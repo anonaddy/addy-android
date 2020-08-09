@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColorStatic">#19216b</color>
+    <color name="primaryColor">#19216b</color>
+    <color name="primaryLightColor">#4d499a</color>
+    <color name="primarySuperLightColor">#804D499A</color>
+    <color name="primaryDarkColor">#000040</color>
+    <color name="secondaryColor">#3ae7e1</color>
+    <color name="secondarySuperLightColor">#807EFFFF</color>
+    <color name="secondaryLightColor">#7effff</color>
+    <color name="secondaryDarkColor">#00b4af</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#000000</color>
+
+    <color name="newNotificationColor">#FF0000</color>
+    <color name="IconGrayTint">#666666</color>
+
+
+    <color name="softRed">#FD5842</color>
+    <color name="softRedSuperLight">#80FD5842</color>
+
+    <color name="easternBlue">#16A8B8</color>
+    <color name="easternBlueSuperLight">#8016A8B8</color>
+    <color name="portalBlue">#4289FD</color>
+    <color name="portalOrange">#FF9800</color>
+    <color name="shimmerGray">#CDCDCD</color>
+    <color name="pillColor">#CCCCCC</color>
+</resources>

@@ -1,0 +1,111 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="android:navigationBarColor">
+            @color/LightDarkMode
+        </item>
+        <!-- Optional, if drawing behind the status bar too -->
+        <item name="android:statusBarColor">
+            @color/primaryColor
+        </item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowContentTransitions">true</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_image_transform
+        </item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
+    </style>
+
+    <style name="BottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/LightDarkMode</item>
+        <item name="android:navigationBarDividerColor">@color/LightDarkMode</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="AnonAddyProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:minHeight">8dip</item>
+    </style>
+
+    <style name="AppTheme.Setup" parent="AppTheme.NoActionBar">
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
+        <!-- Optional, if drawing behind the status bar too -->
+        <item name="android:statusBarColor">
+            @android:color/transparent
+        </item>
+    </style>
+
+    <style name="AppTheme.Transparent" parent="AppTheme.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
+        <!-- Optional, if drawing behind the status bar too -->
+    </style>
+
+    <style name="AnonAddyProgressBarRed" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_red</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:minHeight">8dip</item>
+    </style>
+
+    <style name="AnonAddyProgressBarEasternBlue" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_eastern_blue</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:minHeight">8dip</item>
+    </style>
+
+
+    <style name="MaterialTextButtonWithoutSpacing" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minWidth">0dip</item>
+        <item name="android:minHeight">0dip</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:letterSpacing">0.00</item>
+    </style>
+
+    <style name="ActionButtonsSecondary" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/secondaryColor</item>
+        <item name="android:textColor">@color/BlackWhite</item>
+    </style>
+
+    <style name="TextButtonsSecondary" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/secondaryColor</item>
+    </style>
+
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/shape_rounded_corners</item>
+    </style>
+</resources>

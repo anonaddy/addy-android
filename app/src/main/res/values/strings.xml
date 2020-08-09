@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">AnonAddy</string>
+    <string name="title_home">Home</string>
+    <string name="title_alias">Aliases</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_settings">Settings</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="overall_statistics">Overall statistics</string>
+    <string name="title_activity_dialog">Profile dialog</string>
+    <string name="domain_settings">Domain settings</string>
+    <string name="app_settings">App settings</string>
+    <string name="title_recipients">Recipients</string>
+    <string name="recipients">Recipients</string>
+    <string name="username_settings">Username settings</string>
+    <string name="anonaddy_settings">AnonAddy settings</string>
+    <string name="monthly_bandwidth">Monthly bandwidth</string>
+    <string name="view_more">View more</string>
+    <string name="deleted">Deleted</string>
+    <string name="active">Active</string>
+    <string name="inactive">Inactive</string>
+    <string name="copied_alias">Copied alias</string>
+    <string name="most_active_aliases">Most active aliases</string>
+    <string name="created_at_s">Created %s</string>
+    <string name="updated_at_s">Updated %s</string>
+    <string name="copy_alias">Copy alias</string>
+    <string name="setup_api_key" translatable="false">"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 "</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="back">Back</string>
+    <string name="APIKey">API Key</string>
+    <string name="get_my_key">Get my key</string>
+    <string name="sign_in">Sign in</string>
+    <string name="APIKey_desc">Paste your API Key here…</string>
+    <string name="hi_there">Hi there!</string>
+    <string name="drag_down_to_close">Drag down to close</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="anonymous_email_forwarding">Anonymous Email Forwarding</string>
+    <string name="new_user">New user?</string>
+    <string name="got_the_api_key">Got the API key?</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="how_does_it_work">How does it work?</string>
+    <string name="setup_how_1_desc">Let\'s say your username is johndoe. You can now use *@johndoe.anonaddy.com (or .me) as your email. Where * denotes any valid local part for an email address.\n\nIf you would like to remain anonymous choose a username that is not linked to your real name or identify and that you haven\'t used anywhere else.\n\nYou can also create aliases at shared domains if you are concerned about others linking alias ownership to you.</string>
+    <string name="setup_how_1">1. Register Your Username</string>
+    <string name="setup_how2">2. Create Aliases</string>
+    <string name="setup_how2_desc">Either on the fly or generated beforehand. Next time you are signing up to a website or newsletter, simply make up a new alias and enter that instead of your real email address.\n\nFor example, if you are on vuejs.org and you want to sign up to their newsletter you could simply enter vuejs@johndoe.anonaddy.com (or .me). \n\nWe\'ll automatically create the alias in your dashboard as soon as it receives its first email. You can reply to emails and send from aliases anonymously too!</string>
+    <string name="setup_how_3">3. Manage Aliases</string>
+    <string name="setup_how_3_desc">Let\'s say a spammer gets hold of one of your aliases and starts sending unsolicited email to it. You can simply toggle a switch in your dashboard and deactivate that alias.\n\nOur system will then silently discard any further emails and you won\'t be forwarded anything else for that alias.\n\nYou can also delete the alias. Then our system will reject any emails and respond with an error.</string>
+    <string name="setup_how_4">4. What do you think?</string>
+    <string name="setup_how_4_desc">Sounds like a service you’d use? If so, why not sign up.\n\n(This will open your browser)</string>
+    <string name="api_invalid">API key invalid</string>
+    <string name="aliases_statistics">Aliases statistics</string>
+    <string name="emails_forwarded">Emails forwarded</string>
+    <string name="emails_replied_sent">Emails replied/sent</string>
+    <string name="all_aliases">All aliases</string>
+    <string name="add_alias">Add alias</string>
+    <string name="replied_forwarded_blocked_stat">%d forwarded; %d blocked</string>
+    <string name="replied_replied_sent_stat">%d replied; %d sent</string>
+</resources>

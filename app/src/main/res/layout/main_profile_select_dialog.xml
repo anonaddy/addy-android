@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/main_profile_select_dialog_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:transitionName="background_transition"
+        app:contentPadding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/main_profile_select_dialog_card_accountname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$ANONADDY_Account_Name"
+                        android:textAllCaps="true"
+                        android:textColor="@color/BlackWhite"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/main_profile_select_dialog_card_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$ANONADDY_User_Email"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="43dp"
+                    android:layout_height="43dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/circle"
+                    android:gravity="center"
+                    android:text="AY"
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp"
+                    android:transitionName="image_transition" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_anonaddy_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawableStart="@drawable/ic_logo_small"
+                android:drawablePadding="16dp"
+                android:drawableTint="@color/IconGrayTint"
+                android:gravity="center_vertical"
+                android:text="@string/anonaddy_settings"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_domain_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawableStart="@drawable/ic_round_dns_24"
+                android:drawablePadding="16dp"
+                android:drawableTint="@color/IconGrayTint"
+                android:gravity="center_vertical"
+                android:text="@string/domain_settings"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_username_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawableStart="@drawable/ic_username_settings"
+                android:drawablePadding="16dp"
+                android:drawableTint="@color/IconGrayTint"
+                android:gravity="center_vertical"
+                android:text="@string/username_settings"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_app_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawableStart="@drawable/ic_round_settings_24"
+                android:drawablePadding="16dp"
+                android:drawableTint="@color/IconGrayTint"
+                android:gravity="center_vertical"
+                android:text="@string/app_settings"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="AnonAddy Android | Stjin"
+                android:textAlignment="center"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>
