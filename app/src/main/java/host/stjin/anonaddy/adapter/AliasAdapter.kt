@@ -14,7 +14,6 @@ import host.stjin.anonaddy.models.Aliases
 class AliasAdapter(private val listWithAliases: List<Aliases>, private val showStatus: Boolean) :
     RecyclerView.Adapter<AliasAdapter.AliasesViewHolder>() {
 
-    lateinit var copyAliasClickListener: ClickListener
     lateinit var onAliasClickListener: ClickListener
 
 
@@ -75,16 +74,13 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
     override fun getItemCount(): Int = listWithAliases.size
 
 
-    fun setClickCopyAliasClickListener(aClickListener: ClickListener) {
-        copyAliasClickListener = aClickListener
-    }
-
     fun setClickOnAliasClickListener(aClickListener: ClickListener) {
         onAliasClickListener = aClickListener
     }
 
     interface ClickListener {
         fun onClick(pos: Int, aView: View)
+        fun onClickCopy(pos: Int, aView: View)
     }
 
     inner class AliasesViewHolder(view: View) : RecyclerView.ViewHolder(view),
@@ -106,9 +102,9 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
 
         override fun onClick(p0: View) {
             if (p0.id == R.id.aliases_recyclerview_list_copy) {
-                copyAliasClickListener.onClick(adapterPosition, p0)
-            } else if (p0.id == R.id.aliases_recyclerview_list_LL) {
                 onAliasClickListener.onClick(adapterPosition, p0)
+            } else if (p0.id == R.id.aliases_recyclerview_list_LL) {
+                onAliasClickListener.onClickCopy(adapterPosition, p0)
             }
         }
 

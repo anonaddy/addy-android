@@ -16,27 +16,17 @@
         android:textColor="@android:color/white"
         android:textSize="88sp" />
 
-    <LinearLayout
-        android:id="@+id/fragment_setup_init_hi_there"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/fragment_setup_hi_there"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/hi_there"
-            android:src="@drawable/ic_human_greeting" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/hi_there"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:drawableTop="@drawable/ic_human_greeting"
+        android:drawableTint="@android:color/white"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/hi_there"
+        android:textColor="@android:color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"

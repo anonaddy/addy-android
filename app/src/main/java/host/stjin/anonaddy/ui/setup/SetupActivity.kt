@@ -108,7 +108,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             )
         }
 
-        fragment_setup_init_hi_there.doOnApplyWindowInsets { view, insets, padding ->
+        fragment_setup_hi_there.doOnApplyWindowInsets { view, insets, padding ->
             // padding contains the original padding values after inflation
             view.updatePadding(
                 top = padding.top + insets.systemWindowInsetTop

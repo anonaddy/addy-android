@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,7 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <LinearLayout
             android:id="@+id/home_statistics_LL"
@@ -53,12 +56,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:drawableStart="@drawable/ic_speedometer_slow"
                     android:drawablePadding="4dp"
-                    android:drawableTint="@color/primaryColor"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
-                    android:text="@string/monthly_bandwidth" />
+                    android:text="@string/monthly_bandwidth"
+                    app:drawableStartCompat="@drawable/ic_speedometer_slow"
+                    app:drawableTint="@color/primaryColor" />
 
                 <TextView
                     android:id="@+id/home_statistics_monthly_bandwidth_current"
@@ -66,7 +69,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:text="\?"
-                    android:textColor="@color/BlackWhite" />
+                    android:textColor="@color/BlackWhite"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/home_statistics_monthly_bandwidth_max"
@@ -74,7 +78,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginStart="4dp"
-                    android:text="\?" />
+                    android:text="\?"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <ProgressBar
@@ -96,12 +101,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:drawableStart="@drawable/ic_account_arrow_right_outline"
                     android:drawablePadding="4dp"
-                    android:drawableTint="@color/softRed"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
-                    android:text="@string/recipients" />
+                    android:text="@string/recipients"
+                    app:drawableStartCompat="@drawable/ic_account_arrow_right_outline"
+                    app:drawableTint="@color/softRed" />
 
                 <TextView
                     android:id="@+id/home_statistics_recipients_current"
@@ -110,7 +115,8 @@
                     android:layout_gravity="bottom"
                     android:gravity="bottom"
                     android:text="\?"
-                    android:textColor="@color/BlackWhite" />
+                    android:textColor="@color/BlackWhite"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/home_statistics_recipients_max"
@@ -118,7 +124,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginStart="4dp"
-                    android:text="\?" />
+                    android:text="\?"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
@@ -140,12 +147,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:drawableStart="@drawable/ic_round_alternate_email_24"
                     android:drawablePadding="4dp"
-                    android:drawableTint="@color/easternBlue"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
-                    android:text="@string/title_alias" />
+                    android:text="@string/title_alias"
+                    app:drawableStartCompat="@drawable/ic_round_alternate_email_24"
+                    app:drawableTint="@color/easternBlue" />
 
                 <TextView
                     android:id="@+id/home_statistics_aliases_current"
@@ -154,7 +161,8 @@
                     android:layout_gravity="bottom"
                     android:gravity="bottom"
                     android:text="\?"
-                    android:textColor="@color/BlackWhite" />
+                    android:textColor="@color/BlackWhite"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/home_statistics_aliases_max"
@@ -162,7 +170,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginStart="4dp"
-                    android:text="\?" />
+                    android:text="\?"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 

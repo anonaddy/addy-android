@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
 
 
-    lateinit var listener: AddApiBottomDialogListener
+    private lateinit var listener: AddApiBottomDialogListener
 
 
     // 1. Defines the listener interface with a method passing back data result.

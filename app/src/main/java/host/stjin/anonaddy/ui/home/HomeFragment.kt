@@ -91,8 +91,12 @@ class HomeFragment : Fragment() {
                 // Get the top 5
                 val aliasList = list?.take(5)
                 val aliasAdapter = aliasList?.let { AliasAdapter(it, false) }
-                aliasAdapter?.setClickCopyAliasClickListener(object : AliasAdapter.ClickListener {
+                aliasAdapter?.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                     override fun onClick(pos: Int, aView: View) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onClickCopy(pos: Int, aView: View) {
                         val clipboard: ClipboardManager? =
                             context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                         val aliasEmailAddress = aliasList[pos].email
@@ -110,12 +114,6 @@ class HomeFragment : Fragment() {
                                 anchorView = bottomNavView
                             }.show()
                         }
-                    }
-
-                })
-                aliasAdapter?.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
-                    override fun onClick(pos: Int, aView: View) {
-                        TODO("Not yet implemented")
                     }
 
                 })
@@ -157,11 +155,11 @@ class HomeFragment : Fragment() {
         setMonthlyBandwidthStatistics(root, currMonthlyBandwidth, maxMonthlyBandwidth)
         settingsManager?.putSettingsFloat(
             "stat_current_monthly_bandwidth",
-            currMonthlyBandwidth.toFloat()
+            currMonthlyBandwidth
         )
         settingsManager?.putSettingsFloat(
             "stat_max_monthly_bandwidth",
-            maxMonthlyBandwidth.toFloat()
+            maxMonthlyBandwidth
         )
 
         // ================

@@ -5,10 +5,11 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
 import host.stjin.anonaddy.AnonAddy.API_URL_ALL_ALIAS
+import host.stjin.anonaddy.AnonAddy.API_URL_ALL_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
-import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.AliasesArray
+import host.stjin.anonaddy.models.Recipients
 import host.stjin.anonaddy.models.RecipientsArray
 
 
@@ -57,7 +58,7 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun getRecipientCount(callback: (Int?) -> Unit) {
         //TODO check responsecode
-        val (request, response, result) = Fuel.get(API_URL_RECIPIENTS)
+        val (request, response, result) = Fuel.get(API_URL_ALL_RECIPIENTS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -168,10 +169,6 @@ class NetworkHelper(private val context: Context) {
                 .awaitStringResponseResult()
         }
 
-
-
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -190,6 +187,56 @@ class NetworkHelper(private val context: Context) {
                     aliasList.addAll(anonAddyData.data)
                 }
                 callback(aliasList)
+            }
+            401 -> {
+                // Unauthenticated, clear settings
+                SettingsManager(true, context).clearSettings()
+
+                val ex = result.component2()?.message
+                //TODO log this
+                println(ex)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                //TODO log this
+                println(ex)
+                callback(null)
+            }
+        }
+    }
+
+    suspend fun getRecipients(
+        callback: (ArrayList<Recipients>?) -> Unit,
+        verifiedOnly: Boolean
+    ) {
+        val (request, response, result) = Fuel.get(API_URL_ALL_RECIPIENTS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, RecipientsArray::class.java)
+
+                val recipientList = ArrayList<Recipients>()
+
+                if (verifiedOnly) {
+                    for (recipient in anonAddyData.data) {
+                        if (recipient.email_verified_at != null) {
+                            recipientList.add(recipient)
+                        }
+                    }
+                } else {
+                    recipientList.addAll(anonAddyData.data)
+                }
+                callback(recipientList)
             }
             401 -> {
                 // Unauthenticated, clear settings

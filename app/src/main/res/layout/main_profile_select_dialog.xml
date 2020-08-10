@@ -67,14 +67,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:drawableStart="@drawable/ic_logo_small"
                 android:drawablePadding="16dp"
-                android:drawableTint="@color/IconGrayTint"
                 android:gravity="center_vertical"
                 android:text="@string/anonaddy_settings"
                 android:textColor="@color/BlackWhite"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/ic_logo_small"
+                app:drawableTint="@color/IconGrayTint" />
 
             <TextView
                 android:id="@+id/main_profile_select_dialog_domain_settings"
@@ -82,14 +82,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:drawableStart="@drawable/ic_round_dns_24"
                 android:drawablePadding="16dp"
-                android:drawableTint="@color/IconGrayTint"
                 android:gravity="center_vertical"
                 android:text="@string/domain_settings"
                 android:textColor="@color/BlackWhite"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/ic_round_dns_24"
+                app:drawableTint="@color/IconGrayTint" />
 
             <TextView
                 android:id="@+id/main_profile_select_dialog_username_settings"
@@ -97,14 +97,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:drawableStart="@drawable/ic_username_settings"
                 android:drawablePadding="16dp"
-                android:drawableTint="@color/IconGrayTint"
                 android:gravity="center_vertical"
                 android:text="@string/username_settings"
                 android:textColor="@color/BlackWhite"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/ic_username_settings"
+                app:drawableTint="@color/IconGrayTint" />
 
             <TextView
                 android:id="@+id/main_profile_select_dialog_app_settings"
@@ -112,14 +112,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:drawableStart="@drawable/ic_round_settings_24"
                 android:drawablePadding="16dp"
-                android:drawableTint="@color/IconGrayTint"
                 android:gravity="center_vertical"
                 android:text="@string/app_settings"
                 android:textColor="@color/BlackWhite"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/ic_round_settings_24"
+                app:drawableTint="@color/IconGrayTint" />
 
             <TextView
                 android:layout_width="match_parent"

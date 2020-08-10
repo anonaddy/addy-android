@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/aliases_recyclerview_list_LL"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:orientation="horizontal">
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_marginEnd="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -28,7 +32,6 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -45,7 +48,8 @@
             android:text="e4eba4f0-16e5-457a-9648-a6ba518ace43@dontusemy.email"
             android:textAllCaps="false"
             android:textColor="@color/BlackWhite"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/aliases_recyclerview_list_description"
@@ -57,13 +61,14 @@
             android:maxLines="2"
             android:minLines="2"
             android:singleLine="false"
-            android:text="Stupid Sony newsletters. I don’t want that new PlayStation! I stick to my PSP!" />
+            android:text="Stupid Sony newsletters. I don’t want that new PlayStation! I stick to my PSP!"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_marginStart="16dp"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
@@ -84,8 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:contentDescription="@string/copy_alias"
-            android:src="@drawable/ic_content_copy_24px"
-            android:tint="?attr/colorControlNormal" />
+            android:src="@drawable/ic_content_copy_24px" />
 
     </LinearLayout>
 

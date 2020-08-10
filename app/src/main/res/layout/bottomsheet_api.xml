@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Your API can be obtained at the bottom of the settings page at app.anonaddy.com"
+            android:text="@string/api_obtain_desc"
             android:textAlignment="center" />
 
         <com.google.android.material.textfield.TextInputLayout

@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/title_notifications"
             android:src="@drawable/ic_round_notifications_none_24"
-            android:tint="@android:color/white" />
+            app:tint="@android:color/white" />
 
         <ImageView
             android:id="@+id/main_top_bar_not_new_icon"
@@ -34,9 +34,9 @@
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="15dp"
             android:contentDescription="@string/title_notifications"
-            android:tint="@color/newNotificationColor"
             android:visibility="gone"
-            app:srcCompat="@drawable/circle" />
+            app:srcCompat="@drawable/circle"
+            app:tint="@color/newNotificationColor" />
     </RelativeLayout>
 
 

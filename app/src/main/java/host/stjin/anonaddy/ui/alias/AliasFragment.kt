@@ -123,9 +123,13 @@ class AliasFragment : Fragment() {
                 }
 
                 val finalList = nonDeletedList + onlyDeletedList
-                val aliasAdapter = finalList.let { AliasAdapter(it, true) }
-                aliasAdapter.setClickCopyAliasClickListener(object : AliasAdapter.ClickListener {
+                val aliasAdapter = AliasAdapter(finalList, true)
+                aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                     override fun onClick(pos: Int, aView: View) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onClickCopy(pos: Int, aView: View) {
                         val clipboard: ClipboardManager? =
                             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val aliasEmailAddress = finalList[pos].email
@@ -143,12 +147,6 @@ class AliasFragment : Fragment() {
                                 anchorView = bottomNavView
                             }.show()
                         }
-                    }
-
-                })
-                aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
-                    override fun onClick(pos: Int, aView: View) {
-                        TODO("Not yet implemented")
                     }
 
                 })
