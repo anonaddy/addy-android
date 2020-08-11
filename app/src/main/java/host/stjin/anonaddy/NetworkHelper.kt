@@ -4,13 +4,11 @@ import android.content.Context
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
-import host.stjin.anonaddy.AnonAddy.API_URL_ALL_ALIAS
-import host.stjin.anonaddy.AnonAddy.API_URL_ALL_RECIPIENTS
+import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
-import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.models.AliasesArray
-import host.stjin.anonaddy.models.Recipients
-import host.stjin.anonaddy.models.RecipientsArray
+import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
+import host.stjin.anonaddy.models.*
+import org.json.JSONObject
 
 
 class NetworkHelper(private val context: Context) {
@@ -56,9 +54,44 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun addAlias(
+        domain: String,
+        description: String,
+        format: String,
+        callback: (String?) -> Unit
+    ) {
+
+        val json = JSONObject()
+        json.put("domain", domain)
+        json.put("description", description)
+        json.put("format", format)
+
+
+        val (request, response, result) = Fuel.post(API_URL_ALIAS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            201 -> {
+                callback("201")
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+        }
+    }
+
     suspend fun getRecipientCount(callback: (Int?) -> Unit) {
         //TODO check responsecode
-        val (request, response, result) = Fuel.get(API_URL_ALL_RECIPIENTS)
+        val (request, response, result) = Fuel.get(API_URL_RECIPIENTS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -97,7 +130,7 @@ class NetworkHelper(private val context: Context) {
         activeOnly: Boolean = true
     ) {
         //TODO check responsecode
-        val (request, response, result) = Fuel.get(API_URL_ALL_ALIAS)
+        val (request, response, result) = Fuel.get(API_URL_ALIAS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -150,7 +183,7 @@ class NetworkHelper(private val context: Context) {
         includeDeleted: Boolean
     ) {
         val (request, response, result) = if (includeDeleted) {
-            Fuel.get(API_URL_ALL_ALIAS, listOf("deleted" to "with"))
+            Fuel.get(API_URL_ALIAS, listOf("deleted" to "with"))
                 .appendHeader(
                     "Authorization" to "Bearer $API_KEY",
                     "Content-Type" to "application/json",
@@ -159,7 +192,7 @@ class NetworkHelper(private val context: Context) {
                 )
                 .awaitStringResponseResult()
         } else {
-            Fuel.get(API_URL_ALL_ALIAS)
+            Fuel.get(API_URL_ALIAS)
                 .appendHeader(
                     "Authorization" to "Bearer $API_KEY",
                     "Content-Type" to "application/json",
@@ -206,11 +239,50 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
+    suspend fun getDomainOptions(
+        callback: (Domains?) -> Unit
+    ) {
+        val (request, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, Domains::class.java)
+                callback(anonAddyData)
+            }
+            401 -> {
+                // Unauthenticated, clear settings
+                SettingsManager(true, context).clearSettings()
+
+                val ex = result.component2()?.message
+                //TODO log this
+                println(ex)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                //TODO log this
+                println(ex)
+                callback(null)
+            }
+        }
+    }
+
     suspend fun getRecipients(
         callback: (ArrayList<Recipients>?) -> Unit,
         verifiedOnly: Boolean
     ) {
-        val (request, response, result) = Fuel.get(API_URL_ALL_RECIPIENTS)
+        val (request, response, result) = Fuel.get(API_URL_RECIPIENTS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",

@@ -82,4 +82,10 @@ class MainActivity : BaseActivity() {
     private fun changeTopBarNotification(newNotifications: Boolean) {
         main_top_bar_not_new_icon.visibility = if (newNotifications) View.VISIBLE else View.GONE
     }
+
+
+    fun switchFragments(fragment: Int) {
+        val navController = findNavController(R.id.nav_host_fragment)
+        navController.navigate(fragment)
+    }
 }

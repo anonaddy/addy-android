@@ -24,10 +24,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class AliasFragment : Fragment() {
+class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
+
+    private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
+        AddAliasBottomDialogFragment.newInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +66,13 @@ class AliasFragment : Fragment() {
     private fun setOnClickListeners(root: View) {
         root.alias_statistics_dismiss.setOnClickListener {
             root.alias_statistics_LL.visibility = View.GONE
+        }
+
+        root.alias_add_alias.setOnClickListener {
+            addAliasBottomDialogFragment.show(
+                childFragmentManager,
+                "addApiBottomDialogFragment"
+            )
         }
     }
 
@@ -211,6 +221,14 @@ class AliasFragment : Fragment() {
         root.alias_forwarded_blocked_stats_textview.text =
             context.resources.getString(R.string.replied_forwarded_blocked_stat, forwarded, blocked)
 
+    }
+
+    override fun onAdded() {
+        addAliasBottomDialogFragment.dismiss()
+        // Get the latest data in the background, and update the values when loaded
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getAllAliasesAndSetStatistics(requireView())
+        }
     }
 
 

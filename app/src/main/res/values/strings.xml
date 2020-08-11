@@ -65,4 +65,12 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="sign_up">Sign up</string>
+    <!-- TODO add username -->
+    <string name="add_alias_desc">Other aliases e.g. alias@username.anonaddy.com or .me can also be created automaticaly when they receive their first email.</string>
+    <string name="enter_description_optional">Enter description (optional)…</string>
+    <string name="description">Description</string>
+    <string name="retrieving">Retrieving…</string>
+    <string name="domains_format_random_words">random_words</string>
+    <string name="domains_format_uuid">uuid</string>
+    <string name="error_adding_alias">Something went wrong adding the alias</string>
 </resources>

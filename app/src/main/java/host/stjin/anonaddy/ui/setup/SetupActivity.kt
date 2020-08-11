@@ -83,7 +83,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             } else {
                 fragment_setup_init_button_api.isEnabled = true
                 fragment_setup_init_button_new.isEnabled = true
-                fragment_setup_apikey_get_progressbar.visibility = View.GONE
+                fragment_setup_apikey_get_progressbar.visibility = View.INVISIBLE
                 addApiBottomDialogFragment.show(
                     supportFragmentManager,
                     "addApiBottomDialogFragment"

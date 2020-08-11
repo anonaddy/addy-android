@@ -101,9 +101,9 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         }
 
         override fun onClick(p0: View) {
-            if (p0.id == R.id.aliases_recyclerview_list_copy) {
+            if (p0.id == R.id.aliases_recyclerview_list_LL) {
                 onAliasClickListener.onClick(adapterPosition, p0)
-            } else if (p0.id == R.id.aliases_recyclerview_list_LL) {
+            } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
                 onAliasClickListener.onClickCopy(adapterPosition, p0)
             }
         }

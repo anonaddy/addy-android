@@ -42,11 +42,11 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         listener = activity as AddApiBottomDialogListener
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
-        root.setup_apikey_sign_in_button.setOnClickListener(this)
-        root.setup_apikey_get_button.setOnClickListener(this)
-        root.setup_apikey_tiet.setOnEditorActionListener { v, actionId, event ->
+        root.bs_setup_apikey_sign_in_button.setOnClickListener(this)
+        root.bs_setup_apikey_get_button.setOnClickListener(this)
+        root.bs_setup_apikey_tiet.setOnEditorActionListener { v, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
-                verifyKey(root, requireContext(), v.text.toString())
+                verifyKey(root, requireContext())
             }
             false
         }
@@ -61,11 +61,11 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         }
     }
 
-    private fun verifyKey(root: View, context: Context, apiKey: String) {
-
-        root.setup_apikey_get_button.isEnabled = false
-        root.setup_apikey_sign_in_button.isEnabled = false
-        root.setup_apikey_get_progressbar.visibility = View.VISIBLE
+    private fun verifyKey(root: View, context: Context) {
+        val apiKey = root.bs_setup_apikey_tiet.text.toString()
+        root.bs_setup_apikey_get_button.isEnabled = false
+        root.bs_setup_apikey_sign_in_button.isEnabled = false
+        root.bs_setup_apikey_get_progressbar.visibility = View.VISIBLE
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -79,10 +79,10 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (result == "200") {
                 listener.onClickSave(apiKey)
             } else {
-                root.setup_apikey_get_button.isEnabled = true
-                root.setup_apikey_sign_in_button.isEnabled = true
-                root.setup_apikey_get_progressbar.visibility = View.GONE
-                root.setup_apikey_til.error =
+                root.bs_setup_apikey_get_button.isEnabled = true
+                root.bs_setup_apikey_sign_in_button.isEnabled = true
+                root.bs_setup_apikey_get_progressbar.visibility = View.INVISIBLE
+                root.bs_setup_apikey_til.error =
                     context.resources.getString(R.string.api_invalid) + "\n" + result
             }
         }
@@ -90,13 +90,12 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
-            if (p0.id == R.id.setup_apikey_sign_in_button) {
+            if (p0.id == R.id.bs_setup_apikey_sign_in_button) {
                 verifyKey(
                     requireView(),
-                    requireContext(),
-                    requireView().setup_apikey_tiet.text.toString()
+                    requireContext()
                 )
-            } else if (p0.id == R.id.setup_apikey_get_button) {
+            } else if (p0.id == R.id.bs_setup_apikey_get_button) {
                 listener.onClickGetMyKey()
             }
         }

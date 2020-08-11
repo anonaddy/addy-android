@@ -89,13 +89,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="4dp"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/fragment_setup_init_button_api"
                 style="@style/ActionButtonsSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
                 android:text="@string/got_the_api_key" />
 
         </LinearLayout>

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
+import host.stjin.anonaddy.MainActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
@@ -67,6 +68,10 @@ class HomeFragment : Fragment() {
     private fun setOnClickListeners(root: View) {
         root.home_statistics_dismiss.setOnClickListener {
             root.home_statistics_LL.visibility = View.GONE
+        }
+
+        root.home_most_active_aliases_view_more.setOnClickListener {
+            (activity as MainActivity).switchFragments(R.id.navigation_alias)
         }
     }
 
