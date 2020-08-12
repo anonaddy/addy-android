@@ -25,7 +25,8 @@
             android:textAlignment="center"
             android:textColor="@color/portalOrange"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 

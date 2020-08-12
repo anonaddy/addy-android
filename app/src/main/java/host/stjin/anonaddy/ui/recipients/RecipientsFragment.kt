@@ -55,12 +55,14 @@ class RecipientsFragment : Fragment() {
     private suspend fun getAllRecipients(root: View) {
         root.recipients_all_recipients_recyclerview.apply {
 
-            addItemDecoration(
-                DividerItemDecoration(
-                    this.context,
-                    (layoutManager as LinearLayoutManager).orientation
+            if (itemDecorationCount > 0) {
+                addItemDecoration(
+                    DividerItemDecoration(
+                        this.context,
+                        (layoutManager as LinearLayoutManager).orientation
+                    )
                 )
-            )
+            }
             // set a LinearLayoutManager to handle Android
             // RecyclerView behavior
             layoutManager = LinearLayoutManager(activity)

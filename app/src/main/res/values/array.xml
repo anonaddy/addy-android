@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="domains_formats_names">
+        <item>@string/domains_format_uuid</item>
+        <item>@string/domains_format_random_words</item>
+    </string-array>
+
+    <string-array name="domains_formats">
+        <item>uuid</item>
+        <item>random_words</item>
+    </string-array>
+</resources>

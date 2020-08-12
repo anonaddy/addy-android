@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="16dp"
-                android:hint="Domain">
+                android:hint="@string/domain">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/bs_addalias_domain_mact"
@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="16dp"
-                android:hint="Alias format">
+                android:hint="@string/alias_format">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/bs_addalias_alias_format_mact"
@@ -99,6 +99,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     android:imeOptions="actionDone"
+                    android:inputType="textMultiLine"
                     android:lines="5"
                     android:maxLines="5"
                     android:minLines="5" />

@@ -78,12 +78,14 @@ class HomeFragment : Fragment() {
     private suspend fun getMostActiveAliases(root: View) {
         root.home_most_active_aliases_recyclerview.apply {
 
-            addItemDecoration(
-                DividerItemDecoration(
-                    this.context,
-                    (layoutManager as LinearLayoutManager).orientation
+            if (itemDecorationCount > 0) {
+                addItemDecoration(
+                    DividerItemDecoration(
+                        this.context,
+                        (layoutManager as LinearLayoutManager).orientation
+                    )
                 )
-            )
+            }
             // set a LinearLayoutManager to handle Android
             // RecyclerView behavior
             layoutManager = LinearLayoutManager(activity)

@@ -79,12 +79,15 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private suspend fun getAllAliasesAndSetStatistics(root: View) {
         root.alias_all_aliases_recyclerview.apply {
 
-            addItemDecoration(
-                DividerItemDecoration(
-                    this.context,
-                    (layoutManager as LinearLayoutManager).orientation
+            if (itemDecorationCount > 0) {
+                addItemDecoration(
+                    DividerItemDecoration(
+                        this.context,
+                        (layoutManager as LinearLayoutManager).orientation
+                    )
                 )
-            )
+            }
+
             // set a LinearLayoutManager to handle Android
             // RecyclerView behavior
             layoutManager = LinearLayoutManager(activity)

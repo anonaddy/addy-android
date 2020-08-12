@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.alias
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
@@ -8,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -27,6 +30,12 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
     // 1. Defines the listener interface with a method passing back data result.
     interface AddAliasBottomDialogListener {
         fun onAdded()
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
     }
 
     override fun onCreateView(
@@ -57,6 +66,9 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
 
     }
 
+
+    private var DOMAINS: List<String> = listOf()
+    private var FORMATS: List<String> = listOf()
     private suspend fun fillSpinners(root: View, context: Context) {
         val networkHelper = NetworkHelper(context)
         networkHelper.getDomainOptions { result ->
@@ -64,7 +76,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
 
             // Set domains and default format/domain
             if (result?.data != null) {
-                val DOMAINS = result.data
+                DOMAINS = result.data
 
                 val domainAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
@@ -74,13 +86,13 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 root.bs_addalias_domain_mact.setAdapter(domainAdapter)
 
                 // Set default domain
-                //root.bs_addalias_domain_mact.setText(result.defaultAliasDomain)
+                if (result.defaultAliasDomain != null) {
+                    root.bs_addalias_domain_mact.setText(result.defaultAliasDomain, false)
+                }
 
                 // Set default format
-                val FORMATS = listOf(
-                    context.resources.getString(R.string.domains_format_uuid),
-                    context.resources.getString(R.string.domains_format_random_words)
-                )
+                FORMATS = context.resources.getStringArray(R.array.domains_formats_names).toList()
+                val FORMATS_ID = context.resources.getStringArray(R.array.domains_formats).toList()
 
                 val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
@@ -89,7 +101,12 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 )
                 root.bs_addalias_alias_format_mact.setAdapter(formatAdapter)
                 // Set default format
-                //root.bs_addalias_alias_format_mact.setText(result.defaultAliasFormat)
+                if (result.defaultAliasFormat != null) {
+                    root.bs_addalias_alias_format_mact.setText(
+                        FORMATS[FORMATS_ID.indexOf(result.defaultAliasFormat)],
+                        false
+                    )
+                }
             }
         }
 
@@ -102,11 +119,31 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
     }
 
     private fun addAlias(root: View, context: Context) {
+
+        if (!DOMAINS.contains(root.bs_addalias_domain_mact.text.toString())) {
+            root.bs_addalias_domain_til.error =
+                context.resources.getString(R.string.not_a_valid_domain)
+            return
+        }
+
+        if (!FORMATS.contains(root.bs_addalias_alias_format_mact.text.toString())) {
+            root.bs_addalias_alias_format_til.error =
+                context.resources.getString(R.string.not_a_valid_alias_format)
+            return
+        }
+
+        // Set error to null if domain and alias is valid
+        root.bs_addalias_domain_til.error = null
+        root.bs_addalias_alias_format_til.error = null
+
         root.bs_addalias_alias_add_alias_button.isEnabled = false
         root.bs_addalias_alias_progressbar.visibility = View.VISIBLE
         val domain = root.bs_addalias_domain_mact.text.toString()
         val description = root.bs_addalias_alias_desc_tiet.text.toString()
-        val format = root.bs_addalias_alias_format_mact.text.toString()
+        val format =
+            context.resources.getStringArray(R.array.domains_formats)[context.resources.getStringArray(
+                R.array.domains_formats_names
+            ).indexOf(root.bs_addalias_alias_format_mact.text.toString())]
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             addAliasToAccount(root, context, domain, description, format)
