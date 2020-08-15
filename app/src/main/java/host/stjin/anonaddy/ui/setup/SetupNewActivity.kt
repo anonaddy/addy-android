@@ -16,15 +16,8 @@ class SetupNewActivity : BaseActivity() {
         )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup_new)
-        setupToolbar()
+        setupToolbar(setup_toolbar)
         switchFragments(SetupHow1Fragment())
-    }
-
-    private fun setupToolbar() {
-        setup_toolbar.setNavigationIcon(R.drawable.ic_round_arrow_back_24) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
-        setup_toolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
     }
 
     fun switchFragments(fragment: Fragment) {

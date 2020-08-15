@@ -38,6 +38,9 @@ class MainActivity : BaseActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         navView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            changeTopBarTitle(destination.label.toString())
+        }
 
         changeTopBarNotification(true)
         initialiseMainAppBar()
@@ -64,10 +67,16 @@ class MainActivity : BaseActivity() {
     @SuppressLint("SwitchIntDef")
     fun checkForDarkModeAndSetFlags() {
         val settingsManager = SettingsManager(false, this)
-        if (settingsManager.getSettingsBool("dark_mode")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        when {
+            settingsManager.getSettingsInt("dark_mode") == 0 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            settingsManager.getSettingsInt("dark_mode") == 1 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            settingsManager.getSettingsInt("dark_mode") == -1 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
         }
     }
 

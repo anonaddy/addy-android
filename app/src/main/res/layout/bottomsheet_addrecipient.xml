@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/add_alias"
+            android:text="@string/add_recipient"
             android:textAlignment="center"
             android:textColor="@color/BlackWhite"
             android:textSize="18sp" />
@@ -51,58 +51,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/add_alias_desc"
+                android:text="@string/add_recipient_desc"
                 android:textAlignment="center" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bs_addalias_domain_til"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="16dp"
-                android:hint="@string/domain">
-
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/bs_addalias_domain_mact"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bs_addalias_alias_format_til"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="16dp"
-                android:hint="@string/alias_format">
-
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/bs_addalias_alias_format_mact"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bs_addalias_alias_desc_til"
+                android:id="@+id/bs_addrecipient_recipient_til"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/description">
+                android:layout_height="match_parent"
+                android:hint="@string/address">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/bs_addalias_alias_desc_tiet"
+                    android:id="@+id/bs_addrecipient_recipient_tiet"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
                     android:imeOptions="actionDone"
-                    android:inputType="textMultiLine"
-                    android:lines="5"
-                    android:maxLines="5"
-                    android:minLines="5" />
+                    android:inputType="textEmailAddress"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,7 +86,7 @@
                     android:layout_weight="1" />
 
                 <ProgressBar
-                    android:id="@+id/bs_addalias_alias_progressbar"
+                    android:id="@+id/bs_addrecipient_recipient_progressbar"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -127,11 +95,11 @@
                     android:visibility="invisible" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_addalias_alias_add_alias_button"
+                    android:id="@+id/bs_addrecipient_recipient_add_recipient_button"
                     style="@style/ActionButtonsSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_alias" />
+                    android:text="@string/add_recipient" />
             </LinearLayout>
 
         </LinearLayout>

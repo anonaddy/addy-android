@@ -25,12 +25,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center_vertical"
                 android:text="@string/setup_how_1"
-                android:textColor="?attr/colorControlNormal"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                style="@style/titleTextView" />
 
             <TextView
                 android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package host.stjin.anonaddy
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.MaterialToolbar
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -28,4 +29,11 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun recordInitialPaddingForView(view: View) = InitialPadding(
         view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom
     )
+
+    fun setupToolbar(toolbar: MaterialToolbar) {
+        toolbar.setNavigationIcon(R.drawable.ic_round_arrow_back_24) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+    }
 }

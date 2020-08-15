@@ -30,12 +30,11 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif-light"
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
                     android:text="@string/aliases_statistics"
                     android:textColor="?attr/colorControlNormal"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/alias_statistics_dismiss"
@@ -109,14 +108,10 @@
 
                 <TextView
                     android:layout_width="0dp"
+                    style="@style/titleTextView"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif-light"
-                    android:gravity="center_vertical"
-                    android:text="@string/all_aliases"
-                    android:textColor="?attr/colorControlNormal"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:text="@string/all_aliases" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/alias_add_alias"

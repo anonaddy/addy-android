@@ -30,12 +30,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif-light"
-                    android:gravity="center_vertical"
                     android:text="@string/overall_statistics"
-                    android:textColor="?attr/colorControlNormal"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    style="@style/titleTextView" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/home_statistics_dismiss"
@@ -198,12 +194,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:fontFamily="sans-serif-light"
-                    android:gravity="center_vertical"
                     android:text="@string/most_active_aliases"
-                    android:textColor="?attr/colorControlNormal"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    style="@style/titleTextView" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/home_most_active_aliases_view_more"

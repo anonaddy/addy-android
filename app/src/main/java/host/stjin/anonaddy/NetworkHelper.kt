@@ -89,6 +89,36 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun addRecipient(
+        address: String,
+        callback: (String?) -> Unit
+    ) {
+
+        val json = JSONObject()
+        json.put("email", address)
+
+        val (request, response, result) = Fuel.post(API_URL_RECIPIENTS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            201 -> {
+                callback("201")
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+        }
+    }
+
     suspend fun getRecipientCount(callback: (Int?) -> Unit) {
         //TODO check responsecode
         val (request, response, result) = Fuel.get(API_URL_RECIPIENTS)
@@ -327,4 +357,30 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
+    suspend fun deleteRecipient(
+        id: String,
+        callback: (String?) -> Unit
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$id")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+        }
+    }
+
 }

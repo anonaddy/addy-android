@@ -71,7 +71,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         root.alias_add_alias.setOnClickListener {
             addAliasBottomDialogFragment.show(
                 childFragmentManager,
-                "addApiBottomDialogFragment"
+                "addAliasBottomDialogFragment"
             )
         }
     }

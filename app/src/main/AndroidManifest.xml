@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
+            android:name=".ui.appsettings.AppSettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.setup.SetupActivity"
             android:theme="@style/AppTheme.Setup" />
         <activity

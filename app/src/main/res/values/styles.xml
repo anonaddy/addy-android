@@ -7,6 +7,7 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
+        <item name="android:textColor">@color/BlackWhite</item>
         <item name="android:navigationBarColor">
             @color/LightDarkMode
         </item>
@@ -97,15 +98,50 @@
 
     <style name="ActionButtonsSecondary" parent="Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/secondaryColor</item>
-        <item name="android:textColor">@color/BlackWhite</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.00</item>
     </style>
 
     <style name="TextButtonsSecondary" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/secondaryColor</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.00</item>
     </style>
 
 
     <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/shape_rounded_corners</item>
+        <item name="android:background">@drawable/shape_rounded_corners_top</item>
     </style>
+
+    <style name="SettingsSectionStyle">
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="SettingsSectionIconStyle">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginEnd">16dp</item>
+    </style>
+
+    <style name="titleTextView">
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">?attr/colorControlNormal</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="RadioButton">
+        <item name="android:button">@null</item>
+        <item name="android:drawableRight">?android:attr/listChoiceIndicatorSingle</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textColor">@color/BlackWhite</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
 </resources>
