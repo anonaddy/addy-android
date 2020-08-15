@@ -108,4 +108,26 @@
     <string name="add_recipient_desc">Enter the individual email of the new recipient you’d like to add.\n\nYou will receive an email with a verification link that will expire in one hour, you can tap “Resend email” to get a new one.</string>
     <string name="not_a_valid_address">This is not a valid address</string>
     <string name="error_adding_recipient">Something went wrong creating this alias</string>
+    <string name="verification_email_has_been_sent">Verification email has been sent</string>
+    <string name="no_aliases">You have no aliases, what about creating one?</string>
+    <string name="alias_status">Alias active</string>
+    <string name="alias_status_desc">Use this alias for mail forwarding</string>
+    <string name="delete_alias">Delete alias</string>
+    <string name="delete_alias_desc">Once deleted, this alias will reject any emails sent to it.</string>
+    <string name="created_at">Created at</string>
+    <string name="updated_at">Updated at</string>
+    <string name="_more">%d more</string>
+    <string name="edit_description">Edit description</string>
+    <string name="error_edit_description">Something went wrong editing this description</string>
+    <string name="no_description">This alias has no description set. Tap the edit icon to add one.</string>
+    <string name="edit_desc_desc">Change the description for this alias, describe what this alias is used for.</string>
+    <string name="edit_alias">Edit alias</string>
+    <string name="forwarded">Forwarded</string>
+    <string name="edit_recipients_desc">The list below shows all verified recipients. Select which recipients you want to set as recipient for this alias.</string>
+    <string name="edit_recipients">Edit recipients</string>
+    <string name="error_edit_recipients">Something went wrong editing the recipients</string>
+    <string name="error_edit_active">An error occured while changing the active state</string>
+    <string name="details">Details</string>
+    <string name="alias_deactivated">Alias deactivated</string>
+    <string name="alias_activated">Alias activated</string>
 </resources>

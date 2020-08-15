@@ -217,7 +217,19 @@
                 app:shimmer_demo_child_count="5"
                 app:shimmer_demo_grid_child_count="1"
                 app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_home_shimmer"
-                app:shimmer_demo_layout_manager_type="linear_vertical" />
+                app:shimmer_demo_layout_manager_type="linear_vertical">
+
+            </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+
+            <TextView
+                android:id="@+id/home_no_aliases"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/no_aliases"
+                android:textAlignment="center"
+                android:textColor="@color/BlackWhite"
+                android:visibility="gone" />
 
         </LinearLayout>
 

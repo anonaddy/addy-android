@@ -3,11 +3,9 @@ package host.stjin.anonaddy.ui.alias
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -53,14 +51,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             fillSpinners(root, requireContext())
         }
-        // 2. Setup a callback when the "Done" button is pressed on keyboard
         root.bs_addalias_alias_add_alias_button.setOnClickListener(this)
-        root.bs_addalias_alias_desc_tiet.setOnEditorActionListener { v, actionId, event ->
-            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
-                addAlias(root, requireContext())
-            }
-            false
-        }
 
         return root
 

@@ -122,9 +122,14 @@
         <item name="background">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="SettingsSectionIconStyle">
+    <style name="SettingsSectionIconStyleEnd">
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginEnd">16dp</item>
+    </style>
+
+    <style name="SettingsSectionIconStyleStart">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginStart">16dp</item>
     </style>
 
     <style name="titleTextView">
@@ -142,6 +147,17 @@
         <item name="android:textColor">@color/BlackWhite</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
+    </style>
+
+
+    <!-- These switch styles come from my other Android project Cometin. You should check it out ;D -->
+    <style name="overrideExpandableCardViewSwitch">
+        <item name="android:background">@null</item>
+        <item name="android:padding">8dp</item>
+        <item name="useMaterialThemeColors">false</item>
+        <item name="android:thumbTint">@color/primaryColor</item>
+        <item name="android:thumb">@drawable/v3cometinswitchthumb</item>
+        <item name="track">@drawable/v3cometinswitchtrackselector</item>
     </style>
 
 </resources>

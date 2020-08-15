@@ -4,11 +4,13 @@ import android.animation.ObjectAnimator
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +22,7 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
+import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -47,22 +50,29 @@ class HomeFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val context = this.context
-        if (context != null) {
-            settingsManager = SettingsManager(true, context)
-            networkHelper = NetworkHelper(context)
+        settingsManager = SettingsManager(true, requireContext())
+        networkHelper = NetworkHelper(requireContext())
 
-            // We load values from local to make the app look quick and snappy!
-            setStatisticsFromLocal(root)
-            setOnClickListeners(root)
+        // We load values from local to make the app look quick and snappy!
+        setStatisticsFromLocal(root)
+        setOnClickListeners(root)
 
-            // Get the latest data in the background, and update the values when loaded
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                getMostActiveAliases(root)
-                getStatisticsFromWeb(root)
-            }
+        getDataFromWeb(root)
 
-        }
         return root
+    }
+
+    private fun getDataFromWeb(root: View) {
+        // Get the latest data in the background, and update the values when loaded
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getMostActiveAliases(root)
+            getStatisticsFromWeb(root)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getDataFromWeb(requireView())
     }
 
     private fun setOnClickListeners(root: View) {
@@ -92,6 +102,15 @@ class HomeFragment : Fragment() {
             // set the custom adapter to the RecyclerView
 
             networkHelper?.getAliases({ list ->
+
+                if (list != null) {
+                    if (list.size > 0) {
+                        root.home_no_aliases.visibility = View.GONE
+                    } else {
+                        root.home_no_aliases.visibility = View.VISIBLE
+                    }
+                }
+
                 // Sort by emails forwarded
                 list?.sortByDescending { it.emails_forwarded }
 
@@ -100,7 +119,20 @@ class HomeFragment : Fragment() {
                 val aliasAdapter = aliasList?.let { AliasAdapter(it, false) }
                 aliasAdapter?.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                     override fun onClick(pos: Int, aView: View) {
-                        TODO("Not yet implemented")
+                        val intent = Intent(context, ManageAliasActivity::class.java)
+                        // Pass data object in the bundle and populate details activity.
+                        intent.putExtra("alias_id", aliasList[pos].id)
+                        intent.putExtra("alias_email", aliasList[pos].email)
+                        intent.putExtra("alias_local", aliasList[pos].local_part)
+
+                        val options: ActivityOptionsCompat =
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                requireActivity(),
+                                aView,
+                                aliasList[pos].id
+                            )
+
+                        startActivity(intent, options.toBundle())
                     }
 
                     override fun onClickCopy(pos: Int, aView: View) {

@@ -11,6 +11,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -46,20 +48,25 @@ class RecipientsFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_recipients, container, false)
-        val context = this.context
-        if (context != null) {
-            settingsManager = SettingsManager(true, context)
-            networkHelper = NetworkHelper(context)
+        settingsManager = SettingsManager(true, requireContext())
+        networkHelper = NetworkHelper(requireContext())
 
-            setOnClickListener(root, context)
+        setOnClickListener(root, requireContext())
 
-            // Get the latest data in the background, and update the values when loaded
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                getAllRecipients(root)
-            }
-
-        }
+        getDataFromWeb(root)
         return root
+    }
+
+    private fun getDataFromWeb(root: View) {
+        // Get the latest data in the background, and update the values when loaded
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getAllRecipients(root)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getDataFromWeb(requireView())
     }
 
     private fun setOnClickListener(root: View, context: Context) {
@@ -104,7 +111,7 @@ class RecipientsFragment : Fragment(),
 
                     override fun onClickResend(pos: Int, aView: View) {
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                            resendConfirmationMailRecipient(list[pos].id, context)
+                            resendConfirmationMailRecipient(list[pos].id, list[pos].email, context)
                         }
                     }
 
@@ -121,8 +128,25 @@ class RecipientsFragment : Fragment(),
 
     }
 
-    private fun resendConfirmationMailRecipient(id: String, context: Context) {
-        TODO("Not yet implemented")
+    private fun resendConfirmationMailRecipient(id: String, email: String, context: Context) {
+
+        //TODO FIX
+
+        //verificationEmailSentSnackbar(context)
+    }
+
+    private fun verificationEmailSentSnackbar(context: Context) {
+        val bottomNavView: BottomNavigationView? =
+            activity?.findViewById(R.id.nav_view)
+        bottomNavView?.let {
+            Snackbar.make(
+                it,
+                context.resources.getString(R.string.verification_email_has_been_sent),
+                Snackbar.LENGTH_SHORT
+            ).apply {
+                anchorView = bottomNavView
+            }.show()
+        }
     }
 
     lateinit var dialog: AlertDialog
@@ -144,6 +168,9 @@ class RecipientsFragment : Fragment(),
         customLayout.dialog_positive_button.setOnClickListener {
             customLayout.dialog_progressbar.visibility = View.VISIBLE
             customLayout.dialog_error.visibility = View.GONE
+            customLayout.dialog_negative_button.isEnabled = false
+            customLayout.dialog_positive_button.isEnabled = false
+
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 deleteRecipientHttpRequest(id, context)
             }
@@ -165,6 +192,8 @@ class RecipientsFragment : Fragment(),
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
                 customLayout.dialog_error.visibility = View.VISIBLE
+                customLayout.dialog_negative_button.isEnabled = true
+                customLayout.dialog_positive_button.isEnabled = true
                 customLayout.dialog_error.text =
                     context.resources.getString(R.string.error_deleting_recipient) + "\n" + result
             }
@@ -173,6 +202,7 @@ class RecipientsFragment : Fragment(),
 
     override fun onAdded() {
         addRecipientsFragment.dismiss()
+        verificationEmailSentSnackbar(requireContext())
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllRecipients(requireView())

@@ -15,3 +15,15 @@ data class Recipients(
     val updated_at: String,
     val user_id: String
 )
+
+
+data class Alias_Recipients(
+    val created_at: String,
+    val email: String,
+    val email_verified_at: String,
+    val fingerprint: Any,
+    val id: String,
+    val should_encrypt: Boolean,
+    val updated_at: String,
+    val user_id: String
+)

@@ -77,7 +77,6 @@ dependencies {
 
 // Gradle dependency on Shimmer for Android
 dependencies {
-
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
 }

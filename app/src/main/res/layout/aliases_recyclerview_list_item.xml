@@ -14,19 +14,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/aliases_recyclerview_list_count"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="0"
-            android:textAlignment="center"
-            android:textColor="@color/portalOrange"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText" />
+        <host.stjin.anonaddy.utils.PieChartView
+            android:id="@+id/aliases_recyclerview_list_chart"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
 
     </LinearLayout>
 

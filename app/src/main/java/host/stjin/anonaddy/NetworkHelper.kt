@@ -4,10 +4,13 @@ import android.content.Context
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
+import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS
+import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy.models.*
+import org.json.JSONArray
 import org.json.JSONObject
 
 
@@ -53,6 +56,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
 
     suspend fun addAlias(
         domain: String,
@@ -269,6 +273,137 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun getSpecificAlias(
+        callback: (Aliases?) -> Unit,
+        id: String
+    ) {
+        val (request, response, result) =
+            Fuel.get("${API_URL_ALIAS}/$id")
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
+                callback(anonAddyData.data)
+            }
+            401 -> {
+                // Unauthenticated, clear settings
+                SettingsManager(true, context).clearSettings()
+
+                val ex = result.component2()?.message
+                //TODO log this
+                println(ex)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                //TODO log this
+                println(ex)
+                callback(null)
+            }
+        }
+    }
+
+    suspend fun updateDescriptionSpecificAlias(
+        callback: (String?) -> Unit,
+        aliasId: String,
+        description: String
+    ) {
+
+        val json = JSONObject()
+        json.put("description", description)
+
+
+        val (request, response, result) =
+            Fuel.patch("${API_URL_ALIAS}/$aliasId")
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                // Unauthenticated, clear settings
+                SettingsManager(true, context).clearSettings()
+
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun updateRecipientsSpecificAlias(
+        callback: (String?) -> Unit,
+        aliasId: String,
+        recipients: ArrayList<String>
+    ) {
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (recipient in recipients) {
+            array.put(recipient)
+        }
+
+        json.put("alias_id", aliasId)
+        json.put("recipient_ids", array)
+
+
+
+        val (request, response, result) =
+            Fuel.post(API_URL_ALIAS_RECIPIENTS)
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                // Unauthenticated, clear settings
+                SettingsManager(true, context).clearSettings()
+
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+        }
+    }
 
     suspend fun getDomainOptions(
         callback: (Domains?) -> Unit
@@ -374,6 +509,63 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             204 -> {
                 callback("204")
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+        }
+    }
+
+
+    suspend fun deactivateSpecificAlias(
+        callback: (String?) -> Unit?,
+        aliasId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_ALIAS}/$aliasId")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                callback(ex.toString())
+            }
+        }
+    }
+
+
+    suspend fun activateSpecificAlias(
+        callback: (String?) -> Unit,
+        aliasId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("id", aliasId)
+
+        val (_, response, result) = Fuel.post(API_URL_ACTIVE_ALIAS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
             }
             else -> {
                 val ex = result.component2()?.message

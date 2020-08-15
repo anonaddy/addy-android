@@ -51,7 +51,8 @@
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/api_obtain_desc"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="?attr/colorControlNormal" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_setup_apikey_til"

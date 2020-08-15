@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/navigation_recipients"
-        android:icon="@drawable/ic_account_arrow_right_outline"
+        android:icon="@drawable/ic_recipients"
         android:title="@string/title_recipients" />
 
 

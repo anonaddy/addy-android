@@ -6,10 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import host.stjin.anonaddy.DateTimeUtils
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy.utils.PieChartView
+
 
 class AliasAdapter(private val listWithAliases: List<Aliases>, private val showStatus: Boolean) :
     RecyclerView.Adapter<AliasAdapter.AliasesViewHolder>() {
@@ -48,7 +51,26 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         }
 
 
-        holder.mCount.text = listWithAliases[position].emails_forwarded.toString()
+        /*
+        CHART
+         */
+
+        ViewCompat.setTransitionName(holder.mChart, listWithAliases[position].id)
+        holder.mChart.setDataPoints(
+            floatArrayOf(
+                listWithAliases[position].emails_forwarded.toFloat(),
+                listWithAliases[position].emails_replied.toFloat()
+            )
+        )
+        holder.mChart.setCenterColor(android.R.color.transparent)
+        holder.mChart.setSliceColor(
+            intArrayOf(
+                R.color.portalOrange,
+                R.color.portalBlue
+            )
+        )
+
+
 
         if (showStatus) {
             holder.mStatus.visibility = View.VISIBLE
@@ -90,7 +112,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
-        var mCount: TextView = view.findViewById(R.id.aliases_recyclerview_list_count)
+        var mChart: PieChartView = view.findViewById(R.id.aliases_recyclerview_list_chart)
         var mStatus: TextView = view.findViewById(R.id.aliases_recyclerview_list_status)
         var mCopy: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
 
@@ -102,7 +124,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
 
         override fun onClick(p0: View) {
             if (p0.id == R.id.aliases_recyclerview_list_LL) {
-                onAliasClickListener.onClick(adapterPosition, p0)
+                onAliasClickListener.onClick(adapterPosition, mChart)
             } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
                 onAliasClickListener.onClickCopy(adapterPosition, p0)
             }

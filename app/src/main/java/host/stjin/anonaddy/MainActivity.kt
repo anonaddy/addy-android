@@ -97,4 +97,5 @@ class MainActivity : BaseActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         navController.navigate(fragment)
     }
+
 }

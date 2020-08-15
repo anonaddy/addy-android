@@ -4,6 +4,10 @@ data class AliasesArray(
     val `data`: List<Aliases>
 )
 
+data class SingleAlias(
+    val `data`: Aliases
+)
+
 data class Aliases(
     val active: Boolean,
     val aliasable_id: String,

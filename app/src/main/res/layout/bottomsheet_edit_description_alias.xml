@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/add_recipient"
+            android:text="@string/edit_description"
             android:textAlignment="center"
             android:textColor="@color/BlackWhite"
             android:textSize="18sp" />
@@ -34,7 +34,6 @@
         android:layout_height="1dp"
         android:alpha="0.1"
         android:background="@color/IconGrayTint" />
-
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -51,27 +50,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/add_recipient_desc"
+                android:text="@string/edit_desc_desc"
                 android:textAlignment="center"
                 android:textColor="?attr/colorControlNormal" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bs_addrecipient_recipient_til"
+                android:id="@+id/bs_editalias_alias_desc_til"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/address">
+                android:hint="@string/description">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/bs_addrecipient_recipient_tiet"
+                    android:id="@+id/bs_editalias_alias_desc_tiet"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="top"
                     android:imeOptions="actionDone"
-                    android:inputType="textEmailAddress"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:minLines="1"
-                    android:singleLine="true" />
+                    android:inputType="textMultiLine"
+                    android:lines="5"
+                    android:maxLines="5"
+                    android:minLines="5" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -87,7 +86,7 @@
                     android:layout_weight="1" />
 
                 <ProgressBar
-                    android:id="@+id/bs_addrecipient_recipient_progressbar"
+                    android:id="@+id/bs_editalias_alias_save_progressbar"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -96,14 +95,13 @@
                     android:visibility="invisible" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_addrecipient_recipient_add_recipient_button"
+                    android:id="@+id/bs_editalias_alias_save_button"
                     style="@style/ActionButtonsSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_recipient" />
+                    android:text="@string/edit_description" />
             </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

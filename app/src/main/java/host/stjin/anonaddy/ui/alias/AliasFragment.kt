@@ -3,10 +3,12 @@ package host.stjin.anonaddy.ui.alias
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,11 +20,13 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import kotlinx.android.synthetic.main.fragment_alias.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
 
 class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDialogListener {
 
@@ -46,21 +50,30 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     ): View? {
         val root = inflater.inflate(R.layout.fragment_alias, container, false)
         val context = this.context
-        if (context != null) {
-            settingsManager = SettingsManager(true, context)
-            networkHelper = NetworkHelper(context)
+        settingsManager = SettingsManager(true, requireContext())
+        networkHelper = NetworkHelper(requireContext())
 
-            // We load values from local to make the app look quick and snappy!
-            setStatisticsFromLocal(root, context)
-            setOnClickListeners(root)
+        // We load values from local to make the app look quick and snappy!
+        setStatisticsFromLocal(root, requireContext())
+        setOnClickListeners(root)
 
-            // Get the latest data in the background, and update the values when loaded
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                getAllAliasesAndSetStatistics(root)
-            }
 
-        }
+        getDataFromWeb(root)
+
         return root
+    }
+
+    private fun getDataFromWeb(root: View) {
+        // Get the latest data in the background, and update the values when loaded
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getAllAliasesAndSetStatistics(root)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getDataFromWeb(requireView())
+
     }
 
     private fun setOnClickListeners(root: View) {
@@ -126,12 +139,17 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 val onlyDeletedList: ArrayList<Aliases> = arrayListOf()
 
                 if (list != null) {
-                    for (alias in list) {
-                        if (alias.deleted_at == null) {
-                            nonDeletedList.add(alias)
-                        } else {
-                            onlyDeletedList.add(alias)
+                    if (list.size > 0) {
+                        root.alias_no_aliases.visibility = View.GONE
+                        for (alias in list) {
+                            if (alias.deleted_at == null) {
+                                nonDeletedList.add(alias)
+                            } else {
+                                onlyDeletedList.add(alias)
+                            }
                         }
+                    } else {
+                        root.alias_no_aliases.visibility = View.VISIBLE
                     }
                 }
 
@@ -139,7 +157,20 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 val aliasAdapter = AliasAdapter(finalList, true)
                 aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                     override fun onClick(pos: Int, aView: View) {
-                        TODO("Not yet implemented")
+                        val intent = Intent(context, ManageAliasActivity::class.java)
+                        // Pass data object in the bundle and populate details activity.
+                        intent.putExtra("alias_id", finalList[pos].id)
+                        intent.putExtra("alias_email", finalList[pos].email)
+                        intent.putExtra("alias_local", finalList[pos].local_part)
+
+                        val options: ActivityOptionsCompat =
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                requireActivity(),
+                                aView,
+                                finalList[pos].id
+                            )
+
+                        startActivity(intent, options.toBundle())
                     }
 
                     override fun onClickCopy(pos: Int, aView: View) {
@@ -222,7 +253,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         root.alias_replied_sent_stats_textview.text =
             context.resources.getString(R.string.replied_replied_sent_stat, replied, sent)
         root.alias_forwarded_blocked_stats_textview.text =
-            context.resources.getString(R.string.replied_forwarded_blocked_stat, forwarded, blocked)
+            context.resources.getString(
+                R.string.replied_forwarded_blocked_stat,
+                forwarded,
+                blocked
+            )
 
     }
 
