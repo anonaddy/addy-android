@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -18,7 +19,7 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RecipientAdapter
-import kotlinx.android.synthetic.main.custom_dialog.view.*
+import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_recipients.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,7 @@ class RecipientsFragment : Fragment(),
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
+    private var shouldAnimateRecyclerview: Boolean = true
 
     private val addRecipientsFragment: AddRecipientBottomDialogFragment =
         AddRecipientBottomDialogFragment.newInstance()
@@ -95,6 +97,14 @@ class RecipientsFragment : Fragment(),
             layoutManager = LinearLayoutManager(activity)
             // set the custom adapter to the RecyclerView
 
+            if (shouldAnimateRecyclerview) {
+                shouldAnimateRecyclerview = false
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                root.recipients_all_recipients_recyclerview.layoutAnimation = animation
+            }
+
+
             networkHelper?.getRecipients({ list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
@@ -150,13 +160,13 @@ class RecipientsFragment : Fragment(),
     }
 
     lateinit var dialog: AlertDialog
-    lateinit var customLayout: View
+    private lateinit var customLayout: View
     private fun deleteRecipient(id: String, context: Context) {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         // set the custom layout
         customLayout =
-            layoutInflater.inflate(R.layout.custom_dialog, null)
+            layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
         builder.setView(customLayout)
         dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

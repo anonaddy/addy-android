@@ -101,7 +101,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
                     android:text="@string/recipients"
-                    app:drawableStartCompat="@drawable/ic_account_arrow_right_outline"
+                    app:drawableStartCompat="@drawable/ic_recipients"
                     app:drawableTint="@color/softRed" />
 
                 <TextView

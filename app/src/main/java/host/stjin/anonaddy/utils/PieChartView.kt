@@ -9,6 +9,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import host.stjin.anonaddy.R
 
 
 class PieChartView @JvmOverloads constructor(
@@ -19,7 +20,10 @@ class PieChartView @JvmOverloads constructor(
 
     private var slicePaint: Paint = Paint()
     private var centerPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private var sliceColors: IntArray = intArrayOf(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW)
+    private var sliceColors: IntArray = intArrayOf(
+        R.color.portalOrange,
+        R.color.portalBlue
+    )
     private var rectF: RectF? = null
     private var dataPoints: FloatArray = floatArrayOf()
 

@@ -49,14 +49,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:alpha="0.6"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/edit_recipients_desc"
-                android:textAlignment="center"
-                android:textColor="?attr/colorControlNormal" />
+                android:textAlignment="center" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_editrecipients_til"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

@@ -10,6 +10,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -35,6 +36,8 @@ class HomeFragment : Fragment() {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
+    private var shouldAnimateRecyclerview: Boolean = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +104,13 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
             // set the custom adapter to the RecyclerView
 
+            if (shouldAnimateRecyclerview) {
+                shouldAnimateRecyclerview = false
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                root.home_most_active_aliases_recyclerview.layoutAnimation = animation
+            }
+
             networkHelper?.getAliases({ list ->
 
                 if (list != null) {
@@ -123,7 +133,7 @@ class HomeFragment : Fragment() {
                         // Pass data object in the bundle and populate details activity.
                         intent.putExtra("alias_id", aliasList[pos].id)
                         intent.putExtra("alias_email", aliasList[pos].email)
-                        intent.putExtra("alias_local", aliasList[pos].local_part)
+                        intent.putExtra("alias_deleted", aliasList[pos].deleted_at)
 
                         val options: ActivityOptionsCompat =
                             ActivityOptionsCompat.makeSceneTransitionAnimation(

@@ -19,8 +19,9 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:tint="@color/shimmerGray"
-            app:srcCompat="@drawable/circle" />
+            android:contentDescription="@string/alias_statistics"
+            app:srcCompat="@drawable/circle"
+            app:tint="@color/shimmerGray" />
 
     </LinearLayout>
 

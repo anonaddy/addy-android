@@ -50,17 +50,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:alpha="0.6"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/add_alias_desc"
-                android:textAlignment="center"
-                android:textColor="?attr/colorControlNormal" />
+                android:textAlignment="center" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_addalias_domain_til"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:hint="@string/domain">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -73,10 +73,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_addalias_alias_format_til"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:hint="@string/alias_format">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -89,13 +89,14 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_addalias_alias_desc_til"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bs_addalias_alias_desc_tiet"
+                    style="@style/AnonAddyTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top"

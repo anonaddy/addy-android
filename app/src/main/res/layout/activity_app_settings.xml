@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_app_settings_LL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -41,6 +42,7 @@
                 android:layout_marginBottom="24dp"
                 android:orientation="vertical">
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -79,7 +81,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -104,10 +106,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:minLines="1"
-                            android:singleLine="false"
+
                             android:text="@string/change_app_theme_to_dark_mode"
                             android:textColor="?attr/colorControlNormal" />
                     </LinearLayout>
@@ -138,7 +137,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -161,10 +160,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:minLines="1"
-                            android:singleLine="false"
+
                             android:text="@string/faq_desc"
                             android:textColor="?attr/colorControlNormal" />
                     </LinearLayout>
@@ -195,7 +191,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -218,13 +214,136 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:minLines="1"
-                            android:singleLine="false"
+
                             android:text="@string/see_previous_changelogs"
                             android:textColor="?attr/colorControlNormal" />
                     </LinearLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/activity_app_settings_section_security"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/security"
+                            android:src="@drawable/ic_jam_fingerprint" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/security"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/activity_app_settings_section_security_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:maxLines="2"
+
+                            android:text="@string/security_desc"
+                            android:textColor="?attr/colorControlNormal" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/activity_app_settings_section_security_switch"
+                        style="@style/overrideExpandableCardViewSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:enabled="false" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/activity_app_settings_section_logs"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/store_logs"
+                            android:src="@drawable/ic_android_debug_bridge" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/store_logs"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+
+                            android:text="@string/store_logs_desc"
+                            android:textColor="?attr/colorControlNormal" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/activity_app_settings_section_logs_switch"
+                        style="@style/overrideExpandableCardViewSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
@@ -252,7 +371,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -278,8 +397,60 @@
                             android:lines="3"
                             android:maxLines="3"
                             android:minLines="3"
-                            android:singleLine="false"
+
                             android:text="@string/contributors_list"
+                            android:textColor="?attr/colorControlNormal" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_app_settings_section_reset"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/reset_app"
+                            android:src="@drawable/ic_restore" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/reset_app"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/reset_app_desc"
                             android:textColor="?attr/colorControlNormal" />
                     </LinearLayout>
 
@@ -324,7 +495,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -347,10 +518,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:minLines="1"
-                            android:singleLine="false"
+
                             android:text="@string/visit_anonaddy_helps_section"
                             android:textColor="?attr/colorControlNormal" />
                     </LinearLayout>
@@ -381,7 +549,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -404,10 +572,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:minLines="1"
-                            android:singleLine="false"
+
                             android:text="@string/check_out_our_pricing_options"
                             android:textColor="?attr/colorControlNormal" />
                     </LinearLayout>

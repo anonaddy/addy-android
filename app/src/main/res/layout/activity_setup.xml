@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,11 +23,11 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:drawableTop="@drawable/ic_human_greeting"
-        android:drawableTint="@android:color/white"
         android:fontFamily="sans-serif-medium"
         android:text="@string/hi_there"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        app:drawableTint="@android:color/white"
+        app:drawableTopCompat="@drawable/ic_human_greeting" />
 
     <LinearLayout
         android:layout_width="match_parent"

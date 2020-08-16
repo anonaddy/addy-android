@@ -44,7 +44,7 @@ class EditAliasDescriptionBottomDialogFragment(
     ): View? {
         // get the views and attach the listener
         val root = inflater.inflate(
-            R.layout.bottomsheet_edit_recipients_alias, container,
+            R.layout.bottomsheet_edit_description_alias, container,
             false
         )
         listener = activity as AddEditAliasDescriptionBottomDialogListener

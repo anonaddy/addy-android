@@ -42,17 +42,51 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/activity_manage_alias_prefix"
+                    android:id="@+id/activity_manage_alias_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="16dp"
                     android:textAlignment="center" />
 
-                <host.stjin.anonaddy.utils.PieChartView
-                    android:id="@+id/activity_manage_alias_chart"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:transitionName="alias_chart" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <host.stjin.anonaddy.utils.PieChartView
+                        android:id="@+id/activity_manage_alias_chart"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_centerInParent="true"
+                        android:transitionName="alias_chart" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/activity_manage_alias_forwarded_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-black"
+                            android:gravity="center"
+                            android:textColor="@color/portalOrange"
+                            android:textSize="24sp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/activity_manage_alias_replies_sent_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center"
+                            android:textColor="@color/portalBlue"
+                            android:textSize="18sp"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -86,7 +120,7 @@
                         android:alpha="0.7"
                         android:drawablePadding="4dp"
                         android:gravity="center_vertical"
-                        android:text="@string/forwarded"
+                        android:text="@string/replied_sent"
                         android:textColor="@color/BlackWhite"
                         app:drawableStartCompat="@drawable/ic_round_reply_24"
                         app:drawableTint="@color/portalBlue" />
@@ -107,6 +141,7 @@
                 android:background="@color/IconGrayTint" />
 
             <LinearLayout
+                android:id="@+id/activity_manage_alias_settings_LL"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="24dp"
@@ -131,7 +166,7 @@
                     android:id="@+id/activity_manage_alias_active"
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -202,7 +237,7 @@
                 <LinearLayout
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -272,7 +307,7 @@
                 <LinearLayout
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -342,7 +377,7 @@
                 <LinearLayout
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -399,7 +434,7 @@
                 <LinearLayout
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -457,7 +492,7 @@
                     android:id="@+id/activity_manage_alias_delete"
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -501,6 +536,60 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
                             android:text="@string/delete_alias_desc"
+                            android:textColor="?attr/colorControlNormal" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_manage_alias_restore"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/restore_alias"
+                            android:src="@drawable/ic_outline_restore_from_trash_24"
+                            app:tint="@color/primaryColor" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/restore_alias"
+                            android:textAllCaps="false"
+                            android:textColor="@color/primaryColor"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/restore_alias_desc"
                             android:textColor="?attr/colorControlNormal" />
                     </LinearLayout>
 

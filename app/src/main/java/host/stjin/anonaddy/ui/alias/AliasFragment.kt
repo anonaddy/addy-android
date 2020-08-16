@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -32,6 +33,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
+    private var shouldAnimateRecyclerview: Boolean = true
 
     private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
         AddAliasBottomDialogFragment.newInstance()
@@ -106,6 +108,14 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             layoutManager = LinearLayoutManager(activity)
             // set the custom adapter to the RecyclerView
 
+            if (shouldAnimateRecyclerview) {
+                shouldAnimateRecyclerview = false
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                root.alias_all_aliases_recyclerview.layoutAnimation = animation
+            }
+
+
             networkHelper?.getAliases({ list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
@@ -161,7 +171,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         // Pass data object in the bundle and populate details activity.
                         intent.putExtra("alias_id", finalList[pos].id)
                         intent.putExtra("alias_email", finalList[pos].email)
-                        intent.putExtra("alias_local", finalList[pos].local_part)
+                        intent.putExtra("alias_deleted", finalList[pos].deleted_at)
 
                         val options: ActivityOptionsCompat =
                             ActivityOptionsCompat.makeSceneTransitionAnimation(

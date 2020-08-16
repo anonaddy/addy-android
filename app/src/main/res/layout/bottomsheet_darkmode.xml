@@ -39,52 +39,48 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+
+        <RadioGroup
+            android:id="@+id/bs_darkmode_radiogroup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
 
-
-            <RadioGroup
-                android:id="@+id/bs_darkmode_radiogroup"
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/bs_darkmode_off"
+                style="@style/RadioButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:text="@string/off" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/bs_darkmode_off"
-                    style="@style/RadioButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/off" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.1"
+                android:background="@color/IconGrayTint" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:alpha="0.1"
-                    android:background="@color/IconGrayTint" />
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/bs_darkmode_on"
+                style="@style/RadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/on" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/bs_darkmode_on"
-                    style="@style/RadioButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/on" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.1"
+                android:background="@color/IconGrayTint" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:alpha="0.1"
-                    android:background="@color/IconGrayTint" />
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/bs_darkmode_automatic"
+                style="@style/RadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/system_default" />
+        </RadioGroup>
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/bs_darkmode_automatic"
-                    style="@style/RadioButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/system_default" />
-            </RadioGroup>
-
-        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

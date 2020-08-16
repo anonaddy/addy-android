@@ -37,6 +37,16 @@
                 android:textColor="@color/BlackWhite"
                 android:textSize="18sp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
+                android:text="@string/setup_how_4_desc_2"
+                android:textColor="?attr/colorControlNormal"
+                android:textSize="18sp" />
+
         </LinearLayout>
     </ScrollView>
 

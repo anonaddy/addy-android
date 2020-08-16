@@ -8,9 +8,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import host.stjin.anonaddy.DateTimeUtils
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.PieChartView
 
 
@@ -34,19 +34,19 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
             holder.mDescription.text =
                 "${listWithAliases[position].description}\n${(holder.mStatus.context).resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalPrettyString(listWithAliases[position].created_at)
+                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
                 )}\n${(holder.mStatus.context).resources.getString(
                     R.string.updated_at_s,
-                    DateTimeUtils.turnStringIntoLocalPrettyString(listWithAliases[position].updated_at)
+                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
                 )}"
         } else {
             holder.mDescription.text =
                 "${(holder.mStatus.context).resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalPrettyString(listWithAliases[position].created_at)
+                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
                 )}\n${(holder.mStatus.context).resources.getString(
                     R.string.updated_at_s,
-                    DateTimeUtils.turnStringIntoLocalPrettyString(listWithAliases[position].updated_at)
+                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
                 )}"
         }
 
@@ -62,13 +62,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
                 listWithAliases[position].emails_replied.toFloat()
             )
         )
-        holder.mChart.setCenterColor(android.R.color.transparent)
-        holder.mChart.setSliceColor(
-            intArrayOf(
-                R.color.portalOrange,
-                R.color.portalBlue
-            )
-        )
+        holder.mChart.setCenterColor(R.color.LightDarkMode)
 
 
 

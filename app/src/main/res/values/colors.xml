@@ -9,7 +9,6 @@
     <color name="secondarySuperLightColor">#807EFFFF</color>
     <color name="secondaryLightColor">#7effff</color>
     <color name="secondaryDarkColor">#00b4af</color>
-    <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
 
     <color name="newNotificationColor">#FF0000</color>
@@ -25,4 +24,6 @@
     <color name="portalOrange">#FF9800</color>
     <color name="shimmerGray">#CDCDCD</color>
     <color name="pillColor">#CCCCCC</color>
+    <color name="titOutlineColor">#BABABA</color>
+
 </resources>

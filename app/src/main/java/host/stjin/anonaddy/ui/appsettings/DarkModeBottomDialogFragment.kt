@@ -21,9 +21,9 @@ class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddDarkmodeBottomDialogListener {
-        fun OnDarkModeOff()
-        fun OnDarkModeOn()
-        fun OnDarkModeAutomatic()
+        fun onDarkModeOff()
+        fun onDarkModeOn()
+        fun onDarkModeAutomatic()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -45,15 +45,14 @@ class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         listener = activity as AddDarkmodeBottomDialogListener
 
         val settingsManager = SettingsManager(false, requireContext())
-        val test = settingsManager.getSettingsInt("dark_mode")
-        when {
-            settingsManager.getSettingsInt("dark_mode") == 0 -> {
+        when (settingsManager.getSettingsInt("dark_mode", -1)) {
+            0 -> {
                 root.bs_darkmode_off.isChecked = true
             }
-            settingsManager.getSettingsInt("dark_mode") == 1 -> {
+            1 -> {
                 root.bs_darkmode_on.isChecked = true
             }
-            settingsManager.getSettingsInt("dark_mode") == -1 -> {
+            -1 -> {
                 root.bs_darkmode_automatic.isChecked = true
             }
         }
@@ -77,13 +76,13 @@ class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         if (p0 != null) {
             when (p0.id) {
                 R.id.bs_darkmode_off -> {
-                    listener.OnDarkModeOff()
+                    listener.onDarkModeOff()
                 }
                 R.id.bs_darkmode_on -> {
-                    listener.OnDarkModeOn()
+                    listener.onDarkModeOn()
                 }
                 R.id.bs_darkmode_automatic -> {
-                    listener.OnDarkModeAutomatic()
+                    listener.onDarkModeAutomatic()
                 }
             }
         }

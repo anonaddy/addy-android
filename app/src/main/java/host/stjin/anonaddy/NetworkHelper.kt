@@ -1,6 +1,8 @@
 package host.stjin.anonaddy
 
 import android.content.Context
+import android.os.Handler
+import android.widget.Toast
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
@@ -10,6 +12,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy.models.*
+import host.stjin.anonaddy.utils.LoggingHelper
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -28,6 +31,7 @@ class NetworkHelper(private val context: Context) {
     503	Service Unavailable -- We're temporarially offline for maintanance. Please try again later*/
 
     private var API_KEY: String? = null
+    private val loggingHelper = LoggingHelper(context)
 
     init {
         // Obtain API key from the encrypted preferences
@@ -36,7 +40,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun verifyApiKey(apiKey: String, callback: (String?) -> Unit) {
-        val (request, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
+        val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
             .appendHeader(
                 "Authorization" to "Bearer $apiKey",
                 "Content-Type" to "application/json",
@@ -49,9 +53,11 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 callback("200")
             }
+            // Do not check for a 401 since the UI will take care of it
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "verifyApiKey")
                 callback(ex.toString())
             }
         }
@@ -71,7 +77,7 @@ class NetworkHelper(private val context: Context) {
         json.put("format", format)
 
 
-        val (request, response, result) = Fuel.post(API_URL_ALIAS)
+        val (_, response, result) = Fuel.post(API_URL_ALIAS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -85,9 +91,18 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 callback("201")
             }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "addAlias")
                 callback(ex.toString())
             }
         }
@@ -115,17 +130,25 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 callback("201")
             }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "addRecipient")
                 callback(ex.toString())
             }
         }
     }
 
     suspend fun getRecipientCount(callback: (Int?) -> Unit) {
-        //TODO check responsecode
-        val (request, response, result) = Fuel.get(API_URL_RECIPIENTS)
+        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -142,18 +165,17 @@ class NetworkHelper(private val context: Context) {
                 callback(anonAddyData.data.size)
             }
             401 -> {
-                // Unauthenticated, clear settings
-                SettingsManager(true, context).clearSettings()
-
-                val ex = result.component2()?.message
-                //TODO log this
-                println(ex)
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
                 callback(null)
             }
             else -> {
                 val ex = result.component2()?.message
-                //TODO log this
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "getRecipientCount")
                 callback(null)
             }
         }
@@ -163,8 +185,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Int?) -> Unit,
         activeOnly: Boolean = true
     ) {
-        //TODO check responsecode
-        val (request, response, result) = Fuel.get(API_URL_ALIAS)
+        val (_, response, result) = Fuel.get(API_URL_ALIAS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -193,17 +214,16 @@ class NetworkHelper(private val context: Context) {
                 callback(activeAliasses)
             }
             401 -> {
-                // Unauthenticated, clear settings
-                SettingsManager(true, context).clearSettings()
-
-                val ex = result.component2()?.message
-                //TODO log this
-                println(ex)
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
                 callback(null)
             }
             else -> {
                 val ex = result.component2()?.message
-                //TODO log this
+                loggingHelper.addLog(ex.toString(), "getAliasesCount")
                 println(ex)
                 callback(null)
             }
@@ -216,7 +236,7 @@ class NetworkHelper(private val context: Context) {
         activeOnly: Boolean,
         includeDeleted: Boolean
     ) {
-        val (request, response, result) = if (includeDeleted) {
+        val (_, response, result) = if (includeDeleted) {
             Fuel.get(API_URL_ALIAS, listOf("deleted" to "with"))
                 .appendHeader(
                     "Authorization" to "Bearer $API_KEY",
@@ -256,18 +276,17 @@ class NetworkHelper(private val context: Context) {
                 callback(aliasList)
             }
             401 -> {
-                // Unauthenticated, clear settings
-                SettingsManager(true, context).clearSettings()
-
-                val ex = result.component2()?.message
-                //TODO log this
-                println(ex)
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
                 callback(null)
             }
             else -> {
                 val ex = result.component2()?.message
-                //TODO log this
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "getAliases")
                 callback(null)
             }
         }
@@ -277,7 +296,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Aliases?) -> Unit,
         id: String
     ) {
-        val (request, response, result) =
+        val (_, response, result) =
             Fuel.get("${API_URL_ALIAS}/$id")
                 .appendHeader(
                     "Authorization" to "Bearer $API_KEY",
@@ -296,18 +315,17 @@ class NetworkHelper(private val context: Context) {
                 callback(anonAddyData.data)
             }
             401 -> {
-                // Unauthenticated, clear settings
-                SettingsManager(true, context).clearSettings()
-
-                val ex = result.component2()?.message
-                //TODO log this
-                println(ex)
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
                 callback(null)
             }
             else -> {
                 val ex = result.component2()?.message
-                //TODO log this
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "getSpecificAlias")
                 callback(null)
             }
         }
@@ -323,7 +341,7 @@ class NetworkHelper(private val context: Context) {
         json.put("description", description)
 
 
-        val (request, response, result) =
+        val (_, response, result) =
             Fuel.patch("${API_URL_ALIAS}/$aliasId")
                 .appendHeader(
                     "Authorization" to "Bearer $API_KEY",
@@ -340,16 +358,17 @@ class NetworkHelper(private val context: Context) {
                 callback("200")
             }
             401 -> {
-                // Unauthenticated, clear settings
-                SettingsManager(true, context).clearSettings()
-
-                val ex = result.component2()?.message
-                println(ex)
-                callback(ex.toString())
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificAlias")
                 callback(ex.toString())
             }
         }
@@ -373,7 +392,7 @@ class NetworkHelper(private val context: Context) {
 
 
 
-        val (request, response, result) =
+        val (_, response, result) =
             Fuel.post(API_URL_ALIAS_RECIPIENTS)
                 .appendHeader(
                     "Authorization" to "Bearer $API_KEY",
@@ -390,16 +409,17 @@ class NetworkHelper(private val context: Context) {
                 callback("200")
             }
             401 -> {
-                // Unauthenticated, clear settings
-                SettingsManager(true, context).clearSettings()
-
-                val ex = result.component2()?.message
-                println(ex)
-                callback(ex.toString())
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "updateRecipientsSpecificAlias")
                 callback(ex.toString())
             }
         }
@@ -408,7 +428,7 @@ class NetworkHelper(private val context: Context) {
     suspend fun getDomainOptions(
         callback: (Domains?) -> Unit
     ) {
-        val (request, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
+        val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -426,18 +446,17 @@ class NetworkHelper(private val context: Context) {
                 callback(anonAddyData)
             }
             401 -> {
-                // Unauthenticated, clear settings
-                SettingsManager(true, context).clearSettings()
-
-                val ex = result.component2()?.message
-                //TODO log this
-                println(ex)
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
                 callback(null)
             }
             else -> {
                 val ex = result.component2()?.message
-                //TODO log this
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "getDomainOptions")
                 callback(null)
             }
         }
@@ -447,7 +466,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<Recipients>?) -> Unit,
         verifiedOnly: Boolean
     ) {
-        val (request, response, result) = Fuel.get(API_URL_RECIPIENTS)
+        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -476,18 +495,17 @@ class NetworkHelper(private val context: Context) {
                 callback(recipientList)
             }
             401 -> {
-                // Unauthenticated, clear settings
-                SettingsManager(true, context).clearSettings()
-
-                val ex = result.component2()?.message
-                //TODO log this
-                println(ex)
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
                 callback(null)
             }
             else -> {
                 val ex = result.component2()?.message
-                //TODO log this
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "getRecipients")
                 callback(null)
             }
         }
@@ -510,9 +528,18 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "deleteRecipient")
                 callback(ex.toString())
             }
         }
@@ -536,9 +563,18 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "deactivateSpecificAlias")
                 callback(ex.toString())
             }
         }
@@ -567,12 +603,89 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 callback("200")
             }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
+                loggingHelper.addLog(ex.toString(), "activateSpecificAlias")
                 callback(ex.toString())
             }
         }
     }
 
+
+    suspend fun deleteAlias(
+        callback: (String?) -> Unit,
+        aliasId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "deleteAlias")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun restoreAlias(
+        callback: (String?) -> Unit,
+        aliasId: String
+    ) {
+        val (_, response, result) = Fuel.patch("${API_URL_ALIAS}/$aliasId/restore")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "restoreAlias")
+                callback(ex.toString())
+            }
+        }
+    }
 }

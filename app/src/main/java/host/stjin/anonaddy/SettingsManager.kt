@@ -1,14 +1,16 @@
 package host.stjin.anonaddy
 
+import android.app.ActivityManager
 import android.content.Context
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
 
-class SettingsManager(private val encrypt: Boolean, context: Context) {
+class SettingsManager(private val encrypt: Boolean, private val context: Context) {
     //dark_mode
-
+//biometric_enabled
+    //store_logs
     private val prefs = if (encrypt) {
         PreferenceManager.getDefaultSharedPreferences(context)
     } else {
@@ -44,7 +46,7 @@ class SettingsManager(private val encrypt: Boolean, context: Context) {
         prefs.edit().putInt(key, int).apply()
     }
 
-    fun getSettingsInt(key: String): Int {
+    fun getSettingsInt(key: String, default: Int = 0): Int {
         return prefs.getInt(key, 0)
     }
 
@@ -67,10 +69,10 @@ class SettingsManager(private val encrypt: Boolean, context: Context) {
     }
 
 
+    /*
+    Clears all the settings and closes the app
+     */
     fun clearSettings() {
-        prefs.edit().clear().apply()
-        if (encrypt) {
-            //TODO force close the app
-        }
+        (context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
     }
 }

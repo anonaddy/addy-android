@@ -7,7 +7,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,8 +23,18 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Open setup
+
+        // First check for biometrics with a fallback on screen lock
+        // Please note that the application becomes unusable if the user decides to disable any type of screen lock after this has been set-up
         val settingsManager = SettingsManager(true, this)
+        if (settingsManager.getSettingsBool("biometric_enabled")) {
+            verifyBiometrics()
+        } else {
+            loadMainActivity()
+        }
+
+
+        // Open setup
         if (settingsManager.getSettingsString("API_KEY") == null) {
             val intent = Intent(this, SetupActivity::class.java)
             startActivity(intent)
@@ -29,6 +42,10 @@ class MainActivity : BaseActivity() {
             return
         }
 
+
+    }
+
+    private fun loadMainActivity() {
         setContentView(R.layout.activity_main)
         checkForDarkModeAndSetFlags()
 
@@ -44,6 +61,57 @@ class MainActivity : BaseActivity() {
 
         changeTopBarNotification(true)
         initialiseMainAppBar()
+    }
+
+    private fun verifyBiometrics() {
+        val executor = ContextCompat.getMainExecutor(this)
+        val biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(
+                    errorCode: Int,
+                    errString: CharSequence
+                ) {
+                    super.onAuthenticationError(errorCode, errString)
+
+                    if (errorCode == BiometricPrompt.ERROR_NO_BIOMETRICS) {
+                        // The user has removed the screen lock completely.
+                        // Unlock the app and continue
+                        SettingsManager(true, applicationContext).putSettingsBool("biometric_enabled", false)
+                        Toast.makeText(
+                            applicationContext, resources.getString(
+                                R.string.authentication_error_11
+                            ), Toast.LENGTH_LONG
+                        ).show()
+                        loadMainActivity()
+                    } else {
+                        Toast.makeText(
+                            applicationContext, resources.getString(
+                                R.string.authentication_error_s,
+                                errString
+                            ), Toast.LENGTH_LONG
+                        ).show()
+                        finish()
+                    }
+                }
+
+                override fun onAuthenticationSucceeded(
+                    result: BiometricPrompt.AuthenticationResult
+                ) {
+                    super.onAuthenticationSucceeded(result)
+                    loadMainActivity()
+                }
+
+            })
+
+        val promptInfo =
+            BiometricPrompt.PromptInfo.Builder()
+                .setTitle(resources.getString(R.string.anonaddy_locked))
+                .setDeviceCredentialAllowed(true)
+                .setConfirmationRequired(false)
+                .build()
+
+        biometricPrompt.authenticate(promptInfo)
+
     }
 
     private fun initialiseMainAppBar() {
@@ -67,20 +135,20 @@ class MainActivity : BaseActivity() {
     @SuppressLint("SwitchIntDef")
     fun checkForDarkModeAndSetFlags() {
         val settingsManager = SettingsManager(false, this)
-        when {
-            settingsManager.getSettingsInt("dark_mode") == 0 -> {
+        when (settingsManager.getSettingsInt("dark_mode", -1)) {
+            0 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-            settingsManager.getSettingsInt("dark_mode") == 1 -> {
+            1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
-            settingsManager.getSettingsInt("dark_mode") == -1 -> {
+            -1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
         }
     }
 
-    fun changeTopBarTitle(title: String) {
+    private fun changeTopBarTitle(title: String) {
         main_top_bar_not_title.text = title
     }
 
