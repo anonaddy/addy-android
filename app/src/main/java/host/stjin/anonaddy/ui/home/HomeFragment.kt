@@ -134,6 +134,8 @@ class HomeFragment : Fragment() {
                         intent.putExtra("alias_id", aliasList[pos].id)
                         intent.putExtra("alias_email", aliasList[pos].email)
                         intent.putExtra("alias_deleted", aliasList[pos].deleted_at)
+                        intent.putExtra("alias_forward_count", aliasList[pos].emails_forwarded)
+                        intent.putExtra("aliasRepliedSentCount", aliasList[pos].emails_replied)
 
                         val options: ActivityOptionsCompat =
                             ActivityOptionsCompat.makeSceneTransitionAnimation(

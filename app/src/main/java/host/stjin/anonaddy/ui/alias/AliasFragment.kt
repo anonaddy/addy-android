@@ -172,6 +172,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         intent.putExtra("alias_id", finalList[pos].id)
                         intent.putExtra("alias_email", finalList[pos].email)
                         intent.putExtra("alias_deleted", finalList[pos].deleted_at)
+                        intent.putExtra("alias_forward_count", finalList[pos].emails_forwarded)
+                        intent.putExtra("aliasRepliedSentCount", finalList[pos].emails_replied)
 
                         val options: ActivityOptionsCompat =
                             ActivityOptionsCompat.makeSceneTransitionAnimation(

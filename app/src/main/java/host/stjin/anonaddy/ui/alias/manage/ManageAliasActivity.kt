@@ -45,6 +45,8 @@ class ManageAliasActivity : BaseActivity(),
         val aliasId = b?.getString("alias_id")
         val email = b?.getString("alias_email")
         val aliasDeleted = b?.getString("alias_deleted")
+        val aliasForwardCount = b?.getFloat("alias_forward_count")
+        val aliasRepliedSentCount = b?.getFloat("alias_replied_sent_count")
 
         if (aliasId == null || email == null) {
             finish()
@@ -52,6 +54,13 @@ class ManageAliasActivity : BaseActivity(),
         }
         this.aliasId = aliasId
         this.aliasEmail = email
+
+        // For a smooth overview, we require the numbers here.
+        // Charts will be updated in the background
+
+        if (aliasForwardCount != null && aliasRepliedSentCount != null) {
+            setChart(aliasForwardCount, aliasRepliedSentCount)
+        }
 
         // Finish shared elements transition
         ViewCompat.setTransitionName(activity_manage_alias_chart, aliasId)
