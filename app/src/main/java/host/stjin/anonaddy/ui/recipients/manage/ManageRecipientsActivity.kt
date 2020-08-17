@@ -331,6 +331,15 @@ class ManageRecipientsActivity : BaseActivity(),
                 )
 
                 activity_manage_recipient_aliases_textview.text = aliases
+
+                activity_manage_recipient_RL_progressbar.visibility = View.GONE
+                activity_manage_recipient_LL1.visibility = View.VISIBLE
+            } else {
+                activity_manage_recipient_RL_progressbar.visibility = View.GONE
+                activity_manage_recipient_LL1.visibility = View.GONE
+
+                // Show no internet animations
+                activity_manage_recipient_RL_lottieview.visibility = View.VISIBLE
             }
         }, id)
     }

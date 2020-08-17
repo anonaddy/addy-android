@@ -47,9 +47,8 @@ class ManageAliasActivity : BaseActivity(),
         val b = intent.extras
         val aliasId = b?.getString("alias_id")
         val email = b?.getString("alias_email")
-        val aliasDeleted = b?.getString("alias_deleted")
-        val aliasForwardCount = b?.getFloat("alias_forward_count")
-        val aliasRepliedSentCount = b?.getFloat("alias_replied_sent_count")
+        val aliasForwardCount = b?.getInt("alias_forward_count")?.toFloat()
+        val aliasRepliedSentCount = b?.getInt("alias_replied_sent_count")?.toFloat()
 
         if (aliasId == null || email == null) {
             finish()
@@ -68,65 +67,18 @@ class ManageAliasActivity : BaseActivity(),
         // Finish shared elements transition
         ViewCompat.setTransitionName(activity_manage_alias_chart, aliasId)
 
-        setPage(aliasDeleted, email)
+        setPage(null, email)
+        setOnSwitchChangeListeners()
+        setOnClickListeners()
     }
 
     /*
     Disable and alpha view if the alias is deleted
      */
     private fun setPage(aliasDeleted: String?, email: String?) {
-        val layout =
-            findViewById<View>(R.id.activity_manage_alias_settings_LL) as LinearLayout
 
         // Set email
         activity_manage_alias_email.text = email
-
-        if (aliasDeleted != null) {
-            activity_manage_alias_restore.visibility = View.VISIBLE
-            activity_manage_alias_delete.visibility = View.GONE
-
-            // Only enable the restore button here.
-            setOnRestoreClickListener()
-
-            // Aliasdeleted is not null, thus deleted. We disable all the layouts and alpha them
-            for (i in 0 until layout.childCount) {
-                val child = layout.getChildAt(i)
-
-                // Do not disable the restore button
-                if (child.id == R.id.activity_manage_alias_restore) {
-                    child.isEnabled = true
-                    child.alpha = 1f
-                    child.isClickable = true
-                } else {
-                    child.isEnabled = false
-                    child.alpha = 0.5f
-                    child.isClickable = false
-                }
-            }
-        } else {
-            activity_manage_alias_restore.visibility = View.GONE
-            activity_manage_alias_delete.visibility = View.VISIBLE
-
-            // Only enable the clicklisteners if the alias is not disabled
-            setOnClickListeners()
-
-            // Aliasdeleted is null, thus not deleted. We enable all the layouts
-            for (i in 0 until layout.childCount) {
-                val child = layout.getChildAt(i)
-                child.isEnabled = true
-                child.alpha = 1f
-                child.isClickable = true
-            }
-
-
-            // Initial set, we don't know the description here.
-            editAliasDescriptionBottomDialogFragment =
-                EditAliasDescriptionBottomDialogFragment.newInstance(aliasId, "")
-
-            // Initial set, we don't know the recipients here.
-            editAliasRecipientsBottomDialogFragment =
-                EditAliasRecipientsBottomDialogFragment.newInstance(aliasId, null)
-        }
 
 
         // Get the alias
@@ -267,9 +219,8 @@ class ManageAliasActivity : BaseActivity(),
             // create and show the alert dialog
             dialog.show()
         }
-    }
 
-    private fun setOnRestoreClickListener() {
+
         activity_manage_alias_restore.setOnClickListener {
             // create an alert builder
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -339,20 +290,29 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.getSpecificAlias({ list ->
 
             if (list != null) {
+
+                /**
+                 * CHART
+                 */
+
+                // Update chart
                 setChart(
                     list.emails_forwarded.toFloat(),
                     list.emails_replied.toFloat()
                 )
 
+                /**
+                 *  SWITCH STATUS
+                 */
+
+                // Set switch status
                 activity_manage_alias_active_switch.isChecked = list.active
                 activity_manage_alias_status_textview.text =
                     if (list.active) resources.getString(R.string.alias_activated) else resources.getString(R.string.alias_deactivated)
 
-                // Set the switch to disabled when the account is deleted.
-                if (list.deleted_at == null) {
-                    // Set the listener only if not deleted
-                    setOnSwitchChangeListeners()
 
+                // Set the switch to disabled when the account is deleted. Else unlock it
+                if (list.deleted_at == null) {
                     activity_manage_alias_active_switch.isClickable = true
                     activity_manage_alias_active_switch.isEnabled = true
                 } else {
@@ -360,9 +320,54 @@ class ManageAliasActivity : BaseActivity(),
                     activity_manage_alias_active_switch.isEnabled = false
                 }
 
+                /**
+                 * LAYOUT
+                 */
+
+                val layout =
+                    findViewById<View>(R.id.activity_manage_alias_settings_LL) as LinearLayout
+                if (list.deleted_at != null) {
+                    // Aliasdeleted is not null, thus deleted. We disable all the layouts and alpha them
+
+                    // Show restore and hide delete
+                    activity_manage_alias_restore.visibility = View.VISIBLE
+                    activity_manage_alias_delete.visibility = View.GONE
+                    for (i in 0 until layout.childCount) {
+                        val child = layout.getChildAt(i)
+
+                        // Do not disable the restore button
+                        if (child.id == R.id.activity_manage_alias_restore) {
+                            child.isEnabled = true
+                            child.alpha = 1f
+                            child.isClickable = true
+                        } else {
+                            child.isEnabled = false
+                            child.alpha = 0.5f
+                            child.isClickable = false
+                        }
+                    }
+                } else {
+                    // Show delete and hide restore
+                    activity_manage_alias_restore.visibility = View.GONE
+                    activity_manage_alias_delete.visibility = View.VISIBLE
+
+                    // Aliasdeleted is null, thus not deleted. We enable all the layouts
+                    for (i in 0 until layout.childCount) {
+                        val child = layout.getChildAt(i)
+                        child.isEnabled = true
+                        child.alpha = 1f
+                        child.isClickable = true
+                    }
+                }
+
+                /**
+                 * RECIPIENTS
+                 */
+
+                // Set recipients
                 var recipients = ""
                 var count = 0
-                if (list.recipients != null) {
+                if (list.recipients != null && list.recipients.isNotEmpty()) {
                     // get the first 2 recipients and list them
 
                     val buf = StringBuilder()
@@ -395,14 +400,23 @@ class ManageAliasActivity : BaseActivity(),
                 }
 
                 activity_manage_alias_recipients.text = recipients
+
+
+                // Initialise the bottomdialog
+                editAliasRecipientsBottomDialogFragment =
+                    EditAliasRecipientsBottomDialogFragment.newInstance(aliasId, list.recipients)
+
+
+                // Set created at and updated at
                 activity_manage_alias_created_at.text = DateTimeUtils.turnStringIntoLocalString(list.created_at)
                 activity_manage_alias_updated_at.text = DateTimeUtils.turnStringIntoLocalString(list.updated_at)
 
 
-                /*
-                DESCRIPTION
-                    re-assign the instance, this time with the right description for easy editing
+                /**
+                 * DESCRIPTION
                  */
+
+                // Set description and initialise the bottomDialogFragment
                 if (list.description != null) {
                     activity_manage_alias_desc.text = list.description
                     // We reset this value as it now includes the description
@@ -418,15 +432,17 @@ class ManageAliasActivity : BaseActivity(),
                     )
                 }
 
+                activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
+                activity_manage_alias_settings_LL.visibility = View.VISIBLE
+            } else {
+                activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
+                activity_manage_alias_settings_LL.visibility = View.GONE
 
-                /*
-                RECIPIENTS
-                    re-assign the instance, this time with the right recipients
-                 */
-                editAliasRecipientsBottomDialogFragment =
-                    EditAliasRecipientsBottomDialogFragment.newInstance(aliasId, list.recipients)
-
+                // Show no internet animations
+                activity_manage_alias_settings_RL_lottieview.visibility = View.VISIBLE
             }
+
+
         }, id)
     }
 

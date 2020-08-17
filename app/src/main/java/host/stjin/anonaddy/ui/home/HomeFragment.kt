@@ -52,7 +52,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val context = this.context
         settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
@@ -119,57 +118,59 @@ class HomeFragment : Fragment() {
                     } else {
                         root.home_no_aliases.visibility = View.VISIBLE
                     }
-                }
 
-                // Sort by emails forwarded
-                list?.sortByDescending { it.emails_forwarded }
+                    // Sort by emails forwarded
+                    list.sortByDescending { it.emails_forwarded }
 
-                // Get the top 5
-                val aliasList = list?.take(5)
-                val aliasAdapter = aliasList?.let { AliasAdapter(it, false) }
-                aliasAdapter?.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
-                    override fun onClick(pos: Int, aView: View) {
-                        val intent = Intent(context, ManageAliasActivity::class.java)
-                        // Pass data object in the bundle and populate details activity.
-                        intent.putExtra("alias_id", aliasList[pos].id)
-                        intent.putExtra("alias_email", aliasList[pos].email)
-                        intent.putExtra("alias_deleted", aliasList[pos].deleted_at)
-                        intent.putExtra("alias_forward_count", aliasList[pos].emails_forwarded)
-                        intent.putExtra("aliasRepliedSentCount", aliasList[pos].emails_replied)
+                    // Get the top 5
+                    val aliasList = list.take(5)
+                    val aliasAdapter = AliasAdapter(aliasList, false)
+                    aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+                        override fun onClick(pos: Int, aView: View) {
+                            val intent = Intent(context, ManageAliasActivity::class.java)
+                            // Pass data object in the bundle and populate details activity.
+                            intent.putExtra("alias_id", aliasList[pos].id)
+                            intent.putExtra("alias_email", aliasList[pos].email)
+                            intent.putExtra("alias_forward_count", aliasList[pos].emails_forwarded)
+                            intent.putExtra("alias_replied_sent_count", aliasList[pos].emails_replied)
 
-                        val options: ActivityOptionsCompat =
-                            ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                requireActivity(),
-                                aView,
-                                aliasList[pos].id
-                            )
+                            val options: ActivityOptionsCompat =
+                                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                    requireActivity(),
+                                    aView,
+                                    aliasList[pos].id
+                                )
 
-                        startActivity(intent, options.toBundle())
-                    }
-
-                    override fun onClickCopy(pos: Int, aView: View) {
-                        val clipboard: ClipboardManager? =
-                            context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                        val aliasEmailAddress = aliasList[pos].email
-                        val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                        clipboard?.setPrimaryClip(clip)
-
-                        val bottomNavView: BottomNavigationView? =
-                            activity?.findViewById(R.id.nav_view)
-                        bottomNavView?.let {
-                            Snackbar.make(
-                                it,
-                                context.resources.getString(R.string.copied_alias),
-                                Snackbar.LENGTH_SHORT
-                            ).apply {
-                                anchorView = bottomNavView
-                            }.show()
+                            startActivity(intent, options.toBundle())
                         }
-                    }
 
-                })
-                adapter = aliasAdapter
-                root.home_most_active_aliases_recyclerview.hideShimmerAdapter()
+                        override fun onClickCopy(pos: Int, aView: View) {
+                            val clipboard: ClipboardManager? =
+                                context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                            val aliasEmailAddress = aliasList[pos].email
+                            val clip = ClipData.newPlainText("alias", aliasEmailAddress)
+                            clipboard?.setPrimaryClip(clip)
+
+                            val bottomNavView: BottomNavigationView? =
+                                activity?.findViewById(R.id.nav_view)
+                            bottomNavView?.let {
+                                Snackbar.make(
+                                    it,
+                                    context.resources.getString(R.string.copied_alias),
+                                    Snackbar.LENGTH_SHORT
+                                ).apply {
+                                    anchorView = bottomNavView
+                                }.show()
+                            }
+                        }
+
+                    })
+                    adapter = aliasAdapter
+                    root.home_most_active_aliases_recyclerview.hideShimmerAdapter()
+                } else {
+                    root.home_statistics_LL1.visibility = View.GONE
+                    root.home_statistics_RL_lottieview.visibility = View.VISIBLE
+                }
             }, activeOnly = true, includeDeleted = false)
 
         }

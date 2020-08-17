@@ -258,6 +258,7 @@ class NetworkHelper(private val context: Context) {
                 .awaitStringResponseResult()
         }
 
+
         when (response.statusCode) {
             200 -> {
                 val data = result.get()

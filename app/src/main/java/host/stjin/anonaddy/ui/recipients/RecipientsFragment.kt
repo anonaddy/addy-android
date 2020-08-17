@@ -111,29 +111,43 @@ class RecipientsFragment : Fragment(),
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
-                val recipientAdapter = list?.let { RecipientAdapter(it) }
-                recipientAdapter?.setClickListener(object : RecipientAdapter.ClickListener {
+                if (list != null) {
 
-                    override fun onClickSettings(pos: Int, aView: View) {
-                        val intent = Intent(context, ManageRecipientsActivity::class.java)
-                        intent.putExtra("recipient_id", list[pos].id)
-                        intent.putExtra("recipient_email", list[pos].email)
-                        startActivity(intent)
-                    }
+                    // There is always 1 recipient.
 
-                    override fun onClickResend(pos: Int, aView: View) {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                            resendConfirmationMailRecipient(list[pos].id, list[pos].email, context)
+                    /*if (list.size > 0) {
+                        root.recipients_no_recipients.visibility = View.GONE
+                    } else {
+                        root.recipients_no_recipients.visibility = View.VISIBLE
+                    }*/
+
+                    val recipientAdapter = RecipientAdapter(list)
+                    recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
+
+                        override fun onClickSettings(pos: Int, aView: View) {
+                            val intent = Intent(context, ManageRecipientsActivity::class.java)
+                            intent.putExtra("recipient_id", list[pos].id)
+                            intent.putExtra("recipient_email", list[pos].email)
+                            startActivity(intent)
                         }
-                    }
 
-                    override fun onClickDelete(pos: Int, aView: View) {
-                        deleteRecipient(list[pos].id, context)
-                    }
+                        override fun onClickResend(pos: Int, aView: View) {
+                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                resendConfirmationMailRecipient(list[pos].id, list[pos].email, context)
+                            }
+                        }
 
-                })
-                adapter = recipientAdapter
-                root.recipients_all_recipients_recyclerview.hideShimmerAdapter()
+                        override fun onClickDelete(pos: Int, aView: View) {
+                            deleteRecipient(list[pos].id, context)
+                        }
+
+                    })
+                    adapter = recipientAdapter
+                    root.recipients_all_recipients_recyclerview.hideShimmerAdapter()
+                } else {
+                    root.recipients_LL1.visibility = View.GONE
+                    root.recipients_RL_lottieview.visibility = View.VISIBLE
+                }
             }, verifiedOnly = false)
 
         }

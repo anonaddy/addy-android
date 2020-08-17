@@ -140,457 +140,483 @@
                 android:alpha="0.1"
                 android:background="@color/IconGrayTint" />
 
-            <LinearLayout
-                android:id="@+id/activity_manage_alias_settings_LL"
+            <RelativeLayout
+                android:id="@+id/activity_manage_alias_settings_RL"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="24dp"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="match_parent">
 
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/general" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/activity_manage_alias_settings_RL_lottieview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="32dp"
+                    android:visibility="gone"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/no_internet_connection" />
+
+                <ProgressBar
+                    android:id="@+id/activity_manage_alias_settings_RL_progressbar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
 
                 <LinearLayout
-                    style="@style/SettingsSectionStyle"
+                    android:id="@+id/activity_manage_alias_settings_LL"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="invisible">
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/alias_status_active"
-                            android:src="@drawable/ic_checkbox_marked_circle_outline" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="@string/general" />
 
-                        <TextView
-                            android:id="@+id/activity_manage_alias_status_textview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-medium"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/alias_status_active"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:minLines="1"
-                            android:singleLine="false"
-                            android:text="@string/alias_status_desc"
-                            android:textColor="?attr/colorControlNormal" />
-                    </LinearLayout>
-
-                    <ProgressBar
-                        android:id="@+id/activity_manage_alias_active_switch_progressbar"
-                        style="?android:attr/progressBarStyleSmall"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:padding="4dp"
-                        android:visibility="gone" />
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/activity_manage_alias_active_switch"
-                        style="@style/overrideExpandableCardViewSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:enabled="false" />
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
-                </LinearLayout>
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/alias_status_active"
+                                android:src="@drawable/ic_checkbox_marked_circle_outline" />
 
-                <LinearLayout
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                        </LinearLayout>
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/description"
-                            android:src="@drawable/ic_text" />
+                            <TextView
+                                android:id="@+id/activity_manage_alias_status_textview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/alias_status_active"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
 
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:singleLine="false"
+                                android:text="@string/alias_status_desc"
+                                android:textColor="?attr/colorControlNormal" />
+                        </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-medium"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/description"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/activity_manage_alias_desc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:maxLines="2"
-                            android:singleLine="false"
-                            android:textColor="?attr/colorControlNormal"
-                            tools:text="@tools:sample/lorem/random" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/activity_manage_alias_desc_edit"
-                        style="@style/SettingsSectionIconStyleStart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="8dp"
-                        android:orientation="vertical">
-
-                        <ImageView
+                        <ProgressBar
+                            android:id="@+id/activity_manage_alias_active_switch_progressbar"
+                            style="?android:attr/progressBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/description"
-                            app:srcCompat="@drawable/ic_outline_edit_24" />
-                    </LinearLayout>
+                            android:layout_gravity="center_vertical"
+                            android:padding="4dp"
+                            android:visibility="gone" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/recipients"
-                            android:src="@drawable/ic_account_arrow_right_outline" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-medium"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/recipients"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/activity_manage_alias_recipients"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:maxLines="3"
-                            android:singleLine="false"
-                            android:textColor="?attr/colorControlNormal"
-                            tools:text="@tools:sample/full_names" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/activity_manage_alias_recipients_edit"
-                        style="@style/SettingsSectionIconStyleStart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="8dp"
-                        android:orientation="vertical">
-
-                        <ImageView
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/activity_manage_alias_active_switch"
+                            style="@style/overrideExpandableCardViewSwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/recipients"
-                            app:srcCompat="@drawable/ic_outline_edit_24" />
+                            android:clickable="false"
+                            android:enabled="false" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/description"
+                                android:src="@drawable/ic_text" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/description"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:maxLines="2"
+                                android:singleLine="false"
+                                android:textColor="?attr/colorControlNormal"
+                                tools:text="@tools:sample/lorem/random" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/activity_manage_alias_desc_edit"
+                            style="@style/SettingsSectionIconStyleStart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="8dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/description"
+                                app:srcCompat="@drawable/ic_outline_edit_24" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/recipients"
+                                android:src="@drawable/ic_account_arrow_right_outline" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/recipients"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_recipients"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:maxLines="3"
+                                android:singleLine="false"
+                                android:textColor="?attr/colorControlNormal"
+                                tools:text="@tools:sample/full_names" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/activity_manage_alias_recipients_edit"
+                            style="@style/SettingsSectionIconStyleStart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="8dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/recipients"
+                                app:srcCompat="@drawable/ic_outline_edit_24" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/created_at"
+                                android:src="@drawable/ic_round_access_time_24" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/created_at"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_created_at"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:singleLine="false"
+                                android:textColor="?attr/colorControlNormal"
+                                tools:text="@tools:sample/date/ddmmyy" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/updated_at"
+                                android:src="@drawable/ic_progress_clock" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/updated_at"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_updated_at"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:singleLine="false"
+                                android:textColor="?attr/colorControlNormal"
+                                tools:text="@tools:sample/date/ddmmyy" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_delete"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/delete_alias"
+                                android:src="@drawable/ic_outline_delete_24"
+                                app:tint="@color/softRed" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/delete_alias"
+                                android:textAllCaps="false"
+                                android:textColor="@color/softRed"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif"
+                                android:text="@string/delete_alias_desc"
+                                android:textColor="?attr/colorControlNormal" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_restore"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/restore_alias"
+                                android:src="@drawable/ic_outline_restore_from_trash_24"
+                                app:tint="@color/primaryColor" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/restore_alias"
+                                android:textAllCaps="false"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif"
+                                android:text="@string/restore_alias_desc"
+                                android:textColor="?attr/colorControlNormal" />
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
-
-                <LinearLayout
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/created_at"
-                            android:src="@drawable/ic_round_access_time_24" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-medium"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/created_at"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/activity_manage_alias_created_at"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:minLines="1"
-                            android:singleLine="false"
-                            android:textColor="?attr/colorControlNormal"
-                            tools:text="@tools:sample/date/ddmmyy" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/updated_at"
-                            android:src="@drawable/ic_progress_clock" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-medium"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/updated_at"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/activity_manage_alias_updated_at"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:minLines="1"
-                            android:singleLine="false"
-                            android:textColor="?attr/colorControlNormal"
-                            tools:text="@tools:sample/date/ddmmyy" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/activity_manage_alias_delete"
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/delete_alias"
-                            android:src="@drawable/ic_outline_delete_24"
-                            app:tint="@color/softRed" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif-medium"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/delete_alias"
-                            android:textAllCaps="false"
-                            android:textColor="@color/softRed"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/delete_alias_desc"
-                            android:textColor="?attr/colorControlNormal" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/activity_manage_alias_restore"
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/restore_alias"
-                            android:src="@drawable/ic_outline_restore_from_trash_24"
-                            app:tint="@color/primaryColor" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/restore_alias"
-                            android:textAllCaps="false"
-                            android:textColor="@color/primaryColor"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/restore_alias_desc"
-                            android:textColor="?attr/colorControlNormal" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

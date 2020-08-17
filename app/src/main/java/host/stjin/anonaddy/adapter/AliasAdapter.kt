@@ -55,11 +55,17 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         CHART
          */
 
+        var forwarded = listWithAliases[position].emails_forwarded.toFloat()
+        var replied = listWithAliases[position].emails_replied.toFloat()
+
+        if (forwarded == 0f) forwarded = 1f
+        if (replied == 0f) replied = 1f
+
         ViewCompat.setTransitionName(holder.mChart, listWithAliases[position].id)
         holder.mChart.setDataPoints(
             floatArrayOf(
-                listWithAliases[position].emails_forwarded.toFloat(),
-                listWithAliases[position].emails_replied.toFloat()
+                forwarded,
+                replied
             )
         )
         holder.mChart.setCenterColor(R.color.LightDarkMode)

@@ -125,30 +125,30 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                  * Done here because otherwise we would need to get the aliases twice from the web
                  */
 
-                var forwarded = 0
-                var blocked = 0
-                var replied = 0
-                var sent = 0
                 if (list != null) {
+                    var forwarded = 0
+                    var blocked = 0
+                    var replied = 0
+                    var sent = 0
+
                     for (alias in list) {
                         forwarded += alias.emails_forwarded
                         blocked += alias.emails_blocked
                         replied += alias.emails_replied
                         sent += alias.emails_sent
                     }
-                }
-                // Set the actual statistics
-                setAliasesStatistics(root, context, forwarded, blocked, replied, sent)
 
-                /**
-                 * Seperate the deleted and non-deleted aliases
-                 */
+                    // Set the actual statistics
+                    setAliasesStatistics(root, context, forwarded, blocked, replied, sent)
+
+                    /**
+                     * Seperate the deleted and non-deleted aliases
+                     */
 
 
-                val nonDeletedList: ArrayList<Aliases> = arrayListOf()
-                val onlyDeletedList: ArrayList<Aliases> = arrayListOf()
+                    val nonDeletedList: ArrayList<Aliases> = arrayListOf()
+                    val onlyDeletedList: ArrayList<Aliases> = arrayListOf()
 
-                if (list != null) {
                     if (list.size > 0) {
                         root.alias_no_aliases.visibility = View.GONE
                         for (alias in list) {
@@ -161,53 +161,55 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     } else {
                         root.alias_no_aliases.visibility = View.VISIBLE
                     }
-                }
 
-                val finalList = nonDeletedList + onlyDeletedList
-                val aliasAdapter = AliasAdapter(finalList, true)
-                aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
-                    override fun onClick(pos: Int, aView: View) {
-                        val intent = Intent(context, ManageAliasActivity::class.java)
-                        // Pass data object in the bundle and populate details activity.
-                        intent.putExtra("alias_id", finalList[pos].id)
-                        intent.putExtra("alias_email", finalList[pos].email)
-                        intent.putExtra("alias_deleted", finalList[pos].deleted_at)
-                        intent.putExtra("alias_forward_count", finalList[pos].emails_forwarded)
-                        intent.putExtra("aliasRepliedSentCount", finalList[pos].emails_replied)
+                    val finalList = nonDeletedList + onlyDeletedList
+                    val aliasAdapter = AliasAdapter(finalList, true)
+                    aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+                        override fun onClick(pos: Int, aView: View) {
+                            val intent = Intent(context, ManageAliasActivity::class.java)
+                            // Pass data object in the bundle and populate details activity.
+                            intent.putExtra("alias_id", finalList[pos].id)
+                            intent.putExtra("alias_email", finalList[pos].email)
+                            intent.putExtra("alias_forward_count", finalList[pos].emails_forwarded)
+                            intent.putExtra("alias_replied_sent_count", finalList[pos].emails_replied)
 
-                        val options: ActivityOptionsCompat =
-                            ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                requireActivity(),
-                                aView,
-                                finalList[pos].id
-                            )
+                            val options: ActivityOptionsCompat =
+                                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                    requireActivity(),
+                                    aView,
+                                    finalList[pos].id
+                                )
 
-                        startActivity(intent, options.toBundle())
-                    }
-
-                    override fun onClickCopy(pos: Int, aView: View) {
-                        val clipboard: ClipboardManager? =
-                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val aliasEmailAddress = finalList[pos].email
-                        val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                        clipboard?.setPrimaryClip(clip)
-
-                        val bottomNavView: BottomNavigationView? =
-                            activity?.findViewById(R.id.nav_view)
-                        bottomNavView?.let {
-                            Snackbar.make(
-                                it,
-                                context.resources.getString(R.string.copied_alias),
-                                Snackbar.LENGTH_SHORT
-                            ).apply {
-                                anchorView = bottomNavView
-                            }.show()
+                            startActivity(intent, options.toBundle())
                         }
-                    }
 
-                })
-                adapter = aliasAdapter
-                root.alias_all_aliases_recyclerview.hideShimmerAdapter()
+                        override fun onClickCopy(pos: Int, aView: View) {
+                            val clipboard: ClipboardManager? =
+                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val aliasEmailAddress = finalList[pos].email
+                            val clip = ClipData.newPlainText("alias", aliasEmailAddress)
+                            clipboard?.setPrimaryClip(clip)
+
+                            val bottomNavView: BottomNavigationView? =
+                                activity?.findViewById(R.id.nav_view)
+                            bottomNavView?.let {
+                                Snackbar.make(
+                                    it,
+                                    context.resources.getString(R.string.copied_alias),
+                                    Snackbar.LENGTH_SHORT
+                                ).apply {
+                                    anchorView = bottomNavView
+                                }.show()
+                            }
+                        }
+
+                    })
+                    adapter = aliasAdapter
+                    root.alias_all_aliases_recyclerview.hideShimmerAdapter()
+                } else {
+                    root.alias_statistics_LL1.visibility = View.GONE
+                    root.alias_statistics_RL_lottieview.visibility = View.VISIBLE
+                }
             }, activeOnly = false, includeDeleted = true)
 
         }
@@ -238,14 +240,15 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             statCurrentEmailsSentTotalCount = it
         }
 
-        setAliasesStatistics(
-            root,
-            context,
-            statCurrentEmailsForwardedTotalCount,
-            statCurrentEmailsBlockedTotalCount,
-            statCurrentEmailsRepliedTotalCount,
-            statCurrentEmailsSentTotalCount
-        )
+        root.alias_replied_sent_stats_textview.text =
+            context.resources.getString(R.string.replied_replied_sent_stat, statCurrentEmailsRepliedTotalCount, statCurrentEmailsSentTotalCount)
+        root.alias_forwarded_blocked_stats_textview.text =
+            context.resources.getString(
+                R.string.replied_forwarded_blocked_stat,
+                statCurrentEmailsForwardedTotalCount,
+                statCurrentEmailsBlockedTotalCount
+            )
+
 
     }
 

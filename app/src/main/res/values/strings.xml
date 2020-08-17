@@ -173,4 +173,7 @@
     <string name="fingerprint_s">Fingerprint:\n%s</string>
     <string name="remove_public_key_desc">Are you sure you want to remove the public key for this recipient? It will also be removed from any other recipients using the same key.</string>
     <string name="public_key">Public key</string>
+    <string name="assets">Assets</string>
+    <string name="assets_list">www.freepik.com</string>
+    <string name="no_active_aliases">No active aliases</string>
 </resources>
