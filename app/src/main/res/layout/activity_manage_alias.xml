@@ -148,22 +148,14 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <LinearLayout
+                <TextView
+                    style="@style/titleTextView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/general" />
-
-                </LinearLayout>
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/general" />
 
                 <LinearLayout
-                    android:id="@+id/activity_manage_alias_active"
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -179,7 +171,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/alias_status"
+                            android:contentDescription="@string/alias_status_active"
                             android:src="@drawable/ic_checkbox_marked_circle_outline" />
 
                     </LinearLayout>
@@ -191,15 +183,16 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/activity_manage_alias_status_textview"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"
                             android:ellipsize="end"
-                            android:fontFamily="sans-serif"
+                            android:fontFamily="sans-serif-medium"
                             android:lines="1"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:text="@string/alias_status"
+                            android:text="@string/alias_status_active"
                             android:textAllCaps="false"
                             android:textColor="@color/BlackWhite"
                             android:textSize="16sp" />
@@ -230,7 +223,9 @@
                         android:id="@+id/activity_manage_alias_active_switch"
                         style="@style/overrideExpandableCardViewSwitch"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:enabled="false" />
 
                 </LinearLayout>
 
@@ -266,7 +261,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"
                             android:ellipsize="end"
-                            android:fontFamily="sans-serif"
+                            android:fontFamily="sans-serif-medium"
                             android:lines="1"
                             android:maxLines="1"
                             android:singleLine="true"
@@ -336,7 +331,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"
                             android:ellipsize="end"
-                            android:fontFamily="sans-serif"
+                            android:fontFamily="sans-serif-medium"
                             android:lines="1"
                             android:maxLines="1"
                             android:singleLine="true"
@@ -406,7 +401,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"
                             android:ellipsize="end"
-                            android:fontFamily="sans-serif"
+                            android:fontFamily="sans-serif-medium"
                             android:lines="1"
                             android:maxLines="1"
                             android:singleLine="true"
@@ -463,7 +458,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"
                             android:ellipsize="end"
-                            android:fontFamily="sans-serif"
+                            android:fontFamily="sans-serif-medium"
                             android:lines="1"
                             android:maxLines="1"
                             android:singleLine="true"
@@ -522,7 +517,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="2dp"
                             android:ellipsize="end"
-                            android:fontFamily="sans-serif"
+                            android:fontFamily="sans-serif-medium"
                             android:lines="1"
                             android:maxLines="1"
                             android:singleLine="true"

@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.recipients
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -19,6 +20,7 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RecipientAdapter
+import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_recipients.view.*
 import kotlinx.coroutines.CoroutineStart
@@ -111,12 +113,12 @@ class RecipientsFragment : Fragment(),
 
                 val recipientAdapter = list?.let { RecipientAdapter(it) }
                 recipientAdapter?.setClickListener(object : RecipientAdapter.ClickListener {
-                    override fun onClick(pos: Int, aView: View) {
-                        TODO("Not yet implemented")
-                    }
 
                     override fun onClickSettings(pos: Int, aView: View) {
-                        TODO("Not yet implemented")
+                        val intent = Intent(context, ManageRecipientsActivity::class.java)
+                        intent.putExtra("recipient_id", list[pos].id)
+                        intent.putExtra("recipient_email", list[pos].email)
+                        startActivity(intent)
                     }
 
                     override fun onClickResend(pos: Int, aView: View) {

@@ -15,6 +15,7 @@
             android:name=".ui.appsettings.logs.LogViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.alias.manage.ManageAliasActivity" />
+        <activity android:name=".ui.recipients.manage.ManageRecipientsActivity" />
         <activity
             android:name=".ui.appsettings.AppSettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />

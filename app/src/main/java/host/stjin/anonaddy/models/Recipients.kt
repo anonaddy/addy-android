@@ -4,6 +4,10 @@ data class RecipientsArray(
     val `data`: List<Recipients>
 )
 
+data class SingleRecipient(
+    val `data`: Recipients
+)
+
 data class Recipients(
     val aliases: List<Aliases>?,
     val created_at: String,

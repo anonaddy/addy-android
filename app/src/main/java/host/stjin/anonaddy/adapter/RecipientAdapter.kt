@@ -86,7 +86,6 @@ class RecipientAdapter(
 
 
     interface ClickListener {
-        fun onClick(pos: Int, aView: View)
         fun onClickSettings(pos: Int, aView: View)
         fun onClickResend(pos: Int, aView: View)
         fun onClickDelete(pos: Int, aView: View)
@@ -128,17 +127,10 @@ class RecipientAdapter(
         override fun onClick(p0: View) {
             when (p0.id) {
                 R.id.recipients_recyclerview_list_LL -> {
-                    onRecipientClicker.onClick(adapterPosition, p0)
+                    expandOptions()
                 }
                 R.id.recipients_recyclerview_list_expand_options -> {
-
-                    if (recipientsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
-                        recipientsRecyclerviewListOptionLl.visibility = View.GONE
-                        mOptionsButton.rotation = 0f
-                    } else {
-                        mOptionsButton.rotation = 180f
-                        recipientsRecyclerviewListOptionLl.visibility = View.VISIBLE
-                    }
+                    expandOptions()
                 }
                 R.id.recipients_recyclerview_list_settings_button -> {
                     onRecipientClicker.onClickSettings(adapterPosition, p0)
@@ -149,6 +141,16 @@ class RecipientAdapter(
                 R.id.recipients_recyclerview_list_delete_button -> {
                     onRecipientClicker.onClickDelete(adapterPosition, p0)
                 }
+            }
+        }
+
+        private fun expandOptions() {
+            if (recipientsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                recipientsRecyclerviewListOptionLl.visibility = View.GONE
+                mOptionsButton.rotation = 0f
+            } else {
+                mOptionsButton.rotation = 180f
+                recipientsRecyclerviewListOptionLl.visibility = View.VISIBLE
             }
         }
 

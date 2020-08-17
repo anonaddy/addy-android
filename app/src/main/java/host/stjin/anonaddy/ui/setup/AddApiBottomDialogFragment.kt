@@ -3,10 +3,7 @@ package host.stjin.anonaddy.ui.setup
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -58,6 +55,15 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
                 verifyKey(root, requireContext())
             }
             false
+        }
+
+
+        root.bs_setup_apikey_tiet.setOnTouchListener { view, motionEvent ->
+            view.parent.requestDisallowInterceptTouchEvent(true)
+            if ((motionEvent.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                view.parent.requestDisallowInterceptTouchEvent(false)
+            }
+            return@setOnTouchListener false
         }
 
         return root

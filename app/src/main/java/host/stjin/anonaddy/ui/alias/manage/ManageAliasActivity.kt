@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.alias.manage
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -12,6 +13,8 @@ import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_manage_alias.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
@@ -168,47 +171,49 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private suspend fun deactivateAlias() {
-        activity_manage_alias_active_switch_progressbar.visibility = View.GONE
-
         networkHelper.deactivateSpecificAlias({ result ->
+            activity_manage_alias_active_switch_progressbar.visibility = View.GONE
             if (result == "204") {
-                Snackbar.make(
-                    findViewById(R.id.activity_manage_alias_LL),
-                    applicationContext.resources.getString(R.string.alias_deactivated),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                activity_manage_alias_status_textview.text = resources.getString(R.string.alias_deactivated)
             } else {
                 activity_manage_alias_active_switch.isChecked = true
-                Snackbar.make(
+                val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_alias_LL),
                     applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
-                ).show()
-                //TODO action button with error details?
+                )
+                if (SettingsManager(false, this).getSettingsBool("store_logs")) {
+                    snackbar.setAction(R.string.logs) {
+                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar.show()
+
             }
         }, aliasId)
     }
 
 
     private suspend fun activateAlias() {
-        activity_manage_alias_active_switch_progressbar.visibility = View.GONE
-
-
         networkHelper.activateSpecificAlias({ result ->
+            activity_manage_alias_active_switch_progressbar.visibility = View.GONE
             if (result == "200") {
-                Snackbar.make(
-                    findViewById(R.id.activity_manage_alias_LL),
-                    applicationContext.resources.getString(R.string.alias_activated),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                activity_manage_alias_status_textview.text = resources.getString(R.string.alias_activated)
             } else {
                 activity_manage_alias_active_switch.isChecked = false
-                Snackbar.make(
+                val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_alias_LL),
                     applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
-                )//TODO set action?
-                    .show()
+                )
+                if (SettingsManager(false, this).getSettingsBool("store_logs")) {
+                    snackbar.setAction(R.string.logs) {
+                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar.show()
             }
         }, aliasId)
     }
@@ -340,10 +345,12 @@ class ManageAliasActivity : BaseActivity(),
                 )
 
                 activity_manage_alias_active_switch.isChecked = list.active
+                activity_manage_alias_status_textview.text =
+                    if (list.active) resources.getString(R.string.alias_activated) else resources.getString(R.string.alias_deactivated)
 
                 // Set the switch to disabled when the account is deleted.
                 if (list.deleted_at == null) {
-                    // Set the listener after the switch was changed
+                    // Set the listener only if not deleted
                     setOnSwitchChangeListeners()
 
                     activity_manage_alias_active_switch.isClickable = true
@@ -356,17 +363,19 @@ class ManageAliasActivity : BaseActivity(),
                 var recipients = ""
                 var count = 0
                 if (list.recipients != null) {
-
                     // get the first 2 recipients and list them
+
+                    val buf = StringBuilder()
                     for (recipient in list.recipients) {
                         if (count < 2) {
-                            recipients += recipient.email
-                            if (count < 1) {
-                                recipients += "\n"
+                            if (buf.isNotEmpty()) {
+                                buf.append("\n")
                             }
+                            buf.append(recipient.email)
                             count++
                         }
                     }
+                    recipients = buf.toString()
 
                     // Check if there are more than 2 recipients in the list
                     if (list.recipients.size > 2) {

@@ -10,7 +10,9 @@ import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
+import host.stjin.anonaddy.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
+import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
 import org.json.JSONArray
@@ -511,40 +513,6 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
-    suspend fun deleteRecipient(
-        id: String,
-        callback: (String?) -> Unit
-    ) {
-        val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$id")
-            .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
-            )
-            .awaitStringResponseResult()
-
-        when (response.statusCode) {
-            204 -> {
-                callback("204")
-            }
-            401 -> {
-                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettings()
-                }, 5000)
-                callback(null)
-            }
-            else -> {
-                val ex = result.component2()?.message
-                println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteRecipient")
-                callback(ex.toString())
-            }
-        }
-    }
-
 
     suspend fun deactivateSpecificAlias(
         callback: (String?) -> Unit?,
@@ -685,6 +653,235 @@ class NetworkHelper(private val context: Context) {
                 println(ex)
                 loggingHelper.addLog(ex.toString(), "restoreAlias")
                 callback(ex.toString())
+            }
+        }
+    }
+
+
+    /*
+    Manage Recipient
+     */
+
+    suspend fun deleteRecipient(
+        id: String,
+        callback: (String?) -> Unit
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$id")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "deleteRecipient")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun disableEncryptionRecipient(
+        callback: (String?) -> Unit?,
+        recipientId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_ENCRYPTED_RECIPIENTS}/$recipientId")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "disableEncryptionRecipient")
+                callback(ex.toString())
+            }
+        }
+    }
+
+
+    suspend fun enableEncryptionRecipient(
+        callback: (String?) -> Unit,
+        recipientId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("id", recipientId)
+
+        val (_, response, result) = Fuel.post(API_URL_ENCRYPTED_RECIPIENTS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "enableEncryptionRecipient")
+                callback(ex.toString())
+            }
+        }
+    }
+
+
+    suspend fun removeEncryptionKeyRecipient(
+        callback: (String?) -> Unit,
+        recipientId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_RECIPIENT_KEYS}/$recipientId")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "removeEncryptionKeyRecipient")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun addEncryptionKeyRecipient(
+        callback: (String?) -> Unit,
+        aliasId: String,
+        keyData: String
+    ) {
+
+        val json = JSONObject()
+        json.put("key_data", keyData)
+
+
+        val (_, response, result) = Fuel.patch("${API_URL_RECIPIENT_KEYS}/$aliasId")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "addEncryptionKeyRecipient")
+                callback(ex.toString())
+            }
+        }
+    }
+
+
+    suspend fun getSpecificRecipient(
+        callback: (Recipients?) -> Unit,
+        aliasId: String
+    ) {
+        val (_, response, result) =
+            Fuel.get("${API_URL_RECIPIENTS}/$aliasId")
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(anonAddyData.data)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getSpecificRecipient")
+                callback(null)
             }
         }
     }

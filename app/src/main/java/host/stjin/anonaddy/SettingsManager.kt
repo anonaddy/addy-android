@@ -7,7 +7,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
 
-class SettingsManager(private val encrypt: Boolean, private val context: Context) {
+class SettingsManager(encrypt: Boolean, private val context: Context) {
     //dark_mode
 //biometric_enabled
     //store_logs
