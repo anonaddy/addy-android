@@ -510,7 +510,6 @@
                     <LinearLayout
                         android:id="@+id/activity_manage_alias_delete"
                         style="@style/SettingsSectionStyle"
-                        android:paddingBottom="0dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"
@@ -564,7 +563,6 @@
                     <LinearLayout
                         android:id="@+id/activity_manage_alias_restore"
                         style="@style/SettingsSectionStyle"
-                        android:paddingBottom="0dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"
