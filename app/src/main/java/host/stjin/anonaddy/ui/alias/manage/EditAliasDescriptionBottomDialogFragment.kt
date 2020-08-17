@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class EditAliasDescriptionBottomDialogFragment(
     private val aliasID: String,
-    private val description: String
+    private val description: String?
 ) : BottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -58,7 +58,7 @@ class EditAliasDescriptionBottomDialogFragment(
     }
 
     companion object {
-        fun newInstance(id: String, description: String): EditAliasDescriptionBottomDialogFragment {
+        fun newInstance(id: String, description: String?): EditAliasDescriptionBottomDialogFragment {
             return EditAliasDescriptionBottomDialogFragment(id, description)
         }
     }

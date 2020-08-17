@@ -33,6 +33,7 @@ class AppSettingsActivity : BaseActivity(),
 
     private lateinit var settingsManager: SettingsManager
     private lateinit var encryptedSettingsManager: SettingsManager
+    private var forceSwitch = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +86,11 @@ class AppSettingsActivity : BaseActivity(),
                 activity_app_settings_section_security.alpha = 1f
                 activity_app_settings_section_security_switch.isEnabled = true
                 activity_app_settings_section_security_switch.isClickable = true
+
+                activity_app_settings_section_security.setOnClickListener {
+                    forceSwitch = true
+                    activity_app_settings_section_security_switch.isChecked = !activity_app_settings_section_security_switch.isChecked
+                }
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
                 activity_app_settings_section_security_desc.text =
@@ -159,7 +165,9 @@ class AppSettingsActivity : BaseActivity(),
             })
 
         activity_app_settings_section_security_switch.setOnCheckedChangeListener { compoundButton, b ->
-            if (compoundButton.isPressed) {
+            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                forceSwitch = false
                 shouldEnableBiometric = b
                 val promptInfo = if (b) {
                     BiometricPrompt.PromptInfo.Builder()

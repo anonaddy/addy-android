@@ -141,10 +141,8 @@
                 android:background="@color/IconGrayTint" />
 
             <RelativeLayout
-                android:id="@+id/activity_manage_alias_settings_RL"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/activity_manage_alias_settings_RL_lottieview"
@@ -181,6 +179,7 @@
                         android:text="@string/general" />
 
                     <LinearLayout
+                        android:id="@+id/activity_manage_alias_active_switch_layout"
                         style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -255,6 +254,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/activity_manage_alias_desc_edit"
                         style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -308,7 +308,6 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/activity_manage_alias_desc_edit"
                             style="@style/SettingsSectionIconStyleStart"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -325,6 +324,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/activity_manage_alias_recipients_edit"
                         style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -378,7 +378,6 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/activity_manage_alias_recipients_edit"
                             style="@style/SettingsSectionIconStyleStart"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -395,7 +394,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        style="@style/SettingsSectionStyle"
+                        style="@style/SettingsSectionStyle.NoAction"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"
@@ -452,7 +451,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        style="@style/SettingsSectionStyle"
+                        style="@style/SettingsSectionStyle.NoAction"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"
@@ -511,6 +510,7 @@
                     <LinearLayout
                         android:id="@+id/activity_manage_alias_delete"
                         style="@style/SettingsSectionStyle"
+                        android:paddingBottom="0dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"
@@ -564,6 +564,7 @@
                     <LinearLayout
                         android:id="@+id/activity_manage_alias_restore"
                         style="@style/SettingsSectionStyle"
+                        android:paddingBottom="0dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"

@@ -36,6 +36,19 @@ class ManageAliasActivity : BaseActivity(),
 
     private lateinit var aliasId: String
     private lateinit var aliasEmail: String
+    private var forceSwitch = false
+
+    /*
+    https://stackoverflow.com/questions/50969390/view-visibility-state-loss-when-resuming-activity-with-previously-started-activi
+     */
+    private var progressBarVisibility = View.VISIBLE
+
+
+    override fun onResume() {
+        super.onResume()
+        activity_manage_alias_settings_RL_progressbar.visibility = progressBarVisibility
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,9 +131,10 @@ class ManageAliasActivity : BaseActivity(),
 
     private fun setOnSwitchChangeListeners() {
         activity_manage_alias_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            if (compoundButton.isPressed) {
+            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
                 activity_manage_alias_active_switch_progressbar.visibility = View.VISIBLE
-
+                forceSwitch = false
                 if (b) {
                     GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                         activateAlias()
@@ -187,6 +201,12 @@ class ManageAliasActivity : BaseActivity(),
     lateinit var dialog: AlertDialog
     private lateinit var customLayout: View
     private fun setOnClickListeners() {
+
+        activity_manage_alias_active_switch_layout.setOnClickListener {
+            forceSwitch = true
+            activity_manage_alias_active_switch.isChecked = !activity_manage_alias_active_switch.isChecked
+        }
+
         activity_manage_alias_desc_edit.setOnClickListener {
             editAliasDescriptionBottomDialogFragment.show(
                 supportFragmentManager,
@@ -432,23 +452,25 @@ class ManageAliasActivity : BaseActivity(),
                 // Set description and initialise the bottomDialogFragment
                 if (list.description != null) {
                     activity_manage_alias_desc.text = list.description
-                    // We reset this value as it now includes the description
-                    editAliasDescriptionBottomDialogFragment = list.description.let {
-                        EditAliasDescriptionBottomDialogFragment.newInstance(
-                            id,
-                            it
-                        )
-                    }
                 } else {
                     activity_manage_alias_desc.text = applicationContext.resources.getString(
                         R.string.no_description
                     )
                 }
 
+                // We reset this value as it now includes the description
+                editAliasDescriptionBottomDialogFragment = EditAliasDescriptionBottomDialogFragment.newInstance(
+                    id,
+                    list.description
+                )
+
+
                 activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
+                progressBarVisibility = View.GONE
                 activity_manage_alias_settings_LL.visibility = View.VISIBLE
             } else {
                 activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
+                progressBarVisibility = View.GONE
                 activity_manage_alias_settings_LL.visibility = View.GONE
 
                 // Show no internet animations

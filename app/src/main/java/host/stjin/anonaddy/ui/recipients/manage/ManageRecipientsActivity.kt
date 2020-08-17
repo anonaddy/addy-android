@@ -31,6 +31,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
     private lateinit var recipientId: String
     private lateinit var aliasEmail: String
+    private var forceSwitch = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,12 +90,19 @@ class ManageRecipientsActivity : BaseActivity(),
         activity_manage_recipient_delete.setOnClickListener {
             deleteRecipient(recipientId)
         }
+
+        activity_manage_recipient_active.setOnClickListener {
+            forceSwitch = true
+            activity_manage_recipient_encryption_active_switch.isChecked = !activity_manage_recipient_encryption_active_switch.isChecked
+        }
     }
 
     private fun setOnSwitchChangeListeners(fingerprint: String?) {
         activity_manage_recipient_encryption_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            if (compoundButton.isPressed) {
+            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
                 activity_manage_recipient_encryption_active_switch_progressbar.visibility = View.VISIBLE
+                forceSwitch = false
 
                 if (b) {
                     if (fingerprint != null) {
