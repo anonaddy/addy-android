@@ -55,21 +55,26 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         CHART
          */
 
-        var forwarded = listWithAliases[position].emails_forwarded.toFloat()
-        var replied = listWithAliases[position].emails_replied.toFloat()
+        val forwarded = listWithAliases[position].emails_forwarded.toFloat()
+        val replied = listWithAliases[position].emails_replied.toFloat()
+        // The shimmer will be used for no-use effect
+        var shimmer = 0f
+        // If both forwarded and replied are 0, make shimmer 1 to create a gray circle
+        if (forwarded == 0f && replied == 0f) {
+            shimmer = 1f
+        }
 
-        if (forwarded == 0f) forwarded = 1f
-        if (replied == 0f) replied = 1f
-
-        ViewCompat.setTransitionName(holder.mChart, listWithAliases[position].id)
         holder.mChart.setDataPoints(
             floatArrayOf(
                 forwarded,
-                replied
+                replied,
+                shimmer
             )
         )
-        holder.mChart.setCenterColor(R.color.LightDarkMode)
 
+
+        holder.mChart.setCenterColor(R.color.LightDarkMode)
+        ViewCompat.setTransitionName(holder.mChart, listWithAliases[position].id)
 
 
         if (showStatus) {

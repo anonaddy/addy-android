@@ -22,7 +22,8 @@ class PieChartView @JvmOverloads constructor(
     private var centerPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var sliceColors: IntArray = intArrayOf(
         R.color.portalOrange,
-        R.color.portalBlue
+        R.color.portalBlue,
+        R.color.shimmerGray
     )
     private var rectF: RectF? = null
     private var dataPoints: FloatArray = floatArrayOf()

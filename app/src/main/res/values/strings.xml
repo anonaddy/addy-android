@@ -175,5 +175,5 @@
     <string name="public_key">Public key</string>
     <string name="assets">Assets</string>
     <string name="assets_list">www.freepik.com</string>
-    <string name="no_active_aliases">No active aliases</string>
+    <string name="no_active_aliases">You have no active aliases</string>
 </resources>

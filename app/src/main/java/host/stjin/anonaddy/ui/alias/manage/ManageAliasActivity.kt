@@ -62,6 +62,8 @@ class ManageAliasActivity : BaseActivity(),
 
         if (aliasForwardCount != null && aliasRepliedSentCount != null) {
             setChart(aliasForwardCount, aliasRepliedSentCount)
+        } else {
+            setChart(0f, 0f)
         }
 
         // Finish shared elements transition
@@ -89,12 +91,23 @@ class ManageAliasActivity : BaseActivity(),
 
     private fun setChart(value1: Float, value2: Float) {
         // Set the chart to 0/0
+
+        var shimmer = 0f
+        // If both forwarded and replied are 0, make shimmer 1 to create a gray circle
+        if (value1 == 0f && value2 == 0f) {
+            shimmer = 1f
+        }
+
         activity_manage_alias_chart.setDataPoints(
             floatArrayOf(
                 value1,
-                value2
+                value2,
+                shimmer
             )
         )
+
+
+
         activity_manage_alias_chart.setCenterColor(R.color.LightDarkMode)
 
         activity_manage_alias_forwarded_count.visibility = View.VISIBLE
