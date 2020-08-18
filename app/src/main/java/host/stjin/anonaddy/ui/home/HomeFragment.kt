@@ -21,21 +21,22 @@ import com.google.android.material.transition.MaterialFadeThrough
 import host.stjin.anonaddy.MainActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
+import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
 
 class HomeFragment : Fragment() {
 
     private var networkHelper: NetworkHelper? = null
-    private var settingsManager: SettingsManager? = null
     private var shouldAnimateRecyclerview: Boolean = true
 
 
@@ -52,13 +53,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
         // We load values from local to make the app look quick and snappy!
-        setStatisticsFromLocal(root)
         setOnClickListeners(root)
 
+        getStatistics(root)
         getDataFromWeb(root)
 
         return root
@@ -68,7 +68,6 @@ class HomeFragment : Fragment() {
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getMostActiveAliases(root)
-            getStatisticsFromWeb(root)
         }
     }
 
@@ -177,77 +176,25 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun setStatisticsFromLocal(root: View) {
-        // These settings are related to AnonAddy's service. Thus encrypted
-        settingsManager?.getSettingsFloat("stat_current_monthly_bandwidth")?.let {
-            setMonthlyBandwidthStatistics(
-                root,
-                it, settingsManager?.getSettingsFloat("stat_max_monthly_bandwidth")!!
-            )
-        }
 
-        settingsManager?.getSettingsInt("stat_current_recipients_count")?.let {
-            setRecipientStatistics(
-                root,
-                it, settingsManager?.getSettingsInt("stat_max_recipients_count")!!
-            )
-        }
-        settingsManager?.getSettingsInt("stat_current_aliases_count")?.let {
-            setAliasesStatistics(
-                root,
-                it, settingsManager?.getSettingsInt("stat_max_aliases_count")!!
-            )
-        }
-    }
-
-    private suspend fun getStatisticsFromWeb(root: View) {
-        val currMonthlyBandwidth = 10.2f
-        val maxMonthlyBandwidth = 50f
+    private fun getStatistics(root: View) {
+        val currMonthlyBandwidth = User.userResource.bandwidth.toDouble() / 1024 / 1024
+        val maxMonthlyBandwidth = User.userResource.bandwidth_limit
 
         setMonthlyBandwidthStatistics(root, currMonthlyBandwidth, maxMonthlyBandwidth)
-        settingsManager?.putSettingsFloat(
-            "stat_current_monthly_bandwidth",
-            currMonthlyBandwidth
-        )
-        settingsManager?.putSettingsFloat(
-            "stat_max_monthly_bandwidth",
-            maxMonthlyBandwidth
-        )
-
-        // ================
-
-        networkHelper?.getRecipientCount { count ->
-            if (count != null) {
-                val maxRecipient = 20
-                setRecipientStatistics(root, count, maxRecipient)
-                settingsManager?.putSettingsInt("stat_current_recipients_count", count)
-                settingsManager?.putSettingsInt("stat_max_recipients_count", maxRecipient)
-            }
-        }
-
-
-        // ================
-        networkHelper?.getAliasesCount({ count ->
-            if (count != null) {
-                val maxAliases = -1
-                setAliasesStatistics(root, count, maxAliases)
-                settingsManager?.putSettingsInt("stat_current_aliases_count", count)
-                settingsManager?.putSettingsInt("stat_max_aliases_count", maxAliases)
-            }
-        })
-
-
+        setAliasesStatistics(root, User.userResource.active_shared_domain_alias_count, User.userResource.active_shared_domain_alias_limit)
+        setRecipientStatistics(root, User.userResource.recipient_count, User.userResource.recipient_limit)
     }
 
     private fun setAliasesStatistics(root: View, count: Int, maxAliases: Int) {
-        root.home_statistics_aliases_progress.max = if (maxAliases == -1) 0 else maxAliases * 100
+        root.home_statistics_aliases_progress.max = maxAliases * 100
         root.home_statistics_aliases_current.text = count.toString()
-        root.home_statistics_aliases_max.text = if (maxAliases == -1) "∞" else maxAliases.toString()
+        root.home_statistics_aliases_max.text = if (maxAliases == 0) "∞" else maxAliases.toString()
         Handler().postDelayed({
             ObjectAnimator.ofInt(
                 root.home_statistics_aliases_progress,
                 "progress",
-                if (count == -1) 0 else count * 100
+                count * 100
             )
                 .setDuration(300)
                 .start()
@@ -256,36 +203,45 @@ class HomeFragment : Fragment() {
 
     private fun setMonthlyBandwidthStatistics(
         root: View,
-        currMonthlyBandwidth: Float,
-        maxMonthlyBandwidth: Float
+        currMonthlyBandwidth: Double,
+        maxMonthlyBandwidth: Int
     ) {
         root.home_statistics_monthly_bandwidth_progress.max =
-            if (maxMonthlyBandwidth.roundToInt() == -1) 0 else maxMonthlyBandwidth.roundToInt() * 100
-        root.home_statistics_monthly_bandwidth_current.text = "${currMonthlyBandwidth}MB"
+            if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
+
+
+        root.home_statistics_monthly_bandwidth_current.text = "${roundOffDecimal(currMonthlyBandwidth)}MB"
+
+
         root.home_statistics_monthly_bandwidth_max.text =
-            "${if (maxMonthlyBandwidth == -1f) "∞" else maxMonthlyBandwidth.roundToInt()
-                .toString()}MB"
+            "${if (maxMonthlyBandwidth == 0) "∞" else maxMonthlyBandwidth.toString()}MB"
 
 
         ObjectAnimator.ofInt(
             root.home_statistics_monthly_bandwidth_progress,
             "progress",
-            if (currMonthlyBandwidth == -1f) 0 else currMonthlyBandwidth.roundToInt() * 100
+            currMonthlyBandwidth.roundToInt() * 100
         )
             .setDuration(300)
             .start()
     }
 
+    private fun roundOffDecimal(number: Double): Double? {
+        val df = DecimalFormat("#.#")
+        df.roundingMode = RoundingMode.FLOOR
+        return df.format(number).toDouble()
+    }
+
     private fun setRecipientStatistics(root: View, currRecipients: Int, maxRecipient: Int) {
         root.home_statistics_recipients_progress.max =
-            if (maxRecipient == -1) 0 else maxRecipient * 100
+            maxRecipient * 100
         root.home_statistics_recipients_current.text = currRecipients.toString()
         root.home_statistics_recipients_max.text =
-            if (maxRecipient == -1) "∞" else maxRecipient.toString()
+            if (maxRecipient == 0) "∞" else maxRecipient.toString()
         ObjectAnimator.ofInt(
             root.home_statistics_recipients_progress,
             "progress",
-            if (currRecipients == -1) 0 else currRecipients * 100
+            currRecipients * 100
         )
             .setDuration(300)
             .start()

@@ -66,7 +66,7 @@
     <string name="next">Next</string>
     <string name="sign_up">Sign up</string>
     <!-- TODO add username -->
-    <string name="add_alias_desc">Other aliases e.g. alias@username.anonaddy.com or .me can also be created automatically when they receive their first email.</string>
+    <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email.</string>
     <string name="description">Description</string>
     <string name="domains_format_random_words">Random words</string>
     <string name="domains_format_uuid">UUID</string>
@@ -176,4 +176,9 @@
     <string name="assets">Assets</string>
     <string name="assets_list">www.freepik.com</string>
     <string name="no_active_aliases">You have no active aliases</string>
+    <string name="shared_domain_aliases">Shared domain aliases</string>
+    <string name="anonaddy_load_error">Something went wrong loading AnonAddy, you might want to check your internet connection</string>
+    <string name="whoops">Whoops!</string>
+    <string name="try_again">Try again</string>
+    <string name="subscription_user">%s user</string>
 </resources>

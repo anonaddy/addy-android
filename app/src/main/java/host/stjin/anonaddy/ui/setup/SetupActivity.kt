@@ -95,7 +95,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     private fun addKey(apiKey: String) {
         val settingsManager = SettingsManager(true, baseContext)
         settingsManager.putSettingsString("API_KEY", apiKey)
-        val intent = Intent(baseContext, MainActivity::class.java)
+        val intent = Intent(baseContext, SplashActivity::class.java)
         startActivity(intent)
         finish()
     }

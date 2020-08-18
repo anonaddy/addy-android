@@ -8,4 +8,5 @@ object AnonAddy {
     var API_URL_DOMAIN_OPTIONS = "https://app.anonaddy.com/api/v1/domain-options"
     var API_URL_ENCRYPTED_RECIPIENTS = "https://app.anonaddy.com/api/v1/encrypted-recipients"
     var API_URL_RECIPIENT_KEYS = "https://app.anonaddy.com/api/v1/recipient-keys"
+    var API_URL_ACCOUNT_DETAILS = "https://app.anonaddy.com/api/v1/account-details"
 }

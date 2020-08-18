@@ -14,8 +14,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.DialogActivity
-import host.stjin.anonaddy.ui.setup.SetupActivity
 import kotlinx.android.synthetic.main.main_top_bar_not_user.*
 
 class MainActivity : BaseActivity() {
@@ -23,26 +23,13 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        // First check for biometrics with a fallback on screen lock
-        // Please note that the application becomes unusable if the user decides to disable any type of screen lock after this has been set-up
         val settingsManager = SettingsManager(true, this)
+        // First check for biometrics with a fallback on screen lock
         if (settingsManager.getSettingsBool("biometric_enabled")) {
             verifyBiometrics()
         } else {
             loadMainActivity()
         }
-
-
-        // Open setup
-        if (settingsManager.getSettingsString("API_KEY") == null) {
-            val intent = Intent(this, SetupActivity::class.java)
-            startActivity(intent)
-            finish()
-            return
-        }
-
-
     }
 
     private fun loadMainActivity() {
@@ -115,6 +102,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initialiseMainAppBar() {
+        main_top_bar_user_initials.text = User.userResource.username.first().toString()
         main_top_bar_user_initials.setOnClickListener {
             val i = Intent(Intent(this, DialogActivity::class.java))
             val options = ActivityOptions

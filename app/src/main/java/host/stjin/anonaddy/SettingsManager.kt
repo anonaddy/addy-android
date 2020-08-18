@@ -47,7 +47,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun getSettingsInt(key: String, default: Int = 0): Int {
-        return prefs.getInt(key, 0)
+        return prefs.getInt(key, default)
     }
 
     fun putSettingsFloat(key: String, float: Float) {

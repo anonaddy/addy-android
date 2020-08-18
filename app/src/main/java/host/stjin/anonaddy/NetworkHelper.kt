@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
+import host.stjin.anonaddy.AnonAddy.API_URL_ACCOUNT_DETAILS
 import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS_RECIPIENTS
@@ -65,6 +66,47 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    /**
+     * GET USER RESOURCE
+     */
+
+    suspend fun getUserResource(
+        callback: (UserResource?) -> Unit
+    ) {
+        val (_, response, result) =
+            Fuel.get(API_URL_ACCOUNT_DETAILS)
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleUserResource::class.java)
+                callback(anonAddyData.data)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getUserResource")
+                callback(null)
+            }
+        }
+    }
 
     suspend fun addAlias(
         domain: String,

@@ -74,7 +74,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginStart="4dp"
+                    android:alpha="0.5"
                     android:text="\?"
+                    android:textColor="@color/BlackWhite"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
 
@@ -119,7 +121,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginStart="4dp"
+                    android:alpha="0.5"
                     android:text="\?"
+                    android:textColor="@color/BlackWhite"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
@@ -145,7 +149,7 @@
                     android:drawablePadding="4dp"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
-                    android:text="@string/title_alias"
+                    android:text="@string/shared_domain_aliases"
                     app:drawableStartCompat="@drawable/ic_round_alternate_email_24"
                     app:drawableTint="@color/easternBlue" />
 
@@ -165,7 +169,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginStart="4dp"
+                    android:alpha="0.5"
                     android:text="\?"
+                    android:textColor="@color/BlackWhite"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>

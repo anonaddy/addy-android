@@ -12,6 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.models.User
 import kotlinx.android.synthetic.main.bottomsheet_addalias.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +48,9 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
             false
         )
         listener = parentFragment as AddAliasBottomDialogListener
+
+        // Sent the help text username accordingly
+        root.bs_addalias_domain_help_textview.text = requireContext().resources.getString(R.string.add_alias_desc, User.userResource.username)
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             fillSpinners(root, requireContext())

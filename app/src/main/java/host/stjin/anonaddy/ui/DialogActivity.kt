@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import kotlinx.android.synthetic.main.main_profile_select_dialog.*
 
@@ -17,6 +18,10 @@ class DialogActivity : Activity() {
         window.decorView.systemUiVisibility = flags
 
         (findViewById<View>(R.id.main_profile_select_dialog_card).parent as View).setOnClickListener { finishAfterTransition() }
+
+        main_profile_select_dialog_user_initials.text = User.userResource.username.first().toString()
+        main_profile_select_dialog_card_accountname.text = User.userResource.username
+        main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
 
         main_profile_select_dialog_app_settings.setOnClickListener {
             val intent = Intent(baseContext, AppSettingsActivity::class.java)
