@@ -20,6 +20,7 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RecipientAdapter
+import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_recipients.view.*
@@ -133,7 +134,7 @@ class RecipientsFragment : Fragment(),
 
                         override fun onClickResend(pos: Int, aView: View) {
                             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                                resendConfirmationMailRecipient(list[pos].id, list[pos].email, context)
+                                resendConfirmationMailRecipient(list[pos].id, root, context)
                             }
                         }
 
@@ -154,12 +155,36 @@ class RecipientsFragment : Fragment(),
 
     }
 
-    private fun resendConfirmationMailRecipient(id: String, email: String, context: Context) {
+    private suspend fun resendConfirmationMailRecipient(id: String, root: View, context: Context) {
+        networkHelper?.resendVerificationEmail({ result ->
+            if (result == "200") {
+                verificationEmailSentSnackbar(context)
+            } else {
+                val bottomNavView: BottomNavigationView? =
+                    activity?.findViewById(R.id.nav_view)
 
-        //TODO FIX
+                val snackbar = bottomNavView?.let {
+                    Snackbar.make(
+                        it,
+                        context.resources.getString(R.string.error_resend_verification) + "\n" + result,
+                        Snackbar.LENGTH_SHORT
+                    ).apply {
+                        anchorView = bottomNavView
+                    }
+                }
+                if (SettingsManager(false, context).getSettingsBool("store_logs")) {
+                    snackbar?.setAction(R.string.logs) {
+                        val intent = Intent(context, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar?.show()
+            }
+        }, id)
 
         //verificationEmailSentSnackbar(context)
     }
+
 
     private fun verificationEmailSentSnackbar(context: Context) {
         val bottomNavView: BottomNavigationView? =

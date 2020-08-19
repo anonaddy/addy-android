@@ -56,19 +56,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+
+    <ImageView
         android:id="@+id/main_top_bar_user_initials"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:layout_margin="4dp"
-        android:background="@drawable/circle"
+        android:src="@drawable/ic_account_circle_outline"
         android:gravity="center"
-        android:text="A"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

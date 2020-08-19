@@ -55,6 +55,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
+
         // We load values from local to make the app look quick and snappy!
         setStatisticsFromLocal(root, requireContext())
         setOnClickListeners(root)

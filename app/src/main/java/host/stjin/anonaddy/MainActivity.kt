@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.DialogActivity
 import kotlinx.android.synthetic.main.main_top_bar_not_user.*
 
@@ -102,7 +101,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initialiseMainAppBar() {
-        main_top_bar_user_initials.text = User.userResource.username.first().toString()
         main_top_bar_user_initials.setOnClickListener {
             val i = Intent(Intent(this, DialogActivity::class.java))
             val options = ActivityOptions
@@ -140,9 +138,6 @@ class MainActivity : BaseActivity() {
         main_top_bar_not_title.text = title
     }
 
-    fun changeTopBarInitials(initials: String) {
-        main_top_bar_user_initials.text = initials
-    }
 
     private fun changeTopBarNotification(newNotifications: Boolean) {
         main_top_bar_not_new_icon.visibility = if (newNotifications) View.VISIBLE else View.GONE

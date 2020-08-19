@@ -14,6 +14,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_KEYS
+import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_RESEND
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
 import org.json.JSONArray
@@ -71,7 +72,7 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getUserResource(
-        callback: (UserResource?) -> Unit
+        callback: (UserResource?, String?) -> Unit
     ) {
         val (_, response, result) =
             Fuel.get(API_URL_ACCOUNT_DETAILS)
@@ -89,7 +90,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, SingleUserResource::class.java)
-                callback(anonAddyData.data)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
@@ -97,13 +98,13 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettings()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(ex.toString(), "getUserResource")
-                callback(null)
+                callback(null, ex.toString())
             }
         }
     }
@@ -928,4 +929,44 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
+    suspend fun resendVerificationEmail(
+        callback: (String?) -> Unit,
+        recipientId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("recipient_id", recipientId)
+
+        val (_, response, result) = Fuel.post(API_URL_RECIPIENT_RESEND)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "enableEncryptionRecipient")
+                callback(ex.toString())
+            }
+        }
+    }
+
 }

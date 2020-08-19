@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.updatePadding
 import host.stjin.anonaddy.models.User
+import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import kotlinx.android.synthetic.main.activity_main_failed.*
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -54,7 +55,7 @@ class SplashActivity : BaseActivity() {
     private suspend fun loadUserResourceIntoMemory() {
         val networkHelper = NetworkHelper(this)
 
-        networkHelper.getUserResource { user ->
+        networkHelper.getUserResource { user: UserResource?, s: String? ->
             if (user != null) {
                 User.userResource = user
                 val intent = Intent(baseContext, MainActivity::class.java)
@@ -62,6 +63,7 @@ class SplashActivity : BaseActivity() {
                 finish()
             } else {
                 setContentView(R.layout.activity_main_failed)
+                activity_main_failed_error_message.text = s
                 activity_main_failed_retry_button.setOnClickListener {
                     val intent = Intent(baseContext, SplashActivity::class.java)
                     startActivity(intent)

@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.home
 import android.animation.ObjectAnimator
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.os.Bundle
@@ -21,9 +22,12 @@ import com.google.android.material.transition.MaterialFadeThrough
 import host.stjin.anonaddy.MainActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.models.User
+import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -59,21 +63,22 @@ class HomeFragment : Fragment() {
         setOnClickListeners(root)
 
         getStatistics(root)
-        getDataFromWeb(root)
+        getDataFromWeb(root, requireContext())
 
         return root
     }
 
-    private fun getDataFromWeb(root: View) {
+    private fun getDataFromWeb(root: View, context: Context) {
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getMostActiveAliases(root)
+            getWebStatistics(root, context)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        getDataFromWeb(requireView())
+        getDataFromWeb(requireView(), requireContext())
     }
 
     private fun setOnClickListeners(root: View) {
@@ -83,6 +88,34 @@ class HomeFragment : Fragment() {
 
         root.home_most_active_aliases_view_more.setOnClickListener {
             (activity as MainActivity).switchFragments(R.id.navigation_alias)
+        }
+    }
+
+    private suspend fun getWebStatistics(root: View, context: Context) {
+        networkHelper?.getUserResource { user: UserResource?, result: String? ->
+            if (user != null) {
+                User.userResource = user
+                getStatistics(root)
+            } else {
+                val bottomNavView: BottomNavigationView? =
+                    activity?.findViewById(R.id.nav_view)
+                val snackbar = bottomNavView?.let {
+                    Snackbar.make(
+                        it,
+                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        Snackbar.LENGTH_SHORT
+                    ).apply {
+                        anchorView = bottomNavView
+                    }
+                }
+                if (SettingsManager(false, context).getSettingsBool("store_logs")) {
+                    snackbar?.setAction(R.string.logs) {
+                        val intent = Intent(context, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar?.show()
+            }
         }
     }
 
@@ -108,6 +141,7 @@ class HomeFragment : Fragment() {
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
                 root.home_most_active_aliases_recyclerview.layoutAnimation = animation
             }
+
 
             networkHelper?.getAliases({ list ->
 
@@ -178,8 +212,9 @@ class HomeFragment : Fragment() {
 
 
     private fun getStatistics(root: View) {
+        //  / 1024 / 1024 because api returns bytes
         val currMonthlyBandwidth = User.userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = User.userResource.bandwidth_limit
+        val maxMonthlyBandwidth = User.userResource.bandwidth_limit / 1024 / 1024
 
         setMonthlyBandwidthStatistics(root, currMonthlyBandwidth, maxMonthlyBandwidth)
         setAliasesStatistics(root, User.userResource.active_shared_domain_alias_count, User.userResource.active_shared_domain_alias_limit)

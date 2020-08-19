@@ -19,7 +19,6 @@ class DialogActivity : Activity() {
 
         (findViewById<View>(R.id.main_profile_select_dialog_card).parent as View).setOnClickListener { finishAfterTransition() }
 
-        main_profile_select_dialog_user_initials.text = User.userResource.username.first().toString()
         main_profile_select_dialog_card_accountname.text = User.userResource.username
         main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
 
