@@ -54,6 +54,11 @@ class ManageRecipientsActivity : BaseActivity(),
 
 
     private fun setPage() {
+
+        // Initial set, we don't know the description here.
+        addRecipientPublicGpgKeyBottomDialogFragment =
+            AddRecipientPublicGpgKeyBottomDialogFragment.newInstance(recipientId)
+
         // Get the recipient
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getRecipientInfo(recipientId)

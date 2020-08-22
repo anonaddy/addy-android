@@ -20,8 +20,7 @@ import kotlinx.coroutines.launch
 
 
 class AddRecipientPublicGpgKeyBottomDialogFragment(
-    private val aliasID: String,
-    private val description: String
+    private val aliasID: String
 ) : BottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -52,7 +51,6 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
 
         // Set button listeners and current description
         root.bs_edit_recipient_gpg_key_save_button.setOnClickListener(this)
-        root.bs_edit_recipient_gpg_key_tiet.setText(description)
 
 
         root.bs_edit_recipient_gpg_key_tiet.setOnTouchListener { view, motionEvent ->
@@ -70,8 +68,8 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
 
 
     companion object {
-        fun newInstance(id: String, description: String): AddRecipientPublicGpgKeyBottomDialogFragment {
-            return AddRecipientPublicGpgKeyBottomDialogFragment(id, description)
+        fun newInstance(id: String): AddRecipientPublicGpgKeyBottomDialogFragment {
+            return AddRecipientPublicGpgKeyBottomDialogFragment(id)
         }
     }
 
