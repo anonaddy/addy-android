@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.view.updatePadding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
+import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import kotlinx.android.synthetic.main.activity_main_failed.*
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -15,6 +16,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SplashActivity : BaseActivity() {
+
+
+    lateinit var networkHelper: NetworkHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -30,6 +35,7 @@ class SplashActivity : BaseActivity() {
         setInsets()
         val settingsManager = SettingsManager(true, this)
 
+        networkHelper = NetworkHelper(this)
         // Open setup
         if (settingsManager.getSettingsString("API_KEY") == null) {
             val intent = Intent(this, SetupActivity::class.java)
@@ -52,15 +58,15 @@ class SplashActivity : BaseActivity() {
         }
     }
 
+
     private suspend fun loadUserResourceIntoMemory() {
-        val networkHelper = NetworkHelper(this)
 
         networkHelper.getUserResource { user: UserResource?, s: String? ->
             if (user != null) {
                 User.userResource = user
-                val intent = Intent(baseContext, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                    getDefaultRecipientAddress(user.default_recipient_id)
+                }
             } else {
                 setContentView(R.layout.activity_main_failed)
                 activity_main_failed_error_message.text = s
@@ -71,6 +77,28 @@ class SplashActivity : BaseActivity() {
                 }
             }
         }
+
+
+    }
+
+    private suspend fun getDefaultRecipientAddress(recipientId: String) {
+        networkHelper.getSpecificRecipient({ recipient, error ->
+            if (recipient != null) {
+                User.userResourceExtended = UserResourceExtended(recipient.email)
+                val intent = Intent(baseContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                setContentView(R.layout.activity_main_failed)
+                activity_main_failed_error_message.text = error
+                activity_main_failed_retry_button.setOnClickListener {
+                    val intent = Intent(baseContext, SplashActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            }
+        }, recipientId)
+
 
     }
 

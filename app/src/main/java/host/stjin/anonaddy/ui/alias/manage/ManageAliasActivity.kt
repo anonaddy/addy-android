@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -14,6 +15,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_manage_alias.*
@@ -22,6 +24,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.StringUtils
 import kotlin.math.roundToInt
 
 
@@ -35,8 +38,8 @@ class ManageAliasActivity : BaseActivity(),
     private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
 
     private lateinit var aliasId: String
-    private lateinit var aliasEmail: String
     private var forceSwitch = false
+    private var shouldDeactivateThisAlias = false
 
     /*
     https://stackoverflow.com/questions/50969390/view-visibility-state-loss-when-resuming-activity-with-previously-started-activi
@@ -58,44 +61,37 @@ class ManageAliasActivity : BaseActivity(),
 
 
         val b = intent.extras
-        val aliasId = b?.getString("alias_id")
-        val email = b?.getString("alias_email")
-        val aliasForwardCount = b?.getInt("alias_forward_count")?.toFloat()
-        val aliasRepliedSentCount = b?.getInt("alias_replied_sent_count")?.toFloat()
+        if (b?.getString("alias_id") != null) {
+            // Intents
+            val aliasId = b.getString("alias_id")
+            val aliasForwardCount = b.getInt("alias_forward_count").toFloat()
+            val aliasRepliedSentCount = b.getInt("alias_replied_sent_count").toFloat()
 
-        if (aliasId == null || email == null) {
-            finish()
-            return
-        }
-        this.aliasId = aliasId
-        this.aliasEmail = email
+            if (aliasId == null) {
+                finish()
+                return
+            }
+            this.aliasId = aliasId
 
-        // For a smooth overview, we require the numbers here.
-        // Charts will be updated in the background
-
-        if (aliasForwardCount != null && aliasRepliedSentCount != null) {
+            // For a smooth overview, we require the numbers here.
+            // Charts will be updated in the background
             setChart(aliasForwardCount, aliasRepliedSentCount)
-        } else {
-            setChart(0f, 0f)
+            // Finish shared elements transition
+            ViewCompat.setTransitionName(activity_manage_alias_chart, aliasId)
+            setPage()
+
+        } else if (intent.action != null) {
+            // /deactivate URI's
+            val data: Uri? = intent?.data
+            val aliasId = StringUtils.substringBetween(data.toString(), "deactivate/", "?")
+            this.aliasId = aliasId
+            shouldDeactivateThisAlias = true
+            setPage()
         }
-
-        // Finish shared elements transition
-        ViewCompat.setTransitionName(activity_manage_alias_chart, aliasId)
-
-        setPage(null, email)
-        setOnSwitchChangeListeners()
-        setOnClickListeners()
     }
 
-    /*
-    Disable and alpha view if the alias is deleted
-     */
-    private fun setPage(aliasDeleted: String?, email: String?) {
 
-        // Set email
-        activity_manage_alias_email.text = email
-
-
+    private fun setPage() {
         // Get the alias
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAliasInfo(aliasId)
@@ -198,8 +194,7 @@ class ManageAliasActivity : BaseActivity(),
     }
 
 
-    lateinit var dialog: AlertDialog
-    private lateinit var customLayout: View
+
     private fun setOnClickListeners() {
 
         activity_manage_alias_active_switch_layout.setOnClickListener {
@@ -222,69 +217,80 @@ class ManageAliasActivity : BaseActivity(),
         }
 
         activity_manage_alias_delete.setOnClickListener {
-            // create an alert builder
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            // set the custom layout
-            customLayout =
-                layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-            builder.setView(customLayout)
-            dialog = builder.create()
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            customLayout.dialog_title.text = resources.getString(R.string.delete_alias)
-            customLayout.dialog_text.text =
-                resources.getString(R.string.delete_alias_confirmation_desc)
-            customLayout.dialog_positive_button.text =
-                resources.getString(R.string.delete_alias)
-            customLayout.dialog_positive_button.setOnClickListener {
-                customLayout.dialog_progressbar.visibility = View.VISIBLE
-                customLayout.dialog_error.visibility = View.GONE
-                customLayout.dialog_negative_button.isEnabled = false
-                customLayout.dialog_positive_button.isEnabled = false
-
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    deleteAliasHttpRequest(aliasId, this@ManageAliasActivity)
-                }
-            }
-            customLayout.dialog_negative_button.setOnClickListener {
-                dialog.dismiss()
-            }
-            // create and show the alert dialog
-            dialog.show()
+            deleteAlias()
         }
 
 
         activity_manage_alias_restore.setOnClickListener {
-            // create an alert builder
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            // set the custom layout
-            customLayout =
-                layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-            builder.setView(customLayout)
-            dialog = builder.create()
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            customLayout.dialog_title.text = resources.getString(R.string.restore_alias)
-            customLayout.dialog_text.text =
-                resources.getString(R.string.restore_alias_confirmation_desc)
-            customLayout.dialog_positive_button.text =
-                resources.getString(R.string.restore_alias)
-            customLayout.dialog_positive_button.setOnClickListener {
-                customLayout.dialog_progressbar.visibility = View.VISIBLE
-                customLayout.dialog_error.visibility = View.GONE
-                customLayout.dialog_negative_button.isEnabled = false
-                customLayout.dialog_positive_button.isEnabled = false
-
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    restoreAliasHttpRequest(aliasId, this@ManageAliasActivity)
-                }
-            }
-            customLayout.dialog_negative_button.setOnClickListener {
-                dialog.dismiss()
-            }
-            // create and show the alert dialog
-            dialog.show()
+            restoreAlias()
         }
+    }
+
+
+    lateinit var dialog: AlertDialog
+    private lateinit var customLayout: View
+    private fun restoreAlias() {
+        // create an alert builder
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        // set the custom layout
+        customLayout =
+            layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
+        builder.setView(customLayout)
+        dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        customLayout.dialog_title.text = resources.getString(R.string.restore_alias)
+        customLayout.dialog_text.text =
+            resources.getString(R.string.restore_alias_confirmation_desc)
+        customLayout.dialog_positive_button.text =
+            resources.getString(R.string.restore_alias)
+        customLayout.dialog_positive_button.setOnClickListener {
+            customLayout.dialog_progressbar.visibility = View.VISIBLE
+            customLayout.dialog_error.visibility = View.GONE
+            customLayout.dialog_negative_button.isEnabled = false
+            customLayout.dialog_positive_button.isEnabled = false
+
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                restoreAliasHttpRequest(aliasId, this@ManageAliasActivity)
+            }
+        }
+        customLayout.dialog_negative_button.setOnClickListener {
+            dialog.dismiss()
+        }
+        // create and show the alert dialog
+        dialog.show()
+    }
+
+    private fun deleteAlias() {
+        // create an alert builder
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        // set the custom layout
+        customLayout =
+            layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
+        builder.setView(customLayout)
+        dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        customLayout.dialog_title.text = resources.getString(R.string.delete_alias)
+        customLayout.dialog_text.text =
+            resources.getString(R.string.delete_alias_confirmation_desc)
+        customLayout.dialog_positive_button.text =
+            resources.getString(R.string.delete_alias)
+        customLayout.dialog_positive_button.setOnClickListener {
+            customLayout.dialog_progressbar.visibility = View.VISIBLE
+            customLayout.dialog_error.visibility = View.GONE
+            customLayout.dialog_negative_button.isEnabled = false
+            customLayout.dialog_positive_button.isEnabled = false
+
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                deleteAliasHttpRequest(aliasId, this@ManageAliasActivity)
+            }
+        }
+        customLayout.dialog_negative_button.setOnClickListener {
+            dialog.dismiss()
+        }
+        // create and show the alert dialog
+        dialog.show()
     }
 
     private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
@@ -307,7 +313,7 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.restoreAlias({ result ->
             if (result == "200") {
                 dialog.dismiss()
-                setPage(null, aliasEmail)
+                setPage()
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
                 customLayout.dialog_error.visibility = View.VISIBLE
@@ -323,6 +329,9 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.getSpecificAlias({ list ->
 
             if (list != null) {
+
+                // Set email in textview
+                activity_manage_alias_email.text = list.email
 
                 /**
                  * CHART
@@ -428,7 +437,7 @@ class ManageAliasActivity : BaseActivity(),
                 } else {
                     // TODO Add default recipient between ()
                     recipients = applicationContext.resources.getString(
-                        R.string.default_recipient
+                        R.string.default_recipient_s, User.userResourceExtended.default_recipient_email
                     )
                 }
 
@@ -454,7 +463,7 @@ class ManageAliasActivity : BaseActivity(),
                     activity_manage_alias_desc.text = list.description
                 } else {
                     activity_manage_alias_desc.text = applicationContext.resources.getString(
-                        R.string.no_description
+                        R.string.alias_no_description
                     )
                 }
 
@@ -468,6 +477,15 @@ class ManageAliasActivity : BaseActivity(),
                 activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
                 progressBarVisibility = View.GONE
                 activity_manage_alias_settings_LL.visibility = View.VISIBLE
+
+                if (shouldDeactivateThisAlias) {
+                    // Deactive switch
+                    forceSwitch = true
+                    activity_manage_alias_active_switch.isChecked = false
+                }
+
+                setOnSwitchChangeListeners()
+                setOnClickListeners()
             } else {
                 activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
                 progressBarVisibility = View.GONE
@@ -494,9 +512,7 @@ class ManageAliasActivity : BaseActivity(),
 
     override fun recipientsEdited() {
         // Reload all info
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAliasInfo(aliasId)
-        }
+        setPage()
         editAliasRecipientsBottomDialogFragment.dismiss()
     }
 }

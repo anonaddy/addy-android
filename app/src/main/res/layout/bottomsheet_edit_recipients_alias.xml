@@ -51,7 +51,7 @@
                 android:layout_marginBottom="16dp"
                 android:alpha="0.6"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/edit_recipients_desc"
+                android:text="@string/alias_edit_recipients_desc"
                 android:textAlignment="center" />
 
             <com.google.android.material.textfield.TextInputLayout

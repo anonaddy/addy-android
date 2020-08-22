@@ -2,10 +2,15 @@ package host.stjin.anonaddy.models
 
 object User {
     lateinit var userResource: UserResource
+    lateinit var userResourceExtended: UserResourceExtended
 }
 
 data class SingleUserResource(
     val `data`: UserResource
+)
+
+data class UserResourceExtended(
+    var default_recipient_email: String
 )
 
 data class UserResource(

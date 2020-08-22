@@ -163,7 +163,6 @@ class HomeFragment : Fragment() {
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
                             intent.putExtra("alias_id", aliasList[pos].id)
-                            intent.putExtra("alias_email", aliasList[pos].email)
                             intent.putExtra("alias_forward_count", aliasList[pos].emails_forwarded)
                             intent.putExtra("alias_replied_sent_count", aliasList[pos].emails_replied)
 

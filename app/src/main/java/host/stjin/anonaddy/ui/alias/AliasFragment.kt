@@ -170,7 +170,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
                             intent.putExtra("alias_id", finalList[pos].id)
-                            intent.putExtra("alias_email", finalList[pos].email)
                             intent.putExtra("alias_forward_count", finalList[pos].emails_forwarded)
                             intent.putExtra("alias_replied_sent_count", finalList[pos].emails_replied)
 

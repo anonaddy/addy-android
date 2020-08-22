@@ -42,58 +42,22 @@ class ManageRecipientsActivity : BaseActivity(),
 
         val b = intent.extras
         val recipientId = b?.getString("recipient_id")
-        val email = b?.getString("recipient_email")
 
-        if (recipientId == null || email == null) {
+        if (recipientId == null) {
             finish()
             return
         }
         this.recipientId = recipientId
-        this.aliasEmail = email
 
-        setPage(email)
+        setPage()
+        setOnClickListeners()
     }
 
-    /*
-    Disable and alpha view if the recipient is deleted
-     */
-    private fun setPage(email: String?) {
-        // Set email
-        activity_manage_recipient_basic_textview.text = email
 
-        setOnClickListeners()
-
-
-        // Initial set, we don't know the description here.
-        addRecipientPublicGpgKeyBottomDialogFragment =
-            AddRecipientPublicGpgKeyBottomDialogFragment.newInstance(recipientId, "")
-
-
+    private fun setPage() {
         // Get the recipient
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getRecipientInfo(recipientId)
-        }
-    }
-
-    private fun setOnClickListeners() {
-        activity_manage_recipient_change_gpg_key.setOnClickListener {
-            addRecipientPublicGpgKeyBottomDialogFragment.show(
-                supportFragmentManager,
-                "editrecipientDescriptionBottomDialogFragment"
-            )
-        }
-
-        activity_manage_recipient_remove_gpg_key.setOnClickListener {
-            removeGpgKey(recipientId)
-        }
-
-        activity_manage_recipient_delete.setOnClickListener {
-            deleteRecipient(recipientId)
-        }
-
-        activity_manage_recipient_active.setOnClickListener {
-            forceSwitch = true
-            activity_manage_recipient_encryption_active_switch.isChecked = !activity_manage_recipient_encryption_active_switch.isChecked
         }
     }
 
@@ -123,6 +87,29 @@ class ManageRecipientsActivity : BaseActivity(),
                     }
                 }
             }
+        }
+    }
+
+
+    private fun setOnClickListeners() {
+        activity_manage_recipient_change_gpg_key.setOnClickListener {
+            addRecipientPublicGpgKeyBottomDialogFragment.show(
+                supportFragmentManager,
+                "editrecipientDescriptionBottomDialogFragment"
+            )
+        }
+
+        activity_manage_recipient_remove_gpg_key.setOnClickListener {
+            removeGpgKey(recipientId)
+        }
+
+        activity_manage_recipient_delete.setOnClickListener {
+            deleteRecipient(recipientId)
+        }
+
+        activity_manage_recipient_active.setOnClickListener {
+            forceSwitch = true
+            activity_manage_recipient_encryption_active_switch.isChecked = !activity_manage_recipient_encryption_active_switch.isChecked
         }
     }
 
@@ -263,7 +250,7 @@ class ManageRecipientsActivity : BaseActivity(),
         networkHelper.removeEncryptionKeyRecipient({ result ->
             if (result == "204") {
                 removeGpgKeyDialog.dismiss()
-                setPage(aliasEmail)
+                setPage()
             } else {
                 removeGpgKeyCustomLayout.dialog_progressbar.visibility = View.INVISIBLE
                 removeGpgKeyCustomLayout.dialog_error.visibility = View.VISIBLE
@@ -277,9 +264,14 @@ class ManageRecipientsActivity : BaseActivity(),
 
 
     private suspend fun getRecipientInfo(id: String) {
-        networkHelper.getSpecificRecipient({ list ->
+        networkHelper.getSpecificRecipient({ list, _ ->
 
             if (list != null) {
+
+                /**
+                 *  SWITCH STATUS
+                 */
+
                 activity_manage_recipient_encryption_active_switch.isChecked = list.should_encrypt
                 activity_manage_recipient_encryption_status_textview.text =
                     if (list.should_encrypt) resources.getString(R.string.encryption_enabled) else resources.getString(R.string.encryption_disabled)
@@ -287,6 +279,9 @@ class ManageRecipientsActivity : BaseActivity(),
                 // Set switchlistener after loading
                 setOnSwitchChangeListeners(list.fingerprint)
 
+                /**
+                 * Fingerprint LAYOUT
+                 */
 
                 // If there is a fingerprint, enable the remove button.
                 // If there is no fingerptint, do not enable the remove button
@@ -352,13 +347,9 @@ class ManageRecipientsActivity : BaseActivity(),
         }, id)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        supportFinishAfterTransition()
-    }
 
     override fun onKeyAdded() {
-        setPage(aliasEmail)
+        setPage()
         addRecipientPublicGpgKeyBottomDialogFragment.dismiss()
     }
 }

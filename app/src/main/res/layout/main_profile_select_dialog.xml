@@ -39,7 +39,8 @@
                         android:text="$ANONADDY_Account_Name"
                         android:textAllCaps="false"
                         android:textColor="@color/BlackWhite"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/main_profile_select_dialog_card_subscription"
@@ -47,7 +48,8 @@
                         android:layout_height="wrap_content"
                         android:alpha="0.5"
                         android:text="$ANONADDY_User_Subscription"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <Space
@@ -65,6 +67,7 @@
                     android:tint="@color/BlackWhite"
                     android:transitionName="image_transition"
                     app:tint="@color/secondaryColor"
+                    android:contentDescription="@string/open_options"
                     tools:ignore="UseAppTint" />
 
             </LinearLayout>
@@ -134,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif"
-                android:text="AnonAddy Android | Stjin"
+                android:text="@string/anonaddy_android_stjin"
                 android:textAlignment="center"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="14sp" />

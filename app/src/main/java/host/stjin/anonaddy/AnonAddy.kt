@@ -10,4 +10,6 @@ object AnonAddy {
     var API_URL_RECIPIENT_RESEND = "https://app.anonaddy.com/api/v1/recipients/email/resend"
     var API_URL_RECIPIENT_KEYS = "https://app.anonaddy.com/api/v1/recipient-keys"
     var API_URL_ACCOUNT_DETAILS = "https://app.anonaddy.com/api/v1/account-details"
+    var API_URL_DOMAINS = "https://app.anonaddy.com/api/v1/domains"
+    var API_URL_ACTIVE_DOMAINS = "https://app.anonaddy.com/api/v1/active-domains"
 }

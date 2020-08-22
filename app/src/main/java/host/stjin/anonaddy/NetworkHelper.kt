@@ -8,8 +8,10 @@ import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
 import host.stjin.anonaddy.AnonAddy.API_URL_ACCOUNT_DETAILS
 import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_ALIAS
+import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS_RECIPIENTS
+import host.stjin.anonaddy.AnonAddy.API_URL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
@@ -17,6 +19,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_RESEND
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
+import org.apache.commons.lang3.StringUtils
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -109,6 +112,49 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun getDomainOptions(
+        callback: (DomainOptions?) -> Unit
+    ) {
+        val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, DomainOptions::class.java)
+                callback(anonAddyData)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getDomainOptions")
+                callback(null)
+            }
+        }
+    }
+
+
+    /**
+     * ALIASES
+     */
+
+
     suspend fun addAlias(
         domain: String,
         description: String,
@@ -149,128 +195,6 @@ class NetworkHelper(private val context: Context) {
                 println(ex)
                 loggingHelper.addLog(ex.toString(), "addAlias")
                 callback(ex.toString())
-            }
-        }
-    }
-
-    suspend fun addRecipient(
-        address: String,
-        callback: (String?) -> Unit
-    ) {
-
-        val json = JSONObject()
-        json.put("email", address)
-
-        val (request, response, result) = Fuel.post(API_URL_RECIPIENTS)
-            .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
-            )
-            .body(json.toString())
-            .awaitStringResponseResult()
-
-        when (response.statusCode) {
-            201 -> {
-                callback("201")
-            }
-            401 -> {
-                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettings()
-                }, 5000)
-                callback(null)
-            }
-            else -> {
-                val ex = result.component2()?.message
-                println(ex)
-                loggingHelper.addLog(ex.toString(), "addRecipient")
-                callback(ex.toString())
-            }
-        }
-    }
-
-    suspend fun getRecipientCount(callback: (Int?) -> Unit) {
-        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
-            .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
-            )
-            .awaitStringResponseResult()
-
-        when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val gson = Gson()
-                val anonAddyData = gson.fromJson(data, RecipientsArray::class.java)
-                callback(anonAddyData.data.size)
-            }
-            401 -> {
-                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettings()
-                }, 5000)
-                callback(null)
-            }
-            else -> {
-                val ex = result.component2()?.message
-                println(ex)
-                loggingHelper.addLog(ex.toString(), "getRecipientCount")
-                callback(null)
-            }
-        }
-    }
-
-    suspend fun getAliasesCount(
-        callback: (Int?) -> Unit,
-        activeOnly: Boolean = true
-    ) {
-        val (_, response, result) = Fuel.get(API_URL_ALIAS)
-            .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
-            )
-            .awaitStringResponseResult()
-
-        when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val gson = Gson()
-                val anonAddyData = gson.fromJson(data, AliasesArray::class.java)
-
-                var activeAliasses = 0
-                if (activeOnly) {
-                    for (alias in anonAddyData.data) {
-                        if (alias.active) {
-                            activeAliasses++
-                        }
-                    }
-                } else {
-                    activeAliasses = anonAddyData.data.size
-                }
-
-                callback(activeAliasses)
-            }
-            401 -> {
-                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettings()
-                }, 5000)
-                callback(null)
-            }
-            else -> {
-                val ex = result.component2()?.message
-                loggingHelper.addLog(ex.toString(), "getAliasesCount")
-                println(ex)
-                callback(null)
             }
         }
     }
@@ -340,10 +264,10 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun getSpecificAlias(
         callback: (Aliases?) -> Unit,
-        id: String
+        aliasId: String
     ) {
         val (_, response, result) =
-            Fuel.get("${API_URL_ALIAS}/$id")
+            Fuel.get("${API_URL_ALIAS}/$aliasId")
                 .appendHeader(
                     "Authorization" to "Bearer $API_KEY",
                     "Content-Type" to "application/json",
@@ -467,92 +391,6 @@ class NetworkHelper(private val context: Context) {
                 println(ex)
                 loggingHelper.addLog(ex.toString(), "updateRecipientsSpecificAlias")
                 callback(ex.toString())
-            }
-        }
-    }
-
-    suspend fun getDomainOptions(
-        callback: (Domains?) -> Unit
-    ) {
-        val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
-            .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
-            )
-            .awaitStringResponseResult()
-
-
-        when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val gson = Gson()
-                val anonAddyData = gson.fromJson(data, Domains::class.java)
-                callback(anonAddyData)
-            }
-            401 -> {
-                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettings()
-                }, 5000)
-                callback(null)
-            }
-            else -> {
-                val ex = result.component2()?.message
-                println(ex)
-                loggingHelper.addLog(ex.toString(), "getDomainOptions")
-                callback(null)
-            }
-        }
-    }
-
-    suspend fun getRecipients(
-        callback: (ArrayList<Recipients>?) -> Unit,
-        verifiedOnly: Boolean
-    ) {
-        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
-            .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
-            )
-            .awaitStringResponseResult()
-
-        when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val gson = Gson()
-                val anonAddyData = gson.fromJson(data, RecipientsArray::class.java)
-
-                val recipientList = ArrayList<Recipients>()
-
-                if (verifiedOnly) {
-                    for (recipient in anonAddyData.data) {
-                        if (recipient.email_verified_at != null) {
-                            recipientList.add(recipient)
-                        }
-                    }
-                } else {
-                    recipientList.addAll(anonAddyData.data)
-                }
-                callback(recipientList)
-            }
-            401 -> {
-                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettings()
-                }, 5000)
-                callback(null)
-            }
-            else -> {
-                val ex = result.component2()?.message
-                println(ex)
-                loggingHelper.addLog(ex.toString(), "getRecipients")
-                callback(null)
             }
         }
     }
@@ -702,15 +540,103 @@ class NetworkHelper(private val context: Context) {
     }
 
 
-    /*
-    Manage Recipient
+    /**
+     * RECIPIENTS
      */
 
-    suspend fun deleteRecipient(
-        id: String,
+    suspend fun addRecipient(
+        address: String,
         callback: (String?) -> Unit
     ) {
-        val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$id")
+
+        val json = JSONObject()
+        json.put("email", address)
+
+        val (request, response, result) = Fuel.post(API_URL_RECIPIENTS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            201 -> {
+                callback("201")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "addRecipient")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun getRecipients(
+        callback: (ArrayList<Recipients>?) -> Unit,
+        verifiedOnly: Boolean
+    ) {
+        val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, RecipientsArray::class.java)
+
+                val recipientList = ArrayList<Recipients>()
+
+                if (verifiedOnly) {
+                    for (recipient in anonAddyData.data) {
+                        if (recipient.email_verified_at != null) {
+                            recipientList.add(recipient)
+                        }
+                    }
+                } else {
+                    recipientList.addAll(anonAddyData.data)
+                }
+                callback(recipientList)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getRecipients")
+                callback(null)
+            }
+        }
+    }
+
+    suspend fun deleteRecipient(
+        recipientId: String,
+        callback: (String?) -> Unit
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$recipientId")
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -851,7 +777,7 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun addEncryptionKeyRecipient(
         callback: (String?) -> Unit,
-        aliasId: String,
+        recipientId: String,
         keyData: String
     ) {
 
@@ -859,7 +785,7 @@ class NetworkHelper(private val context: Context) {
         json.put("key_data", keyData)
 
 
-        val (_, response, result) = Fuel.patch("${API_URL_RECIPIENT_KEYS}/$aliasId")
+        val (_, response, result) = Fuel.patch("${API_URL_RECIPIENT_KEYS}/$recipientId")
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -892,11 +818,11 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun getSpecificRecipient(
-        callback: (Recipients?) -> Unit,
-        aliasId: String
+        callback: (Recipients?, String?) -> Unit,
+        recipientId: String
     ) {
         val (_, response, result) =
-            Fuel.get("${API_URL_RECIPIENTS}/$aliasId")
+            Fuel.get("${API_URL_RECIPIENTS}/$recipientId")
                 .appendHeader(
                     "Authorization" to "Bearer $API_KEY",
                     "Content-Type" to "application/json",
@@ -911,7 +837,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
-                callback(anonAddyData.data)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
@@ -919,13 +845,13 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettings()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(ex.toString(), "getSpecificRecipient")
-                callback(null)
+                callback(null, ex.toString())
             }
         }
     }
@@ -964,6 +890,331 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(ex.toString(), "enableEncryptionRecipient")
+                callback(ex.toString())
+            }
+        }
+    }
+
+
+    /**
+     * DOMAINS
+     */
+
+    suspend fun getDomains(
+        callback: (ArrayList<Domains>?) -> Unit
+    ) {
+        val (_, response, result) = Fuel.get(API_URL_DOMAINS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, DomainsArray::class.java)
+
+                val recipientList = ArrayList<Domains>()
+                recipientList.addAll(anonAddyData.data)
+                callback(recipientList)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getDomains")
+                callback(null)
+            }
+        }
+    }
+
+    suspend fun deleteDomain(
+        id: String,
+        callback: (String?) -> Unit
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_DOMAINS}/$id")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "deleteDomain")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun addDomain(
+        domain: String,
+        callback: (String?, String?) -> Unit
+    ) {
+
+        val json = JSONObject()
+        json.put("domain", domain)
+
+        val (request, response, result) = Fuel.post(API_URL_DOMAINS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            201 -> {
+                callback("201", null)
+            }
+
+            // 404 means that the setup is not completed
+            404 -> {
+                //TODO Fix getting body the normal way
+                val body = StringUtils.substringBetween(response.toString(), "Body : ", "\n")
+
+                callback("404", body)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "addDomain")
+                callback(ex.toString(), null)
+            }
+        }
+    }
+
+    suspend fun getSpecificDomain(
+        callback: (Domains?) -> Unit,
+        id: String
+    ) {
+        val (_, response, result) =
+            Fuel.get("${API_URL_DOMAINS}/$id")
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
+                callback(anonAddyData.data)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getSpecificDomain")
+                callback(null)
+            }
+        }
+    }
+
+
+    suspend fun updateDefaultRecipientForSpecificDomain(
+        callback: (String?) -> Unit,
+        domainId: String,
+        recipientId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("default_recipient", recipientId)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_DOMAINS}/$domainId/default-recipient")
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "updateDefaultRecipientForSpecificDomain")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun deactivateSpecificDomain(
+        callback: (String?) -> Unit?,
+        domainId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_DOMAINS}/$domainId")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "deactivateSpecificDomain")
+                callback(ex.toString())
+            }
+        }
+    }
+
+
+    suspend fun activateSpecificDomain(
+        callback: (String?) -> Unit,
+        domainId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("id", domainId)
+
+        val (_, response, result) = Fuel.post(API_URL_ACTIVE_DOMAINS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "activateSpecificDomain")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun updateDescriptionSpecificDomain(
+        callback: (String?) -> Unit,
+        domainId: String,
+        description: String
+    ) {
+
+        val json = JSONObject()
+        json.put("description", description)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_DOMAINS}/$domainId")
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettings()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificDomain")
                 callback(ex.toString())
             }
         }

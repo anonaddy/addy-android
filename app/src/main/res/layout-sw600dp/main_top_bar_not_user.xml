@@ -45,7 +45,6 @@
         android:id="@+id/main_top_bar_not_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="demo.anonaddy.com"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="18sp"
@@ -59,8 +58,8 @@
 
     <ImageView
         android:id="@+id/main_top_bar_user_initials"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_margin="4dp"
         android:src="@drawable/ic_account_circle_outline"
         android:gravity="center"
@@ -68,6 +67,7 @@
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/open_options"
         app:tint="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
