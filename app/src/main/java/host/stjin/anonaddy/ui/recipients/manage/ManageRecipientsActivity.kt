@@ -30,7 +30,6 @@ class ManageRecipientsActivity : BaseActivity(),
     private lateinit var addRecipientPublicGpgKeyBottomDialogFragment: AddRecipientPublicGpgKeyBottomDialogFragment
 
     private lateinit var recipientId: String
-    private lateinit var aliasEmail: String
     private var forceSwitch = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -327,7 +326,7 @@ class ManageRecipientsActivity : BaseActivity(),
                 activity_manage_recipient_aliases_title_textview.text = resources.getString(R.string.recipient_aliases_d, totalAliases)
                 activity_manage_recipient_basic_textview.text = resources.getString(
                     R.string.manage_recipient_basic_info,
-                    aliasEmail,
+                    list.email,
                     DateTimeUtils.turnStringIntoLocalString(list.created_at),
                     DateTimeUtils.turnStringIntoLocalString(list.updated_at),
                     totalForwarded, totalBlocked, totalReplies, totalSent
