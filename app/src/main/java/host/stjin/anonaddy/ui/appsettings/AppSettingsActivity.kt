@@ -51,15 +51,15 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun loadSettings() {
         activity_app_settings_section_security_switch.isChecked =
-            encryptedSettingsManager.getSettingsBool("biometric_enabled")
+            encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)
         activity_app_settings_section_logs_switch.isChecked =
-            settingsManager.getSettingsBool("store_logs")
+            settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)
     }
 
     private fun setOnSwitchListeners() {
         activity_app_settings_section_logs_switch.setOnCheckedChangeListener { compoundButton, b ->
             if (compoundButton.isPressed) {
-                settingsManager.putSettingsBool("store_logs", b)
+                settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, b)
             }
         }
     }
@@ -103,10 +103,10 @@ class AppSettingsActivity : BaseActivity(),
                 activity_app_settings_section_security_desc.text =
                     resources.getString(R.string.biometric_error_none_enrolled)
 
-                if (encryptedSettingsManager.getSettingsBool("biometric_enabled")) {
+                if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
                     // Biometrics is enabled but there is nothing enrolled.
                     encryptedSettingsManager.putSettingsBool(
-                        "biometric_enabled",
+                        SettingsManager.PREFS.BIOMETRIC_ENABLED,
                         false
                     )
                     Snackbar.make(
@@ -147,7 +147,7 @@ class AppSettingsActivity : BaseActivity(),
                     super.onAuthenticationSucceeded(result)
                     activity_app_settings_section_security_switch.isChecked = shouldEnableBiometric
                     encryptedSettingsManager.putSettingsBool(
-                        "biometric_enabled",
+                        SettingsManager.PREFS.BIOMETRIC_ENABLED,
                         shouldEnableBiometric
                     )
                 }
@@ -259,19 +259,19 @@ class AppSettingsActivity : BaseActivity(),
 
     override fun onDarkModeOff() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        settingsManager.putSettingsInt("dark_mode", 0)
+        settingsManager.putSettingsInt(SettingsManager.PREFS.DARK_MODE, 0)
         delegate.applyDayNight()
     }
 
     override fun onDarkModeOn() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        settingsManager.putSettingsInt("dark_mode", 1)
+        settingsManager.putSettingsInt(SettingsManager.PREFS.DARK_MODE, 1)
         delegate.applyDayNight()
     }
 
     override fun onDarkModeAutomatic() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        settingsManager.putSettingsInt("dark_mode", -1)
+        settingsManager.putSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)
         delegate.applyDayNight()
     }
 

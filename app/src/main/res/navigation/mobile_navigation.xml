@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/navigation_alias"
         android:name="host.stjin.anonaddy.ui.alias.AliasFragment"
-        android:label="@string/title_alias"
+        android:label="@string/title_aliases"
         tools:layout="@layout/fragment_alias" />
 
     <fragment

@@ -19,13 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
-import host.stjin.anonaddy.MainActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
+import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -108,7 +108,7 @@ class HomeFragment : Fragment() {
                         anchorView = bottomNavView
                     }
                 }
-                if (SettingsManager(false, context).getSettingsBool("store_logs")) {
+                if (SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar?.setAction(R.string.logs) {
                         val intent = Intent(context, LogViewerActivity::class.java)
                         startActivity(intent)

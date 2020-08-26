@@ -224,19 +224,19 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
         // These settings are related to AnonAddy's service. Thus encrypted
-        settingsManager?.getSettingsInt("stat_current_emails_forwarded_total_count")?.let {
+        settingsManager?.getSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_FORWARDED_TOTAL_COUNT)?.let {
             statCurrentEmailsForwardedTotalCount = it
         }
 
-        settingsManager?.getSettingsInt("stat_current_emails_blocked_total_count")?.let {
+        settingsManager?.getSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_BLOCKED_TOTAL_COUNT)?.let {
             statCurrentEmailsBlockedTotalCount = it
         }
 
-        settingsManager?.getSettingsInt("stat_current_emails_replied_total_count")?.let {
+        settingsManager?.getSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_REPLIED_TOTAL_COUNT)?.let {
             statCurrentEmailsRepliedTotalCount = it
         }
 
-        settingsManager?.getSettingsInt("stat_current_emails_sent_total_count")?.let {
+        settingsManager?.getSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_SENT_TOTAL_COUNT)?.let {
             statCurrentEmailsSentTotalCount = it
         }
 
@@ -260,10 +260,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         replied: Int,
         sent: Int
     ) {
-        settingsManager?.putSettingsInt("stat_current_emails_forwarded_total_count", forwarded)
-        settingsManager?.putSettingsInt("stat_current_emails_blocked_total_count", blocked)
-        settingsManager?.putSettingsInt("stat_current_emails_replied_total_count", replied)
-        settingsManager?.putSettingsInt("stat_current_emails_sent_total_count", sent)
+        settingsManager?.putSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_FORWARDED_TOTAL_COUNT, forwarded)
+        settingsManager?.putSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_BLOCKED_TOTAL_COUNT, blocked)
+        settingsManager?.putSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_REPLIED_TOTAL_COUNT, replied)
+        settingsManager?.putSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_SENT_TOTAL_COUNT, sent)
 
         root.alias_replied_sent_stats_textview.text =
             context.resources.getString(R.string.replied_replied_sent_stat, replied, sent)

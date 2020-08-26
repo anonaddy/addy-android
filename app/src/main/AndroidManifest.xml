@@ -12,8 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ui.domains.DomainSettingsActivity" />
+        <activity android:name=".ui.usernames.UsernamesSettingsActivity" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Setup">
             <intent-filter>
@@ -41,6 +42,7 @@
         </activity>
         <activity android:name=".ui.recipients.manage.ManageRecipientsActivity" />
         <activity android:name=".ui.domains.manage.ManageDomainsActivity" />
+        <activity android:name=".ui.usernames.manage.ManageUsernamesActivity" />
         <activity
             android:name=".ui.appsettings.AppSettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -51,16 +53,16 @@
             android:name=".ui.setup.SetupNewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name" />
         <activity
             android:name=".ui.DialogActivity"
             android:label="@string/title_activity_dialog"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.Transparent">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".ui.MainActivity" />
         </activity>
     </application>
 

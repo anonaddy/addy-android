@@ -15,39 +15,47 @@ import host.stjin.anonaddy.utils.PieChartView
 
 
 class AliasAdapter(private val listWithAliases: List<Aliases>, private val showStatus: Boolean) :
-    RecyclerView.Adapter<AliasAdapter.AliasesViewHolder>() {
+    RecyclerView.Adapter<AliasAdapter.ViewHolder>() {
 
     lateinit var onAliasClickListener: ClickListener
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AliasesViewHolder {
-        return AliasesViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.aliases_recyclerview_list_item, parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: AliasesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.mTitle.text = listWithAliases[position].email
 
         if (listWithAliases[position].description != null) {
             holder.mDescription.text =
-                "${listWithAliases[position].description}\n${(holder.mStatus.context).resources.getString(
-                    R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
-                )}\n${(holder.mStatus.context).resources.getString(
-                    R.string.updated_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
-                )}"
+                "${listWithAliases[position].description}\n${
+                    (holder.mDescription.context).resources.getString(
+                        R.string.created_at_s,
+                        DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
+                    )
+                }\n${
+                    (holder.mDescription.context).resources.getString(
+                        R.string.updated_at_s,
+                        DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
+                    )
+                }"
         } else {
             holder.mDescription.text =
-                "${(holder.mStatus.context).resources.getString(
-                    R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
-                )}\n${(holder.mStatus.context).resources.getString(
-                    R.string.updated_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
-                )}"
+                "${
+                    (holder.mDescription.context).resources.getString(
+                        R.string.created_at_s,
+                        DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
+                    )
+                }\n${
+                    (holder.mDescription.context).resources.getString(
+                        R.string.updated_at_s,
+                        DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
+                    )
+                }"
         }
 
 
@@ -110,7 +118,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         fun onClickCopy(pos: Int, aView: View)
     }
 
-    inner class AliasesViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
         private var mLL: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL)

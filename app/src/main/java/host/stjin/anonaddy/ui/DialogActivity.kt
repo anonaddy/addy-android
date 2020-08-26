@@ -8,6 +8,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import kotlinx.android.synthetic.main.main_profile_select_dialog.*
 
 class DialogActivity : Activity() {
@@ -30,6 +31,11 @@ class DialogActivity : Activity() {
 
         main_profile_select_dialog_domain_settings.setOnClickListener {
             val intent = Intent(baseContext, DomainSettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        main_profile_select_dialog_username_settings.setOnClickListener {
+            val intent = Intent(baseContext, UsernamesSettingsActivity::class.java)
             startActivity(intent)
         }
 

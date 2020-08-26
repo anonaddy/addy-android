@@ -131,7 +131,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
-                if (SettingsManager(false, this).getSettingsBool("store_logs")) {
+                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
                         val intent = Intent(baseContext, LogViewerActivity::class.java)
                         startActivity(intent)
@@ -156,7 +156,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
-                if (SettingsManager(false, this).getSettingsBool("store_logs")) {
+                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
                         val intent = Intent(baseContext, LogViewerActivity::class.java)
                         startActivity(intent)

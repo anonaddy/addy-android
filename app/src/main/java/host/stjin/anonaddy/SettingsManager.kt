@@ -8,9 +8,20 @@ import androidx.security.crypto.MasterKeys
 
 
 class SettingsManager(encrypt: Boolean, private val context: Context) {
-    //dark_mode
-//biometric_enabled
-    //store_logs
+    enum class PREFS(val filename: String) {
+        DARK_MODE("dark_mode"),
+        STORE_LOGS("store_logs"),
+
+        // Encrypted
+        BIOMETRIC_ENABLED("biometric_enabled"),
+        API_KEY("API_KEY"),
+        RECENT_SEARCHES("recent_searches"),
+        STAT_CURRENT_EMAILS_FORWARDED_TOTAL_COUNT("stat_current_emails_forwarded_total_count"),
+        STAT_CURRENT_EMAILS_BLOCKED_TOTAL_COUNT("stat_current_emails_blocked_total_count"),
+        STAT_CURRENT_EMAILS_REPLIED_TOTAL_COUNT("stat_current_emails_replied_total_count"),
+        STAT_CURRENT_EMAILS_SENT_TOTAL_COUNT("stat_current_emails_sent_total_count")
+    }
+
     private val prefs = if (encrypt) {
         PreferenceManager.getDefaultSharedPreferences(context)
     } else {
@@ -26,53 +37,57 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
     // TODO consider method overloading
 
-    fun putSettingsBool(key: String, boolean: Boolean) {
-        prefs.edit().putBoolean(key, boolean).apply()
+    fun putSettingsBool(key: PREFS, boolean: Boolean) {
+        prefs.edit().putBoolean(key.filename, boolean).apply()
     }
 
-    fun getSettingsBool(key: String): Boolean {
-        return prefs.getBoolean(key, false)
+    fun getSettingsBool(key: PREFS): Boolean {
+        return prefs.getBoolean(key.filename, false)
     }
 
-    fun putSettingsString(key: String, string: String) {
-        prefs.edit().putString(key, string).apply()
+    fun putSettingsString(key: PREFS, string: String) {
+        prefs.edit().putString(key.filename, string).apply()
     }
 
-    fun getSettingsString(key: String): String? {
-        return prefs.getString(key, null)
+    fun getSettingsString(key: PREFS): String? {
+        return prefs.getString(key.filename, null)
     }
 
-    fun putSettingsInt(key: String, int: Int) {
-        prefs.edit().putInt(key, int).apply()
+    fun putSettingsInt(key: PREFS, int: Int) {
+        prefs.edit().putInt(key.filename, int).apply()
     }
 
-    fun getSettingsInt(key: String, default: Int = 0): Int {
-        return prefs.getInt(key, default)
+    fun getSettingsInt(key: PREFS, default: Int = 0): Int {
+        return prefs.getInt(key.filename, default)
     }
 
-    fun putSettingsFloat(key: String, float: Float) {
-        prefs.edit().putFloat(key, float).apply()
+    fun putSettingsFloat(key: PREFS, float: Float) {
+        prefs.edit().putFloat(key.filename, float).apply()
     }
 
-    fun getSettingsFloat(key: String): Float {
-        return prefs.getFloat(key, 0f)
+    fun getSettingsFloat(key: PREFS): Float {
+        return prefs.getFloat(key.filename, 0f)
     }
 
-
-    fun putStringSet(key: String, mutableset: MutableSet<String>) {
-        prefs.edit().remove(key).apply()
-        prefs.edit().putStringSet(key, mutableset).apply()
+    fun putStringSet(key: PREFS, mutableset: MutableSet<String>) {
+        prefs.edit().remove(key.filename).apply()
+        prefs.edit().putStringSet(key.filename, mutableset).apply()
     }
 
-    fun getStringSet(key: String): MutableSet<String>? {
-        return prefs.getStringSet(key, HashSet())
+    fun getStringSet(key: PREFS): MutableSet<String>? {
+        return prefs.getStringSet(key.filename, HashSet())
+    }
+
+    fun removeSetting(value: PREFS) {
+        prefs.edit().remove(value.filename).apply()
     }
 
 
     /*
     Clears all the settings and closes the app
      */
-    fun clearSettings() {
+
+    fun clearSettingsAndCloseApp() {
         (context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
     }
 }

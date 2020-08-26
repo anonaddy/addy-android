@@ -15,7 +15,6 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_manage_alias.*
@@ -157,7 +156,7 @@ class ManageAliasActivity : BaseActivity(),
                     applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
-                if (SettingsManager(false, this).getSettingsBool("store_logs")) {
+                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
                         val intent = Intent(baseContext, LogViewerActivity::class.java)
                         startActivity(intent)
@@ -182,7 +181,7 @@ class ManageAliasActivity : BaseActivity(),
                     applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
-                if (SettingsManager(false, this).getSettingsBool("store_logs")) {
+                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
                         val intent = Intent(baseContext, LogViewerActivity::class.java)
                         startActivity(intent)
@@ -435,9 +434,8 @@ class ManageAliasActivity : BaseActivity(),
                         )
                     }
                 } else {
-                    // TODO Add default recipient between ()
                     recipients = applicationContext.resources.getString(
-                        R.string.default_recipient_s, User.userResourceExtended.default_recipient_email
+                        R.string.default_recipient_s
                     )
                 }
 

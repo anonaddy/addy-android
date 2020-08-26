@@ -7,39 +7,18 @@
     android:elevation="4dp"
     android:padding="8dp">
 
-    <RelativeLayout
-        android:id="@+id/main_top_bar_not_icon_RL"
+    <ImageView
+        android:id="@+id/main_top_bar_search_icon"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/search"
         android:padding="8dp"
+        android:src="@drawable/ic_round_search_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toStartOf="@+id/main_top_bar_user_initials"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/main_top_bar_not_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/title_notifications"
-            android:src="@drawable/ic_round_notifications_none_24"
-            app:tint="@android:color/white" />
-
-        <ImageView
-            android:id="@+id/main_top_bar_not_new_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="20dp"
-            android:contentDescription="@string/title_notifications"
-            android:visibility="gone"
-            app:srcCompat="@drawable/circle"
-            app:tint="@color/newNotificationColor" />
-    </RelativeLayout>
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
 
     <TextView
         android:id="@+id/main_top_bar_not_title"
@@ -49,7 +28,7 @@
         android:textColor="@android:color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/main_top_bar_not_icon_RL"
+        app:layout_constraintEnd_toStartOf="@+id/main_top_bar_search_icon"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"

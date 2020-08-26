@@ -9,7 +9,7 @@
     <item
         android:id="@+id/navigation_alias"
         android:icon="@drawable/ic_round_alternate_email_24"
-        android:title="@string/title_alias" />
+        android:title="@string/title_aliases" />
 
     <item
         android:id="@+id/navigation_recipients"

@@ -14,18 +14,18 @@ import host.stjin.anonaddy.models.Recipients
 class RecipientAdapter(
     private val listWithRecipients: ArrayList<Recipients>
 ) :
-    RecyclerView.Adapter<RecipientAdapter.AliasesViewHolder>() {
+    RecyclerView.Adapter<RecipientAdapter.ViewHolder>() {
 
     lateinit var onRecipientClicker: ClickListener
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AliasesViewHolder {
-        return AliasesViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.recipients_recyclerview_list_item, parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: AliasesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.mTitle.text = listWithRecipients[position].email
 
 
@@ -48,27 +48,21 @@ class RecipientAdapter(
 
         when {
             listWithRecipients[position].email_verified_at == null -> {
-                holder.recipientsRecyclerviewListErrorIcon.visibility = View.VISIBLE
-                holder.recipientsRecyclerviewListMailIcon.visibility = View.GONE
-                holder.recipientsRecyclerviewListEncMailIcon.visibility = View.GONE
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_error_outline_24)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListResendButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListSettingsButton.visibility = View.GONE
             }
             listWithRecipients[position].should_encrypt -> {
-                holder.recipientsRecyclerviewListErrorIcon.visibility = View.GONE
-                holder.recipientsRecyclerviewListMailIcon.visibility = View.GONE
-                holder.recipientsRecyclerviewListEncMailIcon.visibility = View.VISIBLE
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_enc_email_outline)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListResendButton.visibility = View.GONE
                 holder.recipientsRecyclerviewListSettingsButton.visibility = View.VISIBLE
             }
             else -> {
-                holder.recipientsRecyclerviewListErrorIcon.visibility = View.GONE
-                holder.recipientsRecyclerviewListMailIcon.visibility = View.VISIBLE
-                holder.recipientsRecyclerviewListEncMailIcon.visibility = View.GONE
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_mail_outline_24)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListResendButton.visibility = View.GONE
@@ -91,7 +85,7 @@ class RecipientAdapter(
         fun onClickDelete(pos: Int, aView: View)
     }
 
-    inner class AliasesViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
         private var mLL: LinearLayout = view.findViewById(R.id.recipients_recyclerview_list_LL)
@@ -102,12 +96,8 @@ class RecipientAdapter(
         var mTitle: TextView = view.findViewById(R.id.recipients_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.recipients_recyclerview_list_description)
-        var recipientsRecyclerviewListErrorIcon: ImageView =
-            view.findViewById(R.id.recipients_recyclerview_list_error_icon)
-        var recipientsRecyclerviewListMailIcon: ImageView =
-            view.findViewById(R.id.recipients_recyclerview_list_mail_icon)
-        var recipientsRecyclerviewListEncMailIcon: ImageView =
-            view.findViewById(R.id.recipients_recyclerview_list_enc_mail_icon)
+        var recipientsRecyclerviewListIcon: ImageView =
+            view.findViewById(R.id.recipients_recyclerview_list_icon)
         var recipientsRecyclerviewListSettingsButton: MaterialButton =
             view.findViewById(R.id.recipients_recyclerview_list_settings_button)
         var recipientsRecyclerviewListResendButton: MaterialButton =

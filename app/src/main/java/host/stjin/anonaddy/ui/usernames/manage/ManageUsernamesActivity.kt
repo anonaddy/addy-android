@@ -1,10 +1,9 @@
-package host.stjin.anonaddy.ui.domains.manage
+package host.stjin.anonaddy.ui.usernames.manage
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -13,9 +12,10 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
-import kotlinx.android.synthetic.main.activity_manage_domains.*
+import kotlinx.android.synthetic.main.activity_manage_usernames.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -23,72 +23,72 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class ManageDomainsActivity : BaseActivity(),
-    EditDomainDescriptionBottomDialogFragment.AddEditDomainDescriptionBottomDialogListener,
-    EditDomainRecipientBottomDialogFragment.AddEditDomainRecipientBottomDialogListener {
+class ManageUsernamesActivity : BaseActivity(),
+    EditUsernameDescriptionBottomDialogFragment.AddEditUsernameDescriptionBottomDialogListener,
+    EditUsernameRecipientBottomDialogFragment.AddEditUsernameRecipientBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
 
-    private lateinit var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment
-    private lateinit var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment
+    private lateinit var editUsernameDescriptionBottomDialogFragment: EditUsernameDescriptionBottomDialogFragment
+    private lateinit var editUsernameRecipientBottomDialogFragment: EditUsernameRecipientBottomDialogFragment
 
-    private lateinit var domainId: String
+    private lateinit var usernameId: String
     private var forceSwitch = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_manage_domains)
-        setupToolbar(activity_manage_domain_toolbar)
+        setContentView(R.layout.activity_manage_usernames)
+        setupToolbar(activity_manage_username_toolbar)
         networkHelper = NetworkHelper(applicationContext)
 
 
         val b = intent.extras
-        val domainId = b?.getString("domain_id")
+        val usernameId = b?.getString("username_id")
 
-        if (domainId == null) {
+        if (usernameId == null) {
             finish()
             return
         }
-        this.domainId = domainId
+        this.usernameId = usernameId
         setPage()
     }
 
 
     private fun setPage() {
-        // Get the domain
+        // Get the username
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getDomainInfo(domainId)
+            getUsernameInfo(usernameId)
         }
     }
 
     private fun setOnSwitchChangeListeners() {
-        activity_manage_domain_active_switch.setOnCheckedChangeListener { compoundButton, b ->
+        activity_manage_username_active_switch.setOnCheckedChangeListener { compoundButton, b ->
             // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
             if (compoundButton.isPressed || forceSwitch) {
-                activity_manage_domain_active_switch_progressbar.visibility = View.VISIBLE
+                activity_manage_username_active_switch_progressbar.visibility = View.VISIBLE
                 forceSwitch = false
                 if (b) {
                     GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        activateDomain()
+                        activateUsername()
                     }
                 } else {
                     GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        deactivateDomain()
+                        deactivateUsername()
                     }
                 }
             }
         }
     }
 
-    private suspend fun deactivateDomain() {
-        networkHelper.deactivateSpecificDomain({ result ->
-            activity_manage_domain_active_switch_progressbar.visibility = View.GONE
+    private suspend fun deactivateUsername() {
+        networkHelper.deactivateSpecificUsername({ result ->
+            activity_manage_username_active_switch_progressbar.visibility = View.GONE
             if (result == "204") {
-                activity_manage_domain_status_textview.text = resources.getString(R.string.domain_deactivated)
+                activity_manage_username_status_textview.text = resources.getString(R.string.username_deactivated)
             } else {
-                activity_manage_domain_active_switch.isChecked = true
+                activity_manage_username_active_switch.isChecked = true
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_username_LL),
                     applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -101,19 +101,19 @@ class ManageDomainsActivity : BaseActivity(),
                 snackbar.show()
 
             }
-        }, domainId)
+        }, usernameId)
     }
 
 
-    private suspend fun activateDomain() {
-        networkHelper.activateSpecificDomain({ result ->
-            activity_manage_domain_active_switch_progressbar.visibility = View.GONE
+    private suspend fun activateUsername() {
+        networkHelper.activateSpecificUsername({ result ->
+            activity_manage_username_active_switch_progressbar.visibility = View.GONE
             if (result == "200") {
-                activity_manage_domain_status_textview.text = resources.getString(R.string.domain_activated)
+                activity_manage_username_status_textview.text = resources.getString(R.string.username_activated)
             } else {
-                activity_manage_domain_active_switch.isChecked = false
+                activity_manage_username_active_switch.isChecked = false
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_username_LL),
                     applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -125,47 +125,39 @@ class ManageDomainsActivity : BaseActivity(),
                 }
                 snackbar.show()
             }
-        }, domainId)
+        }, usernameId)
     }
 
 
     private fun setOnClickListeners() {
-
-        activity_manage_domain_active_switch_layout.setOnClickListener {
+        activity_manage_username_active_switch_layout.setOnClickListener {
             forceSwitch = true
-            activity_manage_domain_active_switch.isChecked = !activity_manage_domain_active_switch.isChecked
+            activity_manage_username_active_switch.isChecked = !activity_manage_username_active_switch.isChecked
         }
 
-        activity_manage_domain_desc_edit.setOnClickListener {
-            editDomainDescriptionBottomDialogFragment.show(
+        activity_manage_username_desc_edit.setOnClickListener {
+            editUsernameDescriptionBottomDialogFragment.show(
                 supportFragmentManager,
-                "editDomainDescriptionBottomDialogFragment"
+                "editUsernameDescriptionBottomDialogFragment"
             )
         }
 
-        activity_manage_domain_recipients_edit.setOnClickListener {
-            editDomainRecipientBottomDialogFragment.show(
+        activity_manage_username_recipients_edit.setOnClickListener {
+            editUsernameRecipientBottomDialogFragment.show(
                 supportFragmentManager,
-                "editDomainRecipientsBottomDialogFragment"
+                "editUsernameRecipientsBottomDialogFragment"
             )
         }
 
-        activity_manage_domain_delete.setOnClickListener {
-            deletedomain(domainId)
-        }
-
-        activity_manage_domain_check_dns.setOnClickListener {
-            val url = "https://app.anonaddy.com/domains"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
+        activity_manage_username_delete.setOnClickListener {
+            deleteUsername(usernameId)
         }
     }
 
 
     lateinit var dialog: AlertDialog
     private lateinit var customLayout: View
-    private fun deletedomain(id: String) {
+    private fun deleteUsername(id: String) {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // set the custom layout
@@ -175,10 +167,10 @@ class ManageDomainsActivity : BaseActivity(),
         dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = resources.getString(R.string.delete_domain)
-        customLayout.dialog_text.text = resources.getString(R.string.delete_domain_desc_confirm)
+        customLayout.dialog_title.text = resources.getString(R.string.delete_username)
+        customLayout.dialog_text.text = resources.getString(R.string.delete_username_desc_confirm)
         customLayout.dialog_positive_button.text =
-            resources.getString(R.string.delete_domain)
+            resources.getString(R.string.delete_username)
         customLayout.dialog_positive_button.setOnClickListener {
             customLayout.dialog_progressbar.visibility = View.VISIBLE
             customLayout.dialog_error.visibility = View.GONE
@@ -186,7 +178,7 @@ class ManageDomainsActivity : BaseActivity(),
             customLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteDomainHttpRequest(id, applicationContext)
+                deleteUsernameHttpRequest(id, applicationContext)
             }
         }
         customLayout.dialog_negative_button.setOnClickListener {
@@ -197,9 +189,9 @@ class ManageDomainsActivity : BaseActivity(),
     }
 
 
-    private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
+    private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {
 
-        networkHelper.deleteDomain(id) { result ->
+        networkHelper.deleteUsername(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
                 finish()
@@ -209,23 +201,23 @@ class ManageDomainsActivity : BaseActivity(),
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
                 customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_domain) + "\n" + result
+                    context.resources.getString(R.string.error_deleting_username) + "\n" + result
             }
         }
     }
 
 
-    private suspend fun getDomainInfo(id: String) {
-        networkHelper.getSpecificDomain({ list ->
+    private suspend fun getUsernameInfo(id: String) {
+        networkHelper.getSpecificUsername({ list ->
 
             if (list != null) {
                 /**
                  *  SWITCH STATUS
                  */
 
-                activity_manage_domain_active_switch.isChecked = list.active
-                activity_manage_domain_status_textview.text =
-                    if (list.active) resources.getString(R.string.domain_activated) else resources.getString(R.string.domain_deactivated)
+                activity_manage_username_active_switch.isChecked = list.active
+                activity_manage_username_status_textview.text =
+                    if (list.active) resources.getString(R.string.username_activated) else resources.getString(R.string.username_deactivated)
 
 
                 /**
@@ -256,18 +248,16 @@ class ManageDomainsActivity : BaseActivity(),
                     aliases = buf.toString()
                 }
 
-                activity_manage_domain_aliases_title_textview.text = resources.getString(R.string.domain_aliases_d, totalAliases)
-                activity_manage_domain_basic_textview.text = resources.getString(
-                    R.string.manage_domain_basic_info,
-                    list.domain,
+                activity_manage_username_aliases_title_textview.text = resources.getString(R.string.username_aliases_d, totalAliases)
+                activity_manage_username_basic_textview.text = resources.getString(
+                    R.string.manage_username_basic_info,
+                    list.username,
                     DateTimeUtils.turnStringIntoLocalString(list.created_at),
                     DateTimeUtils.turnStringIntoLocalString(list.updated_at),
-                    DateTimeUtils.turnStringIntoLocalString(list.domain_verified_at),
-                    DateTimeUtils.turnStringIntoLocalString(list.domain_sending_verified_at),
                     totalForwarded, totalBlocked, totalReplies, totalSent
                 )
 
-                activity_manage_domain_aliases_textview.text = aliases
+                activity_manage_username_aliases_textview.text = aliases
 
                 /**
                  * RECIPIENTS
@@ -276,15 +266,15 @@ class ManageDomainsActivity : BaseActivity(),
                 // Set recipient
                 var recipients = ""
                 recipients = list.default_recipient?.email ?: applicationContext.resources.getString(
-                    R.string.default_recipient
+                    R.string.default_recipient_s, User.userResourceExtended.default_recipient_email
                 )
 
-                activity_manage_domain_recipients.text = recipients
+                activity_manage_username_recipients.text = recipients
 
 
                 // Initialise the bottomdialog
-                editDomainRecipientBottomDialogFragment =
-                    EditDomainRecipientBottomDialogFragment.newInstance(domainId, list.default_recipient?.email)
+                editUsernameRecipientBottomDialogFragment =
+                    EditUsernameRecipientBottomDialogFragment.newInstance(usernameId, list.default_recipient?.email)
 
 
                 /**
@@ -293,15 +283,15 @@ class ManageDomainsActivity : BaseActivity(),
 
                 // Set description and initialise the bottomDialogFragment
                 if (list.description != null) {
-                    activity_manage_domain_desc.text = list.description
+                    activity_manage_username_desc.text = list.description
                 } else {
-                    activity_manage_domain_desc.text = applicationContext.resources.getString(
-                        R.string.domain_no_description
+                    activity_manage_username_desc.text = applicationContext.resources.getString(
+                        R.string.username_no_description
                     )
                 }
 
                 // We reset this value as it now includes the description
-                editDomainDescriptionBottomDialogFragment = EditDomainDescriptionBottomDialogFragment.newInstance(
+                editUsernameDescriptionBottomDialogFragment = EditUsernameDescriptionBottomDialogFragment.newInstance(
                     id,
                     list.description
                 )
@@ -309,28 +299,18 @@ class ManageDomainsActivity : BaseActivity(),
                 /**
                  * Check DNS
                  */
-
-                if (list.domain_sending_verified_at == null) {
-                    activity_manage_domain_dns_icon.setImageResource(R.drawable.ic_dns_warning)
-                    activity_manage_domain_check_dns_subtext.text = resources.getString(R.string.check_dns_desc_incorrect)
-                } else {
-                    activity_manage_domain_dns_icon.setImageResource(R.drawable.ic_round_dns_24)
-                    activity_manage_domain_check_dns_subtext.text = resources.getString(R.string.check_dns_desc)
-                }
-
-
-                activity_manage_domain_RL_progressbar.visibility = View.GONE
-                activity_manage_domain_LL1.visibility = View.VISIBLE
+                activity_manage_username_RL_progressbar.visibility = View.GONE
+                activity_manage_username_LL1.visibility = View.VISIBLE
 
 
                 setOnSwitchChangeListeners()
                 setOnClickListeners()
             } else {
-                activity_manage_domain_RL_progressbar.visibility = View.GONE
-                activity_manage_domain_LL1.visibility = View.GONE
+                activity_manage_username_RL_progressbar.visibility = View.GONE
+                activity_manage_username_LL1.visibility = View.GONE
 
                 // Show no internet animations
-                activity_manage_domain_RL_lottieview.visibility = View.VISIBLE
+                activity_manage_username_RL_lottieview.visibility = View.VISIBLE
             }
         }, id)
     }
@@ -341,12 +321,12 @@ class ManageDomainsActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(description: String) {
-        activity_manage_domain_desc.text = description
-        editDomainDescriptionBottomDialogFragment.dismiss()
+        activity_manage_username_desc.text = description
+        editUsernameDescriptionBottomDialogFragment.dismiss()
     }
 
     override fun recipientEdited() {
         setPage()
-        editDomainRecipientBottomDialogFragment.dismiss()
+        editUsernameRecipientBottomDialogFragment.dismiss()
     }
 }

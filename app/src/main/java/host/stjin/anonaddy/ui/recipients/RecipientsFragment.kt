@@ -172,7 +172,7 @@ class RecipientsFragment : Fragment(),
                         anchorView = bottomNavView
                     }
                 }
-                if (SettingsManager(false, context).getSettingsBool("store_logs")) {
+                if (SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar?.setAction(R.string.logs) {
                         val intent = Intent(context, LogViewerActivity::class.java)
                         startActivity(intent)

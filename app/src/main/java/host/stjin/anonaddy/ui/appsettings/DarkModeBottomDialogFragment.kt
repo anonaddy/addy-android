@@ -45,7 +45,7 @@ class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         listener = activity as AddDarkmodeBottomDialogListener
 
         val settingsManager = SettingsManager(false, requireContext())
-        when (settingsManager.getSettingsInt("dark_mode", -1)) {
+        when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
             0 -> {
                 root.bs_darkmode_off.isChecked = true
             }

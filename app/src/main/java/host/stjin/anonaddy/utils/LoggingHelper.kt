@@ -11,7 +11,7 @@ class LoggingHelper(context: Context) {
     private val settingsManager = SettingsManager(false, context)
 
     fun addLog(error: String, method: String) {
-        if (settingsManager.getSettingsBool("store_logs")) {
+        if (settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
             val logs = getLogs()
             logs.add("${getDateTime()} | $method | $error")
             putLogs(logs)

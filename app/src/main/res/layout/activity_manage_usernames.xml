@@ -2,25 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_manage_domain_LL"
+    android:id="@+id/activity_manage_username_LL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/activity_manage_domain_toolbar"
+        android:id="@+id/activity_manage_username_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primaryColor">
 
         <TextView
-            android:id="@+id/activity_manage_domain_title"
+            android:id="@+id/activity_manage_username_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/edit_domain"
+            android:text="@string/edit_username"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
     </com.google.android.material.appbar.MaterialToolbar>
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content">
 
             <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/activity_manage_domain_RL_lottieview"
+                android:id="@+id/activity_manage_username_RL_lottieview"
                 android:layout_width="wrap_content"
                 android:layout_height="300dp"
                 android:layout_centerInParent="true"
@@ -45,14 +45,14 @@
                 app:lottie_rawRes="@raw/no_internet_connection" />
 
             <ProgressBar
-                android:id="@+id/activity_manage_domain_RL_progressbar"
+                android:id="@+id/activity_manage_username_RL_progressbar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true" />
 
             <LinearLayout
-                android:id="@+id/activity_manage_domain_LL1"
+                android:id="@+id/activity_manage_username_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -74,7 +74,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/activity_manage_domain_basic_textview"
+                        android:id="@+id/activity_manage_username_basic_textview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/BlackWhite"
@@ -82,11 +82,11 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/activity_manage_domain_aliases_title_textview"
+                    android:id="@+id/activity_manage_username_aliases_title_textview"
                     style="@style/titleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/domain_aliases_d" />
+                    android:text="@string/username_aliases_d" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -96,7 +96,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/activity_manage_domain_aliases_textview"
+                        android:id="@+id/activity_manage_username_aliases_textview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/BlackWhite"
@@ -116,7 +116,7 @@
                         android:text="@string/action" />
 
                     <LinearLayout
-                        android:id="@+id/activity_manage_domain_active_switch_layout"
+                        android:id="@+id/activity_manage_username_active_switch_layout"
                         style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:contentDescription="@string/domain_status_active"
+                                android:contentDescription="@string/username_status_active"
                                 android:src="@drawable/ic_checkbox_marked_circle_outline" />
 
                         </LinearLayout>
@@ -144,7 +144,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/activity_manage_domain_status_textview"
+                                android:id="@+id/activity_manage_username_status_textview"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="2dp"
@@ -153,7 +153,7 @@
                                 android:lines="1"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:text="@string/domain_status_active"
+                                android:text="@string/username_status_active"
                                 android:textAllCaps="false"
                                 android:textColor="@color/BlackWhite"
                                 android:textSize="16sp" />
@@ -167,12 +167,12 @@
                                 android:maxLines="1"
                                 android:minLines="1"
                                 android:singleLine="false"
-                                android:text="@string/domain_status_desc"
+                                android:text="@string/username_status_desc"
                                 android:textColor="?attr/colorControlNormal" />
                         </LinearLayout>
 
                         <ProgressBar
-                            android:id="@+id/activity_manage_domain_active_switch_progressbar"
+                            android:id="@+id/activity_manage_username_active_switch_progressbar"
                             style="?android:attr/progressBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
                             android:visibility="gone" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/activity_manage_domain_active_switch"
+                            android:id="@+id/activity_manage_username_active_switch"
                             style="@style/overrideExpandableCardViewSwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -191,7 +191,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/activity_manage_domain_desc_edit"
+                        android:id="@+id/activity_manage_username_desc_edit"
                         style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -233,7 +233,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
-                                android:id="@+id/activity_manage_domain_desc"
+                                android:id="@+id/activity_manage_username_desc"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
@@ -261,7 +261,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/activity_manage_domain_recipients_edit"
+                        android:id="@+id/activity_manage_username_recipients_edit"
                         style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -303,7 +303,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
-                                android:id="@+id/activity_manage_domain_recipients"
+                                android:id="@+id/activity_manage_username_recipients"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
@@ -331,64 +331,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/activity_manage_domain_check_dns"
-                        style="@style/SettingsSectionStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/activity_manage_domain_dns_icon"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/check_dns"
-                                android:src="@drawable/ic_round_dns_24" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/check_dns"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/activity_manage_domain_check_dns_subtext"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:maxLines="3"
-                                android:singleLine="false"
-                                android:textColor="?attr/colorControlNormal"
-                                tools:text="@string/check_dns_desc" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/activity_manage_domain_delete"
+                        android:id="@+id/activity_manage_username_delete"
                         style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -404,7 +347,7 @@
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:contentDescription="@string/delete_domain"
+                                android:contentDescription="@string/delete_username"
                                 android:src="@drawable/ic_outline_delete_24"
                                 app:tint="@color/softRed" />
 
@@ -425,7 +368,7 @@
                                 android:lines="1"
                                 android:maxLines="1"
                                 android:singleLine="true"
-                                android:text="@string/delete_domain"
+                                android:text="@string/delete_username"
                                 android:textAllCaps="false"
                                 android:textColor="@color/softRed"
                                 android:textSize="16sp" />
@@ -434,7 +377,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif"
-                                android:text="@string/delete_domain_desc"
+                                android:text="@string/delete_username_desc"
                                 android:textColor="?attr/colorControlNormal" />
                         </LinearLayout>
 

@@ -25,19 +25,11 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/domains_recyclerview_list_error_icon"
+                android:id="@+id/domains_recyclerview_list_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/issues"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_round_error_outline_24" />
-
-            <ImageView
-                android:id="@+id/domains_recyclerview_list_dns_icon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/domain"
-                android:src="@drawable/ic_round_dns_24" />
+                android:src="@drawable/ic_round_dns_24"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 

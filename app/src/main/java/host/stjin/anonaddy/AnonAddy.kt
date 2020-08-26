@@ -12,4 +12,6 @@ object AnonAddy {
     var API_URL_ACCOUNT_DETAILS = "https://app.anonaddy.com/api/v1/account-details"
     var API_URL_DOMAINS = "https://app.anonaddy.com/api/v1/domains"
     var API_URL_ACTIVE_DOMAINS = "https://app.anonaddy.com/api/v1/active-domains"
+    var API_URL_USERNAMES = "https://app.anonaddy.com/api/v1/usernames"
+    var API_URL_ACTIVE_USERNAMES = "https://app.anonaddy.com/api/v1/active-usernames"
 }

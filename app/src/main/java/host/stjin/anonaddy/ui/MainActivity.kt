@@ -1,4 +1,4 @@
-package host.stjin.anonaddy
+package host.stjin.anonaddy.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -6,7 +6,6 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricPrompt
@@ -14,17 +13,28 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import host.stjin.anonaddy.ui.DialogActivity
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy.models.Domains
+import host.stjin.anonaddy.models.Recipients
+import host.stjin.anonaddy.models.Usernames
 import kotlinx.android.synthetic.main.main_top_bar_not_user.*
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener {
+
+
+    private val searchBottomDialogFragment: SearchBottomDialogFragment =
+        SearchBottomDialogFragment.newInstance()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val settingsManager = SettingsManager(true, this)
         // First check for biometrics with a fallback on screen lock
-        if (settingsManager.getSettingsBool("biometric_enabled")) {
+        if (settingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
             verifyBiometrics()
         } else {
             loadMainActivity()
@@ -45,7 +55,6 @@ class MainActivity : BaseActivity() {
             changeTopBarTitle(destination.label.toString())
         }
 
-        changeTopBarNotification(true)
         initialiseMainAppBar()
     }
 
@@ -62,7 +71,7 @@ class MainActivity : BaseActivity() {
                     if (errorCode == BiometricPrompt.ERROR_NO_BIOMETRICS) {
                         // The user has removed the screen lock completely.
                         // Unlock the app and continue
-                        SettingsManager(true, applicationContext).putSettingsBool("biometric_enabled", false)
+                        SettingsManager(true, applicationContext).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
                         Toast.makeText(
                             applicationContext, resources.getString(
                                 R.string.authentication_error_11
@@ -116,12 +125,19 @@ class MainActivity : BaseActivity() {
                 )
             startActivity(i, options.toBundle())
         }
+
+        main_top_bar_search_icon.setOnClickListener {
+            searchBottomDialogFragment.show(
+                supportFragmentManager,
+                "searchBottomDialogFragment"
+            )
+        }
     }
 
     @SuppressLint("SwitchIntDef")
     fun checkForDarkModeAndSetFlags() {
         val settingsManager = SettingsManager(false, this)
-        when (settingsManager.getSettingsInt("dark_mode", -1)) {
+        when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
             0 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
@@ -138,15 +154,18 @@ class MainActivity : BaseActivity() {
         main_top_bar_not_title.text = title
     }
 
-
-    private fun changeTopBarNotification(newNotifications: Boolean) {
-        main_top_bar_not_new_icon.visibility = if (newNotifications) View.VISIBLE else View.GONE
-    }
-
-
     fun switchFragments(fragment: Int) {
         val navController = findNavController(R.id.nav_host_fragment)
         navController.navigate(fragment)
+    }
+
+    override fun onSearch(
+        filteredAliases: ArrayList<Aliases>,
+        filteredRecipients: ArrayList<Recipients>,
+        filteredDomains: ArrayList<Domains>,
+        filteredUsernames: ArrayList<Usernames>
+    ) {
+        //
     }
 
 }

@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.ui.domains
+package host.stjin.anonaddy.ui.usernames
 
 import android.content.Context
 import android.content.Intent
@@ -14,27 +14,27 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.adapter.DomainAdapter
-import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
-import kotlinx.android.synthetic.main.activity_domain_settings.*
+import host.stjin.anonaddy.adapter.UsernameAdapter
+import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
+import kotlinx.android.synthetic.main.activity_username_settings.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {
+class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragment.AddUsernameBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
     private var shouldAnimateRecyclerview: Boolean = true
 
-    private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
+    private val addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_domain_settings)
-        setupToolbar(activity_domain_settings_toolbar)
+        setContentView(R.layout.activity_username_settings)
+        setupToolbar(activity_username_settings_toolbar)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -44,10 +44,10 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private fun setOnClickListener() {
-        activity_domain_settings_add_domain.setOnClickListener {
-            addDomainFragment.show(
+        activity_username_settings_add_username.setOnClickListener {
+            addUsernameFragment.show(
                 supportFragmentManager,
-                "addDomainFragment"
+                "addUsernameFragment"
             )
         }
     }
@@ -55,12 +55,12 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     private fun getDataFromWeb() {
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
+            getAllUsernames()
         }
     }
 
-    private suspend fun getAllDomains() {
-        activity_domain_settings_all_domains_recyclerview.apply {
+    private suspend fun getAllUsernames() {
+        activity_username_settings_all_usernames_recyclerview.apply {
 
             if (itemDecorationCount > 0) {
                 addItemDecoration(
@@ -79,42 +79,42 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 shouldAnimateRecyclerview = false
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                activity_domain_settings_all_domains_recyclerview.layoutAnimation = animation
+                activity_username_settings_all_usernames_recyclerview.layoutAnimation = animation
             }
 
 
-            networkHelper?.getAllDomains { list ->
+            networkHelper?.getAllUsernames { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
                 if (list != null) {
 
                     if (list.size > 0) {
-                        activity_domain_settings_no_domains.visibility = View.GONE
+                        activity_username_settings_no_usernames.visibility = View.GONE
                     } else {
-                        activity_domain_settings_no_domains.visibility = View.VISIBLE
+                        activity_username_settings_no_usernames.visibility = View.VISIBLE
                     }
 
-                    val domainsAdapter = DomainAdapter(list)
-                    domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
+                    val usernamesAdapter = UsernameAdapter(list)
+                    usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
 
                         override fun onClickSettings(pos: Int, aView: View) {
-                            val intent = Intent(context, ManageDomainsActivity::class.java)
-                            intent.putExtra("domain_id", list[pos].id)
+                            val intent = Intent(context, ManageUsernamesActivity::class.java)
+                            intent.putExtra("username_id", list[pos].id)
                             startActivity(intent)
                         }
 
 
                         override fun onClickDelete(pos: Int, aView: View) {
-                            deleteDomain(list[pos].id, context)
+                            deleteUsername(list[pos].id, context)
                         }
 
                     })
-                    adapter = domainsAdapter
-                    activity_domain_settings_all_domains_recyclerview.hideShimmerAdapter()
+                    adapter = usernamesAdapter
+                    activity_username_settings_all_usernames_recyclerview.hideShimmerAdapter()
                 } else {
-                    activity_domain_settings_LL1.visibility = View.GONE
-                    activity_domain_settings_RL_lottieview.visibility = View.VISIBLE
+                    activity_username_settings_LL1.visibility = View.GONE
+                    activity_username_settings_RL_lottieview.visibility = View.VISIBLE
                 }
             }
 
@@ -125,7 +125,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
     lateinit var dialog: AlertDialog
     private lateinit var customLayout: View
-    private fun deleteDomain(id: String, context: Context) {
+    private fun deleteUsername(id: String, context: Context) {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         // set the custom layout
@@ -135,10 +135,10 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = context.resources.getString(R.string.delete_domain)
-        customLayout.dialog_text.text = context.resources.getString(R.string.delete_domain_desc_confirm)
+        customLayout.dialog_title.text = context.resources.getString(R.string.delete_username)
+        customLayout.dialog_text.text = context.resources.getString(R.string.delete_username_desc_confirm)
         customLayout.dialog_positive_button.text =
-            context.resources.getString(R.string.delete_domain)
+            context.resources.getString(R.string.delete_username)
         customLayout.dialog_positive_button.setOnClickListener {
             customLayout.dialog_progressbar.visibility = View.VISIBLE
             customLayout.dialog_error.visibility = View.GONE
@@ -146,7 +146,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             customLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteDomainHttpRequest(id, context)
+                deleteusernameHttpRequest(id, context)
             }
         }
         customLayout.dialog_negative_button.setOnClickListener {
@@ -156,12 +156,12 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         dialog.show()
     }
 
-    private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
-        networkHelper?.deleteDomain(id) { result ->
+    private suspend fun deleteusernameHttpRequest(id: String, context: Context) {
+        networkHelper?.deleteUsername(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    getAllDomains()
+                    getAllUsernames()
                 }
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
@@ -169,16 +169,16 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
                 customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_domain) + "\n" + result
+                    context.resources.getString(R.string.error_deleting_username) + "\n" + result
             }
         }
     }
 
     override fun onAdded() {
-        addDomainFragment.dismiss()
+        addUsernameFragment.dismiss()
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
+            getAllUsernames()
         }
     }
 
@@ -186,7 +186,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         super.onResume()
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
+            getAllUsernames()
         }
     }
 }

@@ -1,9 +1,13 @@
-package host.stjin.anonaddy
+package host.stjin.anonaddy.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.updatePadding
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.NetworkHelper
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
@@ -37,7 +41,7 @@ class SplashActivity : BaseActivity() {
 
         networkHelper = NetworkHelper(this)
         // Open setup
-        if (settingsManager.getSettingsString("API_KEY") == null) {
+        if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
             val intent = Intent(this, SetupActivity::class.java)
             startActivity(intent)
             finish()

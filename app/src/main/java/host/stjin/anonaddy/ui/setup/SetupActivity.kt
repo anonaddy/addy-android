@@ -7,7 +7,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.updatePadding
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.NetworkHelper
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.ui.SplashActivity
 import kotlinx.android.synthetic.main.activity_setup.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -94,7 +98,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
     private fun addKey(apiKey: String) {
         val settingsManager = SettingsManager(true, baseContext)
-        settingsManager.putSettingsString("API_KEY", apiKey)
+        settingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
         val intent = Intent(baseContext, SplashActivity::class.java)
         startActivity(intent)
         finish()

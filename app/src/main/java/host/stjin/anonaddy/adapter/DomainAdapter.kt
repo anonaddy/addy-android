@@ -14,18 +14,18 @@ import host.stjin.anonaddy.models.Domains
 class DomainAdapter(
     private val listWithDomains: ArrayList<Domains>
 ) :
-    RecyclerView.Adapter<DomainAdapter.AliasesViewHolder>() {
+    RecyclerView.Adapter<DomainAdapter.ViewHolder>() {
 
-    lateinit var onRecipientClicker: ClickListener
+    lateinit var onDomainClicker: ClickListener
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AliasesViewHolder {
-        return AliasesViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.domains_recyclerview_list_item, parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: AliasesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.mTitle.text = listWithDomains[position].domain
 
 
@@ -46,9 +46,7 @@ class DomainAdapter(
                 holder.mDescription.text = holder.mDescription.context.resources.getString(
                     R.string.configuration_error
                 )
-
-                holder.domainsRecyclerviewListErrorIcon.visibility = View.VISIBLE
-                holder.domainsRecyclerviewListDnsIcon.visibility = View.GONE
+                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_error_outline_24)
             }
             else -> {
                 holder.mDescription.text = holder.mDescription.context.resources.getString(
@@ -56,9 +54,7 @@ class DomainAdapter(
                     aliases,
                     forwardedEmails
                 )
-
-                holder.domainsRecyclerviewListErrorIcon.visibility = View.GONE
-                holder.domainsRecyclerviewListDnsIcon.visibility = View.VISIBLE
+                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_dns_24)
             }
         }
     }
@@ -67,7 +63,7 @@ class DomainAdapter(
 
 
     fun setClickListener(aClickListener: ClickListener) {
-        onRecipientClicker = aClickListener
+        onDomainClicker = aClickListener
     }
 
 
@@ -76,7 +72,7 @@ class DomainAdapter(
         fun onClickDelete(pos: Int, aView: View)
     }
 
-    inner class AliasesViewHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
         private var mLL: LinearLayout = view.findViewById(R.id.domains_recyclerview_list_LL)
@@ -87,10 +83,8 @@ class DomainAdapter(
         var mTitle: TextView = view.findViewById(R.id.domains_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.domains_recyclerview_list_description)
-        var domainsRecyclerviewListErrorIcon: ImageView =
-            view.findViewById(R.id.domains_recyclerview_list_error_icon)
-        var domainsRecyclerviewListDnsIcon: ImageView =
-            view.findViewById(R.id.domains_recyclerview_list_dns_icon)
+        var domainsRecyclerviewListIcon: ImageView =
+            view.findViewById(R.id.domains_recyclerview_list_icon)
         private var domainsRecyclerviewListSettingsButton: MaterialButton =
             view.findViewById(R.id.domains_recyclerview_list_settings_button)
         private var domainsRecyclerviewListDeleteButton: MaterialButton =
@@ -113,10 +107,10 @@ class DomainAdapter(
                     expandOptions()
                 }
                 R.id.domains_recyclerview_list_settings_button -> {
-                    onRecipientClicker.onClickSettings(adapterPosition, p0)
+                    onDomainClicker.onClickSettings(adapterPosition, p0)
                 }
                 R.id.domains_recyclerview_list_delete_button -> {
-                    onRecipientClicker.onClickDelete(adapterPosition, p0)
+                    onDomainClicker.onClickDelete(adapterPosition, p0)
                 }
             }
         }
