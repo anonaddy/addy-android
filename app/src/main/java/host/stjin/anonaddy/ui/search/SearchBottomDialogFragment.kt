@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.ui
+package host.stjin.anonaddy.ui.search
 
 import android.app.Dialog
 import android.content.Context
@@ -111,7 +111,6 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             })
             adapter = recipientAdapter
             root.bs_search_recyclerview.hideShimmerAdapter()
-
         }
     }
 
@@ -139,7 +138,7 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         settingsManager.putStringSet(SettingsManager.PREFS.RECENT_SEARCHES, recentSearches.takeLast(5).toMutableSet())
 
 
-        getAndReturnList()
+        getAndReturnList(root, context)
     }
 
     var aliases: ArrayList<Aliases>? = null
@@ -147,98 +146,117 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
     var domains: ArrayList<Domains>? = null
     var usernames: ArrayList<Usernames>? = null
     private var sourcesToSearch = 0
+    private var sourcesSearched = 0
 
 
-    private fun getAndReturnList() {
+    private fun getAndReturnList(root: View, context: Context) {
         if (bs_search_chip_aliases.isChecked) {
+            sourcesToSearch++
+
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getAliases({ aliaslist ->
                     aliases = aliaslist
-                    sourcesToSearch++
-                    performSearch()
+                    sourcesSearched++
+                    performSearch(root, context)
                 }, activeOnly = false, includeDeleted = true)
             }
         }
 
         if (bs_search_chip_recipient.isChecked) {
+            sourcesToSearch++
+
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getRecipients({ recipientlist ->
                     recipients = recipientlist
-                    sourcesToSearch++
-                    performSearch()
+                    sourcesSearched++
+                    performSearch(root, context)
                 }, false)
             }
         }
 
         if (bs_search_chip_domains.isChecked) {
+            sourcesToSearch++
+
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getAllDomains { domainlist ->
                     domains = domainlist
-                    sourcesToSearch++
-                    performSearch()
+                    sourcesSearched++
+                    performSearch(root, context)
                 }
             }
         }
 
         if (bs_search_chip_usernames.isChecked) {
+            sourcesToSearch++
+
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getAllUsernames { usernamelist ->
                     usernames = usernamelist
-                    sourcesToSearch++
-                    performSearch()
+                    sourcesSearched++
+                    performSearch(root, context)
                 }
             }
         }
     }
 
 
-    private fun performSearch() {
-        val filteredAliases = ArrayList<Aliases>()
-        val filteredRecipients = ArrayList<Recipients>()
-        val filteredDomains = ArrayList<Domains>()
-        val filteredUsernames = ArrayList<Usernames>()
+    private fun performSearch(root: View, context: Context) {
+        if (sourcesSearched >= sourcesToSearch) {
+            val filteredAliases = ArrayList<Aliases>()
+            val filteredRecipients = ArrayList<Recipients>()
+            val filteredDomains = ArrayList<Domains>()
+            val filteredUsernames = ArrayList<Usernames>()
 
-        if (aliases != null) {
-            for (alias in aliases!!) {
-                if (alias.email.contains(bs_search_term_tiet.text.toString()) || alias.description?.contains(bs_search_term_tiet.text.toString()) == true) {
-                    filteredAliases.add(alias)
+            if (aliases != null) {
+                for (alias in aliases!!) {
+                    if (alias.email.contains(bs_search_term_tiet.text.toString()) || alias.description?.contains(bs_search_term_tiet.text.toString()) == true) {
+                        filteredAliases.add(alias)
+                    }
                 }
             }
-        }
 
-        if (recipients != null) {
-            for (recipient in recipients!!) {
-                if (recipient.email.contains(bs_search_term_tiet.text.toString())) {
-                    filteredRecipients.add(recipient)
+            if (recipients != null) {
+                for (recipient in recipients!!) {
+                    if (recipient.email.contains(bs_search_term_tiet.text.toString())) {
+                        filteredRecipients.add(recipient)
+                    }
                 }
             }
-        }
 
 
-        if (domains != null) {
-            for (domain in domains!!) {
-                if (domain.domain.contains(bs_search_term_tiet.text.toString()) || domain.description?.contains(bs_search_term_tiet.text.toString()) == true) {
-                    filteredDomains.add(domain)
+            if (domains != null) {
+                for (domain in domains!!) {
+                    if (domain.domain.contains(bs_search_term_tiet.text.toString()) || domain.description?.contains(bs_search_term_tiet.text.toString()) == true) {
+                        filteredDomains.add(domain)
+                    }
                 }
             }
-        }
 
 
-        if (usernames != null) {
-            for (username in usernames!!) {
-                if (username.username.contains(bs_search_term_tiet.text.toString()) || username.description?.contains(bs_search_term_tiet.text.toString()) == true) {
-                    filteredUsernames.add(username)
+            if (usernames != null) {
+                for (username in usernames!!) {
+                    if (username.username.contains(bs_search_term_tiet.text.toString()) || username.description?.contains(bs_search_term_tiet.text.toString()) == true) {
+                        filteredUsernames.add(username)
+                    }
                 }
             }
-        }
 
-        listener.onSearch(filteredAliases, filteredRecipients, filteredDomains, filteredUsernames)
+            if (filteredAliases.size == 0 && filteredDomains.size == 0 && filteredRecipients.size == 0 && filteredUsernames.size == 0) {
+                root.bs_search_title.text = context.resources.getString(R.string.search)
+                root.bs_search_term_til.isEnabled = true
+                root.bs_search_term_til.error =
+                    context.resources.getString(R.string.nothing_found)
+            } else {
+                listener.onSearch(filteredAliases, filteredRecipients, filteredDomains, filteredUsernames)
+            }
+        }
     }
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_search_clear_recent) {
                 settingsManager.removeSetting(SettingsManager.PREFS.RECENT_SEARCHES)
+                getRecentSearchResults(requireView())
             }
         }
     }

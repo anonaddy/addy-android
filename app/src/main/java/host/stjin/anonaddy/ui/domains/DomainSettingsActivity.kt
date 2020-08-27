@@ -45,10 +45,12 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
     private fun setOnClickListener() {
         activity_domain_settings_add_domain.setOnClickListener {
-            addDomainFragment.show(
-                supportFragmentManager,
-                "addDomainFragment"
-            )
+            if (!addDomainFragment.isAdded) {
+                addDomainFragment.show(
+                    supportFragmentManager,
+                    "addDomainFragment"
+                )
+            }
         }
     }
 

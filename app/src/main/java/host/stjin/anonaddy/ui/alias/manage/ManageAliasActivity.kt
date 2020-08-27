@@ -202,17 +202,21 @@ class ManageAliasActivity : BaseActivity(),
         }
 
         activity_manage_alias_desc_edit.setOnClickListener {
-            editAliasDescriptionBottomDialogFragment.show(
-                supportFragmentManager,
-                "editAliasDescriptionBottomDialogFragment"
-            )
+            if (!editAliasDescriptionBottomDialogFragment.isAdded) {
+                editAliasDescriptionBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editAliasDescriptionBottomDialogFragment"
+                )
+            }
         }
 
         activity_manage_alias_recipients_edit.setOnClickListener {
-            editAliasRecipientsBottomDialogFragment.show(
-                supportFragmentManager,
-                "editAliasRecipientsBottomDialogFragment"
-            )
+            if (!editAliasRecipientsBottomDialogFragment.isAdded) {
+                editAliasRecipientsBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editAliasRecipientsBottomDialogFragment"
+                )
+            }
         }
 
         activity_manage_alias_delete.setOnClickListener {
@@ -435,7 +439,7 @@ class ManageAliasActivity : BaseActivity(),
                     }
                 } else {
                     recipients = applicationContext.resources.getString(
-                        R.string.default_recipient_s
+                        R.string.default_recipient
                     )
                 }
 

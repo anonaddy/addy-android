@@ -85,10 +85,12 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
 
         root.alias_add_alias.setOnClickListener {
-            addAliasBottomDialogFragment.show(
-                childFragmentManager,
-                "addAliasBottomDialogFragment"
-            )
+            if (!addAliasBottomDialogFragment.isAdded) {
+                addAliasBottomDialogFragment.show(
+                    childFragmentManager,
+                    "addAliasBottomDialogFragment"
+                )
+            }
         }
     }
 

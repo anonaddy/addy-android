@@ -217,7 +217,7 @@
     <string name="domains">Domains</string>
     <string name="usernames">Usernames</string>
     <string name="search">Search</string>
-    <string name="recent_results">Recent results</string>
+    <string name="recent_searches">Recent searches</string>
     <string name="clear">Clear</string>
     <string name="searching">Searching…</string>
     <string name="default_username_cannot_change">Default username; cannot change</string>
@@ -234,4 +234,7 @@
     <string name="edit_username">Edit username</string>
     <string name="username_status_active">Username active</string>
     <string name="delete_username_desc">This will still count towards your additional username limit</string>
+    <string name="search_result">Search result</string>
+    <string name="aliases">Aliases</string>
+    <string name="nothing_found">Nothing found</string>
 </resources>

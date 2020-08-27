@@ -136,17 +136,21 @@ class ManageUsernamesActivity : BaseActivity(),
         }
 
         activity_manage_username_desc_edit.setOnClickListener {
-            editUsernameDescriptionBottomDialogFragment.show(
-                supportFragmentManager,
-                "editUsernameDescriptionBottomDialogFragment"
-            )
+            if (!editUsernameDescriptionBottomDialogFragment.isAdded) {
+                editUsernameDescriptionBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editUsernameDescriptionBottomDialogFragment"
+                )
+            }
         }
 
         activity_manage_username_recipients_edit.setOnClickListener {
-            editUsernameRecipientBottomDialogFragment.show(
-                supportFragmentManager,
-                "editUsernameRecipientsBottomDialogFragment"
-            )
+            if (!editUsernameRecipientBottomDialogFragment.isAdded) {
+                editUsernameRecipientBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editUsernameRecipientsBottomDialogFragment"
+                )
+            }
         }
 
         activity_manage_username_delete.setOnClickListener {

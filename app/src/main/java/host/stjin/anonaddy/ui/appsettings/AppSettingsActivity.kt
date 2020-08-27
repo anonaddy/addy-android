@@ -189,16 +189,20 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun setOnClickListeners() {
         activity_app_settings_section_app_theme.setOnClickListener {
-            addDarkModeBottomDialogFragment.show(
-                supportFragmentManager,
-                "addDarkModeBottomDialogFragment"
-            )
+            if (!addDarkModeBottomDialogFragment.isAdded) {
+                addDarkModeBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "addDarkModeBottomDialogFragment"
+                )
+            }
         }
         activity_app_settings_section_changelog.setOnClickListener {
-            addChangelogBottomDialogFragment.show(
-                supportFragmentManager,
-                "addChangelogBottomDialogFragment"
-            )
+            if (!addChangelogBottomDialogFragment.isAdded) {
+                addChangelogBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "addChangelogBottomDialogFragment"
+                )
+            }
         }
         activity_app_settings_section_faq.setOnClickListener {
             val url = "https://anonaddy.com/faq/"

@@ -56,10 +56,12 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 // a 999 length string found. This is most likely the API key
                 verifyKeyAndAdd(baseContext, text)
             } else {
-                addApiBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "addApiBottomDialogFragment"
-                )
+                if (!addApiBottomDialogFragment.isAdded) {
+                    addApiBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addApiBottomDialogFragment"
+                    )
+                }
             }
         }
 
@@ -88,10 +90,12 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 fragment_setup_init_button_api.isEnabled = true
                 fragment_setup_init_button_new.isEnabled = true
                 fragment_setup_apikey_get_progressbar.visibility = View.INVISIBLE
-                addApiBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "addApiBottomDialogFragment"
-                )
+                if (!addApiBottomDialogFragment.isAdded) {
+                    addApiBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addApiBottomDialogFragment"
+                    )
+                }
             }
         }
     }

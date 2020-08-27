@@ -45,10 +45,12 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
     private fun setOnClickListener() {
         activity_username_settings_add_username.setOnClickListener {
-            addUsernameFragment.show(
-                supportFragmentManager,
-                "addUsernameFragment"
-            )
+            if (!addUsernameFragment.isAdded) {
+                addUsernameFragment.show(
+                    supportFragmentManager,
+                    "addUsernameFragment"
+                )
+            }
         }
     }
 

@@ -137,17 +137,21 @@ class ManageDomainsActivity : BaseActivity(),
         }
 
         activity_manage_domain_desc_edit.setOnClickListener {
-            editDomainDescriptionBottomDialogFragment.show(
-                supportFragmentManager,
-                "editDomainDescriptionBottomDialogFragment"
-            )
+            if (!editDomainDescriptionBottomDialogFragment.isAdded) {
+                editDomainDescriptionBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editDomainDescriptionBottomDialogFragment"
+                )
+            }
         }
 
         activity_manage_domain_recipients_edit.setOnClickListener {
-            editDomainRecipientBottomDialogFragment.show(
-                supportFragmentManager,
-                "editDomainRecipientsBottomDialogFragment"
-            )
+            if (!editDomainRecipientBottomDialogFragment.isAdded) {
+                editDomainRecipientBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editDomainRecipientsBottomDialogFragment"
+                )
+            }
         }
 
         activity_manage_domain_delete.setOnClickListener {

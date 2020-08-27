@@ -1,6 +1,5 @@
 package host.stjin.anonaddy.utils
 
-import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -9,7 +8,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 object DateTimeUtils {
-    fun turnStringIntoLocalPrettyString(string: String): String? {
+/*    fun turnStringIntoLocalPrettyString(string: String): String? {
         return try {
             val ldt =
                 LocalDateTime.parse(string, DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"))
@@ -26,7 +25,7 @@ object DateTimeUtils {
         } catch (e: Exception) {
             "$string (GMT)"
         }
-    }
+    }*/
 
     fun turnStringIntoLocalString(string: String?): String? {
         if (string == null) {

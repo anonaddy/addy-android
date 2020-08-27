@@ -20,11 +20,16 @@ import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.Domains
 import host.stjin.anonaddy.models.Recipients
 import host.stjin.anonaddy.models.Usernames
+import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.search.SearchActivity
+import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
+import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import kotlinx.android.synthetic.main.main_top_bar_not_user.*
 
 class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener {
 
 
+    private val SEARCH_CONSTANT: Int = 1
     private val searchBottomDialogFragment: SearchBottomDialogFragment =
         SearchBottomDialogFragment.newInstance()
 
@@ -127,10 +132,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         main_top_bar_search_icon.setOnClickListener {
-            searchBottomDialogFragment.show(
-                supportFragmentManager,
-                "searchBottomDialogFragment"
-            )
+            if (!searchBottomDialogFragment.isAdded) {
+                searchBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "searchBottomDialogFragment"
+                )
+            }
         }
     }
 
@@ -165,7 +172,43 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         filteredDomains: ArrayList<Domains>,
         filteredUsernames: ArrayList<Usernames>
     ) {
-        //
+
+        SearchActivity.FilteredLists.filteredAliases = filteredAliases
+        SearchActivity.FilteredLists.filteredRecipients = filteredRecipients
+        SearchActivity.FilteredLists.filteredDomains = filteredDomains
+        SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
+
+        searchBottomDialogFragment.dismiss()
+        val intent = Intent(baseContext, SearchActivity::class.java)
+        startActivityForResult(intent, SEARCH_CONSTANT)
+    }
+
+
+    // When returning from the search activity, load the appropriate screen
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == SEARCH_CONSTANT) {
+            if (data != null) {
+                if (data.hasExtra("target")) {
+                    when (data.extras?.getString("target")) {
+                        SearchActivity.SearchTargets.ALIASES.activity -> {
+                            switchFragments(R.id.navigation_alias)
+                        }
+                        SearchActivity.SearchTargets.RECIPIENTS.activity -> {
+                            switchFragments(R.id.navigation_recipients)
+                        }
+                        SearchActivity.SearchTargets.DOMAINS.activity -> {
+                            val intent = Intent(baseContext, DomainSettingsActivity::class.java)
+                            startActivity(intent)
+                        }
+                        SearchActivity.SearchTargets.USERNAMES.activity -> {
+                            val intent = Intent(baseContext, UsernamesSettingsActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

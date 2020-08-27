@@ -56,7 +56,7 @@ class RecipientsFragment : Fragment(),
         settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
-        setOnClickListener(root, requireContext())
+        setOnClickListener(root)
 
         getDataFromWeb(root)
         return root
@@ -74,12 +74,14 @@ class RecipientsFragment : Fragment(),
         getDataFromWeb(requireView())
     }
 
-    private fun setOnClickListener(root: View, context: Context) {
+    private fun setOnClickListener(root: View) {
         root.recipients_add_recipients.setOnClickListener {
-            addRecipientsFragment.show(
-                childFragmentManager,
-                "addRecipientsFragment"
-            )
+            if (!addRecipientsFragment.isAdded) {
+                addRecipientsFragment.show(
+                    childFragmentManager,
+                    "addRecipientsFragment"
+                )
+            }
         }
     }
 

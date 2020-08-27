@@ -80,10 +80,12 @@ class ManageRecipientsActivity : BaseActivity(),
                     } else {
                         activity_manage_recipient_encryption_active_switch_progressbar.visibility = View.GONE
                         activity_manage_recipient_encryption_active_switch.isChecked = false
-                        addRecipientPublicGpgKeyBottomDialogFragment.show(
-                            supportFragmentManager,
-                            "editrecipientDescriptionBottomDialogFragment"
-                        )
+                        if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
+                            addRecipientPublicGpgKeyBottomDialogFragment.show(
+                                supportFragmentManager,
+                                "editrecipientDescriptionBottomDialogFragment"
+                            )
+                        }
                     }
                 } else {
                     GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -97,10 +99,12 @@ class ManageRecipientsActivity : BaseActivity(),
 
     private fun setOnClickListeners() {
         activity_manage_recipient_change_gpg_key.setOnClickListener {
-            addRecipientPublicGpgKeyBottomDialogFragment.show(
-                supportFragmentManager,
-                "editrecipientDescriptionBottomDialogFragment"
-            )
+            if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
+                addRecipientPublicGpgKeyBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editrecipientDescriptionBottomDialogFragment"
+                )
+            }
         }
 
         activity_manage_recipient_remove_gpg_key.setOnClickListener {
