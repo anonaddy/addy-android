@@ -22,20 +22,22 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         STAT_CURRENT_EMAILS_SENT_TOTAL_COUNT("stat_current_emails_sent_total_count")
     }
 
+    /*
+    This user val is made for possible multiple user support. Defaulting to 1 for now.
+     */
+    private val user = 1
     private val prefs = if (encrypt) {
         PreferenceManager.getDefaultSharedPreferences(context)
     } else {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         EncryptedSharedPreferences.create(
-            "host.stjin.anonaddy_enc",
+            "host.stjin.anonaddy_enc_user$user",
             masterKeyAlias,
             context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     }
-
-    // TODO consider method overloading
 
     fun putSettingsBool(key: PREFS, boolean: Boolean) {
         prefs.edit().putBoolean(key.filename, boolean).apply()

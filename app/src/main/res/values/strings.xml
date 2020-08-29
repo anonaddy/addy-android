@@ -250,7 +250,5 @@
     <string name="update_default_alias_format">Update default alias format</string>
     <string name="update_default_alias_format_desc">The default alias format is the domain you’d like to select bs default when generating a new alias.</string>
     <string name="unlimited">unlimited</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="copy">Copy</string>
+    <string name="Copy">Copy</string>
 </resources>

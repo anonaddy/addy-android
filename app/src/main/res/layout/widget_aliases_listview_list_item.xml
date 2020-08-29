@@ -55,7 +55,7 @@
         android:layout_marginStart="16dp"
         android:layout_weight="0"
         android:backgroundTint="@color/primaryColor"
-        android:text="@string/copy"
+        android:text="@string/Copy"
         android:textColor="@android:color/white" />
 
 </LinearLayout>

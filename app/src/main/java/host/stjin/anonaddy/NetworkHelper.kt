@@ -944,7 +944,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "enableEncryptionRecipient")
+                loggingHelper.addLog(ex.toString(), "resendVerificationEmail")
                 callback(ex.toString())
             }
         }

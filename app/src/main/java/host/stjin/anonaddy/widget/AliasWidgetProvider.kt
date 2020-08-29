@@ -25,11 +25,11 @@ import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.REFRESH_
 class AliasWidgetProvider : AppWidgetProvider() {
 
     object AliasWidgetValues {
-        val REFRESH_ACTION = "host.stjin.anonaddy.widget.REFRESH_ACTION"
-        val COPY_ACTION = "host.stjin.anonaddy.widget.COPY_ACTION"
-        val OPEN_ACTION = "host.stjin.anonaddy.widget.OPEN_ACTION"
-        val OPEN_APP = "host.stjin.anonaddy.widget.OPEN_APP"
-        val NAVIGATE = "host.stjin.anonaddy.widget.NAVIGATE"
+        const val REFRESH_ACTION = "host.stjin.anonaddy.widget.REFRESH_ACTION"
+        const val COPY_ACTION = "host.stjin.anonaddy.widget.COPY_ACTION"
+        const val OPEN_ACTION = "host.stjin.anonaddy.widget.OPEN_ACTION"
+        const val OPEN_APP = "host.stjin.anonaddy.widget.OPEN_APP"
+        const val NAVIGATE = "host.stjin.anonaddy.widget.NAVIGATE"
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {

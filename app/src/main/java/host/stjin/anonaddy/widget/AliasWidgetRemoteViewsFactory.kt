@@ -1,6 +1,5 @@
 package host.stjin.anonaddy.widget
 
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -28,12 +27,6 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context, intent: Inten
 
     override fun getCount(): Int {
         return aliasList?.size ?: 0
-    }
-
-    private fun getPendingSelfIntent(context: Context, action: String): PendingIntent {
-        val intent = Intent(context, AliasWidgetProvider::class.java)
-        intent.action = action
-        return PendingIntent.getBroadcast(context, 0, intent, 0)
     }
 
     override fun getViewAt(position: Int): RemoteViews? {
