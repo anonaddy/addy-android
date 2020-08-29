@@ -33,7 +33,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
                     android:text="@string/aliases_statistics"
-                    android:textColor="?attr/colorControlNormal"
+                    style="@style/DescTextStyle"
                     android:textSize="18sp" />
 
                 <com.google.android.material.button.MaterialButton

@@ -44,7 +44,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
                 android:text="@string/setup_how_4_desc_2"
-                android:textColor="?attr/colorControlNormal"
+                style="@style/DescTextStyle"
                 android:textSize="18sp" />
 
         </LinearLayout>

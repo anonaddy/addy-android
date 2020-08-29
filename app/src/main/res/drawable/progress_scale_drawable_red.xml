@@ -1,22 +1,19 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="1000dp" />
-            <solid android:color="@color/primarySuperLightColor" />
+            <solid android:color="@color/softRedSuperLight" />
         </shape>
     </item>
-
-    <item
-        android:id="@android:id/progress"
-        android:bottom="1dp"
-        android:left="1dp"
-        android:right="1dp"
-        android:top="1dp">
-
-        <scale android:scaleWidth="100%">
+    <item android:id="@android:id/progress">
+        <scale
+            android:scaleWidth="0%"
+            android:scaleHeight="100%"
+            android:scaleGravity="bottom">
             <shape>
+                <solid android:color="@color/softRed" />
                 <corners android:radius="1000dp" />
-                <solid android:color="@color/primaryColor" />
             </shape>
         </scale>
     </item>

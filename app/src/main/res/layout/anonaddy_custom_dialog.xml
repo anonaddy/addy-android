@@ -24,7 +24,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
-        android:textColor="?attr/colorControlNormal"
+        style="@style/DescTextStyle"
         android:textSize="14sp"
         tools:text="@tools:sample/lorem/random" />
 

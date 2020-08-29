@@ -28,13 +28,12 @@ import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
 
@@ -260,11 +259,6 @@ class HomeFragment : Fragment() {
             .start()
     }
 
-    private fun roundOffDecimal(number: Double): Double? {
-        val df = DecimalFormat("#.#")
-        df.roundingMode = RoundingMode.FLOOR
-        return df.format(number).toDouble()
-    }
 
     private fun setRecipientStatistics(root: View, currRecipients: Int, maxRecipient: Int) {
         root.home_statistics_recipients_progress.max =

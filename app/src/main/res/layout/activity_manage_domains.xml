@@ -168,7 +168,7 @@
                                 android:minLines="1"
                                 android:singleLine="false"
                                 android:text="@string/domain_status_desc"
-                                android:textColor="?attr/colorControlNormal" />
+                                style="@style/DescTextStyle" />
                         </LinearLayout>
 
                         <ProgressBar
@@ -240,7 +240,7 @@
                                 android:fontFamily="sans-serif"
                                 android:maxLines="2"
                                 android:singleLine="false"
-                                android:textColor="?attr/colorControlNormal"
+                                style="@style/DescTextStyle"
                                 tools:text="@tools:sample/lorem/random" />
                         </LinearLayout>
 
@@ -310,7 +310,7 @@
                                 android:fontFamily="sans-serif"
                                 android:maxLines="3"
                                 android:singleLine="false"
-                                android:textColor="?attr/colorControlNormal"
+                                style="@style/DescTextStyle"
                                 tools:text="@tools:sample/full_names" />
                         </LinearLayout>
 
@@ -381,7 +381,7 @@
                                 android:fontFamily="sans-serif"
                                 android:maxLines="3"
                                 android:singleLine="false"
-                                android:textColor="?attr/colorControlNormal"
+                                style="@style/DescTextStyle"
                                 tools:text="@string/check_dns_desc" />
                         </LinearLayout>
 
@@ -435,7 +435,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif"
                                 android:text="@string/delete_domain_desc"
-                                android:textColor="?attr/colorControlNormal" />
+                                style="@style/DescTextStyle" />
                         </LinearLayout>
 
                     </LinearLayout>

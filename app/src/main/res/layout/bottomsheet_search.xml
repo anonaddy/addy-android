@@ -58,7 +58,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="@string/filters" />
+                    android:text="@string/filters"
+                    android:textColor="@color/BlackWhite" />
 
 
                 <com.google.android.material.chip.ChipGroup
@@ -147,7 +148,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/recent_searches" />
+                        android:text="@string/recent_searches"
+                        android:textColor="@color/BlackWhite" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/bs_search_clear_recent"

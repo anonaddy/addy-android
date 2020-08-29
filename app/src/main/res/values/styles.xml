@@ -47,12 +47,6 @@
         <item name="windowActionBar">false</item>
     </style>
 
-    <style name="AnonAddyProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
-    </style>
-
     <style name="AppTheme.Setup" parent="AppTheme.NoActionBar">
         <item name="android:navigationBarColor">
             @android:color/transparent
@@ -75,6 +69,13 @@
         <!-- Optional, if drawing behind the status bar too -->
     </style>
 
+
+    <style name="AnonAddyProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:minHeight">8dip</item>
+    </style>
+
     <style name="AnonAddyProgressBarRed" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable_red</item>
         <item name="android:maxHeight">8dip</item>
@@ -83,6 +84,24 @@
 
     <style name="AnonAddyProgressBarEasternBlue" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable_eastern_blue</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:minHeight">8dip</item>
+    </style>
+
+    <style name="AnonAddyProgressBar.Vertical" parent="AnonAddyProgressBar">
+        <item name="android:progressDrawable">@drawable/progress_scale_drawable</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:minHeight">8dip</item>
+    </style>
+
+    <style name="AnonAddyProgressBarRed.Vertical" parent="AnonAddyProgressBarRed">
+        <item name="android:progressDrawable">@drawable/progress_scale_drawable_red</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:minHeight">8dip</item>
+    </style>
+
+    <style name="AnonAddyProgressBarEasternBlue.Vertical" parent="AnonAddyProgressBarEasternBlue">
+        <item name="android:progressDrawable">@drawable/progress_scale_drawable_eastern_blue</item>
         <item name="android:maxHeight">8dip</item>
         <item name="android:minHeight">8dip</item>
     </style>
@@ -111,6 +130,10 @@
         <item name="android:textColor">@color/secondaryColor</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.00</item>
+    </style>
+
+    <style name="DescTextStyle">
+        <item name="android:alpha">0.7</item>
     </style>
 
 
@@ -145,7 +168,8 @@
     <style name="titleTextView">
         <item name="fontFamily">sans-serif-medium</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">?attr/colorControlNormal</item>
+        <item name="android:textColor">@color/BlackWhite</item>
+        <item name="android:alpha">0.8</item>
         <item name="android:gravity">center_vertical</item>
     </style>
 

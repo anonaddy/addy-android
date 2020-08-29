@@ -237,4 +237,20 @@
     <string name="search_result">Search result</string>
     <string name="aliases">Aliases</string>
     <string name="nothing_found">Nothing found</string>
+    <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
+    <string name="anonaddy_settings_monthly_bandwidth_desc">You’ve used %s out of your %s limit this calendar month. Your bandwidth usage will reset on 1st %s.</string>
+    <string name="more_info">More info</string>
+    <string name="usage">Usage</string>
+    <string name="anonaddy_settings_statistics_aliases_desc">You have %d active aliases using a shared domain out of your %s limit</string>
+    <string name="anonaddy_settings_statistics_recipients_desc">You have added %d recipients out of your %s limit</string>
+    <string name="update_default_recipient">Update default recipient</string>
+    <string name="update_default_recipient_desc">The default recipient is used for all new aliases and any aliases that do not have any recipients attached</string>
+    <string name="update_default_alias_domain">Update default alias domain</string>
+    <string name="update_default_alias_domain_desc">The default alias domain is the domain you’d like to select as default when generating a new alias.</string>
+    <string name="update_default_alias_format">Update default alias format</string>
+    <string name="update_default_alias_format_desc">The default alias format is the domain you’d like to select bs default when generating a new alias.</string>
+    <string name="unlimited">unlimited</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="copy">Copy</string>
 </resources>

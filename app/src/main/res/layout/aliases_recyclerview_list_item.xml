@@ -56,6 +56,7 @@
             android:maxLines="2"
             android:minLines="2"
             android:singleLine="false"
+            style="@style/DescTextStyle"
             android:text="Stupid Sony newsletters. I don’t want that new PlayStation! I stick to my PSP!"
             tools:ignore="HardcodedText" />
     </LinearLayout>

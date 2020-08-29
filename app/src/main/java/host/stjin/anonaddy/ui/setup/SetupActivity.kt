@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.updatePadding
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
@@ -55,6 +56,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             if (text.length == 999) {
                 // a 999 length string found. This is most likely the API key
                 verifyKeyAndAdd(baseContext, text)
+                Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()
             } else {
                 if (!addApiBottomDialogFragment.isAdded) {
                     addApiBottomDialogFragment.show(

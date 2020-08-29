@@ -189,7 +189,7 @@
                                 android:minLines="1"
                                 android:singleLine="false"
                                 android:text="@string/encrypt_emails_to_this_recipient"
-                                android:textColor="?attr/colorControlNormal" />
+                                style="@style/DescTextStyle" />
                         </LinearLayout>
 
                         <ProgressBar
@@ -226,7 +226,7 @@
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:contentDescription="@string/description"
+                                android:contentDescription="@string/change_public_gpg_key"
                                 android:src="@drawable/ic_jam_fingerprint" />
 
                         </LinearLayout>

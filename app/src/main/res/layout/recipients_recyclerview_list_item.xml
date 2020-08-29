@@ -66,6 +66,7 @@
                 android:maxLines="1"
                 android:minLines="1"
                 android:singleLine="false"
+                style="@style/DescTextStyle"
                 android:text="5 aliases; Emails forwarded: 28"
                 tools:ignore="HardcodedText" />
         </LinearLayout>

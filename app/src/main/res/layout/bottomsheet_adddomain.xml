@@ -88,7 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:alpha="0.6"
+                    style="@style/DescTextStyle"
                     android:fontFamily="sans-serif-medium"
                     android:text="@string/add_domain_desc"
                     android:textAlignment="center" />

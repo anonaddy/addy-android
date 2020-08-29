@@ -50,7 +50,7 @@
                 android:id="@+id/bs_changelog_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/colorControlNormal"
+                android:textColor="@color/BlackWhite"
                 tools:text="@tools:sample/lorem/random" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

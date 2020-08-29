@@ -202,6 +202,59 @@ class NetworkHelper(private val context: Context) {
     }
 
 
+    fun getAliasesWidget(): ArrayList<Aliases>? {
+        var aliasWidgetList: ArrayList<Aliases>? = null
+        Fuel.get(API_URL_ALIAS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            ).responseString { request, response, result ->
+                when (response.statusCode) {
+                    200 -> {
+                        val data = result.get()
+                        val gson = Gson()
+                        val anonAddyData = gson.fromJson(data, AliasesArray::class.java)
+
+                        val aliasList = ArrayList<Aliases>()
+
+                        for (alias in anonAddyData.data) {
+                            if (alias.active) {
+                                aliasList.add(alias)
+                            }
+                        }
+                        aliasWidgetList = aliasList
+                    }
+                    401 -> {
+                        Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                        Handler().postDelayed({
+                            // Unauthenticated, clear settings
+                            SettingsManager(true, context).clearSettingsAndCloseApp()
+                        }, 5000)
+                        aliasWidgetList = null
+                    }
+                    else -> {
+                        val ex = result.component2()?.message
+                        println(ex)
+                        loggingHelper.addLog(ex.toString(), "getAliasesWidget")
+                        aliasWidgetList = null
+                    }
+                }
+            }
+
+
+        // Wait 10 seconds
+        //TODO fix this gross behaviour
+        try {
+            Thread.sleep(10000)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+
+        return aliasWidgetList
+    }
+
     suspend fun getAliases(
         callback: (ArrayList<Aliases>?) -> Unit,
         activeOnly: Boolean,
@@ -1539,5 +1592,12 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    /**
+     * ANONADDY SETTINGS
+     */
+
+    /*
+    Anonaddy settings cannot be changed by API
+     */
 
 }

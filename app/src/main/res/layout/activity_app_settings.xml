@@ -106,9 +106,8 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-
                             android:text="@string/change_app_theme_to_dark_mode"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -160,9 +159,8 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-
                             android:text="@string/faq_desc"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -214,9 +212,8 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-
                             android:text="@string/see_previous_changelogs"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -271,9 +268,8 @@
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
                             android:maxLines="2"
-
                             android:text="@string/security_desc"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
@@ -334,9 +330,8 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-
                             android:text="@string/store_logs_desc"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
@@ -395,7 +390,7 @@
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
                             android:text="@string/contributors_list"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -449,7 +444,7 @@
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
                             android:text="@string/assets_list"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -501,7 +496,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
                             android:text="@string/reset_app_desc"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -568,9 +563,8 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-
                             android:text="@string/visit_anonaddy_helps_section"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -622,9 +616,8 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="sans-serif"
-
                             android:text="@string/check_out_our_pricing_options"
-                            android:textColor="?attr/colorControlNormal" />
+                            style="@style/DescTextStyle" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -643,7 +636,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:text="@string/crafted_with_love_and_privacy"
                     android:textAlignment="center"
-                    android:textColor="?attr/colorControlNormal"
+                    style="@style/DescTextStyle"
                     android:textSize="14sp" />
 
                 <TextView
@@ -654,7 +647,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:text="v1.0"
                     android:textAlignment="center"
-                    android:textColor="?attr/colorControlNormal"
+                    style="@style/DescTextStyle"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 

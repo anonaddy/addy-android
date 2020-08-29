@@ -61,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif"
+                style="@style/DescTextStyle"
                 android:lines="1"
                 android:maxLines="1"
                 android:minLines="1"
