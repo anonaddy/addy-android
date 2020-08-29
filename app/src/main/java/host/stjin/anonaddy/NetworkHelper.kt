@@ -210,7 +210,7 @@ class NetworkHelper(private val context: Context) {
                 "Content-Type" to "application/json",
                 "X-Requested-With" to "XMLHttpRequest",
                 "Accept" to "application/json"
-            ).responseString { request, response, result ->
+            ).responseString { _, response, result ->
                 when (response.statusCode) {
                     200 -> {
                         val data = result.get()
@@ -607,7 +607,7 @@ class NetworkHelper(private val context: Context) {
         val json = JSONObject()
         json.put("email", address)
 
-        val (request, response, result) = Fuel.post(API_URL_RECIPIENTS)
+        val (_, response, result) = Fuel.post(API_URL_RECIPIENTS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -1036,7 +1036,7 @@ class NetworkHelper(private val context: Context) {
         val json = JSONObject()
         json.put("domain", domain)
 
-        val (request, response, result) = Fuel.post(API_URL_DOMAINS)
+        val (_, response, result) = Fuel.post(API_URL_DOMAINS)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",
@@ -1361,7 +1361,7 @@ class NetworkHelper(private val context: Context) {
         val json = JSONObject()
         json.put("username", username)
 
-        val (request, response, result) = Fuel.post(API_URL_USERNAMES)
+        val (_, response, result) = Fuel.post(API_URL_USERNAMES)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
                 "Content-Type" to "application/json",

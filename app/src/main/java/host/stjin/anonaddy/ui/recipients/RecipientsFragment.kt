@@ -136,7 +136,7 @@ class RecipientsFragment : Fragment(),
 
                         override fun onClickResend(pos: Int, aView: View) {
                             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                                resendConfirmationMailRecipient(list[pos].id, root, context)
+                                resendConfirmationMailRecipient(list[pos].id, context)
                             }
                         }
 
@@ -157,7 +157,7 @@ class RecipientsFragment : Fragment(),
 
     }
 
-    private suspend fun resendConfirmationMailRecipient(id: String, root: View, context: Context) {
+    private suspend fun resendConfirmationMailRecipient(id: String, context: Context) {
         networkHelper?.resendVerificationEmail({ result ->
             if (result == "200") {
                 verificationEmailSentSnackbar(context)

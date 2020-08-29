@@ -52,7 +52,7 @@ class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnCli
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         root.bs_addrecipient_recipient_add_recipient_button.setOnClickListener(this)
-        root.bs_addrecipient_recipient_tiet.setOnEditorActionListener { v, actionId, event ->
+        root.bs_addrecipient_recipient_tiet.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                 addRecipient(root, requireContext())
             }

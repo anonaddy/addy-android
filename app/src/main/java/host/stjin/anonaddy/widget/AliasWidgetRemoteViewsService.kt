@@ -5,6 +5,6 @@ import android.widget.RemoteViewsService
 
 class AliasWidgetRemoteViewsService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return AliasWidgetRemoteViewsFactory(this.applicationContext, intent)
+        return AliasWidgetRemoteViewsFactory(this.applicationContext)
     }
 }

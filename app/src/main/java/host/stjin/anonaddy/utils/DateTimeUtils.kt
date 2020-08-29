@@ -34,7 +34,7 @@ object DateTimeUtils {
             return try {
                 val ldt =
                     LocalDateTime.parse(string, DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"))
-                var date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant())
+                val date: Date
                 val singaporeZoneId = ZoneId.of("GMT")
                 val asiaZonedDateTime: ZonedDateTime = ldt.atZone(singaporeZoneId)
                 val newYokZoneId = ZoneId.systemDefault()

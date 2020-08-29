@@ -410,7 +410,7 @@ class ManageAliasActivity : BaseActivity(),
                  */
 
                 // Set recipients
-                var recipients = ""
+                var recipients: String
                 var count = 0
                 if (list.recipients != null && list.recipients.isNotEmpty()) {
                     // get the first 2 recipients and list them

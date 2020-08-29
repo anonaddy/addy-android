@@ -50,7 +50,7 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         root.bs_setup_apikey_sign_in_button.setOnClickListener(this)
         root.bs_setup_apikey_get_button.setOnClickListener(this)
-        root.bs_setup_apikey_tiet.setOnEditorActionListener { v, actionId, event ->
+        root.bs_setup_apikey_tiet.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                 verifyKey(root, requireContext())
             }

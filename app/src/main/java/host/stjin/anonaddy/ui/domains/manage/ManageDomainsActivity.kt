@@ -278,8 +278,7 @@ class ManageDomainsActivity : BaseActivity(),
                  */
 
                 // Set recipient
-                var recipients = ""
-                recipients = list.default_recipient?.email ?: applicationContext.resources.getString(
+                val recipients: String = list.default_recipient?.email ?: applicationContext.resources.getString(
                     R.string.default_recipient
                 )
 

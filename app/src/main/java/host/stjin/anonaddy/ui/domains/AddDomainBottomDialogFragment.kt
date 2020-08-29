@@ -56,7 +56,7 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         root.bs_adddomain_domain_add_domain_button.setOnClickListener(this)
-        root.bs_adddomain_domain_tiet.setOnEditorActionListener { v, actionId, event ->
+        root.bs_adddomain_domain_tiet.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                 addDomain(root, requireContext())
             }

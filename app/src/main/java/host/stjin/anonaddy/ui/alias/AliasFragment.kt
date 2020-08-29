@@ -51,7 +51,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_alias, container, false)
-        val context = this.context
         settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 

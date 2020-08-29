@@ -13,7 +13,7 @@ import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_ACTION
 
 
-class AliasWidgetRemoteViewsFactory(private val mContext: Context, intent: Intent) : RemoteViewsFactory {
+class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViewsFactory {
 
     private var aliasList: ArrayList<Aliases>? = null
 

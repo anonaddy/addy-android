@@ -52,7 +52,7 @@ class AddUsernameBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         root.bs_addusername_username_add_username_button.setOnClickListener(this)
-        root.bs_addusername_username_tiet.setOnEditorActionListener { v, actionId, event ->
+        root.bs_addusername_username_tiet.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                 addUsername(root, requireContext())
             }
@@ -92,7 +92,7 @@ class AddUsernameBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
         address: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addUsername(address) { result, body ->
+        networkHelper.addUsername(address) { result, _ ->
             when (result) {
                 "201" -> {
                     listener.onAdded()
