@@ -514,58 +514,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/activity_app_settings_section_pricing"
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/pricing_options"
-                            android:src="@drawable/ic_round_attach_money_24" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/pricing_options"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/check_out_our_pricing_options"
-                            style="@style/DescTextStyle" />
-                    </LinearLayout>
-
-                </LinearLayout>
 
             </LinearLayout>
 

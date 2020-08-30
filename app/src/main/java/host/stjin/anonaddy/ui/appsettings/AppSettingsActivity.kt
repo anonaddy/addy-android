@@ -216,13 +216,6 @@ class AppSettingsActivity : BaseActivity(),
             i.data = Uri.parse(url)
             startActivity(i)
         }
-        activity_app_settings_section_pricing.setOnClickListener {
-            val url = "https://anonaddy.com/#pricing"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-
         activity_app_settings_section_logs.setOnClickListener {
             val intent = Intent(this, LogViewerActivity::class.java)
             startActivity(intent)
