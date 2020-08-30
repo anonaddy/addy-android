@@ -4,7 +4,7 @@
 Easily create and manage your AnonAddy aliases, recipients and more from your phone or tablet with this <b>sexy</b> AnonAddy app for Android.
   </br>
 <p align="center">
-<img src="/static/preview.png"/>
+<img src="static/banner.png"/>
 </p>
 
 

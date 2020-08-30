@@ -325,7 +325,7 @@ class ManageUsernamesActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(description: String) {
-        activity_manage_username_desc.text = description
+        setPage()
         editUsernameDescriptionBottomDialogFragment.dismiss()
     }
 

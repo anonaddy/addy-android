@@ -507,7 +507,7 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(description: String) {
-        activity_manage_alias_desc.text = description
+        setPage()
         editAliasDescriptionBottomDialogFragment.dismiss()
     }
 

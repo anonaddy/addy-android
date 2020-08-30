@@ -344,7 +344,7 @@ class ManageDomainsActivity : BaseActivity(),
     }
 
     override fun descriptionEdited(description: String) {
-        activity_manage_domain_desc.text = description
+        setPage()
         editDomainDescriptionBottomDialogFragment.dismiss()
     }
 

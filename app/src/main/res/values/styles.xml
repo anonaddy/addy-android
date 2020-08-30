@@ -173,7 +173,7 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="RadioButton">
+    <style name="RadioButton" parent="Theme.MaterialComponents.Light">
         <item name="android:button">@null</item>
         <item name="android:drawableRight">?android:attr/listChoiceIndicatorSingle</item>
         <item name="android:layout_gravity">start</item>
@@ -181,6 +181,7 @@
         <item name="android:textColor">@color/BlackWhite</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
+        <item name="android:buttonTint">@color/primaryColor</item>
     </style>
 
 
