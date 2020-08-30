@@ -64,7 +64,6 @@ class SplashActivity : BaseActivity() {
 
 
     private suspend fun loadUserResourceIntoMemory() {
-
         networkHelper.getUserResource { user: UserResource?, s: String? ->
             if (user != null) {
                 User.userResource = user
@@ -81,8 +80,6 @@ class SplashActivity : BaseActivity() {
                 }
             }
         }
-
-
     }
 
     private suspend fun getDefaultRecipientAddress(recipientId: String) {

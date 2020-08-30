@@ -25,8 +25,8 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddApiBottomDialogListener {
-        fun onClickSave(inputText: String?)
-        fun onClickGetMyKey()
+        fun onClickSave(baseUrl: String, apiKey: String)
+        fun onClickGetMyKey(baseUrl: String)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -78,21 +78,22 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
     private fun verifyKey(root: View, context: Context) {
         val apiKey = root.bs_setup_apikey_tiet.text.toString()
+        val baseUrl = root.bs_setup_instance_tiet.text.toString()
         root.bs_setup_apikey_get_button.isEnabled = false
         root.bs_setup_apikey_sign_in_button.isEnabled = false
         root.bs_setup_apikey_get_progressbar.visibility = View.VISIBLE
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            verifyApiKey(root, context, apiKey)
+            verifyApiKey(root, context, apiKey, baseUrl)
         }
     }
 
-    private suspend fun verifyApiKey(root: View, context: Context, apiKey: String) {
+    private suspend fun verifyApiKey(root: View, context: Context, apiKey: String, baseUrl: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.verifyApiKey(apiKey) { result ->
+        networkHelper.verifyApiKey(baseUrl, apiKey) { result ->
             if (result == "200") {
-                listener.onClickSave(apiKey)
+                listener.onClickSave(baseUrl, apiKey)
             } else {
                 root.bs_setup_apikey_get_button.isEnabled = true
                 root.bs_setup_apikey_sign_in_button.isEnabled = true
@@ -111,7 +112,8 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
                     requireContext()
                 )
             } else if (p0.id == R.id.bs_setup_apikey_get_button) {
-                listener.onClickGetMyKey()
+                val baseUrl = requireView().bs_setup_instance_tiet.text.toString()
+                listener.onClickGetMyKey(baseUrl)
             }
         }
     }

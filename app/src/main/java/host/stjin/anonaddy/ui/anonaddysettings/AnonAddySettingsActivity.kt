@@ -6,10 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
@@ -51,38 +48,38 @@ class AnonAddySettingsActivity : BaseActivity() {
         ANONADDY SETTINGS CANNOT BE SET BY API. Always open settings
          */
         anonaddy_settings_monthly_bandwidth_more_info_button.setOnClickListener {
-            val url = "https://app.anonaddy.com/settings"
+            val url = "${AnonAddy.API_BASE_URL}/settings"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
         }
         anonaddy_settings_statistics_recipients_more_info_button.setOnClickListener {
-            val url = "https://app.anonaddy.com/settings"
+            val url = "${AnonAddy.API_BASE_URL}/settings"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
         }
         anonaddy_settings_statistics_aliases_more_info_button.setOnClickListener {
-            val url = "https://app.anonaddy.com/settings"
+            val url = "${AnonAddy.API_BASE_URL}/settings"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
         }
         anonaddy_settings_update_default_recipient_LL.setOnClickListener {
-            val url = "https://app.anonaddy.com/settings"
+            val url = "${AnonAddy.API_BASE_URL}/settings"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
         }
         anonaddy_settings_update_default_alias_domain_LL.setOnClickListener {
-            val url = "https://app.anonaddy.com/settings"
+            val url = "${AnonAddy.API_BASE_URL}/settings"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
         }
 
         anonaddy_settings_update_default_alias_format_LL.setOnClickListener {
-            val url = "https://app.anonaddy.com/settings"
+            val url = "${AnonAddy.API_BASE_URL}/settings"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)

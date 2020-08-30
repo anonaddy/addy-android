@@ -15,6 +15,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         // Encrypted
         BIOMETRIC_ENABLED("biometric_enabled"),
         API_KEY("API_KEY"),
+        BASE_URL("BASE_URL"),
         RECENT_SEARCHES("recent_searches"),
         STAT_CURRENT_EMAILS_FORWARDED_TOTAL_COUNT("stat_current_emails_forwarded_total_count"),
         STAT_CURRENT_EMAILS_BLOCKED_TOTAL_COUNT("stat_current_emails_blocked_total_count"),
@@ -26,7 +27,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     This user val is made for possible multiple user support. Defaulting to 1 for now.
      */
     private val user = 1
-    private val prefs = if (encrypt) {
+    private val prefs = if (!encrypt) {
         PreferenceManager.getDefaultSharedPreferences(context)
     } else {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)

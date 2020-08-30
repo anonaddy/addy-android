@@ -45,9 +45,9 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Accepts URIs that begin with "https://app.anonaddy.com/deactivate” -->
+                <!-- Accepts URIs that begin with "https://*/deactivate” -->
                 <data
-                    android:host="app.anonaddy.com"
+                    android:host="*"
                     android:pathPrefix="/deactivate"
                     android:scheme="https" />
                 <!-- note that the leading "/" is required for pathPrefix -->

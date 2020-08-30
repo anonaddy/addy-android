@@ -57,7 +57,7 @@
     <string name="recipients_list_description" tools:ignore="PluralsCandidate">%d aliases; Emails forwarded: %d</string>
     <string name="encryption_enabled">Encryption enabled</string>
     <string name="open_options">Open options</string>
-    <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.anonaddy.com</string>
+    <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.anonaddy.com (or your own hosted instance)</string>
     <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
     <string name="previous">Previous</string>
@@ -250,4 +250,6 @@
     <string name="unlimited">unlimited</string>
     <string name="Copy">Copy</string>
     <string name="no_usernames">You have no usernames, what about creating one?</string>
+    <string name="default_base_url">https://app.anonaddy.com</string>
+    <string name="anonaddy_instance">AnonAddy instance</string>
 </resources>

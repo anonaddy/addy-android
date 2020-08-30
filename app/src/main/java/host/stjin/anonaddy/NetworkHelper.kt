@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
+import host.stjin.anonaddy.AnonAddy.API_BASE_URL
 import host.stjin.anonaddy.AnonAddy.API_URL_ACCOUNT_DETAILS
 import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_DOMAINS
@@ -19,6 +20,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_RESEND
 import host.stjin.anonaddy.AnonAddy.API_URL_USERNAMES
+import host.stjin.anonaddy.AnonAddy.lazyMgr
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
 import org.apache.commons.lang3.StringUtils
@@ -46,9 +48,15 @@ class NetworkHelper(private val context: Context) {
         // Obtain API key from the encrypted preferences
         val settingsManager = SettingsManager(true, context)
         API_KEY = settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
+        API_BASE_URL = settingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL).toString()
     }
 
-    suspend fun verifyApiKey(apiKey: String, callback: (String?) -> Unit) {
+    suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (String?) -> Unit) {
+        // Reset all values as API_BASE_URL is being set
+        lazyMgr.reset() // prop1, prop2, and prop3 all will do new lazy values on next access
+
+        // Set base URL
+        API_BASE_URL = baseUrl
         val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
             .appendHeader(
                 "Authorization" to "Bearer $apiKey",

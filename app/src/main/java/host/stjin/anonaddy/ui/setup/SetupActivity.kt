@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.updatePadding
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.ui.SplashActivity
 import kotlinx.android.synthetic.main.activity_setup.*
 import kotlinx.coroutines.CoroutineStart
@@ -79,15 +76,17 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         fragment_setup_apikey_get_progressbar.visibility = View.VISIBLE
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            verifyApiKey(context, apiKey)
+            // AnonAddy.API_BASE_URL is defaulted to the anonaddy.com instance. If the API key is valid there it was meant to use that instance.
+            // If the baseURL/API do not work or match it opens the API screen
+            verifyApiKey(context, apiKey, AnonAddy.API_BASE_URL)
         }
     }
 
-    private suspend fun verifyApiKey(context: Context, apiKey: String) {
+    private suspend fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.verifyApiKey(apiKey) { result ->
+        networkHelper.verifyApiKey(baseUrl, apiKey) { result ->
             if (result == "200") {
-                addKey(apiKey)
+                addKey(baseUrl, apiKey)
             } else {
                 fragment_setup_init_button_api.isEnabled = true
                 fragment_setup_init_button_new.isEnabled = true
@@ -102,9 +101,10 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         }
     }
 
-    private fun addKey(apiKey: String) {
+    private fun addKey(baseUrl: String, apiKey: String) {
         val settingsManager = SettingsManager(true, baseContext)
         settingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
+        settingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
         val intent = Intent(baseContext, SplashActivity::class.java)
         startActivity(intent)
         finish()
@@ -126,13 +126,13 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         }
     }
 
-    override fun onClickSave(inputText: String?) {
+    override fun onClickSave(baseUrl: String, apiKey: String) {
         addApiBottomDialogFragment.dismiss()
-        inputText?.let { addKey(it) }
+        addKey(baseUrl, apiKey)
     }
 
-    override fun onClickGetMyKey() {
-        val url = "https://app.anonaddy.com/settings"
+    override fun onClickGetMyKey(baseUrl: String) {
+        val url = "$baseUrl/settings"
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(url)
         startActivity(i)

@@ -9,10 +9,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_manage_domains.*
@@ -159,7 +156,7 @@ class ManageDomainsActivity : BaseActivity(),
         }
 
         activity_manage_domain_check_dns.setOnClickListener {
-            val url = "https://app.anonaddy.com/domains"
+            val url = "${AnonAddy.API_BASE_URL}/domains"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)

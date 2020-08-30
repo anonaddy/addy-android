@@ -55,6 +55,29 @@
                 android:textAlignment="center" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bs_setup_instance_til"
+                style="@style/AnonAddyTextInputLayoutOutlined"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:hint="@string/anonaddy_instance">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bs_setup_instance_tiet"
+                    style="@style/AnonAddyTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="true"
+                    android:text="@string/default_base_url" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_setup_apikey_til"
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"

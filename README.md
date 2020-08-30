@@ -12,6 +12,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > Exciting ✨
 
+- Connect to the [AnonAddy](https://anonaddy.com/) instance or your own hosted instance
 - A unique, sexy and sleek design, based on the [Material Design](https://material.io/) language
 - Support for Deep Link to easily deactivate aliases from the email banner
 - Lock the app using Biometrics
