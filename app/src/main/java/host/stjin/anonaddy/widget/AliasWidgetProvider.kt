@@ -47,16 +47,17 @@ class AliasWidgetProvider : AppWidgetProvider() {
         }
 
         if (context != null && intent != null) {
-            when {
-                REFRESH_ACTION == intent.action -> {
+            when (intent.action) {
+                REFRESH_ACTION -> {
+                    Toast.makeText(context, context.resources.getString(R.string.refreshing_data), Toast.LENGTH_LONG).show()
                     onUpdate(context)
                 }
-                OPEN_APP == intent.action -> {
+                OPEN_APP -> {
                     val mainIntent = Intent(context, SplashActivity::class.java)
                     mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                     startActivity(context, mainIntent, null)
                 }
-                NAVIGATE == intent.action -> {
+                NAVIGATE -> {
                     if (intent.hasExtra(COPY_ACTION)) {
                         val alias = intent.getStringExtra(COPY_ACTION)
                         val clipboard: ClipboardManager? =

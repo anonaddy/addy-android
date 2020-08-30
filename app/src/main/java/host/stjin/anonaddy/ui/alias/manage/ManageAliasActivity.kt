@@ -195,7 +195,6 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setOnClickListeners() {
-
         activity_manage_alias_active_switch_layout.setOnClickListener {
             forceSwitch = true
             activity_manage_alias_active_switch.isChecked = !activity_manage_alias_active_switch.isChecked

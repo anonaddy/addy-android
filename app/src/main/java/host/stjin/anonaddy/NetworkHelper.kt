@@ -48,7 +48,7 @@ class NetworkHelper(private val context: Context) {
         // Obtain API key from the encrypted preferences
         val settingsManager = SettingsManager(true, context)
         API_KEY = settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
-        API_BASE_URL = settingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL).toString()
+        API_BASE_URL = settingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL) ?: API_BASE_URL
     }
 
     suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (String?) -> Unit) {

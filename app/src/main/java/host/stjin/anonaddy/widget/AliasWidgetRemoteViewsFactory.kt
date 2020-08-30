@@ -85,11 +85,16 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
 
         val list = networkHelper.getAliasesWidget()
 
-        // Sort by emails forwarded
-        list?.sortByDescending { it.emails_forwarded }
+        if (list != null) {
+            if (list.size >= 2) {
 
-        // Get the top 15
-        aliasList = list?.take(15) as ArrayList<Aliases>?
+                // Sort by emails forwarded
+                list.sortByDescending { it.emails_forwarded }
+
+                // Get the top 15
+                aliasList = list.take(15) as ArrayList<Aliases>?
+            }
+        }
     }
 
 }

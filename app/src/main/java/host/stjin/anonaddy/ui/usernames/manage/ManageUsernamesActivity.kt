@@ -268,8 +268,7 @@ class ManageUsernamesActivity : BaseActivity(),
                  */
 
                 // Set recipient
-                var recipients: String
-                recipients = list.default_recipient?.email ?: applicationContext.resources.getString(
+                val recipients: String = list.default_recipient?.email ?: applicationContext.resources.getString(
                     R.string.default_recipient_s, User.userResourceExtended.default_recipient_email
                 )
 

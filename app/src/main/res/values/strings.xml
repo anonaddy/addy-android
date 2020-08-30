@@ -252,4 +252,6 @@
     <string name="no_usernames">You have no usernames, what about creating one?</string>
     <string name="default_base_url">https://app.anonaddy.com</string>
     <string name="anonaddy_instance">AnonAddy instance</string>
+    <string name="refreshing_data">Refreshing data…</string>
+    <string name="refresh">Refresh</string>
 </resources>
