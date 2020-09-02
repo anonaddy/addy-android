@@ -47,9 +47,9 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 ## Download
 
 Developer-led download channels:
-- Google Play
+- Google Play (release planned)
   - ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here and download it, otherwise please choose another source :)
-- [Gitlab release](https://gitlab.com/anonaddy-ext/anonaddy-android/-/releases): Always stay up to date!
+- [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases): Always stay up to date!
 - F-Droid (release planned)
 
 All other channels are not developer-driven, so please screen them carefully before downloading and using them.
