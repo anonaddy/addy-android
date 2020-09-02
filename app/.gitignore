@@ -1,0 +1,3 @@
+/build
+# Ignore .idea files
+.idea/

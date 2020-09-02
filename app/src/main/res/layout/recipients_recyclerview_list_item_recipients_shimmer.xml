@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/recipients_recyclerview_list_LL"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:paddingTop="8dp"
+    android:baselineAligned="false"
+    android:paddingBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/recipients_recyclerview_list_mail_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/recipients"
+            android:src="@drawable/ic_round_mail_outline_24"
+            app:tint="@color/shimmerGray" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/recipients_recyclerview_list_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:background="@color/shimmerGray"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAllCaps="false"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/recipients_recyclerview_list_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/shimmerGray"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
+                android:singleLine="false" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/recipients_recyclerview_list_expand_options"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/open_options"
+            app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24"
+            app:tint="@color/shimmerGray" />
+    </LinearLayout>
+
+</LinearLayout>

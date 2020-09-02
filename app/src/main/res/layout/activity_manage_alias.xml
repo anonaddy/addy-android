@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_manage_alias_LL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/activity_manage_alias_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primaryColor">
+
+        <TextView
+            android:id="@+id/activity_manage_alias_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/edit_alias"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/activity_manage_alias_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:textAlignment="center" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <host.stjin.anonaddy.utils.PieChartView
+                        android:id="@+id/activity_manage_alias_chart"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_centerInParent="true"
+                        android:transitionName="alias_chart" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/activity_manage_alias_forwarded_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-black"
+                            android:gravity="center"
+                            android:textColor="@color/portalOrange"
+                            android:textSize="24sp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/activity_manage_alias_replies_sent_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center"
+                            android:textColor="@color/portalBlue"
+                            android:textSize="18sp"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.7"
+                        android:drawablePadding="4dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/forwarded"
+                        android:textColor="@color/BlackWhite"
+                        app:drawableStartCompat="@drawable/ic_round_mail_outline_24"
+                        app:drawableTint="@color/portalOrange" />
+
+                    <Space
+                        android:layout_width="8dp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.7"
+                        android:drawablePadding="4dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/replied_sent"
+                        android:textColor="@color/BlackWhite"
+                        app:drawableStartCompat="@drawable/ic_round_reply_24"
+                        app:drawableTint="@color/portalBlue" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.1"
+                android:background="@color/IconGrayTint" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/activity_manage_alias_settings_RL_lottieview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="32dp"
+                    android:visibility="gone"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/no_internet_connection" />
+
+                <ProgressBar
+                    android:id="@+id/activity_manage_alias_settings_RL_progressbar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+                <LinearLayout
+                    android:id="@+id/activity_manage_alias_settings_LL"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="invisible">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/general" />
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_active_switch_layout"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/alias_status_active"
+                                android:src="@drawable/ic_checkbox_marked_circle_outline" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_status_textview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/alias_status_active"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:singleLine="false"
+                                android:text="@string/alias_status_desc"
+                                style="@style/DescTextStyle" />
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:id="@+id/activity_manage_alias_active_switch_progressbar"
+                            style="?android:attr/progressBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:padding="4dp"
+                            android:visibility="gone" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/activity_manage_alias_active_switch"
+                            style="@style/overrideExpandableCardViewSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:enabled="false" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_desc_edit"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/description"
+                                android:src="@drawable/ic_text" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/description"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:maxLines="2"
+                                android:singleLine="false"
+                                style="@style/DescTextStyle"
+                                tools:text="@tools:sample/lorem/random" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleStart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="8dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/description"
+                                app:srcCompat="@drawable/ic_outline_edit_24" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_recipients_edit"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/recipients"
+                                android:src="@drawable/ic_account_arrow_right_outline" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/recipients"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_recipients"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:maxLines="3"
+                                android:singleLine="false"
+                                style="@style/DescTextStyle"
+                                tools:text="@tools:sample/full_names" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleStart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="8dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/recipients"
+                                app:srcCompat="@drawable/ic_outline_edit_24" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="@style/SettingsSectionStyle.NoAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/created_at"
+                                android:src="@drawable/ic_round_access_time_24" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/created_at"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_created_at"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:singleLine="false"
+                                style="@style/DescTextStyle"
+                                tools:text="@tools:sample/date/ddmmyy" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="@style/SettingsSectionStyle.NoAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/updated_at"
+                                android:src="@drawable/ic_progress_clock" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/updated_at"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/activity_manage_alias_updated_at"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:singleLine="false"
+                                style="@style/DescTextStyle"
+                                tools:text="@tools:sample/date/ddmmyy" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_delete"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/delete_alias"
+                                android:src="@drawable/ic_outline_delete_24"
+                                app:tint="@color/softRed" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/delete_alias"
+                                android:textAllCaps="false"
+                                android:textColor="@color/softRed"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif"
+                                android:text="@string/delete_alias_desc"
+                                style="@style/DescTextStyle" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_restore"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/restore_alias"
+                                android:src="@drawable/ic_outline_restore_from_trash_24"
+                                app:tint="@color/primaryColor" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/restore_alias"
+                                android:textAllCaps="false"
+                                android:textColor="@color/primaryColor"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif"
+                                android:text="@string/restore_alias_desc"
+                                style="@style/DescTextStyle" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

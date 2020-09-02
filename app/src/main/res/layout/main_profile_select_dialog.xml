@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/main_profile_select_dialog_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:transitionName="background_transition"
+        app:cardCornerRadius="@dimen/corner_radius"
+        app:contentPadding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/main_profile_select_dialog_card_accountname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="$ANONADDY_Account_Name"
+                        android:textAllCaps="false"
+                        android:textColor="@color/BlackWhite"
+                        android:textSize="16sp"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/main_profile_select_dialog_card_subscription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.5"
+                        android:text="$ANONADDY_User_Subscription"
+                        android:textSize="16sp"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/main_profile_select_dialog_user_initials"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:src="@drawable/ic_account_circle_outline"
+                    android:tint="@color/BlackWhite"
+                    android:transitionName="image_transition"
+                    app:tint="@color/secondaryColor"
+                    android:contentDescription="@string/open_options"
+                    tools:ignore="UseAppTint" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_anonaddy_settings"
+                style="@style/SettingsSectionStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_logo_small"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:text="@string/anonaddy_settings"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_domain_settings"
+                style="@style/SettingsSectionStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_round_dns_24"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:text="@string/domain_settings"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_username_settings"
+                style="@style/SettingsSectionStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_username_settings"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:text="@string/username_settings"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_app_settings"
+                style="@style/SettingsSectionStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_round_settings_24"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:text="@string/app_settings"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/anonaddy_android_stjin"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

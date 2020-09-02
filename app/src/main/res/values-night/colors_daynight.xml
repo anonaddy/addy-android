@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="BlackWhite">#FFFFFF</color>
+    <color name="NavbarLightDarkMode">#2E2E2E</color>
+    <color name="DropDownSurfaceLightDarkMode">#2E2E2E</color>
+    <color name="LightDarkMode">#151515</color>
+</resources>

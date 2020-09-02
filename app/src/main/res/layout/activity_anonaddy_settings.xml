@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_app_settings_LL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/anonaddysettings_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primaryColor">
+
+        <TextView
+            android:id="@+id/anonaddysettings_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/anonaddy_settings"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/usage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_LL"
+                style="@style/SettingsSectionStyle.NoAction"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="4dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:text="@string/monthly_bandwidth"
+                        app:drawableStartCompat="@drawable/ic_speedometer_slow"
+                        app:drawableTint="@color/primaryColor" />
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_current"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:text="\?"
+                            android:textColor="@color/BlackWhite"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_max"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="4dp"
+                            android:alpha="0.5"
+                            android:text="\?"
+                            android:textColor="@color/BlackWhite"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_desc"
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/anonaddy_settings_monthly_bandwidth_desc" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/anonaddy_settings_monthly_bandwidth_more_info_button"
+                        style="@style/MaterialTextButtonWithoutSpacing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/more_info" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_progress"
+                    style="@style/AnonAddyProgressBar.Vertical"
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:progress="60" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/anonaddy_settings_statistics_recipients_LL"
+                style="@style/SettingsSectionStyle.NoAction"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="4dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:text="@string/recipients"
+                        app:drawableStartCompat="@drawable/ic_recipients"
+                        app:drawableTint="@color/softRed" />
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/anonaddy_settings_statistics_recipients_current"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:text="\?"
+                            android:textColor="@color/BlackWhite"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/anonaddy_settings_statistics_recipients_max"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="4dp"
+                            android:alpha="0.5"
+                            android:text="\?"
+                            android:textColor="@color/BlackWhite"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/anonaddy_settings_statistics_recipients_desc"
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/anonaddy_settings_statistics_recipients_desc" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/anonaddy_settings_statistics_recipients_more_info_button"
+                        style="@style/MaterialTextButtonWithoutSpacing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/more_info" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/anonaddy_settings_statistics_statistics_recipients_progress"
+                    style="@style/AnonAddyProgressBarRed.Vertical"
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:progress="60" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/anonaddy_settings_statistics_aliases_LL"
+                style="@style/SettingsSectionStyle.NoAction"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="4dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:text="@string/shared_domain_aliases"
+                        app:drawableStartCompat="@drawable/ic_round_alternate_email_24"
+                        app:drawableTint="@color/easternBlue" />
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/anonaddy_settings_statistics_aliases_current"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:text="\?"
+                            android:textColor="@color/BlackWhite"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/anonaddy_settings_statistics_aliases_max"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="4dp"
+                            android:alpha="0.5"
+                            android:text="\?"
+                            android:textColor="@color/BlackWhite"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/anonaddy_settings_statistics_aliases_desc"
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/anonaddy_settings_statistics_aliases_desc" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/anonaddy_settings_statistics_aliases_more_info_button"
+                        style="@style/MaterialTextButtonWithoutSpacing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/more_info" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/anonaddy_settings_statistics_aliases_progress"
+                    style="@style/AnonAddyProgressBarEasternBlue.Vertical"
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:progress="60" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/settings" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/anonaddy_settings_update_default_recipient_LL"
+                style="@style/SettingsSectionStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    style="@style/SettingsSectionIconStyleEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/update_default_recipient"
+                        android:src="@drawable/ic_creation" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/update_default_recipient"
+                        android:textAllCaps="false"
+                        android:textColor="@color/BlackWhite"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/update_default_recipient_desc" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SettingsSectionIconStyleStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/update_default_recipient"
+                        app:srcCompat="@drawable/ic_outline_edit_24" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/anonaddy_settings_update_default_alias_domain_LL"
+                style="@style/SettingsSectionStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    style="@style/SettingsSectionIconStyleEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/update_default_alias_domain"
+                        android:src="@drawable/ic_creation" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/update_default_alias_domain"
+                        android:textAllCaps="false"
+                        android:textColor="@color/BlackWhite"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/update_default_alias_domain_desc" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SettingsSectionIconStyleStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/update_default_alias_domain"
+                        app:srcCompat="@drawable/ic_outline_edit_24" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/anonaddy_settings_update_default_alias_format_LL"
+                style="@style/SettingsSectionStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    style="@style/SettingsSectionIconStyleEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/update_default_alias_format"
+                        android:src="@drawable/ic_creation" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/update_default_alias_format"
+                        android:textAllCaps="false"
+                        android:textColor="@color/BlackWhite"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/update_default_alias_format_desc" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SettingsSectionIconStyleStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/update_default_alias_format"
+                        app:srcCompat="@drawable/ic_outline_edit_24" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+Multi-state color selector for the border drawn around
+Material TextInputLayouts
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/primaryLightColor" android:state_enabled="true" />
+    <item android:color="@color/primaryColor" android:state_hovered="true" />
+    <item android:color="@color/primaryColor" android:state_focused="true" />
+    <item android:color="@color/primaryLightColor" />
+</selector>
