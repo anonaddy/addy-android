@@ -252,4 +252,8 @@
     <string name="anonaddy_instance">AnonAddy instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
+    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %d out of %d usernames</string>
+    <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %d out of %d active domains</string>
+    <string name="you_ve_used_d_out_of_d_recipients">You’ve used %d out of %d recipients</string>
+    <string name="no_domains">You have no domains, what about creating one?</string>
 </resources>

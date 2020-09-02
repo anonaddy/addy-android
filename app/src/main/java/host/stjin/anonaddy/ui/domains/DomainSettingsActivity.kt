@@ -10,11 +10,15 @@ import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.DomainAdapter
+import host.stjin.anonaddy.models.User
+import host.stjin.anonaddy.models.UserResource
+import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import kotlinx.android.synthetic.main.activity_domain_settings.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
@@ -39,6 +43,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
+        // Set stats right away, update later
+        setStats()
+
         setOnClickListener()
         getDataFromWeb()
     }
@@ -58,8 +65,45 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllDomains()
+            getUserResource()
         }
     }
+
+    private suspend fun getUserResource() {
+        networkHelper?.getUserResource { user: UserResource?, result: String? ->
+            if (user != null) {
+                User.userResource = user
+                setStats()
+            } else {
+                val snackbar =
+                    Snackbar.make(
+                        activity_domain_settings_LL,
+                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        Snackbar.LENGTH_SHORT
+                    )
+
+                if (SettingsManager(false, baseContext).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                    snackbar.setAction(R.string.logs) {
+                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar.show()
+            }
+        }
+    }
+
+    private fun setStats() {
+        activity_domain_settings_RL_count_text.text = resources.getString(
+            R.string.you_ve_used_d_out_of_d_active_domains,
+            User.userResource.active_domain_count,
+            User.userResource.active_domain_limit
+        )
+
+        activity_domain_settings_add_domain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
+
+    }
+
 
     private suspend fun getAllDomains() {
         activity_domain_settings_all_domains_recyclerview.apply {
@@ -164,6 +208,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 dialog.dismiss()
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                     getAllDomains()
+                    getUserResource()
                 }
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
@@ -181,6 +226,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllDomains()
+            getUserResource()
         }
     }
 
@@ -188,7 +234,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         super.onResume()
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
+            getDataFromWeb()
+            getUserResource()
         }
     }
 }

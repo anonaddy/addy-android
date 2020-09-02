@@ -8,6 +8,16 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 </p>
 
 
+## Requirements
+
+> AnonAddy
+
+- AnonAddy v0.2.10 or higher (current version of AnonAddy for Android has been tested with v0.2.10)
+
+> Android
+
+- Android 6.0 or higher
+
 ## Characteristics
 
 > Exciting ✨
@@ -26,6 +36,13 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
   - No stats, buried points or Device IDs, or even crash reporting (so if you get a crash, please share the crash info with me >_<).
   - I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.
   **What's yours is yours**.
+
+ > Manage (add, edit, delete)
+
+- Aliases
+- Recipients
+- Domains
+- Usernames
 
 ## Download
 

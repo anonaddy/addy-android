@@ -64,6 +64,18 @@
                 app:shimmer_demo_layout="@layout/recipients_recyclerview_list_item_recipients_shimmer"
                 app:shimmer_demo_layout_manager_type="linear_vertical" />
 
+            <TextView
+                android:id="@+id/activity_recipient_settings_LL_count"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="32dp"
+                android:layout_weight="1"
+                android:alpha="0.8"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:text="@string/you_ve_used_d_out_of_d_recipients"
+                app:drawableStartCompat="@drawable/ic_outline_info_24" />
+
         </LinearLayout>
 
     </RelativeLayout>

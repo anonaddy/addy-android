@@ -20,6 +20,8 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RecipientAdapter
+import host.stjin.anonaddy.models.User
+import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
@@ -56,8 +58,11 @@ class RecipientsFragment : Fragment(),
         settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
-        setOnClickListener(root)
 
+        // Set stats right away, update later
+        setStats(root)
+
+        setOnClickListener(root)
         getDataFromWeb(root)
         return root
     }
@@ -66,6 +71,44 @@ class RecipientsFragment : Fragment(),
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllRecipients(root)
+            getUserResource(root, requireContext())
+        }
+    }
+
+    private fun setStats(root: View) {
+        root.activity_recipient_settings_LL_count.text = requireContext().resources.getString(
+            R.string.you_ve_used_d_out_of_d_recipients,
+            User.userResource.recipient_count,
+            User.userResource.recipient_limit
+        )
+        root.recipients_add_recipients.isEnabled = User.userResource.recipient_count < User.userResource.recipient_limit
+    }
+
+    private suspend fun getUserResource(root: View, context: Context) {
+        networkHelper?.getUserResource { user: UserResource?, result: String? ->
+            if (user != null) {
+                User.userResource = user
+                setStats(root)
+            } else {
+                val bottomNavView: BottomNavigationView? =
+                    activity?.findViewById(R.id.nav_view)
+                val snackbar = bottomNavView?.let {
+                    Snackbar.make(
+                        it,
+                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        Snackbar.LENGTH_SHORT
+                    ).apply {
+                        anchorView = bottomNavView
+                    }
+                }
+                if (SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                    snackbar?.setAction(R.string.logs) {
+                        val intent = Intent(context, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar?.show()
+            }
         }
     }
 
@@ -241,6 +284,7 @@ class RecipientsFragment : Fragment(),
                 dialog.dismiss()
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                     getAllRecipients(requireView())
+                    getUserResource(requireView(), requireContext())
                 }
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
@@ -259,6 +303,7 @@ class RecipientsFragment : Fragment(),
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllRecipients(requireView())
+            getUserResource(requireView(), requireContext())
         }
     }
 

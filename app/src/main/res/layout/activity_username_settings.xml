@@ -99,6 +99,17 @@
                     android:textColor="@color/BlackWhite"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/activity_username_settings_RL_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:alpha="0.8"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/you_ve_used_d_out_of_d_usernames"
+                    app:drawableStartCompat="@drawable/ic_outline_info_24" />
+
             </LinearLayout>
 
         </RelativeLayout>

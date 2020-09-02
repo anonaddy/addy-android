@@ -10,11 +10,15 @@ import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.UsernameAdapter
+import host.stjin.anonaddy.models.User
+import host.stjin.anonaddy.models.UserResource
+import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import kotlinx.android.synthetic.main.activity_username_settings.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
@@ -39,6 +43,9 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
+        // Set stats right away, update later
+        setStats()
+
         setOnClickListener()
         getDataFromWeb()
     }
@@ -58,7 +65,38 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllUsernames()
+            getUserResource()
         }
+    }
+
+    private suspend fun getUserResource() {
+        networkHelper?.getUserResource { user: UserResource?, result: String? ->
+            if (user != null) {
+                User.userResource = user
+                setStats()
+            } else {
+                val snackbar =
+                    Snackbar.make(
+                        activity_username_settings_LL,
+                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        Snackbar.LENGTH_SHORT
+                    )
+
+                if (SettingsManager(false, baseContext).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                    snackbar.setAction(R.string.logs) {
+                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar.show()
+            }
+        }
+    }
+
+    private fun setStats() {
+        activity_username_settings_RL_count_text.text =
+            resources.getString(R.string.you_ve_used_d_out_of_d_usernames, User.userResource.username_count, User.userResource.username_limit)
+        activity_username_settings_add_username.isEnabled = User.userResource.username_count < User.userResource.username_limit
     }
 
     private suspend fun getAllUsernames() {
@@ -148,7 +186,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
             customLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteusernameHttpRequest(id, context)
+                deleteUsernameHttpRequest(id, context)
             }
         }
         customLayout.dialog_negative_button.setOnClickListener {
@@ -158,12 +196,13 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         dialog.show()
     }
 
-    private suspend fun deleteusernameHttpRequest(id: String, context: Context) {
+    private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {
         networkHelper?.deleteUsername(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                     getAllUsernames()
+                    getUserResource()
                 }
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
@@ -181,6 +220,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllUsernames()
+            getUserResource()
         }
     }
 
@@ -188,7 +228,8 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         super.onResume()
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllUsernames()
+            getDataFromWeb()
+            getUserResource()
         }
     }
 }
