@@ -4,22 +4,28 @@ Manage your AnonAddy aliases, recipients, domains and more with the AnonAddy for
 AnonAddy instance running v0.2.10 or higher
 
 <b>Characteristics</b>
-- Connect to the AnonAddy instance or your own hosted instance
-- A unique, sexy and sleek design, based on the Material Design language
-- Support for Deep Link to easily deactivate aliases from the email banner
-- Lock the app using Biometrics
-- Enable error logging to *locally* store exceptions for easy troubleshooting
-- Widgets!
+<ul>
+<li>Connect to the AnonAddy instance or your own hosted instance</li>
+<li>A unique, sexy and sleek design, based on the Material Design language</li>
+<li>Support for Deep Link to easily deactivate aliases from the email banner</li>
+<li>Lock the app using Biometrics</li>
+<li>Enable error logging to *locally* store exceptions for easy troubleshooting</li>
+<li>Widgets!</li>
+</ul>
 
 <b>Security:</b>
-  - Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using the AndroidX crypto library
-  - I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.
+<ul>
+<li>Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using the AndroidX crypto library</li>
+<li>I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.</li>
+</ul>
 
 <b>Manage (add, edit, delete):</b>
-- Aliases
-- Recipients
-- Domains
-- Usernames
+<ul>
+<li>Aliases</li>
+<li>Recipients</li>
+<li>Domains</li>
+<li>Usernames</li>
+</ul>
 
 <b>What is AnonAddy</b>
 AnonAddy is an open source email forwarding service designed to protect an Internet user's email addresses from spam and other unwanted emails. Using the AnonAddy Android app managing your aliased has become easier than ever!
