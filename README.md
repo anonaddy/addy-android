@@ -84,5 +84,14 @@ Third party libraries used.
 I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me.
 Of course, you can also contact the developer directly via telegram or email and we'll get back to you shortly.
 
+## Donation
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick" />
+<input type="hidden" name="hosted_button_id" value="ZM2VEB23XL8S2" />
+<input type="image" src="https://www.paypalobjects.com/en_US/NL/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/en_NL/i/scr/pixel.gif" width="1" height="1" />
+</form>
+
+
 ## Privacy policy
 [Privacy policy](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/PrivacyPolicy.md)
