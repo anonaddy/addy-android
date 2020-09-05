@@ -7,6 +7,16 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 <img src="static/banner.png"/>
 </p>
 
+<p align="center">
+<a href='https://play.google.com/store/apps/details?id=host.stjin.anonaddy&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'  height="80"/></a>
+<!--<a href="https://f-droid.org/packages/host.stjin.anonaddy">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">
+</a>-->
+</p>
+
+
 
 ## Requirements
 
@@ -47,10 +57,14 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 ## Download
 
 Developer-led download channels:
-- Google Play (release planned)
+
+>Recommended (access to beta's, automatic updates and support me :) )
+- [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
   - ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here and download it, otherwise please choose another source :)
-- [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases): Always stay up to date!
-- F-Droid (release planned)
+
+>Other releases
+- [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
+- [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy) (release planned)
 
 All other channels are not developer-driven, so please screen them carefully before downloading and using them.
 
