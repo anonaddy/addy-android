@@ -87,6 +87,5 @@ Of course, you can also contact the developer directly via telegram or email and
 ## Donation
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](ZM2VEB23XL8S2)
 
-
 ## Privacy policy
 [Privacy policy](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/PrivacyPolicy.md)
