@@ -92,6 +92,5 @@ Of course, you can also contact the developer directly via telegram or email and
 <img alt="" border="0" src="https://www.paypal.com/en_NL/i/scr/pixel.gif" width="1" height="1" />
 </form>
 
-
 ## Privacy policy
 [Privacy policy](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/PrivacyPolicy.md)
