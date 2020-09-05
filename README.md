@@ -85,7 +85,7 @@ I welcome your comments and suggestions in the issues section, or you can contri
 Of course, you can also contact the developer directly via telegram or email and we'll get back to you shortly.
 
 ## Donation
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](ZM2VEB23XL8S2)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZM2VEB23XL8S2)
 
 ## Privacy policy
 [Privacy policy](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/PrivacyPolicy.md)
