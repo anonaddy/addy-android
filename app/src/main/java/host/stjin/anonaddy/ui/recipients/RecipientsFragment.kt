@@ -63,7 +63,8 @@ class RecipientsFragment : Fragment(),
         setStats(root)
 
         setOnClickListener(root)
-        getDataFromWeb(root)
+        // Called on OnResume()
+        // getDataFromWeb(root)
         return root
     }
 

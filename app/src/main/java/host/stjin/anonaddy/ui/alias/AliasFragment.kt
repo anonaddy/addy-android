@@ -60,7 +60,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         setOnClickListeners(root)
 
 
-        getDataFromWeb(root)
+        // Called on OnResume()
+        // getDataFromWeb(root)
 
         return root
     }
@@ -75,7 +76,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     override fun onResume() {
         super.onResume()
         getDataFromWeb(requireView())
-
     }
 
     private fun setOnClickListeners(root: View) {

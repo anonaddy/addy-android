@@ -479,14 +479,14 @@ class ManageAliasActivity : BaseActivity(),
                 progressBarVisibility = View.GONE
                 activity_manage_alias_settings_LL.visibility = View.VISIBLE
 
+                setOnSwitchChangeListeners()
+                setOnClickListeners()
+
                 if (shouldDeactivateThisAlias) {
                     // Deactive switch
                     forceSwitch = true
                     activity_manage_alias_active_switch.isChecked = false
                 }
-
-                setOnSwitchChangeListeners()
-                setOnClickListeners()
             } else {
                 activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
                 progressBarVisibility = View.GONE

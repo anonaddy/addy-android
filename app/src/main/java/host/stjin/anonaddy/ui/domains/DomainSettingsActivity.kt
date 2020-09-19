@@ -47,7 +47,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         setStats()
 
         setOnClickListener()
-        getDataFromWeb()
+        // Called on OnResume()
+        // getDataFromWeb()
     }
 
     private fun setOnClickListener() {

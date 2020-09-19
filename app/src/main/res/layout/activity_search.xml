@@ -71,7 +71,7 @@
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                         android:id="@+id/activity_search_aliases_recyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
@@ -100,7 +100,7 @@
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                         android:id="@+id/activity_search_recipients_recyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
@@ -129,7 +129,7 @@
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                         android:id="@+id/activity_search_domains_recyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
@@ -158,7 +158,7 @@
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                         android:id="@+id/activity_search_usernames_recyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"

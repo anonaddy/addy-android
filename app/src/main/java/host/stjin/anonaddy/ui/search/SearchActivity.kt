@@ -72,7 +72,8 @@ class SearchActivity : BaseActivity() {
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
-        getDataFromWeb()
+        // Called on OnResume()
+        // getDataFromWeb()
     }
 
     private fun getDataFromWeb() {
@@ -191,7 +192,7 @@ class SearchActivity : BaseActivity() {
                 }
             }
 
-            val finalList = nonDeletedList + onlyDeletedList
+            val finalList = (nonDeletedList + onlyDeletedList)
             val aliasAdapter = AliasAdapter(finalList, true)
             aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                 override fun onClick(pos: Int, aView: View) {
