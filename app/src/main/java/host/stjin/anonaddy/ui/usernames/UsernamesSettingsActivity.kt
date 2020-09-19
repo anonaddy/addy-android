@@ -47,7 +47,8 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         setStats()
 
         setOnClickListener()
-        getDataFromWeb()
+        // Called on OnResume()
+        // getDataFromWeb()
     }
 
     private fun setOnClickListener() {

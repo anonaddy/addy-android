@@ -32,7 +32,8 @@ class AnonAddySettingsActivity : BaseActivity() {
         setOnClickListeners()
 
         getStatistics()
-        getDataFromWeb()
+        // Called on OnResume()
+        // getDataFromWeb()
     }
 
 

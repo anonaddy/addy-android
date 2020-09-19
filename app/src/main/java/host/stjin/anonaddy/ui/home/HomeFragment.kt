@@ -62,7 +62,8 @@ class HomeFragment : Fragment() {
         setOnClickListeners(root)
 
         getStatistics(root)
-        getDataFromWeb(root, requireContext())
+        // Called on OnResume()
+        // getDataFromWeb(root, requireContext())
 
         return root
     }

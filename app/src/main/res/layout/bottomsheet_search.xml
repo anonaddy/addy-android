@@ -163,7 +163,7 @@
                 <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                     android:id="@+id/bs_search_recyclerview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginBottom="16dp"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
