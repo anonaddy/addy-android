@@ -28,7 +28,7 @@
                 android:id="@+id/domains_recyclerview_list_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_round_dns_24"
+                android:src="@drawable/ic_outline_dns_24"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>

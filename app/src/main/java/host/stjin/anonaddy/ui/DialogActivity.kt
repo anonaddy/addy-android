@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.anonaddysettings.AnonAddySettingsActivity
@@ -22,6 +23,7 @@ class DialogActivity : Activity() {
 
         (findViewById<View>(R.id.main_profile_select_dialog_card).parent as View).setOnClickListener { finishAfterTransition() }
 
+        main_profile_select_dialog_version.text = BuildConfig.VERSION_NAME
         main_profile_select_dialog_card_accountname.text = User.userResource.username
         main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
 

@@ -314,7 +314,7 @@ class ManageDomainsActivity : BaseActivity(),
                     activity_manage_domain_dns_icon.setImageResource(R.drawable.ic_dns_warning)
                     activity_manage_domain_check_dns_subtext.text = resources.getString(R.string.check_dns_desc_incorrect)
                 } else {
-                    activity_manage_domain_dns_icon.setImageResource(R.drawable.ic_round_dns_24)
+                    activity_manage_domain_dns_icon.setImageResource(R.drawable.ic_outline_dns_24)
                     activity_manage_domain_check_dns_subtext.text = resources.getString(R.string.check_dns_desc)
                 }
 

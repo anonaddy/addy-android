@@ -54,7 +54,7 @@ class DomainAdapter(
                     aliases,
                     forwardedEmails
                 )
-                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_dns_24)
+                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_outline_dns_24)
             }
         }
     }
