@@ -349,7 +349,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:contentDescription="@string/check_dns"
-                                android:src="@drawable/ic_round_dns_24" />
+                                android:src="@drawable/ic_outline_dns_24" />
 
                         </LinearLayout>
 

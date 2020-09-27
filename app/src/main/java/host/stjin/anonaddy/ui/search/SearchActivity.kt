@@ -73,7 +73,7 @@ class SearchActivity : BaseActivity() {
         networkHelper = NetworkHelper(this)
 
         // Called on OnResume()
-        // getDataFromWeb()
+        getDataFromWeb()
     }
 
     private fun getDataFromWeb() {

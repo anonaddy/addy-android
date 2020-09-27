@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/domain"
-            android:src="@drawable/ic_round_dns_24"
+            android:src="@drawable/ic_outline_dns_24"
             app:tint="@color/shimmerGray" />
 
     </LinearLayout>

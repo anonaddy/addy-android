@@ -58,12 +58,23 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         // We load values from local to make the app look quick and snappy!
         setStatisticsFromLocal(root, requireContext())
         setOnClickListeners(root)
-
+        setOnScrollViewListener(root)
 
         // Called on OnResume()
         // getDataFromWeb(root)
 
         return root
+    }
+
+    private fun setOnScrollViewListener(root: View) {
+        root.alias_scrollview.viewTreeObserver.addOnScrollChangedListener {
+            if (root.alias_scrollview.scrollY == 0) {
+                root.alias_fragment_add_alias_fab.hide()
+            } else {
+                root.alias_fragment_add_alias_fab.show()
+            }
+
+        }
     }
 
     private fun getDataFromWeb(root: View) {
@@ -84,6 +95,15 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
 
         root.alias_add_alias.setOnClickListener {
+            if (!addAliasBottomDialogFragment.isAdded) {
+                addAliasBottomDialogFragment.show(
+                    childFragmentManager,
+                    "addAliasBottomDialogFragment"
+                )
+            }
+        }
+
+        root.alias_fragment_add_alias_fab.setOnClickListener {
             if (!addAliasBottomDialogFragment.isAdded) {
                 addAliasBottomDialogFragment.show(
                     childFragmentManager,
@@ -212,7 +232,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     root.alias_statistics_RL_lottieview.visibility = View.VISIBLE
                 }
             }, activeOnly = false, includeDeleted = true)
-
         }
 
     }

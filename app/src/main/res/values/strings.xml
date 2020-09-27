@@ -87,8 +87,7 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<p><span style="color: #808080;">Initial release</span></p>
-<p><span style="color: #808080;">Thanks for using AnonAddy for Android! ❤🔑</span></p>]]></string>
+    <string name="app_changelog"><![CDATA[<p><span style="color: #808080;">- UI Improvements<br/>- Fixed a rounding issue on devices with a certain locale</span></p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
     <string name="confirm">Confirm</string>

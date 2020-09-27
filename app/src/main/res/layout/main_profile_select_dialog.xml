@@ -27,14 +27,27 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/main_profile_select_dialog_user_initials"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:contentDescription="@string/open_options"
+                        android:src="@drawable/ic_account_circle_outline"
+                        android:tint="@color/BlackWhite"
+                        android:transitionName="image_transition"
+                        app:tint="@color/secondaryColor"
+                        tools:ignore="UseAppTint" />
 
                     <TextView
                         android:id="@+id/main_profile_select_dialog_card_accountname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:fontFamily="sans-serif-medium"
                         android:text="$ANONADDY_Account_Name"
                         android:textAllCaps="false"
@@ -57,19 +70,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
-                <ImageView
-                    android:id="@+id/main_profile_select_dialog_user_initials"
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:src="@drawable/ic_account_circle_outline"
-                    android:tint="@color/BlackWhite"
-                    android:transitionName="image_transition"
-                    app:tint="@color/secondaryColor"
-                    android:contentDescription="@string/open_options"
-                    tools:ignore="UseAppTint" />
-
             </LinearLayout>
 
 
@@ -91,7 +91,7 @@
                 style="@style/SettingsSectionStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_round_dns_24"
+                android:drawableStart="@drawable/ic_outline_dns_24"
                 android:drawablePadding="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical"
@@ -104,7 +104,7 @@
                 style="@style/SettingsSectionStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_username_settings"
+                android:drawableStart="@drawable/ic_mdi_account_details_outline"
                 android:drawablePadding="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical"
@@ -117,7 +117,7 @@
                 style="@style/SettingsSectionStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_round_settings_24"
+                android:drawableStart="@drawable/ic_outline_settings_24"
                 android:drawablePadding="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical"
@@ -131,6 +131,16 @@
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/anonaddy_android_stjin"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/main_profile_select_dialog_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="1.0"
                 android:textAlignment="center"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="14sp" />
