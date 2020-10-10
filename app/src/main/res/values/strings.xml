@@ -66,6 +66,7 @@
     <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email.</string>
     <string name="description">Description</string>
     <string name="domains_format_random_words">Random words</string>
+    <string name="domains_format_custom">Custom</string>
     <string name="domains_format_uuid">UUID</string>
     <string name="error_adding_alias">Something went wrong while adding the alias</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
@@ -120,6 +121,7 @@
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>
     <string name="error_edit_recipient">Something went wrong while editing the recipient</string>
     <string name="error_edit_active">An error occurred while changing the active state</string>
+    <string name="error_edit_catch_all">An error occurred while changing the catch-all state</string>
     <string name="alias_deactivated">Alias deactivated</string>
     <string name="alias_activated">Alias activated</string>
     <string name="delete_alias_confirmation_desc">Are you sure you want to delete this alias? You can restore this alias if you later change your mind. Once deleted, this alias will reject any emails sent to it.</string>
@@ -255,4 +257,10 @@
     <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %d out of %d active domains</string>
     <string name="you_ve_used_d_out_of_d_recipients">You’ve used %d out of %d recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
+    <string name="catch_all_desc">Enable catch-all on this domain</string>
+    <string name="catch_all_enabled">Catch-All enabled</string>
+    <string name="catch_all_disabled">Catch-All disabled</string>
+    <string name="alias_local_part">Alias local part</string>
+    <string name="domains_format_custom_not_available_for_this_domain">Not available for the selected domains</string>
+    <string name="domains_format_random_words_not_available_for_this_subscription">Random words is not available for your current subscription</string>
 </resources>

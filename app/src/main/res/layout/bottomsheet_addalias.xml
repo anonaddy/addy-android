@@ -61,7 +61,6 @@
                 style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
                 android:hint="@string/domain">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -77,7 +76,6 @@
                 style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
                 android:hint="@string/alias_format">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -87,6 +85,30 @@
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bs_addalias_alias_local_part_til"
+                style="@style/AnonAddyTextInputLayoutOutlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/alias_local_part"
+                android:visibility="gone">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bs_addalias_alias_local_part_tiet"
+                    style="@style/AnonAddyTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:imeOptions="actionDone"
+                    android:inputType="textMultiLine"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_addalias_alias_desc_til"

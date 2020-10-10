@@ -75,6 +75,71 @@ class ManageDomainsActivity : BaseActivity(),
                 }
             }
         }
+
+        activity_manage_catch_all_switch.setOnCheckedChangeListener { compoundButton, b ->
+            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                activity_manage_catch_all_switch_progressbar.visibility = View.VISIBLE
+                forceSwitch = false
+                if (b) {
+                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        enableCatchAll()
+                    }
+                } else {
+                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        disableCatchAll()
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun disableCatchAll() {
+        networkHelper.disableCatchAllSpecificDomain({ result ->
+            activity_manage_catch_all_switch_progressbar.visibility = View.GONE
+            if (result == "204") {
+                activity_manage_catch_all_textview.text = resources.getString(R.string.catch_all_disabled)
+            } else {
+                activity_manage_catch_all_switch.isChecked = true
+                val snackbar = Snackbar.make(
+                    findViewById(R.id.activity_manage_domain_LL),
+                    applicationContext.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
+                    Snackbar.LENGTH_SHORT
+                )
+                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                    snackbar.setAction(R.string.logs) {
+                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar.show()
+
+            }
+        }, domainId)
+    }
+
+
+    private suspend fun enableCatchAll() {
+        networkHelper.enableCatchAllSpecificDomain({ result ->
+            activity_manage_catch_all_switch_progressbar.visibility = View.GONE
+            if (result == "200") {
+                activity_manage_catch_all_textview.text = resources.getString(R.string.catch_all_enabled)
+            } else {
+                activity_manage_catch_all_switch.isChecked = false
+                val snackbar = Snackbar.make(
+                    findViewById(R.id.activity_manage_domain_LL),
+                    applicationContext.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
+                    Snackbar.LENGTH_SHORT
+                )
+                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                    snackbar.setAction(R.string.logs) {
+                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar.show()
+            }
+        }, domainId)
     }
 
     private suspend fun deactivateDomain() {
@@ -131,6 +196,11 @@ class ManageDomainsActivity : BaseActivity(),
         activity_manage_domain_active_switch_layout.setOnClickListener {
             forceSwitch = true
             activity_manage_domain_active_switch.isChecked = !activity_manage_domain_active_switch.isChecked
+        }
+
+        activity_manage_domain_catch_all_switch_layout.setOnClickListener {
+            forceSwitch = true
+            activity_manage_catch_all_switch.isChecked = !activity_manage_catch_all_switch.isChecked
         }
 
         activity_manage_domain_desc_edit.setOnClickListener {
@@ -199,7 +269,6 @@ class ManageDomainsActivity : BaseActivity(),
 
 
     private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
-
         networkHelper.deleteDomain(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
@@ -227,6 +296,8 @@ class ManageDomainsActivity : BaseActivity(),
                 activity_manage_domain_active_switch.isChecked = list.active
                 activity_manage_domain_status_textview.text =
                     if (list.active) resources.getString(R.string.domain_activated) else resources.getString(R.string.domain_deactivated)
+
+                activity_manage_catch_all_switch.isChecked = list.catch_all
 
 
                 /**

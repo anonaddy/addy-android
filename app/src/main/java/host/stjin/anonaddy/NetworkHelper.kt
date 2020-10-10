@@ -13,6 +13,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_USERNAMES
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS_RECIPIENTS
+import host.stjin.anonaddy.AnonAddy.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
@@ -1239,6 +1240,81 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
+    suspend fun disableCatchAllSpecificDomain(
+        callback: (String?) -> Unit?,
+        domainId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_DOMAINS}/$domainId")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "disableCatchAllSpecificDomain")
+                callback(ex.toString())
+            }
+        }
+    }
+
+
+    suspend fun enableCatchAllSpecificDomain(
+        callback: (String?) -> Unit,
+        domainId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("id", domainId)
+
+        val (_, response, result) = Fuel.post(API_URL_CATCH_ALL_DOMAINS)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler().postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "enableCatchAllSpecificDomain")
+                callback(ex.toString())
+            }
+        }
+    }
+
 
     suspend fun updateDescriptionSpecificDomain(
         callback: (String?) -> Unit,

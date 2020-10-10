@@ -14,12 +14,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.Domains
 import host.stjin.anonaddy.models.Recipients
 import host.stjin.anonaddy.models.Usernames
+import host.stjin.anonaddy.ui.appsettings.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
@@ -50,6 +52,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         setContentView(R.layout.activity_main)
         checkForDarkModeAndSetFlags()
 
+        showChangeLog()
+
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)
@@ -63,9 +67,27 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         initialiseMainAppBar()
     }
 
+    private fun showChangeLog() {
+        // Check the version code in the sharedpreferences, if the one in the preferences is older than the current one, the app got updated.
+        // Show the changelog
+        val settingsManager = SettingsManager(false, this)
+        if (settingsManager.getSettingsInt(SettingsManager.PREFS.VERSION_CODE) < BuildConfig.VERSION_CODE) {
+            val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
+                ChangelogBottomDialogFragment.newInstance()
+            addChangelogBottomDialogFragment.show(
+                supportFragmentManager,
+                "MainActivity:addChangelogBottomDialogFragment"
+            )
+        }
+
+        // Write the current version code to prevent double triggering
+        settingsManager.putSettingsInt(SettingsManager.PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
+    }
+
     private fun verifyBiometrics() {
         val executor = ContextCompat.getMainExecutor(this)
-        val biometricPrompt = BiometricPrompt(this, executor,
+        val biometricPrompt = BiometricPrompt(
+            this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(
                     errorCode: Int,

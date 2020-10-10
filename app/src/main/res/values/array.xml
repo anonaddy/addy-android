@@ -3,10 +3,18 @@
     <string-array name="domains_formats_names">
         <item>@string/domains_format_uuid</item>
         <item>@string/domains_format_random_words</item>
+        <item>@string/domains_format_custom</item>
     </string-array>
 
     <string-array name="domains_formats">
         <item>uuid</item>
         <item>random_words</item>
+        <item>custom</item>
+    </string-array>
+
+    <!--the custom format is not available for shared domains -->
+    <string-array name="shared_domains">
+        <item>anonaddy.me</item>
+        <item>4wrd.cc</item>
     </string-array>
 </resources>

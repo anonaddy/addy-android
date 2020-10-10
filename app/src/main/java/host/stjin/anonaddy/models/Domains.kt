@@ -9,17 +9,19 @@ data class SingleDomain(
 )
 
 data class Domains(
-    val active: Boolean,
-    val aliases: List<Aliases>?,
-    val created_at: String,
-    val default_recipient: Recipients?,
-    val description: String?,
-    val domain: String,
-    val domain_sending_verified_at: String?,
-    val domain_verified_at: String?,
     val id: String,
+    val user_id: String,
+    val domain: String,
+    val description: String?,
+    val aliases: List<Aliases>?,
+    val default_recipient: Recipients?,
+    val active: Boolean,
+    val catch_all: Boolean, // Introduced in v0.5.0
+    val test: Boolean, // Introduced in v0.5.0
+    val domain_verified_at: String?,
+    val domain_sending_verified_at: String?,
+    val created_at: String,
     val updated_at: String,
-    val user_id: String
 )
 
 data class DomainOptions(

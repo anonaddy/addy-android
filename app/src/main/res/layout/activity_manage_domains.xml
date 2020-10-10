@@ -159,6 +159,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
+                                style="@style/DescTextStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
@@ -167,8 +168,7 @@
                                 android:maxLines="1"
                                 android:minLines="1"
                                 android:singleLine="false"
-                                android:text="@string/domain_status_desc"
-                                style="@style/DescTextStyle" />
+                                android:text="@string/domain_status_desc" />
                         </LinearLayout>
 
                         <ProgressBar
@@ -189,6 +189,82 @@
                             android:enabled="false" />
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_domain_catch_all_switch_layout"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/catch_all_enabled"
+                                android:src="@drawable/ic_alphabetical" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/activity_manage_catch_all_textview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/catch_all_desc"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                style="@style/DescTextStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:minLines="1"
+                                android:singleLine="false"
+                                android:text="@string/catch_all_desc" />
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:id="@+id/activity_manage_catch_all_switch_progressbar"
+                            style="?android:attr/progressBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:padding="4dp"
+                            android:visibility="gone" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/activity_manage_catch_all_switch"
+                            style="@style/overrideExpandableCardViewSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:enabled="false" />
+
+                    </LinearLayout>
+
 
                     <LinearLayout
                         android:id="@+id/activity_manage_domain_desc_edit"
@@ -234,13 +310,13 @@
 
                             <TextView
                                 android:id="@+id/activity_manage_domain_desc"
+                                style="@style/DescTextStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
                                 android:fontFamily="sans-serif"
                                 android:maxLines="2"
                                 android:singleLine="false"
-                                style="@style/DescTextStyle"
                                 tools:text="@tools:sample/lorem/random" />
                         </LinearLayout>
 
@@ -304,13 +380,13 @@
 
                             <TextView
                                 android:id="@+id/activity_manage_domain_recipients"
+                                style="@style/DescTextStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
                                 android:fontFamily="sans-serif"
                                 android:maxLines="3"
                                 android:singleLine="false"
-                                style="@style/DescTextStyle"
                                 tools:text="@tools:sample/full_names" />
                         </LinearLayout>
 
@@ -375,13 +451,13 @@
 
                             <TextView
                                 android:id="@+id/activity_manage_domain_check_dns_subtext"
+                                style="@style/DescTextStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
                                 android:fontFamily="sans-serif"
                                 android:maxLines="3"
                                 android:singleLine="false"
-                                style="@style/DescTextStyle"
                                 tools:text="@string/check_dns_desc" />
                         </LinearLayout>
 
@@ -431,11 +507,11 @@
                                 android:textSize="16sp" />
 
                             <TextView
+                                style="@style/DescTextStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif"
-                                android:text="@string/delete_domain_desc"
-                                style="@style/DescTextStyle" />
+                                android:text="@string/delete_domain_desc" />
                         </LinearLayout>
 
                     </LinearLayout>

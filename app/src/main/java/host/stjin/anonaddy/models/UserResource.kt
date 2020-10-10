@@ -1,5 +1,10 @@
 package host.stjin.anonaddy.models
 
+enum class SUBSCRIPTIONS(val subscription: String) {
+    FREE("free"),
+    LITE("lite"),
+    PRO("pro")
+}
 object User {
     lateinit var userResource: UserResource
     lateinit var userResourceExtended: UserResourceExtended
