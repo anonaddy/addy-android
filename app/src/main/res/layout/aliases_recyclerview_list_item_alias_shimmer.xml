@@ -90,7 +90,7 @@
             android:layout_gravity="end"
             android:contentDescription="@string/copy_alias"
             android:src="@drawable/ic_content_copy_24px"
-            app:tint="?attr/colorControlNormal" />
+            app:tint="@color/colorControlNormal" />
 
     </LinearLayout>
 

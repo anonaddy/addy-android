@@ -3,5 +3,6 @@
     <color name="primaryColor">#5c6bc0</color>
     <color name="primaryLightColor">#8e99f3</color>
     <color name="primaryDarkColor">#26418f</color>
+    <color name="colorControlNormal">#7AFFFFFF</color>
 
 </resources>

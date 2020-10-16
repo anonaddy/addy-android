@@ -24,6 +24,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup)
+
         window.decorView.systemUiVisibility =
                 // Tells the system that the window wishes the content to
                 // be laid out at the most extreme scenario. See the docs for

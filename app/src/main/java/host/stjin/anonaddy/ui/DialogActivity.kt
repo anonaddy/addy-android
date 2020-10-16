@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.AnonAddy
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.anonaddysettings.AnonAddySettingsActivity
@@ -17,13 +17,23 @@ class DialogActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_profile_select_dialog)
-        val flags: Int =
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        window.decorView.systemUiVisibility = flags
+
+        window.decorView.systemUiVisibility =
+                // Tells the system that the window wishes the content to
+                // be laid out at the most extreme scenario. See the docs for
+                // more information on the specifics
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    // Tells the system that the window wishes the content to
+                    // be laid out as if the navigation bar was hidden
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
         (findViewById<View>(R.id.main_profile_select_dialog_card).parent as View).setOnClickListener { finishAfterTransition() }
 
-        main_profile_select_dialog_version.text = BuildConfig.VERSION_NAME
+        main_profile_select_dialog_version.text =
+            if (AnonAddy.VERSIONCODE == 9999) applicationContext.resources.getString(R.string.hosted_instance) else applicationContext.resources.getString(
+                R.string.self_hosted_instance_s,
+                AnonAddy.VERSIONSTRING
+            )
         main_profile_select_dialog_card_accountname.text = User.userResource.username
         main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
 

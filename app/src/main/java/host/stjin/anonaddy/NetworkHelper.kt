@@ -2,6 +2,7 @@ package host.stjin.anonaddy
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
@@ -13,6 +14,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_ACTIVE_USERNAMES
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS
 import host.stjin.anonaddy.AnonAddy.API_URL_ALIAS_RECIPIENTS
+import host.stjin.anonaddy.AnonAddy.API_URL_APP_VERSION
 import host.stjin.anonaddy.AnonAddy.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
@@ -82,6 +84,54 @@ class NetworkHelper(private val context: Context) {
     }
 
     /**
+     * GET VERSION
+     */
+
+    suspend fun getAnonAddyInstanceVersion(
+        callback: (Version?, String?) -> Unit
+    ) {
+        val (_, response, result) =
+            Fuel.get(API_URL_APP_VERSION)
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, Version::class.java)
+                callback(anonAddyData, null)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+            // Not found, aka the AnonAddy version is <0.6.0 (this endpoint was introduced in 0.6.0)
+            // Send an empty version as callback to let the checks run in SplashActivity
+            404 -> {
+                callback(Version(0, 0, 0, ""), null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getAnonAddyInstanceVersion")
+                callback(null, ex.toString())
+            }
+        }
+    }
+
+
+    /**
      * GET USER RESOURCE
      */
 
@@ -108,7 +158,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -145,7 +195,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -195,7 +245,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -237,7 +287,7 @@ class NetworkHelper(private val context: Context) {
                     }
                     401 -> {
                         Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                        Handler().postDelayed({
+                        Handler(Looper.getMainLooper()).postDelayed({
                             // Unauthenticated, clear settings
                             SettingsManager(true, context).clearSettingsAndCloseApp()
                         }, 5000)
@@ -311,7 +361,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -350,7 +400,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -393,7 +443,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -444,7 +494,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -479,7 +529,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -519,7 +569,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -554,7 +604,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -588,7 +638,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -632,7 +682,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -681,7 +731,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -715,7 +765,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -749,7 +799,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -789,7 +839,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -824,7 +874,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -865,7 +915,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -905,7 +955,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -944,7 +994,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -988,7 +1038,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1022,7 +1072,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1069,7 +1119,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1108,7 +1158,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1152,7 +1202,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1186,7 +1236,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1226,7 +1276,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1260,7 +1310,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1300,7 +1350,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1344,7 +1394,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1388,7 +1438,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1422,7 +1472,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1461,7 +1511,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1500,7 +1550,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1544,7 +1594,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1578,7 +1628,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1618,7 +1668,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
@@ -1661,7 +1711,7 @@ class NetworkHelper(private val context: Context) {
             }
             401 -> {
                 Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)

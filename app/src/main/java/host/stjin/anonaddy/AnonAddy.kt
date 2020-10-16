@@ -3,6 +3,10 @@ package host.stjin.anonaddy
 object AnonAddy {
     var API_BASE_URL = "https://app.anonaddy.com"
 
+    // The versioncode is a combination of MAJOR MINOR PATCH
+    var VERSIONCODE = 0
+    var VERSIONSTRING = ""
+
 
     //resettableLazy(lazyMgr) properties: the value gets computed only upon first access
     val lazyMgr = resettableManager()
@@ -20,4 +24,7 @@ object AnonAddy {
     val API_URL_CATCH_ALL_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/catch-all-domains" }
     val API_URL_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/usernames" }
     val API_URL_ACTIVE_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-usernames" }
+
+    // 0.6.0
+    val API_URL_APP_VERSION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/app-version" }
 }
