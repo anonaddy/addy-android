@@ -59,9 +59,9 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // The default instance at anonaddy.com does NOT return its version
         // However, we assume that the creator of AnonAddy keeps the main version up-to-date :P
         // So we set the versioncode to 9999 so it will always pass the min version check
-        if (AnonAddy.API_BASE_URL == applicationContext.resources.getString(R.string.default_base_url)) {
+        if (AnonAddy.API_BASE_URL == this.resources.getString(R.string.default_base_url)) {
             AnonAddy.VERSIONCODE = 9999
-            AnonAddy.VERSIONSTRING = applicationContext.resources.getString(R.string.latest)
+            AnonAddy.VERSIONSTRING = this.resources.getString(R.string.latest)
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 loadUserResourceIntoMemory()
@@ -118,7 +118,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         networkHelper.getSpecificRecipient({ recipient, error ->
             if (recipient != null) {
                 User.userResourceExtended = UserResourceExtended(recipient.email)
-                val intent = Intent(baseContext, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
@@ -131,7 +131,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         setContentView(R.layout.activity_main_failed)
         activity_main_failed_error_message.text = error
         activity_main_failed_retry_button.setOnClickListener {
-            val intent = Intent(baseContext, SplashActivity::class.java)
+            val intent = Intent(this, SplashActivity::class.java)
             startActivity(intent)
             finish()
         }

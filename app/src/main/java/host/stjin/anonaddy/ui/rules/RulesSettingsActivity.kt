@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.ui.domains
+package host.stjin.anonaddy.ui.rules
 
 import android.content.Context
 import android.content.Intent
@@ -9,42 +9,37 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.adapter.DomainAdapter
-import host.stjin.anonaddy.models.User
-import host.stjin.anonaddy.models.UserResource
+import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
-import kotlinx.android.synthetic.main.activity_domain_settings.*
+import host.stjin.anonaddy.utils.SimpleItemTouchHelperCallback
+import kotlinx.android.synthetic.main.activity_manage_rules.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {
+
+class RulesSettingsActivity : BaseActivity() {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
     private var shouldAnimateRecyclerview: Boolean = true
 
-    private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_domain_settings)
-        setupToolbar(activity_domain_settings_toolbar)
+        setContentView(R.layout.activity_manage_rules)
+        setupToolbar(activity_manage_rules_toolbar)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
-
-        // Set stats right away, update later
-        setStats()
 
         setOnClickListener()
         // Called on OnResume()
@@ -52,63 +47,22 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private fun setOnClickListener() {
-        activity_domain_settings_add_domain.setOnClickListener {
-            if (!addDomainFragment.isAdded) {
-                addDomainFragment.show(
-                    supportFragmentManager,
-                    "addDomainFragment"
-                )
-            }
+        activity_manage_rules_create_rules.setOnClickListener {
+            val intent = Intent(this, CreateRuleActivity::class.java)
+            startActivity(intent)
         }
     }
 
     private fun getDataFromWeb() {
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
-            getUserResource()
+            getAllRules()
         }
     }
 
-    private suspend fun getUserResource() {
-        networkHelper?.getUserResource { user: UserResource?, result: String? ->
-            if (user != null) {
-                User.userResource = user
-                setStats()
-            } else {
-                val snackbar =
-                    Snackbar.make(
-                        activity_domain_settings_LL,
-                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        Snackbar.LENGTH_SHORT
-                    )
 
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
-            }
-        }
-    }
-
-    private fun setStats() {
-        activity_domain_settings_RL_count_text.text = resources.getString(
-            R.string.you_ve_used_d_out_of_d_active_domains,
-            User.userResource.active_domain_count,
-            User.userResource.active_domain_limit
-        )
-
-        activity_domain_settings_add_domain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
-
-    }
-
-
-    private suspend fun getAllDomains() {
-        activity_domain_settings_all_domains_recyclerview.apply {
-
+    private suspend fun getAllRules() {
+        activity_manage_rules_all_rules_recyclerview.apply {
             if (itemDecorationCount > 0) {
                 addItemDecoration(
                     DividerItemDecoration(
@@ -126,42 +80,80 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 shouldAnimateRecyclerview = false
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                activity_domain_settings_all_domains_recyclerview.layoutAnimation = animation
+                activity_manage_rules_all_rules_recyclerview.layoutAnimation = animation
             }
 
 
-            networkHelper?.getAllDomains { list ->
+            networkHelper?.getAllRules { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
                 if (list != null) {
 
                     if (list.size > 0) {
-                        activity_domain_settings_no_domains.visibility = View.GONE
+                        activity_manage_rules_no_rules.visibility = View.GONE
                     } else {
-                        activity_domain_settings_no_domains.visibility = View.VISIBLE
+                        activity_manage_rules_no_rules.visibility = View.VISIBLE
                     }
 
-                    val domainsAdapter = DomainAdapter(list)
-                    domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
+                    val domainsAdapter = RulesAdapter(list)
+                    domainsAdapter.setClickListener(object : RulesAdapter.ClickListener {
 
                         override fun onClickSettings(pos: Int, aView: View) {
-                            val intent = Intent(context, ManageDomainsActivity::class.java)
-                            intent.putExtra("domain_id", list[pos].id)
+                            val intent = Intent(context, CreateRuleActivity::class.java)
+                            intent.putExtra("rule_id", list[pos].id)
                             startActivity(intent)
                         }
 
 
                         override fun onClickDelete(pos: Int, aView: View) {
-                            deleteDomain(list[pos].id, context)
+                            deleteRule(list[pos].id, context)
+                        }
+
+                        override fun onItemMove(fromPosition: Int, toPosition: Int) {
+
+                            val itemToMove = list[fromPosition]
+                            list.removeAt(fromPosition)
+                            list.add(toPosition, itemToMove)
+
+                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                networkHelper!!.reorderRules(list) { result ->
+                                    if (result == "200") {
+                                        val snackbar = Snackbar.make(
+                                            activity_manage_rules_LL,
+                                            this@RulesSettingsActivity.resources.getString(R.string.changing_rules_order_success),
+                                            Snackbar.LENGTH_SHORT
+                                        )
+                                        snackbar.show()
+                                    } else {
+                                        val snackbar = Snackbar.make(
+                                            activity_manage_rules_LL,
+                                            this@RulesSettingsActivity.resources.getString(R.string.error_changing_rules_order) + "\n" + result,
+                                            Snackbar.LENGTH_SHORT
+                                        )
+                                        if (SettingsManager(false, this@RulesSettingsActivity).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                                            snackbar.setAction(R.string.logs) {
+                                                val intent = Intent(this@RulesSettingsActivity, LogViewerActivity::class.java)
+                                                startActivity(intent)
+                                            }
+                                        }
+                                        snackbar.show()
+                                    }
+                                }
+                            }
                         }
 
                     })
                     adapter = domainsAdapter
-                    activity_domain_settings_all_domains_recyclerview.hideShimmerAdapter()
+                    activity_manage_rules_all_rules_recyclerview.hideShimmerAdapter()
+
+
+                    val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter as RulesAdapter)
+                    val touchHelper = ItemTouchHelper(callback)
+                    touchHelper.attachToRecyclerView(activity_manage_rules_all_rules_recyclerview)
                 } else {
-                    activity_domain_settings_LL1.visibility = View.GONE
-                    activity_domain_settings_RL_lottieview.visibility = View.VISIBLE
+                    activity_manage_rules_LL1.visibility = View.GONE
+                    activity_manage_rules_RL_lottieview.visibility = View.VISIBLE
                 }
             }
 
@@ -172,7 +164,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
     lateinit var dialog: AlertDialog
     private lateinit var customLayout: View
-    private fun deleteDomain(id: String, context: Context) {
+    private fun deleteRule(id: String, context: Context) {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         // set the custom layout
@@ -182,10 +174,10 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = context.resources.getString(R.string.delete_domain)
-        customLayout.dialog_text.text = context.resources.getString(R.string.delete_domain_desc_confirm)
+        customLayout.dialog_title.text = context.resources.getString(R.string.delete_rule)
+        customLayout.dialog_text.text = context.resources.getString(R.string.delete_rule_desc_confirm)
         customLayout.dialog_positive_button.text =
-            context.resources.getString(R.string.delete_domain)
+            context.resources.getString(R.string.delete_rule)
         customLayout.dialog_positive_button.setOnClickListener {
             customLayout.dialog_progressbar.visibility = View.VISIBLE
             customLayout.dialog_error.visibility = View.GONE
@@ -193,7 +185,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             customLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteDomainHttpRequest(id, context)
+                deleteRuleHttpRequest(id, context)
             }
         }
         customLayout.dialog_negative_button.setOnClickListener {
@@ -203,13 +195,12 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         dialog.show()
     }
 
-    private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
-        networkHelper?.deleteDomain(id) { result ->
+    private suspend fun deleteRuleHttpRequest(id: String, context: Context) {
+        networkHelper?.deleteRule(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    getAllDomains()
-                    getUserResource()
+                    getAllRules()
                 }
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
@@ -222,21 +213,11 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         }
     }
 
-    override fun onAdded() {
-        addDomainFragment.dismiss()
-        // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
-            getUserResource()
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getDataFromWeb()
-            getUserResource()
         }
     }
 }

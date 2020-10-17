@@ -83,9 +83,9 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                         Snackbar.LENGTH_SHORT
                     )
 
-                if (SettingsManager(false, baseContext).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }

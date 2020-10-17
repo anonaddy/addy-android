@@ -56,7 +56,7 @@ class ManageAliasActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_alias)
         setupToolbar(activity_manage_alias_toolbar)
-        networkHelper = NetworkHelper(applicationContext)
+        networkHelper = NetworkHelper(this)
 
 
         val b = intent.extras
@@ -153,12 +153,12 @@ class ManageAliasActivity : BaseActivity(),
                 activity_manage_alias_active_switch.isChecked = true
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_alias_LL),
-                    applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -178,12 +178,12 @@ class ManageAliasActivity : BaseActivity(),
                 activity_manage_alias_active_switch.isChecked = false
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_alias_LL),
-                    applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -431,13 +431,13 @@ class ManageAliasActivity : BaseActivity(),
                         // If this is the case add a "x more" on the third rule
                         // X is the total amount minus the 2 listed above
                         recipients += "\n"
-                        recipients += applicationContext.resources.getString(
+                        recipients += this.resources.getString(
                             R.string._more,
                             list.recipients.size - 2
                         )
                     }
                 } else {
-                    recipients = applicationContext.resources.getString(
+                    recipients = this.resources.getString(
                         R.string.default_recipient
                     )
                 }
@@ -463,7 +463,7 @@ class ManageAliasActivity : BaseActivity(),
                 if (list.description != null) {
                     activity_manage_alias_desc.text = list.description
                 } else {
-                    activity_manage_alias_desc.text = applicationContext.resources.getString(
+                    activity_manage_alias_desc.text = this.resources.getString(
                         R.string.alias_no_description
                     )
                 }

@@ -104,12 +104,13 @@
                 style="@style/SettingsSectionStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_outline_school"
+                android:drawableStart="@drawable/ic_clipboard_text_outline"
                 android:drawablePadding="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical"
                 android:text="@string/manage_rules"
                 android:textColor="@color/BlackWhite"
+                android:visibility="gone"
                 android:textSize="16sp" />
 
             <TextView
@@ -156,7 +157,8 @@
                 android:text="1.0"
                 android:textAlignment="center"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

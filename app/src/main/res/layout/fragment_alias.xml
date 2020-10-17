@@ -16,6 +16,7 @@
         android:visibility="invisible"
         app:backgroundTint="@color/primaryColor"
         app:srcCompat="@drawable/ic_outline_add_24"
+        android:contentDescription="@string/add_alias"
         app:tint="@android:color/white" />
 
     <androidx.core.widget.NestedScrollView

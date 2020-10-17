@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/domains_recyclerview_list_LL"
+    android:id="@+id/rules_recyclerview_list_LL"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:paddingTop="8dp"
     android:baselineAligned="false"
+    android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
     <LinearLayout
@@ -17,11 +17,11 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/domains_recyclerview_list_dns_icon"
+            android:id="@+id/rules_recyclerview_list_dns_icon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/domain"
-            android:src="@drawable/ic_outline_dns_24"
+            android:contentDescription="@string/rule"
+            android:src="@drawable/ic_clipboard_text_outline"
             app:tint="@color/shimmerGray" />
 
     </LinearLayout>
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/domains_recyclerview_list_title"
+                android:id="@+id/rules_recyclerview_list_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/domains_recyclerview_list_description"
+                android:id="@+id/rules_recyclerview_list_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/shimmerGray"
@@ -71,7 +71,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/domains_recyclerview_list_expand_options"
+        android:id="@+id/rules_recyclerview_list_expand_options"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
@@ -83,6 +83,22 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/open_options"
             app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24"
+            app:tint="@color/shimmerGray" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rules_recyclerview_list_drag"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/drag_to_change_order"
+            app:srcCompat="@drawable/ic_outline_menu_24"
             app:tint="@color/shimmerGray" />
     </LinearLayout>
 

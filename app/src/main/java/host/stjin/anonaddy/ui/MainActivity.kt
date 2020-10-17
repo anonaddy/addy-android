@@ -98,16 +98,16 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     if (errorCode == BiometricPrompt.ERROR_NO_BIOMETRICS) {
                         // The user has removed the screen lock completely.
                         // Unlock the app and continue
-                        SettingsManager(true, applicationContext).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
+                        SettingsManager(true, this@MainActivity).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
                         Toast.makeText(
-                            applicationContext, resources.getString(
+                            this@MainActivity, resources.getString(
                                 R.string.authentication_error_11
                             ), Toast.LENGTH_LONG
                         ).show()
                         loadMainActivity()
                     } else {
                         Toast.makeText(
-                            applicationContext, resources.getString(
+                            this@MainActivity, resources.getString(
                                 R.string.authentication_error_s,
                                 errString
                             ), Toast.LENGTH_LONG
@@ -201,7 +201,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
 
         searchBottomDialogFragment.dismiss()
-        val intent = Intent(baseContext, SearchActivity::class.java)
+        val intent = Intent(this, SearchActivity::class.java)
         startActivityForResult(intent, SEARCH_CONSTANT)
     }
 
@@ -220,11 +220,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                             switchFragments(R.id.navigation_recipients)
                         }
                         SearchActivity.SearchTargets.DOMAINS.activity -> {
-                            val intent = Intent(baseContext, DomainSettingsActivity::class.java)
+                            val intent = Intent(this, DomainSettingsActivity::class.java)
                             startActivity(intent)
                         }
                         SearchActivity.SearchTargets.USERNAMES.activity -> {
-                            val intent = Intent(baseContext, UsernamesSettingsActivity::class.java)
+                            val intent = Intent(this, UsernamesSettingsActivity::class.java)
                             startActivity(intent)
                         }
                     }

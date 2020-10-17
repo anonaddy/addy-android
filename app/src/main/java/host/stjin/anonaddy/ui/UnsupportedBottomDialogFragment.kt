@@ -41,7 +41,7 @@ class UnsupportedBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
             false
         )
 
-        listener = activity as UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener
+        listener = activity as UnsupportedBottomDialogListener
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         root.bs_anonaddy_instance_version_unsupported_how_to_update_button.setOnClickListener(this)

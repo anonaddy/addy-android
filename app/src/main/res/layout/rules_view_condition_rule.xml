@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rules_view_condition_rule_LL1"
+    style="@style/SettingsSectionStyle.NoAction"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/rules_view_condition_rule_LL2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/rules_view_condition_rule_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:lines="1"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="If 'the sender' contains..."
+            android:textAllCaps="false"
+            android:textColor="@color/BlackWhite"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/rules_view_condition_rule_subtitle"
+            style="@style/DescTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="3"
+            android:singleLine="false"
+            android:text="Stjin, AnonAddy, SomeGarbo" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/SettingsSectionIconStyleStart"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp">
+
+        <ImageView
+            android:id="@+id/rules_view_condition_rule_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/recipients"
+            app:srcCompat="@drawable/ic_outline_edit_24" />
+
+        <Space
+            android:layout_width="18dp"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/rules_view_condition_rule_close"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/recipients"
+            app:srcCompat="@drawable/ic_outline_close_24" />
+    </LinearLayout>
+
+</LinearLayout>

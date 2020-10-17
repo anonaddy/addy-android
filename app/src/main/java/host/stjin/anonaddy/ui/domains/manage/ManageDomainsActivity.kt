@@ -36,7 +36,7 @@ class ManageDomainsActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_domains)
         setupToolbar(activity_manage_domain_toolbar)
-        networkHelper = NetworkHelper(applicationContext)
+        networkHelper = NetworkHelper(this)
 
 
         val b = intent.extras
@@ -103,12 +103,12 @@ class ManageDomainsActivity : BaseActivity(),
                 activity_manage_catch_all_switch.isChecked = true
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_domain_LL),
-                    applicationContext.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -117,7 +117,6 @@ class ManageDomainsActivity : BaseActivity(),
             }
         }, domainId)
     }
-
 
     private suspend fun enableCatchAll() {
         networkHelper.enableCatchAllSpecificDomain({ result ->
@@ -128,12 +127,12 @@ class ManageDomainsActivity : BaseActivity(),
                 activity_manage_catch_all_switch.isChecked = false
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_domain_LL),
-                    applicationContext.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -151,12 +150,12 @@ class ManageDomainsActivity : BaseActivity(),
                 activity_manage_domain_active_switch.isChecked = true
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_domain_LL),
-                    applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -165,7 +164,6 @@ class ManageDomainsActivity : BaseActivity(),
             }
         }, domainId)
     }
-
 
     private suspend fun activateDomain() {
         networkHelper.activateSpecificDomain({ result ->
@@ -176,12 +174,12 @@ class ManageDomainsActivity : BaseActivity(),
                 activity_manage_domain_active_switch.isChecked = false
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_domain_LL),
-                    applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -189,7 +187,6 @@ class ManageDomainsActivity : BaseActivity(),
             }
         }, domainId)
     }
-
 
     private fun setOnClickListeners() {
 
@@ -233,7 +230,6 @@ class ManageDomainsActivity : BaseActivity(),
         }
     }
 
-
     lateinit var dialog: AlertDialog
     private lateinit var customLayout: View
     private fun deletedomain(id: String) {
@@ -257,7 +253,7 @@ class ManageDomainsActivity : BaseActivity(),
             customLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteDomainHttpRequest(id, applicationContext)
+                deleteDomainHttpRequest(id, this@ManageDomainsActivity)
             }
         }
         customLayout.dialog_negative_button.setOnClickListener {
@@ -346,7 +342,7 @@ class ManageDomainsActivity : BaseActivity(),
                  */
 
                 // Set recipient
-                val recipients: String = list.default_recipient?.email ?: applicationContext.resources.getString(
+                val recipients: String = list.default_recipient?.email ?: this.resources.getString(
                     R.string.default_recipient
                 )
 
@@ -366,7 +362,7 @@ class ManageDomainsActivity : BaseActivity(),
                 if (list.description != null) {
                     activity_manage_domain_desc.text = list.description
                 } else {
-                    activity_manage_domain_desc.text = applicationContext.resources.getString(
+                    activity_manage_domain_desc.text = this.resources.getString(
                         R.string.domain_no_description
                     )
                 }

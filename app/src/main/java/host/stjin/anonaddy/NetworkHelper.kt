@@ -22,6 +22,8 @@ import host.stjin.anonaddy.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_RESEND
+import host.stjin.anonaddy.AnonAddy.API_URL_REORDER_RULES
+import host.stjin.anonaddy.AnonAddy.API_URL_RULES
 import host.stjin.anonaddy.AnonAddy.API_URL_USERNAMES
 import host.stjin.anonaddy.AnonAddy.lazyMgr
 import host.stjin.anonaddy.models.*
@@ -1721,6 +1723,246 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificUsername")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    /**
+     * RULES
+     */
+
+
+    /**
+     * DOMAINS
+     */
+
+    suspend fun getAllRules(
+        callback: (ArrayList<Rules>?) -> Unit
+    ) {
+        val (_, response, result) = Fuel.get(API_URL_RULES)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, RulesArray::class.java)
+
+                val domainList = ArrayList<Rules>()
+                domainList.addAll(anonAddyData.data)
+                callback(domainList)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getAllRules")
+                callback(null)
+            }
+        }
+    }
+
+    suspend fun getSpecificRule(
+        callback: (Rules?) -> Unit,
+        id: String
+    ) {
+        val (_, response, result) =
+            Fuel.get("${API_URL_RULES}/$id")
+                .appendHeader(
+                    "Authorization" to "Bearer $API_KEY",
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json"
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRule::class.java)
+                callback(anonAddyData.data)
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getSpecificRule")
+                callback(null)
+            }
+        }
+    }
+
+
+    suspend fun deleteRule(
+        id: String,
+        callback: (String?) -> Unit
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_RULES}/$id")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "deleteRule")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun createRule(
+        rule: Rules,
+        callback: (String?) -> Unit
+    ) {
+        val ruleJson = Gson().toJson(rule)
+        val (_, response, result) = Fuel.post(API_URL_RULES)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(ruleJson)
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            201 -> {
+                callback("201")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "createRule")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun reorderRules(
+        rulesArray: ArrayList<Rules>,
+        callback: (String?) -> Unit
+    ) {
+
+        val array = JSONArray()
+        // Sum up the ids
+        for (rule in rulesArray) {
+            array.put(rule.id)
+        }
+        val obj = JSONObject()
+        obj.put("ids", array)
+        val ruleJson = obj.toString()
+
+        val (_, response, result) = Fuel.post(API_URL_REORDER_RULES)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(ruleJson)
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "reorderRules")
+                callback(ex.toString())
+            }
+        }
+    }
+
+    suspend fun updateRule(
+        ruleId: String,
+        rule: Rules,
+        callback: (String?) -> Unit
+    ) {
+        val ruleJson = Gson().toJson(rule)
+        val (_, response, result) = Fuel.patch("${API_URL_RULES}/$ruleId")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .body(ruleJson)
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                callback("200")
+            }
+            401 -> {
+                Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "updateRule")
                 callback(ex.toString())
             }
         }
