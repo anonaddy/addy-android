@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.adapter
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -10,14 +11,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Rules
-import host.stjin.anonaddy.utils.ItemTouchHelperAdapter
 
 class RulesAdapter(
     private val listWithRules: ArrayList<Rules>
 ) :
-    RecyclerView.Adapter<RulesAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+    RecyclerView.Adapter<RulesAdapter.ViewHolder>() {
 
     lateinit var onRuleClicker: ClickListener
+
+
+    fun moveItem(fromPosition: Int, toPosition: Int) {
+        onRuleClicker.onItemMove(fromPosition, toPosition)
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -28,6 +34,11 @@ class RulesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.mTitle.text = listWithRules[position].name
+
+        holder.rulesRecyclerviewListActivateButton.text =
+            if (listWithRules[position].active) holder.rulesRecyclerviewListActivateButton.context.resources.getString(R.string.deactivate) else holder.rulesRecyclerviewListActivateButton.context.resources.getString(
+                R.string.activate
+            )
 
         val descConditions =
             "${listWithRules[position].conditions[0].type} ${listWithRules[position].conditions[0].match} ${listWithRules[position].conditions[0].values[0]}"
@@ -51,9 +62,11 @@ class RulesAdapter(
 
 
     interface ClickListener {
+        fun onClickActivate(pos: Int, aView: View)
         fun onClickSettings(pos: Int, aView: View)
         fun onClickDelete(pos: Int, aView: View)
         fun onItemMove(fromPosition: Int, toPosition: Int)
+        fun startDragging(viewHolder: RecyclerView.ViewHolder?)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
@@ -71,6 +84,8 @@ class RulesAdapter(
             view.findViewById(R.id.rules_recyclerview_list_icon)
         private var rulesRecyclerviewListSettingsButton: MaterialButton =
             view.findViewById(R.id.rules_recyclerview_list_settings_button)
+        var rulesRecyclerviewListActivateButton: MaterialButton =
+            view.findViewById(R.id.rules_recyclerview_list_activate_button)
         private var rulesRecyclerviewListDeleteButton: MaterialButton =
             view.findViewById(R.id.rules_recyclerview_list_delete_button)
 
@@ -79,7 +94,14 @@ class RulesAdapter(
             mOptionsButton.setOnClickListener(this)
             mLL.setOnClickListener(this)
             rulesRecyclerviewListSettingsButton.setOnClickListener(this)
+            rulesRecyclerviewListActivateButton.setOnClickListener(this)
             rulesRecyclerviewListDeleteButton.setOnClickListener(this)
+            rulesRecyclerviewListIcon.setOnTouchListener { view, motionEvent ->
+                if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
+                    onRuleClicker.startDragging(this)
+                }
+                return@setOnTouchListener true
+            }
         }
 
         override fun onClick(p0: View) {
@@ -89,6 +111,9 @@ class RulesAdapter(
                 }
                 R.id.rules_recyclerview_list_expand_options -> {
                     expandOptions()
+                }
+                R.id.rules_recyclerview_list_activate_button -> {
+                    onRuleClicker.onClickActivate(adapterPosition, p0)
                 }
                 R.id.rules_recyclerview_list_settings_button -> {
                     onRuleClicker.onClickSettings(adapterPosition, p0)
@@ -110,16 +135,5 @@ class RulesAdapter(
         }
 
     }
-
-    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        notifyItemMoved(fromPosition, toPosition)
-        onRuleClicker.onItemMove(fromPosition, toPosition)
-        return true
-    }
-
-    override fun onItemDismiss(position: Int) {
-        // not being used
-    }
-
 }
 

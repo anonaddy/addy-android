@@ -248,8 +248,10 @@ class ManageRecipientsActivity : BaseActivity(),
                 customLayout.dialog_error.visibility = View.VISIBLE
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_recipient) + "\n" + result
+                customLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_recipient), result
+                )
             }
         }
     }
@@ -264,8 +266,10 @@ class ManageRecipientsActivity : BaseActivity(),
                 removeGpgKeyCustomLayout.dialog_error.visibility = View.VISIBLE
                 removeGpgKeyCustomLayout.dialog_negative_button.isEnabled = true
                 removeGpgKeyCustomLayout.dialog_positive_button.isEnabled = true
-                removeGpgKeyCustomLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_removing_gpg_key) + "\n" + result
+                removeGpgKeyCustomLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_removing_gpg_key), result
+                )
             }
         }, id)
     }

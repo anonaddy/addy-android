@@ -68,20 +68,20 @@
     </string-array>
 
     <string-array name="actions.type.bannerlocation.options">
-        <item>@string/top</item>
-        <item>@string/bottom</item>
-        <item>@string/off</item>
+        <item>top</item>
+        <item>bottom</item>
+        <item>off</item>
     </string-array>
     <string-array name="actions.type.bannerlocation.options.name">
-        <item>@string/top</item>
-        <item>@string/bottom</item>
-        <item>@string/off</item>
+        <item>@string/rule_bannerlocation_top</item>
+        <item>@string/rule_bannerlocation_bottom</item>
+        <item>@string/rule_bannerlocation_off</item>
     </string-array>
 
     <string name="contains">contains</string>
-    <string name="top">top</string>
-    <string name="bottom">bottom</string>
-    <string name="subject">subject</string>
+    <string name="rule_bannerlocation_top">top</string>
+    <string name="rule_bannerlocation_bottom">bottom</string>
+    <string name="rule_bannerlocation_off">off</string>
     <string name="the_sender">the sender</string>
     <string name="the_subject">the subject</string>
     <string name="the_alias">the alias</string>

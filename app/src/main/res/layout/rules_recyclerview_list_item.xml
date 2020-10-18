@@ -120,6 +120,14 @@
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/rules_recyclerview_list_activate_button"
+                style="@style/MaterialTextButtonWithoutSpacing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@string/activate" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_recyclerview_list_settings_button"
                 style="@style/MaterialTextButtonWithoutSpacing"
                 android:layout_width="wrap_content"

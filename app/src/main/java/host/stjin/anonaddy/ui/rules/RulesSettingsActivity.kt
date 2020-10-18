@@ -10,7 +10,9 @@ import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
@@ -18,7 +20,6 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import host.stjin.anonaddy.utils.SimpleItemTouchHelperCallback
 import kotlinx.android.synthetic.main.activity_rule_settings.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.coroutines.CoroutineStart
@@ -96,8 +97,20 @@ class RulesSettingsActivity : BaseActivity() {
                         activity_manage_rules_no_rules.visibility = View.VISIBLE
                     }
 
-                    val domainsAdapter = RulesAdapter(list)
-                    domainsAdapter.setClickListener(object : RulesAdapter.ClickListener {
+                    val rulesAdapter = RulesAdapter(list)
+                    rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
+
+                        override fun onClickActivate(pos: Int, aView: View) {
+                            if (list[pos].active) {
+                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                    deactivateRule(list[pos].id)
+                                }
+                            } else {
+                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                    activateRule(list[pos].id)
+                                }
+                            }
+                        }
 
                         override fun onClickSettings(pos: Int, aView: View) {
                             val intent = Intent(context, CreateRuleActivity::class.java)
@@ -111,7 +124,6 @@ class RulesSettingsActivity : BaseActivity() {
                         }
 
                         override fun onItemMove(fromPosition: Int, toPosition: Int) {
-
                             val itemToMove = list[fromPosition]
                             list.removeAt(fromPosition)
                             list.add(toPosition, itemToMove)
@@ -143,14 +155,15 @@ class RulesSettingsActivity : BaseActivity() {
                             }
                         }
 
+                        override fun startDragging(viewHolder: RecyclerView.ViewHolder?) {
+                            viewHolder?.let { itemTouchHelper.startDrag(it) }
+                        }
+
                     })
-                    adapter = domainsAdapter
+                    adapter = rulesAdapter
                     activity_manage_rules_all_rules_recyclerview.hideShimmerAdapter()
 
-
-                    val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter as RulesAdapter)
-                    val touchHelper = ItemTouchHelper(callback)
-                    touchHelper.attachToRecyclerView(activity_manage_rules_all_rules_recyclerview)
+                    itemTouchHelper.attachToRecyclerView(activity_manage_rules_all_rules_recyclerview)
                 } else {
                     activity_manage_rules_LL1.visibility = View.GONE
                     activity_manage_rules_RL_lottieview.visibility = View.VISIBLE
@@ -159,6 +172,62 @@ class RulesSettingsActivity : BaseActivity() {
 
         }
 
+    }
+
+    private suspend fun deactivateRule(ruleId: String) {
+        networkHelper?.deactivateSpecificRule({ result ->
+            if (result == "204") {
+                getDataFromWeb()
+
+                val snackbar = Snackbar.make(
+                    activity_manage_rules_LL,
+                    this@RulesSettingsActivity.resources.getString(R.string.rule_deactivated),
+                    Snackbar.LENGTH_SHORT
+                )
+                snackbar.show()
+            } else {
+                val snackbar = Snackbar.make(
+                    activity_manage_rules_LL,
+                    this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
+                    Snackbar.LENGTH_SHORT
+                )
+                if (SettingsManager(false, this@RulesSettingsActivity).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                    snackbar.setAction(R.string.logs) {
+                        val intent = Intent(this@RulesSettingsActivity, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar.show()
+            }
+        }, ruleId)
+    }
+
+    private suspend fun activateRule(ruleId: String) {
+        networkHelper?.activateSpecificRule({ result ->
+            if (result == "200") {
+                getDataFromWeb()
+
+                val snackbar = Snackbar.make(
+                    activity_manage_rules_LL,
+                    this@RulesSettingsActivity.resources.getString(R.string.rule_activated),
+                    Snackbar.LENGTH_SHORT
+                )
+                snackbar.show()
+            } else {
+                val snackbar = Snackbar.make(
+                    activity_manage_rules_LL,
+                    this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
+                    Snackbar.LENGTH_SHORT
+                )
+                if (SettingsManager(false, this@RulesSettingsActivity).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                    snackbar.setAction(R.string.logs) {
+                        val intent = Intent(this@RulesSettingsActivity, LogViewerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                snackbar.show()
+            }
+        }, ruleId)
     }
 
 
@@ -207,8 +276,10 @@ class RulesSettingsActivity : BaseActivity() {
                 customLayout.dialog_error.visibility = View.VISIBLE
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_domain) + "\n" + result
+                customLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_domain), result
+                )
             }
         }
     }
@@ -220,4 +291,43 @@ class RulesSettingsActivity : BaseActivity() {
             getDataFromWeb()
         }
     }
+
+    private val itemTouchHelper by lazy {
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(UP or DOWN or START or END, 0) {
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+
+                if (actionState == ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.5f
+                }
+            }
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                viewHolder.itemView.alpha = 1.0f
+            }
+
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                val adapter = recyclerView.adapter as RulesAdapter
+                val from = viewHolder.adapterPosition
+                val to = target.adapterPosition
+                adapter.moveItem(from, to)
+                adapter.notifyItemMoved(from, to)
+
+                return true
+            }
+
+        }
+
+        ItemTouchHelper(simpleItemTouchCallback)
+    }
+
 }
+
+
+
+

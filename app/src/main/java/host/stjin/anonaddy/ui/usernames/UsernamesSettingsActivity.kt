@@ -211,7 +211,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
                 customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_username) + "\n" + result
+                    context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result)
             }
         }
     }

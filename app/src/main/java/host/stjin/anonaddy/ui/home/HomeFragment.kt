@@ -245,11 +245,15 @@ class HomeFragment : Fragment() {
             if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
 
 
-        root.home_statistics_monthly_bandwidth_current.text = "${roundOffDecimal(currMonthlyBandwidth)}MB"
+        root.home_statistics_monthly_bandwidth_current.text =
+            this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
 
 
         root.home_statistics_monthly_bandwidth_max.text =
-            "${if (maxMonthlyBandwidth == 0) "∞" else maxMonthlyBandwidth.toString()}MB"
+            if (maxMonthlyBandwidth == 0) this.resources.getString(R.string._sMB, "∞") else this.resources.getString(
+                R.string._sMB,
+                maxMonthlyBandwidth.toString()
+            )
 
 
         ObjectAnimator.ofInt(

@@ -65,14 +65,14 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="All rules" />
+                        android:text="@string/all_rules" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_rules_create_rules"
                         style="@style/MaterialTextButtonWithoutSpacing"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Create rule" />
+                        android:text="@string/create_rule" />
 
                 </LinearLayout>
 

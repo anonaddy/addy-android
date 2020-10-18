@@ -31,31 +31,30 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         holder.mTitle.text = listWithAliases[position].email
 
         if (listWithAliases[position].description != null) {
-            holder.mDescription.text =
-                "${listWithAliases[position].description}\n${
-                    (holder.mDescription.context).resources.getString(
-                        R.string.created_at_s,
-                        DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
-                    )
-                }\n${
-                    (holder.mDescription.context).resources.getString(
-                        R.string.updated_at_s,
-                        DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
-                    )
-                }"
+            holder.mDescription.text = holder.mDescription.context.resources.getString(
+                R.string.s_s_s,
+                listWithAliases[position].description,
+                (holder.mDescription.context).resources.getString(
+                    R.string.created_at_s,
+                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
+                ),
+                (holder.mDescription.context).resources.getString(
+                    R.string.updated_at_s,
+                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
+                )
+            )
         } else {
-            holder.mDescription.text =
-                "${
-                    (holder.mDescription.context).resources.getString(
-                        R.string.created_at_s,
-                        DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
-                    )
-                }\n${
-                    (holder.mDescription.context).resources.getString(
-                        R.string.updated_at_s,
-                        DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
-                    )
-                }"
+            holder.mDescription.text = holder.mDescription.context.resources.getString(
+                R.string.s_s,
+                (holder.mDescription.context).resources.getString(
+                    R.string.created_at_s,
+                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
+                ),
+                (holder.mDescription.context).resources.getString(
+                    R.string.updated_at_s,
+                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
+                )
+            )
         }
 
 

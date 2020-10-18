@@ -193,7 +193,6 @@ class ManageAliasActivity : BaseActivity(),
     }
 
 
-
     private fun setOnClickListeners() {
         activity_manage_alias_active_switch_layout.setOnClickListener {
             forceSwitch = true
@@ -305,8 +304,10 @@ class ManageAliasActivity : BaseActivity(),
                 customLayout.dialog_error.visibility = View.VISIBLE
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_alias) + "\n" + result
+                customLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_alias), result
+                )
             }
         }, id)
     }
@@ -321,8 +322,10 @@ class ManageAliasActivity : BaseActivity(),
                 customLayout.dialog_error.visibility = View.VISIBLE
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_restoring_alias) + "\n" + result
+                customLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_restoring_alias), result
+                )
             }
         }, id)
     }

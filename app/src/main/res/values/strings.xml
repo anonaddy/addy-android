@@ -88,7 +88,7 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[<p>&mdash; NOTE &mdash;<br />Starting from this version the app uses version checks thanks to a new API endpoint. The app will work on versions below 0.6.0 but for the best experience, use AnonAddy 0.6.0 or higher.</p>
-<p><br />&mdash; CHANGELOG &mdash;<br />- Added catch-all switch for AnonAddy v0.4.0&gt;<br />- Added custom alias format option<br />- Added subscription check for random words alias format<br />- Show changelog on update<br />- Added version check (for self hosted instances)<br />- UI improvements</p>]]></string>
+<p><br />&mdash; CHANGELOG &mdash;<br />- Added new rule-editor (beta)<br />&nbsp; &nbsp; - The feature is still in beta, and might not be available on the hosted instance<br />&nbsp; &nbsp; - For self-hosted instanced, enable the rule feature in order to use this editor<br />&nbsp; &nbsp; - To use the new rule-editor, tap the version number in the app settings 10 times<br />- Added catch-all switch for AnonAddy v0.4.0&gt;<br />- Added custom alias format option<br />- Added subscription check for random words alias format<br />- Show changelog on update<br />- Added version check (for self hosted instances)<br />- UI improvements</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -122,6 +122,7 @@
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>
     <string name="error_edit_recipient">Something went wrong while editing the recipient</string>
     <string name="error_edit_active">An error occurred while changing the active state</string>
+    <string name="error_rules_active">An error occurred while changing the rule state</string>
     <string name="error_edit_catch_all">An error occurred while changing the catch-all state</string>
     <string name="alias_deactivated">Alias deactivated</string>
     <string name="alias_activated">Alias activated</string>
@@ -277,7 +278,7 @@
     <string name="rule">Rule</string>
     <string name="no_rules">You have no rules, what about creating one?</string>
     <string name="rule_if_">If %s</string>
-    <string name="rule_the_">Then %s</string>
+    <string name="rule_then_">Then %s</string>
     <string name="creating_a_rule">Creating a rule</string>
     <string name="error_creating_rule">An error occurred while saving this rule</string>
     <string name="beta_features_unlocked">You unlocked beta features</string>
@@ -294,6 +295,26 @@
     <string name="not_a_valid_action_type">Not a valid action type</string>
     <string name="not_a_valid_condition_match">Not a valid condition match</string>
     <string name="not_a_valid_banner_location">Not a valid banner location</string>
+    <string name="conditions">Conditions</string>
+    <string name="actions_then">Actions (then)</string>
+    <string name="enter_name">Enter name</string>
+    <string name="rule_name">Rule name</string>
+    <string name="banner_location">Banner location</string>
+    <string name="match">Match</string>
+    <string name="not_a_valid_value">Not a valid value</string>
+    <string name="enter_values_comma_separated">Enter values (comma separated)</string>
+    <string name="save_rule">Save rule</string>
+    <string name="or">OR</string>
+    <string name="and">AND</string>
+    <string name="create_rule">Create rule</string>
+    <string name="all_rules">All rules</string>
+    <string name="s_s">%s\n%s</string>
+    <string name="s_s_s">%s\n%s\n%s</string>
+    <string name="_sMB">%sMB</string>
+    <string name="activate">Activate</string>
+    <string name="deactivate">Deactivate</string>
+    <string name="rule_activated">Rule activated</string>
+    <string name="rule_deactivated">Rule deactivated</string>
 
 
 </resources>

@@ -11,24 +11,22 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.models.Action
 import kotlinx.android.synthetic.main.bottomsheet_rules_action.view.*
-import kotlinx.android.synthetic.main.bottomsheet_rules_condition.view.*
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddActionBottomDialogListener
+    private var actionEditIndex: Int? = null
+    private var actionEditObject: Action? = null
 
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddActionBottomDialogListener {
-        fun onAddedAction(type: String, values: String)
-        fun onAddedAction(type: String, values: Boolean)
+        fun onAddedAction(actionEditIndex: Int?, type: String, value: String)
+        fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -50,13 +48,36 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         listener = activity as AddActionBottomDialogListener
 
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            fillSpinners(root, requireContext())
-        }
-
+        fillSpinners(root, requireContext())
         root.bs_rule_action_add_action_button.setOnClickListener(this)
         spinnerChangeListener(root, requireContext())
+
+        checkForArguments(root, requireContext())
         return root
+    }
+
+    private fun checkForArguments(root: View, context: Context) {
+        // Check if there arguments (to be filled from the Create Rule Activity)
+        if (arguments?.size() ?: 0 > 0) {
+            arguments?.getInt(CreateRuleActivity.ARGUMENTS.ACTION_EDIT_INDEX.argument)?.let {
+                actionEditIndex = it
+            }
+            arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.ACTION_EDIT.argument)?.let {
+                actionEditObject = it as? Action
+            }
+
+
+            val typeText =
+                TYPES_NAME[TYPES.indexOf(actionEditObject?.type)]
+            root.bs_rule_action_type_mact.setText(typeText, false)
+            root.bs_rule_action_values_tiet.setText(actionEditObject?.value)
+
+
+
+            checkIfTypeRequiresValueField(root, context)
+            root.bs_rule_action_type_til.error = null
+        }
+
     }
 
     /*
@@ -128,7 +149,7 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         }
     }
 
-    private fun addAlias(root: View, context: Context) {
+    private fun addAction(root: View, context: Context) {
 
         if (!TYPES_NAME.contains(root.bs_rule_action_type_mact.text.toString())) {
             root.bs_rule_action_type_til.error =
@@ -160,23 +181,23 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             // If the type is set to set banner information location get the value from the spinner
             root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.set_the_banner_information_location_to) -> {
                 val banner_location =
-                    VALUE_BANNER_LOCATION[VALUE_BANNER_LOCATION_NAME.indexOf(root.bs_rule_condition_type_mact.text.toString())]
+                    VALUE_BANNER_LOCATION[VALUE_BANNER_LOCATION_NAME.indexOf(root.bs_rule_action_values_spinner_banner_location_mact.text.toString())]
 
-                listener.onAddedAction(type, banner_location)
+                listener.onAddedAction(actionEditIndex, type, banner_location)
             }
 
             // If the type is set to block email send a true
             root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.block_the_email) -> {
-                listener.onAddedAction(type, true)
+                listener.onAddedAction(actionEditIndex, type, true)
             }
             // If the type is set to turn off PGP send a true
             root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.turn_PGP_encryption_off) -> {
-                listener.onAddedAction(type, true)
+                listener.onAddedAction(actionEditIndex, type, true)
             }
             else -> {
                 // Else just get the textfield value
                 val value = root.bs_rule_action_values_tiet.text.toString()
-                listener.onAddedAction(type, value)
+                listener.onAddedAction(actionEditIndex, type, value)
             }
         }
 
@@ -185,8 +206,8 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
-            if (p0.id == R.id.bs_addalias_alias_add_alias_button) {
-                addAlias(requireView(), requireContext())
+            if (p0.id == R.id.bs_rule_action_add_action_button) {
+                addAction(requireView(), requireContext())
             }
         }
     }

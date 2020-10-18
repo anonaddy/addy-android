@@ -76,13 +76,14 @@
                 style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/top"
+                android:hint="@string/banner_location"
                 android:visibility="gone">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/bs_rule_action_values_spinner_banner_location_mact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/rule_bannerlocation_top"
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>

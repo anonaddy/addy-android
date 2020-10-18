@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rules_view_condition_rule_LL1"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rules_view_condition_action_LL1"
     style="@style/SettingsSectionStyle.NoAction"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,14 +10,14 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:id="@+id/rules_view_condition_rule_LL2"
+        android:id="@+id/rules_view_condition_action_LL2"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/rules_view_condition_rule_title"
+            android:id="@+id/rules_view_condition_action_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -28,10 +29,11 @@
             android:text="If 'the sender' contains..."
             android:textAllCaps="false"
             android:textColor="@color/BlackWhite"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
-            android:id="@+id/rules_view_condition_rule_subtitle"
+            android:id="@+id/rules_view_condition_action_subtitle"
             style="@style/DescTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +41,8 @@
             android:fontFamily="sans-serif"
             android:maxLines="3"
             android:singleLine="false"
-            android:text="Stjin, AnonAddy, SomeGarbo" />
+            android:text="Stjin, AnonAddy, SomeGarbo"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,7 +52,7 @@
         android:layout_marginEnd="8dp">
 
         <ImageView
-            android:id="@+id/rules_view_condition_rule_edit"
+            android:id="@+id/rules_view_condition_action_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/recipients"
@@ -60,7 +63,7 @@
             android:layout_height="wrap_content" />
 
         <ImageView
-            android:id="@+id/rules_view_condition_rule_close"
+            android:id="@+id/rules_view_condition_action_close"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/recipients"

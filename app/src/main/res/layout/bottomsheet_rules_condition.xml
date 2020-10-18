@@ -76,12 +76,13 @@
                 style="@style/AppTheme.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/contains">
+                android:hint="@string/match">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/bs_rule_condition_match_mact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/contains"
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -92,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="@string/enter_value">
+                android:hint="@string/enter_values_comma_separated">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bs_rule_condition_values_tiet"
@@ -102,9 +103,9 @@
                     android:gravity="top"
                     android:imeOptions="actionDone"
                     android:inputType="textMultiLine"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:minLines="1" />
+                    android:lines="5"
+                    android:maxLines="5"
+                    android:minLines="5" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

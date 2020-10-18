@@ -31,6 +31,7 @@
             android:layout_gravity="end"
             android:layout_marginEnd="16dp"
             app:srcCompat="@drawable/ic_outline_check_24"
+            android:contentDescription="@string/save_rule"
             app:tint="@android:color/white" />
 
         <ProgressBar
@@ -85,7 +86,7 @@
                     style="@style/titleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Rule name" />
+                    android:text="@string/rule_name" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/activity_rules_create_rule_name_til"
@@ -93,7 +94,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dp"
-                    android:hint="Enter name"
+                    android:hint="@string/enter_name"
                     android:visibility="visible">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -111,7 +112,6 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
-                    android:id="@+id/activity_rules_create_LL_conditions"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="16dp"
@@ -127,22 +127,27 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="Conditions" />
+                            android:text="@string/conditions" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/activity_rules_create_add_condition"
                             style="@style/MaterialTextButtonWithoutSpacing"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add condition" />
+                            android:text="@string/add_condition" />
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_rules_create_LL_conditions"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" />
 
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/activity_rules_create_LL_actions"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="16dp"
@@ -158,16 +163,22 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="Actions (then)" />
+                            android:text="@string/actions_then" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/activity_rules_create_add_action"
                             style="@style/MaterialTextButtonWithoutSpacing"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add action" />
+                            android:text="@string/add_action" />
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_rules_create_LL_actions"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" />
 
 
                 </LinearLayout>
