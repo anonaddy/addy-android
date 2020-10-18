@@ -22,7 +22,7 @@ data class RulesArray(
 data class Rules(
     val actions: List<Action>,
     val active: Boolean,
-    val conditions: List<Condition>,
+    var conditions: List<Condition>,
     val created_at: String,
     val id: String,
     var name: String,

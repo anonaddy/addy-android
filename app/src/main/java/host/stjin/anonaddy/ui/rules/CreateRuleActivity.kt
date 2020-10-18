@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -23,12 +24,19 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class CreateRuleActivity : BaseActivity() {
+class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddConditionBottomDialogListener,
+    ActionBottomDialogFragment.AddActionBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
 
     private var ruleId: String? = null
     private lateinit var rules: Rules
+
+    private val conditionBottomDialogFragment: ConditionBottomDialogFragment =
+        ConditionBottomDialogFragment.newInstance()
+
+    private val actionBottomDialogFragment: ActionBottomDialogFragment =
+        ActionBottomDialogFragment.newInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -220,14 +228,18 @@ class CreateRuleActivity : BaseActivity() {
         activity_rules_create_LL1.visibility = View.VISIBLE
 
         setOnClickListeners()
+        setOnChangeListeners()
+    }
+
+    private fun setOnChangeListeners() {
+        activity_rules_create_rule_name_tiet.addTextChangedListener {
+            rules.name = activity_rules_create_rule_name_tiet.text.toString()
+        }
     }
 
     private fun setOnClickListeners() {
         activity_rules_create_check.setOnClickListener {
-
             // Update title
-            rules.name = activity_rules_create_rule_name_tiet.text.toString()
-
             activity_rules_create_progressbar.visibility = View.VISIBLE
 
             if (ruleId != null) {
@@ -288,10 +300,46 @@ class CreateRuleActivity : BaseActivity() {
                 }
             }
         }
+
+        activity_rules_create_add_condition.setOnClickListener {
+            if (!conditionBottomDialogFragment.isAdded) {
+                conditionBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "conditionBottomDialogFragment"
+                )
+            }
+        }
+
+        activity_rules_create_add_action.setOnClickListener {
+            if (!actionBottomDialogFragment.isAdded) {
+                actionBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "actionBottomDialogFragment"
+                )
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         supportFinishAfterTransition()
+    }
+
+    // Condition
+    override fun onAddedCondition(type: String, match: String, values: List<String>) {
+        //TODO check if this is a new or a edited condition
+        rules.conditions
+    }
+
+
+    // Actions
+    override fun onAddedAction(type: String, values: String) {
+        //TODO check if this is a new or a edited condition
+
+    }
+
+    override fun onAddedAction(type: String, values: Boolean) {
+        //TODO check if this is a new or a edited condition
+
     }
 }

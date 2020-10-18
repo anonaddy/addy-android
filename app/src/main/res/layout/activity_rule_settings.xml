@@ -99,6 +99,17 @@
                     android:textColor="@color/BlackWhite"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/activity_manage_rules_RL_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:alpha="0.8"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/hold_the_drag_handle_and_drag_to_change_order"
+                    app:drawableStartCompat="@drawable/ic_outline_info_24" />
+
             </LinearLayout>
 
         </RelativeLayout>

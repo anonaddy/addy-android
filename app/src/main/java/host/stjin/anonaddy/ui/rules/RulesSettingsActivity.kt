@@ -19,7 +19,7 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.SimpleItemTouchHelperCallback
-import kotlinx.android.synthetic.main.activity_manage_rules.*
+import kotlinx.android.synthetic.main.activity_rule_settings.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +35,7 @@ class RulesSettingsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_manage_rules)
+        setContentView(R.layout.activity_rule_settings)
         setupToolbar(activity_manage_rules_toolbar)
 
         settingsManager = SettingsManager(true, this)

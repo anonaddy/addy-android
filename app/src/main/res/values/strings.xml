@@ -284,6 +284,16 @@
     <string name="drag_to_change_order">Drag to change order</string>
     <string name="error_changing_rules_order">Something went wrong while changing the order of the rules</string>
     <string name="changing_rules_order_success">Successfully changed the order</string>
+    <string name="hold_the_drag_handle_and_drag_to_change_order">Hold the drag handle and drag to change order</string>
+    <string name="select">Select</string>
+    <string name="enter_value">Enter value</string>
+    <string name="add_condition">Add condition</string>
+    <string name="add_condition_desc">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
+    <string name="add_action">Add action</string>
+    <string name="not_a_valid_condition_type">Not a valid condition type</string>
+    <string name="not_a_valid_action_type">Not a valid action type</string>
+    <string name="not_a_valid_condition_match">Not a valid condition match</string>
+    <string name="not_a_valid_banner_location">Not a valid banner location</string>
 
 
 </resources>
