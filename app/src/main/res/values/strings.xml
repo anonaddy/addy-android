@@ -317,6 +317,10 @@
     <string name="rules_unavailable_404">The rules feature is not available in the current instance of AnonAddy. Please make sure that the rules API is available for the current user.</string>
     <string name="rules">Rules</string>
     <string name="this_field_cannot_be_empty">This field cannot be empty</string>
+    <string name="gitlab_project">Gitlab project</string>
+    <string name="gitlab_project_desc">View source code and report issues</string>
+    <string name="report_an_issue">Report an issue</string>
+    <string name="report_an_issue_desc">Found a bug? Tap here to create a report.</string>
 
 
 </resources>

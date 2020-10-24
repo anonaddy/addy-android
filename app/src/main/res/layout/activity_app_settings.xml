@@ -111,59 +111,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/activity_app_settings_section_faq"
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/faq"
-                            android:src="@drawable/ic_frequently_asked_questions" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/faq"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/faq_desc"
-                            style="@style/DescTextStyle" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
                     android:id="@+id/activity_app_settings_section_changelog"
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
@@ -510,6 +457,182 @@
                             android:fontFamily="sans-serif"
                             android:text="@string/visit_anonaddy_helps_section"
                             style="@style/DescTextStyle" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_app_settings_section_faq"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/faq"
+                            android:src="@drawable/ic_frequently_asked_questions" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/faq"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            style="@style/DescTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/faq_desc" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Stjin"
+                        tools:ignore="HardcodedText" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_app_settings_section_gitlab"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/gitlab_project"
+                            android:src="@drawable/ic_gitlab" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/gitlab_project"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            style="@style/DescTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/gitlab_project_desc" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_app_settings_section_report_issue"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/report_an_issue"
+                            android:src="@drawable/ic_bug" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/report_an_issue"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            style="@style/DescTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/report_an_issue_desc" />
                     </LinearLayout>
 
                 </LinearLayout>

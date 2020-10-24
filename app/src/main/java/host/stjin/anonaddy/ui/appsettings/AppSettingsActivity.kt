@@ -216,6 +216,18 @@ class AppSettingsActivity : BaseActivity(),
             i.data = Uri.parse(url)
             startActivity(i)
         }
+        activity_app_settings_section_gitlab.setOnClickListener {
+            val url = "https://gitlab.com/Stjin/anonaddy-android"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }
+        activity_app_settings_section_report_issue.setOnClickListener {
+            val url = "https://gitlab.com/Stjin/anonaddy-android/-/issues/new"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }
         activity_app_settings_section_logs.setOnClickListener {
             val intent = Intent(this, LogViewerActivity::class.java)
             startActivity(intent)
