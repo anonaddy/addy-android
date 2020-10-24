@@ -97,7 +97,7 @@ class RulesSettingsActivity : BaseActivity() {
                         activity_manage_rules_no_rules.visibility = View.VISIBLE
                     }
 
-                    val rulesAdapter = RulesAdapter(list)
+                    val rulesAdapter = RulesAdapter(list, true)
                     rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
 
                         override fun onClickActivate(pos: Int, aView: View) {

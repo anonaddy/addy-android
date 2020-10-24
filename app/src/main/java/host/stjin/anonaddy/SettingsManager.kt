@@ -12,7 +12,6 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         DARK_MODE("dark_mode"),
         STORE_LOGS("store_logs"),
         VERSION_CODE("version_code"),
-        SHOW_BETA_FEATURES("show_beta_features"),
 
         // Encrypted
         BIOMETRIC_ENABLED("biometric_enabled"),

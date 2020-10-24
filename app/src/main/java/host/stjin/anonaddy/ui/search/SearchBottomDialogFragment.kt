@@ -17,16 +17,15 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.SearchAdapter
-import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.models.Domains
-import host.stjin.anonaddy.models.Recipients
-import host.stjin.anonaddy.models.Usernames
+import host.stjin.anonaddy.models.*
 import kotlinx.android.synthetic.main.bottomsheet_search.*
 import kotlinx.android.synthetic.main.bottomsheet_search.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
@@ -41,7 +40,8 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             filteredAliases: ArrayList<Aliases>,
             filteredRecipients: ArrayList<Recipients>,
             filteredDomains: ArrayList<Domains>,
-            filteredUsernames: ArrayList<Usernames>
+            filteredUsernames: ArrayList<Usernames>,
+            filteredRules: ArrayList<Rules>
         )
     }
 
@@ -145,6 +145,7 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
     var recipients: ArrayList<Recipients>? = null
     var domains: ArrayList<Domains>? = null
     var usernames: ArrayList<Usernames>? = null
+    var rules: ArrayList<Rules>? = null
     private var sourcesToSearch = 0
     private var sourcesSearched = 0
 
@@ -197,6 +198,20 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
                 }
             }
         }
+
+
+
+        if (bs_search_chip_rules.isChecked) {
+            sourcesToSearch++
+
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                networkHelper.getAllRules { rulesList ->
+                    rules = rulesList
+                    sourcesSearched++
+                    performSearch(root, context)
+                }
+            }
+        }
     }
 
 
@@ -206,10 +221,14 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             val filteredRecipients = ArrayList<Recipients>()
             val filteredDomains = ArrayList<Domains>()
             val filteredUsernames = ArrayList<Usernames>()
+            val filteredRules = ArrayList<Rules>()
 
             if (aliases != null) {
                 for (alias in aliases!!) {
-                    if (alias.email.contains(bs_search_term_tiet.text.toString()) || alias.description?.contains(bs_search_term_tiet.text.toString()) == true) {
+                    if (
+                        alias.email.toLowerCase().contains(bs_search_term_tiet.text.toString().toLowerCase()) ||
+                        alias.description?.toLowerCase()?.contains(bs_search_term_tiet.text.toString().toLowerCase()) == true
+                    ) {
                         filteredAliases.add(alias)
                     }
                 }
@@ -217,7 +236,8 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
             if (recipients != null) {
                 for (recipient in recipients!!) {
-                    if (recipient.email.contains(bs_search_term_tiet.text.toString())) {
+                    if (
+                        recipient.email.toLowerCase(Locale.ROOT).contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT))) {
                         filteredRecipients.add(recipient)
                     }
                 }
@@ -226,7 +246,10 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
             if (domains != null) {
                 for (domain in domains!!) {
-                    if (domain.domain.contains(bs_search_term_tiet.text.toString()) || domain.description?.contains(bs_search_term_tiet.text.toString()) == true) {
+                    if (
+                        domain.domain.toLowerCase(Locale.ROOT).contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT)) ||
+                        domain.description?.toLowerCase(Locale.ROOT)?.contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT)) == true
+                    ) {
                         filteredDomains.add(domain)
                     }
                 }
@@ -235,19 +258,31 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
             if (usernames != null) {
                 for (username in usernames!!) {
-                    if (username.username.contains(bs_search_term_tiet.text.toString()) || username.description?.contains(bs_search_term_tiet.text.toString()) == true) {
+                    if (
+                        username.username.toLowerCase(Locale.ROOT).contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT)) ||
+                        username.description?.toLowerCase(Locale.ROOT)?.contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT)) == true
+                    ) {
                         filteredUsernames.add(username)
                     }
                 }
             }
 
-            if (filteredAliases.size == 0 && filteredDomains.size == 0 && filteredRecipients.size == 0 && filteredUsernames.size == 0) {
+            if (rules != null) {
+                for (rule in rules!!) {
+                    if (
+                        rule.name.toLowerCase(Locale.ROOT).contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT))) {
+                        filteredRules.add(rule)
+                    }
+                }
+            }
+
+            if (filteredAliases.size == 0 && filteredDomains.size == 0 && filteredRecipients.size == 0 && filteredUsernames.size == 0 && filteredRules.size == 0) {
                 root.bs_search_title.text = context.resources.getString(R.string.search)
                 root.bs_search_term_til.isEnabled = true
                 root.bs_search_term_til.error =
                     context.resources.getString(R.string.nothing_found)
             } else {
-                listener.onSearch(filteredAliases, filteredRecipients, filteredDomains, filteredUsernames)
+                listener.onSearch(filteredAliases, filteredRecipients, filteredDomains, filteredUsernames, filteredRules)
             }
         }
     }

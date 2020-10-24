@@ -251,24 +251,8 @@ class AppSettingsActivity : BaseActivity(),
     }
 
 
-    private var timesClickedOnVersion = 0
     private fun setVersion() {
         activity_app_settings_version.text = BuildConfig.VERSION_NAME
-
-        activity_app_settings_version.setOnClickListener {
-            timesClickedOnVersion++
-
-            if (timesClickedOnVersion > 10) {
-                val snackbar =
-                    Snackbar.make(
-                        activity_app_settings_LL, resources.getString(R.string.beta_features_unlocked),
-                        Snackbar.LENGTH_SHORT
-                    )
-                snackbar.show()
-
-                settingsManager.putSettingsBool(SettingsManager.PREFS.SHOW_BETA_FEATURES, true)
-            }
-        }
     }
 
     override fun onDarkModeOff() {

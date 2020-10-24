@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="@color/primaryColor"
-    android:elevation="4dp"
     android:padding="8dp">
 
     <ImageView

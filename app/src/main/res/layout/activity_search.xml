@@ -169,6 +169,37 @@
                         app:shimmer_demo_layout_manager_type="linear_vertical" />
 
                 </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/activity_search_rules_LL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/rules" />
+
+                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                        android:id="@+id/activity_search_rules_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        app:shimmer_demo_angle="20"
+                        app:shimmer_demo_child_count="5"
+                        app:shimmer_demo_grid_child_count="1"
+                        app:shimmer_demo_layout="@layout/rules_recyclerview_list_item_rules_shimmer"
+                        app:shimmer_demo_layout_manager_type="linear_vertical" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </RelativeLayout>

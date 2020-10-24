@@ -13,7 +13,8 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Rules
 
 class RulesAdapter(
-    private val listWithRules: ArrayList<Rules>
+    private val listWithRules: ArrayList<Rules>,
+    private val allowDrag: Boolean
 ) :
     RecyclerView.Adapter<RulesAdapter.ViewHolder>() {
 
@@ -33,6 +34,13 @@ class RulesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        if (allowDrag) {
+            holder.rulesRecyclerviewListDragLL.visibility = View.VISIBLE
+        } else {
+            holder.rulesRecyclerviewListDragLL.visibility = View.GONE
+        }
+
         holder.mTitle.text = listWithRules[position].name
 
         holder.rulesRecyclerviewListActivateButton.text =
@@ -75,6 +83,8 @@ class RulesAdapter(
         private var mLL: LinearLayout = view.findViewById(R.id.rules_recyclerview_list_LL)
         private var rulesRecyclerviewListOptionLl: LinearLayout =
             view.findViewById(R.id.rules_recyclerview_list_option_LL)
+        var rulesRecyclerviewListDragLL: LinearLayout =
+            view.findViewById(R.id.rules_recyclerview_list_drag)
         private var mOptionsButton: LinearLayout =
             view.findViewById(R.id.rules_recyclerview_list_expand_options)
         var mTitle: TextView = view.findViewById(R.id.rules_recyclerview_list_title)
@@ -96,11 +106,14 @@ class RulesAdapter(
             rulesRecyclerviewListSettingsButton.setOnClickListener(this)
             rulesRecyclerviewListActivateButton.setOnClickListener(this)
             rulesRecyclerviewListDeleteButton.setOnClickListener(this)
-            rulesRecyclerviewListIcon.setOnTouchListener { view, motionEvent ->
-                if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                    onRuleClicker.startDragging(this)
+
+            if (allowDrag) {
+                rulesRecyclerviewListDragLL.setOnTouchListener { view, motionEvent ->
+                    if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
+                        onRuleClicker.startDragging(this)
+                    }
+                    return@setOnTouchListener true
                 }
-                return@setOnTouchListener true
             }
         }
 

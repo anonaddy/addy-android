@@ -110,7 +110,6 @@
                 android:gravity="center_vertical"
                 android:text="@string/manage_rules"
                 android:textColor="@color/BlackWhite"
-                android:visibility="gone"
                 android:textSize="16sp" />
 
             <TextView

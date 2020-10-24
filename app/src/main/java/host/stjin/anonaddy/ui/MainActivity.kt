@@ -17,12 +17,10 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.models.Domains
-import host.stjin.anonaddy.models.Recipients
-import host.stjin.anonaddy.models.Usernames
+import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.appsettings.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
@@ -192,13 +190,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         filteredAliases: ArrayList<Aliases>,
         filteredRecipients: ArrayList<Recipients>,
         filteredDomains: ArrayList<Domains>,
-        filteredUsernames: ArrayList<Usernames>
+        filteredUsernames: ArrayList<Usernames>,
+        filteredRules: ArrayList<Rules>
     ) {
 
         SearchActivity.FilteredLists.filteredAliases = filteredAliases
         SearchActivity.FilteredLists.filteredRecipients = filteredRecipients
         SearchActivity.FilteredLists.filteredDomains = filteredDomains
         SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
+        SearchActivity.FilteredLists.filteredRules = filteredRules
 
         searchBottomDialogFragment.dismiss()
         val intent = Intent(this, SearchActivity::class.java)
@@ -225,6 +225,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         }
                         SearchActivity.SearchTargets.USERNAMES.activity -> {
                             val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                            startActivity(intent)
+                        }
+                        SearchActivity.SearchTargets.RULES.activity -> {
+                            val intent = Intent(this, RulesSettingsActivity::class.java)
                             startActivity(intent)
                         }
                     }

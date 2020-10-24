@@ -88,7 +88,7 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[<p>&mdash; NOTE &mdash;<br />Starting from this version the app uses version checks thanks to a new API endpoint. The app will work on versions below 0.6.0 but for the best experience, use AnonAddy 0.6.0 or higher.</p>
-<p><br />&mdash; CHANGELOG &mdash;<br />- Added new rule-editor (beta)<br />&nbsp; &nbsp; - The feature is still in beta, and might not be available on the hosted instance<br />&nbsp; &nbsp; - For self-hosted instanced, enable the rule feature in order to use this editor<br />&nbsp; &nbsp; - To use the new rule-editor, tap the version number in the app settings 10 times<br />- Added catch-all switch for AnonAddy v0.4.0&gt;<br />- Added custom alias format option<br />- Added subscription check for random words alias format<br />- Show changelog on update<br />- Added version check (for self hosted instances)<br />- UI improvements</p>]]></string>
+<p><br />&mdash; CHANGELOG &mdash;<br />📋 Added new rule-editor (beta)<br /><em><span style="color: #333399;">The feature is still in beta, and might not be available on the hosted instance</span></em><br /><em><span style="color: #000080;">For self-hosted instanced, enable the rule feature in order to use this editor</span></em><br />🔤 Added catch-all switch for AnonAddy v0.4.0&gt;<br />⌨️ Added custom alias format option<br />💸 Added subscription check for random words alias format<br />💌 Show changelog on update<br />🛠️ Added version check (for self hosted instances)<br />🔎 Improved the search function<br />🌟 UI improvements</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -281,7 +281,6 @@
     <string name="rule_then_">Then %s</string>
     <string name="creating_a_rule">Creating a rule</string>
     <string name="error_creating_rule">An error occurred while saving this rule</string>
-    <string name="beta_features_unlocked">You unlocked beta features</string>
     <string name="drag_to_change_order">Drag to change order</string>
     <string name="error_changing_rules_order">Something went wrong while changing the order of the rules</string>
     <string name="changing_rules_order_success">Successfully changed the order</string>
@@ -315,6 +314,8 @@
     <string name="deactivate">Deactivate</string>
     <string name="rule_activated">Rule activated</string>
     <string name="rule_deactivated">Rule deactivated</string>
+    <string name="rules_unavailable_404">The rules feature is not available in the current instance of AnonAddy. Please make sure that the rules API is available for the current user.</string>
+    <string name="rules">Rules</string>
 
 
 </resources>

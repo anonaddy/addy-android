@@ -1117,7 +1117,6 @@ class NetworkHelper(private val context: Context) {
             404 -> {
                 //TODO Fix getting body the normal way
                 val body = StringUtils.substringBetween(response.toString(), "Body : ", "\n")
-
                 callback("404", body)
             }
             401 -> {
@@ -1766,6 +1765,15 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
+                callback(null)
+            }
+            // Not found, aka the AnonAddy version is <0.6.0 (this endpoint was introduced in 0.6.0)
+            // OR
+            // Not found, aka the rules API (which is in beta as of 0.6.0) is not enabled.
+            // =
+            // Show a toast letting the user know this feature is only available if the rules API is enabled
+            404 -> {
+                Toast.makeText(context, context.resources.getString(R.string.rules_unavailable_404), Toast.LENGTH_LONG).show()
                 callback(null)
             }
             else -> {

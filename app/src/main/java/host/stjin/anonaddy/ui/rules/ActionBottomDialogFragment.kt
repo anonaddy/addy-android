@@ -180,10 +180,10 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         when {
             // If the type is set to set banner information location get the value from the spinner
             root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.set_the_banner_information_location_to) -> {
-                val banner_location =
+                val bannerLocation =
                     VALUE_BANNER_LOCATION[VALUE_BANNER_LOCATION_NAME.indexOf(root.bs_rule_action_values_spinner_banner_location_mact.text.toString())]
 
-                listener.onAddedAction(actionEditIndex, type, banner_location)
+                listener.onAddedAction(actionEditIndex, type, bannerLocation)
             }
 
             // If the type is set to block email send a true

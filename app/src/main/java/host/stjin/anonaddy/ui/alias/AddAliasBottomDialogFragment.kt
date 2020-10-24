@@ -112,7 +112,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
 
                 // Set default format
                 FORMATS = context.resources.getStringArray(R.array.domains_formats_names).toList()
-                val FORMATS_ID = context.resources.getStringArray(R.array.domains_formats).toList()
+                val FORMATSID = context.resources.getStringArray(R.array.domains_formats).toList()
 
                 val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
@@ -123,7 +123,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 // Set default format
                 if (result.defaultAliasFormat != null) {
                     root.bs_addalias_alias_format_mact.setText(
-                        FORMATS[FORMATS_ID.indexOf(result.defaultAliasFormat)],
+                        FORMATS[FORMATSID.indexOf(result.defaultAliasFormat)],
                         false
                     )
                 }

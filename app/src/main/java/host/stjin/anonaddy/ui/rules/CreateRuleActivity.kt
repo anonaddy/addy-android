@@ -158,7 +158,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         // For every condition, add a condition view and append an id to all subviews
         for ((conditionNumber, condition) in rules.conditions.withIndex()) {
 
-
             /**
              * AND/OR
              */
@@ -190,11 +189,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 }
 
                 activity_rules_create_LL_conditions.addView(inflatedLayout)
-
             }
 
             /**
-             * CONDITIONS
+             * CONDITION
              */
 
             val inflatedLayout: View =
@@ -202,12 +200,12 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
             val deleteCondition = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_close)
             val editCondition = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_edit)
-            title.id = conditionNumber
 
 
             val typeText =
                 this.resources.getStringArray(R.array.conditions_type_name)[this.resources.getStringArray(R.array.conditions_type)
                     .indexOf(condition.type)]
+
             val matchText =
                 this.resources.getStringArray(R.array.conditions_match_name)[this.resources.getStringArray(R.array.conditions_match)
                     .indexOf(condition.match)]
@@ -215,7 +213,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             title.text = this.resources.getString(R.string.rule_if_, "`${typeText}` ${matchText}...")
 
             val subtitle = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_subtitle)
-            subtitle.id = conditionNumber
             // Loop through all the values
             var values = ""
             var firstValue = true
@@ -249,7 +246,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     )
                 }
             }
-
 
             activity_rules_create_LL_conditions.addView(inflatedLayout)
         }
@@ -292,7 +288,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
             val deleteAction = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_close)
             val editAction = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_edit)
-            title.id = actionNumber
 
 
             val typeText =
@@ -300,7 +295,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             title.text = this.resources.getString(R.string.rule_then_, "`${typeText}`")
 
             val subtitle = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_subtitle)
-            subtitle.id = actionNumber
             subtitle.text = action.value
 
 

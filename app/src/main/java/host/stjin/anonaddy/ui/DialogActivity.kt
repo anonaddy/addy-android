@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import host.stjin.anonaddy.AnonAddy
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.anonaddysettings.AnonAddySettingsActivity
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
@@ -49,13 +48,11 @@ class DialogActivity : Activity() {
             startActivity(intent)
         }
 
-        if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.SHOW_BETA_FEATURES)) {
-            main_profile_select_dialog_rules.visibility = View.VISIBLE
-            main_profile_select_dialog_rules.setOnClickListener {
-                val intent = Intent(this, RulesSettingsActivity::class.java)
-                startActivity(intent)
-            }
+        main_profile_select_dialog_rules.setOnClickListener {
+            val intent = Intent(this, RulesSettingsActivity::class.java)
+            startActivity(intent)
         }
+
 
         main_profile_select_dialog_username_settings.setOnClickListener {
             val intent = Intent(this, UsernamesSettingsActivity::class.java)
