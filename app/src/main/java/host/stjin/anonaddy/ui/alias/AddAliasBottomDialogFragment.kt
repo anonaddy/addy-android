@@ -66,6 +66,8 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
     the custom format is not available for shared domains
      */
     private fun spinnerChangeListener(root: View, context: Context) {
+        checkIfCustomIsAvailable(root, context)
+
         root.bs_addalias_alias_format_mact.setOnItemClickListener { _, _, _, _ ->
             checkIfCustomIsAvailable(root, context)
             root.bs_addalias_alias_format_til.error = null
@@ -169,7 +171,13 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 root.bs_addalias_alias_format_til.error = context.resources.getString(R.string.domains_format_custom_not_available_for_this_domain)
                 return
             }
+
+            if (root.bs_addalias_alias_local_part_tiet.text.toString().isEmpty()) {
+                root.bs_addalias_alias_local_part_til.error = context.resources.getString(R.string.this_field_cannot_be_empty)
+                return
+            }
         }
+
 
 
         // Set error to null if domain and alias is valid
@@ -180,13 +188,14 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         root.bs_addalias_alias_progressbar.visibility = View.VISIBLE
         val domain = root.bs_addalias_domain_mact.text.toString()
         val description = root.bs_addalias_alias_desc_tiet.text.toString()
+        val localPart = root.bs_addalias_alias_local_part_tiet.text.toString()
         val format =
             context.resources.getStringArray(R.array.domains_formats)[context.resources.getStringArray(
                 R.array.domains_formats_names
             ).indexOf(root.bs_addalias_alias_format_mact.text.toString())]
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            addAliasToAccount(root, context, domain, description, format)
+            addAliasToAccount(root, context, domain, description, format, localPart)
         }
     }
 
@@ -195,10 +204,11 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         context: Context,
         domain: String,
         description: String,
-        format: String
+        format: String,
+        local_part: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addAlias(domain, description, format) { result ->
+        networkHelper.addAlias(domain, description, format, local_part) { result ->
             if (result == "201") {
                 listener.onAdded()
             } else {
@@ -216,5 +226,10 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 addAlias(requireView(), requireContext())
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkIfCustomIsAvailable(requireView(), requireContext())
     }
 }

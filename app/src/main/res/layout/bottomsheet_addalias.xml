@@ -102,7 +102,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     android:imeOptions="actionDone"
-                    android:inputType="textMultiLine"
+                    android:inputType="text"
+                    android:maxLength="50"
                     android:lines="1"
                     android:maxLines="1"
                     android:minLines="1" />
