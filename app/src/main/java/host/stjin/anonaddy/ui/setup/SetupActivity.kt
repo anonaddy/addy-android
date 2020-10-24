@@ -24,6 +24,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup)
+
         window.decorView.systemUiVisibility =
                 // Tells the system that the window wishes the content to
                 // be laid out at the most extreme scenario. See the docs for
@@ -45,14 +46,14 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
              */
 
             val clipboard: ClipboardManager? =
-                baseContext?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipboardData = clipboard?.primaryClip
             val item = clipboardData?.getItemAt(0)
             val text = item?.text.toString()
 
             if (text.length == 999) {
                 // a 999 length string found. This is most likely the API key
-                verifyKeyAndAdd(baseContext, text)
+                verifyKeyAndAdd(this, text)
                 Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()
             } else {
                 if (!addApiBottomDialogFragment.isAdded) {
@@ -102,10 +103,10 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
     private fun addKey(baseUrl: String, apiKey: String) {
-        val settingsManager = SettingsManager(true, baseContext)
+        val settingsManager = SettingsManager(true, this)
         settingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
         settingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
-        val intent = Intent(baseContext, SplashActivity::class.java)
+        val intent = Intent(this, SplashActivity::class.java)
         startActivity(intent)
         finish()
     }

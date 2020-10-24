@@ -11,6 +11,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     enum class PREFS(val filename: String) {
         DARK_MODE("dark_mode"),
         STORE_LOGS("store_logs"),
+        VERSION_CODE("version_code"),
 
         // Encrypted
         BIOMETRIC_ENABLED("biometric_enabled"),

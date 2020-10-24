@@ -83,9 +83,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                         Snackbar.LENGTH_SHORT
                     )
 
-                if (SettingsManager(false, baseContext).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -216,8 +216,10 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 customLayout.dialog_error.visibility = View.VISIBLE
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_domain) + "\n" + result
+                customLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_domain), result
+                )
             }
         }
     }

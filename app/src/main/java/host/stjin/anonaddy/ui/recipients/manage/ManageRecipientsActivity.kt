@@ -36,7 +36,7 @@ class ManageRecipientsActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_recipients)
         setupToolbar(activity_manage_recipient_toolbar)
-        networkHelper = NetworkHelper(applicationContext)
+        networkHelper = NetworkHelper(this)
 
 
         val b = intent.extras
@@ -132,12 +132,12 @@ class ManageRecipientsActivity : BaseActivity(),
                 activity_manage_recipient_encryption_active_switch.isChecked = true
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_recipient_LL),
-                    applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -157,12 +157,12 @@ class ManageRecipientsActivity : BaseActivity(),
                 activity_manage_recipient_encryption_active_switch.isChecked = false
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_recipient_LL),
-                    applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -195,7 +195,7 @@ class ManageRecipientsActivity : BaseActivity(),
             removeGpgKeyCustomLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                removeGpgKeyHttpRequest(id, applicationContext)
+                removeGpgKeyHttpRequest(id, this@ManageRecipientsActivity)
             }
         }
         removeGpgKeyCustomLayout.dialog_negative_button.setOnClickListener {
@@ -228,7 +228,7 @@ class ManageRecipientsActivity : BaseActivity(),
             customLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteRecipientHttpRequest(id, applicationContext)
+                deleteRecipientHttpRequest(id, this@ManageRecipientsActivity)
             }
         }
         customLayout.dialog_negative_button.setOnClickListener {
@@ -248,8 +248,10 @@ class ManageRecipientsActivity : BaseActivity(),
                 customLayout.dialog_error.visibility = View.VISIBLE
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_recipient) + "\n" + result
+                customLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_recipient), result
+                )
             }
         }
     }
@@ -264,8 +266,10 @@ class ManageRecipientsActivity : BaseActivity(),
                 removeGpgKeyCustomLayout.dialog_error.visibility = View.VISIBLE
                 removeGpgKeyCustomLayout.dialog_negative_button.isEnabled = true
                 removeGpgKeyCustomLayout.dialog_positive_button.isEnabled = true
-                removeGpgKeyCustomLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_removing_gpg_key) + "\n" + result
+                removeGpgKeyCustomLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_removing_gpg_key), result
+                )
             }
         }, id)
     }

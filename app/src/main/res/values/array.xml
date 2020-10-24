@@ -3,10 +3,98 @@
     <string-array name="domains_formats_names">
         <item>@string/domains_format_uuid</item>
         <item>@string/domains_format_random_words</item>
+        <item>@string/domains_format_custom</item>
     </string-array>
 
     <string-array name="domains_formats">
         <item>uuid</item>
         <item>random_words</item>
+        <item>custom</item>
     </string-array>
+
+    <!--the custom format is not available for shared domains -->
+    <string-array name="shared_domains">
+        <item>anonaddy.me</item>
+        <item>4wrd.cc</item>
+    </string-array>
+
+
+    <!-- RULE CONDITIONS -->
+    <string-array name="conditions.type">
+        <item>sender</item>
+        <item>subject</item>
+        <item>alias</item>
+    </string-array>
+    <string-array name="conditions.type.name">
+        <item>@string/the_sender</item>
+        <item>@string/the_subject</item>
+        <item>@string/the_alias</item>
+    </string-array>
+    <string-array name="conditions.match">
+        <item>contains</item>
+        <item>does not contain</item>
+        <item>is exactly</item>
+        <item>is not</item>
+        <item>starts with</item>
+        <item>does not start with</item>
+        <item>ends with</item>
+        <item>does not end with</item>
+    </string-array>
+    <string-array name="conditions.match.name">
+        <item>@string/contains</item>
+        <item>@string/does_not_contain</item>
+        <item>@string/is_exactly</item>
+        <item>@string/is_not</item>
+        <item>@string/starts_with</item>
+        <item>@string/does_not_start_with</item>
+        <item>@string/ends_with</item>
+        <item>@string/does_not_end_with</item>
+    </string-array>
+
+    <!-- RULE CONDITIONS -->
+    <string-array name="actions.type">
+        <item>subject</item>
+        <item>displayFrom</item>
+        <item>encryption</item>
+        <item>banner</item>
+        <item>block</item>
+    </string-array>
+    <string-array name="actions.type.name">
+        <item>@string/replace_the_subject_with</item>
+        <item>@string/replace_the_from_name_with</item>
+        <item>@string/turn_PGP_encryption_off</item>
+        <item>@string/set_the_banner_information_location_to</item>
+        <item>@string/block_the_email</item>
+    </string-array>
+
+    <string-array name="actions.type.bannerlocation.options">
+        <item>top</item>
+        <item>bottom</item>
+        <item>off</item>
+    </string-array>
+    <string-array name="actions.type.bannerlocation.options.name">
+        <item>@string/rule_bannerlocation_top</item>
+        <item>@string/rule_bannerlocation_bottom</item>
+        <item>@string/rule_bannerlocation_off</item>
+    </string-array>
+
+    <string name="contains">contains</string>
+    <string name="rule_bannerlocation_top">top</string>
+    <string name="rule_bannerlocation_bottom">bottom</string>
+    <string name="rule_bannerlocation_off">off</string>
+    <string name="the_sender">the sender</string>
+    <string name="the_subject">the subject</string>
+    <string name="the_alias">the alias</string>
+    <string name="does_not_contain">does not contain</string>
+    <string name="is_exactly">is exactly</string>
+    <string name="is_not">is not</string>
+    <string name="starts_with">starts with</string>
+    <string name="does_not_start_with">does not start with</string>
+    <string name="ends_with">end with</string>
+    <string name="does_not_end_with">does not ends with</string>
+    <string name="replace_the_subject_with">replace the subject with</string>
+    <string name="replace_the_from_name_with">replace the "from name" with</string>
+    <string name="turn_PGP_encryption_off">turn PGP encryption off</string>
+    <string name="set_the_banner_information_location_to">set the banner information location to</string>
+    <string name="block_the_email">block the email</string>
 </resources>

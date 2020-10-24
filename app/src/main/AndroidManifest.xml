@@ -13,8 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="AllowBackup">
-
-
         <!-- Widget -->
         <receiver android:name=".widget.AliasWidgetProvider">
             <intent-filter>
@@ -28,9 +26,7 @@
 
         <service
             android:name=".widget.AliasWidgetRemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <!-- END widget -->
-
+            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- END widget -->
         <activity
             android:name=".ui.SplashActivity"
             android:label="@string/app_name"
@@ -57,6 +53,12 @@
         </activity>
         <activity
             android:name=".ui.appsettings.logs.LogViewerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.rules.CreateRuleActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.rules.RulesSettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.domains.DomainSettingsActivity"

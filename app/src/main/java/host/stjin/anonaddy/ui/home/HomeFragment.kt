@@ -8,6 +8,7 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -224,7 +225,7 @@ class HomeFragment : Fragment() {
         root.home_statistics_aliases_progress.max = maxAliases * 100
         root.home_statistics_aliases_current.text = count.toString()
         root.home_statistics_aliases_max.text = if (maxAliases == 0) "∞" else maxAliases.toString()
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             ObjectAnimator.ofInt(
                 root.home_statistics_aliases_progress,
                 "progress",
@@ -244,11 +245,15 @@ class HomeFragment : Fragment() {
             if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
 
 
-        root.home_statistics_monthly_bandwidth_current.text = "${roundOffDecimal(currMonthlyBandwidth)}MB"
+        root.home_statistics_monthly_bandwidth_current.text =
+            this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
 
 
         root.home_statistics_monthly_bandwidth_max.text =
-            "${if (maxMonthlyBandwidth == 0) "∞" else maxMonthlyBandwidth.toString()}MB"
+            if (maxMonthlyBandwidth == 0) this.resources.getString(R.string._sMB, "∞") else this.resources.getString(
+                R.string._sMB,
+                maxMonthlyBandwidth.toString()
+            )
 
 
         ObjectAnimator.ofInt(

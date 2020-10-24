@@ -1,0 +1,18 @@
+# Changelog
+
+## [AnonAddy v1.1.0] - 2020-10-24
+
+### Added
+-  📋 Added new rule-editor (beta)
+    -  The feature is still in beta, and might not be available on the hosted instance
+    -  For self-hosted instanced, enable the rule feature in order to use this editor
+-  🔤 Added catch-all switch for AnonAddy v0.4.0>
+-  ⌨ Added custom alias format option
+-  💸 Added subscription check for random words alias format
+-  💌 Show changelog on update
+-  🛠️ Added version check (for self hosted instances)
+
+
+### Fixed/Improved
+-  🔎 Improved the search function
+-  🌟 UI improvements

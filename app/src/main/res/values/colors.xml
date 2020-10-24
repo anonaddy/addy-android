@@ -25,4 +25,6 @@
     <color name="pillColor">#CCCCCC</color>
     <color name="titOutlineColor">#BABABA</color>
 
+    <color name="colorControlNormal">#89000000</color>
+
 </resources>

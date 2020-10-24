@@ -12,6 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.models.SUBSCRIPTIONS
 import host.stjin.anonaddy.models.User
 import kotlinx.android.synthetic.main.bottomsheet_addalias.view.*
 import kotlinx.coroutines.CoroutineStart
@@ -55,10 +56,34 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             fillSpinners(root, requireContext())
         }
+
         root.bs_addalias_alias_add_alias_button.setOnClickListener(this)
-
+        spinnerChangeListener(root, requireContext())
         return root
+    }
 
+    /*
+    the custom format is not available for shared domains
+     */
+    private fun spinnerChangeListener(root: View, context: Context) {
+        root.bs_addalias_alias_format_mact.setOnItemClickListener { _, _, _, _ ->
+            checkIfCustomIsAvailable(root, context)
+            root.bs_addalias_alias_format_til.error = null
+        }
+
+        root.bs_addalias_domain_mact.setOnItemClickListener { _, _, _, _ ->
+            checkIfCustomIsAvailable(root, context)
+            root.bs_addalias_domain_til.error = null
+        }
+    }
+
+    private fun checkIfCustomIsAvailable(root: View, context: Context) {
+        // If the selected domain format is custom
+        if (root.bs_addalias_alias_format_mact.text.toString() == context.resources.getString(R.string.domains_format_custom)) {
+            root.bs_addalias_alias_local_part_til.visibility = View.VISIBLE
+        } else {
+            root.bs_addalias_alias_local_part_til.visibility = View.GONE
+        }
     }
 
 
@@ -87,7 +112,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
 
                 // Set default format
                 FORMATS = context.resources.getStringArray(R.array.domains_formats_names).toList()
-                val FORMATS_ID = context.resources.getStringArray(R.array.domains_formats).toList()
+                val FORMATSID = context.resources.getStringArray(R.array.domains_formats).toList()
 
                 val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
@@ -98,7 +123,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 // Set default format
                 if (result.defaultAliasFormat != null) {
                     root.bs_addalias_alias_format_mact.setText(
-                        FORMATS[FORMATS_ID.indexOf(result.defaultAliasFormat)],
+                        FORMATS[FORMATSID.indexOf(result.defaultAliasFormat)],
                         false
                     )
                 }
@@ -126,6 +151,26 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 context.resources.getString(R.string.not_a_valid_alias_format)
             return
         }
+
+        // If the selected domain format is random words
+        if (root.bs_addalias_alias_format_mact.text.toString() == context.resources.getString(R.string.domains_format_random_words)) {
+            // If the user has a free subscription
+            if (User.userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+                root.bs_addalias_alias_format_til.error =
+                    context.resources.getString(R.string.domains_format_random_words_not_available_for_this_subscription)
+                return
+            }
+        }
+
+        // If the selected domain format is custom
+        if (root.bs_addalias_alias_format_mact.text.toString() == context.resources.getString(R.string.domains_format_custom)) {
+            // If the selected domain contains a shared domain disable the local part box
+            if (context.resources.getStringArray(R.array.shared_domains).contains(root.bs_addalias_domain_mact.text.toString())) {
+                root.bs_addalias_alias_format_til.error = context.resources.getString(R.string.domains_format_custom_not_available_for_this_domain)
+                return
+            }
+        }
+
 
         // Set error to null if domain and alias is valid
         root.bs_addalias_domain_til.error = null

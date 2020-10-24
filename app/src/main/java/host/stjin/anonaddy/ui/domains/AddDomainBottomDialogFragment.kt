@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -149,7 +150,7 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
             anim.duration = 500
             anim.repeatMode = Animation.REVERSE
             root.bs_add_domain_setup_1.startAnimation(anim)
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 root.bs_add_domain_setup_1.visibility = View.GONE
                 root.bs_add_domain_setup_2.visibility = View.VISIBLE
                 anim = AlphaAnimation(0.0f, 1.0f)
@@ -171,7 +172,7 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
         anim.duration = 500
         anim.repeatMode = Animation.REVERSE
         root.bs_add_domain_setup_2.startAnimation(anim)
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             anim = AlphaAnimation(0.0f, 1.0f)
             anim.duration = 500
             anim.repeatMode = Animation.REVERSE

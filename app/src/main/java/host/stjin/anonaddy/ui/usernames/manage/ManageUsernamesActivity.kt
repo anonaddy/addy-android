@@ -39,7 +39,7 @@ class ManageUsernamesActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_usernames)
         setupToolbar(activity_manage_username_toolbar)
-        networkHelper = NetworkHelper(applicationContext)
+        networkHelper = NetworkHelper(this)
 
 
         val b = intent.extras
@@ -89,12 +89,12 @@ class ManageUsernamesActivity : BaseActivity(),
                 activity_manage_username_active_switch.isChecked = true
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_username_LL),
-                    applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -114,12 +114,12 @@ class ManageUsernamesActivity : BaseActivity(),
                 activity_manage_username_active_switch.isChecked = false
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_username_LL),
-                    applicationContext.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
                 if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     snackbar.setAction(R.string.logs) {
-                        val intent = Intent(baseContext, LogViewerActivity::class.java)
+                        val intent = Intent(this, LogViewerActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -182,7 +182,7 @@ class ManageUsernamesActivity : BaseActivity(),
             customLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteUsernameHttpRequest(id, applicationContext)
+                deleteUsernameHttpRequest(id, this@ManageUsernamesActivity)
             }
         }
         customLayout.dialog_negative_button.setOnClickListener {
@@ -204,8 +204,10 @@ class ManageUsernamesActivity : BaseActivity(),
                 customLayout.dialog_error.visibility = View.VISIBLE
                 customLayout.dialog_negative_button.isEnabled = true
                 customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
-                    context.resources.getString(R.string.error_deleting_username) + "\n" + result
+                customLayout.dialog_error.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_username), result
+                )
             }
         }
     }
@@ -268,7 +270,7 @@ class ManageUsernamesActivity : BaseActivity(),
                  */
 
                 // Set recipient
-                val recipients: String = list.default_recipient?.email ?: applicationContext.resources.getString(
+                val recipients: String = list.default_recipient?.email ?: this.resources.getString(
                     R.string.default_recipient_s, User.userResourceExtended.default_recipient_email
                 )
 
@@ -288,7 +290,7 @@ class ManageUsernamesActivity : BaseActivity(),
                 if (list.description != null) {
                     activity_manage_username_desc.text = list.description
                 } else {
-                    activity_manage_username_desc.text = applicationContext.resources.getString(
+                    activity_manage_username_desc.text = this.resources.getString(
                         R.string.username_no_description
                     )
                 }

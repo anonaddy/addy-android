@@ -14,13 +14,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.models.Domains
-import host.stjin.anonaddy.models.Recipients
-import host.stjin.anonaddy.models.Usernames
+import host.stjin.anonaddy.models.*
+import host.stjin.anonaddy.ui.appsettings.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
@@ -50,6 +50,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         setContentView(R.layout.activity_main)
         checkForDarkModeAndSetFlags()
 
+        showChangeLog()
+
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)
@@ -63,9 +65,27 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         initialiseMainAppBar()
     }
 
+    private fun showChangeLog() {
+        // Check the version code in the sharedpreferences, if the one in the preferences is older than the current one, the app got updated.
+        // Show the changelog
+        val settingsManager = SettingsManager(false, this)
+        if (settingsManager.getSettingsInt(SettingsManager.PREFS.VERSION_CODE) < BuildConfig.VERSION_CODE) {
+            val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
+                ChangelogBottomDialogFragment.newInstance()
+            addChangelogBottomDialogFragment.show(
+                supportFragmentManager,
+                "MainActivity:addChangelogBottomDialogFragment"
+            )
+        }
+
+        // Write the current version code to prevent double triggering
+        settingsManager.putSettingsInt(SettingsManager.PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
+    }
+
     private fun verifyBiometrics() {
         val executor = ContextCompat.getMainExecutor(this)
-        val biometricPrompt = BiometricPrompt(this, executor,
+        val biometricPrompt = BiometricPrompt(
+            this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(
                     errorCode: Int,
@@ -76,16 +96,16 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     if (errorCode == BiometricPrompt.ERROR_NO_BIOMETRICS) {
                         // The user has removed the screen lock completely.
                         // Unlock the app and continue
-                        SettingsManager(true, applicationContext).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
+                        SettingsManager(true, this@MainActivity).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
                         Toast.makeText(
-                            applicationContext, resources.getString(
+                            this@MainActivity, resources.getString(
                                 R.string.authentication_error_11
                             ), Toast.LENGTH_LONG
                         ).show()
                         loadMainActivity()
                     } else {
                         Toast.makeText(
-                            applicationContext, resources.getString(
+                            this@MainActivity, resources.getString(
                                 R.string.authentication_error_s,
                                 errString
                             ), Toast.LENGTH_LONG
@@ -170,16 +190,18 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         filteredAliases: ArrayList<Aliases>,
         filteredRecipients: ArrayList<Recipients>,
         filteredDomains: ArrayList<Domains>,
-        filteredUsernames: ArrayList<Usernames>
+        filteredUsernames: ArrayList<Usernames>,
+        filteredRules: ArrayList<Rules>
     ) {
 
         SearchActivity.FilteredLists.filteredAliases = filteredAliases
         SearchActivity.FilteredLists.filteredRecipients = filteredRecipients
         SearchActivity.FilteredLists.filteredDomains = filteredDomains
         SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
+        SearchActivity.FilteredLists.filteredRules = filteredRules
 
         searchBottomDialogFragment.dismiss()
-        val intent = Intent(baseContext, SearchActivity::class.java)
+        val intent = Intent(this, SearchActivity::class.java)
         startActivityForResult(intent, SEARCH_CONSTANT)
     }
 
@@ -198,11 +220,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                             switchFragments(R.id.navigation_recipients)
                         }
                         SearchActivity.SearchTargets.DOMAINS.activity -> {
-                            val intent = Intent(baseContext, DomainSettingsActivity::class.java)
+                            val intent = Intent(this, DomainSettingsActivity::class.java)
                             startActivity(intent)
                         }
                         SearchActivity.SearchTargets.USERNAMES.activity -> {
-                            val intent = Intent(baseContext, UsernamesSettingsActivity::class.java)
+                            val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                            startActivity(intent)
+                        }
+                        SearchActivity.SearchTargets.RULES.activity -> {
+                            val intent = Intent(this, RulesSettingsActivity::class.java)
                             startActivity(intent)
                         }
                     }

@@ -10,25 +10,22 @@ import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.adapter.AliasAdapter
-import host.stjin.anonaddy.adapter.DomainAdapter
-import host.stjin.anonaddy.adapter.RecipientAdapter
-import host.stjin.anonaddy.adapter.UsernameAdapter
-import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.models.Domains
-import host.stjin.anonaddy.models.Recipients
-import host.stjin.anonaddy.models.Usernames
+import host.stjin.anonaddy.adapter.*
+import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
+import host.stjin.anonaddy.ui.rules.CreateRuleActivity
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredAliases
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredDomains
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRecipients
+import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRules
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUsernames
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import kotlinx.android.synthetic.main.activity_search.*
@@ -44,7 +41,8 @@ class SearchActivity : BaseActivity() {
         ALIASES("aliases"),
         RECIPIENTS("recipients"),
         DOMAINS("domains"),
-        USERNAMES("usernames")
+        USERNAMES("usernames"),
+        RULES("rules")
     }
 
     object FilteredLists {
@@ -52,6 +50,7 @@ class SearchActivity : BaseActivity() {
         var filteredRecipients: ArrayList<Recipients>? = null
         var filteredDomains: ArrayList<Domains>? = null
         var filteredUsernames: ArrayList<Usernames>? = null
+        var filteredRules: ArrayList<Rules>? = null
     }
 
     // TODO Get these lists through bundles?
@@ -62,6 +61,7 @@ class SearchActivity : BaseActivity() {
         filteredRecipients = null
         filteredDomains = null
         filteredUsernames = null
+        filteredRules = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +98,12 @@ class SearchActivity : BaseActivity() {
             setUsernames()
         }
 
-        if (filteredAliases?.size ?: 0 == 0 && filteredDomains?.size ?: 0 == 0 && filteredRecipients?.size ?: 0 == 0 && filteredUsernames?.size ?: 0 == 0) {
+        if (filteredRules?.size ?: 0 > 0) {
+            activity_search_rules_LL.visibility = View.VISIBLE
+            setRules()
+        }
+
+        if (filteredAliases?.size ?: 0 == 0 && filteredDomains?.size ?: 0 == 0 && filteredRecipients?.size ?: 0 == 0 && filteredUsernames?.size ?: 0 == 0 && filteredRules?.size ?: 0 == 0) {
             activity_search_RL_lottieview.visibility = View.VISIBLE
         }
 
@@ -147,6 +152,67 @@ class SearchActivity : BaseActivity() {
             })
             adapter = usernamesAdapter
             activity_search_usernames_recyclerview.hideShimmerAdapter()
+        }
+
+    }
+
+
+    private fun setRules() {
+        activity_search_rules_recyclerview.apply {
+
+            if (itemDecorationCount > 0) {
+                addItemDecoration(
+                    DividerItemDecoration(
+                        this.context,
+                        (layoutManager as LinearLayoutManager).orientation
+                    )
+                )
+            }
+            // set a LinearLayoutManager to handle Android
+            // RecyclerView behavior
+            layoutManager = LinearLayoutManager(context)
+            // set the custom adapter to the RecyclerView
+
+            if (shouldAnimateRecyclerview) {
+                shouldAnimateRecyclerview = false
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                activity_search_rules_recyclerview.layoutAnimation = animation
+            }
+
+            val rulesAdapter = RulesAdapter(filteredRules!!, false)
+            rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
+                override fun onClickActivate(pos: Int, aView: View) {
+                    val data = Intent()
+                    data.putExtra("target", SearchTargets.RULES.activity)
+                    setResult(RESULT_OK, data)
+                    finish()
+                }
+
+                override fun onClickSettings(pos: Int, aView: View) {
+                    val intent = Intent(context, CreateRuleActivity::class.java)
+                    intent.putExtra("rule_id", filteredRules!![pos].id)
+                    startActivity(intent)
+                }
+
+                override fun onClickDelete(pos: Int, aView: View) {
+                    val data = Intent()
+                    data.putExtra("target", SearchTargets.RULES.activity)
+                    setResult(RESULT_OK, data)
+                    finish()
+                }
+
+                override fun onItemMove(fromPosition: Int, toPosition: Int) {
+                    // Not used
+                }
+
+                override fun startDragging(viewHolder: RecyclerView.ViewHolder?) {
+                    // Not used
+                }
+
+            })
+            adapter = rulesAdapter
+            activity_search_rules_recyclerview.hideShimmerAdapter()
         }
 
     }

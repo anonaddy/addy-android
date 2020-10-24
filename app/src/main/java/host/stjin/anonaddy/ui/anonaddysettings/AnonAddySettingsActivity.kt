@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.models.User
@@ -139,7 +140,7 @@ class AnonAddySettingsActivity : BaseActivity() {
         anonaddy_settings_statistics_aliases_desc.text =
             resources.getString(R.string.anonaddy_settings_statistics_aliases_desc, count, maxAliasesDescString)
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             ObjectAnimator.ofInt(
                 anonaddy_settings_statistics_aliases_progress,
                 "progress",

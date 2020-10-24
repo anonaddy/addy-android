@@ -39,8 +39,8 @@ class AppSettingsActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_settings)
-        settingsManager = SettingsManager(false, applicationContext)
-        encryptedSettingsManager = SettingsManager(true, applicationContext)
+        settingsManager = SettingsManager(false, this)
+        encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(appsettings_toolbar)
         setVersion()
         loadSettings()
@@ -131,7 +131,7 @@ class AppSettingsActivity : BaseActivity(),
                     super.onAuthenticationError(errorCode, errString)
                     Snackbar.make(
                         findViewById(R.id.activity_app_settings_LL),
-                        applicationContext.resources.getString(
+                        this@AppSettingsActivity.resources.getString(
                             R.string.authentication_error_s,
                             errString
                         ),
@@ -249,6 +249,7 @@ class AppSettingsActivity : BaseActivity(),
         // create and show the alert dialog
         dialog.show()
     }
+
 
     private fun setVersion() {
         activity_app_settings_version.text = BuildConfig.VERSION_NAME

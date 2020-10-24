@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_rules_create_LL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/activity_rules_create_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primaryColor">
+
+        <TextView
+            android:id="@+id/activity_rules_create_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/creating_a_rule"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+
+        <ImageView
+            android:id="@+id/activity_rules_create_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            app:srcCompat="@drawable/ic_outline_check_24"
+            android:contentDescription="@string/save_rule"
+            app:tint="@android:color/white" />
+
+        <ProgressBar
+            android:id="@+id/activity_rules_create_progressbar"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:padding="4dp"
+            android:visibility="invisible" />
+
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/activity_rules_create_RL_lottieview"
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="32dp"
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/no_internet_connection" />
+
+            <ProgressBar
+                android:id="@+id/activity_rules_create_RL_progressbar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <LinearLayout
+                android:id="@+id/activity_rules_create_LL1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="invisible">
+
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/rule_name" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/activity_rules_create_rule_name_til"
+                    style="@style/AnonAddyTextInputLayoutOutlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/enter_name"
+                    android:visibility="visible">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/activity_rules_create_rule_name_tiet"
+                        style="@style/AnonAddyTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:minLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/titleTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/conditions" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/activity_rules_create_add_condition"
+                            style="@style/MaterialTextButtonWithoutSpacing"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/add_condition" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_rules_create_LL_conditions"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/titleTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/actions_then" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/activity_rules_create_add_action"
+                            style="@style/MaterialTextButtonWithoutSpacing"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/add_action" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/activity_rules_create_LL_actions"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
