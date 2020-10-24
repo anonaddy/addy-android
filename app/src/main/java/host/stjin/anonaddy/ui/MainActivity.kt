@@ -36,6 +36,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkForDarkModeAndSetFlags()
 
         val settingsManager = SettingsManager(true, this)
         // First check for biometrics with a fallback on screen lock
@@ -48,8 +49,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private fun loadMainActivity() {
         setContentView(R.layout.activity_main)
-        checkForDarkModeAndSetFlags()
-
         showChangeLog()
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
@@ -93,24 +92,33 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 ) {
                     super.onAuthenticationError(errorCode, errString)
 
-                    if (errorCode == BiometricPrompt.ERROR_NO_BIOMETRICS) {
-                        // The user has removed the screen lock completely.
-                        // Unlock the app and continue
-                        SettingsManager(true, this@MainActivity).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
-                        Toast.makeText(
-                            this@MainActivity, resources.getString(
-                                R.string.authentication_error_11
-                            ), Toast.LENGTH_LONG
-                        ).show()
-                        loadMainActivity()
-                    } else {
-                        Toast.makeText(
-                            this@MainActivity, resources.getString(
-                                R.string.authentication_error_s,
-                                errString
-                            ), Toast.LENGTH_LONG
-                        ).show()
-                        finish()
+                    when (errorCode) {
+                        BiometricPrompt.ERROR_NO_BIOMETRICS -> {
+                            // The user has removed the screen lock completely.
+                            // Unlock the app and continue
+                            SettingsManager(true, this@MainActivity).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
+                            Toast.makeText(
+                                this@MainActivity, resources.getString(
+                                    R.string.authentication_error_11
+                                ), Toast.LENGTH_LONG
+                            ).show()
+                            loadMainActivity()
+                        }
+                        BiometricPrompt.ERROR_USER_CANCELED -> {
+                            finish()
+                        }
+                        BiometricPrompt.ERROR_CANCELED -> {
+                            finish()
+                        }
+                        else -> {
+                            Toast.makeText(
+                                this@MainActivity, resources.getString(
+                                    R.string.authentication_error_s,
+                                    errString
+                                ), Toast.LENGTH_LONG
+                            ).show()
+                            finish()
+                        }
                     }
                 }
 

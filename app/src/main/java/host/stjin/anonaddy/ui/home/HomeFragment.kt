@@ -61,7 +61,6 @@ class HomeFragment : Fragment() {
 
         // We load values from local to make the app look quick and snappy!
         setOnClickListeners(root)
-
         getStatistics(root)
         // Called on OnResume()
         // getDataFromWeb(root, requireContext())

@@ -316,6 +316,7 @@
     <string name="rule_deactivated">Rule deactivated</string>
     <string name="rules_unavailable_404">The rules feature is not available in the current instance of AnonAddy. Please make sure that the rules API is available for the current user.</string>
     <string name="rules">Rules</string>
+    <string name="this_field_cannot_be_empty">This field cannot be empty</string>
 
 
 </resources>

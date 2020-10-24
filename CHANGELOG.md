@@ -1,5 +1,12 @@
 # Changelog
 
+## [AnonAddy v1.1.1] - 2020-10-24
+
+### Fixed/Improved
+-  Added the forgotten piece of the custom alias format >.<
+-  Fixed crash at double Biometrics authentication prompt when dark mode was enabled
+
+
 ## [AnonAddy v1.1.0] - 2020-10-24
 
 ### Added
