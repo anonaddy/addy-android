@@ -10,21 +10,24 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.*
+import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.home.HomeFragment
+import host.stjin.anonaddy.ui.recipients.RecipientsFragment
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_top_bar_not_user.*
+import kotlin.math.abs
 
 class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener {
 
@@ -32,6 +35,13 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private val SEARCH_CONSTANT: Int = 1
     private val searchBottomDialogFragment: SearchBottomDialogFragment =
         SearchBottomDialogFragment.newInstance()
+
+
+    private val fragmentList = arrayListOf(
+        HomeFragment.newInstance(),
+        AliasFragment.newInstance(),
+        RecipientsFragment.newInstance()
+    )
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,14 +61,34 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         setContentView(R.layout.activity_main)
         showChangeLog()
 
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        activity_main_viewpager.adapter = MainViewpagerAdapter(this, fragmentList)
+        activity_main_viewpager.offscreenPageLimit = 3
+        activity_main_viewpager.isUserInputEnabled = false
+        activity_main_viewpager.setPageTransformer { page, position ->
+            val normalizedposition = abs(abs(position) - 1)
+            page.alpha = normalizedposition
+        }
 
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        navView.setupWithNavController(navController)
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            changeTopBarTitle(destination.label.toString())
+        activity_main_viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    0 -> {
+                        nav_view.menu.findItem(R.id.navigation_home).isChecked = true
+                    }
+                    1 -> {
+                        nav_view.menu.findItem(R.id.navigation_alias).isChecked = true
+                    }
+                    2 -> {
+                        nav_view.menu.findItem(R.id.navigation_recipients).isChecked = true
+                    }
+                }
+                super.onPageSelected(position)
+            }
+        })
+
+        nav_view.setOnNavigationItemSelectedListener {
+            switchFragments(it.itemId)
+            false
         }
 
         initialiseMainAppBar()
@@ -190,8 +220,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     fun switchFragments(fragment: Int) {
-        val navController = findNavController(R.id.nav_host_fragment)
-        navController.navigate(fragment)
+        when (fragment) {
+            R.id.navigation_home -> activity_main_viewpager.currentItem = 0
+            R.id.navigation_alias -> activity_main_viewpager.currentItem = 1
+            R.id.navigation_recipients -> activity_main_viewpager.currentItem = 2
+        }
     }
 
     override fun onSearch(

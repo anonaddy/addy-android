@@ -43,6 +43,9 @@ class HomeFragment : Fragment() {
     private var networkHelper: NetworkHelper? = null
     private var shouldAnimateRecyclerview: Boolean = true
 
+    companion object {
+        fun newInstance() = HomeFragment()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

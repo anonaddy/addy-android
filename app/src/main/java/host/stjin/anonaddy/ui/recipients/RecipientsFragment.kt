@@ -35,6 +35,10 @@ import kotlinx.coroutines.launch
 class RecipientsFragment : Fragment(),
     AddRecipientBottomDialogFragment.AddRecipientBottomDialogListener {
 
+    companion object {
+        fun newInstance() = RecipientsFragment()
+    }
+
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
     private var shouldAnimateRecyclerview: Boolean = true

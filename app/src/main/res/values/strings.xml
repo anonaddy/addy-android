@@ -102,6 +102,7 @@
     <string name="error_adding_recipient">Something went wrong while creating this alias</string>
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
     <string name="no_aliases">You have no aliases, what about creating one?</string>
+    <string name="no_deleted_aliases">You have no deleted aliases</string>
     <string name="alias_status_active">Alias active</string>
     <string name="alias_status_desc">Use this alias for mail forwarding</string>
     <string name="delete_alias">Delete alias</string>
@@ -321,6 +322,7 @@
     <string name="gitlab_project_desc">View source code and report issues</string>
     <string name="report_an_issue">Report an issue</string>
     <string name="report_an_issue_desc">Found a bug? Tap here to create a report.</string>
+    <string name="deleted_aliases">Deleted aliases</string>
 
 
 </resources>
