@@ -33,7 +33,7 @@ class RecipientAdapter(
         var forwardedEmails = 0
 
         // Count the total amount of forwarded emails for all aliases
-        // We can only check the forwarded emails if the aliases are more than 0
+        // can only check the forwarded emails if the aliases are more than 0
         if (aliases > 0) {
             for (alias in listWithRecipients[position].aliases!!) {
                 forwardedEmails += alias.emails_forwarded

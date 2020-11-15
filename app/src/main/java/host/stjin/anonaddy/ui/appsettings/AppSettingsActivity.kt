@@ -165,7 +165,7 @@ class AppSettingsActivity : BaseActivity(),
             })
 
         activity_app_settings_section_security_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
             if (compoundButton.isPressed || forceSwitch) {
                 forceSwitch = false
                 shouldEnableBiometric = b

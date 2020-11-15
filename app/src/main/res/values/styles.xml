@@ -244,7 +244,7 @@
         <item name="android:popupElevation">4dp</item>
         <!--
          When this overlay is applied, the AutoCompleteTextView
-         loses padding. Luckily, we can restore it by defining
+         loses padding. Luckily, can restore it by defining
          a style that should be applied to all AutoCompletTextView(s)
          in this theme/overlay
          -->

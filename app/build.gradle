@@ -10,8 +10,8 @@ android {
         applicationId "host.stjin.anonaddy"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 9
-        versionName "1.1.1"
+        versionCode 10
+        versionName "1.1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -90,4 +90,10 @@ dependencies {
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+}
+
+// Animate the fab on aliasfragment
+dependencies {
+// https://mvnrepository.com/artifact/androidx.transition/transition-ktx
+    implementation group: 'androidx.transition', name: 'transition-ktx', version: '1.4.0-beta01'
 }

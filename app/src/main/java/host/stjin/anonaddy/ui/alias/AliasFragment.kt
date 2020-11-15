@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,38 +61,42 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         networkHelper = NetworkHelper(requireContext())
 
 
-        // We load values from local to make the app look quick and snappy!
+        // Load values from local to make the app look quick and snappy!
         setStatisticsFromLocal(root, requireContext())
         setOnClickListeners(root)
         setOnScrollViewListener(root)
 
-        // Called on OnResume()
-        // getDataFromWeb(root)
+        // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
+        getDataFromWeb(root)
 
         return root
     }
 
+
     private fun setOnScrollViewListener(root: View) {
-        val scrollView = root.alias_scrollview
-        scrollView.viewTreeObserver.addOnScrollChangedListener {
-            if (scrollView != null) {
-                when {
-                    root.alias_scrollview.scrollY == 0 -> {
-                        root.alias_fragment_add_alias_fab.hide()
-                    }
-                    scrollView.getChildAt(0).bottom <= scrollView.height + scrollView.scrollY -> {
-                        //Bottom
-                        //root.alias_fragment_add_alias_fab.hide()
-                    }
-                    else -> {
-                        root.alias_fragment_add_alias_fab.show()
-                    }
-                }
+
+        root.alias_scrollview?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, oldScrollY ->
+
+            val scrollViewHeight: Double = (v.getChildAt(0).bottom - v.height).toDouble()
+            val getScrollY: Double = scrollY.toDouble()
+            val scrollPosition = getScrollY / scrollViewHeight * 100.0
+            //Log.i("scrollview", "scroll Percent Y: " + scrollPosition.toInt())
+            val percentage = scrollPosition.toInt()
+
+            if (percentage in 6..100) { // If between 6 and 100, show the fab
+                root.alias_fragment_add_alias_fab.show()
+            } else if (percentage in 0..5) { // If between 0 and 5, hide the fab
+                root.alias_fragment_add_alias_fab.hide()
             }
-        }
+        })
+
+
     }
 
     private fun getDataFromWeb(root: View) {
+        root.alias_list_LL1.visibility = View.VISIBLE
+        root.alias_statistics_RL_lottieview.visibility = View.GONE
+
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllAliasesAndSetStatistics(root)
@@ -169,7 +174,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                 /**
                  * Count the totals for the aliases statistics
-                 * Done here because otherwise we would need to get the aliases twice from the web
+                 * Done here because otherwise would need to get the aliases twice from the web
                  */
 
                 if (list != null) {
@@ -417,10 +422,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     override fun onAdded() {
         addAliasBottomDialogFragment.dismiss()
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllAliasesAndSetStatistics(requireView())
-            getAllDeletedAliases(requireView())
-        }
+        getDataFromWeb(requireView())
     }
 
 

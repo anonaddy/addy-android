@@ -63,6 +63,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private fun getDataFromWeb() {
+        activity_domain_settings_LL1.visibility = View.VISIBLE
+        activity_domain_settings_RL_lottieview.visibility = View.GONE
+
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllDomains()
@@ -207,10 +210,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         networkHelper?.deleteDomain(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    getAllDomains()
-                    getUserResource()
-                }
+                getDataFromWeb()
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
                 customLayout.dialog_error.visibility = View.VISIBLE
@@ -227,18 +227,12 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     override fun onAdded() {
         addDomainFragment.dismiss()
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
-            getUserResource()
-        }
+        getDataFromWeb()
     }
 
     override fun onResume() {
         super.onResume()
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getDataFromWeb()
-            getUserResource()
-        }
+        getDataFromWeb()
     }
 }

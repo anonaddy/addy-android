@@ -218,8 +218,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/alias_list_LL1"
-                    android:layout_marginBottom="18dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingBottom="64dp">
 
                     <LinearLayout
                         android:id="@+id/alias_show_deleted_alias_toggle_LL"
@@ -270,6 +270,7 @@
                         android:visibility="gone" />
 
                 </LinearLayout>
+
             </RelativeLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

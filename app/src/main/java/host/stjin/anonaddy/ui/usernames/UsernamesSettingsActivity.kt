@@ -63,6 +63,9 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     private fun getDataFromWeb() {
+        activity_username_settings_LL1.visibility = View.VISIBLE
+        activity_username_settings_RL_lottieview.visibility = View.GONE
+
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllUsernames()
@@ -201,10 +204,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         networkHelper?.deleteUsername(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    getAllUsernames()
-                    getUserResource()
-                }
+                getDataFromWeb()
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
                 customLayout.dialog_error.visibility = View.VISIBLE
@@ -219,18 +219,12 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     override fun onAdded() {
         addUsernameFragment.dismiss()
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllUsernames()
-            getUserResource()
-        }
+        getDataFromWeb()
     }
 
     override fun onResume() {
         super.onResume()
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getDataFromWeb()
-            getUserResource()
-        }
+        getDataFromWeb()
     }
 }

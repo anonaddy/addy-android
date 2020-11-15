@@ -31,12 +31,12 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
 
     override fun getViewAt(position: Int): RemoteViews? {
         // position will always range from 0 to getCount() - 1.
-        // We construct a remote views item based on our widget item xml file, and set the
+        // construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
         val rv = RemoteViews(mContext.packageName, R.layout.widget_aliases_listview_list_item)
         rv.setTextViewText(R.id.widget_aliases_listview_list_title, aliasList?.get(position)?.email)
         rv.setTextViewText(R.id.widget_aliases_listview_list_description, aliasList?.get(position)?.description)
-        // Next, we set a fill-intent which will be used to fill-in the pending intent template
+        // Next, set a fill-intent which will be used to fill-in the pending intent template
         // which is set on the collection view in StackWidgetProvider.
 
         val extras = Bundle()

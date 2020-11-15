@@ -74,12 +74,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 when (position) {
                     0 -> {
                         nav_view.menu.findItem(R.id.navigation_home).isChecked = true
+                        changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_home))
                     }
                     1 -> {
                         nav_view.menu.findItem(R.id.navigation_alias).isChecked = true
+                        changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_aliases))
                     }
                     2 -> {
                         nav_view.menu.findItem(R.id.navigation_recipients).isChecked = true
+                        changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_recipients))
                     }
                 }
                 super.onPageSelected(position)

@@ -52,6 +52,8 @@ class ManageDomainsActivity : BaseActivity(),
 
 
     private fun setPage() {
+        activity_manage_domain_RL_lottieview.visibility = View.GONE
+
         // Get the domain
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getDomainInfo(domainId)
@@ -60,7 +62,7 @@ class ManageDomainsActivity : BaseActivity(),
 
     private fun setOnSwitchChangeListeners() {
         activity_manage_domain_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
             if (compoundButton.isPressed || forceSwitch) {
                 activity_manage_domain_active_switch_progressbar.visibility = View.VISIBLE
                 forceSwitch = false
@@ -77,7 +79,7 @@ class ManageDomainsActivity : BaseActivity(),
         }
 
         activity_manage_catch_all_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
             if (compoundButton.isPressed || forceSwitch) {
                 activity_manage_catch_all_switch_progressbar.visibility = View.VISIBLE
                 forceSwitch = false
@@ -367,7 +369,7 @@ class ManageDomainsActivity : BaseActivity(),
                     )
                 }
 
-                // We reset this value as it now includes the description
+                // reset this value as it now includes the description
                 editDomainDescriptionBottomDialogFragment = EditDomainDescriptionBottomDialogFragment.newInstance(
                     id,
                     list.description

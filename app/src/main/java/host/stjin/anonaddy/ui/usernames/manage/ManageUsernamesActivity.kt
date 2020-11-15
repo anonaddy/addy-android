@@ -55,6 +55,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
 
     private fun setPage() {
+        activity_manage_username_RL_lottieview.visibility = View.GONE
         // Get the username
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUsernameInfo(usernameId)
@@ -63,7 +64,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
     private fun setOnSwitchChangeListeners() {
         activity_manage_username_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
             if (compoundButton.isPressed || forceSwitch) {
                 activity_manage_username_active_switch_progressbar.visibility = View.VISIBLE
                 forceSwitch = false
@@ -295,7 +296,7 @@ class ManageUsernamesActivity : BaseActivity(),
                     )
                 }
 
-                // We reset this value as it now includes the description
+                // reset this value as it now includes the description
                 editUsernameDescriptionBottomDialogFragment = EditUsernameDescriptionBottomDialogFragment.newInstance(
                     id,
                     list.description

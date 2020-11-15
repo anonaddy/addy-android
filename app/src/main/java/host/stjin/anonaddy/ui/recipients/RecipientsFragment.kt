@@ -67,12 +67,16 @@ class RecipientsFragment : Fragment(),
         setStats(root)
 
         setOnClickListener(root)
-        // Called on OnResume()
-        // getDataFromWeb(root)
+
+        // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
+        getDataFromWeb(root)
         return root
     }
 
     private fun getDataFromWeb(root: View) {
+        root.recipients_LL1.visibility = View.VISIBLE
+        root.recipients_RL_lottieview.visibility = View.GONE
+
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllRecipients(root)
@@ -287,10 +291,7 @@ class RecipientsFragment : Fragment(),
         networkHelper?.deleteRecipient(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    getAllRecipients(requireView())
-                    getUserResource(requireView(), requireContext())
-                }
+                getDataFromWeb(requireView())
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
                 customLayout.dialog_error.visibility = View.VISIBLE
@@ -308,10 +309,7 @@ class RecipientsFragment : Fragment(),
         addRecipientsFragment.dismiss()
         verificationEmailSentSnackbar(requireContext())
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllRecipients(requireView())
-            getUserResource(requireView(), requireContext())
-        }
+        getDataFromWeb(requireView())
     }
 
 
