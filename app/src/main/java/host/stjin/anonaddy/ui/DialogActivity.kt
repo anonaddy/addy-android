@@ -70,6 +70,6 @@ class DialogActivity : Activity() {
             )
         main_profile_select_dialog_card_accountname.text = User.userResource.username
         main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
-        main_profile_select_dialog_app_settings_desc.text = BuildConfig.VERSION_NAME
+        main_profile_select_dialog_app_settings_desc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
     }
 }
