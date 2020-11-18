@@ -1,0 +1,4 @@
+-  Optimized UI for big screens
+-  [BUG FIX] Improved responsiveness when switching fragments
+-  [FEATURE REQUEST] Added link to gitlab page
+-  [FEATURE REQUEST] Separated deleted aliases into a different section

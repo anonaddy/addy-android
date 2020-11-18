@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import host.stjin.anonaddy.AnonAddy
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.anonaddysettings.AnonAddySettingsActivity
@@ -30,14 +31,11 @@ class DialogActivity : Activity() {
 
         (findViewById<View>(R.id.main_profile_select_dialog_card).parent as View).setOnClickListener { finishAfterTransition() }
 
-        main_profile_select_dialog_version.text =
-            if (AnonAddy.VERSIONCODE == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
-                R.string.self_hosted_instance_s,
-                AnonAddy.VERSIONSTRING
-            )
-        main_profile_select_dialog_card_accountname.text = User.userResource.username
-        main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
+        setInfo()
+        setOnClickListeners()
+    }
 
+    private fun setOnClickListeners() {
         main_profile_select_dialog_app_settings.setOnClickListener {
             val intent = Intent(this, AppSettingsActivity::class.java)
             startActivity(intent)
@@ -53,7 +51,6 @@ class DialogActivity : Activity() {
             startActivity(intent)
         }
 
-
         main_profile_select_dialog_username_settings.setOnClickListener {
             val intent = Intent(this, UsernamesSettingsActivity::class.java)
             startActivity(intent)
@@ -63,6 +60,16 @@ class DialogActivity : Activity() {
             val intent = Intent(this, AnonAddySettingsActivity::class.java)
             startActivity(intent)
         }
+    }
 
+    private fun setInfo() {
+        main_profile_select_dialog_instance_type.text =
+            if (AnonAddy.VERSIONCODE == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
+                R.string.self_hosted_instance_s,
+                AnonAddy.VERSIONSTRING
+            )
+        main_profile_select_dialog_card_accountname.text = User.userResource.username
+        main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
+        main_profile_select_dialog_app_settings_desc.text = BuildConfig.VERSION_NAME
     }
 }

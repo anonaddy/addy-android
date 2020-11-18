@@ -14,6 +14,7 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible"
+        app:layout_behavior=".utils.FABMove"
         app:backgroundTint="@color/primaryColor"
         app:srcCompat="@drawable/ic_outline_add_24"
         android:contentDescription="@string/add_alias"
@@ -218,8 +219,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/alias_list_LL1"
-                    android:orientation="vertical"
-                    android:paddingBottom="64dp">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:id="@+id/alias_show_deleted_alias_toggle_LL"
