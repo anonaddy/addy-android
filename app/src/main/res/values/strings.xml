@@ -325,7 +325,6 @@
     <string name="username_settings_desc">Choose additional usernames</string>
     <string name="manage_rules_desc">Add, modify and reorder rules</string>
     <string name="manage_domains_desc">Add or remove custom domains</string>
-    <string name="anonaddy_settings_desc">Check your AnonAddy usage</string>
     <string name="version_s">Version %s</string>
 
 

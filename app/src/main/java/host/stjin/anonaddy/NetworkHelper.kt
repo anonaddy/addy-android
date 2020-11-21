@@ -311,7 +311,7 @@ class NetworkHelper(private val context: Context) {
         // Wait 10 seconds
         //TODO fix this gross behaviour
         try {
-            Thread.sleep(10000)
+            Thread.sleep(6000)
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }

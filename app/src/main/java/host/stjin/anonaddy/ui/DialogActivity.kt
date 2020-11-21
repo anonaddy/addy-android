@@ -63,7 +63,7 @@ class DialogActivity : Activity() {
     }
 
     private fun setInfo() {
-        main_profile_select_dialog_instance_type.text =
+        main_profile_select_dialog_anonaddy_settings_desc.text =
             if (AnonAddy.VERSIONCODE == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
                 R.string.self_hosted_instance_s,
                 AnonAddy.VERSIONSTRING
@@ -71,5 +71,6 @@ class DialogActivity : Activity() {
         main_profile_select_dialog_card_accountname.text = User.userResource.username
         main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
         main_profile_select_dialog_app_settings_desc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
+
     }
 }
