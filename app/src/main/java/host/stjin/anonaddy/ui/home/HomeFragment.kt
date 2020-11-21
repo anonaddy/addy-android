@@ -43,6 +43,9 @@ class HomeFragment : Fragment() {
     private var networkHelper: NetworkHelper? = null
     private var shouldAnimateRecyclerview: Boolean = true
 
+    companion object {
+        fun newInstance() = HomeFragment()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,16 +62,20 @@ class HomeFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         networkHelper = NetworkHelper(requireContext())
 
-        // We load values from local to make the app look quick and snappy!
+        // load values from local to make the app look quick and snappy!
         setOnClickListeners(root)
         getStatistics(root)
-        // Called on OnResume()
-        // getDataFromWeb(root, requireContext())
+
+        // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
+        getDataFromWeb(root, requireContext())
 
         return root
     }
 
     private fun getDataFromWeb(root: View, context: Context) {
+        root.home_statistics_LL1.visibility = View.VISIBLE
+        root.home_statistics_RL_lottieview.visibility = View.GONE
+
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getMostActiveAliases(root)

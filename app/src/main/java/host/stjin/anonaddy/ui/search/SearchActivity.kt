@@ -77,6 +77,8 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun getDataFromWeb() {
+        activity_search_RL_lottieview.visibility = View.GONE
+
 
         if (filteredAliases?.size ?: 0 > 0) {
             activity_search_aliases_LL.visibility = View.VISIBLE

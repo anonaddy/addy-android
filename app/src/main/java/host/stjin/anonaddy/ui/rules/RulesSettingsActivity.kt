@@ -55,6 +55,9 @@ class RulesSettingsActivity : BaseActivity() {
     }
 
     private fun getDataFromWeb() {
+        activity_manage_rules_LL1.visibility = View.VISIBLE
+        activity_manage_rules_RL_lottieview.visibility = View.GONE
+
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllRules()
@@ -268,9 +271,7 @@ class RulesSettingsActivity : BaseActivity() {
         networkHelper?.deleteRule(id) { result ->
             if (result == "204") {
                 dialog.dismiss()
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    getAllRules()
-                }
+                getDataFromWeb()
             } else {
                 customLayout.dialog_progressbar.visibility = View.INVISIBLE
                 customLayout.dialog_error.visibility = View.VISIBLE

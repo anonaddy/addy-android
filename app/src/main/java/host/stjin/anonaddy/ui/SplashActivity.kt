@@ -57,8 +57,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     private suspend fun loadDataAndStartApp() {
         // The default instance at anonaddy.com does NOT return its version
-        // However, we assume that the creator of AnonAddy keeps the main version up-to-date :P
-        // So we set the versioncode to 9999 so it will always pass the min version check
+        // However, assume that the creator of AnonAddy keeps the main version up-to-date :P
+        // So set the versioncode to 9999 so it will always pass the min version check
         if (AnonAddy.API_BASE_URL == this.resources.getString(R.string.default_base_url)) {
             AnonAddy.VERSIONCODE = 9999
             AnonAddy.VERSIONSTRING = this.resources.getString(R.string.latest)

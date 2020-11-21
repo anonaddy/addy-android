@@ -244,7 +244,7 @@
         <item name="android:popupElevation">4dp</item>
         <!--
          When this overlay is applied, the AutoCompleteTextView
-         loses padding. Luckily, we can restore it by defining
+         loses padding. Luckily, can restore it by defining
          a style that should be applied to all AutoCompletTextView(s)
          in this theme/overlay
          -->
@@ -268,6 +268,29 @@
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="AnonAddyDialogTitle">
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:lines">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="singleLine">true</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AnonAddyDialogDesc" parent="AnonAddyDialogTitle">
+        <item name="android:alpha">0.7</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="AnonAddyDialogLayout">
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
     </style>
 
 </resources>

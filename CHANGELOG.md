@@ -1,5 +1,14 @@
 # Changelog
 
+## [AnonAddy v1.1.2] - 2020-11-21
+
+### Fixed/Improved
+-  🖥️ Optimized UI for big screens
+-  🐛 [BUG FIX] Improved responsiveness when switching fragments
+-  🙋 [FEATURE REQUEST] Added link to gitlab page
+-  🙋 [FEATURE REQUEST] Separated deleted aliases into a different section
+
+
 ## [AnonAddy v1.1.1] - 2020-10-24
 
 ### Fixed/Improved

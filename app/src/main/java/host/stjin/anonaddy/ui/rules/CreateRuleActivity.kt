@@ -113,6 +113,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private fun getRule() {
+        activity_rules_create_RL_lottieview.visibility = View.GONE
+
         // Get the rule
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             ruleId?.let { getRuleInfo(it) }
@@ -438,7 +440,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             values = values
         )
 
-        // Edit index is not empty, thus we are editing a condition, replace the condition at index
+        // Edit index is not empty, thus are editing a condition, replace the condition at index
         if (conditionEditIndex != null) {
             rules.conditions[conditionEditIndex] = condition
         } else {
@@ -456,7 +458,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             type = type,
             value = value
         )
-        // Edit index is not empty, thus we are editing an action, replace the action at index
+        // Edit index is not empty, thus are editing an action, replace the action at index
         if (actionEditIndex != null) {
             rules.actions[actionEditIndex] = action
         } else {
@@ -472,7 +474,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             type = type,
             value = value.toString()
         )
-        // Edit index is not empty, thus we are editing an action, replace the action at index
+        // Edit index is not empty, thus are editing an action, replace the action at index
         if (actionEditIndex != null) {
             rules.actions[actionEditIndex] = action
         } else {

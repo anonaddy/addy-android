@@ -4,7 +4,7 @@ import java.util.*
 import kotlin.reflect.KProperty
 
 class ResettableLazyManager {
-    // we synchronize to make sure the timing of a reset() call and new inits do not collide
+    // synchronize to make sure the timing of a reset() call and new inits do not collide
     private val managedDelegates = LinkedList<Resettable>()
 
     fun register(managed: Resettable) {

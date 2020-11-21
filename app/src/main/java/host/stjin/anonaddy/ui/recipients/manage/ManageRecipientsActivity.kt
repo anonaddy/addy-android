@@ -54,10 +54,11 @@ class ManageRecipientsActivity : BaseActivity(),
 
 
     private fun setPage() {
-
-        // Initial set, we don't know the description here.
+        // Initial set, don't know the description here.
         addRecipientPublicGpgKeyBottomDialogFragment =
             AddRecipientPublicGpgKeyBottomDialogFragment.newInstance(recipientId)
+
+        activity_manage_recipient_RL_lottieview.visibility = View.GONE
 
         // Get the recipient
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -67,7 +68,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
     private fun setOnSwitchChangeListeners(fingerprint: String?) {
         activity_manage_recipient_encryption_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
             if (compoundButton.isPressed || forceSwitch) {
                 activity_manage_recipient_encryption_active_switch_progressbar.visibility = View.VISIBLE
                 forceSwitch = false

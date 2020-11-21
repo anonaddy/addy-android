@@ -165,7 +165,7 @@ class AppSettingsActivity : BaseActivity(),
             })
 
         activity_app_settings_section_security_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
             if (compoundButton.isPressed || forceSwitch) {
                 forceSwitch = false
                 shouldEnableBiometric = b
@@ -212,6 +212,18 @@ class AppSettingsActivity : BaseActivity(),
         }
         activity_app_settings_section_help.setOnClickListener {
             val url = "https://anonaddy.com/help/"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }
+        activity_app_settings_section_gitlab.setOnClickListener {
+            val url = "https://gitlab.com/Stjin/anonaddy-android"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }
+        activity_app_settings_section_report_issue.setOnClickListener {
+            val url = "https://gitlab.com/Stjin/anonaddy-android/-/issues/new"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)

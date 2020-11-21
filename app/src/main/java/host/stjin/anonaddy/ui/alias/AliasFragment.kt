@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private var settingsManager: SettingsManager? = null
     private var shouldAnimateRecyclerview: Boolean = true
 
+
+    companion object {
+        fun newInstance() = AliasFragment()
+    }
+
     private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
         AddAliasBottomDialogFragment.newInstance()
 
@@ -55,32 +61,46 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         networkHelper = NetworkHelper(requireContext())
 
 
-        // We load values from local to make the app look quick and snappy!
+        // Load values from local to make the app look quick and snappy!
         setStatisticsFromLocal(root, requireContext())
         setOnClickListeners(root)
         setOnScrollViewListener(root)
 
-        // Called on OnResume()
-        // getDataFromWeb(root)
+        // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
+        getDataFromWeb(root)
 
         return root
     }
 
-    private fun setOnScrollViewListener(root: View) {
-        root.alias_scrollview.viewTreeObserver.addOnScrollChangedListener {
-            if (root.alias_scrollview.scrollY == 0) {
-                root.alias_fragment_add_alias_fab.hide()
-            } else {
-                root.alias_fragment_add_alias_fab.show()
-            }
 
-        }
+    private fun setOnScrollViewListener(root: View) {
+
+        root.alias_scrollview?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, oldScrollY ->
+
+            val scrollViewHeight: Double = (v.getChildAt(0).bottom - v.height).toDouble()
+            val getScrollY: Double = scrollY.toDouble()
+            val scrollPosition = getScrollY / scrollViewHeight * 100.0
+            //Log.i("scrollview", "scroll Percent Y: " + scrollPosition.toInt())
+            val percentage = scrollPosition.toInt()
+
+            if (percentage in 6..100) { // If between 6 and 100, show the fab
+                root.alias_fragment_add_alias_fab.show()
+            } else if (percentage in 0..5) { // If between 0 and 5, hide the fab
+                root.alias_fragment_add_alias_fab.hide()
+            }
+        })
+
+
     }
 
     private fun getDataFromWeb(root: View) {
+        root.alias_list_LL1.visibility = View.VISIBLE
+        root.alias_statistics_RL_lottieview.visibility = View.GONE
+
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllAliasesAndSetStatistics(root)
+            getAllDeletedAliases(root)
         }
     }
 
@@ -111,6 +131,16 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 )
             }
         }
+
+        root.alias_show_deleted_alias_toggle_LL.setOnClickListener {
+            if (root.alias_deleted_aliases_recyclerview.visibility == View.GONE) {
+                root.alias_deleted_aliases_recyclerview.visibility = View.VISIBLE
+                root.alias_show_deleted_alias_toggle.setImageResource(R.drawable.ic_menu_up_outline)
+            } else {
+                root.alias_deleted_aliases_recyclerview.visibility = View.GONE
+                root.alias_show_deleted_alias_toggle.setImageResource(R.drawable.ic_menu_down_outline)
+            }
+        }
     }
 
     private suspend fun getAllAliasesAndSetStatistics(root: View) {
@@ -134,7 +164,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 shouldAnimateRecyclerview = false
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                root.alias_all_aliases_recyclerview.layoutAnimation = animation
+                layoutAnimation = animation
             }
 
 
@@ -144,7 +174,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                 /**
                  * Count the totals for the aliases statistics
-                 * Done here because otherwise we would need to get the aliases twice from the web
+                 * Done here because otherwise would need to get the aliases twice from the web
                  */
 
                 if (list != null) {
@@ -163,42 +193,32 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     // Set the actual statistics
                     setAliasesStatistics(root, context, forwarded, blocked, replied, sent)
 
-                    /**
-                     * Seperate the deleted and non-deleted aliases
-                     */
 
-
-                    val nonDeletedList: ArrayList<Aliases> = arrayListOf()
-                    val onlyDeletedList: ArrayList<Aliases> = arrayListOf()
 
                     if (list.size > 0) {
                         root.alias_no_aliases.visibility = View.GONE
-                        for (alias in list) {
-                            if (alias.deleted_at == null) {
-                                nonDeletedList.add(alias)
-                            } else {
-                                onlyDeletedList.add(alias)
-                            }
-                        }
                     } else {
                         root.alias_no_aliases.visibility = View.VISIBLE
                     }
 
-                    val finalList = nonDeletedList + onlyDeletedList
-                    val aliasAdapter = AliasAdapter(finalList, true)
+
+                    /**
+                     * ALIAS LIST
+                     */
+                    val aliasAdapter = AliasAdapter(list, true)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int, aView: View) {
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
-                            intent.putExtra("alias_id", finalList[pos].id)
-                            intent.putExtra("alias_forward_count", finalList[pos].emails_forwarded)
-                            intent.putExtra("alias_replied_sent_count", finalList[pos].emails_replied)
+                            intent.putExtra("alias_id", list[pos].id)
+                            intent.putExtra("alias_forward_count", list[pos].emails_forwarded)
+                            intent.putExtra("alias_replied_sent_count", list[pos].emails_replied)
 
                             val options: ActivityOptionsCompat =
                                 ActivityOptionsCompat.makeSceneTransitionAnimation(
                                     requireActivity(),
                                     aView,
-                                    finalList[pos].id
+                                    list[pos].id
                                 )
 
                             startActivity(intent, options.toBundle())
@@ -207,7 +227,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         override fun onClickCopy(pos: Int, aView: View) {
                             val clipboard: ClipboardManager? =
                                 context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val aliasEmailAddress = finalList[pos].email
+                            val aliasEmailAddress = list[pos].email
                             val clip = ClipData.newPlainText("alias", aliasEmailAddress)
                             clipboard?.setPrimaryClip(clip)
 
@@ -226,9 +246,112 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                     })
                     adapter = aliasAdapter
-                    root.alias_all_aliases_recyclerview.hideShimmerAdapter()
+                    hideShimmerAdapter()
                 } else {
-                    root.alias_statistics_LL1.visibility = View.GONE
+                    root.alias_list_LL1.visibility = View.GONE
+                    root.alias_statistics_RL_lottieview.visibility = View.VISIBLE
+                }
+            }, activeOnly = false, includeDeleted = false)
+        }
+
+    }
+
+
+    private suspend fun getAllDeletedAliases(root: View) {
+        root.alias_deleted_aliases_recyclerview.apply {
+
+            if (itemDecorationCount > 0) {
+                addItemDecoration(
+                    DividerItemDecoration(
+                        this.context,
+                        (layoutManager as LinearLayoutManager).orientation
+                    )
+                )
+            }
+
+            // set a LinearLayoutManager to handle Android
+            // RecyclerView behavior
+            layoutManager = LinearLayoutManager(activity)
+            // set the custom adapter to the RecyclerView
+
+            if (shouldAnimateRecyclerview) {
+                shouldAnimateRecyclerview = false
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+            }
+
+
+            networkHelper?.getAliases({ list ->
+
+                if (list != null) {
+
+                    /**
+                     * Seperate the deleted and non-deleted aliases
+                     */
+
+
+                    val onlyDeletedList: ArrayList<Aliases> = arrayListOf()
+
+                    if (list.size > 0) {
+                        root.alias_no_deleted_aliases.visibility = View.GONE
+                        for (alias in list) {
+                            if (alias.deleted_at != null) {
+                                onlyDeletedList.add(alias)
+                            }
+                        }
+                    } else {
+                        root.alias_no_deleted_aliases.visibility = View.VISIBLE
+                    }
+
+
+                    /**
+                     * ALIAS LIST
+                     */
+                    val aliasAdapter = AliasAdapter(onlyDeletedList, true)
+                    aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+                        override fun onClick(pos: Int, aView: View) {
+                            val intent = Intent(context, ManageAliasActivity::class.java)
+                            // Pass data object in the bundle and populate details activity.
+                            intent.putExtra("alias_id", onlyDeletedList[pos].id)
+                            intent.putExtra("alias_forward_count", onlyDeletedList[pos].emails_forwarded)
+                            intent.putExtra("alias_replied_sent_count", onlyDeletedList[pos].emails_replied)
+
+                            val options: ActivityOptionsCompat =
+                                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                    requireActivity(),
+                                    aView,
+                                    onlyDeletedList[pos].id
+                                )
+
+                            startActivity(intent, options.toBundle())
+                        }
+
+                        override fun onClickCopy(pos: Int, aView: View) {
+                            val clipboard: ClipboardManager? =
+                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val aliasEmailAddress = onlyDeletedList[pos].email
+                            val clip = ClipData.newPlainText("alias", aliasEmailAddress)
+                            clipboard?.setPrimaryClip(clip)
+
+                            val bottomNavView: BottomNavigationView? =
+                                activity?.findViewById(R.id.nav_view)
+                            bottomNavView?.let {
+                                Snackbar.make(
+                                    it,
+                                    context.resources.getString(R.string.copied_alias),
+                                    Snackbar.LENGTH_SHORT
+                                ).apply {
+                                    anchorView = bottomNavView
+                                }.show()
+                            }
+                        }
+
+                    })
+                    adapter = aliasAdapter
+                    hideShimmerAdapter()
+                } else {
+                    root.alias_list_LL1.visibility = View.GONE
                     root.alias_statistics_RL_lottieview.visibility = View.VISIBLE
                 }
             }, activeOnly = false, includeDeleted = true)
@@ -299,9 +422,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     override fun onAdded() {
         addAliasBottomDialogFragment.dismiss()
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllAliasesAndSetStatistics(requireView())
-        }
+        getDataFromWeb(requireView())
     }
 
 

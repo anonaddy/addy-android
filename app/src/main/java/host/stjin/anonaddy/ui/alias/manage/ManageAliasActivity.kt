@@ -72,7 +72,7 @@ class ManageAliasActivity : BaseActivity(),
             }
             this.aliasId = aliasId
 
-            // For a smooth overview, we require the numbers here.
+            // For a smooth overview, require the numbers here.
             // Charts will be updated in the background
             setChart(aliasForwardCount, aliasRepliedSentCount)
             // Finish shared elements transition
@@ -91,6 +91,8 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setPage() {
+        activity_manage_alias_settings_RL_lottieview.visibility = View.GONE
+
         // Get the alias
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAliasInfo(aliasId)
@@ -126,7 +128,7 @@ class ManageAliasActivity : BaseActivity(),
 
     private fun setOnSwitchChangeListeners() {
         activity_manage_alias_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch we can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
             if (compoundButton.isPressed || forceSwitch) {
                 activity_manage_alias_active_switch_progressbar.visibility = View.VISIBLE
                 forceSwitch = false
@@ -374,7 +376,7 @@ class ManageAliasActivity : BaseActivity(),
                 val layout =
                     findViewById<View>(R.id.activity_manage_alias_settings_LL) as LinearLayout
                 if (list.deleted_at != null) {
-                    // Aliasdeleted is not null, thus deleted. We disable all the layouts and alpha them
+                    // Aliasdeleted is not null, thus deleted. disable all the layouts and alpha them
 
                     // Show restore and hide delete
                     activity_manage_alias_restore.visibility = View.VISIBLE
@@ -398,7 +400,7 @@ class ManageAliasActivity : BaseActivity(),
                     activity_manage_alias_restore.visibility = View.GONE
                     activity_manage_alias_delete.visibility = View.VISIBLE
 
-                    // Aliasdeleted is null, thus not deleted. We enable all the layouts
+                    // Aliasdeleted is null, thus not deleted. enable all the layouts
                     for (i in 0 until layout.childCount) {
                         val child = layout.getChildAt(i)
                         child.isEnabled = true
@@ -471,7 +473,7 @@ class ManageAliasActivity : BaseActivity(),
                     )
                 }
 
-                // We reset this value as it now includes the description
+                // reset this value as it now includes the description
                 editAliasDescriptionBottomDialogFragment = EditAliasDescriptionBottomDialogFragment.newInstance(
                     id,
                     list.description
