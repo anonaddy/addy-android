@@ -225,6 +225,7 @@
                         android:id="@+id/alias_show_deleted_alias_toggle_LL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:orientation="horizontal">
 
                         <TextView
