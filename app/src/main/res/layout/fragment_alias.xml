@@ -246,6 +246,7 @@
 
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                         android:id="@+id/alias_deleted_aliases_recyclerview"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="8dp"

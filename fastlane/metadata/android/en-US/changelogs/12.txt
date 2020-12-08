@@ -1,0 +1,2 @@
+- [BUG FIX] Deleted alias section is not collapsed by default
+- [FEATURE REQUEST] Switch between panels by swiping left/right

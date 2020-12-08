@@ -87,7 +87,7 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 1.1.2 &mdash;<br />🖥️ Optimized UI for big screens<br />🐛 [BUG FIX] Improved responsiveness when switching fragments<br />🙋 [FEATURE REQUEST] Added link to gitlab page<br />🙋 [FEATURE REQUEST] Separated deleted aliases into a different section</p>]]></string>
+    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 1.1.3 &mdash;<br />🐛 [BUG FIX] Deleted alias section is not collapsed by default<br />🙋 [FEATURE REQUEST] Switch between panels by swiping left/right</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>

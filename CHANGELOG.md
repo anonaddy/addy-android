@@ -1,5 +1,12 @@
 # Changelog
 
+## [AnonAddy v1.1.3] - 2020-12-08
+
+### Fixed/Improved
+- 🐛 [BUG FIX] Deleted alias section is not collapsed by default
+- 🙋 [FEATURE REQUEST] Switch between panels by swiping left/right
+
+
 ## [AnonAddy v1.1.2] - 2020-11-21
 
 ### Fixed/Improved
