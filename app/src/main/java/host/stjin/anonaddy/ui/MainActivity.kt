@@ -63,7 +63,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         activity_main_viewpager.adapter = MainViewpagerAdapter(this, fragmentList)
         activity_main_viewpager.offscreenPageLimit = 3
-        activity_main_viewpager.isUserInputEnabled = false
+        // Allow swiping through the pages
+        activity_main_viewpager.isUserInputEnabled = true
         activity_main_viewpager.setPageTransformer { page, position ->
             val normalizedposition = abs(abs(position) - 1)
             page.alpha = normalizedposition
