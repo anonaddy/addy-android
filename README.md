@@ -75,6 +75,8 @@ Third party libraries used.
 - [sharish/ShimmerRecyclerView](https://github.com/sharish/ShimmerRecyclerView)
 - [androidx.biometric](https://developer.android.com/jetpack/androidx/releases/biometric)
 - [androidx.security.crypto](https://developer.android.com/jetpack/androidx/releases/security)
+- [google/flexbox-layout](https://github.com/google/flexbox-layout)
+- [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner)
 
 ## Feedback and contribution
 I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me.

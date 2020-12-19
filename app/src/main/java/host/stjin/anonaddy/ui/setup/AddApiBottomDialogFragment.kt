@@ -1,10 +1,15 @@
 package host.stjin.anonaddy.ui.setup
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.PermissionChecker.checkSelfPermission
+import com.budiyev.android.codescanner.CodeScanner
+import com.budiyev.android.codescanner.DecodeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -19,7 +24,7 @@ import kotlinx.coroutines.launch
 
 class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
 
-
+    private var codeScanner: CodeScanner? = null
     private lateinit var listener: AddApiBottomDialogListener
 
 
@@ -66,9 +71,13 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             return@setOnTouchListener false
         }
 
-        return root
+        root.bs_setup_scanner_view.setOnClickListener {
+            toggleQrCodeScanning(root)
+        }
 
+        return root
     }
+
 
     companion object {
         fun newInstance(): AddApiBottomDialogFragment {
@@ -117,4 +126,78 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             }
         }
     }
+
+
+    override fun onPause() {
+        codeScanner?.releaseResources()
+        super.onPause()
+    }
+
+    private val CAMERA_REQUEST_CODE: Int = 1000
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            CAMERA_REQUEST_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() &&
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    toggleQrCodeScanning(requireView())
+                } else {
+                    // Explain to the user that the feature is unavailable because
+                    // the features requires a permission that the user has denied.
+                    // At the same time, respect the user's decision. Don't link to
+                    // system settings in an effort to convince the user to change
+                    // their decision.
+                    requireView().bs_setup_scanner_view_desc.text = requireContext().resources.getString(R.string.qr_permissions_required)
+                }
+                return
+            }
+        }
+    }
+
+    private fun toggleQrCodeScanning(root: View) {
+        // Check if camera permissions are granted
+        if (checkSelfPermission(root.context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                ), 1000
+            )
+        } else {
+            if (codeScanner == null) {
+                val activity = requireActivity()
+                codeScanner = CodeScanner(activity, root.bs_setup_scanner_view)
+                codeScanner!!.decodeCallback = DecodeCallback {
+                    activity.runOnUiThread {
+                        // Verify if the scanned QR code has all the properties
+                        if (isQrCodeFormattedCorrect(it.text)) {
+                            // Get the string part before the ; delimiter
+                            root.bs_setup_instance_tiet.setText(it.text.substringBeforeLast(";", ""))
+                            // Get the string part after the ; delimiter
+                            root.bs_setup_apikey_tiet.setText(it.text.substringAfterLast(";", ""))
+                            verifyKey(root, requireContext())
+                        } else {
+                            root.bs_setup_scanner_view_desc.text = context?.resources?.getString(R.string.api_setup_qr_code_scan_wrong)
+                            codeScanner!!.startPreview()
+                        }
+
+                    }
+                }
+                codeScanner!!.startPreview()
+            } else destroyQrCode(root)
+        }
+    }
+
+    private fun isQrCodeFormattedCorrect(text: String): Boolean {
+        return text.contains(";") && text.contains("http")
+    }
+
+    private fun destroyQrCode(root: View) {
+        codeScanner?.releaseResources()
+        codeScanner = null
+    }
+
+
 }

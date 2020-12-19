@@ -10,8 +10,8 @@ android {
         applicationId "host.stjin.anonaddy"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 12
-        versionName "1.1.3"
+        versionCode 13
+        versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,7 +36,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.20"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.21"
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
@@ -95,4 +95,9 @@ dependencies {
 // Tablet layout of dialog
 dependencies {
     implementation 'com.google.android:flexbox:2.0.1'
+}
+
+// Scanning QR codes
+dependencies {
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
 }

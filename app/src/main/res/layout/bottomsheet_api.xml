@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:elevation="16dp"
     android:orientation="vertical">
 
@@ -46,13 +47,71 @@
             android:padding="16dp">
 
             <TextView
+                style="@style/DescTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/api_setup_qr_code_scan"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/bs_setup_scanner_view_desc"
+                style="@style/DescTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.5"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/api_setup_qr_code_scan_desc"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+            <com.budiyev.android.codescanner.CodeScannerView
+                android:id="@+id/bs_setup_scanner_view"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                app:autoFocusButtonColor="@android:color/white"
+                app:autoFocusButtonVisible="false"
+                app:flashButtonColor="@android:color/white"
+                app:flashButtonVisible="false"
+                app:frameAspectRatioHeight="1"
+                app:frameAspectRatioWidth="1"
+                app:frameColor="@android:color/transparent"
+                app:frameCornersRadius="@dimen/corner_radius"
+                app:frameCornersSize="@dimen/corner_radius"
+                app:frameSize="1"
+                app:frameThickness="0dp"
+                app:maskColor="@color/NavbarLightDarkMode">
+
+            </com.budiyev.android.codescanner.CodeScannerView>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="16dp"
+                android:alpha="0.1"
+                android:background="@color/IconGrayTint" />
+
+            <TextView
+                style="@style/DescTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/api_obtain"
+                android:textAlignment="center" />
+
+            <TextView
+                style="@style/DescTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                style="@style/DescTextStyle"
+                android:alpha="0.5"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/api_obtain_desc"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="12sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_setup_instance_til"
@@ -100,6 +159,7 @@
                     android:scrollbars="vertical" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
