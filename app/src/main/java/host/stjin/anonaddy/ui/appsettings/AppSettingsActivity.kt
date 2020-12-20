@@ -17,18 +17,23 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import kotlinx.android.synthetic.main.activity_app_settings.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 
 class AppSettingsActivity : BaseActivity(),
-    DarkModeBottomDialogFragment.AddDarkmodeBottomDialogListener {
+    DarkModeBottomDialogFragment.AddDarkmodeBottomDialogListener,
+    BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
 
     private val addDarkModeBottomDialogFragment: DarkModeBottomDialogFragment =
         DarkModeBottomDialogFragment.newInstance()
 
     private val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
         ChangelogBottomDialogFragment.newInstance()
+
+    private val addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
+        BackgroundServiceIntervalBottomDialogFragment.newInstance()
 
 
     private lateinit var settingsManager: SettingsManager
@@ -204,6 +209,14 @@ class AppSettingsActivity : BaseActivity(),
                 )
             }
         }
+        activity_app_settings_section_background_service.setOnClickListener {
+            if (!addBackgroundServiceIntervalBottomDialogFragment.isAdded) {
+                addBackgroundServiceIntervalBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "addBackgroundServiceIntervalBottomDialogFragment"
+                )
+            }
+        }
         activity_app_settings_section_faq.setOnClickListener {
             val url = "https://anonaddy.com/faq/"
             val i = Intent(Intent.ACTION_VIEW)
@@ -283,6 +296,15 @@ class AppSettingsActivity : BaseActivity(),
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         settingsManager.putSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)
         delegate.applyDayNight()
+    }
+
+    override fun setInterval(minutes: Int) {
+        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, minutes)
+
+        // Schedule the background worker (this will cancel if already scheduled)
+        BackgroundWorkerHelper(this).scheduleBackgroundWorker()
+
+        addBackgroundServiceIntervalBottomDialogFragment.dismiss()
     }
 
 

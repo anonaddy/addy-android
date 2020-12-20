@@ -331,6 +331,13 @@
     <string name="api_setup_qr_code_scan_desc">Tap the scanning area to start scanning</string>
     <string name="api_obtain">Or manually enter your API key</string>
     <string name="api_setup_qr_code_scan_wrong">This is not a valid QR code</string>
+    <string name="background_service_interval">Background service interval</string>
+    <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
+    <string name="backgroundserviceinterval_15m">15m</string>
+    <string name="backgroundserviceinterval_30m">30m</string>
+    <string name="backgroundserviceinterval_1h">1h</string>
+    <string name="backgroundserviceinterval_2h">2h</string>
+    <string name="set_interval">Set interval</string>
 
 
 </resources>

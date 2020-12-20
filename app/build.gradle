@@ -101,3 +101,8 @@ dependencies {
 dependencies {
     implementation 'com.budiyev.android:code-scanner:2.1.0'
 }
+
+// For updating widgets and caching data
+dependencies {
+    implementation "androidx.work:work-runtime-ktx:2.4.0"
+}

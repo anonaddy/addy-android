@@ -174,9 +174,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
                 if (rules.operator == "AND") {
                     andButton.isChecked = true
-                    orButton.isChecked = false
                 } else {
-                    andButton.isChecked = false
                     orButton.isChecked = true
                 }
 

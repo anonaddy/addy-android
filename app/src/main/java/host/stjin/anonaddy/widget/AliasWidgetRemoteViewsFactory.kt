@@ -5,9 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
-import host.stjin.anonaddy.NetworkHelper
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.COPY_ACTION
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_ACTION
@@ -81,20 +84,30 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
     }
 
     override fun onDataSetChanged() {
-        val networkHelper = NetworkHelper(mContext)
+        val loggingHelper = LoggingHelper(mContext)
+        val settingsManager = SettingsManager(true, mContext)
+        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
 
-        val list = networkHelper.getAliasesWidget()
+        try {
+            val aliasesList: ArrayList<Aliases> = Gson().fromJson(
+                aliasesJson,
+                object : TypeToken<ArrayList<Aliases?>?>() {}.type
+            ) as ArrayList<Aliases>
 
-        if (list != null) {
-            if (list.size >= 2) {
+            if (aliasesList.size >= 2) {
 
                 // Sort by emails forwarded
-                list.sortByDescending { it.emails_forwarded }
+                aliasesList.sortByDescending { it.emails_forwarded }
 
                 // Get the top 15
-                aliasList = list.take(15) as ArrayList<Aliases>?
+                aliasList = aliasesList.take(15) as ArrayList<Aliases>?
             }
+        } catch (e: Exception) {
+            val ex = e.message
+            println(ex)
+            loggingHelper.addLog(ex.toString(), "onDataSetChanged")
         }
+
     }
 
 }

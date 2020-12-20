@@ -10,6 +10,8 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.COPY_ACTION
@@ -32,19 +34,41 @@ class AliasWidgetProvider : AppWidgetProvider() {
         const val NAVIGATE = "host.stjin.anonaddy.widget.NAVIGATE"
     }
 
+    /*
+    Called in response to the AppWidgetManager#ACTION_APPWIDGET_DISABLED broadcast,
+    which is sent when the last AppWidget instance for this provider is deleted. Override this method to implement your own AppWidget functionality.
+     */
+    override fun onDisabled(context: Context?) {
+        super.onDisabled(context)
+        context?.let { SettingsManager(false, it).putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, 0) }
+
+        // Since the last widget is removed, call scheduleBackgroundWorker. This method will remove the BackgroundWorker and reschedule if its still required
+        context?.let { BackgroundWorkerHelper(it).scheduleBackgroundWorker() }
+    }
+
+
+    override fun onEnabled(context: Context?) {
+        super.onEnabled(context)
+
+        // Set widgets to 1 (onEnabled gets called if this is the first widget) to allow the backgroundworker to be scheduled
+        context?.let { SettingsManager(false, it).putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, 1) }
+        // Since a widget was added, call scheduleBackgroundWorker. This method will Schedule if its still required
+        context?.let { BackgroundWorkerHelper(it).scheduleBackgroundWorker() }
+    }
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         // There may be multiple widgets active, so update all of them
+        var amountOfWidgets = 0
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
+            amountOfWidgets++
         }
+
+        SettingsManager(false, context).putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, amountOfWidgets)
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
-
-        if (intent != null) {
-            println("ONRECEIVE ${intent.action}")
-        }
 
         if (context != null && intent != null) {
             when (intent.action) {
