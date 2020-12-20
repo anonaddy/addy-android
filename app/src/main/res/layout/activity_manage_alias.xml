@@ -253,6 +253,72 @@
 
                     </LinearLayout>
 
+
+                    <LinearLayout
+                        android:id="@+id/activity_manage_alias_watch_switch_layout"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            style="@style/SettingsSectionIconStyleEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/watch_alias"
+                                android:src="@drawable/ic_comment_eye_outline" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-medium"
+                                android:lines="1"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:text="@string/watch_alias"
+                                android:textAllCaps="false"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                style="@style/DescTextStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:maxLines="2"
+                                android:singleLine="false"
+                                android:text="@string/watch_alias_desc" />
+                        </LinearLayout>
+
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/activity_manage_alias_watch_switch"
+                            style="@style/overrideExpandableCardViewSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:clickable="false"
+                            android:enabled="false" />
+
+                    </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/activity_manage_alias_desc_edit"
                         style="@style/SettingsSectionStyle"

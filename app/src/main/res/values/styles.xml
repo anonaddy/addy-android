@@ -193,6 +193,7 @@
         <item name="android:thumbTint">@color/primaryColor</item>
         <item name="android:thumb">@drawable/v3cometinswitchthumb</item>
         <item name="track">@drawable/v3cometinswitchtrackselector</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
     <style name="FloatingActionButton">

@@ -26,6 +26,12 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/alias_widget_info" />
         </receiver>
+        <!-- Widget -->
+
+        <!-- Notification -->
+        <receiver android:name=".utils.notifications.ActionReceiver" />
+        <!-- Notification-->
+
 
         <service
             android:name=".widget.AliasWidgetRemoteViewsService"

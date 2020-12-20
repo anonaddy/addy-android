@@ -19,6 +19,7 @@ import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_ACTION
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_APP
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.REFRESH_ACTION
+import kotlin.random.Random
 
 
 /**
@@ -141,5 +142,5 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
 private fun getPendingSelfIntent(context: Context, action: String): PendingIntent {
     val intent = Intent(context, AliasWidgetProvider::class.java)
     intent.action = action
-    return PendingIntent.getBroadcast(context, 0, intent, 0)
+    return PendingIntent.getBroadcast(context, Random.nextInt(0, 999), intent, PendingIntent.FLAG_UPDATE_CURRENT)
 }

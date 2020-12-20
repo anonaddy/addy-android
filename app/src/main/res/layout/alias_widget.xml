@@ -27,6 +27,7 @@
             android:layout_centerVertical="true"
             android:src="@drawable/ic_round_refresh_24"
             android:contentDescription="@string/refresh"
+            android:tint="@android:color/white"
             app:tint="@android:color/white" />
     </RelativeLayout>
 

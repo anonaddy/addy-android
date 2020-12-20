@@ -36,6 +36,9 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 }
             }
 
+            // No the data has been updated we perform the AliasWatcher check
+            AliasWatcher(appContext).watchAliasesForDifferences()
+
             return if (networkCallResult) {
                 Result.success()
             } else {

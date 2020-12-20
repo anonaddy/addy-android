@@ -28,6 +28,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_RULES
 import host.stjin.anonaddy.AnonAddy.API_URL_USERNAMES
 import host.stjin.anonaddy.AnonAddy.lazyMgr
 import host.stjin.anonaddy.models.*
+import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.utils.LoggingHelper
 import org.apache.commons.lang3.StringUtils
 import org.json.JSONArray
@@ -2027,6 +2028,17 @@ class NetworkHelper(private val context: Context) {
             } else {
                 // Turn the list into a json object
                 val data = Gson().toJson(list)
+
+                // Move the current list to the PREV position for AliasWatcher to compare
+                val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)?.let {
+                    GsonTools.jsonToAliasObject(
+                        context,
+                        it
+                    )
+                }
+                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS, Gson().toJson(currentList))
+                // Move the current list to the PREV position for AliasWatcher to compare
+
                 // Store a copy of this data locally
                 settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES, data)
 

@@ -15,6 +15,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_manage_alias.*
@@ -32,6 +33,7 @@ class ManageAliasActivity : BaseActivity(),
     EditAliasRecipientsBottomDialogFragment.AddEditAliasRecipientsBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
+    lateinit var aliasWatcher: AliasWatcher
 
     private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
     private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
@@ -57,6 +59,7 @@ class ManageAliasActivity : BaseActivity(),
         setContentView(R.layout.activity_manage_alias)
         setupToolbar(activity_manage_alias_toolbar)
         networkHelper = NetworkHelper(this)
+        aliasWatcher = AliasWatcher(this)
 
 
         val b = intent.extras
@@ -143,6 +146,18 @@ class ManageAliasActivity : BaseActivity(),
                 }
             }
         }
+
+        activity_manage_alias_watch_switch.setOnCheckedChangeListener { compoundButton, b ->
+            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+            if (compoundButton.isPressed || forceSwitch) {
+                forceSwitch = false
+                if (b) {
+                    aliasWatcher.addAliasToWatch(aliasId)
+                } else {
+                    aliasWatcher.removeAliasToWatch(aliasId)
+                }
+            }
+        }
     }
 
 
@@ -199,6 +214,11 @@ class ManageAliasActivity : BaseActivity(),
         activity_manage_alias_active_switch_layout.setOnClickListener {
             forceSwitch = true
             activity_manage_alias_active_switch.isChecked = !activity_manage_alias_active_switch.isChecked
+        }
+
+        activity_manage_alias_watch_switch_layout.setOnClickListener {
+            forceSwitch = true
+            activity_manage_alias_watch_switch.isChecked = !activity_manage_alias_watch_switch.isChecked
         }
 
         activity_manage_alias_desc_edit.setOnClickListener {
@@ -358,6 +378,9 @@ class ManageAliasActivity : BaseActivity(),
                 activity_manage_alias_active_switch.isChecked = list.active
                 activity_manage_alias_status_textview.text =
                     if (list.active) resources.getString(R.string.alias_activated) else resources.getString(R.string.alias_deactivated)
+
+                // Set watch switch status
+                activity_manage_alias_watch_switch.isChecked = aliasWatcher.getAliasesToWatch()?.contains(aliasId) ?: false
 
 
                 // Set the switch to disabled when the account is deleted. Else unlock it

@@ -5,12 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.COPY_ACTION
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_ACTION
@@ -38,7 +37,19 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
         // text based on the position.
         val rv = RemoteViews(mContext.packageName, R.layout.widget_aliases_listview_list_item)
         rv.setTextViewText(R.id.widget_aliases_listview_list_title, aliasList?.get(position)?.email)
-        rv.setTextViewText(R.id.widget_aliases_listview_list_description, aliasList?.get(position)?.description)
+
+
+        val description: String = if (aliasList?.get(position)?.description.isNullOrEmpty()) {
+            mContext.resources.getString(
+                R.string.created_at_s,
+                DateTimeUtils.turnStringIntoLocalString(aliasList?.get(position)?.created_at)
+            )
+        } else {
+            aliasList?.get(position)?.description.toString()
+        }
+        rv.setTextViewText(R.id.widget_aliases_listview_list_description, description)
+
+
         // Next, set a fill-intent which will be used to fill-in the pending intent template
         // which is set on the collection view in StackWidgetProvider.
 
@@ -84,16 +95,13 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
     }
 
     override fun onDataSetChanged() {
-        val loggingHelper = LoggingHelper(mContext)
         val settingsManager = SettingsManager(true, mContext)
         val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
 
-        try {
-            val aliasesList: ArrayList<Aliases> = Gson().fromJson(
-                aliasesJson,
-                object : TypeToken<ArrayList<Aliases?>?>() {}.type
-            ) as ArrayList<Aliases>
 
+        val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(mContext, it) }
+
+        if (aliasesList != null) {
             if (aliasesList.size >= 2) {
 
                 // Sort by emails forwarded
@@ -102,11 +110,8 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
                 // Get the top 15
                 aliasList = aliasesList.take(15) as ArrayList<Aliases>?
             }
-        } catch (e: Exception) {
-            val ex = e.message
-            println(ex)
-            loggingHelper.addLog(ex.toString(), "onDataSetChanged")
         }
+
 
     }
 

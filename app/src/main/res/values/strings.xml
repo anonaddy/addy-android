@@ -338,6 +338,11 @@
     <string name="backgroundserviceinterval_1h">1h</string>
     <string name="backgroundserviceinterval_2h">2h</string>
     <string name="set_interval">Set interval</string>
+    <string name="watch_alias">Watch alias</string>
+    <string name="watch_alias_desc">Receive a notification when an email is sent to this alias.</string>
+    <string name="notification_new_emails">New emails forwarded</string>
+    <string name="notification_new_emails_desc">%d new email(s) have been forwarded via %s</string>
+    <string name="stop_watching">Stop watching</string>
 
 
 </resources>
