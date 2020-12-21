@@ -66,15 +66,13 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
     the custom format is not available for shared domains
      */
     private fun spinnerChangeListener(root: View, context: Context) {
-        checkIfCustomIsAvailable(root, context)
-
         root.bs_addalias_alias_format_mact.setOnItemClickListener { _, _, _, _ ->
+            // Since the alias format changed, check if custom is available
             checkIfCustomIsAvailable(root, context)
             root.bs_addalias_alias_format_til.error = null
         }
 
         root.bs_addalias_domain_mact.setOnItemClickListener { _, _, _, _ ->
-            checkIfCustomIsAvailable(root, context)
             root.bs_addalias_domain_til.error = null
         }
     }
@@ -130,6 +128,9 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                     )
                 }
             }
+
+            // Since the alias format has been set, check if custom is available
+            checkIfCustomIsAvailable(root, context)
         }
 
     }
@@ -226,10 +227,5 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 addAlias(requireView(), requireContext())
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkIfCustomIsAvailable(requireView(), requireContext())
     }
 }

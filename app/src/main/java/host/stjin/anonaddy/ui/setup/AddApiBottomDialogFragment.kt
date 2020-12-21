@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
@@ -52,6 +53,9 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         )
         listener = activity as AddApiBottomDialogListener
 
+        initQrScanner(root)
+
+
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         root.bs_setup_apikey_sign_in_button.setOnClickListener(this)
         root.bs_setup_apikey_get_button.setOnClickListener(this)
@@ -76,6 +80,28 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         }
 
         return root
+    }
+
+    private fun initQrScanner(root: View) {
+        // Initialize the codeScanner, this won't start the camera yet.
+        codeScanner = CodeScanner(requireActivity(), root.bs_setup_scanner_view)
+        // Initialize the codeScanner
+        codeScanner!!.decodeCallback = DecodeCallback {
+            requireActivity().runOnUiThread {
+                // Verify if the scanned QR code has all the properties
+                if (isQrCodeFormattedCorrect(it.text)) {
+                    // Get the string part before the ; delimiter
+                    root.bs_setup_instance_tiet.setText(it.text.substringBeforeLast(";", ""))
+                    // Get the string part after the ; delimiter
+                    root.bs_setup_apikey_tiet.setText(it.text.substringAfterLast(";", ""))
+                    verifyKey(root, requireContext())
+                } else {
+                    root.bs_setup_scanner_view_desc.text = context?.resources?.getString(R.string.api_setup_qr_code_scan_wrong)
+                    codeScanner!!.startPreview()
+                }
+
+            }
+        }
     }
 
 
@@ -129,6 +155,9 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
 
     override fun onPause() {
+        // Stop preview when the app gets suspended
+        codeScanner?.stopPreview()
+        // Release resources to prevent draining as well as giving other apps a chance to use the camera
         codeScanner?.releaseResources()
         super.onPause()
     }
@@ -159,45 +188,27 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
     private fun toggleQrCodeScanning(root: View) {
         // Check if camera permissions are granted
-        if (checkSelfPermission(root.context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(root.context, Manifest.permission.CAMERA) != PermissionChecker.PERMISSION_GRANTED) {
             requestPermissions(
                 arrayOf(
                     Manifest.permission.CAMERA,
                 ), 1000
             )
         } else {
-            if (codeScanner == null) {
-                val activity = requireActivity()
-                codeScanner = CodeScanner(activity, root.bs_setup_scanner_view)
-                codeScanner!!.decodeCallback = DecodeCallback {
-                    activity.runOnUiThread {
-                        // Verify if the scanned QR code has all the properties
-                        if (isQrCodeFormattedCorrect(it.text)) {
-                            // Get the string part before the ; delimiter
-                            root.bs_setup_instance_tiet.setText(it.text.substringBeforeLast(";", ""))
-                            // Get the string part after the ; delimiter
-                            root.bs_setup_apikey_tiet.setText(it.text.substringAfterLast(";", ""))
-                            verifyKey(root, requireContext())
-                        } else {
-                            root.bs_setup_scanner_view_desc.text = context?.resources?.getString(R.string.api_setup_qr_code_scan_wrong)
-                            codeScanner!!.startPreview()
-                        }
+            // If codeScanner is initialized, switch between start en stopPreview
+            if (codeScanner?.isPreviewActive == true) {
+                codeScanner?.stopPreview()
+                // Release resources to prevent draining as well as giving other apps a chance to use the camera
+                codeScanner?.releaseResources()
+            } else {
+                codeScanner?.startPreview()
+            }
 
-                    }
-                }
-                codeScanner!!.startPreview()
-            } else destroyQrCode(root)
         }
     }
 
     private fun isQrCodeFormattedCorrect(text: String): Boolean {
         return text.contains(";") && text.contains("http")
     }
-
-    private fun destroyQrCode(root: View) {
-        codeScanner?.releaseResources()
-        codeScanner = null
-    }
-
 
 }

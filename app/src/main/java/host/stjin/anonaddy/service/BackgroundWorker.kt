@@ -1,19 +1,35 @@
 package host.stjin.anonaddy.service
 
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE
+import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import androidx.work.*
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.widget.AliasWidgetProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
+
 
 /*
 This BackgroundWorker is used for obtaining data in the background, this data is then being used to "Watch" aliases and updating the data the widget uses.
  */
 
 class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
+
+    private fun updateWidgets() {
+        val updateWidgetIntent = Intent(applicationContext, AliasWidgetProvider::class.java)
+        updateWidgetIntent.action = ACTION_APPWIDGET_UPDATE
+        val ids = AppWidgetManager.getInstance(applicationContext)
+            .getAppWidgetIds(ComponentName(applicationContext, AliasWidgetProvider::class.java))
+        updateWidgetIntent.putExtra(EXTRA_APPWIDGET_IDS, ids)
+        applicationContext.sendBroadcast(updateWidgetIntent)
+    }
 
     override fun doWork(): Result {
 
@@ -27,19 +43,35 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
         // True if there are aliases to be watched or there are widgets to be updated
         if (backgroundWorkerHelper.isThereWorkTodo()) {
             val networkHelper = NetworkHelper(appContext)
-            var networkCallResult = false
+
+            // Stored if the network call succeeds its task
+            var aliasNetworkCallResult = false
+            var domainNetworkCallResult = false
 
             // Block the thread until this is finished
             runBlocking(Dispatchers.Default) {
-                networkHelper.cacheDataForWidget { result ->
-                    networkCallResult = result
+                networkHelper.cacheAliasDataForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    aliasNetworkCallResult = result
+                }
+
+                networkHelper.cacheDomainsDataForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    domainNetworkCallResult = result
                 }
             }
 
-            // No the data has been updated we perform the AliasWatcher check
-            AliasWatcher(appContext).watchAliasesForDifferences()
+            // If the aliasNetwork call was successful, perform the check
+            if (aliasNetworkCallResult) {
+                // Now the data has been updated, perform the AliasWatcher check
+                AliasWatcher(appContext).watchAliasesForDifferences()
 
-            return if (networkCallResult) {
+                // Now the data has been updated, we can update the widget as well
+                updateWidgets()
+            }
+
+            // If both tasks are successful return a success()
+            return if (aliasNetworkCallResult && domainNetworkCallResult) {
                 Result.success()
             } else {
                 Result.failure()
@@ -55,7 +87,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
 
 class BackgroundWorkerHelper(private val context: Context) {
-    val CONSTANT_PERIODIC_WORK_REQUEST_TAG = "host.stjin.anonaddy.backgroundworker"
+    private val CONSTANT_PERIODIC_WORK_REQUEST_TAG = "host.stjin.anonaddy.backgroundworker"
     fun scheduleBackgroundWorker() {
         // Cancel the work to prevent it from being scheduled twice
         cancelScheduledBackgroundWorker()
@@ -68,22 +100,15 @@ class BackgroundWorkerHelper(private val context: Context) {
                 .setRequiresCharging(false)
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .setRequiresBatteryNotLow(true)
-                .setRequiresStorageNotLow(true)
                 .build()
 
-            val source: Data = Data.Builder()
-                .putString("workType", "PeriodicTime")
-                .build()
-
-            val minutes = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL).toLong()
+            // Get the amount of minutes from the settings
+            val minutes = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30).toLong()
             val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundWorker::class.java, minutes, TimeUnit.MINUTES)
                 .setConstraints(myConstraints)
-                .setInputData(source)
                 .addTag(CONSTANT_PERIODIC_WORK_REQUEST_TAG)
                 .build()
-
             WorkManager.getInstance(context).enqueue(refreshCpnWork)
-
 
             if (BuildConfig.DEBUG) {
                 println("There is work todo, queued work for every $minutes minutes")

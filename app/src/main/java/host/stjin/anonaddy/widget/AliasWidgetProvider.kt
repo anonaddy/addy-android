@@ -3,12 +3,16 @@ package host.stjin.anonaddy.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
@@ -58,6 +62,11 @@ class AliasWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+
+        if (BuildConfig.DEBUG) {
+            println("onUpdate() called")
+        }
+
         // There may be multiple widgets active, so update all of them
         var amountOfWidgets = 0
         for (appWidgetId in appWidgetIds) {
@@ -65,6 +74,7 @@ class AliasWidgetProvider : AppWidgetProvider() {
             amountOfWidgets++
         }
 
+        // Store the amount of widgets
         SettingsManager(false, context).putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, amountOfWidgets)
     }
 
@@ -74,8 +84,14 @@ class AliasWidgetProvider : AppWidgetProvider() {
         if (context != null && intent != null) {
             when (intent.action) {
                 REFRESH_ACTION -> {
+                    // The refresh button will re-schedule the background worker as I assume that people will press this button if either
+                    // 1. They reset the app and kept the widget on their homescreen resulting in no workmanager being active
+                    // 2. They expected data which is not there
+                    BackgroundWorkerHelper(context).scheduleBackgroundWorker()
                     Toast.makeText(context, context.resources.getString(R.string.refreshing_data), Toast.LENGTH_LONG).show()
-                    onUpdate(context)
+
+                    //scheduleBackgroundWorker calls doWork which updates the widget as soon as it got all the data
+                    //onUpdate(context)
                 }
                 OPEN_APP -> {
                     val mainIntent = Intent(context, SplashActivity::class.java)
@@ -85,10 +101,10 @@ class AliasWidgetProvider : AppWidgetProvider() {
                 NAVIGATE -> {
                     if (intent.hasExtra(COPY_ACTION)) {
                         val alias = intent.getStringExtra(COPY_ACTION)
-                        val clipboard: ClipboardManager? =
+                        val clipboard: ClipboardManager =
                             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText("alias", alias)
-                        clipboard?.setPrimaryClip(clip)
+                        clipboard.setPrimaryClip(clip)
                         Toast.makeText(context, context.resources.getString(R.string.copied_alias), Toast.LENGTH_LONG).show()
                     } else if (intent.hasExtra(OPEN_ACTION)) {
                         val manageAliasIntent = Intent(context, ManageAliasActivity::class.java)
@@ -99,14 +115,6 @@ class AliasWidgetProvider : AppWidgetProvider() {
                 }
             }
         }
-    }
-
-    private fun onUpdate(context: Context) {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val thisAppWidgetComponentName = ComponentName(context.packageName, AliasWidgetProvider::class.java.name)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidgetComponentName)
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_alias_list_view)
-        onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
 }
@@ -134,6 +142,10 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
     views.setPendingIntentTemplate(R.id.widget_alias_list_view, onClickPendingIntent)
     views.setOnClickPendingIntent(R.id.widget_aliases_listview_list_refresh, getPendingSelfIntent(context, REFRESH_ACTION))
     views.setOnClickPendingIntent(R.id.widget_aliases_listview_list_open_app, getPendingSelfIntent(context, OPEN_APP))
+
+
+    // Tell every widget there is new data for the listview
+    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_alias_list_view)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)

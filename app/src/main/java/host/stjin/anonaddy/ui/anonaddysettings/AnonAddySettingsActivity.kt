@@ -38,7 +38,7 @@ class AnonAddySettingsActivity : BaseActivity() {
     }
 
 
-    // If the user comes back from eg. settings re-check + enable biometricswitch
+    // If the user comes back from eg. settings re-check for updated data
     override fun onResume() {
         super.onResume()
         getDataFromWeb()

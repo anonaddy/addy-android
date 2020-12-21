@@ -303,7 +303,6 @@ class AppSettingsActivity : BaseActivity(),
 
         // Schedule the background worker (this will cancel if already scheduled)
         BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-
         addBackgroundServiceIntervalBottomDialogFragment.dismiss()
     }
 

@@ -68,8 +68,6 @@ class EditUsernameRecipientBottomDialogFragment(
 
         networkHelper.getRecipients({ result ->
             if (result != null) {
-
-                //TODO There is a bug where the default option will stay checked when selecting another chip, gotta fix this
                 for (recipient in result) {
                     val chip = Chip(root.bs_editrecipient_chipgroup.context)
                     chip.text = recipient.email
@@ -82,7 +80,6 @@ class EditUsernameRecipientBottomDialogFragment(
                     root.bs_editrecipient_chipgroup.addView(chip)
                 }
             }
-
         }, true)
     }
 

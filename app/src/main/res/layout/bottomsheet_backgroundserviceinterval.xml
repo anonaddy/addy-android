@@ -55,6 +55,7 @@
                 android:text="@string/background_service_desc"
                 android:textAlignment="center" />
 
+            <!-- TODO fix this color issue in dark mode -->
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -69,7 +70,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:enabled="true"
                     android:text="@string/backgroundserviceinterval_15m" />
 
                 <com.google.android.material.button.MaterialButton
@@ -78,7 +78,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:enabled="true"
                     android:text="@string/backgroundserviceinterval_30m" />
 
                 <com.google.android.material.button.MaterialButton
@@ -87,7 +86,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:enabled="true"
                     android:text="@string/backgroundserviceinterval_1h" />
 
                 <com.google.android.material.button.MaterialButton
@@ -96,7 +94,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:enabled="true"
                     android:text="@string/backgroundserviceinterval_2h" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>

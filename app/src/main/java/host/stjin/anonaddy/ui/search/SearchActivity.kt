@@ -108,8 +108,6 @@ class SearchActivity : BaseActivity() {
         if (filteredAliases?.size ?: 0 == 0 && filteredDomains?.size ?: 0 == 0 && filteredRecipients?.size ?: 0 == 0 && filteredUsernames?.size ?: 0 == 0 && filteredRules?.size ?: 0 == 0) {
             activity_search_RL_lottieview.visibility = View.VISIBLE
         }
-
-
     }
 
     private fun setUsernames() {
@@ -281,11 +279,11 @@ class SearchActivity : BaseActivity() {
                 }
 
                 override fun onClickCopy(pos: Int, aView: View) {
-                    val clipboard: ClipboardManager? =
+                    val clipboard: ClipboardManager =
                         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val aliasEmailAddress = finalList[pos].email
                     val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                    clipboard?.setPrimaryClip(clip)
+                    clipboard.setPrimaryClip(clip)
 
                     Snackbar.make(
                         activity_search_LL,

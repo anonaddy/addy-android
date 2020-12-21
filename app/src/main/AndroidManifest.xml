@@ -29,7 +29,7 @@
         <!-- Widget -->
 
         <!-- Notification -->
-        <receiver android:name=".utils.notifications.ActionReceiver" />
+        <receiver android:name="host.stjin.anonaddy.notifications.ActionReceiver" />
         <!-- Notification-->
 
 

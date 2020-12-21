@@ -45,9 +45,9 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
              * Check if there is a 999 length string in the clipboard (that's most likely the API key)
              */
 
-            val clipboard: ClipboardManager? =
+            val clipboard: ClipboardManager =
                 this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clipboardData = clipboard?.primaryClip
+            val clipboardData = clipboard.primaryClip
             val item = clipboardData?.getItemAt(0)
             val text = item?.text.toString()
 

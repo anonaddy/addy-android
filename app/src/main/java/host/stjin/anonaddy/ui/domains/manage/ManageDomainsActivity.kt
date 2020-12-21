@@ -404,11 +404,6 @@ class ManageDomainsActivity : BaseActivity(),
         }, id)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        supportFinishAfterTransition()
-    }
-
     override fun descriptionEdited(description: String) {
         setPage()
         editDomainDescriptionBottomDialogFragment.dismiss()

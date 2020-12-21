@@ -31,7 +31,7 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
         return aliasList?.size ?: 0
     }
 
-    override fun getViewAt(position: Int): RemoteViews? {
+    override fun getViewAt(position: Int): RemoteViews {
         // position will always range from 0 to getCount() - 1.
         // construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
@@ -98,7 +98,6 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
         val settingsManager = SettingsManager(true, mContext)
         val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
 
-
         val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(mContext, it) }
 
         if (aliasesList != null) {
@@ -111,8 +110,6 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
                 aliasList = aliasesList.take(15) as ArrayList<Aliases>?
             }
         }
-
-
     }
 
 }

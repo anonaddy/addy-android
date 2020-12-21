@@ -104,6 +104,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
     }
 
+    // Update list of aliases when coming back
     override fun onResume() {
         super.onResume()
         getDataFromWeb(requireView())
@@ -225,11 +226,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         }
 
                         override fun onClickCopy(pos: Int, aView: View) {
-                            val clipboard: ClipboardManager? =
+                            val clipboard: ClipboardManager =
                                 context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val aliasEmailAddress = list[pos].email
                             val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                            clipboard?.setPrimaryClip(clip)
+                            clipboard.setPrimaryClip(clip)
 
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)
@@ -328,11 +329,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         }
 
                         override fun onClickCopy(pos: Int, aView: View) {
-                            val clipboard: ClipboardManager? =
+                            val clipboard: ClipboardManager =
                                 context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val aliasEmailAddress = onlyDeletedList[pos].email
                             val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                            clipboard?.setPrimaryClip(clip)
+                            clipboard.setPrimaryClip(clip)
 
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)

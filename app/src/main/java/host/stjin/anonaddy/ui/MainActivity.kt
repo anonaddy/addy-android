@@ -1,15 +1,10 @@
 package host.stjin.anonaddy.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -27,6 +22,10 @@ import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_top_bar_not_user.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener {
@@ -46,15 +45,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkForDarkModeAndSetFlags()
 
-        val settingsManager = SettingsManager(true, this)
-        // First check for biometrics with a fallback on screen lock
-        if (settingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
-            verifyBiometrics()
-        } else {
-            loadMainActivity()
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            isAuthenticated { isAuthenticated ->
+                if (isAuthenticated) {
+                    loadMainActivity()
+                }
+            }
         }
+
     }
 
     private fun loadMainActivity() {
@@ -115,67 +114,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         settingsManager.putSettingsInt(SettingsManager.PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
     }
 
-    private fun verifyBiometrics() {
-        val executor = ContextCompat.getMainExecutor(this)
-        val biometricPrompt = BiometricPrompt(
-            this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(
-                    errorCode: Int,
-                    errString: CharSequence
-                ) {
-                    super.onAuthenticationError(errorCode, errString)
-
-                    when (errorCode) {
-                        BiometricPrompt.ERROR_NO_BIOMETRICS -> {
-                            // The user has removed the screen lock completely.
-                            // Unlock the app and continue
-                            SettingsManager(true, this@MainActivity).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
-                            Toast.makeText(
-                                this@MainActivity, resources.getString(
-                                    R.string.authentication_error_11
-                                ), Toast.LENGTH_LONG
-                            ).show()
-                            loadMainActivity()
-                        }
-                        BiometricPrompt.ERROR_USER_CANCELED -> {
-                            finish()
-                        }
-                        BiometricPrompt.ERROR_CANCELED -> {
-                            finish()
-                        }
-                        else -> {
-                            Toast.makeText(
-                                this@MainActivity, resources.getString(
-                                    R.string.authentication_error_s,
-                                    errString
-                                ), Toast.LENGTH_LONG
-                            ).show()
-                            finish()
-                        }
-                    }
-                }
-
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult
-                ) {
-                    super.onAuthenticationSucceeded(result)
-                    loadMainActivity()
-                }
-
-            })
-
-        val promptInfo =
-            BiometricPrompt.PromptInfo.Builder()
-                .setTitle(resources.getString(R.string.anonaddy_locked))
-                .setDeviceCredentialAllowed(true)
-                .setConfirmationRequired(false)
-                .build()
-
-        biometricPrompt.authenticate(promptInfo)
-
-    }
-
     private fun initialiseMainAppBar() {
         main_top_bar_user_initials.setOnClickListener {
             val i = Intent(Intent(this, DialogActivity::class.java))
@@ -203,21 +141,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-    @SuppressLint("SwitchIntDef")
-    fun checkForDarkModeAndSetFlags() {
-        val settingsManager = SettingsManager(false, this)
-        when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
-            0 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-            1 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }
-            -1 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
-        }
-    }
 
     private fun changeTopBarTitle(title: String) {
         main_top_bar_not_title.text = title

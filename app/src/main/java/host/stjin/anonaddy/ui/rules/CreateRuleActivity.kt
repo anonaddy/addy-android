@@ -423,10 +423,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        supportFinishAfterTransition()
-    }
 
     // Condition
     override fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String, values: List<String>) {

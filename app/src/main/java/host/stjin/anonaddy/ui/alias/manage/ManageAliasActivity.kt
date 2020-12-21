@@ -33,7 +33,7 @@ class ManageAliasActivity : BaseActivity(),
     EditAliasRecipientsBottomDialogFragment.AddEditAliasRecipientsBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
-    lateinit var aliasWatcher: AliasWatcher
+    private lateinit var aliasWatcher: AliasWatcher
 
     private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
     private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
@@ -47,15 +47,20 @@ class ManageAliasActivity : BaseActivity(),
      */
     private var progressBarVisibility = View.VISIBLE
 
-
+    // Bug fix
     override fun onResume() {
         super.onResume()
-        activity_manage_alias_settings_RL_progressbar.visibility = progressBarVisibility
+        if (activity_manage_alias_settings_RL_progressbar != null) {
+            activity_manage_alias_settings_RL_progressbar.visibility = progressBarVisibility
+        }
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Since this activity can be directly launched, set the dark mode.
+        checkForDarkModeAndSetFlags()
         setContentView(R.layout.activity_manage_alias)
         setupToolbar(activity_manage_alias_toolbar)
         networkHelper = NetworkHelper(this)
@@ -94,6 +99,21 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setPage() {
+        /**
+         * This activity can be called by an URI or Widget/Notification Intent.
+         * Protect this part
+         */
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            isAuthenticated { isAuthenticated ->
+                if (isAuthenticated) {
+                    setPageInfo()
+                }
+            }
+        }
+
+    }
+
+    private fun setPageInfo() {
         activity_manage_alias_settings_RL_lottieview.visibility = View.GONE
 
         // Get the alias
@@ -383,15 +403,6 @@ class ManageAliasActivity : BaseActivity(),
                 activity_manage_alias_watch_switch.isChecked = aliasWatcher.getAliasesToWatch()?.contains(aliasId) ?: false
 
 
-                // Set the switch to disabled when the account is deleted. Else unlock it
-                if (list.deleted_at == null) {
-                    activity_manage_alias_active_switch.isClickable = true
-                    activity_manage_alias_active_switch.isEnabled = true
-                } else {
-                    activity_manage_alias_active_switch.isClickable = false
-                    activity_manage_alias_active_switch.isEnabled = false
-                }
-
                 /**
                  * LAYOUT
                  */
@@ -528,10 +539,6 @@ class ManageAliasActivity : BaseActivity(),
         }, id)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        supportFinishAfterTransition()
-    }
 
     override fun descriptionEdited(description: String) {
         setPage()

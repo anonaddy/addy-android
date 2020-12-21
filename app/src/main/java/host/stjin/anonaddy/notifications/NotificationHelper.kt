@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.utils.notifications
+package host.stjin.anonaddy.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -26,7 +26,7 @@ class NotificationHelper(private val context: Context) {
         createChannel(
             ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID,
             context.resources.getString(R.string.watch_alias),
-            context.resources.getString(R.string.watch_alias_desc)
+            context.resources.getString(R.string.notification_channel_watch_alias_desc)
         )
 
         buildAliasWatcherCallNotification(
@@ -42,13 +42,13 @@ class NotificationHelper(private val context: Context) {
             if (SettingsManager(true, context).getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PRIVATE
 
         val stopWatchingIntent = Intent(context, ActionReceiver::class.java).apply {
-            action = ActionReceiver.NOTIFICATION_ACTIONS.STOP_WATCHING
+            action = ActionReceiver.NOTIFICATIONACTIONS.STOP_WATCHING
             putExtra("extra", aliasId)
         }
         val stopWatchingPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(context, Random.nextInt(0, 999), stopWatchingIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val editAliasIntent = Intent(context, ActionReceiver::class.java).apply {
-            action = ActionReceiver.NOTIFICATION_ACTIONS.EDIT_ALIAS
+            action = ActionReceiver.NOTIFICATIONACTIONS.EDIT_ALIAS
             putExtra("extra", aliasId)
         }
         val editAliasPendingIntent: PendingIntent =
@@ -67,9 +67,8 @@ class NotificationHelper(private val context: Context) {
             .setContentIntent(pendingIntent)
             .setVisibility(visibility)
             .setColor(ContextCompat.getColor(context, R.color.primaryColor))
-            .setSmallIcon(R.drawable.ic_logo_small)
+            .setSmallIcon(R.drawable.ic_comment_eye_outline)
             .addAction(R.drawable.ic_comment_eye_outline, context.resources.getString(R.string.stop_watching), stopWatchingPendingIntent)
-            .addAction(R.drawable.ic_round_alternate_email_24, context.resources.getString(R.string.edit_alias), editAliasPendingIntent)
             .setContentIntent(editAliasPendingIntent)
             // Auto cancel only in production
             .setAutoCancel(!BuildConfig.DEBUG)

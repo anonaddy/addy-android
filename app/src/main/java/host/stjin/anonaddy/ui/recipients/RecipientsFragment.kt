@@ -121,6 +121,7 @@ class RecipientsFragment : Fragment(),
         }
     }
 
+    // Update the recipients list when coming back
     override fun onResume() {
         super.onResume()
         getDataFromWeb(requireView())

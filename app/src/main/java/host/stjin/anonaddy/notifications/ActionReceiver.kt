@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.utils.notifications
+package host.stjin.anonaddy.notifications
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -10,7 +10,7 @@ import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 
 class ActionReceiver : BroadcastReceiver() {
 
-    object NOTIFICATION_ACTIONS {
+    object NOTIFICATIONACTIONS {
         const val STOP_WATCHING = "stop_watching"
         const val EDIT_ALIAS = "edit_alias"
     }
@@ -20,9 +20,9 @@ class ActionReceiver : BroadcastReceiver() {
         val action = intent.action
         val extra = intent.getStringExtra("extra")
 
-        if (action == NOTIFICATION_ACTIONS.STOP_WATCHING) {
+        if (action == NOTIFICATIONACTIONS.STOP_WATCHING) {
             extra?.let { AliasWatcher(context).removeAliasToWatch(it) }
-        } else if (action == NOTIFICATION_ACTIONS.EDIT_ALIAS) {
+        } else if (action == NOTIFICATIONACTIONS.EDIT_ALIAS) {
             val manageAliasIntent = Intent(context, ManageAliasActivity::class.java)
             manageAliasIntent.putExtra("alias_id", extra)
             manageAliasIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -66,8 +66,8 @@ class HomeFragment : Fragment() {
         setOnClickListeners(root)
         getStatistics(root)
 
-        // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
-        getDataFromWeb(root, requireContext())
+        // Called on OnResume(), prevent double calls
+        //getDataFromWeb(root, requireContext())
 
         return root
     }
@@ -83,6 +83,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // Update information when coming back, such as aliases and statistics
     override fun onResume() {
         super.onResume()
         getDataFromWeb(requireView(), requireContext())
@@ -184,11 +185,11 @@ class HomeFragment : Fragment() {
                         }
 
                         override fun onClickCopy(pos: Int, aView: View) {
-                            val clipboard: ClipboardManager? =
+                            val clipboard: ClipboardManager =
                                 context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                             val aliasEmailAddress = aliasList[pos].email
                             val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                            clipboard?.setPrimaryClip(clip)
+                            clipboard.setPrimaryClip(clip)
 
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)

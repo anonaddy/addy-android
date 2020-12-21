@@ -27,6 +27,9 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
+        checkForDarkModeAndSetFlags()
         setContentView(R.layout.activity_splash)
 
         window.decorView.systemUiVisibility =
