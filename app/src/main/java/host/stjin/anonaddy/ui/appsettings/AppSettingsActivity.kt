@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
@@ -19,6 +20,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.ui.customviews.SectionView
 import kotlinx.android.synthetic.main.activity_app_settings.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 
@@ -55,18 +57,18 @@ class AppSettingsActivity : BaseActivity(),
     }
 
     private fun loadSettings() {
-        activity_app_settings_section_security_switch.isChecked =
-            encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)
-        activity_app_settings_section_logs_switch.isChecked =
-            settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)
+        activity_app_settings_section_security.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED))
+        activity_app_settings_section_logs.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS))
     }
 
     private fun setOnSwitchListeners() {
-        activity_app_settings_section_logs_switch.setOnCheckedChangeListener { compoundButton, b ->
-            if (compoundButton.isPressed) {
-                settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, b)
+        activity_app_settings_section_logs.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed) {
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, checked)
+                }
             }
-        }
+        })
     }
 
     // If the user comes back from eg. settings re-check + enable biometricswitch
@@ -79,34 +81,37 @@ class AppSettingsActivity : BaseActivity(),
 
     private var shouldEnableBiometric = true
     private fun setOnBiometricSwitchListeners() {
-        activity_app_settings_section_security.alpha = 0.5f
-        activity_app_settings_section_security_switch.isEnabled = false
-        activity_app_settings_section_security_switch.isClickable = false
+        activity_app_settings_section_security.setLayoutEnabled(false)
 
         val biometricManager = BiometricManager.from(this)
         when (biometricManager.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
-                activity_app_settings_section_security_desc.text =
-                    resources.getString(R.string.security_desc)
-                activity_app_settings_section_security.alpha = 1f
-                activity_app_settings_section_security_switch.isEnabled = true
-                activity_app_settings_section_security_switch.isClickable = true
+                activity_app_settings_section_security.setDescription(resources.getString(R.string.security_desc))
 
-                activity_app_settings_section_security.setOnClickListener {
-                    forceSwitch = true
-                    activity_app_settings_section_security_switch.isChecked = !activity_app_settings_section_security_switch.isChecked
-                }
+                activity_app_settings_section_security.setLayoutEnabled(true)
+
+
+                activity_app_settings_section_security.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+                    override fun onClick() {
+                        forceSwitch = true
+                        activity_app_settings_section_security.setSwitchChecked(!activity_app_settings_section_security.getSwitchChecked())
+                    }
+                })
             }
+
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
-                activity_app_settings_section_security_desc.text =
+                activity_app_settings_section_security.setDescription(
                     resources.getString(R.string.biometric_error_no_hardware)
+                )
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-                activity_app_settings_section_security_desc.text =
+                activity_app_settings_section_security.setDescription(
                     resources.getString(R.string.biometric_error_hw_unavailable)
+                )
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
 
-                activity_app_settings_section_security_desc.text =
+                activity_app_settings_section_security.setDescription(
                     resources.getString(R.string.biometric_error_none_enrolled)
+                )
 
                 if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
                     // Biometrics is enabled but there is nothing enrolled.
@@ -143,14 +148,14 @@ class AppSettingsActivity : BaseActivity(),
                         Snackbar.LENGTH_SHORT
                     ).show()
 
-                    activity_app_settings_section_security_switch.isChecked = !shouldEnableBiometric
+                    activity_app_settings_section_security.setSwitchChecked(!shouldEnableBiometric)
                 }
 
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult
                 ) {
                     super.onAuthenticationSucceeded(result)
-                    activity_app_settings_section_security_switch.isChecked = shouldEnableBiometric
+                    activity_app_settings_section_security.setSwitchChecked(shouldEnableBiometric)
                     encryptedSettingsManager.putSettingsBool(
                         SettingsManager.PREFS.BIOMETRIC_ENABLED,
                         shouldEnableBiometric
@@ -165,90 +170,123 @@ class AppSettingsActivity : BaseActivity(),
                         Snackbar.LENGTH_SHORT
                     ).show()
 
-                    activity_app_settings_section_security_switch.isChecked = !shouldEnableBiometric
+                    activity_app_settings_section_security.setSwitchChecked(!shouldEnableBiometric)
                 }
             })
 
-        activity_app_settings_section_security_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-            if (compoundButton.isPressed || forceSwitch) {
-                forceSwitch = false
-                shouldEnableBiometric = b
-                val promptInfo = if (b) {
-                    BiometricPrompt.PromptInfo.Builder()
-                        .setTitle(resources.getString(R.string.enable_biometric_authentication))
-                        .setDeviceCredentialAllowed(true)
-                        .build()
-                } else {
-                    BiometricPrompt.PromptInfo.Builder()
-                        .setTitle(resources.getString(R.string.disable_biometric_authentication))
-                        .setDeviceCredentialAllowed(true)
-                        .build()
+
+        activity_app_settings_section_security.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    forceSwitch = false
+                    shouldEnableBiometric = checked
+                    val promptInfo = if (checked) {
+                        BiometricPrompt.PromptInfo.Builder()
+                            .setTitle(resources.getString(R.string.enable_biometric_authentication))
+                            .setDeviceCredentialAllowed(true)
+                            .build()
+                    } else {
+                        BiometricPrompt.PromptInfo.Builder()
+                            .setTitle(resources.getString(R.string.disable_biometric_authentication))
+                            .setDeviceCredentialAllowed(true)
+                            .build()
+                    }
+
+                    biometricPrompt.authenticate(promptInfo)
                 }
-
-                biometricPrompt.authenticate(promptInfo)
             }
-        }
-
+        })
     }
 
     private fun setOnClickListeners() {
-        activity_app_settings_section_app_theme.setOnClickListener {
-            if (!addDarkModeBottomDialogFragment.isAdded) {
-                addDarkModeBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "addDarkModeBottomDialogFragment"
-                )
+        activity_app_settings_section_app_theme.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addDarkModeBottomDialogFragment.isAdded) {
+                    addDarkModeBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addDarkModeBottomDialogFragment"
+                    )
+                }
             }
-        }
-        activity_app_settings_section_changelog.setOnClickListener {
-            if (!addChangelogBottomDialogFragment.isAdded) {
-                addChangelogBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "addChangelogBottomDialogFragment"
-                )
-            }
-        }
-        activity_app_settings_section_background_service.setOnClickListener {
-            if (!addBackgroundServiceIntervalBottomDialogFragment.isAdded) {
-                addBackgroundServiceIntervalBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "addBackgroundServiceIntervalBottomDialogFragment"
-                )
-            }
-        }
-        activity_app_settings_section_faq.setOnClickListener {
-            val url = "https://anonaddy.com/faq/"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        activity_app_settings_section_help.setOnClickListener {
-            val url = "https://anonaddy.com/help/"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        activity_app_settings_section_gitlab.setOnClickListener {
-            val url = "https://gitlab.com/Stjin/anonaddy-android"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        activity_app_settings_section_report_issue.setOnClickListener {
-            val url = "https://gitlab.com/Stjin/anonaddy-android/-/issues/new"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        activity_app_settings_section_logs.setOnClickListener {
-            val intent = Intent(this, LogViewerActivity::class.java)
-            startActivity(intent)
-        }
+        })
 
-        activity_app_settings_section_reset.setOnClickListener {
-            resetApp()
-        }
+        activity_app_settings_section_changelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addChangelogBottomDialogFragment.isAdded) {
+                    addChangelogBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addChangelogBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        activity_app_settings_section_background_service.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addBackgroundServiceIntervalBottomDialogFragment.isAdded) {
+                    addBackgroundServiceIntervalBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addBackgroundServiceIntervalBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        activity_app_settings_section_faq.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://anonaddy.com/faq/"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+        activity_app_settings_section_help.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://anonaddy.com/help/"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+        activity_app_settings_section_gitlab.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://gitlab.com/Stjin/anonaddy-android"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+        activity_app_settings_section_report_issue.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://gitlab.com/Stjin/anonaddy-android/-/issues/new"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+
+
+        activity_app_settings_section_logs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsActivity, LogViewerActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        activity_app_settings_section_reset.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                resetApp()
+            }
+        })
     }
 
     private fun resetApp() {

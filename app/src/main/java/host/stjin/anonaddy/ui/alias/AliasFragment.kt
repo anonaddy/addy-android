@@ -16,13 +16,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.MaterialFadeThrough
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.utils.GsonTools
 import kotlinx.android.synthetic.main.fragment_alias.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -44,12 +44,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
         AddAliasBottomDialogFragment.newInstance()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        exitTransition = MaterialFadeThrough()
-        enterTransition = MaterialFadeThrough()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -360,28 +354,27 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     }
 
+    /*
+    Only gets called in onCreate, so when coming back later the number won't just jump back to the old value
+     */
     private fun setStatisticsFromLocal(root: View, context: Context) {
-        var statCurrentEmailsForwardedTotalCount = 0
-        var statCurrentEmailsBlockedTotalCount = 0
-        var statCurrentEmailsRepliedTotalCount = 0
-        var statCurrentEmailsSentTotalCount = 0
+        val statCurrentEmailsForwardedTotalCount = 0
+        val statCurrentEmailsBlockedTotalCount = 0
+        val statCurrentEmailsRepliedTotalCount = 0
+        val statCurrentEmailsSentTotalCount = 0
 
+        // Get aliasList
+        val aliasesJson = settingsManager?.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
+        val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(context, it) }
 
-        // These settings are related to AnonAddy's service. Thus encrypted
-        settingsManager?.getSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_FORWARDED_TOTAL_COUNT)?.let {
-            statCurrentEmailsForwardedTotalCount = it
-        }
-
-        settingsManager?.getSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_BLOCKED_TOTAL_COUNT)?.let {
-            statCurrentEmailsBlockedTotalCount = it
-        }
-
-        settingsManager?.getSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_REPLIED_TOTAL_COUNT)?.let {
-            statCurrentEmailsRepliedTotalCount = it
-        }
-
-        settingsManager?.getSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_SENT_TOTAL_COUNT)?.let {
-            statCurrentEmailsSentTotalCount = it
+        // Count the stats from the cache
+        if (aliasesList != null) {
+            for (alias in aliasesList) {
+                statCurrentEmailsForwardedTotalCount + alias.emails_forwarded
+                statCurrentEmailsBlockedTotalCount + alias.emails_blocked
+                statCurrentEmailsRepliedTotalCount + alias.emails_replied
+                statCurrentEmailsSentTotalCount + alias.emails_sent
+            }
         }
 
         root.alias_replied_sent_stats_textview.text =
@@ -392,8 +385,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 statCurrentEmailsForwardedTotalCount,
                 statCurrentEmailsBlockedTotalCount
             )
-
-
     }
 
     private fun setAliasesStatistics(
@@ -404,11 +395,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         replied: Int,
         sent: Int
     ) {
-        settingsManager?.putSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_FORWARDED_TOTAL_COUNT, forwarded)
-        settingsManager?.putSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_BLOCKED_TOTAL_COUNT, blocked)
-        settingsManager?.putSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_REPLIED_TOTAL_COUNT, replied)
-        settingsManager?.putSettingsInt(SettingsManager.PREFS.STAT_CURRENT_EMAILS_SENT_TOTAL_COUNT, sent)
-
         root.alias_replied_sent_stats_textview.text =
             context.resources.getString(R.string.replied_replied_sent_stat, replied, sent)
         root.alias_forwarded_blocked_stats_textview.text =

@@ -72,11 +72,10 @@ class SearchActivity : BaseActivity() {
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
-        // Called on OnResume()
-        getDataFromWeb()
+        setSearchResults()
     }
 
-    private fun getDataFromWeb() {
+    private fun setSearchResults() {
         activity_search_RL_lottieview.visibility = View.GONE
 
 

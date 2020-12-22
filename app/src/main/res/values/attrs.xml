@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SectionView">
+        <attr name="sectionTitle" format="string" />
+        <attr name="sectionDescription" format="string" />
+        <attr name="sectionStartIcon" format="integer" />
+        <attr name="sectionEndIcon" format="integer" />
+        <attr name="sectionShowSwitch" format="boolean" />
+        <attr name="sectionRippleEffect" format="boolean" />
+        <attr name="sectionEnabled" format="boolean" />
+        <attr name="sectionColorAccent" format="color" />
+    </declare-styleable>
+</resources>

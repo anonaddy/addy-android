@@ -30,7 +30,7 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
     </style>
 
-    <style name="BottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+    <style name="BottomSheet" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/NavbarLightDarkMode</item>
@@ -155,12 +155,12 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="SettingsSectionIconStyleEnd">
+    <style name="SettingsSectionIconStyleMarginEnd">
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginEnd">16dp</item>
     </style>
 
-    <style name="SettingsSectionIconStyleStart">
+    <style name="SettingsSectionIconStyleMarginStart">
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginStart">16dp</item>
     </style>
@@ -293,5 +293,10 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
+
+    <style name="AnonAddyMaterialButtonToggleGroupButtonOverlay">
+        <item name="colorSurface">?attr/selectableItemBackground</item>
+    </style>
+
 
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_app_settings_LL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -57,396 +58,58 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_app_theme"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/change_app_theme_to_dark_mode"
+                    app:sectionStartIcon="@drawable/ic_round_compare_24"
+                    app:sectionTitle="@string/app_theme" />
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
 
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/app_theme"
-                            android:src="@drawable/ic_round_compare_24" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/app_theme"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            style="@style/DescTextStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/change_app_theme_to_dark_mode" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_changelog"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/see_this_version_changelogs"
+                    app:sectionStartIcon="@drawable/ic_round_restore_24"
+                    app:sectionTitle="@string/changelog" />
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/changelog"
-                            android:src="@drawable/ic_round_restore_24" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/changelog"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/see_previous_changelogs"
-                            style="@style/DescTextStyle" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_background_service"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/background_service_desc"
+                    app:sectionStartIcon="@drawable/ic_widgets_outline"
+                    app:sectionTitle="@string/background_service_interval" />
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/background_service_desc"
-                            android:src="@drawable/ic_widgets_outline" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/background_service_interval"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/activity_app_settings_section_background_service_desc"
-                            style="@style/DescTextStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:maxLines="2"
-                            android:text="@string/background_service_desc" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_security"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/security_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_jam_fingerprint"
+                    app:sectionTitle="@string/security" />
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/security"
-                            android:src="@drawable/ic_jam_fingerprint" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/security"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/activity_app_settings_section_security_desc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:maxLines="2"
-                            android:text="@string/security_desc"
-                            style="@style/DescTextStyle" />
-                    </LinearLayout>
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/activity_app_settings_section_security_switch"
-                        style="@style/overrideExpandableCardViewSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:enabled="false" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_logs"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/store_logs"
-                            android:src="@drawable/ic_android_debug_bridge" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/store_logs"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/store_logs_desc"
-                            style="@style/DescTextStyle" />
-                    </LinearLayout>
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/activity_app_settings_section_logs_switch"
-                        style="@style/overrideExpandableCardViewSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/activity_app_settings_section_contributors"
-                    style="@style/SettingsSectionStyle.NoAction"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/contributors"
-                            android:src="@drawable/ic_round_people_outline_24" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/contributors"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/contributors_list"
-                            style="@style/DescTextStyle" />
-                    </LinearLayout>
-
-                </LinearLayout>
+                    app:sectionDescription="@string/store_logs_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_android_debug_bridge"
+                    app:sectionTitle="@string/store_logs" />
 
 
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_reset"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/reset_app_desc"
+                    app:sectionStartIcon="@drawable/ic_restore"
+                    app:sectionTitle="@string/reset_app" />
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/reset_app"
-                            android:src="@drawable/ic_restore" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/reset_app"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/reset_app_desc"
-                            style="@style/DescTextStyle" />
-                    </LinearLayout>
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -463,112 +126,22 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_help"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/visit_anonaddy_helps_section"
+                    app:sectionStartIcon="@drawable/ic_round_help_outline_24"
+                    app:sectionTitle="@string/anonaddy_help" />
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/anonaddy_help"
-                            android:src="@drawable/ic_round_help_outline_24" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/anonaddy_help"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/visit_anonaddy_helps_section"
-                            style="@style/DescTextStyle" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_faq"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/faq"
-                            android:src="@drawable/ic_frequently_asked_questions" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/faq"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            style="@style/DescTextStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/faq_desc" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
+                    app:sectionDescription="@string/faq_desc"
+                    app:sectionStartIcon="@drawable/ic_frequently_asked_questions"
+                    app:sectionTitle="@string/faq" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -586,111 +159,32 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_gitlab"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/gitlab_project_desc"
+                    app:sectionStartIcon="@drawable/ic_gitlab"
+                    app:sectionTitle="@string/gitlab_project" />
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/gitlab_project"
-                            android:src="@drawable/ic_gitlab" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/gitlab_project"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            style="@style/DescTextStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/gitlab_project_desc" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_report_issue"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/report_an_issue_desc"
+                    app:sectionStartIcon="@drawable/ic_bug"
+                    app:sectionTitle="@string/report_an_issue" />
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
 
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/report_an_issue"
-                            android:src="@drawable/ic_bug" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:lines="1"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="@string/report_an_issue"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            style="@style/DescTextStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/report_an_issue_desc" />
-                    </LinearLayout>
-
-                </LinearLayout>
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_contributors"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/contributors_list"
+                    app:sectionRippleEffect="false"
+                    app:sectionStartIcon="@drawable/ic_round_people_outline_24"
+                    app:sectionTitle="@string/contributors" />
 
 
             </LinearLayout>

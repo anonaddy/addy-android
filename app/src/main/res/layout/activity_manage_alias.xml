@@ -178,507 +178,77 @@
                         android:layout_weight="1"
                         android:text="@string/general" />
 
-                    <LinearLayout
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_alias_active_switch_layout"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/alias_status_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_checkbox_marked_circle_outline"
+                        app:sectionTitle="@string/alias_status_active" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/alias_status_active"
-                                android:src="@drawable/ic_checkbox_marked_circle_outline" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/activity_manage_alias_status_textview"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/alias_status_active"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:minLines="1"
-                                android:singleLine="false"
-                                android:text="@string/alias_status_desc"
-                                style="@style/DescTextStyle" />
-                        </LinearLayout>
-
-                        <ProgressBar
-                            android:id="@+id/activity_manage_alias_active_switch_progressbar"
-                            style="?android:attr/progressBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:padding="4dp"
-                            android:visibility="gone" />
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/activity_manage_alias_active_switch"
-                            style="@style/overrideExpandableCardViewSwitch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:enabled="false" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_alias_watch_switch_layout"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/watch_alias_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_comment_eye_outline"
+                        app:sectionTitle="@string/watch_alias" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/watch_alias"
-                                android:src="@drawable/ic_comment_eye_outline" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/watch_alias"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                style="@style/DescTextStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:maxLines="2"
-                                android:singleLine="false"
-                                android:text="@string/watch_alias_desc" />
-                        </LinearLayout>
-
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/activity_manage_alias_watch_switch"
-                            style="@style/overrideExpandableCardViewSwitch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:clickable="false"
-                            android:enabled="false" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_alias_desc_edit"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@tools:sample/lorem/random"
+                        app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                        app:sectionStartIcon="@drawable/ic_text"
+                        app:sectionTitle="@string/description" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/description"
-                                android:src="@drawable/ic_text" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/description"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/activity_manage_alias_desc"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:maxLines="2"
-                                android:singleLine="false"
-                                style="@style/DescTextStyle"
-                                tools:text="@tools:sample/lorem/random" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleStart"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/description"
-                                app:srcCompat="@drawable/ic_outline_edit_24" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_alias_recipients_edit"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@tools:sample/full_names"
+                        app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                        app:sectionStartIcon="@drawable/ic_account_arrow_right_outline"
+                        app:sectionTitle="@string/recipients" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
 
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/recipients"
-                                android:src="@drawable/ic_account_arrow_right_outline" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/recipients"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/activity_manage_alias_recipients"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:maxLines="3"
-                                android:singleLine="false"
-                                style="@style/DescTextStyle"
-                                tools:text="@tools:sample/full_names" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleStart"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/recipients"
-                                app:srcCompat="@drawable/ic_outline_edit_24" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/SettingsSectionStyle.NoAction"
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_alias_created_at"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@tools:sample/date/ddmmyy"
+                        app:sectionStartIcon="@drawable/ic_round_access_time_24"
+                        app:sectionTitle="@string/created_at" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/created_at"
-                                android:src="@drawable/ic_round_access_time_24" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/created_at"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/activity_manage_alias_created_at"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:minLines="1"
-                                android:singleLine="false"
-                                style="@style/DescTextStyle"
-                                tools:text="@tools:sample/date/ddmmyy" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/SettingsSectionStyle.NoAction"
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_alias_updated_at"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@tools:sample/date/ddmmyy"
+                        app:sectionStartIcon="@drawable/ic_progress_clock"
+                        app:sectionTitle="@string/updated_at" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/updated_at"
-                                android:src="@drawable/ic_progress_clock" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/updated_at"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/activity_manage_alias_updated_at"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:minLines="1"
-                                android:singleLine="false"
-                                style="@style/DescTextStyle"
-                                tools:text="@tools:sample/date/ddmmyy" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_alias_delete"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionColorAccent="@color/softRed"
+                        app:sectionDescription="@string/delete_alias_desc"
+                        app:sectionStartIcon="@drawable/ic_outline_delete_24"
+                        app:sectionTitle="@string/delete_alias" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/delete_alias"
-                                android:src="@drawable/ic_outline_delete_24"
-                                app:tint="@color/softRed" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/delete_alias"
-                                android:textAllCaps="false"
-                                android:textColor="@color/softRed"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:text="@string/delete_alias_desc"
-                                style="@style/DescTextStyle" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_alias_restore"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/restore_alias"
-                                android:src="@drawable/ic_outline_restore_from_trash_24"
-                                app:tint="@color/primaryColor" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/restore_alias"
-                                android:textAllCaps="false"
-                                android:textColor="@color/primaryColor"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:text="@string/restore_alias_desc"
-                                style="@style/DescTextStyle" />
-                        </LinearLayout>
-
-                    </LinearLayout>
+                        android:layout_height="match_parent"
+                        app:sectionColorAccent="@color/primaryColor"
+                        app:sectionDescription="@string/restore_alias_desc"
+                        app:sectionStartIcon="@drawable/ic_outline_restore_from_trash_24"
+                        app:sectionTitle="@string/restore_alias" />
 
                 </LinearLayout>
             </RelativeLayout>

@@ -124,7 +124,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
+                            style="@style/SettingsSectionIconStyleMarginEnd"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
@@ -199,7 +199,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
+                            style="@style/SettingsSectionIconStyleMarginEnd"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
@@ -275,7 +275,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
+                            style="@style/SettingsSectionIconStyleMarginEnd"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
@@ -321,7 +321,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            style="@style/SettingsSectionIconStyleStart"
+                            style="@style/SettingsSectionIconStyleMarginStart"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
@@ -345,7 +345,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
+                            style="@style/SettingsSectionIconStyleMarginEnd"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
@@ -391,7 +391,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            style="@style/SettingsSectionIconStyleStart"
+                            style="@style/SettingsSectionIconStyleMarginStart"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="8dp"
@@ -415,7 +415,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
+                            style="@style/SettingsSectionIconStyleMarginEnd"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
@@ -472,7 +472,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
+                            style="@style/SettingsSectionIconStyleMarginEnd"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical">

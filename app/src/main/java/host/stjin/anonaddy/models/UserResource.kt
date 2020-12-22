@@ -5,6 +5,7 @@ enum class SUBSCRIPTIONS(val subscription: String) {
     LITE("lite"),
     PRO("pro")
 }
+
 object User {
     lateinit var userResource: UserResource
     lateinit var userResourceExtended: UserResourceExtended

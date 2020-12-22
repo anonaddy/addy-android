@@ -2106,7 +2106,7 @@ class NetworkHelper(private val context: Context) {
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
-        }, activeOnly = true, includeDeleted = false)
+        }, activeOnly = false, includeDeleted = true)
     }
 
     suspend fun cacheDomainsDataForWidget(

@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
@@ -17,6 +18,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_manage_alias.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
@@ -150,44 +152,48 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun setOnSwitchChangeListeners() {
-        activity_manage_alias_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-            if (compoundButton.isPressed || forceSwitch) {
-                activity_manage_alias_active_switch_progressbar.visibility = View.VISIBLE
-                forceSwitch = false
-                if (b) {
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        activateAlias()
-                    }
-                } else {
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        deactivateAlias()
+        activity_manage_alias_active_switch_layout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    activity_manage_alias_active_switch_layout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            activateAlias()
+                        }
+                    } else {
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            deactivateAlias()
+                        }
                     }
                 }
             }
-        }
+        })
 
-        activity_manage_alias_watch_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-            if (compoundButton.isPressed || forceSwitch) {
-                forceSwitch = false
-                if (b) {
-                    aliasWatcher.addAliasToWatch(aliasId)
-                } else {
-                    aliasWatcher.removeAliasToWatch(aliasId)
+        activity_manage_alias_watch_switch_layout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    forceSwitch = false
+                    if (checked) {
+                        aliasWatcher.addAliasToWatch(aliasId)
+                    } else {
+                        aliasWatcher.removeAliasToWatch(aliasId)
+                    }
                 }
             }
-        }
+        })
     }
 
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
-            activity_manage_alias_active_switch_progressbar.visibility = View.GONE
+            activity_manage_alias_active_switch_layout.showProgressBar(false)
             if (result == "204") {
-                activity_manage_alias_status_textview.text = resources.getString(R.string.alias_deactivated)
+                activity_manage_alias_active_switch_layout.setTitle(resources.getString(R.string.alias_deactivated))
             } else {
-                activity_manage_alias_active_switch.isChecked = true
+                activity_manage_alias_active_switch_layout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_alias_LL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -208,11 +214,11 @@ class ManageAliasActivity : BaseActivity(),
 
     private suspend fun activateAlias() {
         networkHelper.activateSpecificAlias({ result ->
-            activity_manage_alias_active_switch_progressbar.visibility = View.GONE
+            activity_manage_alias_active_switch_layout.showProgressBar(false)
             if (result == "200") {
-                activity_manage_alias_status_textview.text = resources.getString(R.string.alias_activated)
+                activity_manage_alias_active_switch_layout.setTitle(resources.getString(R.string.alias_activated))
             } else {
-                activity_manage_alias_active_switch.isChecked = false
+                activity_manage_alias_active_switch_layout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_alias_LL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -231,42 +237,55 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setOnClickListeners() {
-        activity_manage_alias_active_switch_layout.setOnClickListener {
-            forceSwitch = true
-            activity_manage_alias_active_switch.isChecked = !activity_manage_alias_active_switch.isChecked
-        }
 
-        activity_manage_alias_watch_switch_layout.setOnClickListener {
-            forceSwitch = true
-            activity_manage_alias_watch_switch.isChecked = !activity_manage_alias_watch_switch.isChecked
-        }
-
-        activity_manage_alias_desc_edit.setOnClickListener {
-            if (!editAliasDescriptionBottomDialogFragment.isAdded) {
-                editAliasDescriptionBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "editAliasDescriptionBottomDialogFragment"
-                )
+        activity_manage_alias_active_switch_layout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                activity_manage_alias_active_switch_layout.setSwitchChecked(!activity_manage_alias_active_switch_layout.getSwitchChecked())
             }
-        }
+        })
 
-        activity_manage_alias_recipients_edit.setOnClickListener {
-            if (!editAliasRecipientsBottomDialogFragment.isAdded) {
-                editAliasRecipientsBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "editAliasRecipientsBottomDialogFragment"
-                )
+
+        activity_manage_alias_watch_switch_layout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                activity_manage_alias_watch_switch_layout.setSwitchChecked(!activity_manage_alias_watch_switch_layout.getSwitchChecked())
             }
-        }
+        })
 
-        activity_manage_alias_delete.setOnClickListener {
-            deleteAlias()
-        }
+        activity_manage_alias_desc_edit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editAliasDescriptionBottomDialogFragment.isAdded) {
+                    editAliasDescriptionBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editAliasDescriptionBottomDialogFragment"
+                    )
+                }
+            }
+        })
 
+        activity_manage_alias_recipients_edit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editAliasRecipientsBottomDialogFragment.isAdded) {
+                    editAliasRecipientsBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editAliasRecipientsBottomDialogFragment"
+                    )
+                }
+            }
+        })
 
-        activity_manage_alias_restore.setOnClickListener {
-            restoreAlias()
-        }
+        activity_manage_alias_delete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                deleteAlias()
+            }
+        })
+
+        activity_manage_alias_restore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                restoreAlias()
+            }
+        })
     }
 
 
@@ -395,12 +414,15 @@ class ManageAliasActivity : BaseActivity(),
                  */
 
                 // Set switch status
-                activity_manage_alias_active_switch.isChecked = list.active
-                activity_manage_alias_status_textview.text =
-                    if (list.active) resources.getString(R.string.alias_activated) else resources.getString(R.string.alias_deactivated)
+                activity_manage_alias_active_switch_layout.setSwitchChecked(list.active)
+                activity_manage_alias_active_switch_layout.setTitle(
+                    if (list.active) resources.getString(R.string.alias_activated) else resources.getString(
+                        R.string.alias_deactivated
+                    )
+                )
 
                 // Set watch switch status
-                activity_manage_alias_watch_switch.isChecked = aliasWatcher.getAliasesToWatch()?.contains(aliasId) ?: false
+                activity_manage_alias_watch_switch_layout.setSwitchChecked(aliasWatcher.getAliasesToWatch()?.contains(aliasId) ?: false)
 
 
                 /**
@@ -481,7 +503,7 @@ class ManageAliasActivity : BaseActivity(),
                     )
                 }
 
-                activity_manage_alias_recipients.text = recipients
+                activity_manage_alias_recipients_edit.setDescription(recipients)
 
 
                 // Initialise the bottomdialog
@@ -490,8 +512,8 @@ class ManageAliasActivity : BaseActivity(),
 
 
                 // Set created at and updated at
-                activity_manage_alias_created_at.text = DateTimeUtils.turnStringIntoLocalString(list.created_at)
-                activity_manage_alias_updated_at.text = DateTimeUtils.turnStringIntoLocalString(list.updated_at)
+                DateTimeUtils.turnStringIntoLocalString(list.created_at)?.let { activity_manage_alias_created_at.setDescription(it) }
+                DateTimeUtils.turnStringIntoLocalString(list.updated_at)?.let { activity_manage_alias_updated_at.setDescription(it) }
 
 
                 /**
@@ -500,10 +522,12 @@ class ManageAliasActivity : BaseActivity(),
 
                 // Set description and initialise the bottomDialogFragment
                 if (list.description != null) {
-                    activity_manage_alias_desc.text = list.description
+                    activity_manage_alias_desc_edit.setDescription(list.description)
                 } else {
-                    activity_manage_alias_desc.text = this.resources.getString(
-                        R.string.alias_no_description
+                    activity_manage_alias_desc_edit.setDescription(
+                        this.resources.getString(
+                            R.string.alias_no_description
+                        )
                     )
                 }
 
@@ -524,7 +548,7 @@ class ManageAliasActivity : BaseActivity(),
                 if (shouldDeactivateThisAlias) {
                     // Deactive switch
                     forceSwitch = true
-                    activity_manage_alias_active_switch.isChecked = false
+                    activity_manage_alias_active_switch_layout.setSwitchChecked(false)
                 }
             } else {
                 activity_manage_alias_settings_RL_progressbar.visibility = View.GONE

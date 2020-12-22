@@ -99,16 +99,23 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
         val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
 
         val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(mContext, it) }
+        val filteredAliasList = ArrayList<Aliases>()
 
         if (aliasesList != null) {
-            if (aliasesList.size >= 2) {
-
-                // Sort by emails forwarded
-                aliasesList.sortByDescending { it.emails_forwarded }
-
-                // Get the top 15
-                aliasList = aliasesList.take(15) as ArrayList<Aliases>?
+            for (alias in aliasesList) {
+                if (alias.active && alias.deleted_at == null) {
+                    filteredAliasList.add(alias)
+                }
             }
+        }
+
+        if (filteredAliasList.size >= 2) {
+
+            // Sort by emails forwarded
+            filteredAliasList.sortByDescending { it.emails_forwarded }
+
+            // Get the top 15
+            aliasList = filteredAliasList.take(15) as ArrayList<Aliases>?
         }
     }
 

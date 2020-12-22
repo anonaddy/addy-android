@@ -28,15 +28,6 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         // When BACKGROUND_SERVICE_CACHE_DATA_ALIASES gets updated the current list will move moved to BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS for the AliasWatcher to compare
         BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS("cache_data_aliases_previous"),
         BACKGROUND_SERVICE_WATCH_ALIAS_LIST("background_service_watch_alias_list"),
-
-
-        // TODO replace this count with cached data from the database?
-        STAT_CURRENT_EMAILS_FORWARDED_TOTAL_COUNT("stat_current_emails_forwarded_total_count"),
-        STAT_CURRENT_EMAILS_BLOCKED_TOTAL_COUNT("stat_current_emails_blocked_total_count"),
-        STAT_CURRENT_EMAILS_REPLIED_TOTAL_COUNT("stat_current_emails_replied_total_count"),
-        STAT_CURRENT_EMAILS_SENT_TOTAL_COUNT("stat_current_emails_sent_total_count")
-
-
     }
 
     /*

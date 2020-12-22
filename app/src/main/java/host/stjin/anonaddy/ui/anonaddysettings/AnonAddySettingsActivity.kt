@@ -11,6 +11,7 @@ import host.stjin.anonaddy.*
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
 import kotlinx.android.synthetic.main.activity_anonaddy_settings.*
 import kotlinx.coroutines.CoroutineStart
@@ -50,42 +51,41 @@ class AnonAddySettingsActivity : BaseActivity() {
         ANONADDY SETTINGS CANNOT BE SET BY API. Always open settings
          */
         anonaddy_settings_monthly_bandwidth_more_info_button.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
+            openSettings()
         }
         anonaddy_settings_statistics_recipients_more_info_button.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
+            openSettings()
         }
         anonaddy_settings_statistics_aliases_more_info_button.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        anonaddy_settings_update_default_recipient_LL.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        anonaddy_settings_update_default_alias_domain_LL.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
+            openSettings()
         }
 
-        anonaddy_settings_update_default_alias_format_LL.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
+
+        anonaddy_settings_update_default_recipient_LL.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                openSettings()
+            }
+        })
+
+
+        anonaddy_settings_update_default_alias_domain_LL.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                openSettings()
+            }
+        })
+
+        anonaddy_settings_update_default_alias_format_LL.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                openSettings()
+            }
+        })
+    }
+
+    private fun openSettings() {
+        val url = "${AnonAddy.API_BASE_URL}/settings"
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse(url)
+        startActivity(i)
     }
 
 
