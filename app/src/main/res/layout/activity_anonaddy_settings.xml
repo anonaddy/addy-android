@@ -55,9 +55,10 @@
 
             <LinearLayout
                 android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_LL"
-                style="@style/SettingsSectionStyle.NoAction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -136,9 +137,10 @@
 
             <LinearLayout
                 android:id="@+id/anonaddy_settings_statistics_recipients_LL"
-                style="@style/SettingsSectionStyle.NoAction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -217,9 +219,10 @@
 
             <LinearLayout
                 android:id="@+id/anonaddy_settings_statistics_aliases_LL"
-                style="@style/SettingsSectionStyle.NoAction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 

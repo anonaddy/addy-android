@@ -344,7 +344,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             if (ruleId != null) {
                 // Update the rule
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    networkHelper.updateRule(ruleId!!, rules) { result ->
+                    networkHelper.updateRule({ result ->
                         when (result) {
                             "200" -> {
                                 finish()
@@ -367,12 +367,12 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                 snackbar.show()
                             }
                         }
-                    }
+                    }, ruleId!!, rules)
                 }
             } else {
                 // Post the rule
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    networkHelper.createRule(rules) { result ->
+                    networkHelper.createRule({ result ->
                         when (result) {
                             "201" -> {
                                 finish()
@@ -395,7 +395,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                 snackbar.show()
                             }
                         }
-                    }
+                    }, rules)
                 }
             }
         }

@@ -92,7 +92,7 @@ class AddUsernameBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
         address: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addUsername(address) { result, _ ->
+        networkHelper.addUsername({ result, _ ->
             when (result) {
                 "201" -> {
                     listener.onAdded()
@@ -104,7 +104,7 @@ class AddUsernameBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
                         context.resources.getString(R.string.error_adding_username) + "\n" + result
                 }
             }
-        }
+        }, address)
     }
 
     override fun onClick(p0: View?) {

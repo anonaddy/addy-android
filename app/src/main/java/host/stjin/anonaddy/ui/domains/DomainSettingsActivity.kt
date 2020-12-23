@@ -207,7 +207,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
-        networkHelper?.deleteDomain(id) { result ->
+        networkHelper?.deleteDomain({ result ->
             if (result == "204") {
                 dialog.dismiss()
                 getDataFromWeb()
@@ -221,7 +221,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     context.resources.getString(R.string.error_deleting_domain), result
                 )
             }
-        }
+        }, id)
     }
 
     override fun onAdded() {

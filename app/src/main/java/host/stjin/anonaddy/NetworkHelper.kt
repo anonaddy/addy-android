@@ -253,11 +253,11 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun addAlias(
+        callback: (String?) -> Unit,
         domain: String,
         description: String,
         format: String,
-        local_part: String,
-        callback: (String?) -> Unit
+        local_part: String
     ) {
         val json = JSONObject()
         json.put("domain", domain)
@@ -650,8 +650,8 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun addRecipient(
-        address: String,
-        callback: (String?) -> Unit
+        callback: (String?) -> Unit,
+        address: String
     ) {
         val json = JSONObject()
         json.put("email", address)
@@ -742,8 +742,8 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun deleteRecipient(
-        recipientId: String,
-        callback: (String?) -> Unit
+        callback: (String?) -> Unit,
+        recipientId: String
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$recipientId")
             .appendHeader(
@@ -1051,8 +1051,8 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun deleteDomain(
-        id: String,
-        callback: (String?) -> Unit
+        callback: (String?) -> Unit,
+        id: String
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_DOMAINS}/$id")
             .appendHeader(
@@ -1085,8 +1085,8 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun addDomain(
-        domain: String,
-        callback: (String?, String?) -> Unit
+        callback: (String?, String?) -> Unit,
+        domain: String
     ) {
         val json = JSONObject()
         json.put("domain", domain)
@@ -1455,8 +1455,8 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun deleteUsername(
-        id: String,
-        callback: (String?) -> Unit
+        callback: (String?) -> Unit,
+        id: String
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_USERNAMES}/$id")
             .appendHeader(
@@ -1489,8 +1489,8 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun addUsername(
-        username: String,
-        callback: (String?, String?) -> Unit
+        callback: (String?, String?) -> Unit,
+        username: String
     ) {
         val json = JSONObject()
         json.put("username", username)
@@ -1836,8 +1836,8 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun deleteRule(
-        id: String,
-        callback: (String?) -> Unit
+        callback: (String?) -> Unit,
+        id: String
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_RULES}/$id")
             .appendHeader(
@@ -1870,8 +1870,8 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun createRule(
-        rule: Rules,
-        callback: (String?) -> Unit
+        callback: (String?) -> Unit,
+        rule: Rules
     ) {
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.post(API_URL_RULES)
@@ -1906,8 +1906,8 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun reorderRules(
-        rulesArray: ArrayList<Rules>,
-        callback: (String?) -> Unit
+        callback: (String?) -> Unit,
+        rulesArray: ArrayList<Rules>
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -1955,9 +1955,9 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun updateRule(
+        callback: (String?) -> Unit,
         ruleId: String,
-        rule: Rules,
-        callback: (String?) -> Unit
+        rule: Rules
     ) {
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.patch("${API_URL_RULES}/$ruleId")

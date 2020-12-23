@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -13,6 +14,7 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_manage_recipients.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
@@ -49,15 +51,10 @@ class ManageRecipientsActivity : BaseActivity(),
         this.recipientId = recipientId
 
         setPage()
-        setOnClickListeners()
     }
 
 
     private fun setPage() {
-        // Initial set, don't know the description here.
-        addRecipientPublicGpgKeyBottomDialogFragment =
-            AddRecipientPublicGpgKeyBottomDialogFragment.newInstance(recipientId)
-
         activity_manage_recipient_RL_lottieview.visibility = View.GONE
 
         // Get the recipient
@@ -67,70 +64,47 @@ class ManageRecipientsActivity : BaseActivity(),
     }
 
     private fun setOnSwitchChangeListeners(fingerprint: String?) {
-        activity_manage_recipient_encryption_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-            if (compoundButton.isPressed || forceSwitch) {
-                activity_manage_recipient_encryption_active_switch_progressbar.visibility = View.VISIBLE
-                forceSwitch = false
 
-                if (b) {
-                    if (fingerprint != null) {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                            enableEncryption()
+        activity_manage_recipient_active.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    activity_manage_recipient_active.showProgressBar(true)
+                    forceSwitch = false
+
+                    if (checked) {
+                        if (fingerprint != null) {
+                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                enableEncryption()
+                            }
+                        } else {
+                            activity_manage_recipient_active.showProgressBar(false)
+                            activity_manage_recipient_active.setSwitchChecked(false)
+                            if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
+                                addRecipientPublicGpgKeyBottomDialogFragment.show(
+                                    supportFragmentManager,
+                                    "editrecipientDescriptionBottomDialogFragment"
+                                )
+                            }
                         }
                     } else {
-                        activity_manage_recipient_encryption_active_switch_progressbar.visibility = View.GONE
-                        activity_manage_recipient_encryption_active_switch.isChecked = false
-                        if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
-                            addRecipientPublicGpgKeyBottomDialogFragment.show(
-                                supportFragmentManager,
-                                "editrecipientDescriptionBottomDialogFragment"
-                            )
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            disableEncryption()
                         }
-                    }
-                } else {
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        disableEncryption()
                     }
                 }
             }
-        }
-    }
-
-
-    private fun setOnClickListeners() {
-        activity_manage_recipient_change_gpg_key.setOnClickListener {
-            if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
-                addRecipientPublicGpgKeyBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "editrecipientDescriptionBottomDialogFragment"
-                )
-            }
-        }
-
-        activity_manage_recipient_remove_gpg_key.setOnClickListener {
-            removeGpgKey(recipientId)
-        }
-
-        activity_manage_recipient_delete.setOnClickListener {
-            deleteRecipient(recipientId)
-        }
-
-        activity_manage_recipient_active.setOnClickListener {
-            forceSwitch = true
-            activity_manage_recipient_encryption_active_switch.isChecked = !activity_manage_recipient_encryption_active_switch.isChecked
-        }
+        })
     }
 
 
     private suspend fun disableEncryption() {
         networkHelper.disableEncryptionRecipient({ result ->
-            activity_manage_recipient_encryption_active_switch_progressbar.visibility = View.GONE
-
+            activity_manage_recipient_active.showProgressBar(false)
             if (result == "204") {
-                activity_manage_recipient_encryption_status_textview.text = resources.getString(R.string.encryption_disabled)
+                activity_manage_recipient_active.setTitle(resources.getString(R.string.encryption_disabled))
             } else {
-                activity_manage_recipient_encryption_active_switch.isChecked = true
+                activity_manage_recipient_active.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_recipient_LL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -143,7 +117,6 @@ class ManageRecipientsActivity : BaseActivity(),
                     }
                 }
                 snackbar.show()
-
             }
         }, recipientId)
     }
@@ -151,11 +124,11 @@ class ManageRecipientsActivity : BaseActivity(),
 
     private suspend fun enableEncryption() {
         networkHelper.enableEncryptionRecipient({ result ->
-            activity_manage_recipient_encryption_active_switch_progressbar.visibility = View.GONE
+            activity_manage_recipient_active.showProgressBar(false)
             if (result == "200") {
-                activity_manage_recipient_encryption_status_textview.text = resources.getString(R.string.encryption_enabled)
+                activity_manage_recipient_active.setTitle(resources.getString(R.string.encryption_enabled))
             } else {
-                activity_manage_recipient_encryption_active_switch.isChecked = false
+                activity_manage_recipient_active.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_recipient_LL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -170,6 +143,40 @@ class ManageRecipientsActivity : BaseActivity(),
                 snackbar.show()
             }
         }, recipientId)
+    }
+
+
+    private fun setOnClickListeners() {
+        activity_manage_recipient_change_gpg_key.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
+                    addRecipientPublicGpgKeyBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editrecipientDescriptionBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        activity_manage_recipient_remove_gpg_key.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                removeGpgKey(recipientId)
+            }
+        })
+
+        activity_manage_recipient_delete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                deleteRecipient(recipientId)
+            }
+        })
+
+        activity_manage_recipient_active.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                activity_manage_recipient_active.setSwitchChecked(!activity_manage_recipient_active.getSwitchChecked())
+            }
+        })
+
     }
 
 
@@ -206,55 +213,55 @@ class ManageRecipientsActivity : BaseActivity(),
         removeGpgKeyDialog.show()
     }
 
-    lateinit var dialog: AlertDialog
-    private lateinit var customLayout: View
+    lateinit var deleteRecipientDialog: AlertDialog
+    private lateinit var deleteRecipientcustomLayout: View
     private fun deleteRecipient(id: String) {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // set the custom layout
-        customLayout =
+        deleteRecipientcustomLayout =
             layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(customLayout)
-        dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        builder.setView(deleteRecipientcustomLayout)
+        deleteRecipientDialog = builder.create()
+        deleteRecipientDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = resources.getString(R.string.delete_recipient)
-        customLayout.dialog_text.text = resources.getString(R.string.delete_recipient_desc)
-        customLayout.dialog_positive_button.text =
+        deleteRecipientcustomLayout.dialog_title.text = resources.getString(R.string.delete_recipient)
+        deleteRecipientcustomLayout.dialog_text.text = resources.getString(R.string.delete_recipient_desc)
+        deleteRecipientcustomLayout.dialog_positive_button.text =
             resources.getString(R.string.delete_recipient)
-        customLayout.dialog_positive_button.setOnClickListener {
-            customLayout.dialog_progressbar.visibility = View.VISIBLE
-            customLayout.dialog_error.visibility = View.GONE
-            customLayout.dialog_negative_button.isEnabled = false
-            customLayout.dialog_positive_button.isEnabled = false
+        deleteRecipientcustomLayout.dialog_positive_button.setOnClickListener {
+            deleteRecipientcustomLayout.dialog_progressbar.visibility = View.VISIBLE
+            deleteRecipientcustomLayout.dialog_error.visibility = View.GONE
+            deleteRecipientcustomLayout.dialog_negative_button.isEnabled = false
+            deleteRecipientcustomLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 deleteRecipientHttpRequest(id, this@ManageRecipientsActivity)
             }
         }
-        customLayout.dialog_negative_button.setOnClickListener {
-            dialog.dismiss()
+        deleteRecipientcustomLayout.dialog_negative_button.setOnClickListener {
+            deleteRecipientDialog.dismiss()
         }
         // create and show the alert dialog
-        dialog.show()
+        deleteRecipientDialog.show()
     }
 
     private suspend fun deleteRecipientHttpRequest(id: String, context: Context) {
-        networkHelper.deleteRecipient(id) { result ->
+        networkHelper.deleteRecipient({ result ->
             if (result == "204") {
-                dialog.dismiss()
+                deleteRecipientDialog.dismiss()
                 finish()
             } else {
-                customLayout.dialog_progressbar.visibility = View.INVISIBLE
-                customLayout.dialog_error.visibility = View.VISIBLE
-                customLayout.dialog_negative_button.isEnabled = true
-                customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text = context.resources.getString(
+                deleteRecipientcustomLayout.dialog_progressbar.visibility = View.INVISIBLE
+                deleteRecipientcustomLayout.dialog_error.visibility = View.VISIBLE
+                deleteRecipientcustomLayout.dialog_negative_button.isEnabled = true
+                deleteRecipientcustomLayout.dialog_positive_button.isEnabled = true
+                deleteRecipientcustomLayout.dialog_error.text = context.resources.getString(
                     R.string.s_s,
                     context.resources.getString(R.string.error_deleting_recipient), result
                 )
             }
-        }
+        }, id)
     }
 
     private suspend fun removeGpgKeyHttpRequest(id: String, context: Context) {
@@ -285,12 +292,20 @@ class ManageRecipientsActivity : BaseActivity(),
                  *  SWITCH STATUS
                  */
 
-                activity_manage_recipient_encryption_active_switch.isChecked = list.should_encrypt
-                activity_manage_recipient_encryption_status_textview.text =
-                    if (list.should_encrypt) resources.getString(R.string.encryption_enabled) else resources.getString(R.string.encryption_disabled)
+                activity_manage_recipient_active.setSwitchChecked(list.should_encrypt)
+                activity_manage_recipient_active.setTitle(
+                    if (list.should_encrypt) resources.getString(R.string.encryption_enabled) else resources.getString(
+                        R.string.encryption_disabled
+                    )
+                )
+
 
                 // Set switchlistener after loading
                 setOnSwitchChangeListeners(list.fingerprint)
+
+                // Set the fingerprint BottomDialogFragment
+                addRecipientPublicGpgKeyBottomDialogFragment =
+                    AddRecipientPublicGpgKeyBottomDialogFragment.newInstance(recipientId)
 
                 /**
                  * Fingerprint LAYOUT
@@ -299,16 +314,12 @@ class ManageRecipientsActivity : BaseActivity(),
                 // If there is a fingerprint, enable the remove button.
                 // If there is no fingerptint, do not enable the remove button
                 if (list.fingerprint != null) {
-                    activity_manage_recipient_remove_gpg_key.isEnabled = true
-                    activity_manage_recipient_remove_gpg_key.isClickable = true
-                    activity_manage_recipient_remove_gpg_key.alpha = 1f
-                    activity_manage_recipient_change_gpg_key_textview.text = resources.getString(R.string.change_public_gpg_key)
+                    activity_manage_recipient_remove_gpg_key.setLayoutEnabled(true)
+                    activity_manage_recipient_change_gpg_key.setTitle(resources.getString(R.string.change_public_gpg_key))
                     activity_manage_recipient_encryption_textview.text = resources.getString(R.string.fingerprint_s, list.fingerprint)
                 } else {
-                    activity_manage_recipient_remove_gpg_key.isEnabled = false
-                    activity_manage_recipient_remove_gpg_key.isClickable = false
-                    activity_manage_recipient_remove_gpg_key.alpha = 0.5f
-                    activity_manage_recipient_change_gpg_key_textview.text = resources.getString(R.string.add_public_gpg_key)
+                    activity_manage_recipient_remove_gpg_key.setLayoutEnabled(false)
+                    activity_manage_recipient_change_gpg_key.setTitle(resources.getString(R.string.add_public_gpg_key))
                     activity_manage_recipient_encryption_textview.text = resources.getString(R.string.encryption_disabled)
                 }
 
@@ -350,6 +361,8 @@ class ManageRecipientsActivity : BaseActivity(),
 
                 activity_manage_recipient_RL_progressbar.visibility = View.GONE
                 activity_manage_recipient_LL1.visibility = View.VISIBLE
+
+                setOnClickListeners()
             } else {
                 activity_manage_recipient_RL_progressbar.visibility = View.GONE
                 activity_manage_recipient_LL1.visibility = View.GONE

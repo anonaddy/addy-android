@@ -7,10 +7,12 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.activity_manage_domains.*
 import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
@@ -53,7 +55,6 @@ class ManageDomainsActivity : BaseActivity(),
 
     private fun setPage() {
         activity_manage_domain_RL_lottieview.visibility = View.GONE
-
         // Get the domain
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getDomainInfo(domainId)
@@ -61,48 +62,52 @@ class ManageDomainsActivity : BaseActivity(),
     }
 
     private fun setOnSwitchChangeListeners() {
-        activity_manage_domain_active_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-            if (compoundButton.isPressed || forceSwitch) {
-                activity_manage_domain_active_switch_progressbar.visibility = View.VISIBLE
-                forceSwitch = false
-                if (b) {
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        activateDomain()
-                    }
-                } else {
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        deactivateDomain()
+        activity_manage_domain_active_switch_layout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    activity_manage_domain_active_switch_layout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            activateDomain()
+                        }
+                    } else {
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            deactivateDomain()
+                        }
                     }
                 }
             }
-        }
+        })
 
-        activity_manage_catch_all_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-            if (compoundButton.isPressed || forceSwitch) {
-                activity_manage_catch_all_switch_progressbar.visibility = View.VISIBLE
-                forceSwitch = false
-                if (b) {
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        enableCatchAll()
-                    }
-                } else {
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        disableCatchAll()
+        activity_manage_domain_catch_all_switch_layout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    activity_manage_domain_catch_all_switch_layout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            enableCatchAll()
+                        }
+                    } else {
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            disableCatchAll()
+                        }
                     }
                 }
             }
-        }
+        })
     }
 
     private suspend fun disableCatchAll() {
         networkHelper.disableCatchAllSpecificDomain({ result ->
-            activity_manage_catch_all_switch_progressbar.visibility = View.GONE
+            activity_manage_domain_catch_all_switch_layout.showProgressBar(false)
             if (result == "204") {
-                activity_manage_catch_all_textview.text = resources.getString(R.string.catch_all_disabled)
+                activity_manage_domain_catch_all_switch_layout.setTitle(resources.getString(R.string.catch_all_disabled))
             } else {
-                activity_manage_catch_all_switch.isChecked = true
+                activity_manage_domain_catch_all_switch_layout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_domain_LL),
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
@@ -122,11 +127,11 @@ class ManageDomainsActivity : BaseActivity(),
 
     private suspend fun enableCatchAll() {
         networkHelper.enableCatchAllSpecificDomain({ result ->
-            activity_manage_catch_all_switch_progressbar.visibility = View.GONE
+            activity_manage_domain_catch_all_switch_layout.showProgressBar(false)
             if (result == "200") {
-                activity_manage_catch_all_textview.text = resources.getString(R.string.catch_all_enabled)
+                activity_manage_domain_catch_all_switch_layout.setTitle(resources.getString(R.string.catch_all_enabled))
             } else {
-                activity_manage_catch_all_switch.isChecked = false
+                activity_manage_domain_catch_all_switch_layout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_domain_LL),
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
@@ -145,11 +150,11 @@ class ManageDomainsActivity : BaseActivity(),
 
     private suspend fun deactivateDomain() {
         networkHelper.deactivateSpecificDomain({ result ->
-            activity_manage_domain_active_switch_progressbar.visibility = View.GONE
+            activity_manage_domain_active_switch_layout.showProgressBar(false)
             if (result == "204") {
-                activity_manage_domain_status_textview.text = resources.getString(R.string.domain_deactivated)
+                activity_manage_domain_active_switch_layout.setTitle(resources.getString(R.string.domain_deactivated))
             } else {
-                activity_manage_domain_active_switch.isChecked = true
+                activity_manage_domain_active_switch_layout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_domain_LL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -162,18 +167,17 @@ class ManageDomainsActivity : BaseActivity(),
                     }
                 }
                 snackbar.show()
-
             }
         }, domainId)
     }
 
     private suspend fun activateDomain() {
         networkHelper.activateSpecificDomain({ result ->
-            activity_manage_domain_active_switch_progressbar.visibility = View.GONE
+            activity_manage_domain_active_switch_layout.showProgressBar(false)
             if (result == "200") {
-                activity_manage_domain_status_textview.text = resources.getString(R.string.domain_activated)
+                activity_manage_domain_active_switch_layout.setTitle(resources.getString(R.string.domain_activated))
             } else {
-                activity_manage_domain_active_switch.isChecked = false
+                activity_manage_domain_active_switch_layout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_domain_LL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -191,95 +195,109 @@ class ManageDomainsActivity : BaseActivity(),
     }
 
     private fun setOnClickListeners() {
-
-        activity_manage_domain_active_switch_layout.setOnClickListener {
-            forceSwitch = true
-            activity_manage_domain_active_switch.isChecked = !activity_manage_domain_active_switch.isChecked
-        }
-
-        activity_manage_domain_catch_all_switch_layout.setOnClickListener {
-            forceSwitch = true
-            activity_manage_catch_all_switch.isChecked = !activity_manage_catch_all_switch.isChecked
-        }
-
-        activity_manage_domain_desc_edit.setOnClickListener {
-            if (!editDomainDescriptionBottomDialogFragment.isAdded) {
-                editDomainDescriptionBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "editDomainDescriptionBottomDialogFragment"
-                )
+        activity_manage_domain_active_switch_layout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                activity_manage_domain_active_switch_layout.setSwitchChecked(!activity_manage_domain_active_switch_layout.getSwitchChecked())
             }
-        }
+        })
 
-        activity_manage_domain_recipients_edit.setOnClickListener {
-            if (!editDomainRecipientBottomDialogFragment.isAdded) {
-                editDomainRecipientBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "editDomainRecipientsBottomDialogFragment"
-                )
+        activity_manage_domain_catch_all_switch_layout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                activity_manage_domain_catch_all_switch_layout.setSwitchChecked(!activity_manage_domain_catch_all_switch_layout.getSwitchChecked())
             }
-        }
+        })
 
-        activity_manage_domain_delete.setOnClickListener {
-            deletedomain(domainId)
-        }
+        activity_manage_domain_desc_edit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainDescriptionBottomDialogFragment.isAdded) {
+                    editDomainDescriptionBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainDescriptionBottomDialogFragment"
+                    )
+                }
+            }
+        })
 
-        activity_manage_domain_check_dns.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/domains"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
+
+        activity_manage_domain_recipients_edit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainRecipientBottomDialogFragment.isAdded) {
+                    editDomainRecipientBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainRecipientsBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+
+        activity_manage_domain_delete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                deleteDomain(domainId)
+            }
+        })
+
+        activity_manage_domain_check_dns.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "${AnonAddy.API_BASE_URL}/domains"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
     }
 
-    lateinit var dialog: AlertDialog
-    private lateinit var customLayout: View
-    private fun deletedomain(id: String) {
+    lateinit var deleteDomainDialog: AlertDialog
+    private lateinit var deleteDomainCustomLayout: View
+    private fun deleteDomain(id: String) {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // set the custom layout
-        customLayout =
+        deleteDomainCustomLayout =
             layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(customLayout)
-        dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        builder.setView(deleteDomainCustomLayout)
+        deleteDomainDialog = builder.create()
+        deleteDomainDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = resources.getString(R.string.delete_domain)
-        customLayout.dialog_text.text = resources.getString(R.string.delete_domain_desc_confirm)
-        customLayout.dialog_positive_button.text =
+        deleteDomainCustomLayout.dialog_title.text = resources.getString(R.string.delete_domain)
+        deleteDomainCustomLayout.dialog_text.text = resources.getString(R.string.delete_domain_desc_confirm)
+        deleteDomainCustomLayout.dialog_positive_button.text =
             resources.getString(R.string.delete_domain)
-        customLayout.dialog_positive_button.setOnClickListener {
-            customLayout.dialog_progressbar.visibility = View.VISIBLE
-            customLayout.dialog_error.visibility = View.GONE
-            customLayout.dialog_negative_button.isEnabled = false
-            customLayout.dialog_positive_button.isEnabled = false
+        deleteDomainCustomLayout.dialog_positive_button.setOnClickListener {
+            deleteDomainCustomLayout.dialog_progressbar.visibility = View.VISIBLE
+            deleteDomainCustomLayout.dialog_error.visibility = View.GONE
+            deleteDomainCustomLayout.dialog_negative_button.isEnabled = false
+            deleteDomainCustomLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 deleteDomainHttpRequest(id, this@ManageDomainsActivity)
             }
         }
-        customLayout.dialog_negative_button.setOnClickListener {
-            dialog.dismiss()
+        deleteDomainCustomLayout.dialog_negative_button.setOnClickListener {
+            deleteDomainDialog.dismiss()
         }
         // create and show the alert dialog
-        dialog.show()
+        deleteDomainDialog.show()
     }
 
 
     private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
-        networkHelper.deleteDomain(id) { result ->
+        networkHelper.deleteDomain({ result ->
             if (result == "204") {
-                dialog.dismiss()
+                deleteDomainDialog.dismiss()
                 finish()
             } else {
-                customLayout.dialog_progressbar.visibility = View.INVISIBLE
-                customLayout.dialog_error.visibility = View.VISIBLE
-                customLayout.dialog_negative_button.isEnabled = true
-                customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
+                deleteDomainCustomLayout.dialog_progressbar.visibility = View.INVISIBLE
+                deleteDomainCustomLayout.dialog_error.visibility = View.VISIBLE
+                deleteDomainCustomLayout.dialog_negative_button.isEnabled = true
+                deleteDomainCustomLayout.dialog_positive_button.isEnabled = true
+                deleteDomainCustomLayout.dialog_error.text =
                     context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_domain), result)
             }
-        }
+        }, id)
     }
 
 
@@ -291,12 +309,12 @@ class ManageDomainsActivity : BaseActivity(),
                  *  SWITCH STATUS
                  */
 
-                activity_manage_domain_active_switch.isChecked = list.active
-                activity_manage_domain_status_textview.text =
+                activity_manage_domain_active_switch_layout.setSwitchChecked(list.active)
+                activity_manage_domain_active_switch_layout.setTitle(
                     if (list.active) resources.getString(R.string.domain_activated) else resources.getString(R.string.domain_deactivated)
+                )
 
-                activity_manage_catch_all_switch.isChecked = list.catch_all
-
+                activity_manage_domain_catch_all_switch_layout.setSwitchChecked(list.catch_all)
 
                 /**
                  * TEXT
@@ -348,8 +366,8 @@ class ManageDomainsActivity : BaseActivity(),
                     R.string.default_recipient
                 )
 
-                activity_manage_domain_recipients.text = recipients
 
+                activity_manage_domain_recipients_edit.setDescription(recipients)
 
                 // Initialise the bottomdialog
                 editDomainRecipientBottomDialogFragment =
@@ -362,10 +380,12 @@ class ManageDomainsActivity : BaseActivity(),
 
                 // Set description and initialise the bottomDialogFragment
                 if (list.description != null) {
-                    activity_manage_domain_desc.text = list.description
+                    activity_manage_domain_desc_edit.setDescription(list.description)
                 } else {
-                    activity_manage_domain_desc.text = this.resources.getString(
-                        R.string.domain_no_description
+                    activity_manage_domain_desc_edit.setDescription(
+                        this.resources.getString(
+                            R.string.domain_no_description
+                        )
                     )
                 }
 
@@ -380,11 +400,11 @@ class ManageDomainsActivity : BaseActivity(),
                  */
 
                 if (list.domain_sending_verified_at == null) {
-                    activity_manage_domain_dns_icon.setImageResource(R.drawable.ic_outline_dns_alert)
-                    activity_manage_domain_check_dns_subtext.text = resources.getString(R.string.check_dns_desc_incorrect)
+                    activity_manage_domain_check_dns.setImageResourceIcons(R.drawable.ic_outline_dns_alert, null)
+                    activity_manage_domain_check_dns.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
                 } else {
-                    activity_manage_domain_dns_icon.setImageResource(R.drawable.ic_outline_dns_24)
-                    activity_manage_domain_check_dns_subtext.text = resources.getString(R.string.check_dns_desc)
+                    activity_manage_domain_check_dns.setImageResourceIcons(R.drawable.ic_outline_dns_24, null)
+                    activity_manage_domain_check_dns.setDescription(resources.getString(R.string.check_dns_desc))
                 }
 
 

@@ -132,7 +132,7 @@ class RulesSettingsActivity : BaseActivity() {
                             list.add(toPosition, itemToMove)
 
                             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                                networkHelper!!.reorderRules(list) { result ->
+                                networkHelper!!.reorderRules({ result ->
                                     if (result == "200") {
                                         val snackbar = Snackbar.make(
                                             activity_manage_rules_LL,
@@ -154,7 +154,7 @@ class RulesSettingsActivity : BaseActivity() {
                                         }
                                         snackbar.show()
                                     }
-                                }
+                                }, list)
                             }
                         }
 
@@ -268,7 +268,7 @@ class RulesSettingsActivity : BaseActivity() {
     }
 
     private suspend fun deleteRuleHttpRequest(id: String, context: Context) {
-        networkHelper?.deleteRule(id) { result ->
+        networkHelper?.deleteRule({ result ->
             if (result == "204") {
                 dialog.dismiss()
                 getDataFromWeb()
@@ -282,7 +282,7 @@ class RulesSettingsActivity : BaseActivity() {
                     context.resources.getString(R.string.error_deleting_domain), result
                 )
             }
-        }
+        }, id)
     }
 
     override fun onResume() {

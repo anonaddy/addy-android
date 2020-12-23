@@ -237,7 +237,6 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setOnClickListeners() {
-
         activity_manage_alias_active_switch_layout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
@@ -289,83 +288,83 @@ class ManageAliasActivity : BaseActivity(),
     }
 
 
-    lateinit var dialog: AlertDialog
-    private lateinit var customLayout: View
+    lateinit var restoreAliasDialog: AlertDialog
+    private lateinit var restoreAliasCustomLayout: View
     private fun restoreAlias() {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // set the custom layout
-        customLayout =
+        restoreAliasCustomLayout =
             layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(customLayout)
-        dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        builder.setView(restoreAliasCustomLayout)
+        restoreAliasDialog = builder.create()
+        restoreAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = resources.getString(R.string.restore_alias)
-        customLayout.dialog_text.text =
+        restoreAliasCustomLayout.dialog_title.text = resources.getString(R.string.restore_alias)
+        restoreAliasCustomLayout.dialog_text.text =
             resources.getString(R.string.restore_alias_confirmation_desc)
-        customLayout.dialog_positive_button.text =
+        restoreAliasCustomLayout.dialog_positive_button.text =
             resources.getString(R.string.restore_alias)
-        customLayout.dialog_positive_button.setOnClickListener {
-            customLayout.dialog_progressbar.visibility = View.VISIBLE
-            customLayout.dialog_error.visibility = View.GONE
-            customLayout.dialog_negative_button.isEnabled = false
-            customLayout.dialog_positive_button.isEnabled = false
+        restoreAliasCustomLayout.dialog_positive_button.setOnClickListener {
+            restoreAliasCustomLayout.dialog_progressbar.visibility = View.VISIBLE
+            restoreAliasCustomLayout.dialog_error.visibility = View.GONE
+            restoreAliasCustomLayout.dialog_negative_button.isEnabled = false
+            restoreAliasCustomLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 restoreAliasHttpRequest(aliasId, this@ManageAliasActivity)
             }
         }
-        customLayout.dialog_negative_button.setOnClickListener {
-            dialog.dismiss()
+        restoreAliasCustomLayout.dialog_negative_button.setOnClickListener {
+            restoreAliasDialog.dismiss()
         }
         // create and show the alert dialog
-        dialog.show()
+        restoreAliasDialog.show()
     }
 
     private fun deleteAlias() {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // set the custom layout
-        customLayout =
+        restoreAliasCustomLayout =
             layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(customLayout)
-        dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        builder.setView(restoreAliasCustomLayout)
+        restoreAliasDialog = builder.create()
+        restoreAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = resources.getString(R.string.delete_alias)
-        customLayout.dialog_text.text =
+        restoreAliasCustomLayout.dialog_title.text = resources.getString(R.string.delete_alias)
+        restoreAliasCustomLayout.dialog_text.text =
             resources.getString(R.string.delete_alias_confirmation_desc)
-        customLayout.dialog_positive_button.text =
+        restoreAliasCustomLayout.dialog_positive_button.text =
             resources.getString(R.string.delete_alias)
-        customLayout.dialog_positive_button.setOnClickListener {
-            customLayout.dialog_progressbar.visibility = View.VISIBLE
-            customLayout.dialog_error.visibility = View.GONE
-            customLayout.dialog_negative_button.isEnabled = false
-            customLayout.dialog_positive_button.isEnabled = false
+        restoreAliasCustomLayout.dialog_positive_button.setOnClickListener {
+            restoreAliasCustomLayout.dialog_progressbar.visibility = View.VISIBLE
+            restoreAliasCustomLayout.dialog_error.visibility = View.GONE
+            restoreAliasCustomLayout.dialog_negative_button.isEnabled = false
+            restoreAliasCustomLayout.dialog_positive_button.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 deleteAliasHttpRequest(aliasId, this@ManageAliasActivity)
             }
         }
-        customLayout.dialog_negative_button.setOnClickListener {
-            dialog.dismiss()
+        restoreAliasCustomLayout.dialog_negative_button.setOnClickListener {
+            restoreAliasDialog.dismiss()
         }
         // create and show the alert dialog
-        dialog.show()
+        restoreAliasDialog.show()
     }
 
     private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
-                dialog.dismiss()
+                restoreAliasDialog.dismiss()
                 finish()
             } else {
-                customLayout.dialog_progressbar.visibility = View.INVISIBLE
-                customLayout.dialog_error.visibility = View.VISIBLE
-                customLayout.dialog_negative_button.isEnabled = true
-                customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text = context.resources.getString(
+                restoreAliasCustomLayout.dialog_progressbar.visibility = View.INVISIBLE
+                restoreAliasCustomLayout.dialog_error.visibility = View.VISIBLE
+                restoreAliasCustomLayout.dialog_negative_button.isEnabled = true
+                restoreAliasCustomLayout.dialog_positive_button.isEnabled = true
+                restoreAliasCustomLayout.dialog_error.text = context.resources.getString(
                     R.string.s_s,
                     context.resources.getString(R.string.error_deleting_alias), result
                 )
@@ -376,14 +375,14 @@ class ManageAliasActivity : BaseActivity(),
     private suspend fun restoreAliasHttpRequest(id: String, context: Context) {
         networkHelper.restoreAlias({ result ->
             if (result == "200") {
-                dialog.dismiss()
+                restoreAliasDialog.dismiss()
                 setPage()
             } else {
-                customLayout.dialog_progressbar.visibility = View.INVISIBLE
-                customLayout.dialog_error.visibility = View.VISIBLE
-                customLayout.dialog_negative_button.isEnabled = true
-                customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text = context.resources.getString(
+                restoreAliasCustomLayout.dialog_progressbar.visibility = View.INVISIBLE
+                restoreAliasCustomLayout.dialog_error.visibility = View.VISIBLE
+                restoreAliasCustomLayout.dialog_negative_button.isEnabled = true
+                restoreAliasCustomLayout.dialog_positive_button.isEnabled = true
+                restoreAliasCustomLayout.dialog_error.text = context.resources.getString(
                     R.string.s_s,
                     context.resources.getString(R.string.error_restoring_alias), result
                 )
@@ -440,12 +439,8 @@ class ManageAliasActivity : BaseActivity(),
                     for (i in 0 until layout.childCount) {
                         val child = layout.getChildAt(i)
 
-                        // Do not disable the restore button
-                        if (child.id == R.id.activity_manage_alias_restore) {
-                            child.isEnabled = true
-                            child.alpha = 1f
-                            child.isClickable = true
-                        } else {
+                        // Do not disable the restore button. So disabled everything except the activity_manage_alias_restore
+                        if (child.id != R.id.activity_manage_alias_restore) {
                             child.isEnabled = false
                             child.alpha = 0.5f
                             child.isClickable = false
@@ -545,6 +540,7 @@ class ManageAliasActivity : BaseActivity(),
                 setOnSwitchChangeListeners()
                 setOnClickListeners()
 
+                // Is set true by the intent action, do this after the switchchangelistener is set.
                 if (shouldDeactivateThisAlias) {
                     // Deactive switch
                     forceSwitch = true

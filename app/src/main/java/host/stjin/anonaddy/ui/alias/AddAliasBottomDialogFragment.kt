@@ -209,7 +209,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         local_part: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addAlias(domain, description, format, local_part) { result ->
+        networkHelper.addAlias({ result ->
             if (result == "201") {
                 listener.onAdded()
             } else {
@@ -218,7 +218,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 root.bs_addalias_alias_desc_til.error =
                     context.resources.getString(R.string.error_adding_alias) + "\n" + result
             }
-        }
+        }, domain, description, format, local_part)
     }
 
     override fun onClick(p0: View?) {

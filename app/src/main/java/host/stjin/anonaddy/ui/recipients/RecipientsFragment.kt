@@ -281,7 +281,7 @@ class RecipientsFragment : Fragment(),
     }
 
     private suspend fun deleteRecipientHttpRequest(id: String, context: Context) {
-        networkHelper?.deleteRecipient(id) { result ->
+        networkHelper?.deleteRecipient({ result ->
             if (result == "204") {
                 dialog.dismiss()
                 getDataFromWeb(requireView())
@@ -295,7 +295,7 @@ class RecipientsFragment : Fragment(),
                     context.resources.getString(R.string.error_deleting_recipient), result
                 )
             }
-        }
+        }, id)
     }
 
     override fun onAdded() {

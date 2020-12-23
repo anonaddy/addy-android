@@ -20,6 +20,8 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     var description: TextView? = null
     var progressBar: ProgressBar? = null
     var title: TextView? = null
+    var iconStart: ImageView? = null
+    var iconEnd: ImageView? = null
 
     var linearLayout: LinearLayout? = null
 
@@ -79,12 +81,33 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         progressBar?.visibility = if (boolean) View.VISIBLE else View.GONE
     }
 
-    fun setDescription(text: String) {
-        description?.text = text
+    fun setDescription(text: String?) {
+        if (text.isNullOrEmpty()) {
+            description?.text = null
+            description?.visibility = View.GONE
+        } else {
+            description?.text = text
+            description?.visibility = View.VISIBLE
+        }
     }
 
-    fun setTitle(text: String) {
-        title?.text = text
+    fun setTitle(text: String?) {
+        if (text.isNullOrEmpty()) {
+            title?.text = text
+            title?.visibility = View.GONE
+        } else {
+            title?.text = text
+            title?.visibility = View.VISIBLE
+        }
+    }
+
+    fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
+        if (startIcon != null) {
+            iconStart?.setImageResource(startIcon)
+        }
+        if (endIcon != null) {
+            iconEnd?.setImageResource(endIcon)
+        }
     }
 
     interface OnSwitchCheckedChangedListener {
@@ -99,21 +122,16 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         val inflater = LayoutInflater.from(context)
         inflater.inflate(R.layout.custom_view_section, this)
         linearLayout = findViewById(R.id.custom_view_section_LL)
-        val iconStart = findViewById<ImageView>(R.id.custom_view_section_start_icon)
-        val iconEnd = findViewById<ImageView>(R.id.custom_view_section_end_icon)
+        iconStart = findViewById(R.id.custom_view_section_start_icon)
+        iconEnd = findViewById(R.id.custom_view_section_end_icon)
         title = findViewById(R.id.custom_view_section_title)
         description = findViewById(R.id.custom_view_section_desc)
         switchMaterial = findViewById(R.id.custom_view_section_switch)
         progressBar = findViewById(R.id.custom_view_section_progressbar)
 
-        //TODO delete these from the styles.xml
-        /*
-        <item name="android:clickable">false</item>
-        <item name="android:focusable">false</item>
-        <item name="android:background">@null</item>
-         */
 
         if (attrs != null) {
+            // Get attributes
             val a = getContext()
                 .obtainStyledAttributes(
                     attrs,
@@ -121,15 +139,15 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
                     0, 0
                 )
 
-            // Set ripple, default is enabled
+            // Set ripple, default is enabled. Ripple pref is only set once
             if (!a.getBoolean(R.styleable.SectionView_sectionRippleEffect, true)) {
                 linearLayout?.background = null
             }
 
 
             // Set title and description
-            a.getString(R.styleable.SectionView_sectionTitle)?.let { setTitle(it) }
-            a.getString(R.styleable.SectionView_sectionDescription)?.let { setDescription(it) }
+            setTitle(a.getString(R.styleable.SectionView_sectionTitle))
+            setDescription(a.getString(R.styleable.SectionView_sectionDescription))
 
             // Get colorAccent
             val hasColorAccentDefined = a.hasValue(R.styleable.SectionView_sectionColorAccent)
@@ -142,13 +160,19 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
                 )
                 val imageTintColor = context?.let { ContextCompat.getColor(it, accentColorResource) }
                 imageTintColor?.let { title?.setTextColor(it) }
-                ImageViewCompat.setImageTintList(iconStart, imageTintColor?.let { ColorStateList.valueOf(it) })
+
+                if (iconStart != null) {
+                    // The tint color is only set once, won't be changes at runtime.
+                    ImageViewCompat.setImageTintList(iconStart!!, imageTintColor?.let { ColorStateList.valueOf(it) })
+                }
             }
 
 
-            // Set icon, this is only done at init
-            iconStart.setImageResource(a.getResourceId(R.styleable.SectionView_sectionStartIcon, 0))
-            iconEnd.setImageResource(a.getResourceId(R.styleable.SectionView_sectionEndIcon, 0))
+            // Set icons
+            setImageResourceIcons(
+                a.getResourceId(R.styleable.SectionView_sectionStartIcon, 0),
+                a.getResourceId(R.styleable.SectionView_sectionEndIcon, 0)
+            )
 
             // Set switch this is ony done at init, default is invisible
             if (a.getBoolean(R.styleable.SectionView_sectionShowSwitch, false)) {
@@ -159,7 +183,6 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
             // Set layout enabled
             setLayoutEnabled(a.getBoolean(R.styleable.SectionView_sectionEnabled, true))
-
 
             a.recycle()
         }

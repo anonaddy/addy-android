@@ -99,7 +99,7 @@ class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnCli
         address: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addRecipient(address) { result ->
+        networkHelper.addRecipient({ result ->
             when (result) {
                 "201" -> {
                     listener.onAdded()
@@ -111,7 +111,7 @@ class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnCli
                         context.resources.getString(R.string.error_adding_recipient) + "\n" + result
                 }
             }
-        }
+        }, address)
     }
 
     override fun onClick(p0: View?) {

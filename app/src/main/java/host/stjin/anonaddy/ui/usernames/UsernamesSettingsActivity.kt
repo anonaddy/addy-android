@@ -201,7 +201,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {
-        networkHelper?.deleteUsername(id) { result ->
+        networkHelper?.deleteUsername({ result ->
             if (result == "204") {
                 dialog.dismiss()
                 getDataFromWeb()
@@ -213,7 +213,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 customLayout.dialog_error.text =
                     context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result)
             }
-        }
+        }, id)
     }
 
     override fun onAdded() {

@@ -136,215 +136,37 @@
                         android:layout_height="match_parent"
                         android:text="@string/action" />
 
-                    <LinearLayout
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_active"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/encrypt_emails_to_this_recipient"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_checkbox_marked_circle_outline"
+                        app:sectionTitle="@string/encryption_enabled" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleMarginEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/encryption_status"
-                                android:src="@drawable/ic_checkbox_marked_circle_outline" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/activity_manage_recipient_encryption_status_textview"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/encryption_enabled"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:minLines="1"
-                                android:singleLine="false"
-                                android:text="@string/encrypt_emails_to_this_recipient"
-                                style="@style/DescTextStyle" />
-                        </LinearLayout>
-
-                        <ProgressBar
-                            android:id="@+id/activity_manage_recipient_encryption_active_switch_progressbar"
-                            style="?android:attr/progressBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:padding="4dp"
-                            android:visibility="gone" />
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/activity_manage_recipient_encryption_active_switch"
-                            style="@style/overrideExpandableCardViewSwitch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_change_gpg_key"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionStartIcon="@drawable/ic_jam_fingerprint"
+                        app:sectionTitle="@string/change_public_gpg_key" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleMarginEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/change_public_gpg_key"
-                                android:src="@drawable/ic_jam_fingerprint" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/activity_manage_recipient_change_gpg_key_textview"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/change_public_gpg_key"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_remove_gpg_key"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionStartIcon="@drawable/ic_round_block_24"
+                        app:sectionTitle="@string/remove_public_key" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleMarginEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/remove_public_key"
-                                android:src="@drawable/ic_round_block_24" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/remove_public_key"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_delete"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleMarginEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/delete_recipient"
-                                android:src="@drawable/ic_outline_delete_24"
-                                app:tint="@color/softRed" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/delete_recipient"
-                                android:textAllCaps="false"
-                                android:textColor="@color/softRed"
-                                android:textSize="16sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                        android:layout_height="match_parent"
+                        app:sectionColorAccent="@color/softRed"
+                        app:sectionStartIcon="@drawable/ic_outline_delete_24"
+                        app:sectionTitle="@string/delete_recipient" />
                 </LinearLayout>
 
 
