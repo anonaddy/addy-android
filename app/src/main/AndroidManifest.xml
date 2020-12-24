@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="host.stjin.anonaddy">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+        android:name="android.permission.INTERNET"
+        android:required="false" />
 
     <!-- Used for scanning the API key -->
     <uses-permission android:name="android.permission.CAMERA" />
