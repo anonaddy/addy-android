@@ -174,7 +174,7 @@ class ManageUsernamesActivity : BaseActivity(),
     }
 
 
-    lateinit var deleteUsernameDialog: AlertDialog
+    private lateinit var deleteUsernameDialog: AlertDialog
     private lateinit var deleteUsernameCustomLayout: View
     private fun deleteUsername(id: String) {
         // create an alert builder

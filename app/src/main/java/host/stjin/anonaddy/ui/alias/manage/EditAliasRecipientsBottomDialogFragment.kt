@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 
 class EditAliasRecipientsBottomDialogFragment(
-    private val aliasId: String,
+    private val aliasId: String?,
     private val recipients: List<Recipients>?
 ) :
     BottomSheetDialogFragment(),
@@ -51,14 +51,22 @@ class EditAliasRecipientsBottomDialogFragment(
             R.layout.bottomsheet_edit_recipients_alias, container,
             false
         )
-        listener = activity as AddEditAliasRecipientsBottomDialogListener
 
-        // Set button listeners and current description
-        root.bs_editrecipients_save_button.setOnClickListener(this)
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllRecipients(root, requireContext())
+        // Check if aliasId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+        if (aliasId != null) {
+            listener = activity as AddEditAliasRecipientsBottomDialogListener
+
+            // Set button listeners and current description
+            root.bs_editrecipients_save_button.setOnClickListener(this)
+
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getAllRecipients(root, requireContext())
+            }
+        } else {
+            dismiss()
         }
+
 
         return root
 
@@ -96,6 +104,9 @@ class EditAliasRecipientsBottomDialogFragment(
     }
 
 
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
+
     companion object {
         fun newInstance(
             id: String,
@@ -117,8 +128,9 @@ class EditAliasRecipientsBottomDialogFragment(
         }
 
 
+        // aliasId is never null at this point, hence the !!
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            editRecipientsHttp(root, context, aliasId, recipients)
+            editRecipientsHttp(root, context, aliasId!!, recipients)
         }
     }
 

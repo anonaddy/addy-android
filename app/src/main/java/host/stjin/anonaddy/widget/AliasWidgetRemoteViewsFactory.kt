@@ -109,6 +109,7 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
             }
         }
 
+        // List needs more than 2 else it becomes a singleton and will result in an ClassCastException
         if (filteredAliasList.size >= 2) {
 
             // Sort by emails forwarded

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 
 class EditUsernameDescriptionBottomDialogFragment(
-    private val usernameID: String,
+    private val usernameId: String?,
     private val description: String?
 ) : BottomSheetDialogFragment(), View.OnClickListener {
 
@@ -47,15 +47,23 @@ class EditUsernameDescriptionBottomDialogFragment(
             R.layout.bottomsheet_edit_description_username, container,
             false
         )
-        listener = activity as AddEditUsernameDescriptionBottomDialogListener
+        // Check if usernameId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+        if (usernameId != null) {
+            listener = activity as AddEditUsernameDescriptionBottomDialogListener
 
-        // Set button listeners and current description
-        root.bs_editusername_username_save_button.setOnClickListener(this)
-        root.bs_editusername_username_desc_tiet.setText(description)
+            // Set button listeners and current description
+            root.bs_editusername_username_save_button.setOnClickListener(this)
+            root.bs_editusername_username_desc_tiet.setText(description)
+        } else {
+            dismiss()
+        }
 
         return root
 
     }
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
 
     companion object {
         fun newInstance(id: String, description: String?): EditUsernameDescriptionBottomDialogFragment {
@@ -85,7 +93,8 @@ class EditUsernameDescriptionBottomDialogFragment(
                 root.bs_editusername_username_desc_til.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }
-        }, usernameID, description)
+            // usernameId is never null at this point, hence the !!
+        }, usernameId!!, description)
     }
 
     override fun onClick(p0: View?) {

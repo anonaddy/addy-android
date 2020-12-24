@@ -158,7 +158,6 @@
     <string name="edit_recipient">Edit recipient</string>
     <string name="basic">Basic</string>
     <string name="encryption">Encryption</string>
-    <string name="encryption_status">Encryption status</string>
     <string name="remove_public_key">Remove Public Key</string>
     <string name="action">Action</string>
     <string name="recipient_aliases_d">Recipient aliases (%d)</string>

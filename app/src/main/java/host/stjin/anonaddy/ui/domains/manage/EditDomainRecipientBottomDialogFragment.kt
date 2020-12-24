@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 
 class EditDomainRecipientBottomDialogFragment(
-    private val domainId: String,
+    private val domainId: String?,
     private val defaultRecipient: String?
 ) :
     BottomSheetDialogFragment(),
@@ -50,17 +50,22 @@ class EditDomainRecipientBottomDialogFragment(
             R.layout.bottomsheet_edit_recipient_domain, container,
             false
         )
-        listener = activity as AddEditDomainRecipientBottomDialogListener
 
-        // Set button listeners and current description
-        root.bs_editrecipient_save_button.setOnClickListener(this)
+        // Check if domainId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+        if (domainId != null) {
+            listener = activity as AddEditDomainRecipientBottomDialogListener
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllRecipients(root, requireContext())
+            // Set button listeners and current description
+            root.bs_editrecipient_save_button.setOnClickListener(this)
+
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getAllRecipients(root, requireContext())
+            }
+        } else {
+            dismiss()
         }
 
         return root
-
     }
 
     private suspend fun getAllRecipients(root: View, context: Context) {
@@ -85,6 +90,9 @@ class EditDomainRecipientBottomDialogFragment(
     }
 
 
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
+
     companion object {
         fun newInstance(
             id: String,
@@ -105,9 +113,9 @@ class EditDomainRecipientBottomDialogFragment(
             recipient = chip.tag.toString()
         }
 
-
+        // domainId is never null at this point, hence the !!
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            editRecipientHttp(root, context, domainId, recipient)
+            editRecipientHttp(root, context, domainId!!, recipient)
         }
     }
 

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 
 class EditUsernameRecipientBottomDialogFragment(
-    private val usernameId: String,
+    private val usernameId: String?,
     private val defaultRecipient: String?
 ) :
     BottomSheetDialogFragment(),
@@ -50,17 +50,21 @@ class EditUsernameRecipientBottomDialogFragment(
             R.layout.bottomsheet_edit_recipient_username, container,
             false
         )
-        listener = activity as AddEditUsernameRecipientBottomDialogListener
 
-        // Set button listeners and current description
-        root.bs_editrecipient_save_button.setOnClickListener(this)
+        // Check if usernameId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+        if (usernameId != null) {
+            listener = activity as AddEditUsernameRecipientBottomDialogListener
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllRecipients(root, requireContext())
+            // Set button listeners and current description
+            root.bs_editrecipient_save_button.setOnClickListener(this)
+
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getAllRecipients(root, requireContext())
+            }
+        } else {
+            dismiss()
         }
-
         return root
-
     }
 
     private suspend fun getAllRecipients(root: View, context: Context) {
@@ -83,6 +87,8 @@ class EditUsernameRecipientBottomDialogFragment(
         }, true)
     }
 
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
 
     companion object {
         fun newInstance(
@@ -106,7 +112,8 @@ class EditUsernameRecipientBottomDialogFragment(
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            editRecipientHttp(root, context, usernameId, recipient)
+            // usernameId is never null at this point, hence the !!
+            editRecipientHttp(root, context, usernameId!!, recipient)
         }
     }
 

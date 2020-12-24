@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 
 class EditDomainDescriptionBottomDialogFragment(
-    private val domainID: String,
+    private val domainId: String?,
     private val description: String?
 ) : BottomSheetDialogFragment(), View.OnClickListener {
 
@@ -47,15 +47,23 @@ class EditDomainDescriptionBottomDialogFragment(
             R.layout.bottomsheet_edit_description_domain, container,
             false
         )
-        listener = activity as AddEditDomainDescriptionBottomDialogListener
 
-        // Set button listeners and current description
-        root.bs_editdomain_domain_save_button.setOnClickListener(this)
-        root.bs_editdomain_domain_desc_tiet.setText(description)
+        // Check if domainId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+        if (domainId != null) {
+            listener = activity as AddEditDomainDescriptionBottomDialogListener
+
+            // Set button listeners and current description
+            root.bs_editdomain_domain_save_button.setOnClickListener(this)
+            root.bs_editdomain_domain_desc_tiet.setText(description)
+        } else {
+            dismiss()
+        }
 
         return root
-
     }
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
 
     companion object {
         fun newInstance(id: String, description: String?): EditDomainDescriptionBottomDialogFragment {
@@ -85,7 +93,8 @@ class EditDomainDescriptionBottomDialogFragment(
                 root.bs_editdomain_domain_desc_til.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }
-        }, domainID, description)
+            // domainId is never null at this point, hence the !!
+        }, domainId!!, description)
     }
 
     override fun onClick(p0: View?) {

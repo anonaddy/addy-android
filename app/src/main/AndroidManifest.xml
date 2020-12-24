@@ -17,7 +17,9 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="AllowBackup">
         <!-- Widget -->
-        <receiver android:name=".widget.AliasWidgetProvider">
+        <receiver
+            android:name=".widget.AliasWidgetProvider"
+            android:label="@string/most_active_aliases">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

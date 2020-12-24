@@ -250,7 +250,7 @@ class ManageDomainsActivity : BaseActivity(),
 
     }
 
-    lateinit var deleteDomainDialog: AlertDialog
+    private lateinit var deleteDomainDialog: AlertDialog
     private lateinit var deleteDomainCustomLayout: View
     private fun deleteDomain(id: String) {
         // create an alert builder

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 
 class EditAliasDescriptionBottomDialogFragment(
-    private val aliasID: String,
+    private val aliasId: String?,
     private val description: String?
 ) : BottomSheetDialogFragment(), View.OnClickListener {
 
@@ -47,15 +47,24 @@ class EditAliasDescriptionBottomDialogFragment(
             R.layout.bottomsheet_edit_description_alias, container,
             false
         )
-        listener = activity as AddEditAliasDescriptionBottomDialogListener
 
-        // Set button listeners and current description
-        root.bs_editalias_alias_save_button.setOnClickListener(this)
-        root.bs_editalias_alias_desc_tiet.setText(description)
+        // Check if aliasId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+        if (aliasId != null) {
+            listener = activity as AddEditAliasDescriptionBottomDialogListener
+
+            // Set button listeners and current description
+            root.bs_editalias_alias_save_button.setOnClickListener(this)
+            root.bs_editalias_alias_desc_tiet.setText(description)
+        } else {
+            dismiss()
+        }
 
         return root
 
     }
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
 
     companion object {
         fun newInstance(id: String, description: String?): EditAliasDescriptionBottomDialogFragment {
@@ -85,7 +94,8 @@ class EditAliasDescriptionBottomDialogFragment(
                 root.bs_editalias_alias_desc_til.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }
-        }, aliasID, description)
+            // aliasId is never null at this point, hence the !!
+        }, aliasId!!, description)
     }
 
     override fun onClick(p0: View?) {

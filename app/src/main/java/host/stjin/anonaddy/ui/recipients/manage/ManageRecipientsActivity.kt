@@ -213,7 +213,7 @@ class ManageRecipientsActivity : BaseActivity(),
         removeGpgKeyDialog.show()
     }
 
-    lateinit var deleteRecipientDialog: AlertDialog
+    private lateinit var deleteRecipientDialog: AlertDialog
     private lateinit var deleteRecipientcustomLayout: View
     private fun deleteRecipient(id: String) {
         // create an alert builder

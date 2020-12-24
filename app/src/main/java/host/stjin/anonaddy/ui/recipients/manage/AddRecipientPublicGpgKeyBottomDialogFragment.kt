@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 
 class AddRecipientPublicGpgKeyBottomDialogFragment(
-    private val aliasID: String
+    private val aliasId: String?
 ) : BottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -47,25 +47,31 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
             R.layout.bottomsheet_edit_gpg_key_recipient, container,
             false
         )
-        listener = activity as ManageRecipientsActivity
 
-        // Set button listeners and current description
-        root.bs_edit_recipient_gpg_key_save_button.setOnClickListener(this)
+        // Check if aliasId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+        if (aliasId != null) {
+            listener = activity as ManageRecipientsActivity
+
+            // Set button listeners and current description
+            root.bs_edit_recipient_gpg_key_save_button.setOnClickListener(this)
 
 
-        root.bs_edit_recipient_gpg_key_tiet.setOnTouchListener { view, motionEvent ->
-            view.parent.requestDisallowInterceptTouchEvent(true)
-            if ((motionEvent.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-                view.parent.requestDisallowInterceptTouchEvent(false)
+            root.bs_edit_recipient_gpg_key_tiet.setOnTouchListener { view, motionEvent ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((motionEvent.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
             }
-            return@setOnTouchListener false
+        } else {
+            dismiss()
         }
 
-
         return root
-
     }
 
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null)
 
     companion object {
         fun newInstance(id: String): AddRecipientPublicGpgKeyBottomDialogFragment {
@@ -95,7 +101,8 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
                 root.bs_edit_recipient_gpg_key_til.error =
                     context.resources.getString(R.string.error_add_gpg_key) + "\n" + result
             }
-        }, aliasID, description)
+            // aliasId is never null at this point, hence the !!
+        }, aliasId!!, description)
     }
 
     override fun onClick(p0: View?) {

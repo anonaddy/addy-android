@@ -288,7 +288,7 @@ class ManageAliasActivity : BaseActivity(),
     }
 
 
-    lateinit var restoreAliasDialog: AlertDialog
+    private lateinit var restoreAliasDialog: AlertDialog
     private lateinit var restoreAliasCustomLayout: View
     private fun restoreAlias() {
         // create an alert builder
@@ -428,8 +428,9 @@ class ManageAliasActivity : BaseActivity(),
                  * LAYOUT
                  */
 
+                // This layout only contains SectionViews
                 val layout =
-                    findViewById<View>(R.id.activity_manage_alias_settings_LL) as LinearLayout
+                    findViewById<View>(R.id.activity_manage_alias_settings_LL1) as LinearLayout
                 if (list.deleted_at != null) {
                     // Aliasdeleted is not null, thus deleted. disable all the layouts and alpha them
 
@@ -439,11 +440,10 @@ class ManageAliasActivity : BaseActivity(),
                     for (i in 0 until layout.childCount) {
                         val child = layout.getChildAt(i)
 
+                        // As the childs are only sections, cast and set enabled state
                         // Do not disable the restore button. So disabled everything except the activity_manage_alias_restore
                         if (child.id != R.id.activity_manage_alias_restore) {
-                            child.isEnabled = false
-                            child.alpha = 0.5f
-                            child.isClickable = false
+                            (child as SectionView).setLayoutEnabled(false)
                         }
                     }
                 } else {
@@ -451,12 +451,12 @@ class ManageAliasActivity : BaseActivity(),
                     activity_manage_alias_restore.visibility = View.GONE
                     activity_manage_alias_delete.visibility = View.VISIBLE
 
+                    // As the childs are only sections, cast and set enabled state
                     // Aliasdeleted is null, thus not deleted. enable all the layouts
                     for (i in 0 until layout.childCount) {
                         val child = layout.getChildAt(i)
-                        child.isEnabled = true
-                        child.alpha = 1f
-                        child.isClickable = true
+
+                        (child as SectionView).setLayoutEnabled(true)
                     }
                 }
 

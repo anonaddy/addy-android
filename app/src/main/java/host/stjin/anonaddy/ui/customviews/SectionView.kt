@@ -16,14 +16,14 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     LinearLayout(context, attrs, defStyle) {
     private var listener: OnSwitchCheckedChangedListener? = null
     private var onClicklistener: OnLayoutClickedListener? = null
-    var switchMaterial: SwitchMaterial? = null
+    private var switchMaterial: SwitchMaterial? = null
     var description: TextView? = null
-    var progressBar: ProgressBar? = null
-    var title: TextView? = null
-    var iconStart: ImageView? = null
-    var iconEnd: ImageView? = null
+    private var progressBar: ProgressBar? = null
+    private var title: TextView? = null
+    private var iconStart: ImageView? = null
+    private var iconEnd: ImageView? = null
 
-    var linearLayout: LinearLayout? = null
+    private var linearLayout: LinearLayout? = null
 
 
     fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
