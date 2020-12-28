@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:elevation="16dp"
     android:orientation="vertical">
 
@@ -46,155 +46,171 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                style="@style/DescTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/api_setup_qr_code_scan"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/bs_setup_scanner_view_desc"
-                style="@style/DescTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.5"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/api_setup_qr_code_scan_desc"
-                android:textAlignment="center"
-                android:textSize="12sp" />
-
-            <com.budiyev.android.codescanner.CodeScannerView
-                android:id="@+id/bs_setup_scanner_view"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="16dp"
-                app:autoFocusButtonColor="@android:color/white"
-                app:autoFocusButtonVisible="false"
-                app:flashButtonColor="@android:color/white"
-                app:flashButtonVisible="false"
-                app:frameAspectRatioHeight="1"
-                app:frameAspectRatioWidth="1"
-                app:frameColor="@android:color/transparent"
-                app:frameCornersRadius="@dimen/corner_radius"
-                app:frameCornersSize="@dimen/corner_radius"
-                app:frameSize="1"
-                app:frameThickness="0dp"
-                app:maskColor="@color/NavbarLightDarkMode">
-
-            </com.budiyev.android.codescanner.CodeScannerView>
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="16dp"
-                android:alpha="0.1"
-                android:background="@color/IconGrayTint" />
-
-            <TextView
-                style="@style/DescTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/api_obtain"
-                android:textAlignment="center" />
-
-            <TextView
-                style="@style/DescTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:alpha="0.5"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/api_obtain_desc"
-                android:textAlignment="center"
-                android:textSize="12sp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bs_setup_instance_til"
-                style="@style/AnonAddyTextInputLayoutOutlined"
+            <LinearLayout
+                android:id="@+id/bs_setup_qr_LL"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:hint="@string/anonaddy_instance">
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/bs_setup_instance_tiet"
-                    style="@style/AnonAddyTextInputEditText"
+                <TextView
+                    style="@style/DescTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:inputType="textEmailAddress"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:minLines="1"
-                    android:singleLine="true"
-                    android:text="@string/default_base_url" />
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/api_setup_qr_code_scan"
+                    android:textAlignment="center" />
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bs_setup_apikey_til"
-                style="@style/AnonAddyTextInputLayoutOutlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/APIKey_desc">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/bs_setup_apikey_tiet"
-                    style="@style/AnonAddyTextInputEditText"
+                <TextView
+                    android:id="@+id/bs_setup_scanner_view_desc"
+                    style="@style/DescTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
-                    android:imeOptions="actionDone"
-                    android:inputType="textMultiLine"
-                    android:lines="5"
-                    android:maxLines="5"
-                    android:minLines="5"
-                    android:overScrollMode="always"
-                    android:scrollbarStyle="insideInset"
-                    android:scrollbars="vertical" />
+                    android:alpha="0.5"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/api_setup_qr_code_scan_desc"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.budiyev.android.codescanner.CodeScannerView
+                    android:id="@+id/bs_setup_scanner_view"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="16dp"
+                    app:autoFocusButtonColor="@android:color/white"
+                    app:autoFocusButtonVisible="false"
+                    app:flashButtonColor="@android:color/white"
+                    app:flashButtonVisible="false"
+                    app:frameAspectRatioHeight="1"
+                    app:frameAspectRatioWidth="1"
+                    app:frameColor="@android:color/transparent"
+                    app:frameCornersRadius="@dimen/corner_radius"
+                    app:frameCornersSize="@dimen/corner_radius"
+                    app:frameSize="1"
+                    app:frameThickness="0dp"
+                    app:maskColor="@color/NavbarLightDarkMode">
 
+                </com.budiyev.android.codescanner.CodeScannerView>
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_margin="16dp"
+                    android:alpha="0.1"
+                    android:background="@color/IconGrayTint" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_setup_apikey_get_button"
-                    style="@style/TextButtonsSecondary"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/bs_setup_manual_apikey_textview"
+                    style="@style/DescTextStyle"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/get_my_key" />
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/api_obtain"
+                    android:textAlignment="center" />
 
-                <Space
-                    android:layout_width="0dp"
+                <TextView
+                    style="@style/DescTextStyle"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_marginBottom="16dp"
+                    android:alpha="0.5"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/api_obtain_desc"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
 
-                <ProgressBar
-                    android:id="@+id/bs_setup_apikey_get_progressbar"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:padding="4dp"
-                    android:visibility="invisible" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bs_setup_instance_til"
+                    style="@style/AnonAddyTextInputLayoutOutlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/anonaddy_instance">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_setup_apikey_sign_in_button"
-                    style="@style/ActionButtonsSecondary"
-                    android:layout_width="wrap_content"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bs_setup_instance_tiet"
+                        style="@style/AnonAddyTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="textEmailAddress"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:minLines="1"
+                        android:singleLine="true"
+                        android:text="@string/default_base_url" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bs_setup_apikey_til"
+                    style="@style/AnonAddyTextInputLayoutOutlined"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/sign_in" />
+                    android:hint="@string/APIKey_desc">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bs_setup_apikey_tiet"
+                        style="@style/AnonAddyTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine"
+                        android:lines="5"
+                        android:maxLines="5"
+                        android:minLines="5"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bs_setup_apikey_get_button"
+                        style="@style/TextButtonsSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:text="@string/get_my_key" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <ProgressBar
+                        android:id="@+id/bs_setup_apikey_get_progressbar"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="4dp"
+                        android:visibility="invisible" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bs_setup_apikey_sign_in_button"
+                        style="@style/ActionButtonsSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sign_in" />
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

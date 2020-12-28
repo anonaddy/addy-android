@@ -53,7 +53,11 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         )
         listener = activity as AddApiBottomDialogListener
 
-        initQrScanner(root)
+        // Check that the device will let you use the camera
+        val pm = context?.packageManager
+        if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA) == true) {
+            initQrScanner(root)
+        }
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
@@ -83,6 +87,8 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
     }
 
     private fun initQrScanner(root: View) {
+        root.bs_setup_qr_LL.visibility = View.VISIBLE
+        root.bs_setup_manual_apikey_textview.text = context?.resources?.getString(R.string.api_obtain_camera_available)
         // Initialize the codeScanner, this won't start the camera yet.
         codeScanner = CodeScanner(requireActivity(), root.bs_setup_scanner_view)
         // Initialize the codeScanner

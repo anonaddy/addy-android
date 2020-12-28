@@ -18,9 +18,11 @@ import kotlin.random.Random
 
 class NotificationHelper(private val context: Context) {
     private val ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
-    private val ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID = 1
     private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+    companion object {
+        val ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID = 1
+    }
 
     fun createAliasWatcherNotification(emailDifference: Int, id: String, email: String) {
         createChannel(
@@ -67,8 +69,9 @@ class NotificationHelper(private val context: Context) {
             .setContentIntent(pendingIntent)
             .setVisibility(visibility)
             .setColor(ContextCompat.getColor(context, R.color.primaryColor))
-            .setSmallIcon(R.drawable.ic_comment_eye_outline)
-            .addAction(R.drawable.ic_comment_eye_outline, context.resources.getString(R.string.stop_watching), stopWatchingPendingIntent)
+            .setSmallIcon(R.drawable.notification_ic_comment_eye_outline)
+            .addAction(R.drawable.notification_ic_comment_eye_outline, context.resources.getString(R.string.stop_watching), stopWatchingPendingIntent)
+            .setLights(ContextCompat.getColor(context, R.color.primaryColor), 1000, 6000)
             .setContentIntent(editAliasPendingIntent)
             // Auto cancel only in production
             .setAutoCancel(!BuildConfig.DEBUG)

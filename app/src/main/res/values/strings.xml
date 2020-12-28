@@ -329,7 +329,8 @@
     <string name="api_setup_qr_code_scan">Scan the QR code displayed</string>
     <string name="qr_permissions_required">Camera permissions are required in order to scan the QR code</string>
     <string name="api_setup_qr_code_scan_desc">Tap the scanning area to start scanning</string>
-    <string name="api_obtain">Or manually enter your API key</string>
+    <string name="api_obtain_camera_available">Or manually enter your API key</string>
+    <string name="api_obtain">Manually enter your API key</string>
     <string name="api_setup_qr_code_scan_wrong">This is not a valid QR code</string>
     <string name="background_service_interval">Background service interval</string>
     <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
@@ -344,6 +345,7 @@
     <string name="notification_new_emails">New emails forwarded</string>
     <string name="notification_new_emails_desc">%1$d new email(s) have been forwarded via %2$s</string>
     <string name="stop_watching">Stop watching</string>
+    <string name="not_verified">Not verified</string>
 
 
 </resources>

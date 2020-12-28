@@ -1,9 +1,12 @@
 package host.stjin.anonaddy.notifications
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.notifications.NotificationHelper.Companion.ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 
@@ -28,6 +31,14 @@ class ActionReceiver : BroadcastReceiver() {
             manageAliasIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             ContextCompat.startActivity(context, manageAliasIntent, null)
         }
+
+        // Dismiss notification
+        if (!BuildConfig.DEBUG) {
+            val notificationManager = context
+                .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID)
+        }
+
         //This is used to close the notification tray
         val it = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
         context.sendBroadcast(it)
