@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/main_top_bar_not_user" />
+    <include
+        android:id="@+id/main_top_bar"
+        layout="@layout/main_top_bar_user" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

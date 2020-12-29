@@ -10,6 +10,8 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.databinding.ActivityMainBinding
+import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.ChangelogBottomDialogFragment
@@ -20,13 +22,12 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.main_top_bar_not_user.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+
 
 class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener {
 
@@ -42,6 +43,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         RecipientsFragment.newInstance()
     )
 
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,31 +59,33 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun loadMainActivity() {
-        setContentView(R.layout.activity_main)
+        binding = inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         showChangeLog()
 
-        activity_main_viewpager.adapter = MainViewpagerAdapter(this, fragmentList)
-        activity_main_viewpager.offscreenPageLimit = 3
+        binding.activityMainViewpager.adapter = MainViewpagerAdapter(this, fragmentList)
+        binding.activityMainViewpager.offscreenPageLimit = 3
         // Allow swiping through the pages
-        activity_main_viewpager.isUserInputEnabled = true
-        activity_main_viewpager.setPageTransformer { page, position ->
+        binding.activityMainViewpager.isUserInputEnabled = true
+        binding.activityMainViewpager.setPageTransformer { page, position ->
             val normalizedposition = abs(abs(position) - 1)
             page.alpha = normalizedposition
         }
 
-        activity_main_viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.activityMainViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        nav_view.menu.findItem(R.id.navigation_home).isChecked = true
+                        binding.navView.menu.findItem(R.id.navigation_home).isChecked = true
                         changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_home))
                     }
                     1 -> {
-                        nav_view.menu.findItem(R.id.navigation_alias).isChecked = true
+                        binding.navView.menu.findItem(R.id.navigation_alias).isChecked = true
                         changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_aliases))
                     }
                     2 -> {
-                        nav_view.menu.findItem(R.id.navigation_recipients).isChecked = true
+                        binding.navView.menu.findItem(R.id.navigation_recipients).isChecked = true
                         changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_recipients))
                     }
                 }
@@ -89,7 +93,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         })
 
-        nav_view.setOnNavigationItemSelectedListener {
+        binding.navView.setOnNavigationItemSelectedListener {
             switchFragments(it.itemId)
             false
         }
@@ -115,7 +119,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun initialiseMainAppBar() {
-        main_top_bar_user_initials.setOnClickListener {
+        binding.mainTopBar.mainTopBarUserInitials.setOnClickListener {
             val i = Intent(Intent(this, DialogActivity::class.java))
             val options = ActivityOptions
                 .makeSceneTransitionAnimation(
@@ -131,7 +135,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             startActivity(i, options.toBundle())
         }
 
-        main_top_bar_search_icon.setOnClickListener {
+        binding.mainTopBar.mainTopBarSearchIcon.setOnClickListener {
             if (!searchBottomDialogFragment.isAdded) {
                 searchBottomDialogFragment.show(
                     supportFragmentManager,
@@ -143,14 +147,14 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
     private fun changeTopBarTitle(title: String) {
-        main_top_bar_not_title.text = title
+        binding.mainTopBar.mainTopBarNotTitle.text = title
     }
 
     fun switchFragments(fragment: Int) {
         when (fragment) {
-            R.id.navigation_home -> activity_main_viewpager.currentItem = 0
-            R.id.navigation_alias -> activity_main_viewpager.currentItem = 1
-            R.id.navigation_recipients -> activity_main_viewpager.currentItem = 2
+            R.id.navigation_home -> binding.activityMainViewpager.currentItem = 0
+            R.id.navigation_alias -> binding.activityMainViewpager.currentItem = 1
+            R.id.navigation_recipients -> binding.activityMainViewpager.currentItem = 2
         }
     }
 

@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
@@ -12,8 +11,11 @@ android {
         targetSdkVersion 30
         versionCode 14
         versionName "1.2.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     buildTypes {
@@ -107,3 +109,11 @@ dependencies {
 dependencies {
     implementation "androidx.work:work-runtime-ktx:2.4.0"
 }
+
+
+/*
+//TODO turn into donuts
+// For the donut in the aliasview
+dependencies {
+    implementation 'com.github.futuredapp:donut:2.1.0'
+}*/

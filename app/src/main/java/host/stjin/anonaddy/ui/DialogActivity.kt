@@ -7,18 +7,22 @@ import android.view.View
 import host.stjin.anonaddy.AnonAddy
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.MainProfileSelectDialogBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.anonaddysettings.AnonAddySettingsActivity
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
-import kotlinx.android.synthetic.main.main_profile_select_dialog.*
+
+private lateinit var binding: MainProfileSelectDialogBinding
 
 class DialogActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_profile_select_dialog)
+        binding = MainProfileSelectDialogBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         window.decorView.systemUiVisibility =
                 // Tells the system that the window wishes the content to
@@ -36,41 +40,41 @@ class DialogActivity : Activity() {
     }
 
     private fun setOnClickListeners() {
-        main_profile_select_dialog_app_settings.setOnClickListener {
+        binding.mainProfileSelectDialogAppSettings.setOnClickListener {
             val intent = Intent(this, AppSettingsActivity::class.java)
             startActivity(intent)
         }
 
-        main_profile_select_dialog_domain_settings.setOnClickListener {
+        binding.mainProfileSelectDialogDomainSettings.setOnClickListener {
             val intent = Intent(this, DomainSettingsActivity::class.java)
             startActivity(intent)
         }
 
-        main_profile_select_dialog_rules.setOnClickListener {
+        binding.mainProfileSelectDialogRules.setOnClickListener {
             val intent = Intent(this, RulesSettingsActivity::class.java)
             startActivity(intent)
         }
 
-        main_profile_select_dialog_username_settings.setOnClickListener {
+        binding.mainProfileSelectDialogUsernameSettings.setOnClickListener {
             val intent = Intent(this, UsernamesSettingsActivity::class.java)
             startActivity(intent)
         }
 
-        main_profile_select_dialog_anonaddy_settings.setOnClickListener {
+        binding.mainProfileSelectDialogAnonaddySettings.setOnClickListener {
             val intent = Intent(this, AnonAddySettingsActivity::class.java)
             startActivity(intent)
         }
     }
 
     private fun setInfo() {
-        main_profile_select_dialog_anonaddy_settings_desc.text =
+        binding.mainProfileSelectDialogAnonaddySettingsDesc.text =
             if (AnonAddy.VERSIONCODE == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
                 R.string.self_hosted_instance_s,
                 AnonAddy.VERSIONSTRING
             )
-        main_profile_select_dialog_card_accountname.text = User.userResource.username
-        main_profile_select_dialog_card_subscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
-        main_profile_select_dialog_app_settings_desc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
+        binding.mainProfileSelectDialogCardAccountname.text = User.userResource.username
+        binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
+        binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
 
     }
 }

@@ -52,7 +52,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <host.stjin.anonaddy.utils.PieChartView
+
+                <host.stjin.anonaddy.utils.PieChartView
                         android:id="@+id/activity_manage_alias_chart"
                         android:layout_width="150dp"
                         android:layout_height="150dp"

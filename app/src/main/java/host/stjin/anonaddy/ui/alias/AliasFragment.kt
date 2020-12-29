@@ -20,10 +20,10 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
+import host.stjin.anonaddy.databinding.FragmentAliasBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.GsonTools
-import kotlinx.android.synthetic.main.fragment_alias.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -44,19 +44,26 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
         AddAliasBottomDialogFragment.newInstance()
 
+    private var _binding: FragmentAliasBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_alias, container, false)
+    ): View {
+        _binding = FragmentAliasBinding.inflate(inflater, container, false)
+        val root = binding.root
+
         settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
 
         // Load values from local to make the app look quick and snappy!
-        setStatisticsFromLocal(root, requireContext())
+        setStatisticsFromLocal(requireContext())
         setOnClickListeners(root)
         setOnScrollViewListener(root)
 
@@ -69,7 +76,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private fun setOnScrollViewListener(root: View) {
 
-        root.alias_scrollview?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, oldScrollY ->
+        binding.aliasScrollview.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
 
             val scrollViewHeight: Double = (v.getChildAt(0).bottom - v.height).toDouble()
             val getScrollY: Double = scrollY.toDouble()
@@ -78,9 +85,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             val percentage = scrollPosition.toInt()
 
             if (percentage in 6..100) { // If between 6 and 100, show the fab
-                root.alias_fragment_add_alias_fab.show()
+                binding.aliasFragmentAddAliasFab.show()
             } else if (percentage in 0..5) { // If between 0 and 5, hide the fab
-                root.alias_fragment_add_alias_fab.hide()
+                binding.aliasFragmentAddAliasFab.hide()
             }
         })
 
@@ -88,13 +95,13 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun getDataFromWeb(root: View) {
-        root.alias_list_LL1.visibility = View.VISIBLE
-        root.alias_statistics_RL_lottieview.visibility = View.GONE
+        binding.aliasListLL1.visibility = View.VISIBLE
+        binding.aliasStatisticsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllAliasesAndSetStatistics(root)
-            getAllDeletedAliases(root)
+            getAllDeletedAliases()
         }
     }
 
@@ -105,11 +112,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun setOnClickListeners(root: View) {
-        root.alias_statistics_dismiss.setOnClickListener {
-            root.alias_statistics_LL.visibility = View.GONE
+        binding.aliasStatisticsDismiss.setOnClickListener {
+            binding.aliasStatisticsLL.visibility = View.GONE
         }
 
-        root.alias_add_alias.setOnClickListener {
+        binding.aliasAddAlias.setOnClickListener {
             if (!addAliasBottomDialogFragment.isAdded) {
                 addAliasBottomDialogFragment.show(
                     childFragmentManager,
@@ -118,7 +125,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
         }
 
-        root.alias_fragment_add_alias_fab.setOnClickListener {
+        binding.aliasFragmentAddAliasFab.setOnClickListener {
             if (!addAliasBottomDialogFragment.isAdded) {
                 addAliasBottomDialogFragment.show(
                     childFragmentManager,
@@ -127,19 +134,19 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
         }
 
-        root.alias_show_deleted_alias_toggle_LL.setOnClickListener {
-            if (root.alias_deleted_aliases_recyclerview.visibility == View.GONE) {
-                root.alias_deleted_aliases_recyclerview.visibility = View.VISIBLE
-                root.alias_show_deleted_alias_toggle.setImageResource(R.drawable.ic_menu_up_outline)
+        binding.aliasShowDeletedAliasToggleLL.setOnClickListener {
+            if (binding.aliasDeletedAliasesRecyclerview.visibility == View.GONE) {
+                binding.aliasDeletedAliasesRecyclerview.visibility = View.VISIBLE
+                binding.aliasShowDeletedAliasToggle.setImageResource(R.drawable.ic_menu_up_outline)
             } else {
-                root.alias_deleted_aliases_recyclerview.visibility = View.GONE
-                root.alias_show_deleted_alias_toggle.setImageResource(R.drawable.ic_menu_down_outline)
+                binding.aliasDeletedAliasesRecyclerview.visibility = View.GONE
+                binding.aliasShowDeletedAliasToggle.setImageResource(R.drawable.ic_menu_down_outline)
             }
         }
     }
 
     private suspend fun getAllAliasesAndSetStatistics(root: View) {
-        root.alias_all_aliases_recyclerview.apply {
+        binding.aliasAllAliasesRecyclerview.apply {
 
             if (itemDecorationCount > 0) {
                 addItemDecoration(
@@ -186,14 +193,14 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     }
 
                     // Set the actual statistics
-                    setAliasesStatistics(root, context, forwarded, blocked, replied, sent)
+                    setAliasesStatistics(context, forwarded, blocked, replied, sent)
 
 
 
                     if (list.size > 0) {
-                        root.alias_no_aliases.visibility = View.GONE
+                        binding.aliasNoAliases.visibility = View.GONE
                     } else {
-                        root.alias_no_aliases.visibility = View.VISIBLE
+                        binding.aliasNoAliases.visibility = View.VISIBLE
                     }
 
 
@@ -243,8 +250,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     adapter = aliasAdapter
                     hideShimmerAdapter()
                 } else {
-                    root.alias_list_LL1.visibility = View.GONE
-                    root.alias_statistics_RL_lottieview.visibility = View.VISIBLE
+                    binding.aliasListLL1.visibility = View.GONE
+                    binding.aliasStatisticsRLLottieview.visibility = View.VISIBLE
                 }
             }, activeOnly = false, includeDeleted = false)
         }
@@ -252,8 +259,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
 
-    private suspend fun getAllDeletedAliases(root: View) {
-        root.alias_deleted_aliases_recyclerview.apply {
+    private suspend fun getAllDeletedAliases() {
+        binding.aliasDeletedAliasesRecyclerview.apply {
 
             if (itemDecorationCount > 0) {
                 addItemDecoration(
@@ -289,14 +296,14 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     val onlyDeletedList: ArrayList<Aliases> = arrayListOf()
 
                     if (list.size > 0) {
-                        root.alias_no_deleted_aliases.visibility = View.GONE
+                        binding.aliasNoDeletedAliases.visibility = View.GONE
                         for (alias in list) {
                             if (alias.deleted_at != null) {
                                 onlyDeletedList.add(alias)
                             }
                         }
                     } else {
-                        root.alias_no_deleted_aliases.visibility = View.VISIBLE
+                        binding.aliasNoDeletedAliases.visibility = View.VISIBLE
                     }
 
 
@@ -346,8 +353,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     adapter = aliasAdapter
                     hideShimmerAdapter()
                 } else {
-                    root.alias_list_LL1.visibility = View.GONE
-                    root.alias_statistics_RL_lottieview.visibility = View.VISIBLE
+                    binding.aliasListLL1.visibility = View.GONE
+                    binding.aliasStatisticsRLLottieview.visibility = View.VISIBLE
                 }
             }, activeOnly = false, includeDeleted = true)
         }
@@ -357,7 +364,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     /*
     Only gets called in onCreate, so when coming back later the number won't just jump back to the old value
      */
-    private fun setStatisticsFromLocal(root: View, context: Context) {
+    private fun setStatisticsFromLocal(context: Context) {
         val statCurrentEmailsForwardedTotalCount = 0
         val statCurrentEmailsBlockedTotalCount = 0
         val statCurrentEmailsRepliedTotalCount = 0
@@ -377,33 +384,30 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
         }
 
-        root.alias_replied_sent_stats_textview.text =
-            context.resources.getString(R.string.replied_replied_sent_stat, statCurrentEmailsRepliedTotalCount, statCurrentEmailsSentTotalCount)
-        root.alias_forwarded_blocked_stats_textview.text =
-            context.resources.getString(
-                R.string.replied_forwarded_blocked_stat,
-                statCurrentEmailsForwardedTotalCount,
-                statCurrentEmailsBlockedTotalCount
-            )
+        setAliasesStatistics(
+            context,
+            statCurrentEmailsForwardedTotalCount,
+            statCurrentEmailsBlockedTotalCount,
+            statCurrentEmailsRepliedTotalCount,
+            statCurrentEmailsSentTotalCount
+        )
     }
 
     private fun setAliasesStatistics(
-        root: View,
         context: Context,
         forwarded: Int,
         blocked: Int,
         replied: Int,
         sent: Int
     ) {
-        root.alias_replied_sent_stats_textview.text =
+        binding.aliasRepliedSentStatsTextview.text =
             context.resources.getString(R.string.replied_replied_sent_stat, replied, sent)
-        root.alias_forwarded_blocked_stats_textview.text =
+        binding.aliasForwardedBlockedStatsTextview.text =
             context.resources.getString(
                 R.string.replied_forwarded_blocked_stat,
                 forwarded,
                 blocked
             )
-
     }
 
     override fun onAdded() {
@@ -412,5 +416,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         getDataFromWeb(requireView())
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 }

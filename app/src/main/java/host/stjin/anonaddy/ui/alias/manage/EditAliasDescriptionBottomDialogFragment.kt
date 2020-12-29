@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.bottomsheet_edit_description_alias.view.*
+import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionAliasBinding
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,24 +37,27 @@ class EditAliasDescriptionBottomDialogFragment(
         return dialog
     }
 
+
+    private var _binding: BottomsheetEditDescriptionAliasBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_edit_description_alias, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetEditDescriptionAliasBinding.inflate(inflater, container, false)
+        val root = binding.root
 
         // Check if aliasId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (aliasId != null) {
             listener = activity as AddEditAliasDescriptionBottomDialogListener
 
             // Set button listeners and current description
-            root.bs_editalias_alias_save_button.setOnClickListener(this)
-            root.bs_editalias_alias_desc_tiet.setText(description)
+            binding.bsEditaliasAliasSaveButton.setOnClickListener(this)
+            binding.bsEditaliasAliasDescTiet.setText(description)
         } else {
             dismiss()
         }
@@ -73,9 +76,9 @@ class EditAliasDescriptionBottomDialogFragment(
     }
 
     private fun verifyKey(root: View, context: Context) {
-        val description = root.bs_editalias_alias_desc_tiet.text.toString()
-        root.bs_editalias_alias_save_button.isEnabled = false
-        root.bs_editalias_alias_save_progressbar.visibility = View.VISIBLE
+        val description = binding.bsEditaliasAliasDescTiet.text.toString()
+        binding.bsEditaliasAliasSaveButton.isEnabled = false
+        binding.bsEditaliasAliasSaveProgressbar.visibility = View.VISIBLE
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -89,9 +92,9 @@ class EditAliasDescriptionBottomDialogFragment(
             if (result == "200") {
                 listener.descriptionEdited(description)
             } else {
-                root.bs_editalias_alias_save_button.isEnabled = true
-                root.bs_editalias_alias_save_progressbar.visibility = View.INVISIBLE
-                root.bs_editalias_alias_desc_til.error =
+                binding.bsEditaliasAliasSaveButton.isEnabled = true
+                binding.bsEditaliasAliasSaveProgressbar.visibility = View.INVISIBLE
+                binding.bsEditaliasAliasDescTil.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }
             // aliasId is never null at this point, hence the !!
@@ -107,5 +110,10 @@ class EditAliasDescriptionBottomDialogFragment(
                 )
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

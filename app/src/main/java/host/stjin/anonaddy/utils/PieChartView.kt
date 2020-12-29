@@ -69,7 +69,6 @@ class PieChartView @JvmOverloads constructor(
         val radius = centerX.coerceAtMost(centerY)
 
         canvas!!.drawCircle(centerX, centerY, radius - 70, centerPaint)
-
     }
 
     private fun getTotal(): Float = dataPoints.sum()

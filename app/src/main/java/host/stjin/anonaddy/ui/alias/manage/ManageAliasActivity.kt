@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
@@ -16,12 +17,12 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
+import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
-import kotlinx.android.synthetic.main.activity_manage_alias.*
-import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -52,19 +53,19 @@ class ManageAliasActivity : BaseActivity(),
     // Bug fix
     override fun onResume() {
         super.onResume()
-        if (activity_manage_alias_settings_RL_progressbar != null) {
-            activity_manage_alias_settings_RL_progressbar.visibility = progressBarVisibility
-        }
+        binding.activityManageAliasSettingsRLProgressbar.visibility = progressBarVisibility
     }
 
+    private lateinit var binding: ActivityManageAliasBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        binding = ActivityManageAliasBinding.inflate(layoutInflater)
+        val view = binding.root
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
-        setContentView(R.layout.activity_manage_alias)
-        setupToolbar(activity_manage_alias_toolbar)
+        setContentView(view)
+        setupToolbar(binding.activityManageAliasToolbar)
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
 
@@ -86,7 +87,7 @@ class ManageAliasActivity : BaseActivity(),
             // Charts will be updated in the background
             setChart(aliasForwardCount, aliasRepliedSentCount)
             // Finish shared elements transition
-            ViewCompat.setTransitionName(activity_manage_alias_chart, aliasId)
+            ViewCompat.setTransitionName(binding.activityManageAliasChart, aliasId)
             setPage()
 
         } else if (intent.action != null) {
@@ -116,7 +117,7 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun setPageInfo() {
-        activity_manage_alias_settings_RL_lottieview.visibility = View.GONE
+        binding.activityManageAliasSettingsRLLottieview.visibility = View.GONE
 
         // Get the alias
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -133,7 +134,7 @@ class ManageAliasActivity : BaseActivity(),
             shimmer = 1f
         }
 
-        activity_manage_alias_chart.setDataPoints(
+        binding.activityManageAliasChart.setDataPoints(
             floatArrayOf(
                 value1,
                 value2,
@@ -143,20 +144,20 @@ class ManageAliasActivity : BaseActivity(),
 
 
 
-        activity_manage_alias_chart.setCenterColor(R.color.LightDarkMode)
+        binding.activityManageAliasChart.setCenterColor(R.color.LightDarkMode)
 
-        activity_manage_alias_forwarded_count.visibility = View.VISIBLE
-        activity_manage_alias_replies_sent_count.visibility = View.VISIBLE
-        activity_manage_alias_forwarded_count.text = value1.roundToInt().toString()
-        activity_manage_alias_replies_sent_count.text = value2.roundToInt().toString()
+        binding.activityManageAliasForwardedCount.visibility = View.VISIBLE
+        binding.activityManageAliasRepliesSentCount.visibility = View.VISIBLE
+        binding.activityManageAliasForwardedCount.text = value1.roundToInt().toString()
+        binding.activityManageAliasRepliesSentCount.text = value2.roundToInt().toString()
     }
 
     private fun setOnSwitchChangeListeners() {
-        activity_manage_alias_active_switch_layout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+        binding.activityManageAliasActiveSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
-                    activity_manage_alias_active_switch_layout.showProgressBar(true)
+                    binding.activityManageAliasActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
                     if (checked) {
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -171,7 +172,7 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        activity_manage_alias_watch_switch_layout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+        binding.activityManageAliasWatchSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
@@ -189,11 +190,11 @@ class ManageAliasActivity : BaseActivity(),
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
-            activity_manage_alias_active_switch_layout.showProgressBar(false)
+            binding.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                activity_manage_alias_active_switch_layout.setTitle(resources.getString(R.string.alias_deactivated))
+                binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_deactivated))
             } else {
-                activity_manage_alias_active_switch_layout.setSwitchChecked(true)
+                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_alias_LL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -214,11 +215,11 @@ class ManageAliasActivity : BaseActivity(),
 
     private suspend fun activateAlias() {
         networkHelper.activateSpecificAlias({ result ->
-            activity_manage_alias_active_switch_layout.showProgressBar(false)
+            binding.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (result == "200") {
-                activity_manage_alias_active_switch_layout.setTitle(resources.getString(R.string.alias_activated))
+                binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_activated))
             } else {
-                activity_manage_alias_active_switch_layout.setSwitchChecked(false)
+                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
                     findViewById(R.id.activity_manage_alias_LL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -237,22 +238,22 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setOnClickListeners() {
-        activity_manage_alias_active_switch_layout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
-                activity_manage_alias_active_switch_layout.setSwitchChecked(!activity_manage_alias_active_switch_layout.getSwitchChecked())
+                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.activityManageAliasActiveSwitchLayout.getSwitchChecked())
             }
         })
 
 
-        activity_manage_alias_watch_switch_layout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
-                activity_manage_alias_watch_switch_layout.setSwitchChecked(!activity_manage_alias_watch_switch_layout.getSwitchChecked())
+                binding.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.activityManageAliasWatchSwitchLayout.getSwitchChecked())
             }
         })
 
-        activity_manage_alias_desc_edit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasDescEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!editAliasDescriptionBottomDialogFragment.isAdded) {
                     editAliasDescriptionBottomDialogFragment.show(
@@ -263,7 +264,7 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        activity_manage_alias_recipients_edit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasRecipientsEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!editAliasRecipientsBottomDialogFragment.isAdded) {
                     editAliasRecipientsBottomDialogFragment.show(
@@ -274,13 +275,13 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        activity_manage_alias_delete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 deleteAlias()
             }
         })
 
-        activity_manage_alias_restore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 restoreAlias()
             }
@@ -288,83 +289,80 @@ class ManageAliasActivity : BaseActivity(),
     }
 
 
+    //TODO test
     private lateinit var restoreAliasDialog: AlertDialog
-    private lateinit var restoreAliasCustomLayout: View
+    val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this))
     private fun restoreAlias() {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        // set the custom layout
-        restoreAliasCustomLayout =
-            layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(restoreAliasCustomLayout)
+        builder.setView(binding.root)
         restoreAliasDialog = builder.create()
         restoreAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        restoreAliasCustomLayout.dialog_title.text = resources.getString(R.string.restore_alias)
-        restoreAliasCustomLayout.dialog_text.text =
+        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.restore_alias)
+        anonaddyCustomDialogBinding.dialogText.text =
             resources.getString(R.string.restore_alias_confirmation_desc)
-        restoreAliasCustomLayout.dialog_positive_button.text =
+        anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.restore_alias)
-        restoreAliasCustomLayout.dialog_positive_button.setOnClickListener {
-            restoreAliasCustomLayout.dialog_progressbar.visibility = View.VISIBLE
-            restoreAliasCustomLayout.dialog_error.visibility = View.GONE
-            restoreAliasCustomLayout.dialog_negative_button.isEnabled = false
-            restoreAliasCustomLayout.dialog_positive_button.isEnabled = false
+        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
+            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
+            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
+            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 restoreAliasHttpRequest(aliasId, this@ManageAliasActivity)
             }
         }
-        restoreAliasCustomLayout.dialog_negative_button.setOnClickListener {
+        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
             restoreAliasDialog.dismiss()
         }
         // create and show the alert dialog
         restoreAliasDialog.show()
     }
 
+    //TODO test
     private fun deleteAlias() {
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        // set the custom layout
-        restoreAliasCustomLayout =
-            layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(restoreAliasCustomLayout)
+        builder.setView(binding.root)
         restoreAliasDialog = builder.create()
         restoreAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        restoreAliasCustomLayout.dialog_title.text = resources.getString(R.string.delete_alias)
-        restoreAliasCustomLayout.dialog_text.text =
+        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_alias)
+        anonaddyCustomDialogBinding.dialogText.text =
             resources.getString(R.string.delete_alias_confirmation_desc)
-        restoreAliasCustomLayout.dialog_positive_button.text =
+        anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.delete_alias)
-        restoreAliasCustomLayout.dialog_positive_button.setOnClickListener {
-            restoreAliasCustomLayout.dialog_progressbar.visibility = View.VISIBLE
-            restoreAliasCustomLayout.dialog_error.visibility = View.GONE
-            restoreAliasCustomLayout.dialog_negative_button.isEnabled = false
-            restoreAliasCustomLayout.dialog_positive_button.isEnabled = false
+        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
+            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
+            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
+            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 deleteAliasHttpRequest(aliasId, this@ManageAliasActivity)
             }
         }
-        restoreAliasCustomLayout.dialog_negative_button.setOnClickListener {
+        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
             restoreAliasDialog.dismiss()
         }
         // create and show the alert dialog
         restoreAliasDialog.show()
     }
 
+    //TODO test
     private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
                 restoreAliasDialog.dismiss()
                 finish()
             } else {
-                restoreAliasCustomLayout.dialog_progressbar.visibility = View.INVISIBLE
-                restoreAliasCustomLayout.dialog_error.visibility = View.VISIBLE
-                restoreAliasCustomLayout.dialog_negative_button.isEnabled = true
-                restoreAliasCustomLayout.dialog_positive_button.isEnabled = true
-                restoreAliasCustomLayout.dialog_error.text = context.resources.getString(
+                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
+                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
                     R.string.s_s,
                     context.resources.getString(R.string.error_deleting_alias), result
                 )
@@ -378,11 +376,11 @@ class ManageAliasActivity : BaseActivity(),
                 restoreAliasDialog.dismiss()
                 setPage()
             } else {
-                restoreAliasCustomLayout.dialog_progressbar.visibility = View.INVISIBLE
-                restoreAliasCustomLayout.dialog_error.visibility = View.VISIBLE
-                restoreAliasCustomLayout.dialog_negative_button.isEnabled = true
-                restoreAliasCustomLayout.dialog_positive_button.isEnabled = true
-                restoreAliasCustomLayout.dialog_error.text = context.resources.getString(
+                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
+                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
                     R.string.s_s,
                     context.resources.getString(R.string.error_restoring_alias), result
                 )
@@ -396,7 +394,7 @@ class ManageAliasActivity : BaseActivity(),
             if (list != null) {
 
                 // Set email in textview
-                activity_manage_alias_email.text = list.email
+                binding.activityManageAliasEmail.text = list.email
 
                 /**
                  * CHART
@@ -413,15 +411,15 @@ class ManageAliasActivity : BaseActivity(),
                  */
 
                 // Set switch status
-                activity_manage_alias_active_switch_layout.setSwitchChecked(list.active)
-                activity_manage_alias_active_switch_layout.setTitle(
+                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(list.active)
+                binding.activityManageAliasActiveSwitchLayout.setTitle(
                     if (list.active) resources.getString(R.string.alias_activated) else resources.getString(
                         R.string.alias_deactivated
                     )
                 )
 
                 // Set watch switch status
-                activity_manage_alias_watch_switch_layout.setSwitchChecked(aliasWatcher.getAliasesToWatch()?.contains(aliasId) ?: false)
+                binding.activityManageAliasWatchSwitchLayout.setSwitchChecked(aliasWatcher.getAliasesToWatch()?.contains(aliasId) ?: false)
 
 
                 /**
@@ -435,8 +433,8 @@ class ManageAliasActivity : BaseActivity(),
                     // Aliasdeleted is not null, thus deleted. disable all the layouts and alpha them
 
                     // Show restore and hide delete
-                    activity_manage_alias_restore.visibility = View.VISIBLE
-                    activity_manage_alias_delete.visibility = View.GONE
+                    binding.activityManageAliasRestore.visibility = View.VISIBLE
+                    binding.activityManageAliasDelete.visibility = View.GONE
                     for (i in 0 until layout.childCount) {
                         val child = layout.getChildAt(i)
 
@@ -448,8 +446,8 @@ class ManageAliasActivity : BaseActivity(),
                     }
                 } else {
                     // Show delete and hide restore
-                    activity_manage_alias_restore.visibility = View.GONE
-                    activity_manage_alias_delete.visibility = View.VISIBLE
+                    binding.activityManageAliasRestore.visibility = View.GONE
+                    binding.activityManageAliasDelete.visibility = View.VISIBLE
 
                     // As the childs are only sections, cast and set enabled state
                     // Aliasdeleted is null, thus not deleted. enable all the layouts
@@ -498,7 +496,7 @@ class ManageAliasActivity : BaseActivity(),
                     )
                 }
 
-                activity_manage_alias_recipients_edit.setDescription(recipients)
+                binding.activityManageAliasRecipientsEdit.setDescription(recipients)
 
 
                 // Initialise the bottomdialog
@@ -507,8 +505,8 @@ class ManageAliasActivity : BaseActivity(),
 
 
                 // Set created at and updated at
-                DateTimeUtils.turnStringIntoLocalString(list.created_at)?.let { activity_manage_alias_created_at.setDescription(it) }
-                DateTimeUtils.turnStringIntoLocalString(list.updated_at)?.let { activity_manage_alias_updated_at.setDescription(it) }
+                DateTimeUtils.turnStringIntoLocalString(list.created_at)?.let { binding.activityManageAliasCreatedAt.setDescription(it) }
+                DateTimeUtils.turnStringIntoLocalString(list.updated_at)?.let { binding.activityManageAliasUpdatedAt.setDescription(it) }
 
 
                 /**
@@ -517,9 +515,9 @@ class ManageAliasActivity : BaseActivity(),
 
                 // Set description and initialise the bottomDialogFragment
                 if (list.description != null) {
-                    activity_manage_alias_desc_edit.setDescription(list.description)
+                    binding.activityManageAliasDescEdit.setDescription(list.description)
                 } else {
-                    activity_manage_alias_desc_edit.setDescription(
+                    binding.activityManageAliasDescEdit.setDescription(
                         this.resources.getString(
                             R.string.alias_no_description
                         )
@@ -533,9 +531,9 @@ class ManageAliasActivity : BaseActivity(),
                 )
 
 
-                activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
+                binding.activityManageAliasSettingsRLProgressbar.visibility = View.GONE
                 progressBarVisibility = View.GONE
-                activity_manage_alias_settings_LL.visibility = View.VISIBLE
+                binding.activityManageAliasSettingsLL.visibility = View.VISIBLE
 
                 setOnSwitchChangeListeners()
                 setOnClickListeners()
@@ -544,15 +542,15 @@ class ManageAliasActivity : BaseActivity(),
                 if (shouldDeactivateThisAlias) {
                     // Deactive switch
                     forceSwitch = true
-                    activity_manage_alias_active_switch_layout.setSwitchChecked(false)
+                    binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 }
             } else {
-                activity_manage_alias_settings_RL_progressbar.visibility = View.GONE
+                binding.activityManageAliasSettingsRLProgressbar.visibility = View.GONE
                 progressBarVisibility = View.GONE
-                activity_manage_alias_settings_LL.visibility = View.GONE
+                binding.activityManageAliasSettingsLL.visibility = View.GONE
 
                 // Show no internet animations
-                activity_manage_alias_settings_RL_lottieview.visibility = View.VISIBLE
+                binding.activityManageAliasSettingsRLLottieview.visibility = View.VISIBLE
             }
 
 
