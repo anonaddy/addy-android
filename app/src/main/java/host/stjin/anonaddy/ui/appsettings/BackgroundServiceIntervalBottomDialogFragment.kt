@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
-import kotlinx.android.synthetic.main.bottomsheet_backgroundserviceinterval.view.*
+import host.stjin.anonaddy.databinding.BottomsheetBackgroundserviceintervalBinding
 
 
 class BackgroundServiceIntervalBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
@@ -30,36 +30,38 @@ class BackgroundServiceIntervalBottomDialogFragment : BottomSheetDialogFragment(
         return dialog
     }
 
+    private var _binding: BottomsheetBackgroundserviceintervalBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_backgroundserviceinterval, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetBackgroundserviceintervalBinding.inflate(inflater, container, false)
+        val root = binding.root
         listener = activity as AddBackgroundServiceIntervalBottomDialogListener
 
         val settingsManager = SettingsManager(false, requireContext())
         when (settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)) {
             15 -> {
-                root.bs_backgroundserviceinterval_15.isChecked = true
+                binding.bsBackgroundserviceinterval15.isChecked = true
             }
             30 -> {
-                root.bs_backgroundserviceinterval_30.isChecked = true
+                binding.bsBackgroundserviceinterval30.isChecked = true
             }
             60 -> {
-                root.bs_backgroundserviceinterval_60.isChecked = true
+                binding.bsBackgroundserviceinterval60.isChecked = true
             }
             120 -> {
-                root.bs_backgroundserviceinterval_120.isChecked = true
+                binding.bsBackgroundserviceinterval120.isChecked = true
             }
         }
 
 
-        root.bs_backgroundserviceinterval_set_interval_button.setOnClickListener(this)
+        binding.bsBackgroundserviceintervalSetIntervalButton.setOnClickListener(this)
         return root
 
     }
@@ -77,21 +79,26 @@ class BackgroundServiceIntervalBottomDialogFragment : BottomSheetDialogFragment(
                 R.id.bs_backgroundserviceinterval_set_interval_button -> {
                     val root = view
                     when {
-                        root?.bs_backgroundserviceinterval_15?.isChecked == true -> {
+                        binding.bsBackgroundserviceinterval15.isChecked -> {
                             listener.setInterval(15)
                         }
-                        root?.bs_backgroundserviceinterval_30?.isChecked == true -> {
+                        binding.bsBackgroundserviceinterval30.isChecked -> {
                             listener.setInterval(30)
                         }
-                        root?.bs_backgroundserviceinterval_60?.isChecked == true -> {
+                        binding.bsBackgroundserviceinterval60.isChecked -> {
                             listener.setInterval(60)
                         }
-                        root?.bs_backgroundserviceinterval_120?.isChecked == true -> {
+                        binding.bsBackgroundserviceinterval120.isChecked -> {
                             listener.setInterval(120)
                         }
                     }
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

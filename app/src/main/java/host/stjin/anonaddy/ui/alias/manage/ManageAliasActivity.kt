@@ -11,7 +11,8 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.ViewCompat
+import androidx.core.content.ContextCompat
+import app.futured.donut.DonutSection
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
@@ -74,20 +75,11 @@ class ManageAliasActivity : BaseActivity(),
         if (b?.getString("alias_id") != null) {
             // Intents
             val aliasId = b.getString("alias_id")
-            val aliasForwardCount = b.getInt("alias_forward_count").toFloat()
-            val aliasRepliedSentCount = b.getInt("alias_replied_sent_count").toFloat()
-
             if (aliasId == null) {
                 finish()
                 return
             }
             this.aliasId = aliasId
-
-            // For a smooth overview, require the numbers here.
-            // Charts will be updated in the background
-            setChart(aliasForwardCount, aliasRepliedSentCount)
-            // Finish shared elements transition
-            ViewCompat.setTransitionName(binding.activityManageAliasChart, aliasId)
             setPage()
 
         } else if (intent.action != null) {
@@ -125,31 +117,28 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-    private fun setChart(value1: Float, value2: Float) {
-        // Set the chart to 0/0
+    private fun setChart(forwarded: Float, replied: Float) {
 
-        var shimmer = 0f
-        // If both forwarded and replied are 0, make shimmer 1 to create a gray circle
-        if (value1 == 0f && value2 == 0f) {
-            shimmer = 1f
-        }
-
-        binding.activityManageAliasChart.setDataPoints(
-            floatArrayOf(
-                value1,
-                value2,
-                shimmer
-            )
+        // DONUT
+        val section1 = DonutSection(
+            name = binding.activityManageAliasChart.context.resources.getString(R.string.emails_forwarded),
+            color = ContextCompat.getColor(this, R.color.portalOrange),
+            amount = forwarded
         )
+        val section2 = DonutSection(
+            name = binding.activityManageAliasChart.context.resources.getString(R.string.emails_replied_sent),
+            color = ContextCompat.getColor(this, R.color.portalBlue),
+            amount = replied
+        )
+        binding.activityManageAliasChart.cap = forwarded + replied
+        binding.activityManageAliasChart.submitData(listOf(section2, section1))
+        // DONUT
 
-
-
-        binding.activityManageAliasChart.setCenterColor(R.color.LightDarkMode)
 
         binding.activityManageAliasForwardedCount.visibility = View.VISIBLE
         binding.activityManageAliasRepliesSentCount.visibility = View.VISIBLE
-        binding.activityManageAliasForwardedCount.text = value1.roundToInt().toString()
-        binding.activityManageAliasRepliesSentCount.text = value2.roundToInt().toString()
+        binding.activityManageAliasForwardedCount.text = forwarded.roundToInt().toString()
+        binding.activityManageAliasRepliesSentCount.text = replied.roundToInt().toString()
     }
 
     private fun setOnSwitchChangeListeners() {
@@ -291,11 +280,12 @@ class ManageAliasActivity : BaseActivity(),
 
     //TODO test
     private lateinit var restoreAliasDialog: AlertDialog
-    val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this))
     private fun restoreAlias() {
+        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
+
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(binding.root)
+        builder.setView(anonaddyCustomDialogBinding.root)
         restoreAliasDialog = builder.create()
         restoreAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
@@ -311,7 +301,7 @@ class ManageAliasActivity : BaseActivity(),
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                restoreAliasHttpRequest(aliasId, this@ManageAliasActivity)
+                restoreAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
             }
         }
         anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
@@ -322,12 +312,15 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     //TODO test
+    private lateinit var deleteAliasDialog: AlertDialog
     private fun deleteAlias() {
+        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
         // create an alert builder
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(binding.root)
-        restoreAliasDialog = builder.create()
-        restoreAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        builder.setView(anonaddyCustomDialogBinding.root)
+
+        deleteAliasDialog = builder.create()
+        deleteAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_alias)
         anonaddyCustomDialogBinding.dialogText.text =
@@ -341,21 +334,21 @@ class ManageAliasActivity : BaseActivity(),
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteAliasHttpRequest(aliasId, this@ManageAliasActivity)
+                deleteAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
             }
         }
         anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            restoreAliasDialog.dismiss()
+            deleteAliasDialog.dismiss()
         }
         // create and show the alert dialog
-        restoreAliasDialog.show()
+        deleteAliasDialog.show()
     }
 
     //TODO test
-    private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
+    private suspend fun deleteAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
-                restoreAliasDialog.dismiss()
+                deleteAliasDialog.dismiss()
                 finish()
             } else {
                 anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
@@ -370,7 +363,7 @@ class ManageAliasActivity : BaseActivity(),
         }, id)
     }
 
-    private suspend fun restoreAliasHttpRequest(id: String, context: Context) {
+    private suspend fun restoreAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper.restoreAlias({ result ->
             if (result == "200") {
                 restoreAliasDialog.dismiss()

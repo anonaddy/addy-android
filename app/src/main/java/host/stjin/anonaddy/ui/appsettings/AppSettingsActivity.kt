@@ -294,21 +294,21 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun resetApp() {
         // create an alert builder
-        val binding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this))
+        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(binding.root)
+        builder.setView(anonaddyCustomDialogBinding.root)
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        binding.dialogTitle.text = resources.getString(R.string.reset_app)
-        binding.dialogText.text =
+        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.reset_app)
+        anonaddyCustomDialogBinding.dialogText.text =
             resources.getString(R.string.reset_app_confirmation_desc)
-        binding.dialogPositiveButton.text =
+        anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.reset_app)
-        binding.dialogPositiveButton.setOnClickListener {
+        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
         }
-        binding.dialogNegativeButton.setOnClickListener {
+        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
             dialog.dismiss()
         }
         // create and show the alert dialog

@@ -65,7 +65,7 @@ class EditAliasRecipientsBottomDialogFragment(
             binding.bsEditrecipientsSaveButton.setOnClickListener(this)
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                getAllRecipients(root, requireContext())
+                getAllRecipients(requireContext())
             }
         } else {
             dismiss()
@@ -76,7 +76,7 @@ class EditAliasRecipientsBottomDialogFragment(
 
     }
 
-    private suspend fun getAllRecipients(root: View, context: Context) {
+    private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
 
         val recipientUnderThisAliasList = arrayListOf<String>()
@@ -120,7 +120,7 @@ class EditAliasRecipientsBottomDialogFragment(
         }
     }
 
-    private fun editRecipients(root: View, context: Context) {
+    private fun editRecipients(context: Context) {
         binding.bsEditrecipientsSaveButton.isEnabled = false
         binding.bsEditrecipientsSaveProgressbar.visibility = View.VISIBLE
 
@@ -134,12 +134,11 @@ class EditAliasRecipientsBottomDialogFragment(
 
         // aliasId is never null at this point, hence the !!
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            editRecipientsHttp(root, context, aliasId!!, recipients)
+            editRecipientsHttp(context, aliasId!!, recipients)
         }
     }
 
     private suspend fun editRecipientsHttp(
-        root: View,
         context: Context,
         aliasId: String,
         recipients: ArrayList<String>
@@ -161,7 +160,6 @@ class EditAliasRecipientsBottomDialogFragment(
         if (p0 != null) {
             if (p0.id == R.id.bs_editrecipients_save_button) {
                 editRecipients(
-                    requireView(),
                     requireContext()
                 )
             }

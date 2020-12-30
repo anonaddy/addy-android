@@ -53,12 +53,16 @@
                     android:layout_height="match_parent">
 
 
-                <host.stjin.anonaddy.utils.PieChartView
+                    <app.futured.donut.DonutProgressView
                         android:id="@+id/activity_manage_alias_chart"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:layout_centerInParent="true"
-                        android:transitionName="alias_chart" />
+                        app:donut_animateChanges="true"
+                        app:donut_bgLineColor="@color/shimmerGray"
+                        app:donut_gapAngle="270"
+                        app:donut_gapWidth="20"
+                        app:donut_strokeWidth="16dp" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -225,6 +229,7 @@
                         android:id="@+id/activity_manage_alias_created_at"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        app:sectionRippleEffect="false"
                         app:sectionDescription="@tools:sample/date/ddmmyy"
                         app:sectionStartIcon="@drawable/ic_round_access_time_24"
                         app:sectionTitle="@string/created_at" />
@@ -233,6 +238,7 @@
                         android:id="@+id/activity_manage_alias_updated_at"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        app:sectionRippleEffect="false"
                         app:sectionDescription="@tools:sample/date/ddmmyy"
                         app:sectionStartIcon="@drawable/ic_progress_clock"
                         app:sectionTitle="@string/updated_at" />

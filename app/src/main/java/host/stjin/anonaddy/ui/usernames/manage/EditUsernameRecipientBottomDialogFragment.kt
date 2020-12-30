@@ -12,7 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.bottomsheet_edit_recipient_username.view.*
+import host.stjin.anonaddy.databinding.BottomsheetEditRecipientUsernameBinding
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -40,26 +40,29 @@ class EditUsernameRecipientBottomDialogFragment(
         return dialog
     }
 
+
+    private var _binding: BottomsheetEditRecipientUsernameBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_edit_recipient_username, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetEditRecipientUsernameBinding.inflate(inflater, container, false)
+        val root = binding.root
 
         // Check if usernameId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (usernameId != null) {
             listener = activity as AddEditUsernameRecipientBottomDialogListener
 
             // Set button listeners and current description
-            root.bs_editrecipient_save_button.setOnClickListener(this)
+            binding.bsEditrecipientSaveButton.setOnClickListener(this)
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                getAllRecipients(root, requireContext())
+                getAllRecipients(requireContext())
             }
         } else {
             dismiss()
@@ -67,13 +70,13 @@ class EditUsernameRecipientBottomDialogFragment(
         return root
     }
 
-    private suspend fun getAllRecipients(root: View, context: Context) {
+    private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
 
         networkHelper.getRecipients({ result ->
             if (result != null) {
                 for (recipient in result) {
-                    val chip = Chip(root.bs_editrecipient_chipgroup.context)
+                    val chip = Chip(binding.bsEditrecipientChipgroup.context)
                     chip.text = recipient.email
                     chip.tag = recipient.id
                     chip.isClickable = true
@@ -81,7 +84,7 @@ class EditUsernameRecipientBottomDialogFragment(
 
                     chip.isChecked = defaultRecipient.equals(recipient.email)
 
-                    root.bs_editrecipient_chipgroup.addView(chip)
+                    binding.bsEditrecipientChipgroup.addView(chip)
                 }
             }
         }, true)
@@ -99,26 +102,25 @@ class EditUsernameRecipientBottomDialogFragment(
         }
     }
 
-    private fun editRecipient(root: View, context: Context) {
-        root.bs_editrecipient_save_button.isEnabled = false
-        root.bs_editrecipient_save_progressbar.visibility = View.VISIBLE
+    private fun editRecipient(context: Context) {
+        binding.bsEditrecipientSaveButton.isEnabled = false
+        binding.bsEditrecipientSaveProgressbar.visibility = View.VISIBLE
 
         var recipient = ""
-        val ids: List<Int> = root.bs_editrecipient_chipgroup.checkedChipIds
+        val ids: List<Int> = binding.bsEditrecipientChipgroup.checkedChipIds
         for (id in ids) {
-            val chip: Chip = root.bs_editrecipient_chipgroup.findViewById(id)
+            val chip: Chip = binding.bsEditrecipientChipgroup.findViewById(id)
             recipient = chip.tag.toString()
         }
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             // usernameId is never null at this point, hence the !!
-            editRecipientHttp(root, context, usernameId!!, recipient)
+            editRecipientHttp(context, usernameId!!, recipient)
         }
     }
 
     private suspend fun editRecipientHttp(
-        root: View,
         context: Context,
         aliasId: String,
         recipient: String
@@ -128,9 +130,9 @@ class EditUsernameRecipientBottomDialogFragment(
             if (result == "200") {
                 listener.recipientEdited()
             } else {
-                root.bs_editrecipient_save_button.isEnabled = true
-                root.bs_editrecipient_save_progressbar.visibility = View.INVISIBLE
-                root.bs_editrecipient_til.error =
+                binding.bsEditrecipientSaveButton.isEnabled = true
+                binding.bsEditrecipientSaveProgressbar.visibility = View.INVISIBLE
+                binding.bsEditrecipientTil.error =
                     context.resources.getString(R.string.error_edit_recipient) + "\n" + result
             }
         }, aliasId, recipient)
@@ -140,10 +142,14 @@ class EditUsernameRecipientBottomDialogFragment(
         if (p0 != null) {
             if (p0.id == R.id.bs_editrecipient_save_button) {
                 editRecipient(
-                    requireView(),
                     requireContext()
                 )
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

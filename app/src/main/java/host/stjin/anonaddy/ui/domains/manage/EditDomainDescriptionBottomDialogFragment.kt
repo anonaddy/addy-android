@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.bottomsheet_edit_description_domain.view.*
+import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionDomainBinding
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,24 +37,26 @@ class EditDomainDescriptionBottomDialogFragment(
         return dialog
     }
 
+    private var _binding: BottomsheetEditDescriptionDomainBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_edit_description_domain, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetEditDescriptionDomainBinding.inflate(inflater, container, false)
+        val root = binding.root
 
         // Check if domainId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (domainId != null) {
             listener = activity as AddEditDomainDescriptionBottomDialogListener
 
             // Set button listeners and current description
-            root.bs_editdomain_domain_save_button.setOnClickListener(this)
-            root.bs_editdomain_domain_desc_tiet.setText(description)
+            binding.bsEditdomainDomainSaveButton.setOnClickListener(this)
+            binding.bsEditdomainDomainDescTiet.setText(description)
         } else {
             dismiss()
         }
@@ -71,26 +73,26 @@ class EditDomainDescriptionBottomDialogFragment(
         }
     }
 
-    private fun verifyKey(root: View, context: Context) {
-        val description = root.bs_editdomain_domain_desc_tiet.text.toString()
-        root.bs_editdomain_domain_save_button.isEnabled = false
-        root.bs_editdomain_domain_save_progressbar.visibility = View.VISIBLE
+    private fun verifyKey(context: Context) {
+        val description = binding.bsEditdomainDomainDescTiet.text.toString()
+        binding.bsEditdomainDomainSaveButton.isEnabled = false
+        binding.bsEditdomainDomainSaveProgressbar.visibility = View.VISIBLE
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            editDescriptionHttp(root, context, description)
+            editDescriptionHttp(context, description)
         }
     }
 
-    private suspend fun editDescriptionHttp(root: View, context: Context, description: String) {
+    private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
         networkHelper.updateDescriptionSpecificDomain({ result ->
             if (result == "200") {
                 listener.descriptionEdited(description)
             } else {
-                root.bs_editdomain_domain_save_button.isEnabled = true
-                root.bs_editdomain_domain_save_progressbar.visibility = View.INVISIBLE
-                root.bs_editdomain_domain_desc_til.error =
+                binding.bsEditdomainDomainSaveButton.isEnabled = true
+                binding.bsEditdomainDomainSaveProgressbar.visibility = View.INVISIBLE
+                binding.bsEditdomainDomainDescTil.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }
             // domainId is never null at this point, hence the !!
@@ -101,10 +103,14 @@ class EditDomainDescriptionBottomDialogFragment(
         if (p0 != null) {
             if (p0.id == R.id.bs_editdomain_domain_save_button) {
                 verifyKey(
-                    requireView(),
                     requireContext()
                 )
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

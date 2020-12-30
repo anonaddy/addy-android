@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
-import kotlinx.android.synthetic.main.bottomsheet_darkmode.view.*
+import host.stjin.anonaddy.databinding.BottomsheetDarkmodeBinding
 
 
 class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
@@ -26,41 +26,45 @@ class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         fun onDarkModeAutomatic()
     }
 
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), theme)
         dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         return dialog
     }
 
+    private var _binding: BottomsheetDarkmodeBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_darkmode, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetDarkmodeBinding.inflate(inflater, container, false)
+        val root = binding.root
+
         listener = activity as AddDarkmodeBottomDialogListener
 
         val settingsManager = SettingsManager(false, requireContext())
         when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
             0 -> {
-                root.bs_darkmode_off.isChecked = true
+                binding.bsDarkmodeOff.isChecked = true
             }
             1 -> {
-                root.bs_darkmode_on.isChecked = true
+                binding.bsDarkmodeOn.isChecked = true
             }
             -1 -> {
-                root.bs_darkmode_automatic.isChecked = true
+                binding.bsDarkmodeAutomatic.isChecked = true
             }
         }
 
         // 2. Setup a callback when a theme is selected
-        root.bs_darkmode_off.setOnClickListener(this)
-        root.bs_darkmode_on.setOnClickListener(this)
-        root.bs_darkmode_automatic.setOnClickListener(this)
+        binding.bsDarkmodeOff.setOnClickListener(this)
+        binding.bsDarkmodeOn.setOnClickListener(this)
+        binding.bsDarkmodeAutomatic.setOnClickListener(this)
         return root
 
     }
@@ -86,5 +90,10 @@ class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

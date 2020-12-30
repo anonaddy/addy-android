@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,13 +22,13 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
+import host.stjin.anonaddy.databinding.FragmentHomeBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
-import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -46,17 +45,23 @@ class HomeFragment : Fragment() {
         fun newInstance() = HomeFragment()
     }
 
+    private var _binding: FragmentHomeBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        val root = binding.root
         networkHelper = NetworkHelper(requireContext())
 
         // load values from local to make the app look quick and snappy!
-        setOnClickListeners(root)
-        getStatistics(root)
+        setOnClickListeners()
+        getStatistics()
 
         // Called on OnResume(), prevent double calls
         //getDataFromWeb(root, requireContext())
@@ -64,38 +69,38 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun getDataFromWeb(root: View, context: Context) {
-        root.home_statistics_LL1.visibility = View.VISIBLE
-        root.home_statistics_RL_lottieview.visibility = View.GONE
+    private fun getDataFromWeb(context: Context) {
+        binding.homeStatisticsLL1.visibility = View.VISIBLE
+        binding.homeStatisticsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getMostActiveAliases(root)
-            getWebStatistics(root, context)
+            getMostActiveAliases()
+            getWebStatistics(context)
         }
     }
 
     // Update information when coming back, such as aliases and statistics
     override fun onResume() {
         super.onResume()
-        getDataFromWeb(requireView(), requireContext())
+        getDataFromWeb(requireContext())
     }
 
-    private fun setOnClickListeners(root: View) {
-        root.home_statistics_dismiss.setOnClickListener {
-            root.home_statistics_LL.visibility = View.GONE
+    private fun setOnClickListeners() {
+        binding.homeStatisticsDismiss.setOnClickListener {
+            binding.homeStatisticsLL.visibility = View.GONE
         }
 
-        root.home_most_active_aliases_view_more.setOnClickListener {
+        binding.homeMostActiveAliasesViewMore.setOnClickListener {
             (activity as MainActivity).switchFragments(R.id.navigation_alias)
         }
     }
 
-    private suspend fun getWebStatistics(root: View, context: Context) {
+    private suspend fun getWebStatistics(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 User.userResource = user
-                getStatistics(root)
+                getStatistics()
             } else {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
@@ -119,8 +124,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private suspend fun getMostActiveAliases(root: View) {
-        root.home_most_active_aliases_recyclerview.apply {
+    private suspend fun getMostActiveAliases() {
+        binding.homeMostActiveAliasesRecyclerview.apply {
 
             if (itemDecorationCount > 0) {
                 addItemDecoration(
@@ -139,7 +144,7 @@ class HomeFragment : Fragment() {
                 shouldAnimateRecyclerview = false
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                root.home_most_active_aliases_recyclerview.layoutAnimation = animation
+                binding.homeMostActiveAliasesRecyclerview.layoutAnimation = animation
             }
 
 
@@ -147,9 +152,9 @@ class HomeFragment : Fragment() {
 
                 if (list != null) {
                     if (list.size > 0) {
-                        root.home_no_aliases.visibility = View.GONE
+                        binding.homeNoAliases.visibility = View.GONE
                     } else {
-                        root.home_no_aliases.visibility = View.VISIBLE
+                        binding.homeNoAliases.visibility = View.VISIBLE
                     }
 
                     // Sort by emails forwarded
@@ -163,17 +168,7 @@ class HomeFragment : Fragment() {
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
                             intent.putExtra("alias_id", aliasList[pos].id)
-                            intent.putExtra("alias_forward_count", aliasList[pos].emails_forwarded)
-                            intent.putExtra("alias_replied_sent_count", aliasList[pos].emails_replied)
-
-                            val options: ActivityOptionsCompat =
-                                ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                    requireActivity(),
-                                    aView,
-                                    aliasList[pos].id
-                                )
-
-                            startActivity(intent, options.toBundle())
+                            startActivity(intent)
                         }
 
                         override fun onClickCopy(pos: Int, aView: View) {
@@ -198,10 +193,10 @@ class HomeFragment : Fragment() {
 
                     })
                     adapter = aliasAdapter
-                    root.home_most_active_aliases_recyclerview.hideShimmerAdapter()
+                    binding.homeMostActiveAliasesRecyclerview.hideShimmerAdapter()
                 } else {
-                    root.home_statistics_LL1.visibility = View.GONE
-                    root.home_statistics_RL_lottieview.visibility = View.VISIBLE
+                    binding.homeStatisticsLL1.visibility = View.GONE
+                    binding.homeStatisticsRLLottieview.visibility = View.VISIBLE
                 }
             }, activeOnly = true, includeDeleted = false)
 
@@ -210,23 +205,23 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun getStatistics(root: View) {
+    private fun getStatistics() {
         //  / 1024 / 1024 because api returns bytes
         val currMonthlyBandwidth = User.userResource.bandwidth.toDouble() / 1024 / 1024
         val maxMonthlyBandwidth = User.userResource.bandwidth_limit / 1024 / 1024
 
-        setMonthlyBandwidthStatistics(root, currMonthlyBandwidth, maxMonthlyBandwidth)
-        setAliasesStatistics(root, User.userResource.active_shared_domain_alias_count, User.userResource.active_shared_domain_alias_limit)
-        setRecipientStatistics(root, User.userResource.recipient_count, User.userResource.recipient_limit)
+        setMonthlyBandwidthStatistics(currMonthlyBandwidth, maxMonthlyBandwidth)
+        setAliasesStatistics(User.userResource.active_shared_domain_alias_count, User.userResource.active_shared_domain_alias_limit)
+        setRecipientStatistics(User.userResource.recipient_count, User.userResource.recipient_limit)
     }
 
-    private fun setAliasesStatistics(root: View, count: Int, maxAliases: Int) {
-        root.home_statistics_aliases_progress.max = maxAliases * 100
-        root.home_statistics_aliases_current.text = count.toString()
-        root.home_statistics_aliases_max.text = if (maxAliases == 0) "∞" else maxAliases.toString()
+    private fun setAliasesStatistics(count: Int, maxAliases: Int) {
+        binding.homeStatisticsAliasesProgress.max = maxAliases * 100
+        binding.homeStatisticsAliasesCurrent.text = count.toString()
+        binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
         Handler(Looper.getMainLooper()).postDelayed({
             ObjectAnimator.ofInt(
-                root.home_statistics_aliases_progress,
+                binding.homeStatisticsAliasesProgress,
                 "progress",
                 count * 100
             )
@@ -236,19 +231,18 @@ class HomeFragment : Fragment() {
     }
 
     private fun setMonthlyBandwidthStatistics(
-        root: View,
         currMonthlyBandwidth: Double,
         maxMonthlyBandwidth: Int
     ) {
-        root.home_statistics_monthly_bandwidth_progress.max =
+        binding.homeStatisticsMonthlyBandwidthProgress.max =
             if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
 
 
-        root.home_statistics_monthly_bandwidth_current.text =
+        binding.homeStatisticsMonthlyBandwidthCurrent.text =
             this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
 
 
-        root.home_statistics_monthly_bandwidth_max.text =
+        binding.homeStatisticsMonthlyBandwidthMax.text =
             if (maxMonthlyBandwidth == 0) this.resources.getString(R.string._sMB, "∞") else this.resources.getString(
                 R.string._sMB,
                 maxMonthlyBandwidth.toString()
@@ -256,7 +250,7 @@ class HomeFragment : Fragment() {
 
 
         ObjectAnimator.ofInt(
-            root.home_statistics_monthly_bandwidth_progress,
+            binding.homeStatisticsMonthlyBandwidthProgress,
             "progress",
             currMonthlyBandwidth.roundToInt() * 100
         )
@@ -265,18 +259,23 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun setRecipientStatistics(root: View, currRecipients: Int, maxRecipient: Int) {
-        root.home_statistics_recipients_progress.max =
+    private fun setRecipientStatistics(currRecipients: Int, maxRecipient: Int) {
+        binding.homeStatisticsRecipientsProgress.max =
             maxRecipient * 100
-        root.home_statistics_recipients_current.text = currRecipients.toString()
-        root.home_statistics_recipients_max.text =
+        binding.homeStatisticsRecipientsCurrent.text = currRecipients.toString()
+        binding.homeStatisticsRecipientsMax.text =
             if (maxRecipient == 0) "∞" else maxRecipient.toString()
         ObjectAnimator.ofInt(
-            root.home_statistics_recipients_progress,
+            binding.homeStatisticsRecipientsProgress,
             "progress",
             currRecipients * 100
         )
             .setDuration(300)
             .start()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

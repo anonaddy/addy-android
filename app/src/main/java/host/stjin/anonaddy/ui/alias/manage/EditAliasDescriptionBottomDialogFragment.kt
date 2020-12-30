@@ -75,18 +75,18 @@ class EditAliasDescriptionBottomDialogFragment(
         }
     }
 
-    private fun verifyKey(root: View, context: Context) {
+    private fun verifyKey(context: Context) {
         val description = binding.bsEditaliasAliasDescTiet.text.toString()
         binding.bsEditaliasAliasSaveButton.isEnabled = false
         binding.bsEditaliasAliasSaveProgressbar.visibility = View.VISIBLE
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            editDescriptionHttp(root, context, description)
+            editDescriptionHttp(context, description)
         }
     }
 
-    private suspend fun editDescriptionHttp(root: View, context: Context, description: String) {
+    private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
         networkHelper.updateDescriptionSpecificAlias({ result ->
             if (result == "200") {
@@ -105,7 +105,6 @@ class EditAliasDescriptionBottomDialogFragment(
         if (p0 != null) {
             if (p0.id == R.id.bs_editalias_alias_save_button) {
                 verifyKey(
-                    requireView(),
                     requireContext()
                 )
             }

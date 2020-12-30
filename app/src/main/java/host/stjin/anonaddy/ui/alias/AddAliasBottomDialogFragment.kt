@@ -59,21 +59,21 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         binding.bsAddaliasDomainHelpTextview.text = requireContext().resources.getString(R.string.add_alias_desc, User.userResource.username)
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            fillSpinners(root, requireContext())
+            fillSpinners(requireContext())
         }
 
         binding.bsAddaliasAliasAddAliasButton.setOnClickListener(this)
-        spinnerChangeListener(root, requireContext())
+        spinnerChangeListener(requireContext())
         return root
     }
 
     /*
     the custom format is not available for shared domains
      */
-    private fun spinnerChangeListener(root: View, context: Context) {
+    private fun spinnerChangeListener(context: Context) {
         binding.bsAddaliasAliasFormatMact.setOnItemClickListener { _, _, _, _ ->
             // Since the alias format changed, check if custom is available
-            checkIfCustomIsAvailable(root, context)
+            checkIfCustomIsAvailable(context)
             binding.bsAddaliasAliasFormatTil.error = null
         }
 
@@ -82,7 +82,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         }
     }
 
-    private fun checkIfCustomIsAvailable(root: View, context: Context) {
+    private fun checkIfCustomIsAvailable(context: Context) {
         // If the selected domain format is custom
         if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_custom)) {
             binding.bsAddaliasAliasLocalPartTil.visibility = View.VISIBLE
@@ -94,7 +94,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
 
     private var DOMAINS: List<String> = listOf()
     private var FORMATS: List<String> = listOf()
-    private suspend fun fillSpinners(root: View, context: Context) {
+    private suspend fun fillSpinners(context: Context) {
         val networkHelper = NetworkHelper(context)
         networkHelper.getDomainOptions { result ->
 
@@ -135,7 +135,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
             }
 
             // Since the alias format has been set, check if custom is available
-            checkIfCustomIsAvailable(root, context)
+            checkIfCustomIsAvailable(context)
         }
 
     }
@@ -146,7 +146,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         }
     }
 
-    private fun addAlias(root: View, context: Context) {
+    private fun addAlias(context: Context) {
 
         if (!DOMAINS.contains(binding.bsAddaliasDomainMact.text.toString())) {
             binding.bsAddaliasDomainTil.error =
@@ -200,12 +200,11 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
             ).indexOf(binding.bsAddaliasAliasFormatMact.text.toString())]
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            addAliasToAccount(root, context, domain, description, format, localPart)
+            addAliasToAccount(context, domain, description, format, localPart)
         }
     }
 
     private suspend fun addAliasToAccount(
-        root: View,
         context: Context,
         domain: String,
         description: String,
@@ -228,7 +227,7 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_addalias_alias_add_alias_button) {
-                addAlias(requireView(), requireContext())
+                addAlias(requireContext())
             }
         }
     }

@@ -6,22 +6,25 @@ import android.widget.ArrayAdapter
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.ActivityLogViewerBinding
 import host.stjin.anonaddy.utils.LoggingHelper
-import kotlinx.android.synthetic.main.activity_log_viewer.*
 
 class LogViewerActivity : BaseActivity() {
 
     private lateinit var loggingHelper: LoggingHelper
+    private lateinit var binding: ActivityLogViewerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_log_viewer)
+        binding = ActivityLogViewerBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        setupToolbar(appsettings_logviewer_toolbar)
+        setupToolbar(binding.appsettingsLogviewerToolbar)
         loggingHelper = LoggingHelper(this)
         loadLogs()
 
-        appsettings_logviewer_efab.setOnClickListener {
+        binding.appsettingsLogviewerEfab.setOnClickListener {
             Snackbar.make(
                 findViewById(R.id.appsettings_logviewer_RL),
                 resources.getString(R.string.logs_cleared),
@@ -36,9 +39,9 @@ class LogViewerActivity : BaseActivity() {
         val logs = loggingHelper.getLogs()
 
         if (logs.size > 0) {
-            appsettings_logviewer_efab.show()
+            binding.appsettingsLogviewerEfab.show()
         } else {
-            appsettings_logviewer_efab.hide()
+            binding.appsettingsLogviewerEfab.hide()
         }
 
         val listOfLogs = arrayListOf<String>()
@@ -47,9 +50,9 @@ class LogViewerActivity : BaseActivity() {
             listOfLogs.add(log)
         }
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listOfLogs)
-        appsettings_logviewer_listview.adapter = adapter
+        binding.appsettingsLogviewerListview.adapter = adapter
 
-        appsettings_logviewer_listview.setOnItemClickListener { _, _, i, _ ->
+        binding.appsettingsLogviewerListview.setOnItemClickListener { _, _, i, _ ->
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TEXT, listOfLogs[i])

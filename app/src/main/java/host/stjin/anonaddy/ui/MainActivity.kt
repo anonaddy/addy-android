@@ -43,10 +43,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         RecipientsFragment.newInstance()
     )
 
-    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             isAuthenticated { isAuthenticated ->
@@ -58,10 +60,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
+    private lateinit var binding: ActivityMainBinding
     private fun loadMainActivity() {
-        binding = inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
         showChangeLog()
 
         binding.activityMainViewpager.adapter = MainViewpagerAdapter(this, fragmentList)

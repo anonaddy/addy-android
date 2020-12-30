@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.bottomsheet_edit_description_username.view.*
+import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionUsernameBinding
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,23 +37,27 @@ class EditUsernameDescriptionBottomDialogFragment(
         return dialog
     }
 
+
+    private var _binding: BottomsheetEditDescriptionUsernameBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_edit_description_username, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetEditDescriptionUsernameBinding.inflate(inflater, container, false)
+        val root = binding.root
+
         // Check if usernameId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (usernameId != null) {
             listener = activity as AddEditUsernameDescriptionBottomDialogListener
 
             // Set button listeners and current description
-            root.bs_editusername_username_save_button.setOnClickListener(this)
-            root.bs_editusername_username_desc_tiet.setText(description)
+            binding.bsEditusernameUsernameSaveButton.setOnClickListener(this)
+            binding.bsEditusernameUsernameDescTiet.setText(description)
         } else {
             dismiss()
         }
@@ -71,26 +75,26 @@ class EditUsernameDescriptionBottomDialogFragment(
         }
     }
 
-    private fun verifyKey(root: View, context: Context) {
-        val description = root.bs_editusername_username_desc_tiet.text.toString()
-        root.bs_editusername_username_save_button.isEnabled = false
-        root.bs_editusername_username_save_progressbar.visibility = View.VISIBLE
+    private fun verifyKey(context: Context) {
+        val description = binding.bsEditusernameUsernameDescTiet.text.toString()
+        binding.bsEditusernameUsernameSaveButton.isEnabled = false
+        binding.bsEditusernameUsernameSaveProgressbar.visibility = View.VISIBLE
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            editDescriptionHttp(root, context, description)
+            editDescriptionHttp(context, description)
         }
     }
 
-    private suspend fun editDescriptionHttp(root: View, context: Context, description: String) {
+    private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
         networkHelper.updateDescriptionSpecificUsername({ result ->
             if (result == "200") {
                 listener.descriptionEdited(description)
             } else {
-                root.bs_editusername_username_save_button.isEnabled = true
-                root.bs_editusername_username_save_progressbar.visibility = View.INVISIBLE
-                root.bs_editusername_username_desc_til.error =
+                binding.bsEditusernameUsernameSaveButton.isEnabled = true
+                binding.bsEditusernameUsernameSaveProgressbar.visibility = View.INVISIBLE
+                binding.bsEditusernameUsernameDescTil.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }
             // usernameId is never null at this point, hence the !!
@@ -101,10 +105,14 @@ class EditUsernameDescriptionBottomDialogFragment(
         if (p0 != null) {
             if (p0.id == R.id.bs_editusername_username_save_button) {
                 verifyKey(
-                    requireView(),
                     requireContext()
                 )
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.ViewCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import app.futured.donut.DonutProgressView
+import app.futured.donut.DonutSection
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.utils.DateTimeUtils
-import host.stjin.anonaddy.utils.PieChartView
 
 
 class AliasAdapter(private val listWithAliases: List<Aliases>, private val showStatus: Boolean) :
@@ -64,25 +66,25 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
 
         val forwarded = listWithAliases[position].emails_forwarded.toFloat()
         val replied = listWithAliases[position].emails_replied.toFloat()
-        // The shimmer will be used for no-use effect
-        var shimmer = 0f
-        // If both forwarded and replied are 0, make shimmer 1 to create a gray circle
-        if (forwarded == 0f && replied == 0f) {
-            shimmer = 1f
-        }
 
-        holder.mChart.setDataPoints(
-            floatArrayOf(
-                forwarded,
-                replied,
-                shimmer
-            )
+        // DONUT
+        val section1 = DonutSection(
+            name = holder.mChart.context.resources.getString(R.string.emails_forwarded),
+            color = ContextCompat.getColor(holder.mChart.context, R.color.portalOrange),
+            amount = forwarded
         )
+        val section2 = DonutSection(
+            name = holder.mChart.context.resources.getString(R.string.emails_replied_sent),
+            color = ContextCompat.getColor(holder.mChart.context, R.color.portalBlue),
+            amount = replied
+        )
+        holder.mChart.cap = forwarded + replied
+        holder.mChart.submitData(listOf(section2, section1))
+        // DONUT
 
-
-        holder.mChart.setCenterColor(R.color.LightDarkMode)
-        ViewCompat.setTransitionName(holder.mChart, listWithAliases[position].id)
-
+        val aliasWatcher = AliasWatcher(holder.mWatchedTextView.context)
+        holder.mWatchedTextView.visibility =
+            if (aliasWatcher.getAliasesToWatch()?.contains(listWithAliases[position].id) == true) View.VISIBLE else View.GONE
 
         if (showStatus) {
             holder.mStatus.visibility = View.VISIBLE
@@ -124,8 +126,9 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
-        var mChart: PieChartView = view.findViewById(R.id.aliases_recyclerview_list_chart)
+        var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
         var mStatus: TextView = view.findViewById(R.id.aliases_recyclerview_list_status)
+        var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
         var mCopy: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
 
 

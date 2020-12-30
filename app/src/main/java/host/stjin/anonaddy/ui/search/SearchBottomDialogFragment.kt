@@ -17,9 +17,8 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.SearchAdapter
+import host.stjin.anonaddy.databinding.BottomsheetSearchBinding
 import host.stjin.anonaddy.models.*
-import kotlinx.android.synthetic.main.bottomsheet_search.*
-import kotlinx.android.synthetic.main.bottomsheet_search.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -45,49 +44,53 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         )
     }
 
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), theme)
         dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         return dialog
     }
 
+
+    private var _binding: BottomsheetSearchBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_search, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetSearchBinding.inflate(inflater, container, false)
+        val root = binding.root
 
         settingsManager = SettingsManager(true, requireContext())
         listener = activity as AddSearchBottomDialogListener
         networkHelper = NetworkHelper(requireContext())
 
-        root.bs_search_clear_recent.setOnClickListener(this)
+        binding.bsSearchClearRecent.setOnClickListener(this)
         // Setup a callback when the "Done" button is pressed on keyboard
-        root.bs_search_term_tiet.setOnEditorActionListener { _, actionId, event ->
+        binding.bsSearchTermTiet.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
-                searchForTerm(root, requireContext())
+                searchForTerm(requireContext())
             }
             false
         }
 
-        getRecentSearchResults(root)
+        getRecentSearchResults()
 
         return root
 
     }
 
-    private fun getRecentSearchResults(root: View) {
+    private fun getRecentSearchResults() {
         val recentSearchesSet = settingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
 
         val recentSearches: ArrayList<String> = ArrayList()
         recentSearchesSet?.let { recentSearches.addAll(it) }
 
-        root.bs_search_recyclerview.apply {
+        binding.bsSearchRecyclerview.apply {
 
             if (itemDecorationCount > 0) {
                 addItemDecoration(
@@ -104,13 +107,13 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             recipientAdapter.setClickListener(object : SearchAdapter.ClickListener {
 
                 override fun onClickSearchResult(pos: Int, aView: View) {
-                    root.bs_search_term_tiet.setText(recentSearches[pos])
-                    searchForTerm(root, requireContext())
+                    binding.bsSearchTermTiet.setText(recentSearches[pos])
+                    searchForTerm(requireContext())
                 }
 
             })
             adapter = recipientAdapter
-            root.bs_search_recyclerview.hideShimmerAdapter()
+            binding.bsSearchRecyclerview.hideShimmerAdapter()
         }
     }
 
@@ -121,11 +124,11 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         }
     }
 
-    private fun searchForTerm(root: View, context: Context) {
+    private fun searchForTerm(context: Context) {
         // Set error to null if domain and alias is valid
-        root.bs_search_term_til.error = null
-        root.bs_search_term_til.isEnabled = false
-        root.bs_search_title.text = context.resources.getString(R.string.searching)
+        binding.bsSearchTermTil.error = null
+        binding.bsSearchTermTil.isEnabled = false
+        binding.bsSearchTitle.text = context.resources.getString(R.string.searching)
 
         // Add search to recent searches
         val recentSearchesSet = settingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
@@ -133,12 +136,12 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         val recentSearches: ArrayList<String> = ArrayList()
         recentSearchesSet?.let { recentSearches.addAll(it) }
         // Add search to list
-        recentSearches.add(bs_search_term_tiet.text.toString())
+        recentSearches.add(binding.bsSearchTermTiet.text.toString())
         // Grab last 5 and put them back
         settingsManager.putStringSet(SettingsManager.PREFS.RECENT_SEARCHES, recentSearches.takeLast(5).toMutableSet())
 
 
-        getAndReturnList(root, context)
+        getAndReturnList(context)
     }
 
     var aliases: ArrayList<Aliases>? = null
@@ -150,72 +153,71 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
     private var sourcesSearched = 0
 
 
-    private fun getAndReturnList(root: View, context: Context) {
-        if (bs_search_chip_aliases.isChecked) {
+    private fun getAndReturnList(context: Context) {
+        if (binding.bsSearchChipAliases.isChecked) {
             sourcesToSearch++
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getAliases({ aliaslist ->
                     aliases = aliaslist
                     sourcesSearched++
-                    performSearch(root, context)
+                    performSearch(context)
                 }, activeOnly = false, includeDeleted = true)
             }
         }
 
-        if (bs_search_chip_recipient.isChecked) {
+        if (binding.bsSearchChipRecipient.isChecked) {
             sourcesToSearch++
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getRecipients({ recipientlist ->
                     recipients = recipientlist
                     sourcesSearched++
-                    performSearch(root, context)
+                    performSearch(context)
                 }, false)
             }
         }
 
-        if (bs_search_chip_domains.isChecked) {
+        if (binding.bsSearchChipDomains.isChecked) {
             sourcesToSearch++
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getAllDomains { domainlist ->
                     domains = domainlist
                     sourcesSearched++
-                    performSearch(root, context)
+                    performSearch(context)
                 }
             }
         }
 
-        if (bs_search_chip_usernames.isChecked) {
+        if (binding.bsSearchChipUsernames.isChecked) {
             sourcesToSearch++
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getAllUsernames { usernamelist ->
                     usernames = usernamelist
                     sourcesSearched++
-                    performSearch(root, context)
+                    performSearch(context)
                 }
             }
         }
 
 
-
-        if (bs_search_chip_rules.isChecked) {
+        if (binding.bsSearchChipRules.isChecked) {
             sourcesToSearch++
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 networkHelper.getAllRules { rulesList ->
                     rules = rulesList
                     sourcesSearched++
-                    performSearch(root, context)
+                    performSearch(context)
                 }
             }
         }
     }
 
 
-    private fun performSearch(root: View, context: Context) {
+    private fun performSearch(context: Context) {
         if (sourcesSearched >= sourcesToSearch) {
             val filteredAliases = ArrayList<Aliases>()
             val filteredRecipients = ArrayList<Recipients>()
@@ -226,8 +228,8 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (aliases != null) {
                 for (alias in aliases!!) {
                     if (
-                        alias.email.toLowerCase().contains(bs_search_term_tiet.text.toString().toLowerCase()) ||
-                        alias.description?.toLowerCase()?.contains(bs_search_term_tiet.text.toString().toLowerCase()) == true
+                        alias.email.toLowerCase().contains(binding.bsSearchTermTiet.text.toString().toLowerCase()) ||
+                        alias.description?.toLowerCase()?.contains(binding.bsSearchTermTiet.text.toString().toLowerCase()) == true
                     ) {
                         filteredAliases.add(alias)
                     }
@@ -237,7 +239,7 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (recipients != null) {
                 for (recipient in recipients!!) {
                     if (
-                        recipient.email.toLowerCase(Locale.ROOT).contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT))) {
+                        recipient.email.toLowerCase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT))) {
                         filteredRecipients.add(recipient)
                     }
                 }
@@ -247,8 +249,9 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (domains != null) {
                 for (domain in domains!!) {
                     if (
-                        domain.domain.toLowerCase(Locale.ROOT).contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT)) ||
-                        domain.description?.toLowerCase(Locale.ROOT)?.contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT)) == true
+                        domain.domain.toLowerCase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT)) ||
+                        domain.description?.toLowerCase(Locale.ROOT)
+                            ?.contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT)) == true
                     ) {
                         filteredDomains.add(domain)
                     }
@@ -259,8 +262,9 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (usernames != null) {
                 for (username in usernames!!) {
                     if (
-                        username.username.toLowerCase(Locale.ROOT).contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT)) ||
-                        username.description?.toLowerCase(Locale.ROOT)?.contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT)) == true
+                        username.username.toLowerCase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT)) ||
+                        username.description?.toLowerCase(Locale.ROOT)
+                            ?.contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT)) == true
                     ) {
                         filteredUsernames.add(username)
                     }
@@ -270,16 +274,16 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (rules != null) {
                 for (rule in rules!!) {
                     if (
-                        rule.name.toLowerCase(Locale.ROOT).contains(bs_search_term_tiet.text.toString().toLowerCase(Locale.ROOT))) {
+                        rule.name.toLowerCase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT))) {
                         filteredRules.add(rule)
                     }
                 }
             }
 
             if (filteredAliases.size == 0 && filteredDomains.size == 0 && filteredRecipients.size == 0 && filteredUsernames.size == 0 && filteredRules.size == 0) {
-                root.bs_search_title.text = context.resources.getString(R.string.search)
-                root.bs_search_term_til.isEnabled = true
-                root.bs_search_term_til.error =
+                binding.bsSearchTitle.text = context.resources.getString(R.string.search)
+                binding.bsSearchTermTil.isEnabled = true
+                binding.bsSearchTermTil.error =
                     context.resources.getString(R.string.nothing_found)
             } else {
                 listener.onSearch(filteredAliases, filteredRecipients, filteredDomains, filteredUsernames, filteredRules)
@@ -291,8 +295,13 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         if (p0 != null) {
             if (p0.id == R.id.bs_search_clear_recent) {
                 settingsManager.removeSetting(SettingsManager.PREFS.RECENT_SEARCHES)
-                getRecentSearchResults(requireView())
+                getRecentSearchResults()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

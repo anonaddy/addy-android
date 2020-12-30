@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
@@ -16,12 +17,12 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.DomainAdapter
+import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
+import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
-import kotlinx.android.synthetic.main.activity_domain_settings.*
-import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -35,10 +36,15 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
     private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
 
+    private lateinit var binding: ActivityDomainSettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_domain_settings)
-        setupToolbar(activity_domain_settings_toolbar)
+        binding = ActivityDomainSettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        setupToolbar(binding.activityDomainSettingsToolbar)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -52,7 +58,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private fun setOnClickListener() {
-        activity_domain_settings_add_domain.setOnClickListener {
+        binding.activityDomainSettingsAddDomain.setOnClickListener {
             if (!addDomainFragment.isAdded) {
                 addDomainFragment.show(
                     supportFragmentManager,
@@ -63,8 +69,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private fun getDataFromWeb() {
-        activity_domain_settings_LL1.visibility = View.VISIBLE
-        activity_domain_settings_RL_lottieview.visibility = View.GONE
+        binding.activityDomainSettingsLL1.visibility = View.VISIBLE
+        binding.activityDomainSettingsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -81,7 +87,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             } else {
                 val snackbar =
                     Snackbar.make(
-                        activity_domain_settings_LL,
+                        binding.activityDomainSettingsLL,
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         Snackbar.LENGTH_SHORT
                     )
@@ -98,19 +104,19 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private fun setStats() {
-        activity_domain_settings_RL_count_text.text = resources.getString(
+        binding.activityDomainSettingsRLCountText.text = resources.getString(
             R.string.you_ve_used_d_out_of_d_active_domains,
             User.userResource.active_domain_count,
             User.userResource.active_domain_limit
         )
 
-        activity_domain_settings_add_domain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
+        binding.activityDomainSettingsAddDomain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
 
     }
 
 
     private suspend fun getAllDomains() {
-        activity_domain_settings_all_domains_recyclerview.apply {
+        binding.activityDomainSettingsAllDomainsRecyclerview.apply {
 
             if (itemDecorationCount > 0) {
                 addItemDecoration(
@@ -129,7 +135,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 shouldAnimateRecyclerview = false
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                activity_domain_settings_all_domains_recyclerview.layoutAnimation = animation
+                binding.activityDomainSettingsAllDomainsRecyclerview.layoutAnimation = animation
             }
 
 
@@ -140,9 +146,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 if (list != null) {
 
                     if (list.size > 0) {
-                        activity_domain_settings_no_domains.visibility = View.GONE
+                        binding.activityDomainSettingsNoDomains.visibility = View.GONE
                     } else {
-                        activity_domain_settings_no_domains.visibility = View.VISIBLE
+                        binding.activityDomainSettingsNoDomains.visibility = View.VISIBLE
                     }
 
                     val domainsAdapter = DomainAdapter(list)
@@ -161,10 +167,10 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
                     })
                     adapter = domainsAdapter
-                    activity_domain_settings_all_domains_recyclerview.hideShimmerAdapter()
+                    binding.activityDomainSettingsAllDomainsRecyclerview.hideShimmerAdapter()
                 } else {
-                    activity_domain_settings_LL1.visibility = View.GONE
-                    activity_domain_settings_RL_lottieview.visibility = View.VISIBLE
+                    binding.activityDomainSettingsLL1.visibility = View.GONE
+                    binding.activityDomainSettingsRLLottieview.visibility = View.VISIBLE
                 }
             }
 
@@ -174,49 +180,46 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
 
     lateinit var dialog: AlertDialog
-    private lateinit var customLayout: View
     private fun deleteDomain(id: String, context: Context) {
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        // set the custom layout
-        customLayout =
-            layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(customLayout)
+        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
+// create an alert builder
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setView(anonaddyCustomDialogBinding.root)
         dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = context.resources.getString(R.string.delete_domain)
-        customLayout.dialog_text.text = context.resources.getString(R.string.delete_domain_desc_confirm)
-        customLayout.dialog_positive_button.text =
+        anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_domain)
+        anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_domain_desc_confirm)
+        anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete_domain)
-        customLayout.dialog_positive_button.setOnClickListener {
-            customLayout.dialog_progressbar.visibility = View.VISIBLE
-            customLayout.dialog_error.visibility = View.GONE
-            customLayout.dialog_negative_button.isEnabled = false
-            customLayout.dialog_positive_button.isEnabled = false
+        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
+            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
+            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
+            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteDomainHttpRequest(id, context)
+                deleteDomainHttpRequest(id, context, anonaddyCustomDialogBinding)
             }
         }
-        customLayout.dialog_negative_button.setOnClickListener {
+        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
             dialog.dismiss()
         }
         // create and show the alert dialog
         dialog.show()
     }
 
-    private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
+    private suspend fun deleteDomainHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper?.deleteDomain({ result ->
             if (result == "204") {
                 dialog.dismiss()
                 getDataFromWeb()
             } else {
-                customLayout.dialog_progressbar.visibility = View.INVISIBLE
-                customLayout.dialog_error.visibility = View.VISIBLE
-                customLayout.dialog_negative_button.isEnabled = true
-                customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text = context.resources.getString(
+                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
+                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
                     R.string.s_s,
                     context.resources.getString(R.string.error_deleting_domain), result
                 )

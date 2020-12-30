@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialSharedAxis
-import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.fragment_setup_how1.view.*
+import host.stjin.anonaddy.databinding.FragmentSetupHow1Binding
 
 class SetupHow1Fragment : Fragment() {
 
@@ -22,17 +21,28 @@ class SetupHow1Fragment : Fragment() {
     }
 
 
+    private var _binding: FragmentSetupHow1Binding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_setup_how1, container, false)
+    ): View {
+        _binding = FragmentSetupHow1Binding.inflate(inflater, container, false)
+        val root = binding.root
 
-        root.setup_how_1_button_next.setOnClickListener {
+        binding.setupHow1ButtonNext.setOnClickListener {
             (activity as SetupNewActivity).switchFragments(SetupHow2Fragment())
         }
 
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

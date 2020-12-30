@@ -110,10 +110,8 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.4.0"
 }
 
-
-/*
 //TODO turn into donuts
 // For the donut in the aliasview
 dependencies {
-    implementation 'com.github.futuredapp:donut:2.1.0'
-}*/
+    implementation("app.futured.donut:library:2.1.0")
+}

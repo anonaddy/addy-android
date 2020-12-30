@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -64,17 +63,17 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
         // Load values from local to make the app look quick and snappy!
         setStatisticsFromLocal(requireContext())
-        setOnClickListeners(root)
-        setOnScrollViewListener(root)
+        setOnClickListeners()
+        setOnScrollViewListener()
 
         // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
-        getDataFromWeb(root)
+        getDataFromWeb()
 
         return root
     }
 
 
-    private fun setOnScrollViewListener(root: View) {
+    private fun setOnScrollViewListener() {
 
         binding.aliasScrollview.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
 
@@ -94,13 +93,13 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     }
 
-    private fun getDataFromWeb(root: View) {
+    private fun getDataFromWeb() {
         binding.aliasListLL1.visibility = View.VISIBLE
         binding.aliasStatisticsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllAliasesAndSetStatistics(root)
+            getAllAliasesAndSetStatistics()
             getAllDeletedAliases()
         }
     }
@@ -108,10 +107,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     // Update list of aliases when coming back
     override fun onResume() {
         super.onResume()
-        getDataFromWeb(requireView())
+        getDataFromWeb()
     }
 
-    private fun setOnClickListeners(root: View) {
+    private fun setOnClickListeners() {
         binding.aliasStatisticsDismiss.setOnClickListener {
             binding.aliasStatisticsLL.visibility = View.GONE
         }
@@ -145,7 +144,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
     }
 
-    private suspend fun getAllAliasesAndSetStatistics(root: View) {
+    private suspend fun getAllAliasesAndSetStatistics() {
         binding.aliasAllAliasesRecyclerview.apply {
 
             if (itemDecorationCount > 0) {
@@ -213,17 +212,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
                             intent.putExtra("alias_id", list[pos].id)
-                            intent.putExtra("alias_forward_count", list[pos].emails_forwarded)
-                            intent.putExtra("alias_replied_sent_count", list[pos].emails_replied)
-
-                            val options: ActivityOptionsCompat =
-                                ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                    requireActivity(),
-                                    aView,
-                                    list[pos].id
-                                )
-
-                            startActivity(intent, options.toBundle())
+                            startActivity(intent)
                         }
 
                         override fun onClickCopy(pos: Int, aView: View) {
@@ -316,17 +305,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
                             intent.putExtra("alias_id", onlyDeletedList[pos].id)
-                            intent.putExtra("alias_forward_count", onlyDeletedList[pos].emails_forwarded)
-                            intent.putExtra("alias_replied_sent_count", onlyDeletedList[pos].emails_replied)
-
-                            val options: ActivityOptionsCompat =
-                                ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                    requireActivity(),
-                                    aView,
-                                    onlyDeletedList[pos].id
-                                )
-
-                            startActivity(intent, options.toBundle())
+                            startActivity(intent)
                         }
 
                         override fun onClickCopy(pos: Int, aView: View) {
@@ -413,7 +392,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     override fun onAdded() {
         addAliasBottomDialogFragment.dismiss()
         // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb(requireView())
+        getDataFromWeb()
     }
 
 

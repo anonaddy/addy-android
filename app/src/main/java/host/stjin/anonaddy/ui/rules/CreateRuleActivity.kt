@@ -15,11 +15,11 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.databinding.ActivityRulesCreateBinding
 import host.stjin.anonaddy.models.Action
 import host.stjin.anonaddy.models.Condition
 import host.stjin.anonaddy.models.Rules
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import kotlinx.android.synthetic.main.activity_rules_create.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -47,10 +47,14 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     private var actionBottomDialogFragment: ActionBottomDialogFragment =
         ActionBottomDialogFragment.newInstance()
 
+    private lateinit var binding: ActivityRulesCreateBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_rules_create)
-        setupToolbar(activity_rules_create_toolbar)
+        binding = ActivityRulesCreateBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        setupToolbar(binding.activityRulesCreateToolbar)
 
 
         networkHelper = NetworkHelper(this)
@@ -113,7 +117,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private fun getRule() {
-        activity_rules_create_RL_lottieview.visibility = View.GONE
+        binding.activityRulesCreateRLLottieview.visibility = View.GONE
 
         // Get the rule
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -130,11 +134,11 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 rules = list
                 setPage()
             } else {
-                activity_rules_create_RL_progressbar.visibility = View.GONE
-                activity_rules_create_LL1.visibility = View.GONE
+                binding.activityRulesCreateRLProgressbar.visibility = View.GONE
+                binding.activityRulesCreateLL1.visibility = View.GONE
 
                 // Show no internet animations
-                activity_rules_create_RL_lottieview.visibility = View.VISIBLE
+                binding.activityRulesCreateRLLottieview.visibility = View.VISIBLE
             }
         }, id)
     }
@@ -145,12 +149,12 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         val inflater = LayoutInflater.from(this)
 
         // First remove all the views from the condition and action layouts
-        activity_rules_create_LL_conditions.removeAllViews()
-        activity_rules_create_LL_actions.removeAllViews()
+        binding.activityRulesCreateLLConditions.removeAllViews()
+        binding.activityRulesCreateLLActions.removeAllViews()
 
 
         // Set name
-        activity_rules_create_rule_name_tiet.setText(rules.name)
+        binding.activityRulesCreateRuleNameTiet.setText(rules.name)
 
         /**
          * CONDITIONS
@@ -167,7 +171,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             if (firstCondition) {
                 firstCondition = false
             } else {
-                val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, activity_rules_create_LL_conditions as ViewGroup?, false)
+                val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, binding.activityRulesCreateLLConditions as ViewGroup?, false)
                 //val materialButtonToggleGroup = inflatedLayout.findViewById<MaterialButtonToggleGroup>(R.id.rules_view_and_or_AND_mbtg)
                 val andButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_AND_button)
                 val orButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_OR_button)
@@ -188,7 +192,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     setPage()
                 }
 
-                activity_rules_create_LL_conditions.addView(inflatedLayout)
+                binding.activityRulesCreateLLConditions.addView(inflatedLayout)
             }
 
             /**
@@ -196,7 +200,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
              */
 
             val inflatedLayout: View =
-                inflater.inflate(R.layout.rules_view_condition_action, activity_rules_create_LL_conditions as ViewGroup?, false)
+                inflater.inflate(R.layout.rules_view_condition_action, binding.activityRulesCreateLLConditions as ViewGroup?, false)
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
             val deleteCondition = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_close)
             val editCondition = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_edit)
@@ -247,7 +251,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 }
             }
 
-            activity_rules_create_LL_conditions.addView(inflatedLayout)
+            binding.activityRulesCreateLLConditions.addView(inflatedLayout)
         }
 
         /**
@@ -262,7 +266,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             if (firstActions) {
                 firstActions = false
             } else {
-                val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, activity_rules_create_LL_actions as ViewGroup?, false)
+                val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, binding.activityRulesCreateLLActions as ViewGroup?, false)
                 //val materialButtonToggleGroup = inflatedLayout.findViewById<MaterialButtonToggleGroup>(R.id.rules_view_and_or_AND_mbtg)
                 val andButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_AND_button)
                 val orButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_OR_button)
@@ -280,11 +284,12 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     setPage()
                 }
 
-                activity_rules_create_LL_actions.addView(inflatedLayout)
+                binding.activityRulesCreateLLActions.addView(inflatedLayout)
             }
 
 
-            val inflatedLayout: View = inflater.inflate(R.layout.rules_view_condition_action, activity_rules_create_LL_actions as ViewGroup?, false)
+            val inflatedLayout: View =
+                inflater.inflate(R.layout.rules_view_condition_action, binding.activityRulesCreateLLActions as ViewGroup?, false)
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
             val deleteAction = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_close)
             val editAction = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_edit)
@@ -319,27 +324,27 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             }
 
 
-            activity_rules_create_LL_actions.addView(inflatedLayout)
+            binding.activityRulesCreateLLActions.addView(inflatedLayout)
         }
 
 
-        activity_rules_create_RL_progressbar.visibility = View.GONE
-        activity_rules_create_LL1.visibility = View.VISIBLE
+        binding.activityRulesCreateRLProgressbar.visibility = View.GONE
+        binding.activityRulesCreateLL1.visibility = View.VISIBLE
 
         setOnClickListeners()
         setOnChangeListeners()
     }
 
     private fun setOnChangeListeners() {
-        activity_rules_create_rule_name_tiet.addTextChangedListener {
-            rules.name = activity_rules_create_rule_name_tiet.text.toString()
+        binding.activityRulesCreateRuleNameTiet.addTextChangedListener {
+            rules.name = binding.activityRulesCreateRuleNameTiet.text.toString()
         }
     }
 
     private fun setOnClickListeners() {
-        activity_rules_create_check.setOnClickListener {
+        binding.activityRulesCreateCheck.setOnClickListener {
             // Update title
-            activity_rules_create_progressbar.visibility = View.VISIBLE
+            binding.activityRulesCreateProgressbar.visibility = View.VISIBLE
 
             if (ruleId != null) {
                 // Update the rule
@@ -350,11 +355,11 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                 finish()
                             }
                             else -> {
-                                activity_rules_create_progressbar.visibility = View.INVISIBLE
+                                binding.activityRulesCreateProgressbar.visibility = View.INVISIBLE
 
                                 val snackbar =
                                     Snackbar.make(
-                                        activity_rules_create_LL, resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                        binding.activityRulesCreateLL, resources.getString(R.string.error_creating_rule) + "\n" + result,
                                         Snackbar.LENGTH_SHORT
                                     )
 
@@ -378,11 +383,11 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                 finish()
                             }
                             else -> {
-                                activity_rules_create_progressbar.visibility = View.INVISIBLE
+                                binding.activityRulesCreateProgressbar.visibility = View.INVISIBLE
 
                                 val snackbar =
                                     Snackbar.make(
-                                        activity_rules_create_LL, resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                        binding.activityRulesCreateLL, resources.getString(R.string.error_creating_rule) + "\n" + result,
                                         Snackbar.LENGTH_SHORT
                                     )
 
@@ -400,7 +405,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             }
         }
 
-        activity_rules_create_add_condition.setOnClickListener {
+        binding.activityRulesCreateAddCondition.setOnClickListener {
             if (!conditionBottomDialogFragment.isAdded) {
                 // Remove the arguments that could be sent with the edit button
                 conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance()
@@ -411,7 +416,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             }
         }
 
-        activity_rules_create_add_action.setOnClickListener {
+        binding.activityRulesCreateAddAction.setOnClickListener {
             if (!actionBottomDialogFragment.isAdded) {
                 // Reset the variable to remove the arguments that could be sent with the edit button
                 actionBottomDialogFragment = ActionBottomDialogFragment.newInstance()

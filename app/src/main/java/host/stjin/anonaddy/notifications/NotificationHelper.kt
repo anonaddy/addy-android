@@ -21,7 +21,7 @@ class NotificationHelper(private val context: Context) {
     private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     companion object {
-        val ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID = 1
+        const val ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID = 1
     }
 
     fun createAliasWatcherNotification(emailDifference: Int, id: String, email: String) {
