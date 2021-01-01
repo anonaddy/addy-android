@@ -1,14 +1,14 @@
 
 # Changelog
 
-## [AnonAddy v1.2.0] - TBD
+## [AnonAddy v2.0.0] - TBD
 
 ### Added
 - 📷 [NEW] Setup the AnonAddy app without even having to copy-paste the API key, just scan the QR code shown on the AnonAddy instance and you're good to go!
 - 🌐 [NEW] Get full control over how often background data such as widgets are refreshed
 - 👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email
 ### Fixed/Improved
-- 🖌️ [IMPROVED] There are some minor UI improvements making the app look even better
+- 🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables
 - 🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents
 - 🧈 [IMPROVED] Lot's of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement
 - 🦋 [IMPROVED] Minor bugs have been fixed

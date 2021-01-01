@@ -22,7 +22,7 @@
         app:tint="@android:color/white" />
 
     <TextView
-        android:id="@+id/main_top_bar_not_title"
+        android:id="@+id/main_top_bar_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"

@@ -292,5 +292,10 @@
         <item name="colorSurface">?attr/selectableItemBackground</item>
     </style>
 
+    <style name="divider">
+        <item name="android:layout_height">1dp</item>
+        <item name="android:alpha">0.2</item>
+        <item name="android:background">@color/IconGrayTint</item>
+    </style>
 
 </resources>

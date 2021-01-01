@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -113,20 +113,14 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun setUsernames() {
-        binding.activitySearchAliasesRecyclerview.apply {
+        binding.activitySearchUsernamesRecyclerview.apply {
 
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(this@SearchActivity, 2)
+            } else {
+                LinearLayoutManager(this@SearchActivity)
             }
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -162,18 +156,12 @@ class SearchActivity : BaseActivity() {
     private fun setRules() {
         binding.activitySearchRulesRecyclerview.apply {
 
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(this@SearchActivity, 2)
+            } else {
+                LinearLayoutManager(this@SearchActivity)
             }
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -222,19 +210,13 @@ class SearchActivity : BaseActivity() {
 
     private fun setAliases() {
         binding.activitySearchAliasesRecyclerview.apply {
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
-            }
 
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(this@SearchActivity, 2)
+            } else {
+                LinearLayoutManager(this@SearchActivity)
+            }
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -261,9 +243,9 @@ class SearchActivity : BaseActivity() {
             }
 
             val finalList = (nonDeletedList + onlyDeletedList)
-            val aliasAdapter = AliasAdapter(finalList, true)
+            val aliasAdapter = AliasAdapter(finalList, true, context)
             aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
-                override fun onClick(pos: Int, aView: View) {
+                override fun onClick(pos: Int) {
                     val intent = Intent(context, ManageAliasActivity::class.java)
                     // Pass data object in the bundle and populate details activity.
                     intent.putExtra("alias_id", finalList[pos].id)
@@ -296,18 +278,12 @@ class SearchActivity : BaseActivity() {
     private fun setRecipients() {
         binding.activitySearchRecipientsRecyclerview.apply {
 
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(this@SearchActivity, 2)
+            } else {
+                LinearLayoutManager(this@SearchActivity)
             }
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -351,18 +327,12 @@ class SearchActivity : BaseActivity() {
     private fun setDomains() {
         binding.activitySearchDomainsRecyclerview.apply {
 
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(this@SearchActivity, 2)
+            } else {
+                LinearLayoutManager(this@SearchActivity)
             }
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false

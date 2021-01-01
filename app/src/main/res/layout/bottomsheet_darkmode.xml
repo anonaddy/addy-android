@@ -31,9 +31,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:alpha="0.1"
-        android:background="@color/IconGrayTint" />
+        style="@style/divider" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -57,9 +55,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:alpha="0.1"
-                android:background="@color/IconGrayTint" />
+                style="@style/divider" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/bs_darkmode_on"
@@ -70,9 +66,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:alpha="0.1"
-                android:background="@color/IconGrayTint" />
+                style="@style/divider" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/bs_darkmode_automatic"

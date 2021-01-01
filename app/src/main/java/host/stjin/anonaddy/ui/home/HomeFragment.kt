@@ -14,7 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -127,18 +127,12 @@ class HomeFragment : Fragment() {
     private suspend fun getMostActiveAliases() {
         binding.homeMostActiveAliasesRecyclerview.apply {
 
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(activity, 2)
+            } else {
+                LinearLayoutManager(activity)
             }
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(activity)
-            // set the custom adapter to the RecyclerView
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -162,9 +156,9 @@ class HomeFragment : Fragment() {
 
                     // Get the top 5
                     val aliasList = list.take(5)
-                    val aliasAdapter = AliasAdapter(aliasList, false)
+                    val aliasAdapter = AliasAdapter(aliasList, false, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
-                        override fun onClick(pos: Int, aView: View) {
+                        override fun onClick(pos: Int) {
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
                             intent.putExtra("alias_id", aliasList[pos].id)

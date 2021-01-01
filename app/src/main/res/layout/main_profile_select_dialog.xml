@@ -38,7 +38,6 @@
                         android:contentDescription="@string/anonaddy_settings"
                         android:src="@drawable/ic_account_circle_outline"
                         android:transitionName="image_transition"
-                        android:tint="@color/BlackWhite"
                         app:tint="@color/BlackWhite" />
 
                     <TextView

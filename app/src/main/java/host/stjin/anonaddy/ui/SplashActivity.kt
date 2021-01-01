@@ -35,14 +35,16 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
         setContentView(view)
-        window.decorView.systemUiVisibility =
-                // Tells the system that the window wishes the content to
-                // be laid out at the most extreme scenario. See the docs for
-                // more information on the specifics
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+
+            window.decorView.systemUiVisibility =
                     // Tells the system that the window wishes the content to
-                    // be laid out as if the navigation bar was hidden
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    // be laid out at the most extreme scenario. See the docs for
+                    // more information on the specifics
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        // Tells the system that the window wishes the content to
+                        // be laid out as if the navigation bar was hidden
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
 
         setInsets()
         val settingsManager = SettingsManager(true, this)
@@ -134,9 +136,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private fun showErrorScreen(error: String?) {
-        // TODO test
         bindingFailed = ActivityMainFailedBinding.inflate(layoutInflater)
-        val view = binding.root
+        val view = bindingFailed.root
         setContentView(view)
 
         bindingFailed.activityMainFailedErrorMessage.text = error

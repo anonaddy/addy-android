@@ -45,7 +45,6 @@
     <string name="aliases_statistics">Aliases statistics</string>
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
-    <string name="replied_sent">Replied/sent</string>
     <string name="all_aliases">All aliases</string>
     <string name="add_alias">Add alias</string>
     <string name="replied_forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
@@ -88,7 +87,7 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[<p>🎆 Happy new year everyone! Hope you have a wonderful 2021 🎇<br />This update is the most exciting one since 1.1.0, it rocks a bunch of new features and LOTS of improvements.</p>
-<p>&mdash; What\'s new in version 1.2.0 &mdash;<br />📷 [NEW] Setup the AnonAddy app without even having to copy-paste the API key, just scan the QR code shown on the AnonAddy instance and you\'re good to go!<br />🌐 [NEW] Get full control over how often background data such as widgets are refreshed<br />👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email<br />🖌️ [IMPROVED] There are some minor UI improvements making the app look even better<br />🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents<br />🧈 [IMPROVED] Lot\'s of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement<br />🦋 [IMPROVED] Minor bugs have been fixed</p>]]></string>
+<p>&mdash; What\'s new in version 2.0.0 &mdash;<br />📷 [NEW] Setup the AnonAddy app without even having to copy-paste the API key, just scan the QR code shown on the AnonAddy instance and you\'re good to go!<br />🌐 [NEW] Get full control over how often background data such as widgets are refreshed<br />👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email<br />🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables<br />🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents<br />🧈 [IMPROVED] Lot\'s of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement<br />🦋 [IMPROVED] Minor bugs have been fixed</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -117,7 +116,6 @@
     <string name="domain_no_description">This domain has no description set. Tap here to add one</string>
     <string name="edit_desc_alias_desc">Change the description for this alias, describe what this alias is used for</string>
     <string name="edit_alias">Edit alias</string>
-    <string name="forwarded">Forwarded</string>
     <string name="alias_edit_recipients_desc">The list below shows all verified recipients. Select which recipients you want to set as recipient for this alias</string>
     <string name="edit_recipients">Edit recipients</string>
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>
@@ -134,7 +132,6 @@
     <string name="restore_alias_confirmation_desc">Are you sure you want to restore this alias? Once restored, this alias will be able to receive emails again.</string>
     <string name="error_restoring_alias">Something went wrong while restoring this alias</string>
     <string name="default_recipient_s">Default recipient (%s)</string>
-    <string name="alias_statistics">Alias statistics</string>
     <string name="security">Security</string>
     <string name="security_desc">Use your biometric or pin/pattern to open AnonAddy</string>
     <string name="store_logs">Store logs</string>
@@ -347,6 +344,8 @@
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
-
-
+    <string name="d_blocked">%1$d blocked</string>
+    <string name="d_forwarded">%1$d forwarded</string>
+    <string name="d_replied">%1$d replied</string>
+    <string name="d_sent">%1$d sent</string>
 </resources>

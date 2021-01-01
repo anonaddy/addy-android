@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -92,16 +92,12 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
         binding.bsSearchRecyclerview.apply {
 
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(activity, 2)
+            } else {
+                LinearLayoutManager(activity)
             }
-
-            layoutManager = LinearLayoutManager(activity)
 
             val recipientAdapter = SearchAdapter(recentSearches)
             recipientAdapter.setClickListener(object : SearchAdapter.ClickListener {

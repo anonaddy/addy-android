@@ -77,7 +77,6 @@ class BackgroundServiceIntervalBottomDialogFragment : BottomSheetDialogFragment(
         if (p0 != null) {
             when (p0.id) {
                 R.id.bs_backgroundserviceinterval_set_interval_button -> {
-                    val root = view
                     when {
                         binding.bsBackgroundserviceinterval15.isChecked -> {
                             listener.setInterval(15)

@@ -32,9 +32,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:alpha="0.1"
-        android:background="@color/IconGrayTint" />
+        style="@style/divider" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -94,12 +92,9 @@
                 </com.budiyev.android.codescanner.CodeScannerView>
 
                 <View
-                    android:id="@+id/view"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
                     android:layout_margin="16dp"
-                    android:alpha="0.1"
-                    android:background="@color/IconGrayTint" />
+                    style="@style/divider" />
 
             </LinearLayout>
 

@@ -132,7 +132,7 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
         }, address)
     }
 
-    private val handler = Handler()
+    private val handler =  Handler(Looper.getMainLooper())
     private val runnableCode = Runnable {
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             addDomainToAccount(

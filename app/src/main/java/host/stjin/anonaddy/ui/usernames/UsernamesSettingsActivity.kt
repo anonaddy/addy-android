@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -112,18 +112,12 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     private suspend fun getAllUsernames() {
         binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
 
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(this@UsernamesSettingsActivity, 2)
+            } else {
+                LinearLayoutManager(this@UsernamesSettingsActivity)
             }
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false

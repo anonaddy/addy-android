@@ -46,7 +46,6 @@
                         android:layout_height="38dp"
                         android:contentDescription="@string/anonaddy_settings"
                         android:src="@drawable/ic_account_circle_outline"
-                        android:tint="@color/BlackWhite"
                         android:transitionName="image_transition"
                         app:tint="@color/BlackWhite" />
 

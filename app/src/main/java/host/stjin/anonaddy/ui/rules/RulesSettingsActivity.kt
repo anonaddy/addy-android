@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,14 +72,7 @@ class RulesSettingsActivity : BaseActivity() {
 
     private suspend fun getAllRules() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
-            }
+
             // set a LinearLayoutManager to handle Android
             // RecyclerView behavior
             layoutManager = LinearLayoutManager(context)

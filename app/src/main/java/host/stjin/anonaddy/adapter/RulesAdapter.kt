@@ -108,7 +108,7 @@ class RulesAdapter(
             rulesRecyclerviewListDeleteButton.setOnClickListener(this)
 
             if (allowDrag) {
-                rulesRecyclerviewListDragLL.setOnTouchListener { view, motionEvent ->
+                rulesRecyclerviewListDragLL.setOnTouchListener { _, motionEvent ->
                     if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
                         onRuleClicker.startDragging(this)
                     }

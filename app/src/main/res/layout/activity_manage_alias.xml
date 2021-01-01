@@ -41,99 +41,120 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/activity_manage_alias_email"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:alpha="0"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:visibility="visible"
+                    app:icon="@drawable/ic_content_copy_24px"
+                    app:iconSize="18dp"
+                    tools:text="@tools:sample/lorem/random" />
+
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:textAlignment="center" />
+                    android:weightSum="7">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
 
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2" />
 
                     <app.futured.donut.DonutProgressView
                         android:id="@+id/activity_manage_alias_chart"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_centerInParent="true"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
                         app:donut_animateChanges="true"
-                        app:donut_bgLineColor="@color/shimmerGray"
+                        app:donut_bgLineColor="@android:color/transparent"
                         app:donut_gapAngle="270"
-                        app:donut_gapWidth="20"
-                        app:donut_strokeWidth="16dp" />
+                        app:donut_gapWidth="0"
+                        app:donut_strokeWidth="24dp" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
 
                     <LinearLayout
+                        android:id="@+id/activity_manage_alias_stats_LL"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_centerInParent="true"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:alpha="0"
+                        android:gravity="center_vertical"
                         android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/activity_manage_alias_forwarded_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-black"
-                            android:gravity="center"
-                            android:textColor="@color/portalOrange"
-                            android:textSize="24sp"
-                            android:visibility="gone" />
+                            android:alpha="0.7"
+                            android:drawablePadding="4dp"
+                            android:gravity="center_vertical"
+                            android:padding="4dp"
+                            android:text="@string/d_forwarded"
+                            android:textColor="@color/BlackWhite"
+                            app:drawableStartCompat="@drawable/ic_round_mail_outline_24"
+                            app:drawableTint="@color/portalOrange" />
 
                         <TextView
-                            android:id="@+id/activity_manage_alias_replies_sent_count"
+                            android:id="@+id/activity_manage_alias_replied_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:alpha="0.7"
+                            android:drawablePadding="4dp"
+                            android:gravity="center_vertical"
+                            android:padding="4dp"
+                            android:text="@string/d_replied"
+                            android:textColor="@color/BlackWhite"
+                            app:drawableStartCompat="@drawable/ic_round_reply_24"
+                            app:drawableTint="@color/portalBlue" />
+
+                        <TextView
+                            android:id="@+id/activity_manage_alias_sent_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="center"
-                            android:textColor="@color/portalBlue"
-                            android:textSize="18sp"
-                            android:visibility="gone" />
+                            android:alpha="0.7"
+                            android:drawablePadding="4dp"
+                            android:gravity="center_vertical"
+                            android:padding="4dp"
+                            android:text="@string/d_sent"
+                            android:textColor="@color/BlackWhite"
+                            app:drawableStartCompat="@drawable/ic_email_send_outline"
+                            app:drawableTint="@color/secondaryDarkColor" />
+
+                        <TextView
+                            android:id="@+id/activity_manage_alias_replies_blocked_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:alpha="0.7"
+                            android:drawablePadding="4dp"
+                            android:gravity="center_vertical"
+                            android:padding="4dp"
+                            android:text="@string/d_blocked"
+                            android:textColor="@color/BlackWhite"
+                            app:drawableStartCompat="@drawable/ic_round_block_24"
+                            app:drawableTint="@color/softRed" />
+
                     </LinearLayout>
 
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
-
                     <Space
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:alpha="0.7"
-                        android:drawablePadding="4dp"
-                        android:gravity="center_vertical"
-                        android:text="@string/forwarded"
-                        android:textColor="@color/BlackWhite"
-                        app:drawableStartCompat="@drawable/ic_round_mail_outline_24"
-                        app:drawableTint="@color/portalOrange" />
-
-                    <Space
-                        android:layout_width="8dp"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:alpha="0.7"
-                        android:drawablePadding="4dp"
-                        android:gravity="center_vertical"
-                        android:text="@string/replied_sent"
-                        android:textColor="@color/BlackWhite"
-                        app:drawableStartCompat="@drawable/ic_round_reply_24"
-                        app:drawableTint="@color/portalBlue" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="2" />
 
                 </LinearLayout>
 
@@ -141,9 +162,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:alpha="0.1"
-                android:background="@color/IconGrayTint" />
+                style="@style/divider" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

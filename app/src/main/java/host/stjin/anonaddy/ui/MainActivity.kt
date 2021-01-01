@@ -147,7 +147,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
     private fun changeTopBarTitle(title: String) {
-        binding.mainTopBar.mainTopBarNotTitle.text = title
+        binding.mainTopBar.mainTopBarTitle.text = title
     }
 
     fun switchFragments(fragment: Int) {

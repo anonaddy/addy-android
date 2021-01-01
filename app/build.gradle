@@ -95,11 +95,6 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 }
 
-// Tablet layout of dialog
-dependencies {
-    implementation 'com.google.android:flexbox:2.0.1'
-}
-
 // Scanning QR codes
 dependencies {
     implementation 'com.budiyev.android:code-scanner:2.1.0'

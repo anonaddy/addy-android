@@ -54,7 +54,7 @@ Developer-led download channels:
 
 >Recommended (access to beta's, automatic updates and support me :) )
 - [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
- - ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here and download it, otherwise please choose another source :)
+ - ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here and download it, otherwise choose another source :)
 
 >Other sources
 - [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
@@ -70,10 +70,10 @@ Third party libraries used.
 - [androidx.security.crypto](https://developer.android.com/jetpack/androidx/releases/security)
 - [androidx.work](https://developer.android.com/jetpack/androidx/releases/work)
 - [airbnb/lottie-android](https://github.com/airbnb/lottie-android)
-- [google/flexbox-layout](https://github.com/google/flexbox-layout)
 - [kittinunf/fuel](https://github.com/kittinunf/fuel)
 - [sharish/ShimmerRecyclerView](https://github.com/sharish/ShimmerRecyclerView)
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner)
+- [futuredapp/donut](https://github.com/futuredapp/donut)
 
 
 ## Feedback and contribution

@@ -15,23 +15,25 @@ import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 
-private lateinit var binding: MainProfileSelectDialogBinding
 
 class DialogActivity : Activity() {
+    private lateinit var binding: MainProfileSelectDialogBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainProfileSelectDialogBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
-        window.decorView.systemUiVisibility =
-                // Tells the system that the window wishes the content to
-                // be laid out at the most extreme scenario. See the docs for
-                // more information on the specifics
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            window.decorView.systemUiVisibility =
                     // Tells the system that the window wishes the content to
-                    // be laid out as if the navigation bar was hidden
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    // be laid out at the most extreme scenario. See the docs for
+                    // more information on the specifics
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        // Tells the system that the window wishes the content to
+                        // be laid out as if the navigation bar was hidden
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
 
         (findViewById<View>(R.id.main_profile_select_dialog_card).parent as View).setOnClickListener { finishAfterTransition() }
 

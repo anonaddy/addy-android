@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
     <LinearLayout
@@ -15,13 +14,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="12">
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -29,15 +30,15 @@
                 android:id="@+id/rules_recyclerview_list_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_clipboard_text_outline"
-                tools:ignore="ContentDescription" />
+                android:contentDescription="@string/rule"
+                android:src="@drawable/ic_clipboard_text_outline" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="9"
             android:orientation="vertical">
 
             <TextView
@@ -72,35 +73,45 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/rules_recyclerview_list_expand_options"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:layout_weight="2"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/open_options"
-                app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+            <LinearLayout
+                android:id="@+id/rules_recyclerview_list_expand_options"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/open_options"
+                    app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rules_recyclerview_list_drag"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/drag_to_change_order"
+                    app:srcCompat="@drawable/ic_outline_menu_24" />
+            </LinearLayout>
+
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/rules_recyclerview_list_drag"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:visibility="gone"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/drag_to_change_order"
-                app:srcCompat="@drawable/ic_outline_menu_24" />
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -109,15 +120,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:weightSum="12">
 
         <Space
-            android:layout_width="40dp"
-            android:layout_height="wrap_content" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="11"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -144,5 +159,26 @@
                 android:text="@string/delete" />
 
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:weightSum="12">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1" />
+
+        <View
+            style="@style/divider"
+            android:layout_width="0dp"
+            android:layout_weight="11"/>
+
     </LinearLayout>
 </LinearLayout>

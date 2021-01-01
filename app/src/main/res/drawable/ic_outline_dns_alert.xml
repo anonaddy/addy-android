@@ -2,12 +2,13 @@
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
+    android:tint="@color/colorControlNormal"
     android:viewportHeight="24">
     <path
-        android:fillColor="@color/colorControlNormal"
+        android:fillColor="@android:color/white"
         android:fillType="evenOdd"
         android:pathData="M16,19H5V15H16V13H4C3.45,13 3,13.45 3,14V20C3,20.55 3.45,21 4,21H16V19ZM7,18.5C6.18,18.5 5.5,17.83 5.5,17C5.5,16.17 6.18,15.5 7,15.5C7.82,15.5 8.5,16.17 8.5,17C8.5,17.83 7.83,18.5 7,18.5ZM16,9H5V5H16V3H4C3.45,3 3,3.45 3,4V10C3,10.55 3.45,11 4,11H16V9ZM7,8.5C6.18,8.5 5.5,7.83 5.5,7C5.5,6.17 6.18,5.5 7,5.5C7.82,5.5 8.5,6.18 8.5,7C8.5,7.82 7.83,8.5 7,8.5Z" />
     <path
-        android:fillColor="@color/colorControlNormal"
+        android:fillColor="@android:color/white"
         android:pathData="M19,4H21V15H19V4ZM21,18V20H19V18H21Z" />
 </vector>

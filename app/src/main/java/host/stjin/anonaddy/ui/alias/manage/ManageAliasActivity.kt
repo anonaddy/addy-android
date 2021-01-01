@@ -1,5 +1,7 @@
 package host.stjin.anonaddy.ui.alias.manage
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -29,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
-import kotlin.math.roundToInt
 
 
 class ManageAliasActivity : BaseActivity(),
@@ -51,6 +52,7 @@ class ManageAliasActivity : BaseActivity(),
      */
     private var progressBarVisibility = View.VISIBLE
 
+    //TODO check if still required
     // Bug fix
     override fun onResume() {
         super.onResume()
@@ -117,28 +119,41 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-    private fun setChart(forwarded: Float, replied: Float) {
+    private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
 
         // DONUT
         val section1 = DonutSection(
-            name = binding.activityManageAliasChart.context.resources.getString(R.string.emails_forwarded),
+            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
             color = ContextCompat.getColor(this, R.color.portalOrange),
             amount = forwarded
         )
         val section2 = DonutSection(
-            name = binding.activityManageAliasChart.context.resources.getString(R.string.emails_replied_sent),
+            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_replied, replied.toInt()),
             color = ContextCompat.getColor(this, R.color.portalBlue),
             amount = replied
         )
-        binding.activityManageAliasChart.cap = forwarded + replied
-        binding.activityManageAliasChart.submitData(listOf(section2, section1))
+        val section3 = DonutSection(
+            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_sent, sent.toInt()),
+            color = ContextCompat.getColor(this, R.color.secondaryDarkColor),
+            amount = replied
+        )
+        val section4 = DonutSection(
+            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
+            color = ContextCompat.getColor(this, R.color.softRed),
+            amount = blocked
+        )
+        binding.activityManageAliasChart.cap = forwarded + replied + blocked + sent
+        binding.activityManageAliasChart.submitData(listOf(section4, section3, section2, section1))
         // DONUT
 
 
-        binding.activityManageAliasForwardedCount.visibility = View.VISIBLE
-        binding.activityManageAliasRepliesSentCount.visibility = View.VISIBLE
-        binding.activityManageAliasForwardedCount.text = forwarded.roundToInt().toString()
-        binding.activityManageAliasRepliesSentCount.text = replied.roundToInt().toString()
+        binding.activityManageAliasForwardedCount.text = this.resources.getString(R.string.d_forwarded, forwarded.toInt())
+        binding.activityManageAliasRepliesBlockedCount.text = this.resources.getString(R.string.d_blocked, blocked.toInt())
+        binding.activityManageAliasSentCount.text = this.resources.getString(R.string.d_sent, sent.toInt())
+        binding.activityManageAliasRepliedCount.text = this.resources.getString(R.string.d_replied, replied.toInt())
+
+
+        binding.activityManageAliasStatsLL.animate().alpha(1.0f)
     }
 
     private fun setOnSwitchChangeListeners() {
@@ -275,6 +290,18 @@ class ManageAliasActivity : BaseActivity(),
                 restoreAlias()
             }
         })
+
+        binding.activityManageAliasEmail.setOnClickListener {
+            val clipboard: ClipboardManager =
+                this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
+            clipboard.setPrimaryClip(clip)
+            Snackbar.make(
+                findViewById(R.id.activity_manage_alias_LL),
+                this.resources.getString(R.string.copied_alias),
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
     }
 
 
@@ -388,6 +415,7 @@ class ManageAliasActivity : BaseActivity(),
 
                 // Set email in textview
                 binding.activityManageAliasEmail.text = list.email
+                binding.activityManageAliasEmail.animate().alpha(1.0f)
 
                 /**
                  * CHART
@@ -396,7 +424,9 @@ class ManageAliasActivity : BaseActivity(),
                 // Update chart
                 setChart(
                     list.emails_forwarded.toFloat(),
-                    list.emails_replied.toFloat()
+                    list.emails_replied.toFloat(),
+                    list.emails_blocked.toFloat(),
+                    list.emails_sent.toFloat()
                 )
 
                 /**
