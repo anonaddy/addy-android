@@ -42,17 +42,18 @@
                 android:padding="16dp">
 
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/activity_manage_alias_email"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:alpha="0"
-                    android:lines="1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:minLines="1"
-                    android:visibility="visible"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="18sp"
                     tools:text="@tools:sample/lorem/random" />
 
                 <LinearLayout
@@ -209,8 +210,8 @@
             </LinearLayout>
 
             <View
-                android:layout_width="match_parent"
-                style="@style/divider" />
+                style="@style/divider"
+                android:layout_width="match_parent" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -266,58 +267,58 @@
                             app:sectionTitle="@string/alias_status_active" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_alias_watch_switch_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionDescription="@string/watch_alias_desc"
-                        app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_comment_eye_outline"
-                        app:sectionTitle="@string/watch_alias" />
+                            android:id="@+id/activity_manage_alias_watch_switch_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:sectionDescription="@string/watch_alias_desc"
+                            app:sectionShowSwitch="true"
+                            app:sectionStartIcon="@drawable/ic_comment_eye_outline"
+                            app:sectionTitle="@string/watch_alias" />
 
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_alias_desc_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionDescription="@tools:sample/lorem/random"
-                        app:sectionEndIcon="@drawable/ic_outline_edit_24"
-                        app:sectionStartIcon="@drawable/ic_text"
-                        app:sectionTitle="@string/description" />
+                        <host.stjin.anonaddy.ui.customviews.SectionView
+                            android:id="@+id/activity_manage_alias_desc_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:sectionDescription="@tools:sample/lorem/random"
+                            app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                            app:sectionStartIcon="@drawable/ic_text"
+                            app:sectionTitle="@string/description" />
 
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_alias_recipients_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionDescription="@tools:sample/full_names"
-                        app:sectionEndIcon="@drawable/ic_outline_edit_24"
-                        app:sectionStartIcon="@drawable/ic_account_arrow_right_outline"
-                        app:sectionTitle="@string/recipients" />
+                        <host.stjin.anonaddy.ui.customviews.SectionView
+                            android:id="@+id/activity_manage_alias_recipients_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:sectionDescription="@tools:sample/full_names"
+                            app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                            app:sectionStartIcon="@drawable/ic_account_arrow_right_outline"
+                            app:sectionTitle="@string/recipients" />
 
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_alias_created_at"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionRippleEffect="false"
-                        app:sectionDescription="@tools:sample/date/ddmmyy"
-                        app:sectionStartIcon="@drawable/ic_round_access_time_24"
-                        app:sectionTitle="@string/created_at" />
+                        <host.stjin.anonaddy.ui.customviews.SectionView
+                            android:id="@+id/activity_manage_alias_created_at"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:sectionDescription="@tools:sample/date/ddmmyy"
+                            app:sectionRippleEffect="false"
+                            app:sectionStartIcon="@drawable/ic_round_access_time_24"
+                            app:sectionTitle="@string/created_at" />
 
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_alias_updated_at"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionRippleEffect="false"
-                        app:sectionDescription="@tools:sample/date/ddmmyy"
-                        app:sectionStartIcon="@drawable/ic_progress_clock"
-                        app:sectionTitle="@string/updated_at" />
+                        <host.stjin.anonaddy.ui.customviews.SectionView
+                            android:id="@+id/activity_manage_alias_updated_at"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:sectionDescription="@tools:sample/date/ddmmyy"
+                            app:sectionRippleEffect="false"
+                            app:sectionStartIcon="@drawable/ic_progress_clock"
+                            app:sectionTitle="@string/updated_at" />
 
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_alias_delete"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionColorAccent="@color/softRed"
-                        app:sectionDescription="@string/delete_alias_desc"
-                        app:sectionStartIcon="@drawable/ic_outline_delete_24"
-                        app:sectionTitle="@string/delete_alias" />
+                        <host.stjin.anonaddy.ui.customviews.SectionView
+                            android:id="@+id/activity_manage_alias_delete"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:sectionColorAccent="@color/softRed"
+                            app:sectionDescription="@string/delete_alias_desc"
+                            app:sectionStartIcon="@drawable/ic_outline_delete_24"
+                            app:sectionTitle="@string/delete_alias" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
                             android:id="@+id/activity_manage_alias_restore"

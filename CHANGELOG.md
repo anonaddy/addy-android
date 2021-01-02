@@ -6,7 +6,8 @@
 ### Added
 - 📷 [NEW] Setup the AnonAddy app without even having to copy-paste the API key, just scan the QR code shown on the AnonAddy instance and you're good to go!
 - 🌐 [NEW] Get full control over how often background data such as widgets are refreshed
-- 👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email
+- 👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new emai
+- ✉️️ [NEW] Quickly send emails from an alias
 ### Fixed/Improved
 - 🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables
 - 🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents
