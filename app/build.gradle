@@ -10,7 +10,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 14
-        versionName "1.2.0"
+        versionName "2.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -105,7 +105,6 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.4.0"
 }
 
-//TODO turn into donuts
 // For the donut in the aliasview
 dependencies {
     implementation("app.futured.donut:library:2.1.0")

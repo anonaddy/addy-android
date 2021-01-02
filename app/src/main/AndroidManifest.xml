@@ -18,6 +18,16 @@
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
 
+    <!-- Starting from Android 11, we need to query to packages with mailto: mailscheme
+    This is being used in the ManageAliasActivity for sending emails from an alias
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+    </queries>
+
 
     <application
         android:allowBackup="true"

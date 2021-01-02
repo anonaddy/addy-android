@@ -22,8 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-//TODO test
-
 class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
 
     private var codeScanner: CodeScanner? = null

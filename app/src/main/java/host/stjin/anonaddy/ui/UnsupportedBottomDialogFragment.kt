@@ -64,6 +64,7 @@ class UnsupportedBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
 
     }
 
+
     companion object {
         fun newInstance(): UnsupportedBottomDialogFragment {
             return UnsupportedBottomDialogFragment()

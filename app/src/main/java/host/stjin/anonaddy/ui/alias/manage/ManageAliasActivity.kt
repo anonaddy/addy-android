@@ -22,6 +22,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
+import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
@@ -35,15 +36,18 @@ import org.apache.commons.lang3.StringUtils
 
 class ManageAliasActivity : BaseActivity(),
     EditAliasDescriptionBottomDialogFragment.AddEditAliasDescriptionBottomDialogListener,
-    EditAliasRecipientsBottomDialogFragment.AddEditAliasRecipientsBottomDialogListener {
+    EditAliasRecipientsBottomDialogFragment.AddEditAliasRecipientsBottomDialogListener,
+    EditAliasSendMailRecipientBottomDialogFragment.AddEditAliasSendMailRecipientBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
     private lateinit var aliasWatcher: AliasWatcher
 
     private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
     private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
+    private lateinit var editAliasSendMailRecipientBottomDialogFragment: EditAliasSendMailRecipientBottomDialogFragment
 
     private lateinit var aliasId: String
+    private var alias: Aliases? = null
     private var forceSwitch = false
     private var shouldDeactivateThisAlias = false
 
@@ -52,12 +56,12 @@ class ManageAliasActivity : BaseActivity(),
      */
     private var progressBarVisibility = View.VISIBLE
 
-    //TODO check if still required
-    // Bug fix
-    override fun onResume() {
+    //TODO check if still required in future versions ,commented since switched to bindings
+    //Bug fix
+/*    override fun onResume() {
         super.onResume()
         binding.activityManageAliasSettingsRLProgressbar.visibility = progressBarVisibility
-    }
+    }*/
 
     private lateinit var binding: ActivityManageAliasBinding
 
@@ -154,6 +158,7 @@ class ManageAliasActivity : BaseActivity(),
 
 
         binding.activityManageAliasStatsLL.animate().alpha(1.0f)
+        binding.activityManageAliasActionsLL.animate().alpha(1.0f)
     }
 
     private fun setOnSwitchChangeListeners() {
@@ -291,7 +296,7 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageAliasEmail.setOnClickListener {
+        binding.activityManageAliasCopy.setOnClickListener {
             val clipboard: ClipboardManager =
                 this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
@@ -302,10 +307,46 @@ class ManageAliasActivity : BaseActivity(),
                 Snackbar.LENGTH_SHORT
             ).show()
         }
+
+        binding.activityManageAliasCopy.setOnClickListener {
+            val clipboard: ClipboardManager =
+                this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
+            clipboard.setPrimaryClip(clip)
+            Snackbar.make(
+                findViewById(R.id.activity_manage_alias_LL),
+                this.resources.getString(R.string.copied_alias),
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
+
+        binding.activityManageAliasSend.setOnClickListener {
+            if (!editAliasSendMailRecipientBottomDialogFragment.isAdded) {
+                editAliasSendMailRecipientBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "editAliasSendMailRecipientBottomDialogFragment"
+                )
+            }
+        }
+    }
+
+    private fun getSendAddress(recipientEmails: String): Array<String?> {
+        val recipients = recipientEmails.split(",")
+        val toAddresses = Array<String?>(recipients.size) { null }
+
+        for ((i, email) in recipients.withIndex()) {
+            // This method generates the to address for sending emails from this alias according to https://anonaddy.com/help/sending-email-from-an-alias/
+            val leftPartOfAlias = this.alias?.local_part
+            val domain = this.alias?.domain
+            val recipientLeftPartOfEmail = email.substringBeforeLast("@", "")
+            val recipientRightPartOfEmail = email.substringAfterLast("@", "")
+            toAddresses[i] = "$leftPartOfAlias+$recipientLeftPartOfEmail=$recipientRightPartOfEmail@$domain"
+        }
+
+        return toAddresses
     }
 
 
-    //TODO test
     private lateinit var restoreAliasDialog: AlertDialog
     private fun restoreAlias() {
         val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
@@ -338,7 +379,6 @@ class ManageAliasActivity : BaseActivity(),
         restoreAliasDialog.show()
     }
 
-    //TODO test
     private lateinit var deleteAliasDialog: AlertDialog
     private fun deleteAlias() {
         val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
@@ -371,7 +411,6 @@ class ManageAliasActivity : BaseActivity(),
         deleteAliasDialog.show()
     }
 
-    //TODO test
     private suspend fun deleteAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
@@ -409,13 +448,16 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private suspend fun getAliasInfo(id: String) {
-        networkHelper.getSpecificAlias({ list ->
+        networkHelper.getSpecificAlias({ alias ->
 
-            if (list != null) {
+            if (alias != null) {
+                this.alias = alias
 
                 // Set email in textview
-                binding.activityManageAliasEmail.text = list.email
+                binding.activityManageAliasEmail.text = alias.email
                 binding.activityManageAliasEmail.animate().alpha(1.0f)
+
+                editAliasSendMailRecipientBottomDialogFragment = EditAliasSendMailRecipientBottomDialogFragment.newInstance(alias.email)
 
                 /**
                  * CHART
@@ -423,10 +465,10 @@ class ManageAliasActivity : BaseActivity(),
 
                 // Update chart
                 setChart(
-                    list.emails_forwarded.toFloat(),
-                    list.emails_replied.toFloat(),
-                    list.emails_blocked.toFloat(),
-                    list.emails_sent.toFloat()
+                    alias.emails_forwarded.toFloat(),
+                    alias.emails_replied.toFloat(),
+                    alias.emails_blocked.toFloat(),
+                    alias.emails_sent.toFloat()
                 )
 
                 /**
@@ -434,9 +476,9 @@ class ManageAliasActivity : BaseActivity(),
                  */
 
                 // Set switch status
-                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(list.active)
+                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(alias.active)
                 binding.activityManageAliasActiveSwitchLayout.setTitle(
-                    if (list.active) resources.getString(R.string.alias_activated) else resources.getString(
+                    if (alias.active) resources.getString(R.string.alias_activated) else resources.getString(
                         R.string.alias_deactivated
                     )
                 )
@@ -452,7 +494,7 @@ class ManageAliasActivity : BaseActivity(),
                 // This layout only contains SectionViews
                 val layout =
                     findViewById<View>(R.id.activity_manage_alias_settings_LL1) as LinearLayout
-                if (list.deleted_at != null) {
+                if (alias.deleted_at != null) {
                     // Aliasdeleted is not null, thus deleted. disable all the layouts and alpha them
 
                     // Show restore and hide delete
@@ -488,11 +530,11 @@ class ManageAliasActivity : BaseActivity(),
                 // Set recipients
                 var recipients: String
                 var count = 0
-                if (list.recipients != null && list.recipients.isNotEmpty()) {
+                if (alias.recipients != null && alias.recipients.isNotEmpty()) {
                     // get the first 2 recipients and list them
 
                     val buf = StringBuilder()
-                    for (recipient in list.recipients) {
+                    for (recipient in alias.recipients) {
                         if (count < 2) {
                             if (buf.isNotEmpty()) {
                                 buf.append("\n")
@@ -504,13 +546,13 @@ class ManageAliasActivity : BaseActivity(),
                     recipients = buf.toString()
 
                     // Check if there are more than 2 recipients in the list
-                    if (list.recipients.size > 2) {
+                    if (alias.recipients.size > 2) {
                         // If this is the case add a "x more" on the third rule
                         // X is the total amount minus the 2 listed above
                         recipients += "\n"
                         recipients += this.resources.getString(
                             R.string._more,
-                            list.recipients.size - 2
+                            alias.recipients.size - 2
                         )
                     }
                 } else {
@@ -524,12 +566,12 @@ class ManageAliasActivity : BaseActivity(),
 
                 // Initialise the bottomdialog
                 editAliasRecipientsBottomDialogFragment =
-                    EditAliasRecipientsBottomDialogFragment.newInstance(aliasId, list.recipients)
+                    EditAliasRecipientsBottomDialogFragment.newInstance(aliasId, alias.recipients)
 
 
                 // Set created at and updated at
-                DateTimeUtils.turnStringIntoLocalString(list.created_at)?.let { binding.activityManageAliasCreatedAt.setDescription(it) }
-                DateTimeUtils.turnStringIntoLocalString(list.updated_at)?.let { binding.activityManageAliasUpdatedAt.setDescription(it) }
+                DateTimeUtils.turnStringIntoLocalString(alias.created_at)?.let { binding.activityManageAliasCreatedAt.setDescription(it) }
+                DateTimeUtils.turnStringIntoLocalString(alias.updated_at)?.let { binding.activityManageAliasUpdatedAt.setDescription(it) }
 
 
                 /**
@@ -537,8 +579,8 @@ class ManageAliasActivity : BaseActivity(),
                  */
 
                 // Set description and initialise the bottomDialogFragment
-                if (list.description != null) {
-                    binding.activityManageAliasDescEdit.setDescription(list.description)
+                if (alias.description != null) {
+                    binding.activityManageAliasDescEdit.setDescription(alias.description)
                 } else {
                     binding.activityManageAliasDescEdit.setDescription(
                         this.resources.getString(
@@ -550,7 +592,7 @@ class ManageAliasActivity : BaseActivity(),
                 // reset this value as it now includes the description
                 editAliasDescriptionBottomDialogFragment = EditAliasDescriptionBottomDialogFragment.newInstance(
                     id,
-                    list.description
+                    alias.description
                 )
 
 
@@ -591,5 +633,15 @@ class ManageAliasActivity : BaseActivity(),
         // Reload all info
         setPage()
         editAliasRecipientsBottomDialogFragment.dismiss()
+    }
+
+    override fun onPressSend(toString: String) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, getSendAddress(toString))
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        }
+        editAliasSendMailRecipientBottomDialogFragment.dismiss()
     }
 }

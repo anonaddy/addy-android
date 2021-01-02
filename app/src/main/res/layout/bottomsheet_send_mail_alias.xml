@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="16dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/drag_down_to_close"
+            android:src="@drawable/drag_pill" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/send_mail"
+            android:textAlignment="center"
+            android:textColor="@color/BlackWhite"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        style="@style/divider"
+        android:layout_width="match_parent" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/bs_send_mail_alias_recipient_desc"
+                style="@style/DescTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/send_mail_from_alias_desc"
+                android:textAlignment="center" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bs_send_mail_alias_recipient_til"
+                style="@style/AnonAddyTextInputLayoutOutlined"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/addresses">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/bs_send_mail_alias_recipient_tiet"
+                    style="@style/AnonAddyTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bs_send_mail_alias_send_mail_button"
+                    style="@style/ActionButtonsSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/send_mail" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

@@ -53,10 +53,7 @@
                     android:maxLines="1"
                     android:minLines="1"
                     android:visibility="visible"
-                    app:icon="@drawable/ic_content_copy_24px"
-                    app:iconSize="18dp"
                     tools:text="@tools:sample/lorem/random" />
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -157,6 +154,57 @@
                         android:layout_weight="2" />
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_manage_alias_actions_LL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alpha="0"
+                    android:orientation="horizontal"
+                    android:weightSum="7">
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/activity_manage_alias_copy"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:minLines="1"
+                        android:text="@string/copy_alias"
+                        app:icon="@drawable/ic_content_copy_24px"
+                        app:iconSize="18dp" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/activity_manage_alias_send"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:minLines="1"
+                        android:text="@string/send_mail"
+                        app:icon="@drawable/ic_email_send_outline"
+                        app:iconSize="18dp" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
 
             </LinearLayout>
 

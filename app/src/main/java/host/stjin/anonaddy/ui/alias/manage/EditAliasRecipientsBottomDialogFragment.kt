@@ -110,7 +110,6 @@ class EditAliasRecipientsBottomDialogFragment(
 
     // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
     constructor() : this(null, null)
-
     companion object {
         fun newInstance(
             id: String,
