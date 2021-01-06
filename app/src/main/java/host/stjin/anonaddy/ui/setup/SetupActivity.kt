@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.StringUtils
 
 class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener {
 
@@ -30,18 +31,36 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         setContentView(view)
 
 
-            window.decorView.systemUiVisibility =
+        window.decorView.systemUiVisibility =
+                // Tells the system that the window wishes the content to
+                // be laid out at the most extreme scenario. See the docs for
+                // more information on the specifics
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     // Tells the system that the window wishes the content to
-                    // be laid out at the most extreme scenario. See the docs for
-                    // more information on the specifics
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        // Tells the system that the window wishes the content to
-                        // be laid out as if the navigation bar was hidden
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    // be laid out as if the navigation bar was hidden
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
 
         setInsets()
         setButtonClickListeners()
+        checkForIntents()
+    }
+
+    private fun checkForIntents() {
+        if (intent.action != null) {
+            // /deactivate URI's
+            val data: Uri? = intent?.data
+            if (data.toString().contains("/setup")) {
+                // Reset app data in case app is already setup
+                //clearAllData() will automatically elevate to encrypt=true
+                SettingsManager(false, this).clearAllData()
+
+                val hostname = StringUtils.substringBefore(data.toString(), "/setup/")
+                val apiKey = StringUtils.substringAfter(data.toString(), "/setup/")
+                verifyKeyAndAdd(this, apiKey, hostname)
+                Toast.makeText(this, resources.getString(R.string.API_key_received_from_intent), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun setButtonClickListeners() {
@@ -77,7 +96,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         }
     }
 
-    private fun verifyKeyAndAdd(context: Context, apiKey: String) {
+    private fun verifyKeyAndAdd(context: Context, apiKey: String, baseUrl: String = AnonAddy.API_BASE_URL) {
         binding.fragmentSetupInitButtonApi.isEnabled = false
         binding.fragmentSetupInitButtonNew.isEnabled = false
         binding.fragmentSetupApikeyGetProgressbar.visibility = View.VISIBLE
@@ -85,7 +104,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             // AnonAddy.API_BASE_URL is defaulted to the anonaddy.com instance. If the API key is valid there it was meant to use that instance.
             // If the baseURL/API do not work or match it opens the API screen
-            verifyApiKey(context, apiKey, AnonAddy.API_BASE_URL)
+            verifyApiKey(context, apiKey, baseUrl)
         }
     }
 
@@ -95,6 +114,8 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             if (result == "200") {
                 addKey(baseUrl, apiKey)
             } else {
+                Toast.makeText(this, resources.getString(R.string.API_key_invalid), Toast.LENGTH_LONG).show()
+
                 binding.fragmentSetupInitButtonApi.isEnabled = true
                 binding.fragmentSetupInitButtonNew.isEnabled = true
                 binding.fragmentSetupApikeyGetProgressbar.visibility = View.INVISIBLE
@@ -144,5 +165,4 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         i.data = Uri.parse(url)
         startActivity(i)
     }
-
 }

@@ -352,4 +352,6 @@
     <string name="send_mail_from_alias_desc">Enter the email addressed (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
     <string name="addresses">Addresses</string>
     <string name="more">More</string>
+    <string name="API_key_received_from_intent">API Key received from intent</string>
+    <string name="API_key_invalid">API Key invalid</string>
 </resources>

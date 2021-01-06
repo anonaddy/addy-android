@@ -92,6 +92,11 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         prefs.edit().remove(value.key).apply()
     }
 
+    fun clearAllData() {
+        SettingsManager(true, context).prefs.edit().clear().apply()
+        SettingsManager(false, context).prefs.edit().clear().apply()
+    }
+
 
     /*
     Clears all the settings and closes the app

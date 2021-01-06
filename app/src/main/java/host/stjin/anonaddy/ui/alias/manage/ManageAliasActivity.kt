@@ -77,6 +77,7 @@ class ManageAliasActivity : BaseActivity(),
         aliasWatcher = AliasWatcher(this)
 
 
+        val intent = intent
         val b = intent.extras
         if (b?.getString("alias_id") != null) {
             // Intents
@@ -91,10 +92,12 @@ class ManageAliasActivity : BaseActivity(),
         } else if (intent.action != null) {
             // /deactivate URI's
             val data: Uri? = intent?.data
-            val aliasId = StringUtils.substringBetween(data.toString(), "deactivate/", "?")
-            this.aliasId = aliasId
-            shouldDeactivateThisAlias = true
-            setPage()
+            if (data.toString().contains("/deactivate")) {
+                val aliasId = StringUtils.substringBetween(data.toString(), "deactivate/", "?")
+                this.aliasId = aliasId
+                shouldDeactivateThisAlias = true
+                setPage()
+            }
         }
     }
 

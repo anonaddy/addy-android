@@ -58,7 +58,10 @@
 
         <service
             android:name=".widget.AliasWidgetRemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- END widget -->
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <!-- END widget -->
+
+
         <activity
             android:name=".ui.SplashActivity"
             android:label="@string/app_name"
@@ -118,7 +121,20 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.setup.SetupActivity"
-            android:theme="@style/AppTheme.Setup" />
+            android:theme="@style/AppTheme.Setup">
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "https://*/setup” -->
+                <data
+                    android:host="*"
+                    android:pathPrefix="/setup"
+                    android:scheme="https" />
+                <!-- note that the leading "/" is required for pathPrefix -->
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.setup.SetupNewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
