@@ -1,3 +1,4 @@
+
 # AnonAddy for Android intents
 
 Intents can be used to simplify actions and create a bridge between AnonAddy for web and AnonAddy for Android
@@ -22,18 +23,26 @@ android:scheme="https" />
 ```
 
 ## Usage
-### Deactivating aliases (found in the email banner)
+### Deactivating aliases
 ```html
 https://<<HOST_NAME>>/deactivate/<<ALIAS_ID>>
 ```
 - HOST_NAME: The base URL of the AnonAddy instance
 - API_KEY: The API key generated
-### Setup the app (not implemented as of January 6, 2021)
+### Setup the app
 ```html
 https://<<HOST_NAME>>/setup/<<API_KEY>>
 ```
 - HOST_NAME: The base URL of the AnonAddy instance
 - API_KEY: The API key generated
+
+## Flowchart
+
+### Deactivating aliases
+![Deactivating aliases](assets/intent_deactivating.png)
+
+### Setup the app
+![Setup app](assets/intent_setup.png)
 
 ## Questions?
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
