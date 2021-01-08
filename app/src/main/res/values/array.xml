@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="domains_formats_names">
+        <item>@string/domains_format_random_characters</item>
         <item>@string/domains_format_uuid</item>
         <item>@string/domains_format_random_words</item>
         <item>@string/domains_format_custom</item>
     </string-array>
 
     <string-array name="domains_formats">
+        <item>random_characters</item>
         <item>uuid</item>
         <item>random_words</item>
         <item>custom</item>
@@ -97,4 +99,8 @@
     <string name="turn_PGP_encryption_off">turn PGP encryption off</string>
     <string name="set_the_banner_information_location_to">set the banner information location to</string>
     <string name="block_the_email">block the email</string>
+    <string name="domains_format_random_words">Random words</string>
+    <string name="domains_format_custom">Custom</string>
+    <string name="domains_format_uuid">UUID</string>
+    <string name="domains_format_random_characters">Random characters</string>
 </resources>

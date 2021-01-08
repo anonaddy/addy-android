@@ -14,7 +14,7 @@ Any QR code generated in the following format would work, please make sure to ge
 - HOST_NAME: The base URL of the AnonAddy instance  
 - API_KEY: The API key generated  
   
-## Flowchart  
+## Flowchart
   
 ### Setup QR
 ![Setup QRs](assets/setup_qr.png)

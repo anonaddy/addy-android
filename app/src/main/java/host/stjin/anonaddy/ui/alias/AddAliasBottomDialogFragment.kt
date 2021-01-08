@@ -15,6 +15,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
 import host.stjin.anonaddy.models.SUBSCRIPTIONS
 import host.stjin.anonaddy.models.User
+import host.stjin.anonaddy.utils.LoggingHelper
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -116,7 +117,9 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                 }
 
                 // Set default format
+                // Get all formats
                 FORMATS = context.resources.getStringArray(R.array.domains_formats_names).toList()
+                // Get all format ids
                 val FORMATSID = context.resources.getStringArray(R.array.domains_formats).toList()
 
                 val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
@@ -125,12 +128,24 @@ class AddAliasBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
                     FORMATS
                 )
                 binding.bsAddaliasAliasFormatMact.setAdapter(formatAdapter)
+
                 // Set default format
                 if (result.defaultAliasFormat != null) {
-                    binding.bsAddaliasAliasFormatMact.setText(
-                        FORMATS[FORMATSID.indexOf(result.defaultAliasFormat)],
-                        false
-                    )
+                    // Get the string for the default format ID
+                    // Try/catch, in case there is a default alias format that's not in the formats array
+                    try {
+                        binding.bsAddaliasAliasFormatMact.setText(
+                            FORMATS[FORMATSID.indexOf(result.defaultAliasFormat)],
+                            false
+                        )
+                    } catch (e: Exception) {
+                        // The default alias format does not exist in the formats array, perhaps it was just added?
+                        // To prevent a crash from the ArrayIndexOutOfBoundsException log the error and just continue without filling the spinner
+                        val ex = e.message
+                        println(ex)
+                        LoggingHelper(context).addLog(ex.toString(), "fillSpinners")
+                    }
+
                 }
             }
 

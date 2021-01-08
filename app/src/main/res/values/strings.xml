@@ -63,9 +63,6 @@
     <string name="sign_up">Sign up</string>
     <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email</string>
     <string name="description">Description</string>
-    <string name="domains_format_random_words">Random words</string>
-    <string name="domains_format_custom">Custom</string>
-    <string name="domains_format_uuid">UUID</string>
     <string name="error_adding_alias">Something went wrong while adding the alias</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
     <string name="not_a_valid_alias_format">Not a valid alias format</string>
@@ -87,7 +84,7 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[<p>🎆 Happy new year everyone! Hope you have a wonderful 2021 🎇<br />This update is the most exciting one since 1.1.0, it rocks a bunch of new features and LOTS of improvements.</p>
-<p>&mdash; What\'s new in version 2.0.0 &mdash;<br />📷 [NEW] Setup the AnonAddy app without even having to copy-paste the API key, just scan the QR code shown on the AnonAddy instance and you\'re good to go!<br />🌐 [NEW] Get full control over how often background data such as widgets are refreshed<br />👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email<br />✉️️ [NEW] Quickly send emails from an alias<br />🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables<br />🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents<br />🧈 [IMPROVED] Lot\'s of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement<br />🦋 [IMPROVED] Minor bugs have been fixed</p>]]></string>
+<p>&mdash; What\'s new in version 2.0.0 &mdash;<br />📷 [NEW] Setup the AnonAddy app without even having to copy-paste the API key, just scan the QR code shown on the AnonAddy instance and you\'re good to go!<br />🌐 [NEW] Get full control over how often background data such as widgets are refreshed<br />👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email<br />✉️️ [NEW] Quickly send emails from an alias<br />🔤 [NEW] Added random characters alias format<br />🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables<br />🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents<br />🧈 [IMPROVED] Lot\'s of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement<br />🦋 [IMPROVED] Minor bugs have been fixed</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
