@@ -14,6 +14,7 @@ import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
+import host.stjin.anonaddy.utils.DateTimeUtils
 
 
 class DialogActivity : Activity() {
@@ -75,7 +76,18 @@ class DialogActivity : Activity() {
                 AnonAddy.VERSIONSTRING
             )
         binding.mainProfileSelectDialogCardAccountname.text = User.userResource.username
-        binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
+
+        if (User.userResource.subscription_ends_at != null) {
+            binding.mainProfileSelectDialogCardSubscription.text = resources.getString(
+                R.string.subscription_user_until,
+                User.userResource.subscription,
+                DateTimeUtils.turnStringIntoLocalString(User.userResource.subscription_ends_at, DateTimeUtils.DATETIMEUTILS.DATE)
+            )
+        } else {
+            binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
+        }
+
+
         binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
 
     }

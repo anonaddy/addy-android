@@ -17,7 +17,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > AnonAddy
 
-- AnonAddy v0.6.0 or higher (current version of AnonAddy for Android has been tested with v0.2.10)
+- AnonAddy v0.6.2 or higher (current version of AnonAddy for Android has been tested with v0.6.2)
 
 > Android
 
@@ -81,7 +81,7 @@ I welcome your comments and suggestions in the issues section, or you can contri
 Of course, you can also contact the developer directly via telegram or email and I'll get back to you shortly.
 
 ## Donation
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZM2VEB23XL8S2)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=26D39SEWQLBHW)
 
 ## Privacy policy
 [Privacy policy](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/PrivacyPolicy.md)

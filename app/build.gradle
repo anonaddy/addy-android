@@ -9,7 +9,7 @@ android {
         applicationId "host.stjin.anonaddy"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 14
+        versionCode 16
         versionName "2.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

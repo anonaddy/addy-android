@@ -1,5 +1,5 @@
 <p>Manage your AnonAddy aliases, recipients, domains and more with the AnonAddy for Android app.</p>
-<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.6.0 or higher</p>
+<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.6.2 or higher</p>
 <p><strong>Characteristics</strong></p>
 <ul>
 <li>Connect to the AnonAddy instance or your own hosted instance</li>

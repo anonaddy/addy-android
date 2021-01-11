@@ -76,7 +76,8 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             val item = clipboardData?.getItemAt(0)
             val text = item?.text.toString()
 
-            if (text.length == 999) {
+            // Most passport keys are 999, as there are plans to move to Sanctum (which has 40char tokens) 40 will also trigger the clipboard readout.
+            if (text.length == 999 || text.length == 40) {
                 // a 999 length string found. This is most likely the API key
                 verifyKeyAndAdd(this, text)
                 Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()

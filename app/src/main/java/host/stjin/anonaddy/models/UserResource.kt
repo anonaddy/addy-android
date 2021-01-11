@@ -37,6 +37,7 @@ data class UserResource(
     val recipient_count: Int,
     val recipient_limit: Int,
     val subscription: String,
+    val subscription_ends_at: String?,
     val updated_at: String,
     val username: String,
     val username_count: Int,

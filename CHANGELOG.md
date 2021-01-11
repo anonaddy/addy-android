@@ -1,14 +1,14 @@
 
 # Changelog
 
-## [AnonAddy v2.0.0] - TBD
+## [AnonAddy v2.0.0] - 2021-01-11
 
 ### Added
-- 📷 [NEW] Setup the AnonAddy app without even having to copy-paste the API key, just scan the QR code shown on the AnonAddy instance and you're good to go!
 - 🌐 [NEW] Get full control over how often background data such as widgets are refreshed
 - 👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new emai
 - ✉  [NEW] Quickly send emails from an alias
 - 🔤  [NEW] Added random characters alias format
+- 💳 [NEW] View the subscription end date
 ### Fixed/Improved
 - 🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables
 - 🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents
@@ -19,7 +19,8 @@
 ## [AnonAddy v1.1.3] - 2020-12-08
 
 ### Fixed/Improved
-- 🐛 [BUG FIX] Deleted alias section is not collapsed by default- 🙋 [FEATURE REQUEST] Switch between panels by swiping left/right
+- 🐛 [BUG FIX] Deleted alias section is not collapsed by default
+- 🙋 [FEATURE REQUEST] Switch between panels by swiping left/right
 
 
 ## [AnonAddy v1.1.2] - 2020-11-21
