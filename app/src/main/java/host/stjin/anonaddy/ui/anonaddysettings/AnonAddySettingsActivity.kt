@@ -8,11 +8,12 @@ import android.os.Handler
 import android.os.Looper
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
+import host.stjin.anonaddy.databinding.ActivityAnonaddySettingsBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
-import kotlinx.android.synthetic.main.activity_anonaddy_settings.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -24,12 +25,17 @@ import kotlin.math.roundToInt
 class AnonAddySettingsActivity : BaseActivity() {
 
     private var networkHelper: NetworkHelper? = null
+    private lateinit var binding: ActivityAnonaddySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_anonaddy_settings)
+        binding = ActivityAnonaddySettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+
+        setContentView(view)
         networkHelper = NetworkHelper(this)
 
-        setupToolbar(anonaddysettings_toolbar)
+        setupToolbar(binding.anonaddysettingsToolbar)
         setOnClickListeners()
 
         getStatistics()
@@ -38,7 +44,7 @@ class AnonAddySettingsActivity : BaseActivity() {
     }
 
 
-    // If the user comes back from eg. settings re-check + enable biometricswitch
+    // If the user comes back from eg. settings re-check for updated data
     override fun onResume() {
         super.onResume()
         getDataFromWeb()
@@ -49,43 +55,42 @@ class AnonAddySettingsActivity : BaseActivity() {
         /*
         ANONADDY SETTINGS CANNOT BE SET BY API. Always open settings
          */
-        anonaddy_settings_monthly_bandwidth_more_info_button.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
+        binding.anonaddySettingsMonthlyBandwidthMoreInfoButton.setOnClickListener {
+            openSettings()
         }
-        anonaddy_settings_statistics_recipients_more_info_button.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
+        binding.anonaddySettingsStatisticsRecipientsMoreInfoButton.setOnClickListener {
+            openSettings()
         }
-        anonaddy_settings_statistics_aliases_more_info_button.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        anonaddy_settings_update_default_recipient_LL.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        anonaddy_settings_update_default_alias_domain_LL.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
+        binding.anonaddySettingsStatisticsAliasesMoreInfoButton.setOnClickListener {
+            openSettings()
         }
 
-        anonaddy_settings_update_default_alias_format_LL.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
+
+        binding.anonaddySettingsUpdateDefaultRecipientLL.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                openSettings()
+            }
+        })
+
+
+        binding.anonaddySettingsUpdateDefaultAliasDomainLL.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                openSettings()
+            }
+        })
+
+        binding.anonaddySettingsUpdateDefaultAliasFormatLL.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                openSettings()
+            }
+        })
+    }
+
+    private fun openSettings() {
+        val url = "${AnonAddy.API_BASE_URL}/settings"
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse(url)
+        startActivity(i)
     }
 
 
@@ -104,7 +109,7 @@ class AnonAddySettingsActivity : BaseActivity() {
             } else {
                 val snackbar =
                     Snackbar.make(
-                        activity_app_settings_LL, resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        binding.activityAppSettingsLL, resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         Snackbar.LENGTH_SHORT
                     )
 
@@ -130,19 +135,19 @@ class AnonAddySettingsActivity : BaseActivity() {
     }
 
     private fun setAliasesStatistics(count: Int, maxAliases: Int) {
-        anonaddy_settings_statistics_aliases_progress.max = maxAliases * 100
-        anonaddy_settings_statistics_aliases_current.text = count.toString()
+        binding.anonaddySettingsStatisticsAliasesProgress.max = maxAliases * 100
+        binding.anonaddySettingsStatisticsAliasesCurrent.text = count.toString()
 
         val maxAliasesString = if (maxAliases == 0) "∞" else maxAliases.toString()
-        anonaddy_settings_statistics_aliases_max.text = maxAliasesString
+        binding.anonaddySettingsStatisticsAliasesMax.text = maxAliasesString
 
         val maxAliasesDescString = if (maxAliases == 0) resources.getString(R.string.unlimited) else maxAliases.toString()
-        anonaddy_settings_statistics_aliases_desc.text =
+        binding.anonaddySettingsStatisticsAliasesDesc.text =
             resources.getString(R.string.anonaddy_settings_statistics_aliases_desc, count, maxAliasesDescString)
 
         Handler(Looper.getMainLooper()).postDelayed({
             ObjectAnimator.ofInt(
-                anonaddy_settings_statistics_aliases_progress,
+                binding.anonaddySettingsStatisticsAliasesProgress,
                 "progress",
                 count * 100
             )
@@ -155,16 +160,16 @@ class AnonAddySettingsActivity : BaseActivity() {
         currMonthlyBandwidth: Double,
         maxMonthlyBandwidth: Int
     ) {
-        anonaddy_settings_statistics_monthly_bandwidth_progress.max =
+        binding.anonaddySettingsStatisticsMonthlyBandwidthProgress.max =
             if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
 
         val currMonthlyBandwidthString = "${roundOffDecimal(currMonthlyBandwidth)}MB"
-        anonaddy_settings_statistics_monthly_bandwidth_current.text = currMonthlyBandwidthString
+        binding.anonaddySettingsStatisticsMonthlyBandwidthCurrent.text = currMonthlyBandwidthString
 
         val maxMonthlyBandwidthString = "${if (maxMonthlyBandwidth == 0) "∞" else maxMonthlyBandwidth.toString()}MB"
         val maxMonthlyBandwidthDescString = if (maxMonthlyBandwidth == 0) resources.getString(R.string.unlimited) else "${maxMonthlyBandwidth}MB"
 
-        anonaddy_settings_statistics_monthly_bandwidth_max.text = maxMonthlyBandwidthString
+        binding.anonaddySettingsStatisticsMonthlyBandwidthMax.text = maxMonthlyBandwidthString
 
 
         val cal: Calendar = Calendar.getInstance()
@@ -172,7 +177,7 @@ class AnonAddySettingsActivity : BaseActivity() {
 
         val nextMonthString = SimpleDateFormat("MMMM").format(cal.time)
 
-        anonaddy_settings_statistics_monthly_bandwidth_desc.text =
+        binding.anonaddySettingsStatisticsMonthlyBandwidthDesc.text =
             resources.getString(
                 R.string.anonaddy_settings_monthly_bandwidth_desc,
                 currMonthlyBandwidthString,
@@ -182,7 +187,7 @@ class AnonAddySettingsActivity : BaseActivity() {
 
 
         ObjectAnimator.ofInt(
-            anonaddy_settings_statistics_monthly_bandwidth_progress,
+            binding.anonaddySettingsStatisticsMonthlyBandwidthProgress,
             "progress",
             currMonthlyBandwidth.roundToInt() * 100
         )
@@ -191,19 +196,19 @@ class AnonAddySettingsActivity : BaseActivity() {
     }
 
     private fun setRecipientStatistics(currRecipients: Int, maxRecipient: Int) {
-        anonaddy_settings_statistics_statistics_recipients_progress.max =
+        binding.anonaddySettingsStatisticsStatisticsRecipientsProgress.max =
             maxRecipient * 100
-        anonaddy_settings_statistics_recipients_current.text = currRecipients.toString()
+        binding.anonaddySettingsStatisticsRecipientsCurrent.text = currRecipients.toString()
 
         val maxRecipientString = if (maxRecipient == 0) "∞" else maxRecipient.toString()
         val maxRecipientDescString = if (maxRecipient == 0) resources.getString(R.string.unlimited) else maxRecipient.toString()
-        anonaddy_settings_statistics_recipients_max.text = maxRecipientString
+        binding.anonaddySettingsStatisticsRecipientsMax.text = maxRecipientString
 
-        anonaddy_settings_statistics_recipients_desc.text =
+        binding.anonaddySettingsStatisticsRecipientsDesc.text =
             resources.getString(R.string.anonaddy_settings_statistics_recipients_desc, currRecipients, maxRecipientDescString)
 
         ObjectAnimator.ofInt(
-            anonaddy_settings_statistics_statistics_recipients_progress,
+            binding.anonaddySettingsStatisticsStatisticsRecipientsProgress,
             "progress",
             currRecipients * 100
         )

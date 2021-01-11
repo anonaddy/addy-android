@@ -1,20 +1,17 @@
 package host.stjin.anonaddy.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.databinding.ActivityMainBinding
+import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.ChangelogBottomDialogFragment
@@ -25,9 +22,12 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.main_top_bar_not_user.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.math.abs
+
 
 class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener {
 
@@ -46,43 +46,46 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkForDarkModeAndSetFlags()
+        binding = inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        val settingsManager = SettingsManager(true, this)
-        // First check for biometrics with a fallback on screen lock
-        if (settingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
-            verifyBiometrics()
-        } else {
-            loadMainActivity()
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            isAuthenticated { isAuthenticated ->
+                if (isAuthenticated) {
+                    loadMainActivity()
+                }
+            }
         }
+
     }
 
+    private lateinit var binding: ActivityMainBinding
     private fun loadMainActivity() {
-        setContentView(R.layout.activity_main)
         showChangeLog()
 
-        activity_main_viewpager.adapter = MainViewpagerAdapter(this, fragmentList)
-        activity_main_viewpager.offscreenPageLimit = 3
+        binding.activityMainViewpager.adapter = MainViewpagerAdapter(this, fragmentList)
+        binding.activityMainViewpager.offscreenPageLimit = 3
         // Allow swiping through the pages
-        activity_main_viewpager.isUserInputEnabled = true
-        activity_main_viewpager.setPageTransformer { page, position ->
+        binding.activityMainViewpager.isUserInputEnabled = true
+        binding.activityMainViewpager.setPageTransformer { page, position ->
             val normalizedposition = abs(abs(position) - 1)
             page.alpha = normalizedposition
         }
 
-        activity_main_viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.activityMainViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        nav_view.menu.findItem(R.id.navigation_home).isChecked = true
+                        binding.navView.menu.findItem(R.id.navigation_home).isChecked = true
                         changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_home))
                     }
                     1 -> {
-                        nav_view.menu.findItem(R.id.navigation_alias).isChecked = true
+                        binding.navView.menu.findItem(R.id.navigation_alias).isChecked = true
                         changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_aliases))
                     }
                     2 -> {
-                        nav_view.menu.findItem(R.id.navigation_recipients).isChecked = true
+                        binding.navView.menu.findItem(R.id.navigation_recipients).isChecked = true
                         changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_recipients))
                     }
                 }
@@ -90,7 +93,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         })
 
-        nav_view.setOnNavigationItemSelectedListener {
+        binding.navView.setOnNavigationItemSelectedListener {
             switchFragments(it.itemId)
             false
         }
@@ -115,69 +118,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         settingsManager.putSettingsInt(SettingsManager.PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
     }
 
-    private fun verifyBiometrics() {
-        val executor = ContextCompat.getMainExecutor(this)
-        val biometricPrompt = BiometricPrompt(
-            this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(
-                    errorCode: Int,
-                    errString: CharSequence
-                ) {
-                    super.onAuthenticationError(errorCode, errString)
-
-                    when (errorCode) {
-                        BiometricPrompt.ERROR_NO_BIOMETRICS -> {
-                            // The user has removed the screen lock completely.
-                            // Unlock the app and continue
-                            SettingsManager(true, this@MainActivity).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
-                            Toast.makeText(
-                                this@MainActivity, resources.getString(
-                                    R.string.authentication_error_11
-                                ), Toast.LENGTH_LONG
-                            ).show()
-                            loadMainActivity()
-                        }
-                        BiometricPrompt.ERROR_USER_CANCELED -> {
-                            finish()
-                        }
-                        BiometricPrompt.ERROR_CANCELED -> {
-                            finish()
-                        }
-                        else -> {
-                            Toast.makeText(
-                                this@MainActivity, resources.getString(
-                                    R.string.authentication_error_s,
-                                    errString
-                                ), Toast.LENGTH_LONG
-                            ).show()
-                            finish()
-                        }
-                    }
-                }
-
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult
-                ) {
-                    super.onAuthenticationSucceeded(result)
-                    loadMainActivity()
-                }
-
-            })
-
-        val promptInfo =
-            BiometricPrompt.PromptInfo.Builder()
-                .setTitle(resources.getString(R.string.anonaddy_locked))
-                .setDeviceCredentialAllowed(true)
-                .setConfirmationRequired(false)
-                .build()
-
-        biometricPrompt.authenticate(promptInfo)
-
-    }
-
     private fun initialiseMainAppBar() {
-        main_top_bar_user_initials.setOnClickListener {
+        binding.mainTopBar.mainTopBarUserInitials.setOnClickListener {
             val i = Intent(Intent(this, DialogActivity::class.java))
             val options = ActivityOptions
                 .makeSceneTransitionAnimation(
@@ -193,7 +135,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             startActivity(i, options.toBundle())
         }
 
-        main_top_bar_search_icon.setOnClickListener {
+        binding.mainTopBar.mainTopBarSearchIcon.setOnClickListener {
             if (!searchBottomDialogFragment.isAdded) {
                 searchBottomDialogFragment.show(
                     supportFragmentManager,
@@ -203,31 +145,16 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-    @SuppressLint("SwitchIntDef")
-    fun checkForDarkModeAndSetFlags() {
-        val settingsManager = SettingsManager(false, this)
-        when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
-            0 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-            1 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }
-            -1 -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
-        }
-    }
 
     private fun changeTopBarTitle(title: String) {
-        main_top_bar_not_title.text = title
+        binding.mainTopBar.mainTopBarTitle.text = title
     }
 
     fun switchFragments(fragment: Int) {
         when (fragment) {
-            R.id.navigation_home -> activity_main_viewpager.currentItem = 0
-            R.id.navigation_alias -> activity_main_viewpager.currentItem = 1
-            R.id.navigation_recipients -> activity_main_viewpager.currentItem = 2
+            R.id.navigation_home -> binding.activityMainViewpager.currentItem = 0
+            R.id.navigation_alias -> binding.activityMainViewpager.currentItem = 1
+            R.id.navigation_recipients -> binding.activityMainViewpager.currentItem = 2
         }
     }
 

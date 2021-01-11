@@ -1,6 +1,6 @@
 package host.stjin.anonaddy.utils
 
-import java.text.SimpleDateFormat
+import java.text.DateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -8,26 +8,15 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 object DateTimeUtils {
-/*    fun turnStringIntoLocalPrettyString(string: String): String? {
-        return try {
-            val ldt =
-                LocalDateTime.parse(string, DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"))
-            var date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant())
-            val singaporeZoneId = ZoneId.of("GMT")
-            val asiaZonedDateTime: ZonedDateTime = ldt.atZone(singaporeZoneId)
-            val newYokZoneId = ZoneId.systemDefault()
 
-            val nyDateTime: ZonedDateTime = asiaZonedDateTime.withZoneSameInstant(newYokZoneId)
-            date = Date.from(nyDateTime.toInstant())
+    enum class DATETIMEUTILS {
+        DATE,
+        TIME,
+        DATETIME,
+    }
 
-            val prettyTime = PrettyTime()
-            prettyTime.format(date)
-        } catch (e: Exception) {
-            "$string (GMT)"
-        }
-    }*/
-
-    fun turnStringIntoLocalString(string: String?): String? {
+    // This method takes the string as its stored in Anonaddy's database, and turns it into local format
+    fun turnStringIntoLocalString(string: String?, dateTimeFormat: DATETIMEUTILS = DATETIMEUTILS.DATETIME): String? {
         if (string == null) {
             return ""
         } else {
@@ -35,16 +24,23 @@ object DateTimeUtils {
                 val ldt =
                     LocalDateTime.parse(string, DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"))
                 val date: Date
-                val singaporeZoneId = ZoneId.of("GMT")
-                val asiaZonedDateTime: ZonedDateTime = ldt.atZone(singaporeZoneId)
-                val newYokZoneId = ZoneId.systemDefault()
+                val serverZoneId = ZoneId.of("GMT")
+                val zonedDateTime: ZonedDateTime = ldt.atZone(serverZoneId)
+                val defaultZoneId = ZoneId.systemDefault()
 
-                val nyDateTime: ZonedDateTime = asiaZonedDateTime.withZoneSameInstant(newYokZoneId)
+                val nyDateTime: ZonedDateTime = zonedDateTime.withZoneSameInstant(defaultZoneId)
                 date = Date.from(nyDateTime.toInstant())
-                return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(date)
+
+
+                return when (dateTimeFormat) {
+                    DATETIMEUTILS.DATE -> DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+                    DATETIMEUTILS.TIME -> DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+                    DATETIMEUTILS.DATETIME -> DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
+                }
             } catch (e: Exception) {
                 "$string (GMT)"
             }
         }
     }
+
 }

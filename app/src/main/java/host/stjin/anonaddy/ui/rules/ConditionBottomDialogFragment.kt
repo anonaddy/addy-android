@@ -11,8 +11,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.BottomsheetRulesConditionBinding
 import host.stjin.anonaddy.models.Condition
-import kotlinx.android.synthetic.main.bottomsheet_rules_condition.view.*
 
 
 class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
@@ -33,27 +33,31 @@ class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
         return dialog
     }
 
+    private var _binding: BottomsheetRulesConditionBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_rules_condition, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetRulesConditionBinding.inflate(inflater, container, false)
+        val root = binding.root
+
         listener = activity as AddConditionBottomDialogListener
 
 
-        fillSpinners(root, requireContext())
-        root.bs_rule_condition_add_condition_button.setOnClickListener(this)
+        fillSpinners(requireContext())
+        binding.bsRuleConditionAddConditionButton.setOnClickListener(this)
 
-        checkForArguments(root)
+        checkForArguments()
         return root
     }
 
-    private fun checkForArguments(root: View) {
+    private fun checkForArguments() {
         // Check if there arguments (to be filled from the Create Rule Activity)
         if (arguments?.size() ?: 0 > 0) {
             arguments?.getInt(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT_INDEX.argument)?.let {
@@ -66,14 +70,14 @@ class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
 
             val typeText =
                 TYPES_NAME[TYPES.indexOf(conditionEditObject?.type)]
-            root.bs_rule_condition_type_mact.setText(typeText, false)
+            binding.bsRuleConditionTypeMact.setText(typeText, false)
 
             val matchText =
                 MATCHES_NAME[MATCHES.indexOf(conditionEditObject?.match)]
-            root.bs_rule_condition_match_mact.setText(matchText, false)
+            binding.bsRuleConditionMatchMact.setText(matchText, false)
 
 
-            root.bs_rule_condition_values_tiet.setText(conditionEditObject?.values?.joinToString())
+            binding.bsRuleConditionValuesTiet.setText(conditionEditObject?.values?.joinToString())
         }
 
     }
@@ -83,7 +87,7 @@ class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
     private var MATCHES: List<String> = listOf()
     private var MATCHES_NAME: List<String> = listOf()
     private var TYPES_NAME: List<String> = listOf()
-    private fun fillSpinners(root: View, context: Context) {
+    private fun fillSpinners(context: Context) {
         TYPES = this.resources.getStringArray(R.array.conditions_type).toList()
         MATCHES = this.resources.getStringArray(R.array.conditions_match).toList()
         TYPES_NAME = this.resources.getStringArray(R.array.conditions_type_name).toList()
@@ -94,7 +98,7 @@ class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
             R.layout.dropdown_menu_popup_item,
             TYPES_NAME
         )
-        root.bs_rule_condition_type_mact.setAdapter(domainAdapter)
+        binding.bsRuleConditionTypeMact.setAdapter(domainAdapter)
 
 
         val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
@@ -102,7 +106,7 @@ class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
             R.layout.dropdown_menu_popup_item,
             MATCHES_NAME
         )
-        root.bs_rule_condition_match_mact.setAdapter(formatAdapter)
+        binding.bsRuleConditionMatchMact.setAdapter(formatAdapter)
     }
 
     companion object {
@@ -111,39 +115,39 @@ class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
         }
     }
 
-    private fun addCondition(root: View, context: Context) {
-        if (!TYPES_NAME.contains(root.bs_rule_condition_type_mact.text.toString())) {
-            root.bs_rule_condition_type_til.error =
+    private fun addCondition(context: Context) {
+        if (!TYPES_NAME.contains(binding.bsRuleConditionTypeMact.text.toString())) {
+            binding.bsRuleConditionTypeTil.error =
                 context.resources.getString(R.string.not_a_valid_condition_type)
             return
         }
 
-        if (!MATCHES_NAME.contains(root.bs_rule_condition_match_mact.text.toString())) {
-            root.bs_rule_condition_match_til.error =
+        if (!MATCHES_NAME.contains(binding.bsRuleConditionMatchMact.text.toString())) {
+            binding.bsRuleConditionMatchTil.error =
                 context.resources.getString(R.string.not_a_valid_condition_match)
             return
         }
 
-        if (root.bs_rule_condition_values_tiet.text.toString().isEmpty()) {
-            root.bs_rule_condition_values_til.error =
+        if (binding.bsRuleConditionValuesTiet.text.toString().isEmpty()) {
+            binding.bsRuleConditionValuesTil.error =
                 context.resources.getString(R.string.not_a_valid_value)
             return
         }
 
         // Set error to null if domain and alias is valid
-        root.bs_rule_condition_type_til.error = null
-        root.bs_rule_condition_match_til.error = null
-        root.bs_rule_condition_values_til.error = null
+        binding.bsRuleConditionTypeTil.error = null
+        binding.bsRuleConditionMatchTil.error = null
+        binding.bsRuleConditionValuesTil.error = null
 
-        root.bs_rule_condition_add_condition_button.isEnabled = false
+        binding.bsRuleConditionAddConditionButton.isEnabled = false
 
         val type =
-            TYPES[TYPES_NAME.indexOf(root.bs_rule_condition_type_mact.text.toString())]
+            TYPES[TYPES_NAME.indexOf(binding.bsRuleConditionTypeMact.text.toString())]
         val match =
-            MATCHES[MATCHES_NAME.indexOf(root.bs_rule_condition_match_mact.text.toString())]
+            MATCHES[MATCHES_NAME.indexOf(binding.bsRuleConditionMatchMact.text.toString())]
 
         // Split the textfield to an array (using , as a delimiter)
-        val values = root.bs_rule_condition_values_tiet.text.toString().split(",")
+        val values = binding.bsRuleConditionValuesTiet.text.toString().split(",")
 
         listener.onAddedCondition(conditionEditIndex, type, match, values)
     }
@@ -151,8 +155,13 @@ class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_rule_condition_add_condition_button) {
-                addCondition(requireView(), requireContext())
+                addCondition(requireContext())
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -49,6 +49,7 @@ class RecipientAdapter(
         when {
             listWithRecipients[position].email_verified_at == null -> {
                 holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_error_outline_24)
+                holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.not_verified)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListResendButton.visibility = View.VISIBLE

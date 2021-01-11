@@ -12,8 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.BottomsheetEditRecipientsAliasBinding
 import host.stjin.anonaddy.models.Recipients
-import kotlinx.android.synthetic.main.bottomsheet_edit_recipients_alias.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 
 class EditAliasRecipientsBottomDialogFragment(
-    private val aliasId: String,
+    private val aliasId: String?,
     private val recipients: List<Recipients>?
 ) :
     BottomSheetDialogFragment(),
@@ -41,30 +41,42 @@ class EditAliasRecipientsBottomDialogFragment(
         return dialog
     }
 
+
+    private var _binding: BottomsheetEditRecipientsAliasBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_edit_recipients_alias, container,
-            false
-        )
-        listener = activity as AddEditAliasRecipientsBottomDialogListener
+    ): View {
+        _binding = BottomsheetEditRecipientsAliasBinding.inflate(inflater, container, false)
+        val root = binding.root
 
-        // Set button listeners and current description
-        root.bs_editrecipients_save_button.setOnClickListener(this)
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllRecipients(root, requireContext())
+        // Check if aliasId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+        if (aliasId != null) {
+            listener = activity as AddEditAliasRecipientsBottomDialogListener
+
+            // Set button listeners and current description
+            binding.bsEditrecipientsSaveButton.setOnClickListener(this)
+
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getAllRecipients(requireContext())
+            }
+        } else {
+            dismiss()
         }
+
 
         return root
 
     }
 
-    private suspend fun getAllRecipients(root: View, context: Context) {
+    private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
 
         val recipientUnderThisAliasList = arrayListOf<String>()
@@ -78,7 +90,7 @@ class EditAliasRecipientsBottomDialogFragment(
         networkHelper.getRecipients({ result ->
             if (result != null) {
                 for (recipient in result) {
-                    val chip = Chip(root.bs_editrecipients_chipgroup.context)
+                    val chip = Chip(binding.bsEditrecipientsChipgroup.context)
                     chip.text = recipient.email
                     chip.tag = recipient.id
                     chip.isClickable = true
@@ -88,7 +100,7 @@ class EditAliasRecipientsBottomDialogFragment(
                     chip.isChecked = recipientUnderThisAliasList.contains(recipient.email)
 
 
-                    root.bs_editrecipients_chipgroup.addView(chip)
+                    binding.bsEditrecipientsChipgroup.addView(chip)
                 }
             }
 
@@ -96,6 +108,8 @@ class EditAliasRecipientsBottomDialogFragment(
     }
 
 
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
     companion object {
         fun newInstance(
             id: String,
@@ -105,25 +119,25 @@ class EditAliasRecipientsBottomDialogFragment(
         }
     }
 
-    private fun editRecipients(root: View, context: Context) {
-        root.bs_editrecipients_save_button.isEnabled = false
-        root.bs_editrecipients_save_progressbar.visibility = View.VISIBLE
+    private fun editRecipients(context: Context) {
+        binding.bsEditrecipientsSaveButton.isEnabled = false
+        binding.bsEditrecipientsSaveProgressbar.visibility = View.VISIBLE
 
         val recipients = arrayListOf<String>()
-        val ids: List<Int> = root.bs_editrecipients_chipgroup.checkedChipIds
+        val ids: List<Int> = binding.bsEditrecipientsChipgroup.checkedChipIds
         for (id in ids) {
-            val chip: Chip = root.bs_editrecipients_chipgroup.findViewById(id)
+            val chip: Chip = binding.bsEditrecipientsChipgroup.findViewById(id)
             recipients.add(chip.tag.toString())
         }
 
 
+        // aliasId is never null at this point, hence the !!
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            editRecipientsHttp(root, context, aliasId, recipients)
+            editRecipientsHttp(context, aliasId!!, recipients)
         }
     }
 
     private suspend fun editRecipientsHttp(
-        root: View,
         context: Context,
         aliasId: String,
         recipients: ArrayList<String>
@@ -133,9 +147,9 @@ class EditAliasRecipientsBottomDialogFragment(
             if (result == "200") {
                 listener.recipientsEdited()
             } else {
-                root.bs_editrecipients_save_button.isEnabled = true
-                root.bs_editrecipients_save_progressbar.visibility = View.INVISIBLE
-                root.bs_editrecipients_til.error =
+                binding.bsEditrecipientsSaveButton.isEnabled = true
+                binding.bsEditrecipientsSaveProgressbar.visibility = View.INVISIBLE
+                binding.bsEditrecipientsTil.error =
                     context.resources.getString(R.string.error_edit_recipients) + "\n" + result
             }
         }, aliasId, recipients)
@@ -145,10 +159,14 @@ class EditAliasRecipientsBottomDialogFragment(
         if (p0 != null) {
             if (p0.id == R.id.bs_editrecipients_save_button) {
                 editRecipients(
-                    requireView(),
                     requireContext()
                 )
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

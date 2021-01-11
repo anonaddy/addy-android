@@ -38,7 +38,6 @@
                         android:contentDescription="@string/anonaddy_settings"
                         android:src="@drawable/ic_account_circle_outline"
                         android:transitionName="image_transition"
-                        android:tint="@color/BlackWhite"
                         app:tint="@color/BlackWhite" />
 
                     <TextView
@@ -77,7 +76,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    style="@style/SettingsSectionIconStyleEnd"
+                    style="@style/SettingsSectionIconStyleMarginEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -122,7 +121,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    style="@style/SettingsSectionIconStyleEnd"
+                    style="@style/SettingsSectionIconStyleMarginEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -168,7 +167,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    style="@style/SettingsSectionIconStyleEnd"
+                    style="@style/SettingsSectionIconStyleMarginEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -214,7 +213,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    style="@style/SettingsSectionIconStyleEnd"
+                    style="@style/SettingsSectionIconStyleMarginEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -261,7 +260,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    style="@style/SettingsSectionIconStyleEnd"
+                    style="@style/SettingsSectionIconStyleMarginEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="vertical">

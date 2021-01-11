@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
@@ -10,14 +9,18 @@ android {
         applicationId "host.stjin.anonaddy"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 12
-        versionName "1.1.3"
-
+        versionCode 16
+        versionName "2.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     buildTypes {
         release {
+            // Do not enable, Fuel will break
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -36,7 +39,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.20"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.21"
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
@@ -92,7 +95,17 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 }
 
-// Tablet layout of dialog
+// Scanning QR codes
 dependencies {
-    implementation 'com.google.android:flexbox:2.0.1'
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
+}
+
+// For updating widgets and caching data
+dependencies {
+    implementation "androidx.work:work-runtime-ktx:2.4.0"
+}
+
+// For the donut in the aliasview
+dependencies {
+    implementation("app.futured.donut:library:2.1.0")
 }

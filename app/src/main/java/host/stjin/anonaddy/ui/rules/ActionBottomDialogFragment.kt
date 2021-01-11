@@ -11,8 +11,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.BottomsheetRulesActionBinding
 import host.stjin.anonaddy.models.Action
-import kotlinx.android.synthetic.main.bottomsheet_rules_action.view.*
 
 
 class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
@@ -35,28 +35,31 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         return dialog
     }
 
+    private var _binding: BottomsheetRulesActionBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_rules_action, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetRulesActionBinding.inflate(inflater, container, false)
+        val root = binding.root
+
         listener = activity as AddActionBottomDialogListener
 
 
-        fillSpinners(root, requireContext())
-        root.bs_rule_action_add_action_button.setOnClickListener(this)
-        spinnerChangeListener(root, requireContext())
+        fillSpinners(requireContext())
+        binding.bsRuleActionAddActionButton.setOnClickListener(this)
+        spinnerChangeListener(requireContext())
 
-        checkForArguments(root, requireContext())
+        checkForArguments(requireContext())
         return root
     }
 
-    private fun checkForArguments(root: View, context: Context) {
+    private fun checkForArguments(context: Context) {
         // Check if there arguments (to be filled from the Create Rule Activity)
         if (arguments?.size() ?: 0 > 0) {
             arguments?.getInt(CreateRuleActivity.ARGUMENTS.ACTION_EDIT_INDEX.argument)?.let {
@@ -69,13 +72,13 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
             val typeText =
                 TYPES_NAME[TYPES.indexOf(actionEditObject?.type)]
-            root.bs_rule_action_type_mact.setText(typeText, false)
-            root.bs_rule_action_values_tiet.setText(actionEditObject?.value)
+            binding.bsRuleActionTypeMact.setText(typeText, false)
+            binding.bsRuleActionValuesTiet.setText(actionEditObject?.value)
 
 
 
-            checkIfTypeRequiresValueField(root, context)
-            root.bs_rule_action_type_til.error = null
+            checkIfTypeRequiresValueField(context)
+            binding.bsRuleActionTypeTil.error = null
         }
 
     }
@@ -84,34 +87,34 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
     Check if the type spinner matches any of the value-type type or spinner-type type
      */
 
-    private fun spinnerChangeListener(root: View, context: Context) {
-        root.bs_rule_action_type_mact.setOnItemClickListener { _, _, _, _ ->
-            checkIfTypeRequiresValueField(root, context)
-            root.bs_rule_action_type_til.error = null
+    private fun spinnerChangeListener(context: Context) {
+        binding.bsRuleActionTypeMact.setOnItemClickListener { _, _, _, _ ->
+            checkIfTypeRequiresValueField(context)
+            binding.bsRuleActionTypeTil.error = null
         }
     }
 
 
-    private fun checkIfTypeRequiresValueField(root: View, context: Context) {
+    private fun checkIfTypeRequiresValueField(context: Context) {
         // If the type is set to set banner location show the spinner and hide the value field
         when {
-            root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.set_the_banner_information_location_to) -> {
-                root.bs_rule_action_values_spinner_banner_location_til.visibility = View.VISIBLE
-                root.bs_rule_action_values_til.visibility = View.GONE
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.set_the_banner_information_location_to) -> {
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.VISIBLE
+                binding.bsRuleActionValuesTil.visibility = View.GONE
             }
             // If the type is set to block email hide both
-            root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.block_the_email) -> {
-                root.bs_rule_action_values_spinner_banner_location_til.visibility = View.GONE
-                root.bs_rule_action_values_til.visibility = View.GONE
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.block_the_email) -> {
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
+                binding.bsRuleActionValuesTil.visibility = View.GONE
             }
             // If the type is set to turn off PGP hide both
-            root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.turn_PGP_encryption_off) -> {
-                root.bs_rule_action_values_spinner_banner_location_til.visibility = View.GONE
-                root.bs_rule_action_values_til.visibility = View.GONE
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.turn_PGP_encryption_off) -> {
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
+                binding.bsRuleActionValuesTil.visibility = View.GONE
             }
             else -> {
-                root.bs_rule_action_values_spinner_banner_location_til.visibility = View.GONE
-                root.bs_rule_action_values_til.visibility = View.VISIBLE
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
+                binding.bsRuleActionValuesTil.visibility = View.VISIBLE
             }
         }
     }
@@ -121,7 +124,7 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
     private var VALUE_BANNER_LOCATION: List<String> = listOf()
     private var VALUE_BANNER_LOCATION_NAME: List<String> = listOf()
     private var TYPES_NAME: List<String> = listOf()
-    private fun fillSpinners(root: View, context: Context) {
+    private fun fillSpinners(context: Context) {
         TYPES = this.resources.getStringArray(R.array.actions_type).toList()
         TYPES_NAME = this.resources.getStringArray(R.array.actions_type_name).toList()
         VALUE_BANNER_LOCATION = this.resources.getStringArray(R.array.actions_type_bannerlocation_options).toList()
@@ -132,7 +135,7 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             R.layout.dropdown_menu_popup_item,
             TYPES_NAME
         )
-        root.bs_rule_action_type_mact.setAdapter(domainAdapter)
+        binding.bsRuleActionTypeMact.setAdapter(domainAdapter)
 
 
         val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
@@ -140,7 +143,7 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             R.layout.dropdown_menu_popup_item,
             VALUE_BANNER_LOCATION_NAME
         )
-        root.bs_rule_action_values_spinner_banner_location_mact.setAdapter(formatAdapter)
+        binding.bsRuleActionValuesSpinnerBannerLocationMact.setAdapter(formatAdapter)
     }
 
     companion object {
@@ -149,29 +152,29 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         }
     }
 
-    private fun addAction(root: View, context: Context) {
+    private fun addAction(context: Context) {
 
-        if (!TYPES_NAME.contains(root.bs_rule_action_type_mact.text.toString())) {
-            root.bs_rule_action_type_til.error =
+        if (!TYPES_NAME.contains(binding.bsRuleActionTypeMact.text.toString())) {
+            binding.bsRuleActionTypeTil.error =
                 context.resources.getString(R.string.not_a_valid_action_type)
             return
         }
 
-        if (!VALUE_BANNER_LOCATION_NAME.contains(root.bs_rule_action_values_spinner_banner_location_mact.text.toString())) {
-            root.bs_rule_action_values_spinner_banner_location_til.error =
+        if (!VALUE_BANNER_LOCATION_NAME.contains(binding.bsRuleActionValuesSpinnerBannerLocationMact.text.toString())) {
+            binding.bsRuleActionValuesSpinnerBannerLocationTil.error =
                 context.resources.getString(R.string.not_a_valid_banner_location)
             return
         }
 
 
         // Set error to null if domain and alias is valid
-        root.bs_rule_action_type_til.error = null
-        root.bs_rule_action_values_spinner_banner_location_til.error = null
+        binding.bsRuleActionTypeTil.error = null
+        binding.bsRuleActionValuesSpinnerBannerLocationTil.error = null
 
-        root.bs_rule_action_add_action_button.isEnabled = false
+        binding.bsRuleActionAddActionButton.isEnabled = false
 
         val type =
-            TYPES[TYPES_NAME.indexOf(root.bs_rule_action_type_mact.text.toString())]
+            TYPES[TYPES_NAME.indexOf(binding.bsRuleActionTypeMact.text.toString())]
 
         /*
         GET VALUES
@@ -179,36 +182,40 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
         when {
             // If the type is set to set banner information location get the value from the spinner
-            root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.set_the_banner_information_location_to) -> {
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.set_the_banner_information_location_to) -> {
                 val bannerLocation =
-                    VALUE_BANNER_LOCATION[VALUE_BANNER_LOCATION_NAME.indexOf(root.bs_rule_action_values_spinner_banner_location_mact.text.toString())]
+                    VALUE_BANNER_LOCATION[VALUE_BANNER_LOCATION_NAME.indexOf(binding.bsRuleActionValuesSpinnerBannerLocationMact.text.toString())]
 
                 listener.onAddedAction(actionEditIndex, type, bannerLocation)
             }
 
             // If the type is set to block email send a true
-            root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.block_the_email) -> {
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.block_the_email) -> {
                 listener.onAddedAction(actionEditIndex, type, true)
             }
             // If the type is set to turn off PGP send a true
-            root.bs_rule_action_type_mact.text.toString() == context.resources.getString(R.string.turn_PGP_encryption_off) -> {
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.turn_PGP_encryption_off) -> {
                 listener.onAddedAction(actionEditIndex, type, true)
             }
             else -> {
                 // Else just get the textfield value
-                val value = root.bs_rule_action_values_tiet.text.toString()
+                val value = binding.bsRuleActionValuesTiet.text.toString()
                 listener.onAddedAction(actionEditIndex, type, value)
             }
         }
-
 
     }
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_rule_action_add_action_button) {
-                addAction(requireView(), requireContext())
+                addAction(requireContext())
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

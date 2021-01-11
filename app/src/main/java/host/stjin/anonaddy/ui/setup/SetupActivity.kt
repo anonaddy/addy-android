@@ -9,21 +9,27 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.view.updatePadding
 import host.stjin.anonaddy.*
+import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
-import kotlinx.android.synthetic.main.activity_setup.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.StringUtils
 
 class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener {
 
     private val addApiBottomDialogFragment: AddApiBottomDialogFragment =
         AddApiBottomDialogFragment.newInstance()
 
+    private lateinit var binding: ActivitySetupBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setup)
+        binding = ActivitySetupBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
 
         window.decorView.systemUiVisibility =
                 // Tells the system that the window wishes the content to
@@ -34,24 +40,44 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                     // be laid out as if the navigation bar was hidden
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
+
         setInsets()
         setButtonClickListeners()
+        checkForIntents()
+    }
+
+    private fun checkForIntents() {
+        if (intent.action != null) {
+            // /deactivate URI's
+            val data: Uri? = intent?.data
+            if (data.toString().contains("/setup")) {
+                // Reset app data in case app is already setup
+                //clearAllData() will automatically elevate to encrypt=true
+                SettingsManager(false, this).clearAllData()
+
+                val hostname = StringUtils.substringBefore(data.toString(), "/setup/")
+                val apiKey = StringUtils.substringAfter(data.toString(), "/setup/")
+                verifyKeyAndAdd(this, apiKey, hostname)
+                Toast.makeText(this, resources.getString(R.string.API_key_received_from_intent), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun setButtonClickListeners() {
-        fragment_setup_init_button_api.setOnClickListener {
+        binding.fragmentSetupInitButtonApi.setOnClickListener {
 
             /**
              * Check if there is a 999 length string in the clipboard (that's most likely the API key)
              */
 
-            val clipboard: ClipboardManager? =
+            val clipboard: ClipboardManager =
                 this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clipboardData = clipboard?.primaryClip
+            val clipboardData = clipboard.primaryClip
             val item = clipboardData?.getItemAt(0)
             val text = item?.text.toString()
 
-            if (text.length == 999) {
+            // Most passport keys are 999, as there are plans to move to Sanctum (which has 40char tokens) 40 will also trigger the clipboard readout.
+            if (text.length == 999 || text.length == 40) {
                 // a 999 length string found. This is most likely the API key
                 verifyKeyAndAdd(this, text)
                 Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()
@@ -65,21 +91,21 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             }
         }
 
-        fragment_setup_init_button_new.setOnClickListener {
+        binding.fragmentSetupInitButtonNew.setOnClickListener {
             val intent = Intent(this, SetupNewActivity::class.java)
             startActivity(intent)
         }
     }
 
-    private fun verifyKeyAndAdd(context: Context, apiKey: String) {
-        fragment_setup_init_button_api.isEnabled = false
-        fragment_setup_init_button_new.isEnabled = false
-        fragment_setup_apikey_get_progressbar.visibility = View.VISIBLE
+    private fun verifyKeyAndAdd(context: Context, apiKey: String, baseUrl: String = AnonAddy.API_BASE_URL) {
+        binding.fragmentSetupInitButtonApi.isEnabled = false
+        binding.fragmentSetupInitButtonNew.isEnabled = false
+        binding.fragmentSetupApikeyGetProgressbar.visibility = View.VISIBLE
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             // AnonAddy.API_BASE_URL is defaulted to the anonaddy.com instance. If the API key is valid there it was meant to use that instance.
             // If the baseURL/API do not work or match it opens the API screen
-            verifyApiKey(context, apiKey, AnonAddy.API_BASE_URL)
+            verifyApiKey(context, apiKey, baseUrl)
         }
     }
 
@@ -89,9 +115,11 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             if (result == "200") {
                 addKey(baseUrl, apiKey)
             } else {
-                fragment_setup_init_button_api.isEnabled = true
-                fragment_setup_init_button_new.isEnabled = true
-                fragment_setup_apikey_get_progressbar.visibility = View.INVISIBLE
+                Toast.makeText(this, resources.getString(R.string.API_key_invalid), Toast.LENGTH_LONG).show()
+
+                binding.fragmentSetupInitButtonApi.isEnabled = true
+                binding.fragmentSetupInitButtonNew.isEnabled = true
+                binding.fragmentSetupApikeyGetProgressbar.visibility = View.INVISIBLE
                 if (!addApiBottomDialogFragment.isAdded) {
                     addApiBottomDialogFragment.show(
                         supportFragmentManager,
@@ -112,14 +140,14 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
     private fun setInsets() {
-        fragment_setup_init_button_ll.doOnApplyWindowInsets { view, insets, padding ->
+        binding.fragmentSetupInitButtonLl.doOnApplyWindowInsets { view, insets, padding ->
             // padding contains the original padding values after inflation
             view.updatePadding(
                 bottom = padding.bottom + insets.systemWindowInsetBottom
             )
         }
 
-        fragment_setup_hi_there.doOnApplyWindowInsets { view, insets, padding ->
+        binding.fragmentSetupHiThere.doOnApplyWindowInsets { view, insets, padding ->
             // padding contains the original padding values after inflation
             view.updatePadding(
                 top = padding.top + insets.systemWindowInsetTop
@@ -138,5 +166,4 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         i.data = Uri.parse(url)
         startActivity(i)
     }
-
 }

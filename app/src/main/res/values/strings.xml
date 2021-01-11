@@ -45,15 +45,14 @@
     <string name="aliases_statistics">Aliases statistics</string>
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
-    <string name="replied_sent">Replied/sent</string>
     <string name="all_aliases">All aliases</string>
     <string name="add_alias">Add alias</string>
-    <string name="replied_forwarded_blocked_stat" tools:ignore="PluralsCandidate">%d forwarded; %d blocked</string>
-    <string name="replied_replied_sent_stat" tools:ignore="PluralsCandidate">%d replied; %d sent</string>
+    <string name="replied_forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
+    <string name="replied_replied_sent_stat" tools:ignore="PluralsCandidate">%1$d replied; %2$d sent</string>
     <string name="settings">Settings</string>
     <string name="resend_email">Resend email</string>
     <string name="delete">Delete</string>
-    <string name="recipients_list_description" tools:ignore="PluralsCandidate">%d aliases; Emails forwarded: %d</string>
+    <string name="recipients_list_description" tools:ignore="PluralsCandidate">%1$d aliases; Emails forwarded: %2$d</string>
     <string name="encryption_enabled">Encryption enabled</string>
     <string name="open_options">Open options</string>
     <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.anonaddy.com (or your own hosted instance)</string>
@@ -62,11 +61,8 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="sign_up">Sign up</string>
-    <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email.</string>
+    <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email</string>
     <string name="description">Description</string>
-    <string name="domains_format_random_words">Random words</string>
-    <string name="domains_format_custom">Custom</string>
-    <string name="domains_format_uuid">UUID</string>
     <string name="error_adding_alias">Something went wrong while adding the alias</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
     <string name="not_a_valid_alias_format">Not a valid alias format</string>
@@ -77,7 +73,7 @@
     <string name="app_theme">App theme</string>
     <string name="change_app_theme_to_dark_mode">Change app theme to dark mode</string>
     <string name="faq_desc">Visit the Frequently asked questions</string>
-    <string name="see_previous_changelogs">See previous changelogs</string>
+    <string name="see_this_version_changelogs">See this version\'s changelog</string>
     <string name="changelog">Changelog</string>
     <string name="contributors">Contributors</string>
     <string name="visit_anonaddy_helps_section">Visit Anonaddy helps section</string>
@@ -87,7 +83,9 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 1.1.3 &mdash;<br />🐛 [BUG FIX] Deleted alias section is not collapsed by default<br />🙋 [FEATURE REQUEST] Switch between panels by swiping left/right</p>]]></string>
+    <string name="app_changelog"><![CDATA[<p>🎆 Happy new year everyone! Hope you have a wonderful 2021 🎇<br />This update is the most exciting one since 1.1.0, it rocks a bunch of new features and LOTS of improvements.</p>
+<p>&mdash; What\'s new in version 2.0.0 &mdash;<br />🌐 [NEW] Get full control over how often background data such as widgets are refreshed<br />👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email<br />✉️️ [NEW] Quickly send emails from an alias<br />🔤 [NEW] Added random characters alias format<br />💳 [NEW] View the subscription end date</p>
+<p>&mdash; What\'s improved in version 2.0.0 &mdash;<br />🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables<br />🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents<br />🧈 [IMPROVED] Lot\'s of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement<br />🦋 [IMPROVED] Minor bugs have been fixed</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -96,7 +94,7 @@
     <string name="delete_recipient_desc">Are you sure you want to delete this recipient?</string>
     <string name="error_deleting_recipient">Something went wrong while deleting the recipient</string>
     <string name="address">Address</string>
-    <string name="add_recipient_desc">Enter the individual email of the new recipient you’d like to add.\n\nYou will receive an email with a verification link that will expire in one hour, you can tap “Resend email” to get a new one.</string>
+    <string name="add_recipient_desc">Enter the individual email of the new recipient you’d like to add.\n\nYou will receive an email with a verification link that will expire in one hour, you can tap “Resend email” to get a new one</string>
     <string name="not_a_valid_address">This is not a valid address</string>
     <string name="error_adding_recipient">Something went wrong while creating this alias</string>
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
@@ -105,19 +103,18 @@
     <string name="alias_status_active">Alias active</string>
     <string name="alias_status_desc">Use this alias for mail forwarding</string>
     <string name="delete_alias">Delete alias</string>
-    <string name="delete_alias_desc">Once deleted, this alias will reject any emails sent to it.</string>
+    <string name="delete_alias_desc">Once deleted, this alias will reject any emails sent to it</string>
     <string name="created_at">Created at</string>
     <string name="updated_at">Updated at</string>
     <string name="_more" tools:ignore="PluralsCandidate">%d more</string>
     <string name="edit_description">Edit description</string>
     <string name="error_edit_description">Something went wrong while editing this description</string>
-    <string name="alias_no_description">This alias has no description set. Tap here to add one.</string>
-    <string name="username_no_description">This username has no description set. Tap here to add one.</string>
-    <string name="domain_no_description">This domain has no description set. Tap here to add one.</string>
-    <string name="edit_desc_alias_desc">Change the description for this alias, describe what this alias is used for.</string>
+    <string name="alias_no_description">This alias has no description set. Tap here to add one</string>
+    <string name="username_no_description">This username has no description set. Tap here to add one</string>
+    <string name="domain_no_description">This domain has no description set. Tap here to add one</string>
+    <string name="edit_desc_alias_desc">Change the description for this alias, describe what this alias is used for</string>
     <string name="edit_alias">Edit alias</string>
-    <string name="forwarded">Forwarded</string>
-    <string name="alias_edit_recipients_desc">The list below shows all verified recipients. Select which recipients you want to set as recipient for this alias.</string>
+    <string name="alias_edit_recipients_desc">The list below shows all verified recipients. Select which recipients you want to set as recipient for this alias</string>
     <string name="edit_recipients">Edit recipients</string>
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>
     <string name="error_edit_recipient">Something went wrong while editing the recipient</string>
@@ -133,14 +130,13 @@
     <string name="restore_alias_confirmation_desc">Are you sure you want to restore this alias? Once restored, this alias will be able to receive emails again.</string>
     <string name="error_restoring_alias">Something went wrong while restoring this alias</string>
     <string name="default_recipient_s">Default recipient (%s)</string>
-    <string name="alias_statistics">Alias statistics</string>
     <string name="security">Security</string>
     <string name="security_desc">Use your biometric or pin/pattern to open AnonAddy</string>
     <string name="store_logs">Store logs</string>
     <string name="store_logs_desc">Tap here to see or clear the stored logs</string>
-    <string name="biometric_error_no_hardware">No biometric features available on this device.</string>
-    <string name="biometric_error_hw_unavailable">Biometric features are currently unavailable.</string>
-    <string name="biometric_error_none_enrolled">This user hasn\'t associated any biometric credentials with their account.</string>
+    <string name="biometric_error_no_hardware">No biometric features available on this device</string>
+    <string name="biometric_error_hw_unavailable">Biometric features are currently unavailable</string>
+    <string name="biometric_error_none_enrolled">This user hasn\'t associated any biometric credentials with their account</string>
     <string name="authentication_error_s">Authentication error: %s</string>
     <string name="authentication_failed">Authentication failed</string>
     <string name="enable_biometric_authentication">Enable biometric authentication</string>
@@ -158,14 +154,13 @@
     <string name="edit_recipient">Edit recipient</string>
     <string name="basic">Basic</string>
     <string name="encryption">Encryption</string>
-    <string name="encryption_status">Encryption status</string>
     <string name="remove_public_key">Remove Public Key</string>
     <string name="action">Action</string>
     <string name="recipient_aliases_d">Recipient aliases (%d)</string>
     <string name="encryption_disabled">Encryption disabled</string>
     <string name="change_public_gpg_key">Change public GPG key</string>
     <string name="add_public_gpg_key">Add public GPG key</string>
-    <string name="manage_recipient_basic_info">Email: %s\nCreated: %s\nUpdated at: %s\nEmail forwarded: %d\nEmail blocked: %d\nEmail replies: %d\nEmail sent: %d</string>
+    <string name="manage_recipient_basic_info">Email: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
     <string name="add_public_gpg_key_desc">Enter your PUBLIC key data in the textbox below\n\nMake sure to remove Comment: and Version:</string>
     <string name="add_key">Add key</string>
     <string name="error_add_gpg_key">Something went wrong while adding your public GPG key</string>
@@ -180,35 +175,36 @@
     <string name="whoops">Whoops!</string>
     <string name="try_again">Try again</string>
     <string name="subscription_user">%s user</string>
+    <string name="subscription_user_until">%1$s user until %2$s</string>
     <string name="error_resend_verification">Could not resend verification email</string>
     <string name="error_obtaining_user">Could not refresh data</string>
     <string name="manage_domains">Manage domains</string>
     <string name="all_domains">All domains</string>
     <string name="add_domain">Add domain</string>
-    <string name="domains_list_description" tools:ignore="PluralsCandidate">%d aliases; Emails forwarded: %d</string>
+    <string name="domains_list_description" tools:ignore="PluralsCandidate">%1$d aliases; Emails forwarded: %2$d</string>
     <string name="delete_domain">Delete domain</string>
     <string name="delete_domain_desc_confirm">Are you sure you want to delete this domain? This will also delete all aliases associated with this domain. You will no longer be able to receive any emails at this domain.</string>
     <string name="error_deleting_domain">Something went wrong while deleting this domain</string>
-    <string name="add_domain_desc">Enter the domain you would like to add.\n\nYou will have to verify the ownership of the domain, so make sure you have access to the DNS settings of this domain.</string>
+    <string name="add_domain_desc">Enter the domain you would like to add.\n\nYou will have to verify the ownership of the domain, so make sure you have access to the DNS settings of this domain</string>
     <string name="error_adding_domain">Something went wrong while adding this domain</string>
     <string name="configuration_error">Configuration error</string>
-    <string name="edit_desc_domain_desc">Change the description for this domain, describe what this domain is used for.</string>
-    <string name="edit_desc_username_desc">Change the description for this username, describe what this username is used for.</string>
+    <string name="edit_desc_domain_desc">Change the description for this domain, describe what this domain is used for</string>
+    <string name="edit_desc_username_desc">Change the description for this username, describe what this username is used for</string>
     <string name="edit_domain">Edit domain</string>
     <string name="domain_aliases_d">Domain aliases (%d)</string>
     <string name="username_aliases_d">Domain aliases (%d)</string>
     <string name="domain_status_active">Domain active</string>
     <string name="domain_status_desc">Use this domain for mail forwarding</string>
     <string name="username_status_desc">Use this username for mail forwarding</string>
-    <string name="delete_domain_desc">You will no longer be able to receive any emails at this domain.</string>
+    <string name="delete_domain_desc">You will no longer be able to receive any emails at this domain</string>
     <string name="check_dns">Check DNS</string>
     <string name="check_dns_desc">Verify DNS configuration</string>
     <string name="domain_activated">Domain activated</string>
     <string name="domain_deactivated">Domain deactivated</string>
-    <string name="manage_domain_basic_info">Domain: %s\nCreated: %s\nUpdated at: %s\nDomain verified at: %s\nDomain sending verified at: %s\nEmail forwarded: %d\nEmail blocked: %d\nEmail replies: %d\nEmail sent: %d</string>
-    <string name="manage_username_basic_info">Username: %s\nCreated: %s\nUpdated at: %s\nEmail forwarded: %d\nEmail blocked: %d\nEmail replies: %d\nEmail sent: %d</string>
-    <string name="domain_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this domain.</string>
-    <string name="username_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this username.</string>
+    <string name="manage_domain_basic_info">Domain: %1$s\nCreated: %2$s\nUpdated at: %3$s\nDomain verified at: %4$s\nDomain sending verified at: %5$s\nEmail forwarded: %6$d\nEmail blocked: %7$d\nEmail replies: %8$d\nEmail sent: %9$d</string>
+    <string name="manage_username_basic_info">Username: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
+    <string name="domain_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this domain</string>
+    <string name="username_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this username</string>
     <string name="check_dns_desc_incorrect">Your domain has configuration errors. Tap here to check the DNS records</string>
     <string name="anonaddy_android_stjin">AnonAddy Android | Stjin</string>
     <string name="default_recipient">Default recipient</string>
@@ -226,7 +222,7 @@
     <string name="delete_username">Delete username</string>
     <string name="delete_username_desc_confirm">Are you sure you want to delete this username? This will also delete all aliases associated with this username. You will no longer be able to receive any emails at this username subdomain. This will still count towards your additional username limit even once deleted.</string>
     <string name="error_deleting_username">Something went wrong while deleting this username</string>
-    <string name="add_username_desc">Please choose additional usernames carefully as you can only add a maximum of three.\n\nYou cannot login with these usernames, only the one you originally signed up with.</string>
+    <string name="add_username_desc">Please choose additional usernames carefully as you can only add a maximum of three.\n\nYou cannot login with these usernames, only the one you originally signed up with</string>
     <string name="error_adding_username">Something went wrong while adding this username</string>
     <string name="username_deactivated">Username deactivated</string>
     <string name="username_activated">Username activated</string>
@@ -237,17 +233,17 @@
     <string name="aliases">Aliases</string>
     <string name="nothing_found">Nothing found</string>
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
-    <string name="anonaddy_settings_monthly_bandwidth_desc">You’ve used %s out of your %s limit this calendar month. Your bandwidth usage will reset on 1st %s.</string>
+    <string name="anonaddy_settings_monthly_bandwidth_desc">You’ve used %1$s out of your %2$s limit this calendar month. Your bandwidth usage will reset on 1st %3$s</string>
     <string name="more_info">More info</string>
     <string name="usage">Usage</string>
-    <string name="anonaddy_settings_statistics_aliases_desc">You have %d active aliases using a shared domain out of your %s limit</string>
-    <string name="anonaddy_settings_statistics_recipients_desc">You have added %d recipients out of your %s limit</string>
+    <string name="anonaddy_settings_statistics_aliases_desc">You have %1$d active aliases using a shared domain out of your %2$s limit</string>
+    <string name="anonaddy_settings_statistics_recipients_desc">You have added %1$d recipients out of your %2$s limit</string>
     <string name="update_default_recipient">Update default recipient</string>
     <string name="update_default_recipient_desc">The default recipient is used for all new aliases and any aliases that do not have any recipients attached</string>
     <string name="update_default_alias_domain">Update default alias domain</string>
-    <string name="update_default_alias_domain_desc">The default alias domain is the domain you’d like to select as default when generating a new alias.</string>
+    <string name="update_default_alias_domain_desc">The default alias domain is the domain you’d like to select as default when generating a new alias</string>
     <string name="update_default_alias_format">Update default alias format</string>
-    <string name="update_default_alias_format_desc">The default alias format is the domain you’d like to select bs default when generating a new alias.</string>
+    <string name="update_default_alias_format_desc">The default alias format is the domain you’d like to select bs default when generating a new alias</string>
     <string name="unlimited">unlimited</string>
     <string name="Copy">Copy</string>
     <string name="no_usernames">You have no usernames, what about creating one?</string>
@@ -255,9 +251,9 @@
     <string name="anonaddy_instance">AnonAddy instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
-    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %d out of %d usernames</string>
-    <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %d out of %d active domains</string>
-    <string name="you_ve_used_d_out_of_d_recipients">You’ve used %d out of %d recipients</string>
+    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$d usernames</string>
+    <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$d active domains</string>
+    <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$d recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
     <string name="catch_all_desc">Enable catch-all on this domain</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
@@ -274,7 +270,7 @@
     <string name="note">Note</string>
     <string name="delete_rule">Delete rule</string>
     <string name="delete_rule_desc_confirm">Are you sure you want to delete this rule?</string>
-    <string name="manage_rules_list_desc">If %s then %s</string>
+    <string name="manage_rules_list_desc">If %1$s then %2$s</string>
     <string name="rule">Rule</string>
     <string name="no_rules">You have no rules, what about creating one?</string>
     <string name="rule_if_">If %s</string>
@@ -288,7 +284,7 @@
     <string name="select">Select</string>
     <string name="enter_value">Enter value</string>
     <string name="add_condition">Add condition</string>
-    <string name="add_condition_desc">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
+    <string name="add_condition_desc">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time</string>
     <string name="add_action">Add action</string>
     <string name="not_a_valid_condition_type">Not a valid condition type</string>
     <string name="not_a_valid_action_type">Not a valid action type</string>
@@ -307,25 +303,54 @@
     <string name="and">AND</string>
     <string name="create_rule">Create rule</string>
     <string name="all_rules">All rules</string>
-    <string name="s_s">%s\n%s</string>
-    <string name="s_s_s">%s\n%s\n%s</string>
+    <string name="s_s">%1$s\n%2$s</string>
+    <string name="s_s_s">%1$s\n%2$s\n%3$s</string>
     <string name="_sMB">%sMB</string>
     <string name="activate">Activate</string>
     <string name="deactivate">Deactivate</string>
     <string name="rule_activated">Rule activated</string>
     <string name="rule_deactivated">Rule deactivated</string>
-    <string name="rules_unavailable_404">The rules feature is not available in the current instance of AnonAddy. Please make sure that the rules API is available for the current user.</string>
+    <string name="rules_unavailable_404">The rules feature is not available in the current instance of AnonAddy. Please make sure that the rules API is available for the current user</string>
     <string name="rules">Rules</string>
     <string name="this_field_cannot_be_empty">This field cannot be empty</string>
     <string name="gitlab_project">Gitlab project</string>
     <string name="gitlab_project_desc">View source code and report issues</string>
     <string name="report_an_issue">Report an issue</string>
-    <string name="report_an_issue_desc">Found a bug? Tap here to create a report.</string>
+    <string name="report_an_issue_desc">Found a bug? Tap here to create a report</string>
     <string name="deleted_aliases">Deleted aliases</string>
     <string name="username_settings_desc">Choose additional usernames</string>
     <string name="manage_rules_desc">Add, modify and reorder rules</string>
     <string name="manage_domains_desc">Add or remove custom domains</string>
     <string name="version_s">Version %s</string>
-
-
+    <string name="api_setup_qr_code_scan">Scan the QR code displayed</string>
+    <string name="qr_permissions_required">Camera permissions are required in order to scan the QR code</string>
+    <string name="api_setup_qr_code_scan_desc">Tap the scanning area to start scanning</string>
+    <string name="api_obtain_camera_available">Or manually enter your API key</string>
+    <string name="api_obtain">Manually enter your API key</string>
+    <string name="api_setup_qr_code_scan_wrong">This is not a valid QR code</string>
+    <string name="background_service_interval">Background service interval</string>
+    <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
+    <string name="backgroundserviceinterval_15m">15m</string>
+    <string name="backgroundserviceinterval_30m">30m</string>
+    <string name="backgroundserviceinterval_1h">1h</string>
+    <string name="backgroundserviceinterval_2h">2h</string>
+    <string name="set_interval">Set interval</string>
+    <string name="watch_alias">Watch alias</string>
+    <string name="watch_alias_desc">Receive a notification when an email is sent to this alias</string>
+    <string name="notification_channel_watch_alias_desc">Receive a notification when an email is sent to a watched alias</string>
+    <string name="notification_new_emails">New emails forwarded</string>
+    <string name="notification_new_emails_desc">%1$d new email(s) have been forwarded via %2$s</string>
+    <string name="stop_watching">Stop watching</string>
+    <string name="not_verified">Not verified</string>
+    <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
+    <string name="d_blocked">%1$d blocked</string>
+    <string name="d_forwarded">%1$d forwarded</string>
+    <string name="d_replied">%1$d replied</string>
+    <string name="d_sent">%1$d sent</string>
+    <string name="send_mail">Send mail</string>
+    <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
+    <string name="addresses">Addresses</string>
+    <string name="more">More</string>
+    <string name="API_key_received_from_intent">API Key received from intent</string>
+    <string name="API_key_invalid">API Key invalid</string>
 </resources>

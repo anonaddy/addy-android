@@ -7,6 +7,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
@@ -17,12 +19,15 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
+import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
+import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import kotlinx.android.synthetic.main.activity_app_settings.*
-import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
+import host.stjin.anonaddy.ui.customviews.SectionView
 
 class AppSettingsActivity : BaseActivity(),
-    DarkModeBottomDialogFragment.AddDarkmodeBottomDialogListener {
+    DarkModeBottomDialogFragment.AddDarkmodeBottomDialogListener,
+    BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
 
     private val addDarkModeBottomDialogFragment: DarkModeBottomDialogFragment =
         DarkModeBottomDialogFragment.newInstance()
@@ -30,18 +35,23 @@ class AppSettingsActivity : BaseActivity(),
     private val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
         ChangelogBottomDialogFragment.newInstance()
 
+    private val addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
+        BackgroundServiceIntervalBottomDialogFragment.newInstance()
+
 
     private lateinit var settingsManager: SettingsManager
     private lateinit var encryptedSettingsManager: SettingsManager
     private var forceSwitch = false
 
-
+    private lateinit var binding: ActivityAppSettingsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_app_settings)
+        binding = ActivityAppSettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(appsettings_toolbar)
+        setupToolbar(binding.appsettingsToolbar)
         setVersion()
         loadSettings()
         setOnClickListeners()
@@ -50,18 +60,18 @@ class AppSettingsActivity : BaseActivity(),
     }
 
     private fun loadSettings() {
-        activity_app_settings_section_security_switch.isChecked =
-            encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)
-        activity_app_settings_section_logs_switch.isChecked =
-            settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)
+        binding.activityAppSettingsSectionSecurity.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED))
+        binding.activityAppSettingsSectionLogs.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS))
     }
 
     private fun setOnSwitchListeners() {
-        activity_app_settings_section_logs_switch.setOnCheckedChangeListener { compoundButton, b ->
-            if (compoundButton.isPressed) {
-                settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, b)
+        binding.activityAppSettingsSectionLogs.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed) {
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, checked)
+                }
             }
-        }
+        })
     }
 
     // If the user comes back from eg. settings re-check + enable biometricswitch
@@ -74,34 +84,37 @@ class AppSettingsActivity : BaseActivity(),
 
     private var shouldEnableBiometric = true
     private fun setOnBiometricSwitchListeners() {
-        activity_app_settings_section_security.alpha = 0.5f
-        activity_app_settings_section_security_switch.isEnabled = false
-        activity_app_settings_section_security_switch.isClickable = false
+        binding.activityAppSettingsSectionSecurity.setLayoutEnabled(false)
 
         val biometricManager = BiometricManager.from(this)
         when (biometricManager.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
-                activity_app_settings_section_security_desc.text =
-                    resources.getString(R.string.security_desc)
-                activity_app_settings_section_security.alpha = 1f
-                activity_app_settings_section_security_switch.isEnabled = true
-                activity_app_settings_section_security_switch.isClickable = true
+                binding.activityAppSettingsSectionSecurity.setDescription(resources.getString(R.string.security_desc))
 
-                activity_app_settings_section_security.setOnClickListener {
-                    forceSwitch = true
-                    activity_app_settings_section_security_switch.isChecked = !activity_app_settings_section_security_switch.isChecked
-                }
+                binding.activityAppSettingsSectionSecurity.setLayoutEnabled(true)
+
+
+                binding.activityAppSettingsSectionSecurity.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+                    override fun onClick() {
+                        forceSwitch = true
+                        binding.activityAppSettingsSectionSecurity.setSwitchChecked(!binding.activityAppSettingsSectionSecurity.getSwitchChecked())
+                    }
+                })
             }
+
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
-                activity_app_settings_section_security_desc.text =
+                binding.activityAppSettingsSectionSecurity.setDescription(
                     resources.getString(R.string.biometric_error_no_hardware)
+                )
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-                activity_app_settings_section_security_desc.text =
+                binding.activityAppSettingsSectionSecurity.setDescription(
                     resources.getString(R.string.biometric_error_hw_unavailable)
+                )
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
 
-                activity_app_settings_section_security_desc.text =
+                binding.activityAppSettingsSectionSecurity.setDescription(
                     resources.getString(R.string.biometric_error_none_enrolled)
+                )
 
                 if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
                     // Biometrics is enabled but there is nothing enrolled.
@@ -138,14 +151,14 @@ class AppSettingsActivity : BaseActivity(),
                         Snackbar.LENGTH_SHORT
                     ).show()
 
-                    activity_app_settings_section_security_switch.isChecked = !shouldEnableBiometric
+                    binding.activityAppSettingsSectionSecurity.setSwitchChecked(!shouldEnableBiometric)
                 }
 
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult
                 ) {
                     super.onAuthenticationSucceeded(result)
-                    activity_app_settings_section_security_switch.isChecked = shouldEnableBiometric
+                    binding.activityAppSettingsSectionSecurity.setSwitchChecked(shouldEnableBiometric)
                     encryptedSettingsManager.putSettingsBool(
                         SettingsManager.PREFS.BIOMETRIC_ENABLED,
                         shouldEnableBiometric
@@ -160,102 +173,142 @@ class AppSettingsActivity : BaseActivity(),
                         Snackbar.LENGTH_SHORT
                     ).show()
 
-                    activity_app_settings_section_security_switch.isChecked = !shouldEnableBiometric
+                    binding.activityAppSettingsSectionSecurity.setSwitchChecked(!shouldEnableBiometric)
                 }
             })
 
-        activity_app_settings_section_security_switch.setOnCheckedChangeListener { compoundButton, b ->
-            // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-            if (compoundButton.isPressed || forceSwitch) {
-                forceSwitch = false
-                shouldEnableBiometric = b
-                val promptInfo = if (b) {
-                    BiometricPrompt.PromptInfo.Builder()
-                        .setTitle(resources.getString(R.string.enable_biometric_authentication))
-                        .setDeviceCredentialAllowed(true)
-                        .build()
-                } else {
-                    BiometricPrompt.PromptInfo.Builder()
-                        .setTitle(resources.getString(R.string.disable_biometric_authentication))
-                        .setDeviceCredentialAllowed(true)
-                        .build()
+
+        binding.activityAppSettingsSectionSecurity.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    forceSwitch = false
+                    shouldEnableBiometric = checked
+                    val promptInfo = if (checked) {
+                        BiometricPrompt.PromptInfo.Builder()
+                            .setTitle(resources.getString(R.string.enable_biometric_authentication))
+                            .setDeviceCredentialAllowed(true)
+                            .build()
+                    } else {
+                        BiometricPrompt.PromptInfo.Builder()
+                            .setTitle(resources.getString(R.string.disable_biometric_authentication))
+                            .setDeviceCredentialAllowed(true)
+                            .build()
+                    }
+
+                    biometricPrompt.authenticate(promptInfo)
                 }
-
-                biometricPrompt.authenticate(promptInfo)
             }
-        }
-
+        })
     }
 
     private fun setOnClickListeners() {
-        activity_app_settings_section_app_theme.setOnClickListener {
-            if (!addDarkModeBottomDialogFragment.isAdded) {
-                addDarkModeBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "addDarkModeBottomDialogFragment"
-                )
+        binding.activityAppSettingsSectionAppTheme.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addDarkModeBottomDialogFragment.isAdded) {
+                    addDarkModeBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addDarkModeBottomDialogFragment"
+                    )
+                }
             }
-        }
-        activity_app_settings_section_changelog.setOnClickListener {
-            if (!addChangelogBottomDialogFragment.isAdded) {
-                addChangelogBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "addChangelogBottomDialogFragment"
-                )
-            }
-        }
-        activity_app_settings_section_faq.setOnClickListener {
-            val url = "https://anonaddy.com/faq/"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        activity_app_settings_section_help.setOnClickListener {
-            val url = "https://anonaddy.com/help/"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        activity_app_settings_section_gitlab.setOnClickListener {
-            val url = "https://gitlab.com/Stjin/anonaddy-android"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        activity_app_settings_section_report_issue.setOnClickListener {
-            val url = "https://gitlab.com/Stjin/anonaddy-android/-/issues/new"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-        }
-        activity_app_settings_section_logs.setOnClickListener {
-            val intent = Intent(this, LogViewerActivity::class.java)
-            startActivity(intent)
-        }
+        })
 
-        activity_app_settings_section_reset.setOnClickListener {
-            resetApp()
-        }
+        binding.activityAppSettingsSectionChangelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addChangelogBottomDialogFragment.isAdded) {
+                    addChangelogBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addChangelogBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityAppSettingsSectionBackgroundService.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addBackgroundServiceIntervalBottomDialogFragment.isAdded) {
+                    addBackgroundServiceIntervalBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "addBackgroundServiceIntervalBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityAppSettingsSectionFaq.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://anonaddy.com/faq/"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+        binding.activityAppSettingsSectionHelp.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://anonaddy.com/help/"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+        binding.activityAppSettingsSectionGitlab.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://gitlab.com/Stjin/anonaddy-android"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+        binding.activityAppSettingsSectionReportIssue.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = "https://gitlab.com/Stjin/anonaddy-android/-/issues/new"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+
+
+        binding.activityAppSettingsSectionLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsActivity, LogViewerActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsSectionReset.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                resetApp()
+            }
+        })
     }
 
     private fun resetApp() {
+        // create an alert builder
+        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        // set the custom layout
-        val customLayout =
-            layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(customLayout)
+        builder.setView(anonaddyCustomDialogBinding.root)
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = resources.getString(R.string.reset_app)
-        customLayout.dialog_text.text =
+        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.reset_app)
+        anonaddyCustomDialogBinding.dialogText.text =
             resources.getString(R.string.reset_app_confirmation_desc)
-        customLayout.dialog_positive_button.text =
+        anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.reset_app)
-        customLayout.dialog_positive_button.setOnClickListener {
+        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
         }
-        customLayout.dialog_negative_button.setOnClickListener {
+        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
             dialog.dismiss()
         }
         // create and show the alert dialog
@@ -264,7 +317,7 @@ class AppSettingsActivity : BaseActivity(),
 
 
     private fun setVersion() {
-        activity_app_settings_version.text = BuildConfig.VERSION_NAME
+        binding.activityAppSettingsVersion.text = BuildConfig.VERSION_NAME
     }
 
     override fun onDarkModeOff() {
@@ -283,6 +336,14 @@ class AppSettingsActivity : BaseActivity(),
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         settingsManager.putSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)
         delegate.applyDayNight()
+    }
+
+    override fun setInterval(minutes: Int) {
+        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, minutes)
+
+        // Schedule the background worker (this will cancel if already scheduled)
+        BackgroundWorkerHelper(this).scheduleBackgroundWorker()
+        addBackgroundServiceIntervalBottomDialogFragment.dismiss()
     }
 
 

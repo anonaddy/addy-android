@@ -5,6 +5,7 @@ enum class SUBSCRIPTIONS(val subscription: String) {
     LITE("lite"),
     PRO("pro")
 }
+
 object User {
     lateinit var userResource: UserResource
     lateinit var userResourceExtended: UserResourceExtended
@@ -36,6 +37,7 @@ data class UserResource(
     val recipient_count: Int,
     val recipient_limit: Int,
     val subscription: String,
+    val subscription_ends_at: String?,
     val updated_at: String,
     val username: String,
     val username_count: Int,

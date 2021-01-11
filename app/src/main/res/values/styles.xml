@@ -30,7 +30,7 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
     </style>
 
-    <style name="BottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+    <style name="BottomSheet" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/NavbarLightDarkMode</item>
@@ -149,18 +149,12 @@
         <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="SettingsSectionStyle.NoAction" parent="SettingsSectionStyle">
-        <item name="android:clickable">false</item>
-        <item name="android:focusable">false</item>
-        <item name="android:background">@null</item>
-    </style>
-
-    <style name="SettingsSectionIconStyleEnd">
+    <style name="SettingsSectionIconStyleMarginEnd">
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginEnd">16dp</item>
     </style>
 
-    <style name="SettingsSectionIconStyleStart">
+    <style name="SettingsSectionIconStyleMarginStart">
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginStart">16dp</item>
     </style>
@@ -193,6 +187,7 @@
         <item name="android:thumbTint">@color/primaryColor</item>
         <item name="android:thumb">@drawable/v3cometinswitchthumb</item>
         <item name="track">@drawable/v3cometinswitchtrackselector</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
     <style name="FloatingActionButton">
@@ -291,6 +286,16 @@
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
+    </style>
+
+    <style name="AnonAddyMaterialButtonToggleGroupButtonOverlay">
+        <item name="colorSurface">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="divider">
+        <item name="android:layout_height">1dp</item>
+        <item name="android:alpha">0.2</item>
+        <item name="android:background">@color/IconGrayTint</item>
     </style>
 
 </resources>

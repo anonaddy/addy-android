@@ -18,7 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.bottomsheet_adddomain.view.*
+import host.stjin.anonaddy.databinding.BottomsheetAdddomainBinding
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -42,24 +42,26 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
         return dialog
     }
 
+    private var _binding: BottomsheetAdddomainBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_adddomain, container,
-            false
-        )
+    ): View {
+        _binding = BottomsheetAdddomainBinding.inflate(inflater, container, false)
+        val root = binding.root
         listener = activity as AddDomainBottomDialogListener
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
-        root.bs_adddomain_domain_add_domain_button.setOnClickListener(this)
-        root.bs_adddomain_domain_tiet.setOnEditorActionListener { _, actionId, event ->
+        binding.bsAdddomainDomainAddDomainButton.setOnClickListener(this)
+        binding.bsAdddomainDomainTiet.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
-                addDomain(root, requireContext())
+                addDomain(requireContext())
             }
             false
         }
@@ -75,24 +77,23 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
         }
     }
 
-    private fun addDomain(root: View, context: Context) {
+    private fun addDomain(context: Context) {
 
-        if (!android.util.Patterns.DOMAIN_NAME.matcher(root.bs_adddomain_domain_tiet.text.toString())
+        if (!android.util.Patterns.DOMAIN_NAME.matcher(binding.bsAdddomainDomainTiet.text.toString())
                 .matches()
         ) {
-            root.bs_adddomain_domain_til.error =
+            binding.bsAdddomainDomainTil.error =
                 context.resources.getString(R.string.not_a_valid_address)
             return
         }
 
-        this.domain = root.bs_adddomain_domain_tiet.text.toString()
+        this.domain = binding.bsAdddomainDomainTiet.text.toString()
         // Set error to null if domain and alias is valid
-        root.bs_adddomain_domain_til.error = null
-        root.bs_adddomain_domain_add_domain_button.isEnabled = false
-        root.bs_adddomain_domain_progressbar.visibility = View.VISIBLE
+        binding.bsAdddomainDomainTil.error = null
+        binding.bsAdddomainDomainAddDomainButton.isEnabled = false
+        binding.bsAdddomainDomainProgressbar.visibility = View.VISIBLE
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             addDomainToAccount(
-                root,
                 context,
                 this@AddDomainBottomDialogFragment.domain
             )
@@ -105,15 +106,14 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
     }
 
     private suspend fun addDomainToAccount(
-        root: View,
         context: Context,
         address: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addDomain(address) { result, body ->
+        networkHelper.addDomain({ result, body ->
             when (result) {
                 "404" -> {
-                    openSetup(root, body)
+                    openSetup(body)
                 }
                 "201" -> {
                     handler.removeCallbacksAndMessages(null)
@@ -121,22 +121,21 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
                 }
                 else -> {
                     handler.removeCallbacksAndMessages(null)
-                    root.bs_add_domain_setup_1.visibility = View.VISIBLE
-                    root.bs_add_domain_setup_2.visibility = View.GONE
-                    root.bs_adddomain_domain_add_domain_button.isEnabled = true
-                    root.bs_adddomain_domain_progressbar.visibility = View.INVISIBLE
-                    root.bs_adddomain_domain_til.error =
+                    binding.bsAddDomainSetup1.visibility = View.VISIBLE
+                    binding.bsAddDomainSetup2.visibility = View.GONE
+                    binding.bsAdddomainDomainAddDomainButton.isEnabled = true
+                    binding.bsAdddomainDomainProgressbar.visibility = View.INVISIBLE
+                    binding.bsAdddomainDomainTil.error =
                         context.resources.getString(R.string.error_adding_domain) + "\n" + result
                 }
             }
-        }
+        }, address)
     }
 
-    private val handler = Handler()
+    private val handler =  Handler(Looper.getMainLooper())
     private val runnableCode = Runnable {
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             addDomainToAccount(
-                requireView(),
                 requireContext(),
                 this@AddDomainBottomDialogFragment.domain
             )
@@ -144,40 +143,40 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
     }
 
 
-    private fun openSetup(root: View, body: String?) {
-        if (root.bs_add_domain_setup_1.visibility != View.GONE) {
+    private fun openSetup(body: String?) {
+        if (binding.bsAddDomainSetup1.visibility != View.GONE) {
             var anim = AlphaAnimation(1.0f, 0.0f)
             anim.duration = 500
             anim.repeatMode = Animation.REVERSE
-            root.bs_add_domain_setup_1.startAnimation(anim)
+            binding.bsAddDomainSetup1.startAnimation(anim)
             Handler(Looper.getMainLooper()).postDelayed({
-                root.bs_add_domain_setup_1.visibility = View.GONE
-                root.bs_add_domain_setup_2.visibility = View.VISIBLE
+                binding.bsAddDomainSetup1.visibility = View.GONE
+                binding.bsAddDomainSetup2.visibility = View.VISIBLE
                 anim = AlphaAnimation(0.0f, 1.0f)
                 anim.duration = 500
                 anim.repeatMode = Animation.REVERSE
-                root.bs_add_domain_setup_2.startAnimation(anim)
+                binding.bsAddDomainSetup2.startAnimation(anim)
             }, anim.duration)
         }
 
         // Update body text
-        updateSetupStatus(root, body)
+        updateSetupStatus(body)
 
         //Re-get the status in 10 seconds
         handler.postDelayed(runnableCode, 30000)
     }
 
-    private fun updateSetupStatus(root: View, text: String?) {
+    private fun updateSetupStatus(text: String?) {
         var anim = AlphaAnimation(1.0f, 0.0f)
         anim.duration = 500
         anim.repeatMode = Animation.REVERSE
-        root.bs_add_domain_setup_2.startAnimation(anim)
+        binding.bsAddDomainSetup2.startAnimation(anim)
         Handler(Looper.getMainLooper()).postDelayed({
             anim = AlphaAnimation(0.0f, 1.0f)
             anim.duration = 500
             anim.repeatMode = Animation.REVERSE
-            root.bs_add_domain_setup_2_text.text = text
-            root.bs_add_domain_setup_2.startAnimation(anim)
+            binding.bsAddDomainSetup2Text.text = text
+            binding.bsAddDomainSetup2.startAnimation(anim)
         }, anim.duration)
     }
 
@@ -185,8 +184,13 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_adddomain_domain_add_domain_button) {
-                addDomain(requireView(), requireContext())
+                addDomain(requireContext())
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialSharedAxis
-import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.fragment_setup_how3.view.*
+import host.stjin.anonaddy.databinding.FragmentSetupHow3Binding
 
 class SetupHow3Fragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,22 +19,32 @@ class SetupHow3Fragment : Fragment() {
         returnTransition = backward
     }
 
+    private var _binding: FragmentSetupHow3Binding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_setup_how3, container, false)
+    ): View {
+        _binding = FragmentSetupHow3Binding.inflate(inflater, container, false)
+        val root = binding.root
 
-        root.setup_how_3_button_next.setOnClickListener {
+        binding.setupHow3ButtonNext.setOnClickListener {
             (activity as SetupNewActivity).switchFragments(SetupHow4Fragment())
         }
 
-        root.setup_how_3_button_previous.setOnClickListener {
+        binding.setupHow3ButtonPrevious.setOnClickListener {
             (activity as SetupNewActivity).switchFragments(SetupHow2Fragment())
         }
 
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

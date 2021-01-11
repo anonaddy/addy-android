@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/dialog_shape_rounded_corners"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/dialog_title"
@@ -19,12 +19,12 @@
 
     <TextView
         android:id="@+id/dialog_text"
+        style="@style/DescTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
-        style="@style/DescTextStyle"
         android:textSize="14sp"
         tools:text="@tools:sample/lorem/random" />
 

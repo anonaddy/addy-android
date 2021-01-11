@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true" />
 
+
             <LinearLayout
                 android:id="@+id/activity_manage_domain_LL1"
                 android:layout_width="match_parent"
@@ -115,406 +116,61 @@
                         android:layout_weight="1"
                         android:text="@string/action" />
 
-                    <LinearLayout
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_domain_active_switch_layout"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/domain_status_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_checkbox_marked_circle_outline"
+                        app:sectionTitle="@string/domain_status_active" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/domain_status_active"
-                                android:src="@drawable/ic_checkbox_marked_circle_outline" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/activity_manage_domain_status_textview"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/domain_status_active"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                style="@style/DescTextStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:minLines="1"
-                                android:singleLine="false"
-                                android:text="@string/domain_status_desc" />
-                        </LinearLayout>
-
-                        <ProgressBar
-                            android:id="@+id/activity_manage_domain_active_switch_progressbar"
-                            style="?android:attr/progressBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:padding="4dp"
-                            android:visibility="gone" />
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/activity_manage_domain_active_switch"
-                            style="@style/overrideExpandableCardViewSwitch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:enabled="false" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_domain_catch_all_switch_layout"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/catch_all_enabled"
-                                android:src="@drawable/ic_alphabetical" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/activity_manage_catch_all_textview"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/catch_all_desc"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                style="@style/DescTextStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:minLines="1"
-                                android:singleLine="false"
-                                android:text="@string/catch_all_desc" />
-                        </LinearLayout>
-
-                        <ProgressBar
-                            android:id="@+id/activity_manage_catch_all_switch_progressbar"
-                            style="?android:attr/progressBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:padding="4dp"
-                            android:visibility="gone" />
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/activity_manage_catch_all_switch"
-                            style="@style/overrideExpandableCardViewSwitch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:enabled="false" />
-
-                    </LinearLayout>
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/catch_all_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_alphabetical"
+                        app:sectionTitle="@string/catch_all_enabled" />
 
 
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_domain_desc_edit"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@tools:sample/lorem/random"
+                        app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                        app:sectionStartIcon="@drawable/ic_text"
+                        app:sectionTitle="@string/description" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/description"
-                                android:src="@drawable/ic_text" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/description"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/activity_manage_domain_desc"
-                                style="@style/DescTextStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:maxLines="2"
-                                android:singleLine="false"
-                                tools:text="@tools:sample/lorem/random" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleStart"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/description"
-                                app:srcCompat="@drawable/ic_outline_edit_24" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_domain_recipients_edit"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@tools:sample/full_names"
+                        app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                        app:sectionStartIcon="@drawable/ic_account_arrow_right_outline"
+                        app:sectionTitle="@string/default_recipient" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/recipients"
-                                android:src="@drawable/ic_account_arrow_right_outline" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/default_recipient"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/activity_manage_domain_recipients"
-                                style="@style/DescTextStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:maxLines="3"
-                                android:singleLine="false"
-                                tools:text="@tools:sample/full_names" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleStart"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/recipients"
-                                app:srcCompat="@drawable/ic_outline_edit_24" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_domain_check_dns"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/check_dns_desc"
+                        app:sectionStartIcon="@drawable/ic_outline_dns_24"
+                        app:sectionTitle="@string/check_dns" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/activity_manage_domain_dns_icon"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/check_dns"
-                                android:src="@drawable/ic_outline_dns_24" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/check_dns"
-                                android:textAllCaps="false"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/activity_manage_domain_check_dns_subtext"
-                                style="@style/DescTextStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif"
-                                android:maxLines="3"
-                                android:singleLine="false"
-                                tools:text="@string/check_dns_desc" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_domain_delete"
-                        style="@style/SettingsSectionStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        app:sectionColorAccent="@color/softRed"
+                        app:sectionDescription="@string/delete_domain_desc"
+                        app:sectionStartIcon="@drawable/ic_outline_delete_24"
+                        app:sectionTitle="@string/delete_domain" />
 
-                        <LinearLayout
-                            style="@style/SettingsSectionIconStyleEnd"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/delete_domain"
-                                android:src="@drawable/ic_outline_delete_24"
-                                app:tint="@color/softRed" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:ellipsize="end"
-                                android:fontFamily="sans-serif-medium"
-                                android:lines="1"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:text="@string/delete_domain"
-                                android:textAllCaps="false"
-                                android:textColor="@color/softRed"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                style="@style/DescTextStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:text="@string/delete_domain_desc" />
-                        </LinearLayout>
-
-                    </LinearLayout>
 
                 </LinearLayout>
 

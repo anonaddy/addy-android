@@ -20,6 +20,7 @@
         android:contentDescription="@string/add_alias"
         app:tint="@android:color/white" />
 
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/alias_scrollview"
         android:layout_width="match_parent"
@@ -196,7 +197,7 @@
                         app:shimmer_demo_angle="20"
                         app:shimmer_demo_child_count="5"
                         app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_alias_shimmer"
+                        app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
                         app:shimmer_demo_layout_manager_type="linear_vertical">
 
                     </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
@@ -255,7 +256,7 @@
                         app:shimmer_demo_angle="20"
                         app:shimmer_demo_child_count="5"
                         app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_alias_shimmer"
+                        app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
                         app:shimmer_demo_layout_manager_type="linear_vertical">
 
                     </com.cooltechworks.views.shimmer.ShimmerRecyclerView>

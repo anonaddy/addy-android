@@ -1,24 +1,27 @@
 package host.stjin.anonaddy.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.ViewCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import app.futured.donut.DonutProgressView
+import app.futured.donut.DonutSection
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.utils.DateTimeUtils
-import host.stjin.anonaddy.utils.PieChartView
 
 
-class AliasAdapter(private val listWithAliases: List<Aliases>, private val showStatus: Boolean) :
+class AliasAdapter(private val listWithAliases: List<Aliases>, private val showStatus: Boolean, context: Context) :
     RecyclerView.Adapter<AliasAdapter.ViewHolder>() {
 
     lateinit var onAliasClickListener: ClickListener
-
+    private val aliasesToWatch = AliasWatcher(context).getAliasesToWatch()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -64,25 +67,40 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
 
         val forwarded = listWithAliases[position].emails_forwarded.toFloat()
         val replied = listWithAliases[position].emails_replied.toFloat()
-        // The shimmer will be used for no-use effect
-        var shimmer = 0f
-        // If both forwarded and replied are 0, make shimmer 1 to create a gray circle
-        if (forwarded == 0f && replied == 0f) {
-            shimmer = 1f
-        }
+        val sent = listWithAliases[position].emails_sent.toFloat()
+        val blocked = listWithAliases[position].emails_blocked.toFloat()
 
-        holder.mChart.setDataPoints(
-            floatArrayOf(
-                forwarded,
-                replied,
-                shimmer
-            )
+
+        // DONUT
+        val section1 = DonutSection(
+            name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
+            color = ContextCompat.getColor(holder.mChart.context, R.color.portalOrange),
+            amount = forwarded
         )
+        val section2 = DonutSection(
+            name = holder.mChart.context.resources.getString(R.string.d_replied, replied.toInt()),
+            color = ContextCompat.getColor(holder.mChart.context, R.color.portalBlue),
+            amount = replied
+        )
+        val section3 = DonutSection(
+            name = holder.mChart.context.resources.getString(R.string.d_sent, sent.toInt()),
+            color = ContextCompat.getColor(holder.mChart.context, R.color.secondaryDarkColor),
+            amount = replied
+        )
+        val section4 = DonutSection(
+            name = holder.mChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
+            color = ContextCompat.getColor(holder.mChart.context, R.color.softRed),
+            amount = blocked
+        )
+        holder.mChart.cap = forwarded + replied + blocked + sent
+        holder.mChart.submitData(listOf(section4, section3, section2, section1))
+        // DONUT
 
 
-        holder.mChart.setCenterColor(R.color.LightDarkMode)
-        ViewCompat.setTransitionName(holder.mChart, listWithAliases[position].id)
 
+
+        holder.mWatchedTextView.visibility =
+            if (aliasesToWatch?.contains(listWithAliases[position].id) == true) View.VISIBLE else View.GONE
 
         if (showStatus) {
             holder.mStatus.visibility = View.VISIBLE
@@ -113,7 +131,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
     }
 
     interface ClickListener {
-        fun onClick(pos: Int, aView: View)
+        fun onClick(pos: Int)
         fun onClickCopy(pos: Int, aView: View)
     }
 
@@ -124,9 +142,10 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
-        var mChart: PieChartView = view.findViewById(R.id.aliases_recyclerview_list_chart)
         var mStatus: TextView = view.findViewById(R.id.aliases_recyclerview_list_status)
+        var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
         var mCopy: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
+        var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
 
 
         init {
@@ -136,7 +155,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
 
         override fun onClick(p0: View) {
             if (p0.id == R.id.aliases_recyclerview_list_LL) {
-                onAliasClickListener.onClick(adapterPosition, mChart)
+                onAliasClickListener.onClick(adapterPosition)
             } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
                 onAliasClickListener.onClickCopy(adapterPosition, p0)
             }

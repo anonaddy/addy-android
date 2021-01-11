@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rules_view_condition_action_LL1"
-    style="@style/SettingsSectionStyle.NoAction"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp"
     android:baselineAligned="false"
     android:orientation="horizontal">
 
@@ -46,7 +47,7 @@
     </LinearLayout>
 
     <LinearLayout
-        style="@style/SettingsSectionIconStyleStart"
+        style="@style/SettingsSectionIconStyleMarginStart"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="8dp">

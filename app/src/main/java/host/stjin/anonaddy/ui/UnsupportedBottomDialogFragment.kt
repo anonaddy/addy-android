@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.bottomsheet_anonaddy_instance_version_unsupported.view.*
+import host.stjin.anonaddy.databinding.BottomsheetAnonaddyInstanceVersionUnsupportedBinding
 
 
 class UnsupportedBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
@@ -30,36 +30,40 @@ class UnsupportedBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
         return dialog
     }
 
+    private var _binding: BottomsheetAnonaddyInstanceVersionUnsupportedBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        _binding = BottomsheetAnonaddyInstanceVersionUnsupportedBinding.inflate(inflater, container, false)
         // get the views and attach the listener
-        val root = inflater.inflate(
-            R.layout.bottomsheet_anonaddy_instance_version_unsupported, container,
-            false
-        )
+        val root = binding.root
 
         listener = activity as UnsupportedBottomDialogListener
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
-        root.bs_anonaddy_instance_version_unsupported_how_to_update_button.setOnClickListener(this)
-        root.bs_anonaddy_instance_version_unsupported_ignore_button.setOnClickListener(this)
+        binding.bsAnonaddyInstanceVersionUnsupportedHowToUpdateButton.setOnClickListener(this)
+        binding.bsAnonaddyInstanceVersionUnsupportedIgnoreButton.setOnClickListener(this)
 
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            root.bs_anonaddy_instance_version_unsupported_textview.text = Html.fromHtml(
+            binding.bsAnonaddyInstanceVersionUnsupportedTextview.text = Html.fromHtml(
                 context?.resources?.getString(R.string.anonaddy_instance_version_unsupported),
                 Html.FROM_HTML_MODE_LEGACY
             )
         } else {
-            root.bs_anonaddy_instance_version_unsupported_textview.text =
+            binding.bsAnonaddyInstanceVersionUnsupportedTextview.text =
                 Html.fromHtml(context?.resources?.getString(R.string.anonaddy_instance_version_unsupported))
         }
         return root
 
     }
+
 
     companion object {
         fun newInstance(): UnsupportedBottomDialogFragment {
@@ -75,6 +79,11 @@ class UnsupportedBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
                 listener.onClickIgnore()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

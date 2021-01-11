@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.activity_setup_new.*
+import host.stjin.anonaddy.databinding.ActivitySetupNewBinding
 
 
 class SetupNewActivity : BaseActivity() {
+
+    private lateinit var binding: ActivitySetupNewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         this.overridePendingTransition(
@@ -15,8 +17,10 @@ class SetupNewActivity : BaseActivity() {
             R.anim.slide_out
         )
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setup_new)
-        setupToolbar(setup_toolbar)
+        binding = ActivitySetupNewBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        setupToolbar(binding.setupToolbar)
         switchFragments(SetupHow1Fragment())
     }
 

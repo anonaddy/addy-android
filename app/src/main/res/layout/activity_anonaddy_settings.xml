@@ -55,9 +55,10 @@
 
             <LinearLayout
                 android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_LL"
-                style="@style/SettingsSectionStyle.NoAction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -136,9 +137,10 @@
 
             <LinearLayout
                 android:id="@+id/anonaddy_settings_statistics_recipients_LL"
-                style="@style/SettingsSectionStyle.NoAction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -217,9 +219,10 @@
 
             <LinearLayout
                 android:id="@+id/anonaddy_settings_statistics_aliases_LL"
-                style="@style/SettingsSectionStyle.NoAction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -311,206 +314,33 @@
 
             </LinearLayout>
 
-            <LinearLayout
+
+            <host.stjin.anonaddy.ui.customviews.SectionView
                 android:id="@+id/anonaddy_settings_update_default_recipient_LL"
-                style="@style/SettingsSectionStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                app:sectionDescription="@string/update_default_recipient_desc"
+                app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                app:sectionStartIcon="@drawable/ic_creation"
+                app:sectionTitle="@string/update_default_recipient" />
 
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/update_default_recipient"
-                        android:src="@drawable/ic_creation" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="2dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/update_default_recipient"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/update_default_recipient_desc" />
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/update_default_recipient"
-                        app:srcCompat="@drawable/ic_outline_edit_24" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
+            <host.stjin.anonaddy.ui.customviews.SectionView
                 android:id="@+id/anonaddy_settings_update_default_alias_domain_LL"
-                style="@style/SettingsSectionStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                app:sectionDescription="@string/update_default_alias_domain_desc"
+                app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                app:sectionStartIcon="@drawable/ic_creation"
+                app:sectionTitle="@string/update_default_alias_domain" />
 
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/update_default_alias_domain"
-                        android:src="@drawable/ic_creation" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="2dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/update_default_alias_domain"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/update_default_alias_domain_desc" />
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/update_default_alias_domain"
-                        app:srcCompat="@drawable/ic_outline_edit_24" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
+            <host.stjin.anonaddy.ui.customviews.SectionView
                 android:id="@+id/anonaddy_settings_update_default_alias_format_LL"
-                style="@style/SettingsSectionStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/update_default_alias_format"
-                        android:src="@drawable/ic_creation" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="2dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/update_default_alias_format"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/update_default_alias_format_desc" />
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/update_default_alias_format"
-                        app:srcCompat="@drawable/ic_outline_edit_24" />
-                </LinearLayout>
-
-            </LinearLayout>
+                app:sectionDescription="@string/update_default_alias_format_desc"
+                app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                app:sectionStartIcon="@drawable/ic_creation"
+                app:sectionTitle="@string/update_default_alias_format" />
 
 
         </LinearLayout>

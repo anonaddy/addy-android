@@ -5,10 +5,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -16,12 +17,12 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.UsernameAdapter
+import host.stjin.anonaddy.databinding.ActivityUsernameSettingsBinding
+import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
-import kotlinx.android.synthetic.main.activity_username_settings.*
-import kotlinx.android.synthetic.main.anonaddy_custom_dialog.view.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -35,10 +36,15 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
     private val addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance()
 
+    private lateinit var binding: ActivityUsernameSettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_username_settings)
-        setupToolbar(activity_username_settings_toolbar)
+        binding = ActivityUsernameSettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        setupToolbar(binding.activityUsernameSettingsToolbar)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -52,7 +58,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     private fun setOnClickListener() {
-        activity_username_settings_add_username.setOnClickListener {
+        binding.activityUsernameSettingsAddUsername.setOnClickListener {
             if (!addUsernameFragment.isAdded) {
                 addUsernameFragment.show(
                     supportFragmentManager,
@@ -63,8 +69,8 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     private fun getDataFromWeb() {
-        activity_username_settings_LL1.visibility = View.VISIBLE
-        activity_username_settings_RL_lottieview.visibility = View.GONE
+        binding.activityUsernameSettingsLL1.visibility = View.VISIBLE
+        binding.activityUsernameSettingsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -81,7 +87,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
             } else {
                 val snackbar =
                     Snackbar.make(
-                        activity_username_settings_LL,
+                        binding.activityUsernameSettingsLL,
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         Snackbar.LENGTH_SHORT
                     )
@@ -98,32 +104,26 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     private fun setStats() {
-        activity_username_settings_RL_count_text.text =
+        binding.activityUsernameSettingsRLCountText.text =
             resources.getString(R.string.you_ve_used_d_out_of_d_usernames, User.userResource.username_count, User.userResource.username_limit)
-        activity_username_settings_add_username.isEnabled = User.userResource.username_count < User.userResource.username_limit
+        binding.activityUsernameSettingsAddUsername.isEnabled = User.userResource.username_count < User.userResource.username_limit
     }
 
     private suspend fun getAllUsernames() {
-        activity_username_settings_all_usernames_recyclerview.apply {
+        binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
 
-            if (itemDecorationCount > 0) {
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        (layoutManager as LinearLayoutManager).orientation
-                    )
-                )
+            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(this@UsernamesSettingsActivity, 2)
+            } else {
+                LinearLayoutManager(this@UsernamesSettingsActivity)
             }
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                activity_username_settings_all_usernames_recyclerview.layoutAnimation = animation
+                binding.activityUsernameSettingsAllUsernamesRecyclerview.layoutAnimation = animation
             }
 
 
@@ -134,9 +134,9 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 if (list != null) {
 
                     if (list.size > 0) {
-                        activity_username_settings_no_usernames.visibility = View.GONE
+                        binding.activityUsernameSettingsNoUsernames.visibility = View.GONE
                     } else {
-                        activity_username_settings_no_usernames.visibility = View.VISIBLE
+                        binding.activityUsernameSettingsNoUsernames.visibility = View.VISIBLE
                     }
 
                     val usernamesAdapter = UsernameAdapter(list)
@@ -155,10 +155,10 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
                     })
                     adapter = usernamesAdapter
-                    activity_username_settings_all_usernames_recyclerview.hideShimmerAdapter()
+                    binding.activityUsernameSettingsAllUsernamesRecyclerview.hideShimmerAdapter()
                 } else {
-                    activity_username_settings_LL1.visibility = View.GONE
-                    activity_username_settings_RL_lottieview.visibility = View.VISIBLE
+                    binding.activityUsernameSettingsLL1.visibility = View.GONE
+                    binding.activityUsernameSettingsRLLottieview.visibility = View.VISIBLE
                 }
             }
 
@@ -168,52 +168,50 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
 
     lateinit var dialog: AlertDialog
-    private lateinit var customLayout: View
     private fun deleteUsername(id: String, context: Context) {
+        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
+
         // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        // set the custom layout
-        customLayout =
-            layoutInflater.inflate(R.layout.anonaddy_custom_dialog, null)
-        builder.setView(customLayout)
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setView(anonaddyCustomDialogBinding.root)
         dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        customLayout.dialog_title.text = context.resources.getString(R.string.delete_username)
-        customLayout.dialog_text.text = context.resources.getString(R.string.delete_username_desc_confirm)
-        customLayout.dialog_positive_button.text =
+        anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_username)
+        anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_username_desc_confirm)
+        anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete_username)
-        customLayout.dialog_positive_button.setOnClickListener {
-            customLayout.dialog_progressbar.visibility = View.VISIBLE
-            customLayout.dialog_error.visibility = View.GONE
-            customLayout.dialog_negative_button.isEnabled = false
-            customLayout.dialog_positive_button.isEnabled = false
+        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
+            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
+            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
+            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                deleteUsernameHttpRequest(id, context)
+                deleteUsernameHttpRequest(id, context, anonaddyCustomDialogBinding)
             }
         }
-        customLayout.dialog_negative_button.setOnClickListener {
+        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
             dialog.dismiss()
         }
         // create and show the alert dialog
         dialog.show()
     }
 
-    private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {
-        networkHelper?.deleteUsername(id) { result ->
+    private suspend fun deleteUsernameHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+        networkHelper?.deleteUsername({ result ->
             if (result == "204") {
                 dialog.dismiss()
                 getDataFromWeb()
             } else {
-                customLayout.dialog_progressbar.visibility = View.INVISIBLE
-                customLayout.dialog_error.visibility = View.VISIBLE
-                customLayout.dialog_negative_button.isEnabled = true
-                customLayout.dialog_positive_button.isEnabled = true
-                customLayout.dialog_error.text =
+                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
+                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogError.text =
                     context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result)
             }
-        }
+        }, id)
     }
 
     override fun onAdded() {

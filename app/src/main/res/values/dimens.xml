@@ -3,6 +3,7 @@
     <dimen name="corner_radius">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="corner_radius_dialog">4dp</dimen>
+    <dimen name="corner_radius_widget">8dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

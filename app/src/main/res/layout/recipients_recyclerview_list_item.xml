@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
     <LinearLayout
@@ -15,12 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="12">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -37,7 +38,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="9"
             android:orientation="vertical">
 
             <TextView
@@ -58,6 +59,7 @@
 
             <TextView
                 android:id="@+id/recipients_recyclerview_list_description"
+                style="@style/DescTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -66,16 +68,16 @@
                 android:maxLines="1"
                 android:minLines="1"
                 android:singleLine="false"
-                style="@style/DescTextStyle"
                 android:text="5 aliases; Emails forwarded: 28"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/recipients_recyclerview_list_expand_options"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
+            android:layout_weight="2"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -93,15 +95,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:weightSum="12">
 
         <Space
-            android:layout_width="40dp"
-            android:layout_height="wrap_content" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="11"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -128,5 +134,26 @@
                 android:text="@string/delete" />
 
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:weightSum="12">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1" />
+
+        <View
+            style="@style/divider"
+            android:layout_width="0dp"
+            android:layout_weight="11"/>
+
     </LinearLayout>
 </LinearLayout>

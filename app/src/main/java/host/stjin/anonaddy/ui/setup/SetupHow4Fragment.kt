@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialSharedAxis
-import host.stjin.anonaddy.R
-import kotlinx.android.synthetic.main.fragment_setup_how4.view.*
+import host.stjin.anonaddy.databinding.FragmentSetupHow4Binding
+import host.stjin.anonaddy.databinding.FragmentSetupHow4Binding.inflate
 
 
 class SetupHow4Fragment : Fragment() {
@@ -24,14 +24,17 @@ class SetupHow4Fragment : Fragment() {
         returnTransition = backward
     }
 
+    private var _binding: FragmentSetupHow4Binding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        _binding = inflate(inflater, container, false)
         // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_setup_how4, container, false)
+        val root = binding.root
 
-        root.setup_how_4_button_next.setOnClickListener {
+        binding.setupHow4ButtonNext.setOnClickListener {
             val url = "https://app.anonaddy.com/register"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
@@ -39,10 +42,15 @@ class SetupHow4Fragment : Fragment() {
             (activity as SetupNewActivity).finish()
         }
 
-        root.setup_how_4_button_previous.setOnClickListener {
+        binding.setupHow4ButtonPrevious.setOnClickListener {
             (activity as SetupNewActivity).switchFragments(SetupHow3Fragment())
         }
 
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

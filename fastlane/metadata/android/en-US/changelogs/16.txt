@@ -1,0 +1,13 @@
+🎆 Happy new year everyone! Hope you have a wonderful 2021 🎇
+This update is the most exciting one since 1.1.0, it rocks a bunch of new features and LOTS of improvements.
+
+— What's new in version 2.0.0 —
+🌐 [NEW] Get full control over how often background data such as widgets are refreshed
+👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email
+✉ [NEW] Quickly send emails from an alias
+🔤  [NEW] Added random characters alias format
+💳 [NEW] View the subscription end date
+🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables
+🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents
+🧈 [IMPROVED] Lot's of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement
+🦋 [IMPROVED] Minor bugs have been fixed

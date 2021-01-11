@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.updatePadding
 import host.stjin.anonaddy.*
+import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
+import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
-import kotlinx.android.synthetic.main.activity_main_failed.*
-import kotlinx.android.synthetic.main.activity_splash.*
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,18 +25,26 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private val unsupportedBottomDialogFragment: UnsupportedBottomDialogFragment =
         UnsupportedBottomDialogFragment.newInstance()
 
+    private lateinit var binding: ActivitySplashBinding
+    private lateinit var bindingFailed: ActivityMainFailedBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        val view = binding.root
 
-        window.decorView.systemUiVisibility =
-                // Tells the system that the window wishes the content to
-                // be laid out at the most extreme scenario. See the docs for
-                // more information on the specifics
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+        // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
+        checkForDarkModeAndSetFlags()
+        setContentView(view)
+
+            window.decorView.systemUiVisibility =
                     // Tells the system that the window wishes the content to
-                    // be laid out as if the navigation bar was hidden
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    // be laid out at the most extreme scenario. See the docs for
+                    // more information on the specifics
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        // Tells the system that the window wishes the content to
+                        // be laid out as if the navigation bar was hidden
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
 
         setInsets()
         val settingsManager = SettingsManager(true, this)
@@ -71,8 +79,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 if (version != null) {
                     AnonAddy.VERSIONCODE = "${version.major}${version.minor}${version.patch}".toInt()
                     AnonAddy.VERSIONSTRING = version.version.toString()
-                    //0.6.0 translates to 060 aka 60
-                    if (AnonAddy.VERSIONCODE > 60) {
+                    //0.6.2 translates to 062 aka 62
+                    if (AnonAddy.VERSIONCODE >= 62) {
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             loadUserResourceIntoMemory()
                         }
@@ -92,7 +100,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private fun setInsets() {
-        activity_splash_progressbar.doOnApplyWindowInsets { view, insets, padding ->
+        binding.activitySplashProgressbar.doOnApplyWindowInsets { view, insets, padding ->
             // padding contains the original padding values after inflation
             view.updatePadding(
                 bottom = padding.bottom + insets.systemWindowInsetBottom
@@ -128,9 +136,12 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private fun showErrorScreen(error: String?) {
-        setContentView(R.layout.activity_main_failed)
-        activity_main_failed_error_message.text = error
-        activity_main_failed_retry_button.setOnClickListener {
+        bindingFailed = ActivityMainFailedBinding.inflate(layoutInflater)
+        val view = bindingFailed.root
+        setContentView(view)
+
+        bindingFailed.activityMainFailedErrorMessage.text = error
+        bindingFailed.activityMainFailedRetryButton.setOnClickListener {
             val intent = Intent(this, SplashActivity::class.java)
             startActivity(intent)
             finish()

@@ -5,9 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.COPY_ACTION
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_ACTION
@@ -29,13 +31,25 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
         return aliasList?.size ?: 0
     }
 
-    override fun getViewAt(position: Int): RemoteViews? {
+    override fun getViewAt(position: Int): RemoteViews {
         // position will always range from 0 to getCount() - 1.
         // construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
         val rv = RemoteViews(mContext.packageName, R.layout.widget_aliases_listview_list_item)
         rv.setTextViewText(R.id.widget_aliases_listview_list_title, aliasList?.get(position)?.email)
-        rv.setTextViewText(R.id.widget_aliases_listview_list_description, aliasList?.get(position)?.description)
+
+
+        val description: String = if (aliasList?.get(position)?.description.isNullOrEmpty()) {
+            mContext.resources.getString(
+                R.string.created_at_s,
+                DateTimeUtils.turnStringIntoLocalString(aliasList?.get(position)?.created_at)
+            )
+        } else {
+            aliasList?.get(position)?.description.toString()
+        }
+        rv.setTextViewText(R.id.widget_aliases_listview_list_description, description)
+
+
         // Next, set a fill-intent which will be used to fill-in the pending intent template
         // which is set on the collection view in StackWidgetProvider.
 
@@ -81,19 +95,28 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
     }
 
     override fun onDataSetChanged() {
-        val networkHelper = NetworkHelper(mContext)
+        val settingsManager = SettingsManager(true, mContext)
+        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
 
-        val list = networkHelper.getAliasesWidget()
+        val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(mContext, it) }
+        val filteredAliasList = ArrayList<Aliases>()
 
-        if (list != null) {
-            if (list.size >= 2) {
-
-                // Sort by emails forwarded
-                list.sortByDescending { it.emails_forwarded }
-
-                // Get the top 15
-                aliasList = list.take(15) as ArrayList<Aliases>?
+        if (aliasesList != null) {
+            for (alias in aliasesList) {
+                if (alias.active && alias.deleted_at == null) {
+                    filteredAliasList.add(alias)
+                }
             }
+        }
+
+        // List needs more than 2 else it becomes a singleton and will result in an ClassCastException
+        if (filteredAliasList.size >= 2) {
+
+            // Sort by emails forwarded
+            filteredAliasList.sortByDescending { it.emails_forwarded }
+
+            // Get the top 15
+            aliasList = filteredAliasList.take(15) as ArrayList<Aliases>?
         }
     }
 
