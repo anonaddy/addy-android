@@ -5,7 +5,7 @@
 
 ### Added
 - 🌐 [NEW] Get full control over how often background data such as widgets are refreshed
-- 👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new emai
+- 👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email
 - ✉  [NEW] Quickly send emails from an alias
 - 🔤  [NEW] Added random characters alias format
 - 💳 [NEW] View the subscription end date
