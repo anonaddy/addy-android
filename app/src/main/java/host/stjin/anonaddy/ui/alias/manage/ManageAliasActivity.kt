@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import app.futured.donut.DonutSection
@@ -333,17 +334,17 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-    private fun getSendAddress(recipientEmails: String): Array<String?> {
+    private fun getSendAddress(recipientEmails: String): ArrayList<String> {
         val recipients = recipientEmails.split(",")
-        val toAddresses = Array<String?>(recipients.size) { null }
+        val toAddresses = arrayListOf<String>()
 
-        for ((i, email) in recipients.withIndex()) {
+        for (email in recipients) {
             // This method generates the to address for sending emails from this alias according to https://anonaddy.com/help/sending-email-from-an-alias/
             val leftPartOfAlias = this.alias?.local_part
             val domain = this.alias?.domain
             val recipientLeftPartOfEmail = email.substringBeforeLast("@", "")
             val recipientRightPartOfEmail = email.substringAfterLast("@", "")
-            toAddresses[i] = "$leftPartOfAlias+$recipientLeftPartOfEmail=$recipientRightPartOfEmail@$domain"
+            toAddresses.add("$leftPartOfAlias+$recipientLeftPartOfEmail=$recipientRightPartOfEmail@$domain")
         }
 
         return toAddresses
@@ -639,6 +640,14 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     override fun onPressSend(toString: String) {
+
+        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
+        val clipboard: ClipboardManager =
+            this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("recipients", toString.replace(",", " "))
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
+
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, getSendAddress(toString))

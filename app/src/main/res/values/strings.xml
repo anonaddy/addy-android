@@ -83,9 +83,8 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<p>🎆 Happy new year everyone! Hope you have a wonderful 2021 🎇<br />This update is the most exciting one since 1.1.0, it rocks a bunch of new features and LOTS of improvements.</p>
-<p>&mdash; What\'s new in version 2.0.0 &mdash;<br />🌐 [NEW] Get full control over how often background data such as widgets are refreshed<br />👁️ [NEW] [APP EXCLUSIVE] Watch your aliases to get notified when it forwards a new email<br />✉️️ [NEW] Quickly send emails from an alias<br />🔤 [NEW] Added random characters alias format<br />💳 [NEW] View the subscription end date</p>
-<p>&mdash; What\'s improved in version 2.0.0 &mdash;<br />🖌️ [IMPROVED] There are some major and minor UI improvements making the app look even better on phones, tablets and foldables<br />🔐 [IMPROVED] The app just got even more secure as it now also requires authentication for actions being executed from the widget or intents<br />🧈 [IMPROVED] Lot\'s of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement<br />🦋 [IMPROVED] Minor bugs have been fixed</p>]]></string>
+    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 2.0.1 &mdash;<br />📋 [NEW] Sending an email from an alias will now also copy the recipients to the clipboard</p>
+<p>&mdash; What\'s improved in version 2.0.1 &mdash;<br />🖌️ [BUG FIX] Some email apps did not fill in the to: addresses when sending mail from an alias</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -353,4 +352,5 @@
     <string name="more">More</string>
     <string name="API_key_received_from_intent">API Key received from intent</string>
     <string name="API_key_invalid">API Key invalid</string>
+    <string name="copied_recipients">Copied recipients</string>
 </resources>
