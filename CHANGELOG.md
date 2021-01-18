@@ -1,12 +1,12 @@
 
 # Changelog
-## [AnonAddy v2.0.1] - TBD
+## [AnonAddy v2.0.1] - 2021-01-18
 
 ### Added
 - 📋 [NEW] Sending an email from an alias will now also copy the recipients to the clipboard
 
 ### Fixed/Improved
-- 🖌️ [BUG FIX] Some email apps did not fill in the to: addresses when sending mail from an alias
+- 🐛 [BUG FIX] Some email apps did not fill in the to: addresses when sending mail from an alias
 
 
 ## [AnonAddy v2.0.0] - 2021-01-11
