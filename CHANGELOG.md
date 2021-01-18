@@ -1,5 +1,10 @@
 
 # Changelog
+## [AnonAddy v2.0.1] - 2021-01-18
+
+### Added
+- 📋 [NEW] Sending an email from an alias will now also copy the recipients to the clipboard
+
 
 ## [AnonAddy v2.0.0] - 2021-01-11
 

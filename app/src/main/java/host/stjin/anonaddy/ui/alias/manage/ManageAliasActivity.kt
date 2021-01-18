@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import app.futured.donut.DonutSection
@@ -639,9 +640,18 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     override fun onPressSend(toString: String) {
+        val recipients = getSendAddress(toString)
+
+        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
+        val clipboard: ClipboardManager =
+            this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
+
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, getSendAddress(toString))
+        intent.putExtra(Intent.EXTRA_EMAIL, recipients)
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
         }
