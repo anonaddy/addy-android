@@ -334,17 +334,17 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-    private fun getSendAddress(recipientEmails: String): ArrayList<String> {
+    private fun getSendAddress(recipientEmails: String): Array<String?> {
         val recipients = recipientEmails.split(",")
-        val toAddresses = arrayListOf<String>()
+        val toAddresses = Array<String?>(recipients.size) { null }
 
-        for (email in recipients) {
+        for ((i, email) in recipients.withIndex()) {
             // This method generates the to address for sending emails from this alias according to https://anonaddy.com/help/sending-email-from-an-alias/
             val leftPartOfAlias = this.alias?.local_part
             val domain = this.alias?.domain
             val recipientLeftPartOfEmail = email.substringBeforeLast("@", "")
             val recipientRightPartOfEmail = email.substringAfterLast("@", "")
-            toAddresses.add("$leftPartOfAlias+$recipientLeftPartOfEmail=$recipientRightPartOfEmail@$domain")
+            toAddresses[i] = "$leftPartOfAlias+$recipientLeftPartOfEmail=$recipientRightPartOfEmail@$domain"
         }
 
         return toAddresses
@@ -640,17 +640,18 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     override fun onPressSend(toString: String) {
+        val recipients = getSendAddress(toString)
 
         // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
         val clipboard: ClipboardManager =
             this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("recipients", toString.replace(",", " "))
+        val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
 
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, getSendAddress(toString))
+        intent.putExtra(Intent.EXTRA_EMAIL, recipients)
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
         }

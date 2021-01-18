@@ -1,5 +1,0 @@
-— What's new in version 2.0.1 —
-📋 [NEW] Sending an email from an alias will now also copy the recipients to the clipboard
-
-— What's improved in version 2.0.1 —
-🐛 [BUG FIX] Some email apps did not fill in the to: addresses when sending mail from an alias
