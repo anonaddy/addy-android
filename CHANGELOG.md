@@ -1,5 +1,11 @@
 
 # Changelog
+## [AnonAddy v2.0.2] - 2021-02-08
+
+### Fixed/Improved
+- [IMPROVED] Updated shared domains
+
+
 ## [AnonAddy v2.0.1] - 2021-01-18
 
 ### Added

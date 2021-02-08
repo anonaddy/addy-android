@@ -83,7 +83,7 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 2.0.1 &mdash;<br />📋 [NEW] Sending an email from an alias will now also copy the recipients to the clipboard</p>]]></string>
+    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 2.0.2 &mdash;<br />[IMPROVED] Updated shared domains</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -257,7 +257,7 @@
     <string name="catch_all_enabled">Catch-All enabled</string>
     <string name="catch_all_disabled">Catch-All disabled</string>
     <string name="alias_local_part">Alias local part</string>
-    <string name="domains_format_custom_not_available_for_this_domain">Not available for the selected domains</string>
+    <string name="domains_format_custom_not_available_for_this_domain">Not available for the selected domain</string>
     <string name="domains_format_random_words_not_available_for_this_subscription">Random words is not available for your current subscription</string>
     <string name="ignore_and_continue">Ignore and continue</string>
     <string name="how_to_update">How to update</string>
