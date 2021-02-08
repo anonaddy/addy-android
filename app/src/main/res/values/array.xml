@@ -17,6 +17,7 @@
     <!--the custom format is not available for shared domains -->
     <string-array name="shared_domains">
         <item>anonaddy.me</item>
+        <item>mailer.me</item>
         <item>4wrd.cc</item>
     </string-array>
 

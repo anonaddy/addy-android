@@ -6,6 +6,7 @@ import android.view.WindowInsets
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
@@ -132,7 +133,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 val promptInfo =
                     BiometricPrompt.PromptInfo.Builder()
                         .setTitle(resources.getString(R.string.anonaddy_locked))
-                        .setDeviceCredentialAllowed(true)
+                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
                         .setConfirmationRequired(false)
                         .build()
 

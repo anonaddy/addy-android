@@ -87,7 +87,7 @@ class AppSettingsActivity : BaseActivity(),
         binding.activityAppSettingsSectionSecurity.setLayoutEnabled(false)
 
         val biometricManager = BiometricManager.from(this)
-        when (biometricManager.canAuthenticate()) {
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
                 binding.activityAppSettingsSectionSecurity.setDescription(resources.getString(R.string.security_desc))
 
@@ -131,6 +131,21 @@ class AppSettingsActivity : BaseActivity(),
                     ).show()
                     loadSettings()
                 }
+            }
+            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
+                binding.activityAppSettingsSectionSecurity.setDescription(
+                    resources.getString(R.string.biometric_error_hw_unavailable)
+                )
+            }
+            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
+                binding.activityAppSettingsSectionSecurity.setDescription(
+                    resources.getString(R.string.biometric_error_hw_unavailable)
+                )
+            }
+            BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
+                binding.activityAppSettingsSectionSecurity.setDescription(
+                    resources.getString(R.string.biometric_error_hw_unavailable)
+                )
             }
         }
 
@@ -187,12 +202,12 @@ class AppSettingsActivity : BaseActivity(),
                     val promptInfo = if (checked) {
                         BiometricPrompt.PromptInfo.Builder()
                             .setTitle(resources.getString(R.string.enable_biometric_authentication))
-                            .setDeviceCredentialAllowed(true)
+                            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
                             .build()
                     } else {
                         BiometricPrompt.PromptInfo.Builder()
                             .setTitle(resources.getString(R.string.disable_biometric_authentication))
-                            .setDeviceCredentialAllowed(true)
+                            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
                             .build()
                     }
 
