@@ -342,6 +342,15 @@
                 app:sectionStartIcon="@drawable/ic_creation"
                 app:sectionTitle="@string/update_default_alias_format" />
 
+            <host.stjin.anonaddy.ui.customviews.SectionView
+                android:id="@+id/anonaddy_settings_use_reply_to_header_for_replying_LL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:sectionDescription="@string/use_reply_to_header_for_replying_desc"
+                app:sectionEndIcon="@drawable/ic_outline_edit_24"
+                app:sectionStartIcon="@drawable/ic_creation"
+                app:sectionTitle="@string/use_reply_to_header_for_replying" />
+
 
         </LinearLayout>
 

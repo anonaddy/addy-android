@@ -1,0 +1,4 @@
+— What's new in version 2.0.3 —
+[IMPROVED] Updated libraries
+[IMPROVED] Added "Use Reply-To Header For Replying" to AnonAddy settings
+[IMPROVED] Overall app improvements
