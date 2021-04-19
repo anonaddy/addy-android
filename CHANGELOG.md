@@ -1,5 +1,12 @@
-
 # Changelog
+## [AnonAddy v2.0.3] - 2021-04-19
+
+### Fixed/Improved
+- [IMPROVED] Updated libraries
+- [IMPROVED] Added "Use Reply-To Header For Replying" to AnonAddy settings
+- [IMPROVED] Overall app improvements
+
+
 ## [AnonAddy v2.0.2] - 2021-02-08
 
 ### Fixed/Improved

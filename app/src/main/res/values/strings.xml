@@ -83,7 +83,7 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 2.0.2 &mdash;<br />[IMPROVED] Updated shared domains</p>]]></string>
+    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 2.0.3 &mdash;<br />[IMPROVED] Updated libraries<br />[IMPROVED] Added \"Use Reply-To Header For Replying\" to AnonAddy settings<br />[IMPROVED] Overall app improvements</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
