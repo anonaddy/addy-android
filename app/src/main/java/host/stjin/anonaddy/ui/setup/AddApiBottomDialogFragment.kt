@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -13,7 +14,7 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -23,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
     private var codeScanner: CodeScanner? = null
     private lateinit var listener: AddApiBottomDialogListener
@@ -88,6 +89,11 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
         binding.bsSetupScannerView.setOnClickListener {
             toggleQrCodeScanning()
+        }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsSetupRoot)
         }
 
         return root

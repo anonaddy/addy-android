@@ -31,15 +31,17 @@
 
     <application
         android:allowBackup="false"
+        android:exported="true"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:fullBackupContent="false"
         android:theme="@style/AppTheme.NoActionBar">
         <!-- Widget -->
         <receiver
             android:name=".widget.AliasWidgetProvider"
+            android:exported="false"
             android:label="@string/most_active_aliases">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -64,6 +66,7 @@
 
         <activity
             android:name=".ui.SplashActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Setup">
             <intent-filter>
@@ -72,7 +75,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.alias.manage.ManageAliasActivity">
+        <activity
+            android:name=".ui.alias.manage.ManageAliasActivity"
+            android:exported="true">
+
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -121,6 +127,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.setup.SetupActivity"
+            android:exported="true"
             android:theme="@style/AppTheme.Setup">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.VIEW" />

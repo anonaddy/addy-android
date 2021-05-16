@@ -2,14 +2,15 @@ package host.stjin.anonaddy.ui.domains.manage
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientDomainBinding
@@ -23,7 +24,7 @@ class EditDomainRecipientBottomDialogFragment(
     private val domainId: String?,
     private val defaultRecipient: String?
 ) :
-    BottomSheetDialogFragment(),
+    BaseBottomSheetDialogFragment(),
     View.OnClickListener {
 
 
@@ -66,6 +67,10 @@ class EditDomainRecipientBottomDialogFragment(
             }
         } else {
             dismiss()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsEditrecipientRoot)
         }
 
         return root

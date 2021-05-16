@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bs_addusername_username_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -30,8 +31,8 @@
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        style="@style/divider" />
+        style="@style/divider"
+        android:layout_width="match_parent" />
 
 
     <androidx.core.widget.NestedScrollView
@@ -46,10 +47,10 @@
             android:padding="16dp">
 
             <TextView
+                style="@style/DescTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                style="@style/DescTextStyle"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/add_username_desc"
                 android:textAlignment="center" />

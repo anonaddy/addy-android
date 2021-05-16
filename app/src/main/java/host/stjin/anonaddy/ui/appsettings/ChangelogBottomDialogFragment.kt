@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.appsettings
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -8,12 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetChangelogBinding
 
 
-class ChangelogBottomDialogFragment : BottomSheetDialogFragment() {
+class ChangelogBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -33,7 +34,7 @@ class ChangelogBottomDialogFragment : BottomSheetDialogFragment() {
         val root = binding.root
 
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.bsChangelogTextview.text = Html.fromHtml(
                 context?.resources?.getString(R.string.app_changelog),
                 Html.FROM_HTML_MODE_LEGACY
@@ -42,6 +43,12 @@ class ChangelogBottomDialogFragment : BottomSheetDialogFragment() {
             binding.bsChangelogTextview.text =
                 Html.fromHtml(context?.resources?.getString(R.string.app_changelog))
         }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsChangelogRoot)
+        }
+
         return root
 
     }

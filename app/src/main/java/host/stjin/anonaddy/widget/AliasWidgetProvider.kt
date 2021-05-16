@@ -136,13 +136,12 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
     val onClickPendingIntent = PendingIntent
         .getBroadcast(
             context, appWidgetId, clickIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
     views.setPendingIntentTemplate(R.id.widget_alias_list_view, onClickPendingIntent)
     views.setOnClickPendingIntent(R.id.widget_aliases_listview_list_refresh, getPendingSelfIntent(context, REFRESH_ACTION))
     views.setOnClickPendingIntent(R.id.widget_aliases_listview_list_open_app, getPendingSelfIntent(context, OPEN_APP))
-
 
     // Tell every widget there is new data for the listview
     appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_alias_list_view)
@@ -154,5 +153,5 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
 private fun getPendingSelfIntent(context: Context, action: String): PendingIntent {
     val intent = Intent(context, AliasWidgetProvider::class.java)
     intent.action = action
-    return PendingIntent.getBroadcast(context, Random.nextInt(0, 999), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    return PendingIntent.getBroadcast(context, Random.nextInt(0, 999), intent, PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 }

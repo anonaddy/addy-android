@@ -28,6 +28,8 @@
             @transition/change_image_transform
         </item>
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
+
+        <item name="android:windowSplashScreenBackground">@color/primaryColorStatic</item>
     </style>
 
     <style name="BottomSheet" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">

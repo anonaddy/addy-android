@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion("android-S")
 
     defaultConfig {
         applicationId "host.stjin.anonaddy"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 20
-        versionName "2.0.3"
+        versionName "2.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -69,7 +69,7 @@ dependencies {
     implementation 'com.github.kittinunf.fuel:fuel:2.2.3'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.github.kittinunf.fuel:fuel-coroutines:2.2.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
 }
 
 // Gradle dependency on Shimmer for Android
@@ -101,7 +101,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation "androidx.work:work-runtime-ktx:2.5.0"
+    implementation "androidx.work:work-runtime-ktx:2.7.0-alpha03"
 }
 
 // For the donut in the aliasview

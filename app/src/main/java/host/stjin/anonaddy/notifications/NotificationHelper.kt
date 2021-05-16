@@ -48,16 +48,31 @@ class NotificationHelper(private val context: Context) {
             putExtra("extra", aliasId)
         }
         val stopWatchingPendingIntent: PendingIntent =
-            PendingIntent.getBroadcast(context, Random.nextInt(0, 999), stopWatchingIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                stopWatchingIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
         val editAliasIntent = Intent(context, ActionReceiver::class.java).apply {
             action = ActionReceiver.NOTIFICATIONACTIONS.EDIT_ALIAS
             putExtra("extra", aliasId)
         }
         val editAliasPendingIntent: PendingIntent =
-            PendingIntent.getBroadcast(context, Random.nextInt(0, 999), editAliasIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                editAliasIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
         val notificationIntent = Intent(context, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(context, Random.nextInt(0, 999), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            Random.nextInt(0, 999),
+            notificationIntent,
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         val notification = NotificationCompat.Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)

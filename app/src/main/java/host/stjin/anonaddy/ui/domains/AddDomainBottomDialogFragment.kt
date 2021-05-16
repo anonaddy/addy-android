@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.domains
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,7 +16,7 @@ import android.view.animation.Animation
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAdddomainBinding
@@ -25,7 +26,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddDomainBottomDialogListener
@@ -64,6 +65,10 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
                 addDomain(requireContext())
             }
             false
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsAddDomainRoot)
         }
 
         return root

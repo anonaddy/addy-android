@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -8,12 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAnonaddyInstanceVersionUnsupportedBinding
 
 
-class UnsupportedBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
     private lateinit var listener: UnsupportedBottomDialogListener
 
@@ -51,7 +52,7 @@ class UnsupportedBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
         binding.bsAnonaddyInstanceVersionUnsupportedIgnoreButton.setOnClickListener(this)
 
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.bsAnonaddyInstanceVersionUnsupportedTextview.text = Html.fromHtml(
                 context?.resources?.getString(R.string.anonaddy_instance_version_unsupported),
                 Html.FROM_HTML_MODE_LEGACY
@@ -60,6 +61,12 @@ class UnsupportedBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
             binding.bsAnonaddyInstanceVersionUnsupportedTextview.text =
                 Html.fromHtml(context?.resources?.getString(R.string.anonaddy_instance_version_unsupported))
         }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsAnonaddyInstanceVersionUnsupportedRoot)
+        }
+
         return root
 
     }

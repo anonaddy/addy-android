@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bs_darkmode_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -30,8 +31,8 @@
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        style="@style/divider" />
+        style="@style/divider"
+        android:layout_width="match_parent" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -54,8 +55,8 @@
                 android:text="@string/off" />
 
             <View
-                android:layout_width="match_parent"
-                style="@style/divider" />
+                style="@style/divider"
+                android:layout_width="match_parent" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/bs_darkmode_on"
@@ -65,8 +66,8 @@
                 android:text="@string/on" />
 
             <View
-                android:layout_width="match_parent"
-                style="@style/divider" />
+                style="@style/divider"
+                android:layout_width="match_parent" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/bs_darkmode_automatic"

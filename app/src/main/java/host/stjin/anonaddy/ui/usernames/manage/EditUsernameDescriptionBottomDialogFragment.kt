@@ -2,13 +2,14 @@ package host.stjin.anonaddy.ui.usernames.manage
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionUsernameBinding
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 class EditUsernameDescriptionBottomDialogFragment(
     private val usernameId: String?,
     private val description: String?
-) : BottomSheetDialogFragment(), View.OnClickListener {
+) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddEditUsernameDescriptionBottomDialogListener
@@ -62,6 +63,10 @@ class EditUsernameDescriptionBottomDialogFragment(
             dismiss()
         }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsEditusernameUsernameRoot)
+        }
         return root
 
     }

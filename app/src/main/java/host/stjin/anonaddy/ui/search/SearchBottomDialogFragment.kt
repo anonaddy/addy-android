@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.search
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
@@ -27,7 +28,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
     private lateinit var listener: AddSearchBottomDialogListener
     private lateinit var networkHelper: NetworkHelper
@@ -79,6 +80,10 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         }
 
         getRecentSearchResults()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsSearchRoot)
+        }
 
         return root
 
@@ -224,8 +229,10 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (aliases != null) {
                 for (alias in aliases!!) {
                     if (
-                        alias.email.toLowerCase().contains(binding.bsSearchTermTiet.text.toString().toLowerCase()) ||
-                        alias.description?.toLowerCase()?.contains(binding.bsSearchTermTiet.text.toString().toLowerCase()) == true
+                        alias.email.lowercase(Locale.getDefault())
+                            .contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault())) ||
+                        alias.description?.lowercase(Locale.getDefault())
+                            ?.contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault())) == true
                     ) {
                         filteredAliases.add(alias)
                     }
@@ -235,7 +242,7 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (recipients != null) {
                 for (recipient in recipients!!) {
                     if (
-                        recipient.email.toLowerCase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT))) {
+                        recipient.email.lowercase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.ROOT))) {
                         filteredRecipients.add(recipient)
                     }
                 }
@@ -245,9 +252,9 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (domains != null) {
                 for (domain in domains!!) {
                     if (
-                        domain.domain.toLowerCase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT)) ||
-                        domain.description?.toLowerCase(Locale.ROOT)
-                            ?.contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT)) == true
+                        domain.domain.lowercase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.ROOT)) ||
+                        domain.description?.lowercase(Locale.ROOT)
+                            ?.contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.ROOT)) == true
                     ) {
                         filteredDomains.add(domain)
                     }
@@ -258,9 +265,9 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (usernames != null) {
                 for (username in usernames!!) {
                     if (
-                        username.username.toLowerCase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT)) ||
-                        username.description?.toLowerCase(Locale.ROOT)
-                            ?.contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT)) == true
+                        username.username.lowercase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.ROOT)) ||
+                        username.description?.lowercase(Locale.ROOT)
+                            ?.contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.ROOT)) == true
                     ) {
                         filteredUsernames.add(username)
                     }
@@ -270,7 +277,7 @@ class SearchBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
             if (rules != null) {
                 for (rule in rules!!) {
                     if (
-                        rule.name.toLowerCase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().toLowerCase(Locale.ROOT))) {
+                        rule.name.lowercase(Locale.ROOT).contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.ROOT))) {
                         filteredRules.add(rule)
                     }
                 }

@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.recipients
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -10,7 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddrecipientBinding
@@ -20,7 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddRecipientBottomDialogListener
@@ -60,6 +61,11 @@ class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnCli
                 addRecipient(requireContext())
             }
             false
+        }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsAddrecipientRecipientRoot)
         }
 
         return root
