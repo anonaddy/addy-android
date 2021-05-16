@@ -1,4 +1,13 @@
 # Changelog
+## [AnonAddy v2.1.0] - 2021-05-16
+
+### Fixed/Improved
+- [IMPROVED] Support for Android 12
+- [IMPROVED] Added keyboard animations
+- [IMPROVED] Move content from bottomdialogs above keyboard if there is space
+- [IMPROVED] Overall app improvements
+
+
 ## [AnonAddy v2.0.3] - 2021-04-19
 
 ### Fixed/Improved

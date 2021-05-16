@@ -92,7 +92,7 @@
                     style="@style/ActionButtonsSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/edit_recipient" />
+                    android:text="@string/edit" />
             </LinearLayout>
 
         </LinearLayout>

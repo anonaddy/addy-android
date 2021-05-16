@@ -1,0 +1,5 @@
+— What's new in version 2.1.0 —
+[IMPROVED] Support for Android 12
+[IMPROVED] Added keyboard animations
+[IMPROVED] Move content from bottomdialogs above keyboard if there is space
+[IMPROVED] Overall app improvements

@@ -5,13 +5,13 @@
     "kind": "Directory"
   },
   "applicationId": "host.stjin.anonaddy",
-  "variantName": "processReleaseResources",
+  "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 20,
-      "versionName": "2.0.3",
+      "versionCode": 21,
+      "versionName": "2.1.0",
       "outputFile": "app-release.apk"
     }
   ]
