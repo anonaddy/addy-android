@@ -54,7 +54,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityRulesCreateToolbar)
+        setupToolbar(binding.activityRulesCreateToolbar, R.string.creating_a_rule)
 
 
         networkHelper = NetworkHelper(this)
@@ -359,7 +359,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
                                 val snackbar =
                                     Snackbar.make(
-                                        binding.activityRulesCreateLL, resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                        binding.activityRulesCreateCL, resources.getString(R.string.error_creating_rule) + "\n" + result,
                                         Snackbar.LENGTH_SHORT
                                     )
 
@@ -387,7 +387,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
                                 val snackbar =
                                     Snackbar.make(
-                                        binding.activityRulesCreateLL, resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                        binding.activityRulesCreateCL, resources.getString(R.string.error_creating_rule) + "\n" + result,
                                         Snackbar.LENGTH_SHORT
                                     )
 

@@ -44,7 +44,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityUsernameSettingsToolbar)
+        setupToolbar(binding.activityUsernameSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_usernames)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -87,7 +87,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
             } else {
                 val snackbar =
                     Snackbar.make(
-                        binding.activityUsernameSettingsLL,
+                        binding.activityUsernameSettingsCL,
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         Snackbar.LENGTH_SHORT
                     )

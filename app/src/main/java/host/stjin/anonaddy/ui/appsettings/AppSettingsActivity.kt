@@ -51,7 +51,7 @@ class AppSettingsActivity : BaseActivity(),
         setContentView(view)
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(binding.appsettingsToolbar)
+        setupToolbar(binding.appsettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.settings)
         setVersion()
         loadSettings()
         setOnClickListeners()
@@ -123,7 +123,7 @@ class AppSettingsActivity : BaseActivity(),
                         false
                     )
                     Snackbar.make(
-                        findViewById(R.id.activity_app_settings_LL),
+                        findViewById(R.id.activity_app_settings_CL),
                         resources.getString(
                             R.string.biometric_error_hw_unavailable
                         ),
@@ -158,7 +158,7 @@ class AppSettingsActivity : BaseActivity(),
                 ) {
                     super.onAuthenticationError(errorCode, errString)
                     Snackbar.make(
-                        findViewById(R.id.activity_app_settings_LL),
+                        findViewById(R.id.activity_app_settings_CL),
                         this@AppSettingsActivity.resources.getString(
                             R.string.authentication_error_s,
                             errString
@@ -183,7 +183,7 @@ class AppSettingsActivity : BaseActivity(),
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     Snackbar.make(
-                        findViewById(R.id.activity_app_settings_LL),
+                        findViewById(R.id.activity_app_settings_CL),
                         resources.getString(R.string.authentication_failed),
                         Snackbar.LENGTH_SHORT
                     ).show()

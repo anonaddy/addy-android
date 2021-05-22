@@ -73,7 +73,7 @@ class ManageAliasActivity : BaseActivity(),
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
         setContentView(view)
-        setupToolbar(binding.activityManageAliasToolbar)
+        setupToolbar(binding.activityManageAliasToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_alias)
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
 
@@ -209,7 +209,7 @@ class ManageAliasActivity : BaseActivity(),
             } else {
                 binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_alias_LL),
+                    findViewById(R.id.activity_manage_alias_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -234,7 +234,7 @@ class ManageAliasActivity : BaseActivity(),
             } else {
                 binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_alias_LL),
+                    findViewById(R.id.activity_manage_alias_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -306,7 +306,7 @@ class ManageAliasActivity : BaseActivity(),
             val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
             clipboard.setPrimaryClip(clip)
             Snackbar.make(
-                findViewById(R.id.activity_manage_alias_LL),
+                findViewById(R.id.activity_manage_alias_CL),
                 this.resources.getString(R.string.copied_alias),
                 Snackbar.LENGTH_SHORT
             ).show()
@@ -318,7 +318,7 @@ class ManageAliasActivity : BaseActivity(),
             val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
             clipboard.setPrimaryClip(clip)
             Snackbar.make(
-                findViewById(R.id.activity_manage_alias_LL),
+                findViewById(R.id.activity_manage_alias_CL),
                 this.resources.getString(R.string.copied_alias),
                 Snackbar.LENGTH_SHORT
             ).show()

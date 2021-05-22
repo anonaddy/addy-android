@@ -60,7 +60,7 @@
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/address">
+                android:hint="@string/username">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bs_addusername_username_tiet"

@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Usernames
 import host.stjin.anonaddy.utils.DateTimeUtils
@@ -80,7 +81,7 @@ class UsernameAdapter(
     inner class Holder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
-        private var mLL: LinearLayout = view.findViewById(R.id.usernames_recyclerview_list_LL)
+        private var mCV: MaterialCardView = view.findViewById(R.id.usernames_recyclerview_list_CV)
         private var usernamesRecyclerviewListOptionLl: LinearLayout =
             view.findViewById(R.id.usernames_recyclerview_list_option_LL)
         private var mOptionsButton: LinearLayout =
@@ -98,14 +99,14 @@ class UsernameAdapter(
 
         init {
             mOptionsButton.setOnClickListener(this)
-            mLL.setOnClickListener(this)
+            mCV.setOnClickListener(this)
             usernamesRecyclerviewListSettingsButton.setOnClickListener(this)
             usernamesRecyclerviewListDeleteButton.setOnClickListener(this)
         }
 
         override fun onClick(p0: View) {
             when (p0.id) {
-                R.id.usernames_recyclerview_list_LL -> {
+                R.id.usernames_recyclerview_list_CV -> {
                     expandOptions()
                 }
                 R.id.usernames_recyclerview_list_expand_options -> {

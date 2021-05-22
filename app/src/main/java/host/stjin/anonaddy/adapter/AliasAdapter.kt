@@ -5,19 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import app.futured.donut.DonutProgressView
 import app.futured.donut.DonutSection
+import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.utils.DateTimeUtils
 
 
-class AliasAdapter(private val listWithAliases: List<Aliases>, private val showStatus: Boolean, context: Context) :
+class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context) :
     RecyclerView.Adapter<AliasAdapter.ViewHolder>() {
 
     lateinit var onAliasClickListener: ClickListener
@@ -31,6 +31,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         holder.mTitle.text = listWithAliases[position].email
 
         if (listWithAliases[position].description != null) {
@@ -70,26 +71,30 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         val sent = listWithAliases[position].emails_sent.toFloat()
         val blocked = listWithAliases[position].emails_blocked.toFloat()
 
+        val color1 = if (listWithAliases[position].active) R.color.portalOrange else R.color.md_grey_500
+        val color2 = if (listWithAliases[position].active) R.color.portalBlue else R.color.md_grey_600
+        val color3 = if (listWithAliases[position].active) R.color.secondaryDarkColor else R.color.md_grey_700
+        val color4 = if (listWithAliases[position].active) R.color.softRed else R.color.md_grey_800
 
         // DONUT
         val section1 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, R.color.portalOrange),
+            color = ContextCompat.getColor(holder.mChart.context, color1),
             amount = forwarded
         )
         val section2 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_replied, replied.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, R.color.portalBlue),
+            color = ContextCompat.getColor(holder.mChart.context, color2),
             amount = replied
         )
         val section3 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_sent, sent.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, R.color.secondaryDarkColor),
+            color = ContextCompat.getColor(holder.mChart.context, color3),
             amount = replied
         )
         val section4 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, R.color.softRed),
+            color = ContextCompat.getColor(holder.mChart.context, color4),
             amount = blocked
         )
         holder.mChart.cap = forwarded + replied + blocked + sent
@@ -97,30 +102,8 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
         // DONUT
 
 
-
-
         holder.mWatchedTextView.visibility =
-            if (aliasesToWatch?.contains(listWithAliases[position].id) == true) View.VISIBLE else View.GONE
-
-        if (showStatus) {
-            holder.mStatus.visibility = View.VISIBLE
-            if (listWithAliases[position].deleted_at == null) {
-                if (listWithAliases[position].active) {
-                    holder.mStatus.text =
-                        (holder.mStatus.context).resources.getString(R.string.active)
-                    holder.mCopy.alpha = 1f
-                } else {
-                    holder.mStatus.text =
-                        (holder.mStatus.context).resources.getString(R.string.inactive)
-                    holder.mCopy.alpha = 0.3f
-                }
-            } else {
-                holder.mStatus.text = (holder.mStatus.context).resources.getString(R.string.deleted)
-                holder.mCopy.alpha = 0.3f
-            }
-        } else {
-            holder.mStatus.visibility = View.GONE
-        }
+            if (aliasesToWatch?.contains(listWithAliases[position].id) == true && listWithAliases[position].active) View.VISIBLE else View.GONE
     }
 
     override fun getItemCount(): Int = listWithAliases.size
@@ -138,23 +121,22 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val showS
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
-        private var mLL: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL)
+        private var mCV: MaterialCardView = view.findViewById(R.id.aliases_recyclerview_list_CV)
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
-        var mStatus: TextView = view.findViewById(R.id.aliases_recyclerview_list_status)
         var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
-        var mCopy: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
+        private var mCopy: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
         var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
 
 
         init {
             mCopy.setOnClickListener(this)
-            mLL.setOnClickListener(this)
+            mCV.setOnClickListener(this)
         }
 
         override fun onClick(p0: View) {
-            if (p0.id == R.id.aliases_recyclerview_list_LL) {
+            if (p0.id == R.id.aliases_recyclerview_list_CV) {
                 onAliasClickListener.onClick(adapterPosition)
             } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
                 onAliasClickListener.onClickCopy(adapterPosition, p0)

@@ -2,8 +2,13 @@ package host.stjin.anonaddy.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.WindowCompat
 import host.stjin.anonaddy.AnonAddy
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
@@ -15,6 +20,8 @@ import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.ThemeUtils
+import java.util.*
 
 
 class DialogActivity : Activity() {
@@ -25,15 +32,7 @@ class DialogActivity : Activity() {
         binding = MainProfileSelectDialogBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-            window.decorView.systemUiVisibility =
-                    // Tells the system that the window wishes the content to
-                    // be laid out at the most extreme scenario. See the docs for
-                    // more information on the specifics
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        // Tells the system that the window wishes the content to
-                        // be laid out as if the navigation bar was hidden
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
 
         (findViewById<View>(R.id.main_profile_select_dialog_card).parent as View).setOnClickListener { finishAfterTransition() }
@@ -70,6 +69,20 @@ class DialogActivity : Activity() {
     }
 
     private fun setInfo() {
+        val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
+        binding.mainProfileSelectDialogUsernameInitials.text = usernameInitials
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            binding.mainProfileSelectDialogUsernameInitials.background.colorFilter = BlendModeColorFilter(
+                ThemeUtils.getDeviceAccentColor(this),
+                BlendMode.SRC_IN
+            )
+        } else {
+            binding.mainProfileSelectDialogUsernameInitials.background.setColorFilter(ThemeUtils.getDeviceAccentColor(this), PorterDuff.Mode.SRC_ATOP)
+        }
+
+
+
         binding.mainProfileSelectDialogAnonaddySettingsDesc.text =
             if (AnonAddy.VERSIONCODE == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
                 R.string.self_hosted_instance_s,

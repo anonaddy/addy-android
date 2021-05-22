@@ -3,7 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_aliases">Aliases</string>
     <string name="dismiss">Dismiss</string>
-    <string name="overall_statistics">Overall statistics</string>
     <string name="title_activity_dialog">Profile dialog</string>
     <string name="app_settings">App settings</string>
     <string name="title_recipients">Recipients</string>
@@ -220,7 +219,7 @@
     <string name="delete_username">Delete username</string>
     <string name="delete_username_desc_confirm">Are you sure you want to delete this username? This will also delete all aliases associated with this username. You will no longer be able to receive any emails at this username subdomain. This will still count towards your additional username limit even once deleted.</string>
     <string name="error_deleting_username">Something went wrong while deleting this username</string>
-    <string name="add_username_desc">Please choose additional usernames carefully as you can only add a maximum of three.\n\nYou cannot login with these usernames, only the one you originally signed up with</string>
+    <string name="add_username_desc">Please choose additional usernames carefully as you can only add a limited amount.\n\nYou cannot login with these usernames, only the one you originally signed up with</string>
     <string name="error_adding_username">Something went wrong while adding this username</string>
     <string name="username_deactivated">Username deactivated</string>
     <string name="username_activated">Username activated</string>
@@ -357,4 +356,5 @@
     <string name="add">Add</string>
     <string name="edit">Edit</string>
     <string name="send">Send</string>
+    <string name="username">Username</string>
 </resources>

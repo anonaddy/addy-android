@@ -9,13 +9,12 @@
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="android:textColor">@color/BlackWhite</item>
         <item name="android:navigationBarColor">
-            @color/NavbarLightDarkMode
+            @android:color/transparent
         </item>
         <!-- Optional, if drawing behind the status bar too -->
         <item name="android:statusBarColor">
             @color/primaryColor
         </item>
-        <item name="android:windowLightNavigationBar">true</item>
 
         <!-- enable window content transitions -->
         <item name="android:windowContentTransitions">true</item>
@@ -30,6 +29,16 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
 
         <item name="android:windowSplashScreenBackground">@color/primaryColorStatic</item>
+    </style>
+
+    <style name="AppTheme.CollapsingToolbarTitle.Expanded" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.CollapsingToolbarTitle.Collapsed" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="BottomSheet" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
@@ -282,14 +291,6 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <style name="AnonAddyDialogLayout">
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:layout_marginStart">8dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-    </style>
-
     <style name="AnonAddyMaterialButtonToggleGroupButtonOverlay">
         <item name="colorSurface">?attr/selectableItemBackground</item>
     </style>
@@ -299,5 +300,49 @@
         <item name="android:alpha">0.2</item>
         <item name="android:background">@color/IconGrayTint</item>
     </style>
+
+
+    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners_top" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">14dp</item>
+        <item name="cornerSizeTopLeft">14dp</item>
+        <item name="cornerSizeBottomRight">8dp</item>
+        <item name="cornerSizeBottomLeft">8dp</item>
+    </style>
+
+    <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners_center" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">8dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeBottomRight">8dp</item>
+        <item name="cornerSizeBottomLeft">8dp</item>
+    </style>
+
+    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners_bottom" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">8dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeBottomRight">14dp</item>
+        <item name="cornerSizeBottomLeft">14dp</item>
+    </style>
+
+    <style name="AnonAddyTitleAction" parent="titleTextView">
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
+
 
 </resources>

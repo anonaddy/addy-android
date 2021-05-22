@@ -47,7 +47,7 @@ class ManageUsernamesActivity : BaseActivity(),
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityManageUsernameToolbar)
+        setupToolbar(binding.activityManageUsernameToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_username)
         networkHelper = NetworkHelper(this)
 
 
@@ -100,7 +100,7 @@ class ManageUsernamesActivity : BaseActivity(),
             } else {
                 binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_username_LL),
+                    findViewById(R.id.activity_manage_username_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -124,7 +124,7 @@ class ManageUsernamesActivity : BaseActivity(),
             } else {
                 binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_username_LL),
+                    findViewById(R.id.activity_manage_username_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )

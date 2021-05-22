@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/aliases_recyclerview_list_CV"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:baselineAligned="false"
-    android:orientation="vertical"
-    android:paddingBottom="8dp">
+    android:layout_marginBottom="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="@dimen/cardview_default_elevation">
 
     <LinearLayout
-        android:id="@+id/aliases_recyclerview_list_LL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
         android:orientation="horizontal"
+        android:padding="12dp"
         android:weightSum="12">
 
         <LinearLayout
@@ -22,7 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -43,7 +46,7 @@
             android:id="@+id/aliases_recyclerview_list_LL2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="9"
+            android:layout_weight="8.5"
             android:orientation="vertical">
 
             <TextView
@@ -52,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:ellipsize="end"
-                android:fontFamily="sans-serif"
+                android:fontFamily="sans-serif-medium"
                 android:lines="1"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -106,18 +109,6 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/aliases_recyclerview_list_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:text="@string/inactive"
-                android:textColor="@color/BlackWhite"
-                android:textSize="12sp"
-                android:visibility="visible" />
-
             <ImageView
                 android:id="@+id/aliases_recyclerview_list_copy"
                 android:layout_width="match_parent"
@@ -130,24 +121,4 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:weightSum="12">
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1" />
-
-        <View
-            style="@style/divider"
-            android:layout_width="0dp"
-            android:layout_weight="11"/>
-
-    </LinearLayout>
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

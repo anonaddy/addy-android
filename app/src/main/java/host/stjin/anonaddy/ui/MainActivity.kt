@@ -1,8 +1,13 @@
 package host.stjin.anonaddy.ui
 
+
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.util.Pair
 import androidx.viewpager2.widget.ViewPager2
@@ -22,10 +27,12 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
+import host.stjin.anonaddy.utils.ThemeUtils
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 import kotlin.math.abs
 
 
@@ -119,7 +126,23 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun initialiseMainAppBar() {
-        binding.mainTopBar.mainTopBarUserInitials.setOnClickListener {
+
+        // Figure out the from name initials
+        val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
+        binding.mainAppBarInclude.mainTopBarUserInitials.text = usernameInitials
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            binding.mainAppBarInclude.mainTopBarUserInitials.background.colorFilter = BlendModeColorFilter(
+                ThemeUtils.getDeviceAccentColor(this),
+                BlendMode.SRC_IN
+            )
+        } else {
+            binding.mainAppBarInclude.mainTopBarUserInitials.background.setColorFilter(
+                ThemeUtils.getDeviceAccentColor(this),
+                PorterDuff.Mode.SRC_ATOP
+            )
+        }
+
+        binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {
             val i = Intent(Intent(this, DialogActivity::class.java))
             val options = ActivityOptions
                 .makeSceneTransitionAnimation(
@@ -135,7 +158,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             startActivity(i, options.toBundle())
         }
 
-        binding.mainTopBar.mainTopBarSearchIcon.setOnClickListener {
+        binding.mainAppBarInclude.mainTopBarSearchIcon.setOnClickListener {
             if (!searchBottomDialogFragment.isAdded) {
                 searchBottomDialogFragment.show(
                     supportFragmentManager,
@@ -143,11 +166,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 )
             }
         }
+
     }
-
-
     private fun changeTopBarTitle(title: String) {
-        binding.mainTopBar.mainTopBarTitle.text = title
+        binding.mainAppBarInclude.collapsingToolbar.title = title
     }
 
     fun switchFragments(fragment: Int) {

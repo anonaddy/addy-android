@@ -156,7 +156,7 @@ class HomeFragment : Fragment() {
 
                     // Get the top 5
                     val aliasList = list.take(5)
-                    val aliasAdapter = AliasAdapter(aliasList, false, context)
+                    val aliasAdapter = AliasAdapter(aliasList, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {
                             val intent = Intent(context, ManageAliasActivity::class.java)

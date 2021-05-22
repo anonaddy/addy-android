@@ -35,7 +35,7 @@ class AnonAddySettingsActivity : BaseActivity() {
         setContentView(view)
         networkHelper = NetworkHelper(this)
 
-        setupToolbar(binding.anonaddysettingsToolbar)
+        setupToolbar(binding.anonaddysettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.anonaddy_settings)
         setOnClickListeners()
 
         getStatistics()
@@ -109,7 +109,7 @@ class AnonAddySettingsActivity : BaseActivity() {
             } else {
                 val snackbar =
                     Snackbar.make(
-                        binding.activityAppSettingsLL, resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        binding.activityAppSettingsCL, resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         Snackbar.LENGTH_SHORT
                     )
 

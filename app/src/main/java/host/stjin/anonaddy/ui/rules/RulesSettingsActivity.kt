@@ -42,7 +42,7 @@ class RulesSettingsActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityManageRulesToolbar)
+        setupToolbar(binding.activityManageRulesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_rules)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -133,14 +133,14 @@ class RulesSettingsActivity : BaseActivity() {
                                 networkHelper!!.reorderRules({ result ->
                                     if (result == "200") {
                                         val snackbar = Snackbar.make(
-                                            binding.activityManageRulesLL,
+                                            binding.activityManageRulesCL,
                                             this@RulesSettingsActivity.resources.getString(R.string.changing_rules_order_success),
                                             Snackbar.LENGTH_SHORT
                                         )
                                         snackbar.show()
                                     } else {
                                         val snackbar = Snackbar.make(
-                                            binding.activityManageRulesLL,
+                                            binding.activityManageRulesCL,
                                             this@RulesSettingsActivity.resources.getString(R.string.error_changing_rules_order) + "\n" + result,
                                             Snackbar.LENGTH_SHORT
                                         )
@@ -181,14 +181,14 @@ class RulesSettingsActivity : BaseActivity() {
                 getDataFromWeb()
 
                 val snackbar = Snackbar.make(
-                    binding.activityManageRulesLL,
+                    binding.activityManageRulesCL,
                     this@RulesSettingsActivity.resources.getString(R.string.rule_deactivated),
                     Snackbar.LENGTH_SHORT
                 )
                 snackbar.show()
             } else {
                 val snackbar = Snackbar.make(
-                    binding.activityManageRulesLL,
+                    binding.activityManageRulesCL,
                     this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -209,14 +209,14 @@ class RulesSettingsActivity : BaseActivity() {
                 getDataFromWeb()
 
                 val snackbar = Snackbar.make(
-                    binding.activityManageRulesLL,
+                    binding.activityManageRulesCL,
                     this@RulesSettingsActivity.resources.getString(R.string.rule_activated),
                     Snackbar.LENGTH_SHORT
                 )
                 snackbar.show()
             } else {
                 val snackbar = Snackbar.make(
-                    binding.activityManageRulesLL,
+                    binding.activityManageRulesCL,
                     this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )

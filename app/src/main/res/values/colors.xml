@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primaryColorStatic">#19216b</color>
-    <color name="primaryColor">#19216b</color>
+    <!--<color name="primaryColor">#19216b</color>-->
+    <color name="primaryColor">#353C7D</color>
     <color name="primaryLightColor">#4d499a</color>
     <color name="primarySuperLightColor">#804D499A</color>
     <color name="primaryDarkColor">#000040</color>
@@ -21,10 +22,19 @@
     <color name="easternBlueSuperLight">#8016A8B8</color>
     <color name="portalBlue">#4289FD</color>
     <color name="portalOrange">#FF9800</color>
-    <color name="shimmerGray">#CDCDCD</color>
+    <color name="shimmerGray">#74CDCDCD</color>
     <color name="pillColor">#CCCCCC</color>
     <color name="titOutlineColor">#BABABA</color>
 
     <color name="colorControlNormal">#89000000</color>
+    <color name="transparentCircle">#0FFFFFFF</color>
+
+
+    <!--grey-->
+    <color name="md_grey_500">#9E9E9E</color>
+    <color name="md_grey_600">#757575</color>
+    <color name="md_grey_700">#616161</color>
+    <color name="md_grey_800">#424242</color>
+
 
 </resources>

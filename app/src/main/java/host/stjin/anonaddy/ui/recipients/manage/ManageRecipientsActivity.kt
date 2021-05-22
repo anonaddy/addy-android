@@ -44,7 +44,7 @@ class ManageRecipientsActivity : BaseActivity(),
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityManageRecipientToolbar)
+        setupToolbar(binding.activityManageRecipientToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_recipient)
         networkHelper = NetworkHelper(this)
 
 
@@ -113,7 +113,7 @@ class ManageRecipientsActivity : BaseActivity(),
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_recipient_LL),
+                    findViewById(R.id.activity_manage_recipient_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -137,7 +137,7 @@ class ManageRecipientsActivity : BaseActivity(),
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_recipient_LL),
+                    findViewById(R.id.activity_manage_recipient_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )

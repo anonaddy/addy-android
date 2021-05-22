@@ -1,39 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_domain_settings_LL"
+    android:id="@+id/activity_domain_settings_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
 
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <include
         android:id="@+id/activity_domain_settings_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primaryColor">
-
-        <TextView
-            android:id="@+id/activity_domain_settings_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/manage_domains"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-    </com.google.android.material.appbar.MaterialToolbar>
+        layout="@layout/custom_toolbar_one_handed" />
 
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_domain_settings_NCV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/activity_domain_settings_RL_lottieview"
@@ -53,11 +44,14 @@
                 android:orientation="vertical"
                 android:padding="8dp"
                 android:paddingStart="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:paddingEnd="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/AnonAddyTitleAction"
                     android:orientation="horizontal">
 
                     <TextView
@@ -80,7 +74,6 @@
                     android:id="@+id/activity_domain_settings_all_domains_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     app:shimmer_demo_angle="20"
@@ -103,7 +96,7 @@
                     android:id="@+id/activity_domain_settings_RL_count_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:alpha="0.8"
                     android:drawablePadding="16dp"
                     android:gravity="center_vertical"
@@ -117,4 +110,4 @@
     </androidx.core.widget.NestedScrollView>
 
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

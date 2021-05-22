@@ -44,7 +44,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityDomainSettingsToolbar)
+        setupToolbar(binding.activityDomainSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_domains)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -87,7 +87,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             } else {
                 val snackbar =
                     Snackbar.make(
-                        binding.activityDomainSettingsLL,
+                        binding.activityDomainSettingsCL,
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         Snackbar.LENGTH_SHORT
                     )

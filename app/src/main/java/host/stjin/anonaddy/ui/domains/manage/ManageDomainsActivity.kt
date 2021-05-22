@@ -43,7 +43,7 @@ class ManageDomainsActivity : BaseActivity(),
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityManageDomainToolbar)
+        setupToolbar(binding.activityManageDomainToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_domain)
         networkHelper = NetworkHelper(this)
 
 
@@ -115,7 +115,7 @@ class ManageDomainsActivity : BaseActivity(),
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_domain_CL),
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -139,7 +139,7 @@ class ManageDomainsActivity : BaseActivity(),
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_domain_CL),
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -162,7 +162,7 @@ class ManageDomainsActivity : BaseActivity(),
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_domain_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -185,7 +185,7 @@ class ManageDomainsActivity : BaseActivity(),
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_domain_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )

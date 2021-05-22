@@ -1,39 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_search_LL"
+    android:id="@+id/activity_search_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
 
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <include
         android:id="@+id/activity_search_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primaryColor">
-
-        <TextView
-            android:id="@+id/activity_search_settings_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/search_result"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-    </com.google.android.material.appbar.MaterialToolbar>
+        layout="@layout/custom_toolbar_one_handed" />
 
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_search_NCV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/activity_search_RL_lottieview"
@@ -52,6 +43,8 @@
                 android:orientation="vertical"
                 android:padding="8dp"
                 android:paddingStart="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:paddingEnd="16dp">
 
                 <LinearLayout
@@ -59,11 +52,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="vertical"
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/titleTextView"
+                        style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/aliases" />
@@ -72,7 +67,6 @@
                         android:id="@+id/activity_search_aliases_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
                         app:shimmer_demo_angle="20"
@@ -88,11 +82,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="vertical"
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/titleTextView"
+                        style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/recipients" />
@@ -101,7 +97,6 @@
                         android:id="@+id/activity_search_recipients_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
                         app:shimmer_demo_angle="20"
@@ -118,10 +113,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:orientation="vertical"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/titleTextView"
+                        style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/domains" />
@@ -130,7 +127,6 @@
                         android:id="@+id/activity_search_domains_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
                         app:shimmer_demo_angle="20"
@@ -147,10 +143,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:orientation="vertical"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/titleTextView"
+                        style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/usernames" />
@@ -159,7 +157,6 @@
                         android:id="@+id/activity_search_usernames_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
                         app:shimmer_demo_angle="20"
@@ -170,17 +167,18 @@
 
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/activity_search_rules_LL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:orientation="vertical"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/titleTextView"
+                        style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="@string/rules" />
@@ -189,7 +187,6 @@
                         android:id="@+id/activity_search_rules_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
                         app:shimmer_demo_angle="20"
@@ -207,4 +204,4 @@
     </androidx.core.widget.NestedScrollView>
 
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

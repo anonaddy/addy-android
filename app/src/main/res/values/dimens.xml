@@ -10,4 +10,9 @@ Refer to App Widget Documentation for margin information
 http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
     <dimen name="widget_margin">0dp</dimen>
+
+    <dimen name="collapsingtoolbar_title_left_margin">20dp</dimen>
+    <dimen name="collapsingtoolbar_title_bottom_margin">24dp</dimen>
+
+
 </resources>

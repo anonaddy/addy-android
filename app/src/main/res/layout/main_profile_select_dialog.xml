@@ -8,9 +8,12 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/main_profile_select_dialog_card"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:transitionName="background_transition"
         app:cardCornerRadius="@dimen/corner_radius"
         app:contentPadding="16dp">
@@ -32,19 +35,24 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <TextView
+                        android:id="@+id/main_profile_select_dialog_username_initials"
                         android:layout_width="38dp"
                         android:layout_height="38dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/circle"
                         android:contentDescription="@string/anonaddy_settings"
-                        android:src="@drawable/ic_account_circle_outline"
+                        android:gravity="center"
+                        android:text="SV"
+                        android:textColor="@android:color/white"
                         android:transitionName="image_transition"
-                        app:tint="@color/BlackWhite" />
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/main_profile_select_dialog_card_accountname"
+                        style="@style/AnonAddyDialogTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/AnonAddyDialogTitle"
                         android:text="$ANONADDY_Account_Name"
                         android:textAllCaps="false"
                         android:textColor="@color/BlackWhite"
@@ -52,9 +60,9 @@
 
                     <TextView
                         android:id="@+id/main_profile_select_dialog_card_subscription"
+                        style="@style/AnonAddyDialogDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/AnonAddyDialogDesc"
                         android:text="$ANONADDY_User_Subscription"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>

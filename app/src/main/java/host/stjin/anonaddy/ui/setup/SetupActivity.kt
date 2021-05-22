@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
@@ -29,16 +30,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         binding = ActivitySetupBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-
-        window.decorView.systemUiVisibility =
-                // Tells the system that the window wishes the content to
-                // be laid out at the most extreme scenario. See the docs for
-                // more information on the specifics
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    // Tells the system that the window wishes the content to
-                    // be laid out as if the navigation bar was hidden
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
 
         setInsets()

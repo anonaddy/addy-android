@@ -1,75 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/alias_fragment_add_alias_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="invisible"
-        app:layout_behavior=".utils.FABMove"
-        app:backgroundTint="@color/primaryColor"
-        app:srcCompat="@drawable/ic_outline_add_24"
-        android:contentDescription="@string/add_alias"
-        app:tint="@android:color/white" />
-
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/alias_scrollview"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <LinearLayout
+            android:id="@+id/alias_statistics_LL"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="24dp"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/alias_statistics_LL"
+                style="@style/AnonAddyTitleAction"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="24dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    style="@style/DescTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical"
+                    android:text="@string/aliases_statistics"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/alias_statistics_dismiss"
+                    style="@style/MaterialTextButtonWithoutSpacing"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal">
+                    android:text="@string/dismiss" />
 
-                    <TextView
-                        style="@style/DescTextStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center_vertical"
-                        android:text="@string/aliases_statistics"
-                        android:textSize="18sp" />
+            </LinearLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/alias_statistics_dismiss"
-                        style="@style/MaterialTextButtonWithoutSpacing"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/dismiss" />
 
-                </LinearLayout>
+            <com.google.android.material.card.MaterialCardView
+                style="@style/AnonAddyCustomCardViewStyleTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="@dimen/cardview_default_elevation">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -102,12 +92,21 @@
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/AnonAddyCustomCardViewStyleBottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                app:cardElevation="@dimen/cardview_default_elevation">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -140,140 +139,144 @@
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/alias_statistics_RL_lottieview"
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="32dp"
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/no_internet_connection" />
+
+            <LinearLayout
+                android:id="@+id/alias_list_LL1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/AnonAddyTitleAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/all_aliases" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/alias_add_alias"
+                        style="@style/MaterialTextButtonWithoutSpacing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_alias" />
+
+                </LinearLayout>
+
+                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    android:id="@+id/alias_all_aliases_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:shimmer_demo_angle="20"
+                    app:shimmer_demo_child_count="5"
+                    app:shimmer_demo_grid_child_count="1"
+                    app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
+                    app:shimmer_demo_layout_manager_type="linear_vertical">
+
+                </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+
+                <TextView
+                    android:id="@+id/alias_no_aliases"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/no_aliases"
+                    android:textAlignment="center"
+                    android:textColor="@color/BlackWhite"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/alias_list_LL2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/alias_list_LL1"
+                android:orientation="vertical">
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/alias_statistics_RL_lottieview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="300dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="32dp"
+                <LinearLayout
+                    android:id="@+id/alias_show_deleted_alias_toggle_LL"
+                    style="@style/AnonAddyTitleAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/deleted_aliases" />
+
+                    <ImageView
+                        android:id="@+id/alias_show_deleted_alias_toggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/deleted_aliases"
+                        android:src="@drawable/ic_menu_down_outline"
+                        app:tint="@color/primaryColor" />
+
+                </LinearLayout>
+
+                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    android:id="@+id/alias_deleted_aliases_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
                     android:visibility="gone"
-                    app:lottie_autoPlay="true"
-                    app:lottie_loop="true"
-                    app:lottie_rawRes="@raw/no_internet_connection" />
+                    app:shimmer_demo_angle="20"
+                    app:shimmer_demo_child_count="5"
+                    app:shimmer_demo_grid_child_count="1"
+                    app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
+                    app:shimmer_demo_layout_manager_type="linear_vertical">
 
-                <LinearLayout
-                    android:id="@+id/alias_list_LL1"
+                </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+
+                <TextView
+                    android:id="@+id/alias_no_deleted_aliases"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="18dp"
-                    android:orientation="vertical">
+                    android:padding="16dp"
+                    android:text="@string/no_deleted_aliases"
+                    android:textAlignment="center"
+                    android:textColor="@color/BlackWhite"
+                    android:visibility="gone" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+            </LinearLayout>
 
-                        <TextView
-                            style="@style/titleTextView"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="@string/all_aliases" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/alias_add_alias"
-                            style="@style/MaterialTextButtonWithoutSpacing"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/add_alias" />
-
-                    </LinearLayout>
-
-                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-                        android:id="@+id/alias_all_aliases_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="8dp"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        app:shimmer_demo_angle="20"
-                        app:shimmer_demo_child_count="5"
-                        app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
-                        app:shimmer_demo_layout_manager_type="linear_vertical">
-
-                    </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
-
-                    <TextView
-                        android:id="@+id/alias_no_aliases"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:text="@string/no_aliases"
-                        android:textAlignment="center"
-                        android:textColor="@color/BlackWhite"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/alias_list_LL2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/alias_list_LL1"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/alias_show_deleted_alias_toggle_LL"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            style="@style/titleTextView"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="@string/deleted_aliases" />
-
-                        <ImageView
-                            android:id="@+id/alias_show_deleted_alias_toggle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/deleted_aliases"
-                            android:src="@drawable/ic_menu_down_outline"
-                            app:tint="@color/primaryColor" />
-
-                    </LinearLayout>
-
-                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-                        android:id="@+id/alias_deleted_aliases_recyclerview"
-                        android:visibility="gone"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="8dp"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        app:shimmer_demo_angle="20"
-                        app:shimmer_demo_child_count="5"
-                        app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
-                        app:shimmer_demo_layout_manager_type="linear_vertical">
-
-                    </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
-
-                    <TextView
-                        android:id="@+id/alias_no_deleted_aliases"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:text="@string/no_deleted_aliases"
-                        android:textAlignment="center"
-                        android:textColor="@color/BlackWhite"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

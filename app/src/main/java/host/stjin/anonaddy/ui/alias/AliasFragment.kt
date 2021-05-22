@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,7 +63,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         // Load values from local to make the app look quick and snappy!
         setStatisticsFromLocal(requireContext())
         setOnClickListeners()
-        setOnScrollViewListener()
 
         // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
         getDataFromWeb()
@@ -72,26 +70,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         return root
     }
 
-
-    private fun setOnScrollViewListener() {
-
-        binding.aliasScrollview.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-
-            val scrollViewHeight: Double = (v.getChildAt(0).bottom - v.height).toDouble()
-            val getScrollY: Double = scrollY.toDouble()
-            val scrollPosition = getScrollY / scrollViewHeight * 100.0
-            //Log.i("scrollview", "scroll Percent Y: " + scrollPosition.toInt())
-            val percentage = scrollPosition.toInt()
-
-            if (percentage in 6..100) { // If between 6 and 100, show the fab
-                binding.aliasFragmentAddAliasFab.show()
-            } else if (percentage in 0..5) { // If between 0 and 5, hide the fab
-                binding.aliasFragmentAddAliasFab.hide()
-            }
-        })
-
-
-    }
 
     private fun getDataFromWeb() {
         binding.aliasListLL1.visibility = View.VISIBLE
@@ -124,14 +102,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
         }
 
-        binding.aliasFragmentAddAliasFab.setOnClickListener {
-            if (!addAliasBottomDialogFragment.isAdded) {
-                addAliasBottomDialogFragment.show(
-                    childFragmentManager,
-                    "addAliasBottomDialogFragment"
-                )
-            }
-        }
 
         binding.aliasShowDeletedAliasToggleLL.setOnClickListener {
             if (binding.aliasDeletedAliasesRecyclerview.visibility == View.GONE) {
@@ -199,7 +169,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     /**
                      * ALIAS LIST
                      */
-                    val aliasAdapter = AliasAdapter(list, true, context)
+                    val aliasAdapter = AliasAdapter(list, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {
                             val intent = Intent(context, ManageAliasActivity::class.java)
@@ -287,7 +257,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     /**
                      * ALIAS LIST
                      */
-                    val aliasAdapter = AliasAdapter(onlyDeletedList, true, context)
+                    val aliasAdapter = AliasAdapter(onlyDeletedList, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {
                             val intent = Intent(context, ManageAliasActivity::class.java)

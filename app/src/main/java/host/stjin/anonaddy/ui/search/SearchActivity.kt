@@ -70,7 +70,7 @@ class SearchActivity : BaseActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        setupToolbar(binding.activitySearchToolbar)
+        setupToolbar(binding.activitySearchToolbar.customToolbarOneHandedMaterialtoolbar, R.string.search_result)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -243,7 +243,7 @@ class SearchActivity : BaseActivity() {
             }
 
             val finalList = (nonDeletedList + onlyDeletedList)
-            val aliasAdapter = AliasAdapter(finalList, true, context)
+            val aliasAdapter = AliasAdapter(finalList, context)
             aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                 override fun onClick(pos: Int) {
                     val intent = Intent(context, ManageAliasActivity::class.java)
@@ -260,7 +260,7 @@ class SearchActivity : BaseActivity() {
                     clipboard.setPrimaryClip(clip)
 
                     Snackbar.make(
-                        binding.activitySearchLL,
+                        binding.activitySearchCL,
                         context.resources.getString(R.string.copied_alias),
                         Snackbar.LENGTH_SHORT
                     ).show()
