@@ -18,20 +18,20 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
-import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.COPY_ACTION
-import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.NAVIGATE
-import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_ACTION
-import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_APP
-import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.REFRESH_ACTION
+import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.COPY_ACTION
+import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.NAVIGATE
+import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_ACTION
+import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_APP
+import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.REFRESH_ACTION
 import kotlin.random.Random
 
 
 /**
  * Implementation of App Widget functionality.
  */
-class AliasWidgetProvider : AppWidgetProvider() {
+class AliasWidget1Provider : AppWidgetProvider() {
 
-    object AliasWidgetValues {
+    object AliasWidget1Values {
         const val REFRESH_ACTION = "host.stjin.anonaddy.widget.REFRESH_ACTION"
         const val COPY_ACTION = "host.stjin.anonaddy.widget.COPY_ACTION"
         const val OPEN_ACTION = "host.stjin.anonaddy.widget.OPEN_ACTION"
@@ -120,15 +120,15 @@ class AliasWidgetProvider : AppWidgetProvider() {
 }
 
 
-internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.widget_1_alias)
 
-    val intent = Intent(context, AliasWidgetRemoteViewsService::class.java)
+    val intent = Intent(context, AliasWidget1RemoteViewsService::class.java)
     views.setRemoteAdapter(R.id.widget_alias_list_view, intent)
 
 
-    val clickIntent = Intent(context, AliasWidgetProvider::class.java)
+    val clickIntent = Intent(context, AliasWidget1Provider::class.java)
     clickIntent.action = NAVIGATE
     clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     clickIntent.data = Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME))
@@ -151,7 +151,7 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
 }
 
 private fun getPendingSelfIntent(context: Context, action: String): PendingIntent {
-    val intent = Intent(context, AliasWidgetProvider::class.java)
+    val intent = Intent(context, AliasWidget1Provider::class.java)
     intent.action = action
     return PendingIntent.getBroadcast(context, Random.nextInt(0, 999), intent, PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 }

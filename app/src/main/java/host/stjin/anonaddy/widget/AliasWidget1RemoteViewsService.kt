@@ -3,8 +3,8 @@ package host.stjin.anonaddy.widget
 import android.content.Intent
 import android.widget.RemoteViewsService
 
-class AliasWidgetRemoteViewsService : RemoteViewsService() {
+class AliasWidget1RemoteViewsService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return AliasWidgetRemoteViewsFactory(this)
+        return AliasWidget1RemoteViewsFactory(this)
     }
 }

@@ -38,9 +38,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <!-- Widget -->
+        <!-- Widget 1 -->
         <receiver
-            android:name=".widget.AliasWidgetProvider"
+            android:name=".widget.AliasWidget1Provider"
             android:exported="false"
             android:label="@string/most_active_aliases">
             <intent-filter>
@@ -49,9 +49,25 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/alias_widget_info" />
+                android:resource="@xml/alias_widget_1_info" />
         </receiver>
-        <!-- Widget -->
+        <!-- Widget 1 -->
+
+        <!-- Widget 2 -->
+        <receiver
+            android:name=".widget.AliasWidget2Provider"
+            android:exported="false"
+            android:label="@string/aliases_statistics">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/alias_widget_2_info" />
+        </receiver>
+        <!-- Widget 2 -->
+
 
         <!-- Notification -->
         <receiver android:name="host.stjin.anonaddy.notifications.ActionReceiver" />
@@ -59,7 +75,7 @@
 
 
         <service
-            android:name=".widget.AliasWidgetRemoteViewsService"
+            android:name=".widget.AliasWidget1RemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <!-- END widget -->
 

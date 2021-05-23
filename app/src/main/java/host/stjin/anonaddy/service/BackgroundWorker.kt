@@ -10,7 +10,7 @@ import androidx.work.*
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.widget.AliasWidgetProvider
+import host.stjin.anonaddy.widget.AliasWidget1Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -23,10 +23,10 @@ This BackgroundWorker is used for obtaining data in the background, this data is
 class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
     private fun updateWidgets() {
-        val updateWidgetIntent = Intent(applicationContext, AliasWidgetProvider::class.java)
+        val updateWidgetIntent = Intent(applicationContext, AliasWidget1Provider::class.java)
         updateWidgetIntent.action = ACTION_APPWIDGET_UPDATE
         val ids = AppWidgetManager.getInstance(applicationContext)
-            .getAppWidgetIds(ComponentName(applicationContext, AliasWidgetProvider::class.java))
+            .getAppWidgetIds(ComponentName(applicationContext, AliasWidget1Provider::class.java))
         updateWidgetIntent.putExtra(EXTRA_APPWIDGET_IDS, ids)
         applicationContext.sendBroadcast(updateWidgetIntent)
     }

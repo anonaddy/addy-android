@@ -10,12 +10,12 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.GsonTools
-import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.COPY_ACTION
-import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.NAVIGATE
-import host.stjin.anonaddy.widget.AliasWidgetProvider.AliasWidgetValues.OPEN_ACTION
+import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.COPY_ACTION
+import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.NAVIGATE
+import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_ACTION
 
 
-class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViewsFactory {
+class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteViewsFactory {
 
     private var aliasList: ArrayList<Aliases>? = null
 
