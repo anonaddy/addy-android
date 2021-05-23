@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/widget_background_top"
+        android:background="@drawable/widget_1_background_top"
         android:backgroundTint="@color/primaryColorStatic"
         android:padding="8dp">
 
@@ -35,7 +35,7 @@
     <ListView
         android:id="@+id/widget_alias_list_view"
         android:layout_width="match_parent"
-        android:background="@drawable/widget_background_bottom"
+        android:background="@drawable/widget_1_background_bottom"
         android:layout_height="match_parent"
         android:gravity="center"
         android:loopViews="true" />

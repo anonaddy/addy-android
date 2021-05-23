@@ -19,18 +19,16 @@
             android:id="@+id/alias_statistics_LL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
             <LinearLayout
                 style="@style/AnonAddyTitleAction"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    style="@style/DescTextStyle"
+                    style="@style/titleTextView"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -38,13 +36,6 @@
                     android:gravity="center_vertical"
                     android:text="@string/aliases_statistics"
                     android:textSize="18sp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/alias_statistics_dismiss"
-                    style="@style/MaterialTextButtonWithoutSpacing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dismiss" />
 
             </LinearLayout>
 
@@ -165,7 +156,7 @@
                 android:id="@+id/alias_list_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="8dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical">
@@ -173,7 +164,6 @@
                 <LinearLayout
                     style="@style/AnonAddyTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
@@ -185,7 +175,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/alias_add_alias"
-                        style="@style/MaterialTextButtonWithoutSpacing"
+                        style="@style/MaterialActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_alias" />
@@ -224,13 +214,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/alias_list_LL1"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/alias_show_deleted_alias_toggle_LL"
                     style="@style/AnonAddyTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView

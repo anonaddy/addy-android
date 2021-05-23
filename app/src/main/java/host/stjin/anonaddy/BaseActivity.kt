@@ -13,6 +13,7 @@ import com.google.android.material.appbar.MaterialToolbar
 
 abstract class BaseActivity : AppCompatActivity() {
 
+
     companion object SecurityStatus {
         // This variable becomes true when the user authenticates. It will only switch back to false whenever the app is closed.
         // That way all the protected parts of the app stay available until the user explicitly closed them.

@@ -49,7 +49,6 @@
                 <LinearLayout
                     style="@style/AnonAddyTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
@@ -61,7 +60,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_rules_create_rules"
-                        style="@style/MaterialTextButtonWithoutSpacing"
+                        style="@style/MaterialActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/create_rule" />

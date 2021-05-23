@@ -122,7 +122,7 @@ class AliasWidgetProvider : AppWidgetProvider() {
 
 internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
     // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.widget_alias)
+    val views = RemoteViews(context.packageName, R.layout.widget_1_alias)
 
     val intent = Intent(context, AliasWidgetRemoteViewsService::class.java)
     views.setRemoteAdapter(R.id.widget_alias_list_view, intent)

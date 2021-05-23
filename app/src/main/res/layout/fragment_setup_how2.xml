@@ -59,7 +59,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/setup_how_2_button_previous"
-            style="@style/MaterialTextButtonWithoutSpacing"
+            style="@style/MaterialActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/previous" />

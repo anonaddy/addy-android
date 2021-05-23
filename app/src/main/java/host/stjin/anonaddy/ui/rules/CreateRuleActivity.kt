@@ -172,6 +172,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 firstCondition = false
             } else {
                 val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, binding.activityRulesCreateLLConditions as ViewGroup?, false)
+                inflatedLayout.elevation = this.resources.getDimension(R.dimen.cardview_default_elevation)
                 //val materialButtonToggleGroup = inflatedLayout.findViewById<MaterialButtonToggleGroup>(R.id.rules_view_and_or_AND_mbtg)
                 val andButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_AND_button)
                 val orButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_OR_button)
@@ -267,6 +268,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 firstActions = false
             } else {
                 val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, binding.activityRulesCreateLLActions as ViewGroup?, false)
+                inflatedLayout.elevation = this.resources.getDimension(R.dimen.cardview_default_elevation)
                 //val materialButtonToggleGroup = inflatedLayout.findViewById<MaterialButtonToggleGroup>(R.id.rules_view_and_or_AND_mbtg)
                 val andButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_AND_button)
                 val orButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_OR_button)
@@ -274,15 +276,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 // Actions are al-ways AND
                 andButton.isChecked = true
                 orButton.isChecked = false
-
-                andButton.setOnClickListener {
-                    rules.operator = "AND"
-                    setPage()
-                }
-                orButton.setOnClickListener {
-                    rules.operator = "OR"
-                    setPage()
-                }
 
                 binding.activityRulesCreateLLActions.addView(inflatedLayout)
             }

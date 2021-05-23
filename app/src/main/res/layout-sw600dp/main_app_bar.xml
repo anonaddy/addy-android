@@ -41,13 +41,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:layout_margin="16dp">
+            android:layout_margin="@dimen/collapsingtoolbar_action_margin">
 
 
             <TextView
                 android:id="@+id/main_top_bar_user_initials"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="end|bottom"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/circle"
@@ -56,7 +56,6 @@
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
-                android:padding="4dp"
                 android:text="SV"
                 android:textColor="@android:color/white"
                 app:layout_collapseMode="pin"
@@ -64,8 +63,8 @@
 
             <ImageView
                 android:id="@+id/main_top_bar_search_icon"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="end|bottom"
                 android:background="@drawable/circle"
                 android:backgroundTint="@color/transparentCircle"
@@ -73,7 +72,7 @@
                 android:contentDescription="@string/search"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
+                android:padding="12dp"
                 android:src="@drawable/ic_round_search_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="H,1:1"

@@ -35,7 +35,6 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 style="@style/AnonAddyTitleAction"
                 android:orientation="horizontal">
 
@@ -48,7 +47,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/recipients_add_recipients"
-                    style="@style/MaterialTextButtonWithoutSpacing"
+                    style="@style/MaterialActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/add_recipient" />

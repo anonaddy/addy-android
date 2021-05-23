@@ -89,9 +89,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun setOnClickListeners() {
-        binding.aliasStatisticsDismiss.setOnClickListener {
-            binding.aliasStatisticsLL.visibility = View.GONE
-        }
 
         binding.aliasAddAlias.setOnClickListener {
             if (!addAliasBottomDialogFragment.isAdded) {

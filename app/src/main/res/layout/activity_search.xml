@@ -60,7 +60,6 @@
                     <TextView
                         style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
                         android:text="@string/aliases" />
 
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
@@ -90,7 +89,6 @@
                     <TextView
                         style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
                         android:text="@string/recipients" />
 
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
@@ -120,7 +118,6 @@
                     <TextView
                         style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
                         android:text="@string/domains" />
 
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
@@ -150,7 +147,6 @@
                     <TextView
                         style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
                         android:text="@string/usernames" />
 
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView
@@ -180,7 +176,6 @@
                     <TextView
                         style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
                         android:text="@string/rules" />
 
                     <com.cooltechworks.views.shimmer.ShimmerRecyclerView

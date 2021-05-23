@@ -52,8 +52,9 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/change_app_theme_to_dark_mode"
                     app:sectionStartIcon="@drawable/ic_round_compare_24"
-                    app:sectionTitle="@string/app_theme" />
+                    app:sectionTitle="@string/app_theme">
 
+                </host.stjin.anonaddy.ui.customviews.SectionView>
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_changelog"

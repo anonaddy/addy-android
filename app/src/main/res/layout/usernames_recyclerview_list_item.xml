@@ -121,7 +121,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/usernames_recyclerview_list_settings_button"
-                    style="@style/MaterialTextButtonWithoutSpacing"
+                    style="@style/MaterialTextActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -129,7 +129,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/usernames_recyclerview_list_delete_button"
-                    style="@style/MaterialTextButtonWithoutSpacing"
+                    style="@style/MaterialTextActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/delete" />

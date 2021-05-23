@@ -51,7 +51,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         prefs.edit().putBoolean(key.key, boolean).apply()
     }
 
-    fun getSettingsBool(key: PREFS): Boolean {
+    fun getSettingsBool(key: PREFS, default: Boolean = false): Boolean {
         return prefs.getBoolean(key.key, false)
     }
 

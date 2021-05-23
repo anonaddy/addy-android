@@ -87,9 +87,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setOnClickListeners() {
-        binding.homeStatisticsDismiss.setOnClickListener {
-            binding.homeStatisticsLL.visibility = View.GONE
-        }
 
         binding.homeMostActiveAliasesViewMore.setOnClickListener {
             (activity as MainActivity).switchFragments(R.id.navigation_alias)

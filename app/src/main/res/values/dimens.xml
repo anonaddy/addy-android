@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="corner_radius">16dp</dimen>
+    <dimen name="corner_radius">28dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="corner_radius_dialog">4dp</dimen>
-    <dimen name="corner_radius_widget">8dp</dimen>
+    <dimen name="corner_radius_widget_1">8dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information
@@ -11,8 +11,9 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
     <dimen name="widget_margin">0dp</dimen>
 
-    <dimen name="collapsingtoolbar_title_left_margin">20dp</dimen>
-    <dimen name="collapsingtoolbar_title_bottom_margin">24dp</dimen>
+    <dimen name="collapsingtoolbar_title_left_margin">15dp</dimen>
+    <dimen name="collapsingtoolbar_action_margin">12dp</dimen>
+    <dimen name="collapsingtoolbar_title_bottom_margin">18dp</dimen>
 
 
 </resources>

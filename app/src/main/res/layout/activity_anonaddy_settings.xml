@@ -106,7 +106,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/anonaddy_settings_monthly_bandwidth_more_info_button"
-                        style="@style/MaterialTextButtonWithoutSpacing"
+                        style="@style/MaterialActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -188,7 +188,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/anonaddy_settings_statistics_recipients_more_info_button"
-                        style="@style/MaterialTextButtonWithoutSpacing"
+                        style="@style/MaterialActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -270,7 +270,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/anonaddy_settings_statistics_aliases_more_info_button"
-                        style="@style/MaterialTextButtonWithoutSpacing"
+                        style="@style/MaterialActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"

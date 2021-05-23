@@ -35,7 +35,7 @@ class AliasWidgetRemoteViewsFactory(private val mContext: Context) : RemoteViews
         // position will always range from 0 to getCount() - 1.
         // construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
-        val rv = RemoteViews(mContext.packageName, R.layout.widget_aliases_listview_list_item)
+        val rv = RemoteViews(mContext.packageName, R.layout.widget_1_aliases_listview_list_item)
         rv.setTextViewText(R.id.widget_aliases_listview_list_title, aliasList?.get(position)?.email)
 
 
