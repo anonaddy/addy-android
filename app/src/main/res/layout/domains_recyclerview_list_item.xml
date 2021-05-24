@@ -105,37 +105,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
-            android:visibility="gone"
-            android:weightSum="12">
+            android:visibility="gone">
 
-            <Space
-                android:layout_width="0dp"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/domains_recyclerview_list_delete_button"
+                style="@style/MaterialTextActionButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/delete" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/domains_recyclerview_list_settings_button"
+                style="@style/MaterialTextActionButton"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="@string/settings" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="11"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/domains_recyclerview_list_settings_button"
-                    style="@style/MaterialTextActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/settings" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/domains_recyclerview_list_delete_button"
-                    style="@style/MaterialTextActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/delete" />
-
-            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
