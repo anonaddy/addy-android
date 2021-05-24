@@ -298,6 +298,12 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageAliasForget.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forgetAlias()
+            }
+        })
+
         binding.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 restoreAlias()
@@ -419,10 +425,60 @@ class ManageAliasActivity : BaseActivity(),
         deleteAliasDialog.show()
     }
 
+    private lateinit var forgetAliasDialog: AlertDialog
+    private fun forgetAlias() {
+        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
+        // create an alert builder
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setView(anonaddyCustomDialogBinding.root)
+
+        forgetAliasDialog = builder.create()
+        forgetAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.forget_alias)
+        anonaddyCustomDialogBinding.dialogText.text =
+            resources.getString(R.string.forget_alias_confirmation_desc)
+        anonaddyCustomDialogBinding.dialogPositiveButton.text =
+            resources.getString(R.string.forget_alias)
+        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
+            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
+            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
+            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
+
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                forgetAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
+            }
+        }
+        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
+            forgetAliasDialog.dismiss()
+        }
+        // create and show the alert dialog
+        forgetAliasDialog.show()
+    }
+
     private suspend fun deleteAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
                 deleteAliasDialog.dismiss()
+                finishWithUpdate()
+            } else {
+                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
+                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_alias), result
+                )
+            }
+        }, id)
+    }
+
+    private suspend fun forgetAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+        networkHelper.forgetAlias({ result ->
+            if (result == "204") {
+                forgetAliasDialog.dismiss()
                 finishWithUpdate()
             } else {
                 anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
@@ -514,6 +570,7 @@ class ManageAliasActivity : BaseActivity(),
 
                     // Show restore and hide delete
                     binding.activityManageAliasRestore.visibility = View.VISIBLE
+                    binding.activityManageAliasForget.visibility = View.VISIBLE
                     binding.activityManageAliasDelete.visibility = View.GONE
                     for (i in 0 until layout.childCount) {
                         val child = layout.getChildAt(i)
@@ -528,6 +585,7 @@ class ManageAliasActivity : BaseActivity(),
                     // Show delete and hide restore
                     binding.activityManageAliasRestore.visibility = View.GONE
                     binding.activityManageAliasDelete.visibility = View.VISIBLE
+                    binding.activityManageAliasForget.visibility = View.VISIBLE
 
                     // As the childs are only sections, cast and set enabled state
                     // Aliasdeleted is null, thus not deleted. enable all the layouts

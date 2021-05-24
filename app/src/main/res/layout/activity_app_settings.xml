@@ -173,6 +173,7 @@
                     android:id="@+id/activity_app_settings_section_contributors"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:sectionRippleEffect="false"
                     app:sectionDescription="@string/contributors_list"
                     app:sectionStartIcon="@drawable/ic_round_people_outline_24"
                     app:sectionTitle="@string/contributors" />

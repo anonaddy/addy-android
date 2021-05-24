@@ -349,6 +349,7 @@
 
     <style name="AnonAddyTitleAction" parent="titleTextView">
         <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">4dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:alpha">1</item>

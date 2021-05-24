@@ -358,4 +358,7 @@
     <string name="send">Send</string>
     <string name="username">Username</string>
     <string name="four_most_active_aliases">4 most active aliases</string>
+    <string name="forget_alias_desc">Forgetting an alias will disassociate it from your account</string>
+    <string name="forget_alias">Forget alias</string>
+    <string name="forget_alias_confirmation_desc">Are you sure you want to forget this alias? Forgetting an alias will disassociate it from your account.\n\nNote: If this alias uses a shared domain then it can never be restored or used again so make sure you are certain. If it is a standard alias then it can be created again since it will be as if it never existed.</string>
 </resources>

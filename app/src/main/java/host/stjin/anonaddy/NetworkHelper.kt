@@ -610,6 +610,40 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun forgetAlias(
+        callback: (String?) -> Unit,
+        aliasId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId/forget")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "forgetAlias")
+                callback(ex.toString())
+            }
+        }
+    }
+
     suspend fun restoreAlias(
         callback: (String?) -> Unit,
         aliasId: String
@@ -774,6 +808,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
 
     suspend fun disableEncryptionRecipient(
         callback: (String?) -> Unit?,
