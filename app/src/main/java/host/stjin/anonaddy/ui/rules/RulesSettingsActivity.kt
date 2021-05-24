@@ -65,30 +65,38 @@ class RulesSettingsActivity : BaseActivity() {
 
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllRules()
+            getAllRulesAndSetView()
         }
     }
 
 
-    private suspend fun getAllRules() {
+    private lateinit var rulesAdapter: RulesAdapter
+    private suspend fun getAllRulesAndSetView() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
-
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activityManageRulesAllRulesRecyclerview.layoutAnimation = animation
-            }
-
 
             networkHelper?.getAllRules { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new rules since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::rulesAdapter.isInitialized && list == rulesAdapter.getList()) {
+                    return@getAllRules
+                }
+
+                // set a LinearLayoutManager to handle Android
+                // RecyclerView behavior
+                layoutManager = LinearLayoutManager(context)
+                // set the custom adapter to the RecyclerView
+
+                if (shouldAnimateRecyclerview) {
+                    shouldAnimateRecyclerview = false
+                    val resId: Int = R.anim.layout_animation_fall_down
+                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                    binding.activityManageRulesAllRulesRecyclerview.layoutAnimation = animation
+                }
+
+
 
                 if (list != null) {
 
@@ -98,7 +106,7 @@ class RulesSettingsActivity : BaseActivity() {
                         binding.activityManageRulesNoRules.visibility = View.VISIBLE
                     }
 
-                    val rulesAdapter = RulesAdapter(list, true)
+                    rulesAdapter = RulesAdapter(list, true)
                     rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
 
                         override fun onClickActivate(pos: Int, aView: View) {

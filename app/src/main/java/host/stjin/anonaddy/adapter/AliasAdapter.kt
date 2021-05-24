@@ -108,6 +108,9 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
 
     override fun getItemCount(): Int = listWithAliases.size
 
+    fun getList(): List<Aliases> {
+        return listWithAliases
+    }
 
     fun setClickOnAliasClickListener(aClickListener: ClickListener) {
         onAliasClickListener = aClickListener

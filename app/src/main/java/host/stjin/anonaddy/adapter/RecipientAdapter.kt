@@ -80,6 +80,10 @@ class RecipientAdapter(
         onRecipientClicker = aClickListener
     }
 
+    fun getList(): List<Recipients> {
+        return listWithRecipients
+    }
+
 
     interface ClickListener {
         fun onClickSettings(pos: Int, aView: View)

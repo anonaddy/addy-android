@@ -121,25 +121,31 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private lateinit var aliasAdapter: AliasAdapter
     private suspend fun getMostActiveAliases() {
         binding.homeMostActiveAliasesRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(activity, 2)
-            } else {
-                LinearLayoutManager(activity)
-            }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.homeMostActiveAliasesRecyclerview.layoutAnimation = animation
-            }
-
-
             networkHelper?.getAliases({ list ->
+
+                // Check if there are new aliases since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::aliasAdapter.isInitialized && list == aliasAdapter.getList()) {
+                    return@getAliases
+                }
+
+                layoutManager = if (context.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
+                }
+
+                if (shouldAnimateRecyclerview) {
+                    shouldAnimateRecyclerview = false
+                    val resId: Int = R.anim.layout_animation_fall_down
+                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                    binding.homeMostActiveAliasesRecyclerview.layoutAnimation = animation
+                }
 
                 if (list != null) {
                     if (list.size > 0) {

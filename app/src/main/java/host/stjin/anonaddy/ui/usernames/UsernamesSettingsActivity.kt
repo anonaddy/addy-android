@@ -74,7 +74,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllUsernames()
+            getAllUsernamesAndSetView()
             getUserResource()
         }
     }
@@ -109,27 +109,33 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         binding.activityUsernameSettingsAddUsername.isEnabled = User.userResource.username_count < User.userResource.username_limit
     }
 
-    private suspend fun getAllUsernames() {
+    private lateinit var usernamesAdapter: UsernameAdapter
+    private suspend fun getAllUsernamesAndSetView() {
         binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
-
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@UsernamesSettingsActivity, 2)
-            } else {
-                LinearLayoutManager(this@UsernamesSettingsActivity)
-            }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activityUsernameSettingsAllUsernamesRecyclerview.layoutAnimation = animation
-            }
-
 
             networkHelper?.getAllUsernames { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new usernames since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::usernamesAdapter.isInitialized && list == usernamesAdapter.getList()) {
+                    return@getAllUsernames
+                }
+
+                layoutManager = if (context.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@UsernamesSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@UsernamesSettingsActivity)
+                }
+
+                if (shouldAnimateRecyclerview) {
+                    shouldAnimateRecyclerview = false
+                    val resId: Int = R.anim.layout_animation_fall_down
+                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                    binding.activityUsernameSettingsAllUsernamesRecyclerview.layoutAnimation = animation
+                }
 
                 if (list != null) {
 
@@ -139,7 +145,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                         binding.activityUsernameSettingsNoUsernames.visibility = View.VISIBLE
                     }
 
-                    val usernamesAdapter = UsernameAdapter(list)
+                    usernamesAdapter = UsernameAdapter(list)
                     usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
 
                         override fun onClickSettings(pos: Int, aView: View) {

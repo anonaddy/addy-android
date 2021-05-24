@@ -74,7 +74,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
         // Get the latest data in the background, and update the values when loaded
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
+            getAllDomainsAndSetView()
             getUserResource()
         }
     }
@@ -114,28 +114,33 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
     }
 
-
-    private suspend fun getAllDomains() {
+    private lateinit var domainsAdapter: DomainAdapter
+    private suspend fun getAllDomainsAndSetView() {
         binding.activityDomainSettingsAllDomainsRecyclerview.apply {
-
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@DomainSettingsActivity, 2)
-            } else {
-                LinearLayoutManager(this@DomainSettingsActivity)
-            }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activityDomainSettingsAllDomainsRecyclerview.layoutAnimation = animation
-            }
-
 
             networkHelper?.getAllDomains { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new domains since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::domainsAdapter.isInitialized && list == domainsAdapter.getList()) {
+                    return@getAllDomains
+                }
+
+                layoutManager = if (context.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@DomainSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@DomainSettingsActivity)
+                }
+
+                if (shouldAnimateRecyclerview) {
+                    shouldAnimateRecyclerview = false
+                    val resId: Int = R.anim.layout_animation_fall_down
+                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                    binding.activityDomainSettingsAllDomainsRecyclerview.layoutAnimation = animation
+                }
 
                 if (list != null) {
 
@@ -145,7 +150,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                         binding.activityDomainSettingsNoDomains.visibility = View.VISIBLE
                     }
 
-                    val domainsAdapter = DomainAdapter(list)
+                    domainsAdapter = DomainAdapter(list)
                     domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
 
                         override fun onClickSettings(pos: Int, aView: View) {

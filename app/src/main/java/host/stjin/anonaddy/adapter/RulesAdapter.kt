@@ -69,6 +69,10 @@ class RulesAdapter(
         onRuleClicker = aClickListener
     }
 
+    fun getList(): ArrayList<Rules> {
+        return listWithRules
+    }
+
 
     interface ClickListener {
         fun onClickActivate(pos: Int, aView: View)

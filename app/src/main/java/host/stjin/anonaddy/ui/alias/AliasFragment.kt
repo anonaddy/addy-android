@@ -111,27 +111,33 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
     }
 
+    private lateinit var aliasAdapter: AliasAdapter
     private suspend fun getAllAliasesAndSetStatistics() {
         binding.aliasAllAliasesRecyclerview.apply {
-
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(activity, 2)
-            } else {
-                LinearLayoutManager(activity)
-            }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-            }
-
 
             networkHelper?.getAliases({ list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new aliases since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::aliasAdapter.isInitialized && list == aliasAdapter.getList()) {
+                    return@getAliases
+                }
+
+                layoutManager = if (context.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
+                }
+
+                if (shouldAnimateRecyclerview) {
+                    shouldAnimateRecyclerview = false
+                    val resId: Int = R.anim.layout_animation_fall_down
+                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                    layoutAnimation = animation
+                }
 
                 /**
                  * Count the totals for the aliases statistics
@@ -166,7 +172,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     /**
                      * ALIAS LIST
                      */
-                    val aliasAdapter = AliasAdapter(list, context)
+                    aliasAdapter = AliasAdapter(list, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {
                             val intent = Intent(context, ManageAliasActivity::class.java)
@@ -203,32 +209,39 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     binding.aliasStatisticsRLLottieview.visibility = View.VISIBLE
                 }
             }, activeOnly = false, includeDeleted = false)
+
+
         }
 
     }
 
 
+    private lateinit var deletedAliasAdapter: AliasAdapter
     private suspend fun getAllDeletedAliases() {
         binding.aliasDeletedAliasesRecyclerview.apply {
 
-
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(activity, 2)
-            } else {
-                LinearLayoutManager(activity)
-            }
-
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-            }
-
-
             networkHelper?.getAliases({ list ->
+
+                // Check if there are new aliases since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::deletedAliasAdapter.isInitialized && list == deletedAliasAdapter.getList()) {
+                    return@getAliases
+                }
+
+                layoutManager = if (context.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
+                }
+
+
+                if (shouldAnimateRecyclerview) {
+                    shouldAnimateRecyclerview = false
+                    val resId: Int = R.anim.layout_animation_fall_down
+                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                    layoutAnimation = animation
+                }
 
                 if (list != null) {
 
@@ -254,8 +267,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     /**
                      * ALIAS LIST
                      */
-                    val aliasAdapter = AliasAdapter(onlyDeletedList, context)
-                    aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+                    deletedAliasAdapter = AliasAdapter(onlyDeletedList, context)
+                    deletedAliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
@@ -284,7 +297,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         }
 
                     })
-                    adapter = aliasAdapter
+                    adapter = deletedAliasAdapter
                     hideShimmerAdapter()
                 } else {
                     binding.aliasListLL1.visibility = View.GONE

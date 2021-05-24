@@ -67,6 +67,10 @@ class DomainAdapter(
         onDomainClicker = aClickListener
     }
 
+    fun getList(): ArrayList<Domains> {
+        return listWithDomains
+    }
+
 
     interface ClickListener {
         fun onClickSettings(pos: Int, aView: View)

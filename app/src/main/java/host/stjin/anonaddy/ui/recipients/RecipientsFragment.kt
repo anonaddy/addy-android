@@ -137,27 +137,34 @@ class RecipientsFragment : Fragment(),
     }
 
 
+    private lateinit var recipientAdapter: RecipientAdapter
     private suspend fun getAllRecipients() {
         binding.recipientsAllRecipientsRecyclerview.apply {
-
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(activity, 2)
-            } else {
-                LinearLayoutManager(activity)
-            }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.recipientsAllRecipientsRecyclerview.layoutAnimation = animation
-            }
-
 
             networkHelper?.getRecipients({ list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new recipients since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::recipientAdapter.isInitialized && list == recipientAdapter.getList()) {
+                    return@getRecipients
+                }
+
+
+                layoutManager = if (context.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
+                }
+
+                if (shouldAnimateRecyclerview) {
+                    shouldAnimateRecyclerview = false
+                    val resId: Int = R.anim.layout_animation_fall_down
+                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                    binding.recipientsAllRecipientsRecyclerview.layoutAnimation = animation
+                }
 
                 if (list != null) {
 
@@ -169,7 +176,7 @@ class RecipientsFragment : Fragment(),
                         root.recipients_no_recipients.visibility = View.VISIBLE
                     }*/
 
-                    val recipientAdapter = RecipientAdapter(list)
+                    recipientAdapter = RecipientAdapter(list)
                     recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
 
                         override fun onClickSettings(pos: Int, aView: View) {

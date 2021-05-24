@@ -72,6 +72,10 @@ class UsernameAdapter(
         onUsernameClicker = aClickListener
     }
 
+    fun getList(): ArrayList<Usernames> {
+        return listWithUsernames
+    }
+
 
     interface ClickListener {
         fun onClickSettings(pos: Int, aView: View)
