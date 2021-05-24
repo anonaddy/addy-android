@@ -219,7 +219,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     binding.aliasListLL1.visibility = View.GONE
                     binding.aliasStatisticsRLLottieview.visibility = View.VISIBLE
                 }
-            }, activeOnly = false, includeDeleted = false)
+            }, activeOnly = false, includeDeleted = true)
 
 
         }

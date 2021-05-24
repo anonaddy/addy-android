@@ -35,7 +35,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                style="@style/AnonAddyTitleAction"
+                style="@style/AnonAddyTitleAction2"
                 android:orientation="horizontal">
 
                 <TextView

@@ -51,7 +51,7 @@
                     android:id="@+id/activity_search_aliases_LL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical"
@@ -80,7 +80,7 @@
                     android:id="@+id/activity_search_recipients_LL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical"
@@ -109,10 +109,10 @@
                     android:id="@+id/activity_search_domains_LL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:orientation="vertical"
+                    android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
+                    android:orientation="vertical"
                     android:visibility="gone">
 
                     <TextView
@@ -138,10 +138,10 @@
                     android:id="@+id/activity_search_usernames_LL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:orientation="vertical"
+                    android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
+                    android:orientation="vertical"
                     android:visibility="gone">
 
                     <TextView
@@ -167,10 +167,10 @@
                     android:id="@+id/activity_search_rules_LL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:orientation="vertical"
+                    android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
+                    android:orientation="vertical"
                     android:visibility="gone">
 
                     <TextView
