@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.home
 
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -13,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,6 +80,8 @@ class HomeFragment : Fragment() {
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getMostActiveAliases()
             getWebStatistics(context)
+            // Set forceUpdate to false (if it was true) to prevent the lists from reloading every oneresume
+            forceUpdate = false
         }
     }
 
@@ -122,6 +126,21 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // This value is there to force updating the alias recyclerview in case "Watch alias" has been enabled.
+    private var forceUpdate = false
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data != null) {
+                if (data.getBooleanExtra("should_update", false)) {
+                    forceUpdate = true
+                }
+            }
+        }
+    }
+
     private lateinit var aliasAdapter: AliasAdapter
     private suspend fun getMostActiveAliases() {
         binding.homeMostActiveAliasesRecyclerview.apply {
@@ -130,7 +149,8 @@ class HomeFragment : Fragment() {
 
                 // Check if there are new aliases since the latest list
                 // If the list is the same, just return and don't bother re-init the layoutmanager
-                if (::aliasAdapter.isInitialized && list == aliasAdapter.getList()) {
+                // Unless forceUpdate is true. If forceupdate is true, always update
+                if (::aliasAdapter.isInitialized && list == aliasAdapter.getList() && !forceUpdate) {
                     return@getAliases
                 }
 
@@ -171,7 +191,7 @@ class HomeFragment : Fragment() {
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
                             intent.putExtra("alias_id", aliasList[pos].id)
-                            startActivity(intent)
+                            resultLauncher.launch(intent)
                         }
 
                         override fun onClickCopy(pos: Int, aView: View) {

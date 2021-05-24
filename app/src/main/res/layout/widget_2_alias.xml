@@ -4,6 +4,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/widget_2_background"
     android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     android:padding="@dimen/widget_2_padding">
 
     <LinearLayout

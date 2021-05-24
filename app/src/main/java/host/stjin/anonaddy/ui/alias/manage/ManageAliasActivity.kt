@@ -102,6 +102,10 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
+    // Override onbackpressed, this is the only way to close the activity (besides deleting the alias)
+    override fun onBackPressed() {
+        finishWithUpdate()
+    }
 
     private fun setPage() {
         /**
@@ -419,7 +423,7 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
                 deleteAliasDialog.dismiss()
-                finish()
+                finishWithUpdate()
             } else {
                 anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
@@ -431,6 +435,13 @@ class ManageAliasActivity : BaseActivity(),
                 )
             }
         }, id)
+    }
+
+    private fun finishWithUpdate() {
+        val intent = Intent()
+        intent.putExtra("should_update", true)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 
     private suspend fun restoreAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
