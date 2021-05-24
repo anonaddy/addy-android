@@ -5,8 +5,8 @@
     android:id="@+id/activity_app_settings_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
-
 
     <include
         android:id="@+id/appsettings_toolbar"
@@ -23,18 +23,22 @@
             android:orientation="vertical"
             android:padding="8dp"
             android:paddingStart="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:paddingEnd="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="24dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical">
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/AnonAddyTitleAction"
                     android:orientation="horizontal">
 
                     <TextView
@@ -97,13 +101,13 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/reset_app_desc"
                     app:sectionStartIcon="@drawable/ic_restore"
+                    android:layout_marginBottom="6dp"
                     app:sectionTitle="@string/reset_app" />
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    style="@style/AnonAddyTitleAction"
                     android:orientation="horizontal">
 
                     <TextView
@@ -130,12 +134,12 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/faq_desc"
                     app:sectionStartIcon="@drawable/ic_frequently_asked_questions"
+                    android:layout_marginBottom="6dp"
                     app:sectionTitle="@string/faq" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    style="@style/AnonAddyTitleAction"
                     android:orientation="horizontal">
 
                     <TextView
@@ -170,7 +174,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/contributors_list"
-                    app:sectionRippleEffect="false"
                     app:sectionStartIcon="@drawable/ic_round_people_outline_24"
                     app:sectionTitle="@string/contributors" />
 

@@ -9,6 +9,7 @@ import android.view.View.OnClickListener
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import host.stjin.anonaddy.R
 
@@ -23,7 +24,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     private var iconStart: ImageView? = null
     private var iconEnd: ImageView? = null
 
-    private var linearLayout: LinearLayout? = null
+    private var cardView: MaterialCardView? = null
 
 
     fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
@@ -68,12 +69,12 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         switchMaterial?.isEnabled = boolean
         switchMaterial?.isClickable = boolean
 
-        linearLayout?.alpha = if (boolean) 1f else 0.5f
+        cardView?.alpha = if (boolean) 1f else 0.5f
 
         if (boolean) {
-            linearLayout?.setOnClickListener(layoutClickedListener)
+            cardView?.setOnClickListener(layoutClickedListener)
         } else {
-            linearLayout?.setOnClickListener(null)
+            cardView?.setOnClickListener(null)
         }
     }
 
@@ -121,7 +122,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     init {
         val inflater = LayoutInflater.from(context)
         inflater.inflate(R.layout.custom_view_section, this)
-        linearLayout = findViewById(R.id.custom_view_section_LL)
+        cardView = findViewById(R.id.custom_view_section_CV)
         iconStart = findViewById(R.id.custom_view_section_start_icon)
         iconEnd = findViewById(R.id.custom_view_section_end_icon)
         title = findViewById(R.id.custom_view_section_title)
@@ -141,7 +142,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
             // Set ripple, default is enabled. Ripple pref is only set once
             if (!a.getBoolean(R.styleable.SectionView_sectionRippleEffect, true)) {
-                linearLayout?.background = null
+                cardView?.background = null
             }
 
 
