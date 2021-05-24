@@ -51,6 +51,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/alias_widget_1_info" />
         </receiver>
+
+
+        <service
+            android:name=".widget.AliasWidget1RemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
         <!-- Widget 1 -->
 
         <!-- Widget 2 -->
@@ -68,15 +73,31 @@
         </receiver>
         <!-- Widget 2 -->
 
+        <!-- Widget 3 -->
+        <receiver
+            android:name=".widget.AliasWidget3Provider"
+            android:exported="false"
+            android:label="@string/four_most_active_aliases">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/alias_widget_3_info" />
+        </receiver>
+
+
+        <service
+            android:name=".widget.AliasWidget3RemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <!-- Widget 3 -->
+
 
         <!-- Notification -->
         <receiver android:name="host.stjin.anonaddy.notifications.ActionReceiver" />
         <!-- Notification-->
 
-
-        <service
-            android:name=".widget.AliasWidget1RemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
         <!-- END widget -->
 
 

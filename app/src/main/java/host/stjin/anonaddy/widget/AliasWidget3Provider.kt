@@ -16,26 +16,19 @@ import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
-import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.COPY_ACTION
-import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.NAVIGATE
-import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_ACTION
-import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_APP
-import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.REFRESH_ACTION
-import kotlin.random.Random
-
+import host.stjin.anonaddy.widget.AliasWidget3Provider.AliasWidget3Values.COPY_ACTION
+import host.stjin.anonaddy.widget.AliasWidget3Provider.AliasWidget3Values.NAVIGATE
+import host.stjin.anonaddy.widget.AliasWidget3Provider.AliasWidget3Values.OPEN_ACTION
 
 /**
  * Implementation of App Widget functionality.
  */
-class AliasWidget1Provider : AppWidgetProvider() {
+class AliasWidget3Provider : AppWidgetProvider() {
 
-    object AliasWidget1Values {
-        const val REFRESH_ACTION = "host.stjin.anonaddy.widget.REFRESH_ACTION"
+    object AliasWidget3Values {
         const val COPY_ACTION = "host.stjin.anonaddy.widget.COPY_ACTION"
         const val OPEN_ACTION = "host.stjin.anonaddy.widget.OPEN_ACTION"
-        const val OPEN_APP = "host.stjin.anonaddy.widget.OPEN_APP"
         const val NAVIGATE = "host.stjin.anonaddy.widget.NAVIGATE"
     }
 
@@ -81,21 +74,6 @@ class AliasWidget1Provider : AppWidgetProvider() {
 
         if (context != null && intent != null) {
             when (intent.action) {
-                REFRESH_ACTION -> {
-                    // The refresh button will re-schedule the background worker as I assume that people will press this button if either
-                    // 1. They reset the app and kept the widget on their homescreen resulting in no workmanager being active
-                    // 2. They expected data which is not there
-                    BackgroundWorkerHelper(context).scheduleBackgroundWorker()
-                    Toast.makeText(context, context.resources.getString(R.string.refreshing_data), Toast.LENGTH_LONG).show()
-
-                    //scheduleBackgroundWorker calls doWork which updates the widget as soon as it got all the data
-                    //onUpdate(context)
-                }
-                OPEN_APP -> {
-                    val mainIntent = Intent(context, SplashActivity::class.java)
-                    mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(context, mainIntent, null)
-                }
                 NAVIGATE -> {
                     if (intent.hasExtra(COPY_ACTION)) {
                         val alias = intent.getStringExtra(COPY_ACTION)
@@ -120,13 +98,13 @@ class AliasWidget1Provider : AppWidgetProvider() {
 
 private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
     // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.widget_1_alias)
+    val views = RemoteViews(context.packageName, R.layout.widget_3_alias)
 
-    val intent = Intent(context, AliasWidget1RemoteViewsService::class.java)
-    views.setRemoteAdapter(R.id.widget_alias_list_view, intent)
+    val intent = Intent(context, AliasWidget3RemoteViewsService::class.java)
+    views.setRemoteAdapter(R.id.widget_3_alias_list_view, intent)
 
 
-    val clickIntent = Intent(context, AliasWidget1Provider::class.java)
+    val clickIntent = Intent(context, AliasWidget3Provider::class.java)
     clickIntent.action = NAVIGATE
     clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     clickIntent.data = Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME))
@@ -137,19 +115,11 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
             PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-    views.setPendingIntentTemplate(R.id.widget_alias_list_view, onClickPendingIntent)
-    views.setOnClickPendingIntent(R.id.widget_aliases_listview_list_refresh, getPendingSelfIntent(context, REFRESH_ACTION))
-    views.setOnClickPendingIntent(R.id.widget_aliases_listview_list_open_app, getPendingSelfIntent(context, OPEN_APP))
+    views.setPendingIntentTemplate(R.id.widget_3_alias_list_view, onClickPendingIntent)
 
     // Tell every widget there is new data for the listview
-    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_alias_list_view)
+    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_3_alias_list_view)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
-}
-
-private fun getPendingSelfIntent(context: Context, action: String): PendingIntent {
-    val intent = Intent(context, AliasWidget1Provider::class.java)
-    intent.action = action
-    return PendingIntent.getBroadcast(context, Random.nextInt(0, 999), intent, PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 }

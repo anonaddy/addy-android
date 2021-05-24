@@ -357,4 +357,5 @@
     <string name="edit">Edit</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
+    <string name="four_most_active_aliases">4 most active aliases</string>
 </resources>

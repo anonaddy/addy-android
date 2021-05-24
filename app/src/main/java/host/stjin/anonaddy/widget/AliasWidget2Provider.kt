@@ -33,9 +33,7 @@ class AliasWidget2Provider : AppWidgetProvider() {
      */
     override fun onDisabled(context: Context?) {
         super.onDisabled(context)
-        context?.let { SettingsManager(false, it).putSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE, 0) }
-
-        // Since the last widget is removed, call scheduleBackgroundWorker. This method will remove the BackgroundWorker and reschedule if its still required
+        // Since this might be the last widget is that is removed, call scheduleBackgroundWorker. This method will remove the BackgroundWorker and reschedule if its still required
         context?.let { BackgroundWorkerHelper(it).scheduleBackgroundWorker() }
     }
 

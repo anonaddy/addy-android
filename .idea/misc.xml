@@ -10,10 +10,12 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_logo.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_logo_icon.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_logo_small.xml" value="0.3223684210526316" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_logo_widget_icon.xml" value="0.20614035087719298" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_outline_add_24.xml" value="0.1543859649122807" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/shape_rounded_corners_top.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/widget_1_background_top.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/widget_2_background.xml" value="0.3223684210526316" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/widget_3_background.xml" value="0.2219298245614035" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/widget_background_bottom.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/widget_background_top.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout-sw600dp/main_app_bar.xml" value="0.25" />
@@ -63,10 +65,14 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/usernames_recyclerview_list_item.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/usernames_recyclerview_list_item_usernames_shimmer.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/widget_1_alias.xml" value="0.3087719298245614" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/widget_1_aliases_listview_list_item.xml" value="0.67" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/widget_2_alias.xml" value="0.43808338518979467" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/widget_3_alias.xml" value="0.25043859649122807" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/widget_3_aliases_listview_list_item.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/widget_alias.xml" value="0.14078947368421052" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/widget_aliases_listview_list_item.xml" value="0.22236842105263158" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/xml/alias_widget_2_info.xml" value="0.3087719298245614" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/xml/alias_widget_3_info.xml" value="0.25043859649122807" />
       </map>
     </option>
   </component>
