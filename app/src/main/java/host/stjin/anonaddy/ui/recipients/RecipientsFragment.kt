@@ -25,6 +25,7 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
+import host.stjin.anonaddy.utils.SpacesItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -157,6 +158,11 @@ class RecipientsFragment : Fragment(),
                     GridLayoutManager(activity, 2)
                 } else {
                     LinearLayoutManager(activity)
+                }
+
+                if (context.resources.getBoolean(R.bool.isTablet)) {
+                    val spacingInPixels = resources.getDimensionPixelSize(R.dimen.gridLayoutSpacing)
+                    addItemDecoration(SpacesItemDecoration(spacingInPixels))
                 }
 
                 if (shouldAnimateRecyclerview) {

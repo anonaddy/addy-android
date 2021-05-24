@@ -22,6 +22,7 @@ import host.stjin.anonaddy.databinding.FragmentAliasBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.GsonTools
+import host.stjin.anonaddy.utils.SpacesItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -132,6 +133,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     LinearLayoutManager(activity)
                 }
 
+                if (context.resources.getBoolean(R.bool.isTablet)) {
+                    val spacingInPixels = resources.getDimensionPixelSize(R.dimen.gridLayoutSpacing)
+                    addItemDecoration(SpacesItemDecoration(spacingInPixels))
+                }
+
                 if (shouldAnimateRecyclerview) {
                     shouldAnimateRecyclerview = false
                     val resId: Int = R.anim.layout_animation_fall_down
@@ -235,6 +241,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     LinearLayoutManager(activity)
                 }
 
+                if (context.resources.getBoolean(R.bool.isTablet)) {
+                    val spacingInPixels = resources.getDimensionPixelSize(R.dimen.gridLayoutSpacing)
+                    addItemDecoration(SpacesItemDecoration(spacingInPixels))
+                }
 
                 if (shouldAnimateRecyclerview) {
                     shouldAnimateRecyclerview = false

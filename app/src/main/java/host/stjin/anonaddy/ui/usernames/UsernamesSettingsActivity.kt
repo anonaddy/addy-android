@@ -23,6 +23,7 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
+import host.stjin.anonaddy.utils.SpacesItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -128,6 +129,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                     GridLayoutManager(this@UsernamesSettingsActivity, 2)
                 } else {
                     LinearLayoutManager(this@UsernamesSettingsActivity)
+                }
+
+                if (context.resources.getBoolean(R.bool.isTablet)) {
+                    val spacingInPixels = resources.getDimensionPixelSize(R.dimen.gridLayoutSpacing)
+                    addItemDecoration(SpacesItemDecoration(spacingInPixels))
                 }
 
                 if (shouldAnimateRecyclerview) {

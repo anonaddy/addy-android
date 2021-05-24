@@ -29,6 +29,7 @@ import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
+import host.stjin.anonaddy.utils.SpacesItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -140,6 +141,11 @@ class HomeFragment : Fragment() {
                     LinearLayoutManager(activity)
                 }
 
+                if (context.resources.getBoolean(R.bool.isTablet)) {
+                    val spacingInPixels = resources.getDimensionPixelSize(R.dimen.gridLayoutSpacing)
+                    addItemDecoration(SpacesItemDecoration(spacingInPixels))
+                }
+
                 if (shouldAnimateRecyclerview) {
                     shouldAnimateRecyclerview = false
                     val resId: Int = R.anim.layout_animation_fall_down
@@ -159,7 +165,7 @@ class HomeFragment : Fragment() {
 
                     // Get the top 5
                     val aliasList = list.take(5)
-                    val aliasAdapter = AliasAdapter(aliasList, context)
+                    aliasAdapter = AliasAdapter(aliasList, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {
                             val intent = Intent(context, ManageAliasActivity::class.java)
