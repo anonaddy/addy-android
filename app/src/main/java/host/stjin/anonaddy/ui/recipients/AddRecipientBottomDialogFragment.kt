@@ -91,8 +91,10 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
 
         // Set error to null if domain and alias is valid
         binding.bsAddrecipientRecipientTil.error = null
-        binding.bsAddrecipientRecipientAddRecipientButton.isEnabled = false
-        binding.bsAddrecipientRecipientProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsAddrecipientRecipientAddRecipientButton.startAnimation()
+
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             addRecipientToAccount(
                 context,
@@ -112,8 +114,9 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
                     listener.onAdded()
                 }
                 else -> {
-                    binding.bsAddrecipientRecipientAddRecipientButton.isEnabled = true
-                    binding.bsAddrecipientRecipientProgressbar.visibility = View.INVISIBLE
+                    // Revert the button to normal
+                    binding.bsAddrecipientRecipientAddRecipientButton.revertAnimation()
+
                     binding.bsAddrecipientRecipientTil.error =
                         context.resources.getString(R.string.error_adding_recipient) + "\n" + result
                 }

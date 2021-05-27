@@ -95,8 +95,10 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         this.domain = binding.bsAdddomainDomainTiet.text.toString()
         // Set error to null if domain and alias is valid
         binding.bsAdddomainDomainTil.error = null
-        binding.bsAdddomainDomainAddDomainButton.isEnabled = false
-        binding.bsAdddomainDomainProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsAdddomainDomainAddDomainButton.startAnimation()
+
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             addDomainToAccount(
                 context,
@@ -128,8 +130,10 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
                     handler.removeCallbacksAndMessages(null)
                     binding.bsAddDomainSetup1.visibility = View.VISIBLE
                     binding.bsAddDomainSetup2.visibility = View.GONE
-                    binding.bsAdddomainDomainAddDomainButton.isEnabled = true
-                    binding.bsAdddomainDomainProgressbar.visibility = View.INVISIBLE
+
+                    // Revert the button to normal
+                    binding.bsAdddomainDomainAddDomainButton.revertAnimation()
+
                     binding.bsAdddomainDomainTil.error =
                         context.resources.getString(R.string.error_adding_domain) + "\n" + result
                 }

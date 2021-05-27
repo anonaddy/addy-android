@@ -109,8 +109,8 @@ class EditUsernameRecipientBottomDialogFragment(
     }
 
     private fun editRecipient(context: Context) {
-        binding.bsEditrecipientSaveButton.isEnabled = false
-        binding.bsEditrecipientSaveProgressbar.visibility = View.VISIBLE
+        // Animate the button to progress
+        binding.bsEditrecipientSaveButton.startAnimation()
 
         var recipient = ""
         val ids: List<Int> = binding.bsEditrecipientChipgroup.checkedChipIds
@@ -136,8 +136,9 @@ class EditUsernameRecipientBottomDialogFragment(
             if (result == "200") {
                 listener.recipientEdited()
             } else {
-                binding.bsEditrecipientSaveButton.isEnabled = true
-                binding.bsEditrecipientSaveProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                binding.bsEditrecipientSaveButton.revertAnimation()
+
                 binding.bsEditrecipientTil.error =
                     context.resources.getString(R.string.error_edit_recipient) + "\n" + result
             }

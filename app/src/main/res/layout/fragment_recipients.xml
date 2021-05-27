@@ -35,7 +35,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                style="@style/AnonAddyTitleAction2"
+                style="@style/AnonAddyTitleAction"
                 android:orientation="horizontal">
 
                 <TextView
@@ -47,7 +47,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/recipients_add_recipients"
-                    style="@style/MaterialActionButton"
+                    style="@style/RoundActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/add_recipient" />

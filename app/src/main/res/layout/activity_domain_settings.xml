@@ -50,7 +50,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    style="@style/AnonAddyTitleAction2"
+                    style="@style/AnonAddyTitleAction"
                     android:orientation="horizontal">
 
                     <TextView
@@ -62,7 +62,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_domain_settings_add_domain"
-                        style="@style/MaterialActionButton"
+                        style="@style/RoundActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_domain" />

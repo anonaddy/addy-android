@@ -60,6 +60,8 @@
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+
                 android:hint="@string/addresses">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -76,24 +78,13 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bs_send_mail_alias_send_mail_button"
+                style="@style/MaterialButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_send_mail_alias_send_mail_button"
-                    style="@style/ActionButtonsSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/send" />
-            </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:text="@string/send" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

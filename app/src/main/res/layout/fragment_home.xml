@@ -172,7 +172,6 @@
                 style="@style/AnonAddyCustomCardViewStyleBottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
                 app:cardElevation="@dimen/cardview_default_elevation">
 
                 <LinearLayout
@@ -274,7 +273,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/home_most_active_aliases_view_more"
-                        style="@style/MaterialActionButton"
+                        style="@style/RoundActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/view_more" />

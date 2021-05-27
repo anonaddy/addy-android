@@ -124,8 +124,9 @@ class EditAliasRecipientsBottomDialogFragment(
     }
 
     private fun editRecipients(context: Context) {
-        binding.bsEditrecipientsSaveButton.isEnabled = false
-        binding.bsEditrecipientsSaveProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsEditrecipientsSaveButton.startAnimation()
 
         val recipients = arrayListOf<String>()
         val ids: List<Int> = binding.bsEditrecipientsChipgroup.checkedChipIds
@@ -151,8 +152,9 @@ class EditAliasRecipientsBottomDialogFragment(
             if (result == "200") {
                 listener.recipientsEdited()
             } else {
-                binding.bsEditrecipientsSaveButton.isEnabled = true
-                binding.bsEditrecipientsSaveProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                binding.bsEditrecipientsSaveButton.revertAnimation()
+
                 binding.bsEditrecipientsTil.error =
                     context.resources.getString(R.string.error_edit_recipients) + "\n" + result
             }

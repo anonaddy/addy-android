@@ -4,6 +4,7 @@
     android:id="@+id/activity_rules_create_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
 
 
@@ -91,7 +92,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/activity_rules_create_RL_lottieview"
@@ -115,23 +118,18 @@
                 android:id="@+id/activity_rules_create_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:visibility="invisible">
 
-
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/rule_name" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/activity_rules_create_rule_name_til"
                     style="@style/AnonAddyTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
                     android:hint="@string/enter_name"
                     android:visibility="visible">
 
@@ -152,12 +150,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="vertical">
 
                     <LinearLayout
+                        style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
                         android:orientation="horizontal">
 
                         <TextView
@@ -169,7 +169,7 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/activity_rules_create_add_condition"
-                            style="@style/MaterialActionButton"
+                            style="@style/MaterialButtonSecondaryLight"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/add_condition" />
@@ -180,6 +180,8 @@
                         android:id="@+id/activity_rules_create_LL_conditions"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
                         android:orientation="vertical" />
 
 
@@ -189,11 +191,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="16dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="vertical">
 
                     <LinearLayout
+                        style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
                         android:orientation="horizontal">
 
                         <TextView
@@ -205,7 +209,7 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/activity_rules_create_add_action"
-                            style="@style/MaterialActionButton"
+                            style="@style/MaterialButtonSecondaryLight"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/add_action" />
@@ -216,6 +220,8 @@
                         android:id="@+id/activity_rules_create_LL_actions"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
                         android:orientation="vertical" />
 
 

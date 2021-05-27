@@ -219,7 +219,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     binding.aliasListLL1.visibility = View.GONE
                     binding.aliasStatisticsRLLottieview.visibility = View.VISIBLE
                 }
-            }, activeOnly = false, includeDeleted = true)
+            }, activeOnly = false, includeDeleted = false)
 
 
         }
@@ -244,7 +244,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private lateinit var deletedAliasAdapter: AliasAdapter
     private suspend fun getAllDeletedAliases() {
         binding.aliasDeletedAliasesRecyclerview.apply {
-
             networkHelper?.getAliases({ list ->
 
                 // Check if there are new aliases since the latest list

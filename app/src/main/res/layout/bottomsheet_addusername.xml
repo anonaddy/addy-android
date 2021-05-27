@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bs_addusername_username_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -60,6 +61,7 @@
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
                 android:hint="@string/username">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -76,33 +78,15 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/bs_addusername_username_add_username_button"
+                style="@style/CircularProgressButtonSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <ProgressBar
-                    android:id="@+id/bs_addusername_username_progressbar"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:padding="4dp"
-                    android:visibility="invisible" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_addusername_username_add_username_button"
-                    style="@style/ActionButtonsSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add" />
-            </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:text="@string/add_username"
+                app:icon="@drawable/ic_baseline_add_24"
+                app:iconGravity="textStart" />
         </LinearLayout>
 
 

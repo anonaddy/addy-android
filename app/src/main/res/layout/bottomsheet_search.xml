@@ -157,7 +157,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/bs_search_clear_recent"
-                        style="@style/MaterialActionButton"
+                        style="@style/RoundActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/clear" />

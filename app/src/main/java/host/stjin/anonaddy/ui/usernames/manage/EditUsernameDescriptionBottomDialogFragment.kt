@@ -82,9 +82,9 @@ class EditUsernameDescriptionBottomDialogFragment(
 
     private fun verifyKey(context: Context) {
         val description = binding.bsEditusernameUsernameDescTiet.text.toString()
-        binding.bsEditusernameUsernameSaveButton.isEnabled = false
-        binding.bsEditusernameUsernameSaveProgressbar.visibility = View.VISIBLE
 
+        // Animate the button to progress
+        binding.bsEditusernameUsernameSaveButton.startAnimation()
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             editDescriptionHttp(context, description)
@@ -97,8 +97,9 @@ class EditUsernameDescriptionBottomDialogFragment(
             if (result == "200") {
                 listener.descriptionEdited(description)
             } else {
-                binding.bsEditusernameUsernameSaveButton.isEnabled = true
-                binding.bsEditusernameUsernameSaveProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                binding.bsEditusernameUsernameSaveButton.revertAnimation()
+
                 binding.bsEditusernameUsernameDescTil.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }

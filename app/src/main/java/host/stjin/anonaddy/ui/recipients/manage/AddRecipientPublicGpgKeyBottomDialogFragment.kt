@@ -88,8 +88,9 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
 
     private fun addKey(context: Context) {
         val description = binding.bsEditRecipientGpgKeyTiet.text.toString()
-        binding.bsEditRecipientGpgKeySaveButton.isEnabled = false
-        binding.bsEditRecipientGpgKeySaveProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsEditRecipientGpgKeySaveButton.startAnimation()
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -103,8 +104,10 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
             if (result == "200") {
                 listener.onKeyAdded()
             } else {
-                binding.bsEditRecipientGpgKeySaveButton.isEnabled = true
-                binding.bsEditRecipientGpgKeySaveProgressbar.visibility = View.INVISIBLE
+
+                // Revert the button to normal
+                binding.bsEditRecipientGpgKeySaveButton.revertAnimation()
+
                 binding.bsEditRecipientGpgKeyTil.error =
                     context.resources.getString(R.string.error_add_gpg_key) + "\n" + result
             }

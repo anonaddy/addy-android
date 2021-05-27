@@ -111,24 +111,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bs_rule_action_add_action_button"
+                style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_rule_action_add_action_button"
-                    style="@style/ActionButtonsSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add" />
-            </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:text="@string/add_action" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -108,3 +108,8 @@ dependencies {
 dependencies {
     implementation("app.futured.donut:library:2.1.0")
 }
+
+// Loading spinners when execution actions from eg. bottomsheets
+dependencies {
+    implementation 'br.com.simplepass:loading-button-android:2.2.0'
+}

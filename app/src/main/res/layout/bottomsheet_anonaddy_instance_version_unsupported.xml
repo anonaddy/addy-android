@@ -50,12 +50,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/BlackWhite"
+                android:layout_marginBottom="16dp"
                 tools:text="@tools:sample/lorem/random" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp">
 
                 <com.google.android.material.button.MaterialButton
@@ -73,7 +73,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_anonaddy_instance_version_unsupported_how_to_update_button"
-                    style="@style/ActionButtonsSecondary"
+                    style="@style/CircularProgressButtonSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/how_to_update" />

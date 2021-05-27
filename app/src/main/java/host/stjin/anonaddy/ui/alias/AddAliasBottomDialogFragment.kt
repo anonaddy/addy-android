@@ -210,8 +210,9 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         binding.bsAddaliasDomainTil.error = null
         binding.bsAddaliasAliasFormatTil.error = null
 
-        binding.bsAddaliasAliasAddAliasButton.isEnabled = false
-        binding.bsAddaliasAliasProgressbar.visibility = View.VISIBLE
+        // Animate the button to progress
+        binding.bsAddaliasAliasAddAliasButton.startAnimation()
+
         val domain = binding.bsAddaliasDomainMact.text.toString()
         val description = binding.bsAddaliasAliasDescTiet.text.toString()
         val localPart = binding.bsAddaliasAliasLocalPartTiet.text.toString()
@@ -237,8 +238,9 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             if (result == "201") {
                 listener.onAdded()
             } else {
-                binding.bsAddaliasAliasAddAliasButton.isEnabled = true
-                binding.bsAddaliasAliasProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                binding.bsAddaliasAliasAddAliasButton.revertAnimation()
+
                 binding.bsAddaliasAliasDescTil.error =
                     context.resources.getString(R.string.error_adding_alias) + "\n" + result
             }

@@ -83,8 +83,10 @@ class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
         this.username = binding.bsAddusernameUsernameTiet.text.toString()
         // Set error to null if username and alias is valid
         binding.bsAddusernameUsernameTil.error = null
-        binding.bsAddusernameUsernameAddUsernameButton.isEnabled = false
-        binding.bsAddusernameUsernameProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsAddusernameUsernameAddUsernameButton.startAnimation()
+
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             addUsernameToAccount(
                 context,
@@ -104,8 +106,9 @@ class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
                     listener.onAdded()
                 }
                 else -> {
-                    binding.bsAddusernameUsernameAddUsernameButton.isEnabled = true
-                    binding.bsAddusernameUsernameProgressbar.visibility = View.INVISIBLE
+                    // Revert the button to normal
+                    binding.bsAddusernameUsernameAddUsernameButton.revertAnimation()
+
                     binding.bsAddusernameUsernameTil.error =
                         context.resources.getString(R.string.error_adding_username) + "\n" + result
                 }

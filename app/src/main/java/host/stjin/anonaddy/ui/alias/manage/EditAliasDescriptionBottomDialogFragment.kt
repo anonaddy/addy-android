@@ -82,9 +82,9 @@ class EditAliasDescriptionBottomDialogFragment(
 
     private fun verifyKey(context: Context) {
         val description = binding.bsEditaliasAliasDescTiet.text.toString()
-        binding.bsEditaliasAliasSaveButton.isEnabled = false
-        binding.bsEditaliasAliasSaveProgressbar.visibility = View.VISIBLE
 
+        // Animate the button to progress
+        binding.bsEditaliasAliasSaveButton.startAnimation()
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             editDescriptionHttp(context, description)
@@ -97,8 +97,9 @@ class EditAliasDescriptionBottomDialogFragment(
             if (result == "200") {
                 listener.descriptionEdited(description)
             } else {
-                binding.bsEditaliasAliasSaveButton.isEnabled = true
-                binding.bsEditaliasAliasSaveProgressbar.visibility = View.INVISIBLE
+                // Animate the button to progress
+                binding.bsEditaliasAliasSaveButton.revertAnimation()
+
                 binding.bsEditaliasAliasDescTil.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }

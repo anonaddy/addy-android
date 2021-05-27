@@ -80,8 +80,9 @@ class EditDomainDescriptionBottomDialogFragment(
 
     private fun verifyKey(context: Context) {
         val description = binding.bsEditdomainDomainDescTiet.text.toString()
-        binding.bsEditdomainDomainSaveButton.isEnabled = false
-        binding.bsEditdomainDomainSaveProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsEditdomainDomainSaveButton.startAnimation()
 
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -95,8 +96,10 @@ class EditDomainDescriptionBottomDialogFragment(
             if (result == "200") {
                 listener.descriptionEdited(description)
             } else {
-                binding.bsEditdomainDomainSaveButton.isEnabled = true
-                binding.bsEditdomainDomainSaveProgressbar.visibility = View.INVISIBLE
+
+                // Revert the button to normal
+                binding.bsEditdomainDomainSaveButton.revertAnimation()
+
                 binding.bsEditdomainDomainDescTil.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }

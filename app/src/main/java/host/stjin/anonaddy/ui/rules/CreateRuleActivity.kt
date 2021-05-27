@@ -6,10 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
@@ -203,8 +204,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val inflatedLayout: View =
                 inflater.inflate(R.layout.rules_view_condition_action, binding.activityRulesCreateLLConditions as ViewGroup?, false)
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
-            val deleteCondition = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_close)
-            val editCondition = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_edit)
+            val deleteCondition = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_close)
+            val cardView = inflatedLayout.findViewById<CardView>(R.id.domains_recyclerview_list_CV)
 
 
             val typeText =
@@ -237,7 +238,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 setPage()
             }
 
-            editCondition.setOnClickListener {
+            cardView.setOnClickListener {
                 if (!conditionBottomDialogFragment.isAdded) {
                     // Reset the variable to remove the arguments that could be sent with the previous edit button
                     conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance()
@@ -284,8 +285,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val inflatedLayout: View =
                 inflater.inflate(R.layout.rules_view_condition_action, binding.activityRulesCreateLLActions as ViewGroup?, false)
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
-            val deleteAction = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_close)
-            val editAction = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_edit)
+            val deleteAction = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_close)
+            val cardView = inflatedLayout.findViewById<MaterialCardView>(R.id.domains_recyclerview_list_CV)
 
 
             val typeText =
@@ -301,7 +302,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 setPage()
             }
 
-            editAction.setOnClickListener {
+            cardView.setOnClickListener {
                 if (!actionBottomDialogFragment.isAdded) {
                     // Reset the variable to remove the arguments that could be sent with the previous edit button
                     actionBottomDialogFragment = ActionBottomDialogFragment.newInstance()

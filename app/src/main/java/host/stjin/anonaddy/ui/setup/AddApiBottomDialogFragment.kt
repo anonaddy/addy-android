@@ -134,9 +134,9 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         val apiKey = binding.bsSetupApikeyTiet.text.toString()
         val baseUrl = binding.bsSetupInstanceTiet.text.toString()
         binding.bsSetupApikeyGetButton.isEnabled = false
-        binding.bsSetupApikeySignInButton.isEnabled = false
-        binding.bsSetupApikeyGetProgressbar.visibility = View.VISIBLE
 
+        // Animate the button to progress
+        binding.bsSetupApikeySignInButton.startAnimation()
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             verifyApiKey(context, apiKey, baseUrl)
@@ -150,8 +150,10 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 listener.onClickSave(baseUrl, apiKey)
             } else {
                 binding.bsSetupApikeyGetButton.isEnabled = true
-                binding.bsSetupApikeySignInButton.isEnabled = true
-                binding.bsSetupApikeyGetProgressbar.visibility = View.INVISIBLE
+
+                // Revert the button to normal
+                binding.bsSetupApikeySignInButton.revertAnimation()
+
                 binding.bsSetupApikeyTil.error =
                     context.resources.getString(R.string.api_invalid) + "\n" + result
             }

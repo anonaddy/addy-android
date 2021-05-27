@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
@@ -68,8 +67,8 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             val item = clipboardData?.getItemAt(0)
             val text = item?.text.toString()
 
-            // Most passport keys are 999, as there are plans to move to Sanctum (which has 40char tokens) 40 will also trigger the clipboard readout.
-            if (text.length == 999 || text.length == 40) {
+            // Most passport keys are 999 or 1024, as there are plans to move to Sanctum (which has 40char tokens) 40 will also trigger the clipboard readout.
+            if (text.length == 999 || text.length == 1024 || text.length == 40) {
                 // a 999 length string found. This is most likely the API key
                 verifyKeyAndAdd(this, text)
                 Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()
@@ -90,9 +89,10 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
     private fun verifyKeyAndAdd(context: Context, apiKey: String, baseUrl: String = AnonAddy.API_BASE_URL) {
-        binding.fragmentSetupInitButtonApi.isEnabled = false
         binding.fragmentSetupInitButtonNew.isEnabled = false
-        binding.fragmentSetupApikeyGetProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.fragmentSetupInitButtonApi.startAnimation()
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             // AnonAddy.API_BASE_URL is defaulted to the anonaddy.com instance. If the API key is valid there it was meant to use that instance.
@@ -109,9 +109,11 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             } else {
                 Toast.makeText(this, resources.getString(R.string.API_key_invalid), Toast.LENGTH_LONG).show()
 
-                binding.fragmentSetupInitButtonApi.isEnabled = true
                 binding.fragmentSetupInitButtonNew.isEnabled = true
-                binding.fragmentSetupApikeyGetProgressbar.visibility = View.INVISIBLE
+
+                // Revert the button to normal
+                binding.fragmentSetupInitButtonApi.revertAnimation()
+
                 if (!addApiBottomDialogFragment.isAdded) {
                     addApiBottomDialogFragment.show(
                         supportFragmentManager,

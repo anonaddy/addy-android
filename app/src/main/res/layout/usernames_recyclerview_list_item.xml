@@ -108,7 +108,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/usernames_recyclerview_list_settings_button"
-                style="@style/MaterialTextActionButton"
+                style="@style/MaterialButtonSecondaryLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -116,7 +116,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/usernames_recyclerview_list_delete_button"
-                style="@style/MaterialTextActionButton"
+                style="@style/MaterialButtonSecondaryLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

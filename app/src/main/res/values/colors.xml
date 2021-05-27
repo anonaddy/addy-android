@@ -8,10 +8,8 @@
     <color name="primarySuperSuperLightColor">#26353C7D</color>
     <color name="primaryDarkColor">#000040</color>
     <color name="secondaryColor">#3ae7e1</color>
-    <color name="secondarySuperLightColor">#807EFFFF</color>
-    <color name="secondaryLightColor">#7effff</color>
+    <color name="secondaryColor10">#1A3AE7E1</color>
     <color name="secondaryDarkColor">#00b4af</color>
-    <color name="secondaryTextColor">#000000</color>
 
     <color name="IconGrayTint">#666666</color>
 
