@@ -2118,7 +2118,6 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheAliasDataForWidget(
         callback: (Boolean) -> Unit
     ) {
-        // Widget 1
         getAliases({ list ->
             if (list == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
@@ -2141,13 +2140,14 @@ class NetworkHelper(private val context: Context) {
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
-        }, activeOnly = false, includeDeleted = true)
+        }, activeOnly = false, includeDeleted = false)
     }
 
+
+    // TODO make use of this
     suspend fun cacheDomainsDataForWidget(
         callback: (Boolean) -> Unit
     ) {
-        // Widget 2
         getDomainOptions { result ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.

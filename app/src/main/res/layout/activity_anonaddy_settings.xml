@@ -5,6 +5,7 @@
     android:id="@+id/activity_app_settings_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
 
 
@@ -23,6 +24,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
@@ -30,6 +33,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/AnonAddyTitleAction"
                 android:orientation="horizontal">
 
                 <TextView
@@ -41,256 +45,265 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_LL"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/anonaddy_settings_monthly_bandwidth_cv"
+                style="@style/AnonAddyCustomCardViewStyleTop"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="@dimen/cardview_default_elevation">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="4dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center_vertical"
-                        android:text="@string/monthly_bandwidth"
-                        app:drawableStartCompat="@drawable/ic_speedometer_slow"
-                        app:drawableTint="@color/primaryColor" />
-
+                    android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_LL"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_current"
+                            style="@style/DescTextStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            android:drawablePadding="4dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center_vertical"
+                            android:text="@string/monthly_bandwidth"
+                            app:drawableStartCompat="@drawable/ic_speedometer_slow"
+                            app:drawableTint="@color/primaryColor" />
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_current"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@color/BlackWhite"
+                                tools:ignore="HardcodedText" />
+
+                            <TextView
+                                android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_max"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@color/BlackWhite"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_max"
+                            android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_desc"
+                            style="@style/DescTextStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginStart="4dp"
-                            android:alpha="0.5"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            android:layout_marginTop="8dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/anonaddy_settings_monthly_bandwidth_desc" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_desc"
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/anonaddy_settings_monthly_bandwidth_desc" />
+                    <ProgressBar
+                        android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_progress"
+                        style="@style/AnonAddyProgressBar.Vertical"
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:progress="60" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/anonaddy_settings_monthly_bandwidth_more_info_button"
-                        style="@style/RoundActionButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/more_info" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <ProgressBar
-                    android:id="@+id/anonaddy_settings_statistics_monthly_bandwidth_progress"
-                    style="@style/AnonAddyProgressBar.Vertical"
-                    android:layout_width="15dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:progress="60" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/anonaddy_settings_statistics_recipients_LL"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/anonaddy_settings_statistics_recipients_cv"
+                style="@style/AnonAddyCustomCardViewStyleCenter"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="@dimen/cardview_default_elevation">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="4dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center_vertical"
-                        android:text="@string/recipients"
-                        app:drawableStartCompat="@drawable/ic_recipients"
-                        app:drawableTint="@color/softRed" />
-
+                    android:id="@+id/anonaddy_settings_statistics_recipients_LL"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/anonaddy_settings_statistics_recipients_current"
+                            style="@style/DescTextStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            android:drawablePadding="4dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center_vertical"
+                            android:text="@string/recipients"
+                            app:drawableStartCompat="@drawable/ic_recipients"
+                            app:drawableTint="@color/softRed" />
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/anonaddy_settings_statistics_recipients_current"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@color/BlackWhite"
+                                tools:ignore="HardcodedText" />
+
+                            <TextView
+                                android:id="@+id/anonaddy_settings_statistics_recipients_max"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@color/BlackWhite"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/anonaddy_settings_statistics_recipients_max"
+                            android:id="@+id/anonaddy_settings_statistics_recipients_desc"
+                            style="@style/DescTextStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginStart="4dp"
-                            android:alpha="0.5"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            android:layout_marginTop="8dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/anonaddy_settings_statistics_recipients_desc" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/anonaddy_settings_statistics_recipients_desc"
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/anonaddy_settings_statistics_recipients_desc" />
+                    <ProgressBar
+                        android:id="@+id/anonaddy_settings_statistics_statistics_recipients_progress"
+                        style="@style/AnonAddyProgressBarRed.Vertical"
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:progress="60" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/anonaddy_settings_statistics_recipients_more_info_button"
-                        style="@style/RoundActionButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/more_info" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <ProgressBar
-                    android:id="@+id/anonaddy_settings_statistics_statistics_recipients_progress"
-                    style="@style/AnonAddyProgressBarRed.Vertical"
-                    android:layout_width="15dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:progress="60" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/anonaddy_settings_statistics_aliases_LL"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/anonaddy_settings_statistics_aliases_cv"
+                style="@style/AnonAddyCustomCardViewStyleBottom"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="@dimen/cardview_default_elevation">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="4dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center_vertical"
-                        android:text="@string/shared_domain_aliases"
-                        app:drawableStartCompat="@drawable/ic_round_alternate_email_24"
-                        app:drawableTint="@color/easternBlue" />
-
+                    android:id="@+id/anonaddy_settings_statistics_aliases_LL"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/anonaddy_settings_statistics_aliases_current"
+                            style="@style/DescTextStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            android:drawablePadding="4dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center_vertical"
+                            android:text="@string/shared_domain_aliases"
+                            app:drawableStartCompat="@drawable/ic_round_alternate_email_24"
+                            app:drawableTint="@color/easternBlue" />
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/anonaddy_settings_statistics_aliases_current"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@color/BlackWhite"
+                                tools:ignore="HardcodedText" />
+
+                            <TextView
+                                android:id="@+id/anonaddy_settings_statistics_aliases_max"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@color/BlackWhite"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/anonaddy_settings_statistics_aliases_max"
+                            android:id="@+id/anonaddy_settings_statistics_aliases_desc"
+                            style="@style/DescTextStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginStart="4dp"
-                            android:alpha="0.5"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            android:layout_marginTop="8dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif"
+                            android:text="@string/anonaddy_settings_statistics_aliases_desc" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/anonaddy_settings_statistics_aliases_desc"
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/anonaddy_settings_statistics_aliases_desc" />
+                    <ProgressBar
+                        android:id="@+id/anonaddy_settings_statistics_aliases_progress"
+                        style="@style/AnonAddyProgressBarEasternBlue.Vertical"
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:progress="60" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/anonaddy_settings_statistics_aliases_more_info_button"
-                        style="@style/RoundActionButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/more_info" />
                 </LinearLayout>
-
-                <ProgressBar
-                    android:id="@+id/anonaddy_settings_statistics_aliases_progress"
-                    style="@style/AnonAddyProgressBarEasternBlue.Vertical"
-                    android:layout_width="15dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:progress="60" />
-
-            </LinearLayout>
-
+            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                style="@style/AnonAddyTitleAction"
                 android:orientation="horizontal">
 
                 <TextView

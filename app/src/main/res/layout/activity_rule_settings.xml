@@ -89,6 +89,11 @@
                     android:textColor="@color/BlackWhite"
                     android:visibility="gone" />
 
+                <View
+                    style="@style/divider"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="16dp" />
+
                 <TextView
                     android:id="@+id/activity_manage_rules_RL_count_text"
                     android:layout_width="match_parent"

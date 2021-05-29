@@ -23,7 +23,6 @@ import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentAliasBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
-import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.utils.SpacesItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -63,8 +62,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         networkHelper = NetworkHelper(requireContext())
 
 
-        // Load values from local to make the app look quick and snappy!
-        setStatisticsFromLocal(requireContext())
         setOnClickListeners()
 
         // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
@@ -82,7 +79,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllAliasesAndSetStatistics()
             getAllDeletedAliases()
-            // Set forceUpdate to false (if it was true) to prevent the lists from reloading every oneresume
+            // Set forceUpdate to false (if it was true) to prevent the lists from reloading every onresume
             forceUpdate = false
         }
     }
@@ -337,37 +334,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     }
 
-    /*
-    Only gets called in onCreate, so when coming back later the number won't just jump back to the old value
-     */
-    private fun setStatisticsFromLocal(context: Context) {
-        val statCurrentEmailsForwardedTotalCount = 0
-        val statCurrentEmailsBlockedTotalCount = 0
-        val statCurrentEmailsRepliedTotalCount = 0
-        val statCurrentEmailsSentTotalCount = 0
-
-        // Get aliasList
-        val aliasesJson = settingsManager?.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
-        val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(context, it) }
-
-        // Count the stats from the cache
-        if (aliasesList != null) {
-            for (alias in aliasesList) {
-                statCurrentEmailsForwardedTotalCount + alias.emails_forwarded
-                statCurrentEmailsBlockedTotalCount + alias.emails_blocked
-                statCurrentEmailsRepliedTotalCount + alias.emails_replied
-                statCurrentEmailsSentTotalCount + alias.emails_sent
-            }
-        }
-
-        setAliasesStatistics(
-            context,
-            statCurrentEmailsForwardedTotalCount,
-            statCurrentEmailsBlockedTotalCount,
-            statCurrentEmailsRepliedTotalCount,
-            statCurrentEmailsSentTotalCount
-        )
-    }
 
     private fun setAliasesStatistics(
         context: Context,

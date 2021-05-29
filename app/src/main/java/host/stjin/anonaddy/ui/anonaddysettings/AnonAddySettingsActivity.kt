@@ -55,13 +55,13 @@ class AnonAddySettingsActivity : BaseActivity() {
         /*
         ANONADDY SETTINGS CANNOT BE SET BY API. Always open settings
          */
-        binding.anonaddySettingsMonthlyBandwidthMoreInfoButton.setOnClickListener {
+        binding.anonaddySettingsMonthlyBandwidthCv.setOnClickListener {
             openSettings()
         }
-        binding.anonaddySettingsStatisticsRecipientsMoreInfoButton.setOnClickListener {
+        binding.anonaddySettingsStatisticsRecipientsCv.setOnClickListener {
             openSettings()
         }
-        binding.anonaddySettingsStatisticsAliasesMoreInfoButton.setOnClickListener {
+        binding.anonaddySettingsStatisticsAliasesCv.setOnClickListener {
             openSettings()
         }
 

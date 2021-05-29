@@ -223,11 +223,22 @@
                         android:clipChildren="false"
                         android:clipToPadding="false"
                         android:orientation="vertical" />
-
-
                 </LinearLayout>
 
+                <View
+                    style="@style/divider"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="16dp" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:alpha="0.8"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/rules_create_info"
+                    app:drawableStartCompat="@drawable/ic_outline_info_24" />
             </LinearLayout>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>

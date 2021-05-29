@@ -115,20 +115,20 @@
                 android:text="@string/settings" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/recipients_recyclerview_list_delete_button"
-                style="@style/MaterialButtonSecondaryLight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/delete" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/recipients_recyclerview_list_resend_button"
                 style="@style/MaterialButtonSecondaryLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/resend_email" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/recipients_recyclerview_list_delete_button"
+                style="@style/MaterialButtonSecondaryLight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/delete" />
 
         </LinearLayout>
 

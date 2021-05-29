@@ -66,6 +66,11 @@
                 app:shimmer_demo_layout="@layout/recipients_recyclerview_list_item_recipients_shimmer"
                 app:shimmer_demo_layout_manager_type="linear_vertical" />
 
+            <View
+                style="@style/divider"
+                android:layout_width="match_parent"
+                android:layout_marginTop="16dp" />
+
             <TextView
                 android:id="@+id/activity_recipient_settings_LL_count"
                 android:layout_width="match_parent"

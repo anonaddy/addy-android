@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/custom_view_section_LL"
-    style="@style/SettingsSectionStyle"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:baselineAligned="false"
-    android:clickable="false"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
+    android:clickable="true"
     android:focusable="true"
-    android:orientation="horizontal">
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="@dimen/cardview_default_elevation">
 
     <LinearLayout
+        android:id="@+id/custom_view_section_LL"
+        style="@style/SettingsSectionStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:clickable="false"
+        android:focusable="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
         style="@style/SettingsSectionIconStyleMarginEnd"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -91,4 +103,5 @@
         android:focusable="true"
         android:visibility="gone" />
 
-</LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

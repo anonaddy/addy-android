@@ -589,7 +589,7 @@ class ManageAliasActivity : BaseActivity(),
 
                         // As the childs are only sections, cast and set enabled state
                         // Do not disable the restore button. So disabled everything except the activity_manage_alias_restore
-                        if (child.id != R.id.activity_manage_alias_restore) {
+                        if (child.id != R.id.activity_manage_alias_restore && child.id != R.id.activity_manage_alias_forget) {
                             (child as SectionView).setLayoutEnabled(false)
                         }
                     }

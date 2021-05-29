@@ -5,6 +5,7 @@
     android:id="@+id/activity_manage_username_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
 
 
@@ -20,7 +21,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/activity_manage_username_RL_lottieview"
@@ -46,14 +49,24 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:visibility="invisible">
 
 
-                <TextView
-                    style="@style/titleTextView"
+                <LinearLayout
+                    style="@style/AnonAddyTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/basic" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/basic" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -70,12 +83,20 @@
                         tools:text="@tools:sample/lorem/random" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/activity_manage_username_aliases_title_textview"
-                    style="@style/titleTextView"
+                <LinearLayout
+                    style="@style/AnonAddyTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/username_aliases_d" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/activity_manage_username_aliases_title_textview"
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/username_aliases_d" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -95,14 +116,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="vertical">
 
-                    <TextView
-                        style="@style/titleTextView"
+                    <LinearLayout
+                        style="@style/AnonAddyTitleAction"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="@string/action" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/titleTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/action" />
+                    </LinearLayout>
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_username_active_switch_layout"
