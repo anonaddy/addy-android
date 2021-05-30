@@ -28,6 +28,7 @@ import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRecipi
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRules
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUsernames
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
+import host.stjin.anonaddy.utils.MarginItemDecoration
 
 class SearchActivity : BaseActivity() {
 
@@ -115,12 +116,14 @@ class SearchActivity : BaseActivity() {
     private fun setUsernames() {
         binding.activitySearchUsernamesRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -156,12 +159,14 @@ class SearchActivity : BaseActivity() {
     private fun setRules() {
         binding.activitySearchRulesRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -211,12 +216,14 @@ class SearchActivity : BaseActivity() {
     private fun setAliases() {
         binding.activitySearchAliasesRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -278,12 +285,14 @@ class SearchActivity : BaseActivity() {
     private fun setRecipients() {
         binding.activitySearchRecipientsRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false
@@ -327,12 +336,14 @@ class SearchActivity : BaseActivity() {
     private fun setDomains() {
         binding.activitySearchDomainsRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
 
             if (shouldAnimateRecyclerview) {
                 shouldAnimateRecyclerview = false

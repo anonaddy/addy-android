@@ -6,7 +6,6 @@
     style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="6dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
@@ -88,7 +87,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
                 android:layout_weight="2.5"
-                android:gravity="center"
+                android:gravity="end"
                 android:orientation="horizontal">
 
                 <LinearLayout

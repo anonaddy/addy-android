@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -120,6 +121,8 @@ class RulesAdapter(
                     return@setOnTouchListener true
                 }
             }
+
+            checkForTabletLayout(rulesRecyclerviewListDeleteButton.context)
         }
 
         override fun onClick(p0: View) {
@@ -143,11 +146,20 @@ class RulesAdapter(
         }
 
         private fun expandOptions() {
-            if (rulesRecyclerviewListOptionLl.visibility == View.VISIBLE) {
-                rulesRecyclerviewListOptionLl.visibility = View.GONE
-                mOptionsButton.rotation = 0f
-            } else {
-                mOptionsButton.rotation = 180f
+            if (!rulesRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
+                if (rulesRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                    rulesRecyclerviewListOptionLl.visibility = View.GONE
+                    mOptionsButton.rotation = 0f
+                } else {
+                    mOptionsButton.rotation = 180f
+                    rulesRecyclerviewListOptionLl.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        private fun checkForTabletLayout(context: Context) {
+            if (context.resources.getBoolean(R.bool.isTablet)) {
+                mOptionsButton.visibility = View.GONE
                 rulesRecyclerviewListOptionLl.visibility = View.VISIBLE
             }
         }

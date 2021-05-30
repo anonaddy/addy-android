@@ -143,19 +143,25 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {
-            val i = Intent(Intent(this, DialogActivity::class.java))
-            val options = ActivityOptions
-                .makeSceneTransitionAnimation(
-                    this as Activity?,
-                    Pair.create(
-                        findViewById(R.id.main_top_bar_user_initials),
-                        "background_transition"
-                    ),
-                    Pair.create(
-                        findViewById(R.id.main_top_bar_user_initials), "image_transition"
+            if (this.resources.getBoolean(R.bool.isTablet)) {
+                val i = Intent(Intent(this, DialogActivity::class.java))
+                val options = ActivityOptions
+                    .makeSceneTransitionAnimation(
+                        this as Activity?,
+                        Pair.create(
+                            findViewById(R.id.main_top_bar_user_initials),
+                            "background_transition"
+                        ),
+                        Pair.create(
+                            findViewById(R.id.main_top_bar_user_initials), "image_transition"
+                        )
                     )
-                )
-            startActivity(i, options.toBundle())
+                startActivity(i, options.toBundle())
+            } else {
+                val i = Intent(Intent(this, DialogActivity::class.java))
+                startActivity(i)
+                overridePendingTransition(R.anim.bottom_up, R.anim.nothing)
+            }
         }
 
         binding.mainAppBarInclude.mainTopBarSearchIcon.setOnClickListener {

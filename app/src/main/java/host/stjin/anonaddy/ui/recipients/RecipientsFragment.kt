@@ -25,7 +25,7 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
-import host.stjin.anonaddy.utils.SpacesItemDecoration
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -139,6 +139,7 @@ class RecipientsFragment : Fragment(),
 
 
     private lateinit var recipientAdapter: RecipientAdapter
+    private var hasSetItemDecoration = false
     private suspend fun getAllRecipients() {
         binding.recipientsAllRecipientsRecyclerview.apply {
 
@@ -152,17 +153,16 @@ class RecipientsFragment : Fragment(),
                     return@getRecipients
                 }
 
-
-                layoutManager = if (context.resources.getBoolean(R.bool.isTablet)) {
+                layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
                     // set a GridLayoutManager for tablets
                     GridLayoutManager(activity, 2)
                 } else {
                     LinearLayoutManager(activity)
                 }
 
-                if (context.resources.getBoolean(R.bool.isTablet)) {
-                    val spacingInPixels = resources.getDimensionPixelSize(R.dimen.gridLayoutSpacing)
-                    addItemDecoration(SpacesItemDecoration(spacingInPixels))
+                if (!hasSetItemDecoration) {
+                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                    hasSetItemDecoration = true
                 }
 
                 if (shouldAnimateRecyclerview) {

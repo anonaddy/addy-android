@@ -110,11 +110,13 @@
                 android:layout_marginBottom="6dp"
                 app:cardElevation="@dimen/cardview_default_elevation">
 
+
+                <!-- Extra padding because AnonAddyCustomCardViewStyleTop and Bottom take up extra padding -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"

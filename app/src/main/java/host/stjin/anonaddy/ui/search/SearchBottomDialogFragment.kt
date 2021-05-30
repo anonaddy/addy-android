@@ -20,6 +20,7 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.SearchAdapter
 import host.stjin.anonaddy.databinding.BottomsheetSearchBinding
 import host.stjin.anonaddy.models.*
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -89,6 +90,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
     }
 
+    private var hasSetItemDecoration = false
     private fun getRecentSearchResults() {
         val recentSearchesSet = settingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
 
@@ -97,11 +99,15 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
         binding.bsSearchRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(activity, 2)
             } else {
                 LinearLayoutManager(activity)
+            }
+            if (!hasSetItemDecoration) {
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                hasSetItemDecoration = true
             }
 
             val recipientAdapter = SearchAdapter(recentSearches)

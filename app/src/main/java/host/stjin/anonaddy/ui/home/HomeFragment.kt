@@ -25,13 +25,14 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
+import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
-import host.stjin.anonaddy.utils.SpacesItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -142,6 +143,8 @@ class HomeFragment : Fragment() {
     }
 
     private lateinit var aliasAdapter: AliasAdapter
+    private var previousList: ArrayList<Aliases> = arrayListOf()
+    private var hasSetItemDecoration = false
     private suspend fun getMostActiveAliases() {
         binding.homeMostActiveAliasesRecyclerview.apply {
 
@@ -150,20 +153,22 @@ class HomeFragment : Fragment() {
                 // Check if there are new aliases since the latest list
                 // If the list is the same, just return and don't bother re-init the layoutmanager
                 // Unless forceUpdate is true. If forceupdate is true, always update
-                if (::aliasAdapter.isInitialized && list == aliasAdapter.getList() && !forceUpdate) {
+                //TODO Eh? Why is this never returning?
+                if (::aliasAdapter.isInitialized && list == previousList && !forceUpdate) {
                     return@getAliases
                 }
 
-                layoutManager = if (context.resources.getBoolean(R.bool.isTablet)) {
+                layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
                     // set a GridLayoutManager for tablets
                     GridLayoutManager(activity, 2)
                 } else {
                     LinearLayoutManager(activity)
                 }
 
-                if (context.resources.getBoolean(R.bool.isTablet)) {
-                    val spacingInPixels = resources.getDimensionPixelSize(R.dimen.gridLayoutSpacing)
-                    addItemDecoration(SpacesItemDecoration(spacingInPixels))
+
+                if (!hasSetItemDecoration) {
+                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                    hasSetItemDecoration = true
                 }
 
                 if (shouldAnimateRecyclerview) {
@@ -174,6 +179,9 @@ class HomeFragment : Fragment() {
                 }
 
                 if (list != null) {
+                    previousList.clear()
+                    previousList.addAll(list)
+
                     if (list.size > 0) {
                         binding.homeNoAliases.visibility = View.GONE
                     } else {
@@ -237,6 +245,7 @@ class HomeFragment : Fragment() {
         setAliasesStatistics(User.userResource.active_shared_domain_alias_count, User.userResource.active_shared_domain_alias_limit)
         setRecipientStatistics(User.userResource.recipient_count, User.userResource.recipient_limit)
     }
+
 
     private fun setAliasesStatistics(count: Int, maxAliases: Int) {
         binding.homeStatisticsAliasesProgress.max = maxAliases * 100

@@ -2140,7 +2140,7 @@ class NetworkHelper(private val context: Context) {
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
-        }, activeOnly = false, includeDeleted = false)
+        }, activeOnly = false, includeDeleted = true)
     }
 
 

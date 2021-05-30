@@ -35,7 +35,7 @@
             android:text="e4eba4f0-16e5-457a-9648-a6ba518ace43@dontusemy.email"
             android:textAllCaps="false"
             android:textColor="@color/BlackWhite"
-            android:textSize="16sp"
+            android:textSize="14sp"
             tools:ignore="HardcodedText" />
 
         <ImageButton

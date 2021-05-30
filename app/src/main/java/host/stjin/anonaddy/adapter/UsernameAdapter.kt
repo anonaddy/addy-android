@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -106,6 +107,8 @@ class UsernameAdapter(
             mCV.setOnClickListener(this)
             usernamesRecyclerviewListSettingsButton.setOnClickListener(this)
             usernamesRecyclerviewListDeleteButton.setOnClickListener(this)
+
+            checkForTabletLayout(usernamesRecyclerviewListDeleteButton.context)
         }
 
         override fun onClick(p0: View) {
@@ -126,11 +129,21 @@ class UsernameAdapter(
         }
 
         private fun expandOptions() {
-            if (usernamesRecyclerviewListOptionLl.visibility == View.VISIBLE) {
-                usernamesRecyclerviewListOptionLl.visibility = View.GONE
-                mOptionsButton.rotation = 0f
-            } else {
-                mOptionsButton.rotation = 180f
+            if (!usernamesRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
+                if (usernamesRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                    usernamesRecyclerviewListOptionLl.visibility = View.GONE
+                    mOptionsButton.rotation = 0f
+                } else {
+                    mOptionsButton.rotation = 180f
+                    usernamesRecyclerviewListOptionLl.visibility = View.VISIBLE
+                }
+            }
+        }
+
+
+        private fun checkForTabletLayout(context: Context) {
+            if (context.resources.getBoolean(R.bool.isTablet)) {
+                mOptionsButton.visibility = View.GONE
                 usernamesRecyclerviewListOptionLl.visibility = View.VISIBLE
             }
         }

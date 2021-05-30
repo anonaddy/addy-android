@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,6 +119,8 @@ class RecipientAdapter(
             recipientsRecyclerviewListSettingsButton.setOnClickListener(this)
             recipientsRecyclerviewListResendButton.setOnClickListener(this)
             recipientsRecyclerviewListDeleteButton.setOnClickListener(this)
+
+            checkForTabletLayout(recipientsRecyclerviewListDeleteButton.context)
         }
 
         override fun onClick(p0: View) {
@@ -141,11 +144,20 @@ class RecipientAdapter(
         }
 
         private fun expandOptions() {
-            if (recipientsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
-                recipientsRecyclerviewListOptionLl.visibility = View.GONE
-                mOptionsButton.rotation = 0f
-            } else {
-                mOptionsButton.rotation = 180f
+            if (!recipientsRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
+                if (recipientsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                    recipientsRecyclerviewListOptionLl.visibility = View.GONE
+                    mOptionsButton.rotation = 0f
+                } else {
+                    mOptionsButton.rotation = 180f
+                    recipientsRecyclerviewListOptionLl.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        private fun checkForTabletLayout(context: Context) {
+            if (context.resources.getBoolean(R.bool.isTablet)) {
+                mOptionsButton.visibility = View.GONE
                 recipientsRecyclerviewListOptionLl.visibility = View.VISIBLE
             }
         }

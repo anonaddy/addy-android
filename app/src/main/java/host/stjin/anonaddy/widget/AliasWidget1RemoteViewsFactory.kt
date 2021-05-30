@@ -103,6 +103,7 @@ class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteView
 
         if (aliasesList != null) {
             for (alias in aliasesList) {
+                // Only show active and non-deleted aliases
                 if (alias.active && alias.deleted_at == null) {
                     filteredAliasList.add(alias)
                 }

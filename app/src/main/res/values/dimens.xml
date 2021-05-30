@@ -20,6 +20,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="collapsingtoolbar_title_bottom_margin">18dp</dimen>
     <dimen name="gridLayoutSpacing">4dp</dimen>
     <dimen name="corner_radius_button">8dp</dimen>
+    <dimen name="recyclerview_margin">6dp</dimen>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,12 +96,13 @@ class DomainAdapter(
         private var domainsRecyclerviewListDeleteButton: MaterialButton =
             view.findViewById(R.id.domains_recyclerview_list_delete_button)
 
-
         init {
             mOptionsButton.setOnClickListener(this)
             mCV.setOnClickListener(this)
             domainsRecyclerviewListSettingsButton.setOnClickListener(this)
             domainsRecyclerviewListDeleteButton.setOnClickListener(this)
+
+            checkForTabletLayout(domainsRecyclerviewListDeleteButton.context)
         }
 
         override fun onClick(p0: View) {
@@ -121,15 +123,25 @@ class DomainAdapter(
         }
 
         private fun expandOptions() {
-            if (domainsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
-                domainsRecyclerviewListOptionLl.visibility = View.GONE
-                mOptionsButton.rotation = 0f
-            } else {
-                mOptionsButton.rotation = 180f
-                domainsRecyclerviewListOptionLl.visibility = View.VISIBLE
+            if (!domainsRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
+                if (domainsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                    domainsRecyclerviewListOptionLl.visibility = View.GONE
+                    mOptionsButton.rotation = 0f
+                } else {
+                    mOptionsButton.rotation = 180f
+                    domainsRecyclerviewListOptionLl.visibility = View.VISIBLE
+                }
             }
         }
 
+        private fun checkForTabletLayout(context: Context) {
+            if (context.resources.getBoolean(R.bool.isTablet)) {
+                mOptionsButton.visibility = View.GONE
+                domainsRecyclerviewListOptionLl.visibility = View.VISIBLE
+            }
+        }
     }
+
+
 }
 

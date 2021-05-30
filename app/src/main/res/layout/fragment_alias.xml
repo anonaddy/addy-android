@@ -230,14 +230,11 @@
                         android:layout_weight="1"
                         android:text="@string/deleted_aliases" />
 
-                    <ImageView
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/alias_show_deleted_alias_toggle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/MaterialButtonSecondary.IconOnly"
                         android:contentDescription="@string/deleted_aliases"
-                        android:src="@drawable/ic_menu_down_outline"
-                        app:tint="@color/primaryColor" />
-
+                        app:icon="@drawable/ic_menu_down_outline" />
                 </LinearLayout>
 
                 <com.cooltechworks.views.shimmer.ShimmerRecyclerView

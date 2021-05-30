@@ -2,6 +2,6 @@
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
     <changeImageTransform />
     <changeBounds
-        android:duration="300"
+        android:duration="200"
         android:interpolator="@android:interpolator/fast_out_slow_in" />
 </transitionSet>

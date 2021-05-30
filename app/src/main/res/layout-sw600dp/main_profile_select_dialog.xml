@@ -10,13 +10,8 @@
         android:id="@+id/main_profile_select_dialog_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
         android:transitionName="background_transition"
-        app:cardCornerRadius="@dimen/corner_radius"
-        app:contentPadding="16dp">
+        app:cardCornerRadius="@dimen/corner_radius">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,14 +21,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal">
+                android:background="@color/AnonAddyNotYetWhite"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:weightSum="10">
 
                     <TextView
                         android:id="@+id/main_profile_select_dialog_username_initials"
@@ -43,290 +40,334 @@
                         android:background="@drawable/circle"
                         android:contentDescription="@string/anonaddy_settings"
                         android:gravity="center"
+                        android:transitionName="image_transition"
                         android:text="SV"
                         android:textColor="@android:color/white"
-                        android:transitionName="image_transition"
                         tools:ignore="HardcodedText" />
 
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_card_accountname"
-                        style="@style/AnonAddyDialogTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="$ANONADDY_Account_Name"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite"
-                        tools:ignore="HardcodedText" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="10"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_card_subscription"
-                        style="@style/AnonAddyDialogDesc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="$ANONADDY_User_Subscription"
-                        tools:ignore="HardcodedText" />
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/main_profile_select_dialog_card_accountname"
+                            style="@style/AnonAddyDialogTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$ANONADDY_Account_Name"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite"
+                            tools:ignore="HardcodedText" />
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                        <TextView
+                            android:id="@+id/main_profile_select_dialog_card_subscription"
+                            style="@style/AnonAddyDialogDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$ANONADDY_User_Subscription"
+                            tools:ignore="HardcodedText" />
 
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/main_profile_select_dialog_anonaddy_settings"
-                style="@style/SettingsSectionStyle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleMarginEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    </LinearLayout>
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/main_profile_select_dialog_switch_user"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
                         android:contentDescription="@string/anonaddy_settings"
-                        android:src="@drawable/ic_logo_small" />
+                        android:src="@drawable/ic_switch_accounts"
+                        app:tint="@color/BlackWhite" />
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AnonAddyDialogTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/anonaddy_settings"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite" />
-
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_anonaddy_settings_desc"
-                        style="@style/AnonAddyDialogDesc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/main_profile_select_dialog_domain_settings"
-                style="@style/SettingsSectionStyle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleMarginEnd"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/main_profile_select_dialog_anonaddy_settings"
+                    style="@style/RoundFlatButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/manage_domains"
-                        android:src="@drawable/ic_outline_dns_24" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AnonAddyDialogTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/manage_domains"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite" />
-
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_domain_settings_desc"
-                        style="@style/AnonAddyDialogDesc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/manage_domains_desc" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/main_profile_select_dialog_rules"
-                style="@style/SettingsSectionStyle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleMarginEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/manage_rules"
-                        android:src="@drawable/ic_clipboard_text_outline" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AnonAddyDialogTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/manage_rules"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite" />
-
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_rules_desc"
-                        style="@style/AnonAddyDialogDesc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/manage_rules_desc" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/main_profile_select_dialog_username_settings"
-                style="@style/SettingsSectionStyle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    style="@style/SettingsSectionIconStyleMarginEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/username_settings"
-                        android:src="@drawable/ic_mdi_account_details_outline" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AnonAddyDialogTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/username_settings"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite" />
-
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_username_settings_desc"
-                        style="@style/AnonAddyDialogDesc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/username_settings_desc" />
-                </LinearLayout>
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/manage_your_anonaddy_account" />
 
             </LinearLayout>
 
 
             <LinearLayout
-                android:id="@+id/main_profile_select_dialog_app_settings"
-                style="@style/SettingsSectionStyle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
 
                 <LinearLayout
-                    style="@style/SettingsSectionIconStyleMarginEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/app_settings"
-                        android:src="@drawable/ic_outline_settings" />
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:drawablePadding="4dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:text="@string/monthly_bandwidth" />
+
+                    <TextView
+                        android:id="@+id/main_profile_select_dialog_statistics_monthly_bandwidth_left_text"
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:drawablePadding="4dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:text="@string/monthly_bandwidth" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/main_profile_select_dialog_statistics_monthly_bandwidth_progress"
+                    style="@style/AnonAddyProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:progress="0" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:id="@+id/main_profile_select_dialog_domain_settings"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleMarginEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/manage_domains"
+                            android:src="@drawable/ic_outline_dns_24" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/AnonAddyDialogTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/manage_domains"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite" />
+
+                        <TextView
+                            android:id="@+id/main_profile_select_dialog_domain_settings_desc"
+                            style="@style/AnonAddyDialogDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/manage_domains_desc" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:id="@+id/main_profile_select_dialog_rules"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleMarginEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/manage_rules"
+                            android:src="@drawable/ic_clipboard_text_outline" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/AnonAddyDialogTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/manage_rules"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite" />
+
+                        <TextView
+                            android:id="@+id/main_profile_select_dialog_rules_desc"
+                            style="@style/AnonAddyDialogDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/manage_rules_desc" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/main_profile_select_dialog_username_settings"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleMarginEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/username_settings"
+                            android:src="@drawable/ic_mdi_account_details_outline" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/AnonAddyDialogTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/username_settings"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite" />
+
+                        <TextView
+                            android:id="@+id/main_profile_select_dialog_username_settings_desc"
+                            style="@style/AnonAddyDialogDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/username_settings_desc" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/main_profile_select_dialog_app_settings"
+                    style="@style/SettingsSectionStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp">
+
+                    <LinearLayout
+                        style="@style/SettingsSectionIconStyleMarginEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/app_settings"
+                            android:src="@drawable/ic_outline_settings" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/AnonAddyDialogTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/app_settings"
+                            android:textAllCaps="false"
+                            android:textColor="@color/BlackWhite" />
+
+                        <TextView
+                            android:id="@+id/main_profile_select_dialog_app_settings_desc"
+                            style="@style/AnonAddyDialogDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Version 1.1.2"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
 
                     <TextView
-                        style="@style/AnonAddyDialogTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/app_settings"
-                        android:textAllCaps="false"
-                        android:textColor="@color/BlackWhite" />
+                        android:fontFamily="sans-serif"
+                        android:text="@string/anonaddy_android_stjin"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/main_profile_select_dialog_app_settings_desc"
-                        style="@style/AnonAddyDialogDesc"
+                        android:id="@+id/main_profile_select_dialog_instance_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Version 1.1.2"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/crafted_with_love_and_privacy"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="12sp"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
-
             </LinearLayout>
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:fontFamily="sans-serif"
-                android:text="@string/anonaddy_android_stjin"
-                android:textAlignment="center"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/main_profile_select_dialog_instance_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="@string/crafted_with_love_and_privacy"
-                android:textAlignment="center"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp"
-                tools:ignore="HardcodedText" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

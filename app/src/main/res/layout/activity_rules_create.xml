@@ -237,6 +237,7 @@
                     android:alpha="0.8"
                     android:drawablePadding="16dp"
                     android:gravity="center_vertical"
+                    android:layout_marginStart="8dp"
                     android:text="@string/rules_create_info"
                     app:drawableStartCompat="@drawable/ic_outline_info_24" />
             </LinearLayout>

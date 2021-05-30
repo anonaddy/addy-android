@@ -22,6 +22,7 @@ import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.databinding.ActivityRuleSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -71,6 +72,7 @@ class RulesSettingsActivity : BaseActivity() {
 
 
     private lateinit var rulesAdapter: RulesAdapter
+    private var hasSetItemDecoration = false
     private suspend fun getAllRulesAndSetView() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
 
@@ -86,8 +88,13 @@ class RulesSettingsActivity : BaseActivity() {
 
                 // set a LinearLayoutManager to handle Android
                 // RecyclerView behavior
-                layoutManager = LinearLayoutManager(context)
+                layoutManager = LinearLayoutManager(this@RulesSettingsActivity)
                 // set the custom adapter to the RecyclerView
+
+                if (!hasSetItemDecoration) {
+                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                    hasSetItemDecoration = true
+                }
 
                 if (shouldAnimateRecyclerview) {
                     shouldAnimateRecyclerview = false

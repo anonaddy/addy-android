@@ -324,7 +324,6 @@
     </style>
 
     <style name="AnonAddyDialogTitle">
-        <item name="android:layout_marginBottom">2dp</item>
         <item name="android:ellipsize">end</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:lines">1</item>
@@ -406,6 +405,13 @@
     <style name="AnonAddyToggleButton" parent="MaterialButtonSecondary">
         <item name="android:backgroundTint">@color/anonaddy_toggle_button_color</item>
         <item name="cornerRadius">@dimen/corner_radius_cardview</item>
+    </style>
+
+    <style name="RoundFlatButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="android:letterSpacing">0.00</item>
+        <item name="android:textColor">@color/IconGrayTint</item>
     </style>
 
 </resources>
