@@ -101,7 +101,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation "androidx.work:work-runtime-ktx:2.7.0-alpha03"
+    implementation "androidx.work:work-runtime-ktx:2.7.0-alpha04"
 }
 
 // For the donut in the aliasview

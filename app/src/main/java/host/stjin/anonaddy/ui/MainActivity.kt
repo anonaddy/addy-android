@@ -1,15 +1,12 @@
 package host.stjin.anonaddy.ui
 
 
-import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
-import android.util.Pair
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -42,6 +39,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private val SEARCH_CONSTANT: Int = 1
     private val searchBottomDialogFragment: SearchBottomDialogFragment =
         SearchBottomDialogFragment.newInstance()
+
+    private val profileBottomDialogFragment: ProfileBottomDialogFragment =
+        ProfileBottomDialogFragment.newInstance()
 
 
     private val fragmentList = arrayListOf(
@@ -126,7 +126,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun initialiseMainAppBar() {
-
         // Figure out the from name initials
         val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainAppBarInclude.mainTopBarUserInitials.text = usernameInitials
@@ -143,24 +142,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {
-            if (this.resources.getBoolean(R.bool.isTablet)) {
-                val i = Intent(Intent(this, DialogActivity::class.java))
-                val options = ActivityOptions
-                    .makeSceneTransitionAnimation(
-                        this as Activity?,
-                        Pair.create(
-                            findViewById(R.id.main_top_bar_user_initials),
-                            "background_transition"
-                        ),
-                        Pair.create(
-                            findViewById(R.id.main_top_bar_user_initials), "image_transition"
-                        )
-                    )
-                startActivity(i, options.toBundle())
-            } else {
-                val i = Intent(Intent(this, DialogActivity::class.java))
-                startActivity(i)
-                overridePendingTransition(R.anim.bottom_up, R.anim.nothing)
+            if (!profileBottomDialogFragment.isAdded) {
+                profileBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "profileBottomDialogFragment"
+                )
             }
         }
 

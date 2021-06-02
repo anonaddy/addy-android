@@ -1,23 +1,24 @@
 package host.stjin.anonaddy.ui
 
 import android.animation.ObjectAnimator
-import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.DisplayCutout
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.WindowCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.AnonAddy
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.MainProfileSelectDialogBinding
+import host.stjin.anonaddy.databinding.BottomsheetProfileBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
@@ -30,63 +31,56 @@ import java.util.*
 import kotlin.math.roundToInt
 
 
-class DialogActivity : Activity() {
-    private lateinit var binding: MainProfileSelectDialogBinding
+class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = MainProfileSelectDialogBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
 
+    private var _binding: BottomsheetProfileBinding? = null
 
-        if (this.resources.getBoolean(R.bool.isTablet)) {
-            (findViewById<View>(R.id.main_profile_select_dialog_card).parent as View).setOnClickListener { finishAfterTransition() }
-        } else {
-            window.statusBarColor = Color.TRANSPARENT
-        }
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = BottomsheetProfileBinding.inflate(inflater, container, false)
+        // get the views and attach the listener
+        val root = binding.root
+
 
         setMonthlyBandwidthStatistics()
         setInfo()
         setOnClickListeners()
-    }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !this.resources.getBoolean(R.bool.isTablet)) {
-            val displayCutout: DisplayCutout? = window.decorView.rootWindowInsets.displayCutout
-            val newLayoutParams = binding.mainProfileSelectDialogTitle?.layoutParams as ViewGroup.MarginLayoutParams
-            if (displayCutout != null) {
-                newLayoutParams.setMargins(0, displayCutout.safeInsetTop + 24, 0, 0)
-            }
-            binding.mainProfileSelectDialogTitle!!.layoutParams = newLayoutParams
-        }
+        return root
+
     }
 
     private fun setOnClickListeners() {
         binding.mainProfileSelectDialogAppSettings.setOnClickListener {
-            val intent = Intent(this, AppSettingsActivity::class.java)
+            val intent = Intent(activity, AppSettingsActivity::class.java)
             startActivity(intent)
         }
 
         binding.mainProfileSelectDialogDomainSettings.setOnClickListener {
-            val intent = Intent(this, DomainSettingsActivity::class.java)
+            val intent = Intent(activity, DomainSettingsActivity::class.java)
             startActivity(intent)
         }
 
         binding.mainProfileSelectDialogRules.setOnClickListener {
-            val intent = Intent(this, RulesSettingsActivity::class.java)
+            val intent = Intent(activity, RulesSettingsActivity::class.java)
             startActivity(intent)
         }
 
         binding.mainProfileSelectDialogUsernameSettings.setOnClickListener {
-            val intent = Intent(this, UsernamesSettingsActivity::class.java)
+            val intent = Intent(activity, UsernamesSettingsActivity::class.java)
             startActivity(intent)
-        }
-
-        binding.mainProfileSelectDialogClose?.setOnClickListener {
-            finish()
         }
 
         binding.mainProfileSelectDialogAnonaddySettings.setOnClickListener {
@@ -94,19 +88,6 @@ class DialogActivity : Activity() {
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
-        }
-    }
-
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(R.anim.nothing, R.anim.bottom_down)
-    }
-
-    override fun onBackPressed() {
-        if (this.resources.getBoolean(R.bool.isTablet)) {
-            finishAfterTransition()
-        } else {
-            finish()
         }
     }
 
@@ -141,11 +122,14 @@ class DialogActivity : Activity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             binding.mainProfileSelectDialogUsernameInitials.background.colorFilter = BlendModeColorFilter(
-                ThemeUtils.getDeviceAccentColor(this),
+                ThemeUtils.getDeviceAccentColor(requireContext()),
                 BlendMode.SRC_IN
             )
         } else {
-            binding.mainProfileSelectDialogUsernameInitials.background.setColorFilter(ThemeUtils.getDeviceAccentColor(this), PorterDuff.Mode.SRC_ATOP)
+            binding.mainProfileSelectDialogUsernameInitials.background.setColorFilter(
+                ThemeUtils.getDeviceAccentColor(requireContext()),
+                PorterDuff.Mode.SRC_ATOP
+            )
         }
 
 
@@ -165,4 +149,17 @@ class DialogActivity : Activity() {
         binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
 
     }
+
+
+    companion object {
+        fun newInstance(): ProfileBottomDialogFragment {
+            return ProfileBottomDialogFragment()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

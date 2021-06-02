@@ -5,5 +5,6 @@
     <color name="BlackWhite">#000000</color>
     <color name="LightDarkMode">#FFFFFF</color>
     <color name="AnonAddyNotYetWhite">#FAFAFA</color>
+    <color name="ProfileDialogColor">@color/AnonAddyNotYetWhite</color>
 
 </resources>

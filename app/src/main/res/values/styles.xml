@@ -393,6 +393,12 @@
         <item name="android:layout_height">48dp</item>
     </style>
 
+    <style name="AnonAddyDescText">
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
+
     <style name="AnonAddyTitleAction2" parent="titleTextView">
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:layout_marginTop">4dp</item>
