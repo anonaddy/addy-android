@@ -80,7 +80,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bs_send_mail_alias_send_mail_button"
-                style="@style/MaterialButtonSecondary"
+                style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

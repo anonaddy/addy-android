@@ -164,19 +164,15 @@
 
                 </LinearLayout>
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/bs_search_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="16dp"
                     android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="5"
-                    app:shimmer_demo_grid_child_count="1"
-                    app:shimmer_demo_layout_manager_type="linear_vertical">
+                    android:overScrollMode="never">
 
-                </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
 

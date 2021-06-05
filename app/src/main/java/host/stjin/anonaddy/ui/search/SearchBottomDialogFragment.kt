@@ -120,7 +120,6 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
             })
             adapter = recipientAdapter
-            binding.bsSearchRecyclerview.hideShimmerAdapter()
         }
     }
 

@@ -53,6 +53,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -132,12 +133,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             binding.mainAppBarInclude.mainTopBarUserInitials.background.colorFilter = BlendModeColorFilter(
                 ThemeUtils.getDeviceAccentColor(this),
-                BlendMode.SRC_IN
+                BlendMode.SRC_OVER
             )
         } else {
             binding.mainAppBarInclude.mainTopBarUserInitials.background.setColorFilter(
                 ThemeUtils.getDeviceAccentColor(this),
-                PorterDuff.Mode.SRC_ATOP
+                PorterDuff.Mode.SRC_OVER
             )
         }
 

@@ -1,0 +1,6 @@
+<h3>What's new in version 3.0.0</h3>
+<h4>Added</h4>
+<p>🔢 Added 2 brand new widgets<br />- Statistic widget for flexing with your forwarded email count<br />- Android 12 style alias widget for showing the 4 most active aliases<br /><br />💭 It's now possible to "forget" your alias from the app</p>
+<h4>Fixed/Improved</h4>
+<p>🎨 Massive UI redesign with Android 12 and simplicity in mind<br />- One-handed interface, simply swipe down from any screen to move content down for better accessibility<br />- Cards and raises are now used for a clean-looking, easier-to-understand design<br />- The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color<br />- Softer colors<br />- Bigger, clearer buttons with more space between elements<br />- Animations! Most progressbars are now replaced with morphing buttons<br />- Improved shimmers<br />- Improved tablet layout</p>
+<p>📃 Updated shared domains list<br />👤 Select the recipients for an alias when creating a new alias<br />✨ Performance improvements to make the app even smoother</p>

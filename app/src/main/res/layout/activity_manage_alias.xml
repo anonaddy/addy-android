@@ -163,7 +163,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_alias_copy"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/MaterialButtonSecondaryLight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -181,7 +181,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_alias_send"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/MaterialButtonSecondaryLight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

@@ -43,7 +43,7 @@ import kotlin.math.roundToInt
 class HomeFragment : Fragment() {
 
     private var networkHelper: NetworkHelper? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -144,18 +144,16 @@ class HomeFragment : Fragment() {
 
     private lateinit var aliasAdapter: AliasAdapter
     private var previousList: ArrayList<Aliases> = arrayListOf()
-    private var hasSetItemDecoration = false
     private suspend fun getMostActiveAliases() {
         binding.homeMostActiveAliasesRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
 
-            networkHelper?.getAliases({ list ->
-
-                // Check if there are new aliases since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                // Unless forceUpdate is true. If forceupdate is true, always update
-                //TODO Eh? Why is this never returning?
-                if (::aliasAdapter.isInitialized && list == previousList && !forceUpdate) {
-                    return@getAliases
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
                 }
 
                 layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
@@ -165,18 +163,22 @@ class HomeFragment : Fragment() {
                     LinearLayoutManager(activity)
                 }
 
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
 
-                if (!hasSetItemDecoration) {
-                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                    hasSetItemDecoration = true
+                showShimmer()
+            }
+            networkHelper?.getAliases({ list ->
+
+                // Check if there are new aliases since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                // Unless forceUpdate is true. If forceupdate is true, always update
+                if (::aliasAdapter.isInitialized && list == previousList && !forceUpdate) {
+                    return@getAliases
                 }
 
-                if (shouldAnimateRecyclerview) {
-                    shouldAnimateRecyclerview = false
-                    val resId: Int = R.anim.layout_animation_fall_down
-                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                    binding.homeMostActiveAliasesRecyclerview.layoutAnimation = animation
-                }
 
                 if (list != null) {
                     previousList.clear()
@@ -224,11 +226,11 @@ class HomeFragment : Fragment() {
 
                     })
                     adapter = aliasAdapter
-                    binding.homeMostActiveAliasesRecyclerview.hideShimmerAdapter()
                 } else {
                     binding.homeStatisticsLL1.visibility = View.GONE
                     binding.homeStatisticsRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }, activeOnly = true, includeDeleted = false)
 
         }

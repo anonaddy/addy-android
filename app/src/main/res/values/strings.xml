@@ -2,8 +2,6 @@
     <string name="app_name">AnonAddy</string>
     <string name="title_home">Home</string>
     <string name="title_aliases">Aliases</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="title_activity_dialog">Profile dialog</string>
     <string name="app_settings">App settings</string>
     <string name="title_recipients">Recipients</string>
     <string name="recipients">Recipients</string>
@@ -11,9 +9,6 @@
     <string name="anonaddy_settings">AnonAddy settings</string>
     <string name="monthly_bandwidth">Monthly bandwidth</string>
     <string name="view_more">View more</string>
-    <string name="deleted">Deleted</string>
-    <string name="active">Active</string>
-    <string name="inactive">Inactive</string>
     <string name="copied_alias">Copied alias</string>
     <string name="most_active_aliases">Most active aliases</string>
     <string name="created_at_s">Created %s</string>
@@ -82,7 +77,12 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 2.1.0 &mdash;<br />[IMPROVED] Support for Android 12<br />[IMPROVED] Added keyboard animations<br />[IMPROVED] Move content from bottomdialogs above keyboard if there is space<br />[IMPROVED] Overall app improvements</p>]]></string>
+    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.0.0</h3>
+<h4>Added</h4>
+<p>🔢 Added 2 brand new widgets<br />- Statistic widget for flexing with your forwarded email count<br />- Android 12 style alias widget for showing the 4 most active aliases<br /><br />💭 It\'s now possible to "forget" your alias from the app</p>
+<h4>Fixed/Improved</h4>
+<p>🎨 Massive UI redesign with Android 12 and simplicity in mind<br />- One-handed interface, simply swipe down from any screen to move content down for better accessibility<br />- Cards and raises are now used for a clean-looking, easier-to-understand design<br />- The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color<br />- Softer colors<br />- Bigger, clearer buttons with more space between elements<br />- Animations! Most progressbars are now replaced with morphing buttons<br />- Improved shimmers<br />- Improved tablet layout</p>
+<p>📃 Updated shared domains list<br />👤 Select the recipients for an alias when creating a new alias<br />✨ Performance improvements to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -230,18 +230,6 @@
     <string name="aliases">Aliases</string>
     <string name="nothing_found">Nothing found</string>
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
-    <string name="anonaddy_settings_monthly_bandwidth_desc">You’ve used %1$s out of your %2$s limit this calendar month. Your bandwidth usage will reset on 1st %3$s</string>
-    <string name="more_info">More info</string>
-    <string name="usage">Usage</string>
-    <string name="anonaddy_settings_statistics_aliases_desc">You have %1$d active aliases using a shared domain out of your %2$s limit</string>
-    <string name="anonaddy_settings_statistics_recipients_desc">You have added %1$d recipients out of your %2$s limit</string>
-    <string name="update_default_recipient">Update default recipient</string>
-    <string name="update_default_recipient_desc">The default recipient is used for all new aliases and any aliases that do not have any recipients attached</string>
-    <string name="update_default_alias_domain">Update default alias domain</string>
-    <string name="update_default_alias_domain_desc">The default alias domain is the domain you\'d like to be selected by default in the drop down options when generating a new alias on the site or the browser extension</string>
-    <string name="update_default_alias_format">Update default alias format</string>
-    <string name="update_default_alias_format_desc">The default alias format is the format you\'d like to be selected by default in the drop down options when generating a new alias on the site or the browser extension</string>
-    <string name="unlimited">unlimited</string>
     <string name="Copy">Copy</string>
     <string name="no_usernames">You have no usernames, what about creating one?</string>
     <string name="default_base_url">https://app.anonaddy.com</string>
@@ -290,7 +278,6 @@
     <string name="conditions">Conditions</string>
     <string name="actions_then">Actions (then)</string>
     <string name="enter_name">Enter name</string>
-    <string name="rule_name">Rule name</string>
     <string name="banner_location">Banner location</string>
     <string name="match">Match</string>
     <string name="not_a_valid_value">Not a valid value</string>
@@ -351,10 +338,6 @@
     <string name="API_key_received_from_intent">API Key received from intent</string>
     <string name="API_key_invalid">API Key invalid</string>
     <string name="copied_recipients">Copied recipients</string>
-    <string name="use_reply_to_header_for_replying">Use Reply-To Header For Replying</string>
-    <string name="use_reply_to_header_for_replying_desc">This will determine if forwarded emails use the From header or the Reply-To header for sending replies. Some users may find it easier to set up inbox filters having the From: header set as just the alias.</string>
-    <string name="add">Add</string>
-    <string name="edit">Edit</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
     <string name="four_most_active_aliases">4 most active aliases</string>
@@ -364,4 +347,5 @@
     <string name="rules_create_info">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
     <string name="_sMB_remaining_this_month">%sMB remaining this month</string>
     <string name="manage_your_anonaddy_account">Manage your AnonAddy account</string>
+    <string name="loading_recipients">Loading recipients…</string>
 </resources>

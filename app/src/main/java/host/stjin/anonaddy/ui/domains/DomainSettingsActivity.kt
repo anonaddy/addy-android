@@ -33,7 +33,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
 
@@ -116,10 +116,32 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private lateinit var domainsAdapter: DomainAdapter
-    private var hasSetItemDecoration = false
     private suspend fun getAllDomainsAndSetView() {
         binding.activityDomainSettingsAllDomainsRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@DomainSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@DomainSettingsActivity)
+                }
 
+                layoutManager = if (this@DomainSettingsActivity.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@DomainSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@DomainSettingsActivity)
+                }
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+
+                showShimmer()
+            }
             networkHelper?.getAllDomains { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
@@ -130,25 +152,6 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     return@getAllDomains
                 }
 
-                layoutManager = if (this@DomainSettingsActivity.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(this@DomainSettingsActivity, 2)
-                } else {
-                    LinearLayoutManager(this@DomainSettingsActivity)
-                }
-
-                if (!hasSetItemDecoration) {
-                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                    hasSetItemDecoration = true
-                }
-
-                if (shouldAnimateRecyclerview) {
-                    shouldAnimateRecyclerview = false
-                    val resId: Int = R.anim.layout_animation_fall_down
-                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                    binding.activityDomainSettingsAllDomainsRecyclerview.layoutAnimation = animation
-                }
-
                 if (list != null) {
 
                     if (list.size > 0) {
@@ -156,6 +159,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     } else {
                         binding.activityDomainSettingsNoDomains.visibility = View.VISIBLE
                     }
+
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, list.size)
 
                     domainsAdapter = DomainAdapter(list)
                     domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
@@ -173,11 +179,12 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
                     })
                     adapter = domainsAdapter
-                    binding.activityDomainSettingsAllDomainsRecyclerview.hideShimmerAdapter()
+
                 } else {
                     binding.activityDomainSettingsLL1.visibility = View.GONE
                     binding.activityDomainSettingsRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }
 
         }

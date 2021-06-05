@@ -123,15 +123,20 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             binding.mainProfileSelectDialogUsernameInitials.background.colorFilter = BlendModeColorFilter(
                 ThemeUtils.getDeviceAccentColor(requireContext()),
-                BlendMode.SRC_IN
+                BlendMode.SRC_OVER
             )
         } else {
             binding.mainProfileSelectDialogUsernameInitials.background.setColorFilter(
                 ThemeUtils.getDeviceAccentColor(requireContext()),
-                PorterDuff.Mode.SRC_ATOP
+                PorterDuff.Mode.SRC_OVER
             )
         }
 
+        binding.mainProfileSelectDialogAnonaddyVersion.text =
+            if (AnonAddy.VERSIONCODE == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
+                R.string.self_hosted_instance_s,
+                AnonAddy.VERSIONSTRING
+            )
 
         binding.mainProfileSelectDialogCardAccountname.text = User.userResource.username
 

@@ -33,7 +33,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance()
 
@@ -111,11 +111,36 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     private lateinit var usernamesAdapter: UsernameAdapter
-    private var hasSetItemDecoration = false
     private suspend fun getAllUsernamesAndSetView() {
 
         binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
 
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, 2) ?: 2
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@UsernamesSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@UsernamesSettingsActivity)
+                }
+
+                layoutManager = if (this@UsernamesSettingsActivity.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@UsernamesSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@UsernamesSettingsActivity)
+                }
+
+
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+
+                showShimmer()
+            }
             networkHelper?.getAllUsernames { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
@@ -126,25 +151,6 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                     return@getAllUsernames
                 }
 
-                layoutManager = if (this@UsernamesSettingsActivity.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(this@UsernamesSettingsActivity, 2)
-                } else {
-                    LinearLayoutManager(this@UsernamesSettingsActivity)
-                }
-
-                if (!hasSetItemDecoration) {
-                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                    hasSetItemDecoration = true
-                }
-
-                if (shouldAnimateRecyclerview) {
-                    shouldAnimateRecyclerview = false
-                    val resId: Int = R.anim.layout_animation_fall_down
-                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                    binding.activityUsernameSettingsAllUsernamesRecyclerview.layoutAnimation = animation
-                }
-
                 if (list != null) {
 
                     if (list.size > 0) {
@@ -152,6 +158,10 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                     } else {
                         binding.activityUsernameSettingsNoUsernames.visibility = View.VISIBLE
                     }
+
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, list.size)
+
 
                     usernamesAdapter = UsernameAdapter(list)
                     usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
@@ -169,11 +179,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
                     })
                     adapter = usernamesAdapter
-                    binding.activityUsernameSettingsAllUsernamesRecyclerview.hideShimmerAdapter()
                 } else {
                     binding.activityUsernameSettingsLL1.visibility = View.GONE
                     binding.activityUsernameSettingsRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }
 
         }

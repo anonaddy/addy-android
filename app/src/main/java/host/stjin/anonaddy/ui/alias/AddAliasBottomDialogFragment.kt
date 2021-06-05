@@ -2,14 +2,20 @@ package host.stjin.anonaddy.ui.alias
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
+import com.google.android.material.shape.ShapeAppearanceModel
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -62,6 +68,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             fillSpinners(requireContext())
+            getAllRecipients(requireContext())
         }
 
         binding.bsAddaliasAliasAddAliasButton.setOnClickListener(this)
@@ -73,6 +80,37 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
         return root
     }
+
+    private suspend fun getAllRecipients(context: Context) {
+        val networkHelper = NetworkHelper(context)
+
+
+        networkHelper.getRecipients({ result ->
+            if (result != null) {
+                // Remove the default "Loading recipients" chip
+                binding.bsAddaliasRecipientsChipgroup.removeAllViewsInLayout()
+                binding.bsAddaliasRecipientsChipgroup.requestLayout()
+                binding.bsAddaliasRecipientsChipgroup.invalidate()
+                for (recipient in result) {
+                    val chip = Chip(ContextThemeWrapper(binding.bsAddaliasRecipientsChipgroup.context, R.style.AnonAddyChip), null, 0)
+                    chip.text = recipient.email
+                    chip.tag = recipient.id
+                    chip.isClickable = true
+                    chip.isCheckable = true
+                    chip.shapeAppearanceModel =
+                        ShapeAppearanceModel().toBuilder().setAllCornerSizes(context.resources.getDimension(R.dimen.corner_radius_chips)).build()
+                    chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.transparent))
+                    chip.checkedIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_outline_check_24, null)
+                    chip.chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.shimmerGray))
+                    chip.chipStrokeWidth = context.resources.getDimension(R.dimen.chip_stroke_width)
+
+                    binding.bsAddaliasRecipientsChipgroup.addView(chip)
+                }
+            }
+
+        }, true)
+    }
+
 
     /*
     the custom format is not available for shared domains
@@ -149,7 +187,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                         // To prevent a crash from the ArrayIndexOutOfBoundsException log the error and just continue without filling the spinner
                         val ex = e.message
                         println(ex)
-                        LoggingHelper(context).addLog(ex.toString(), "fillSpinners")
+                        LoggingHelper(context).addLog(ex.toString(), "fillSpinners", null)
                     }
 
                 }
@@ -213,6 +251,14 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // Animate the button to progress
         binding.bsAddaliasAliasAddAliasButton.startAnimation()
 
+
+        val recipients = arrayListOf<String>()
+        val ids: List<Int> = binding.bsAddaliasRecipientsChipgroup.checkedChipIds
+        for (id in ids) {
+            val chip: Chip = binding.bsAddaliasRecipientsChipgroup.findViewById(id)
+            recipients.add(chip.tag.toString())
+        }
+
         val domain = binding.bsAddaliasDomainMact.text.toString()
         val description = binding.bsAddaliasAliasDescTiet.text.toString()
         val localPart = binding.bsAddaliasAliasLocalPartTiet.text.toString()
@@ -222,7 +268,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             ).indexOf(binding.bsAddaliasAliasFormatMact.text.toString())]
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            addAliasToAccount(context, domain, description, format, localPart)
+            addAliasToAccount(context, domain, description, format, localPart, recipients)
         }
     }
 
@@ -231,7 +277,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         domain: String,
         description: String,
         format: String,
-        local_part: String
+        local_part: String,
+        recipients: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
         networkHelper.addAlias({ result ->
@@ -244,7 +291,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasAliasDescTil.error =
                     context.resources.getString(R.string.error_adding_alias) + "\n" + result
             }
-        }, domain, description, format, local_part)
+        }, domain, description, format, local_part, recipients)
     }
 
     override fun onClick(p0: View?) {

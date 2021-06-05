@@ -41,7 +41,7 @@ class RecipientsFragment : Fragment(),
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addRecipientsFragment: AddRecipientBottomDialogFragment =
         AddRecipientBottomDialogFragment.newInstance()
@@ -139,18 +139,17 @@ class RecipientsFragment : Fragment(),
 
 
     private lateinit var recipientAdapter: RecipientAdapter
-    private var hasSetItemDecoration = false
     private suspend fun getAllRecipients() {
         binding.recipientsAllRecipientsRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
 
-            networkHelper?.getRecipients({ list ->
-                // Sorted by created_at automatically
-                //list?.sortByDescending { it.emails_forwarded }
-
-                // Check if there are new recipients since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                if (::recipientAdapter.isInitialized && list == recipientAdapter.getList()) {
-                    return@getRecipients
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
                 }
 
                 layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
@@ -159,17 +158,20 @@ class RecipientsFragment : Fragment(),
                 } else {
                     LinearLayoutManager(activity)
                 }
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+                showShimmer()
+            }
+            networkHelper?.getRecipients({ list ->
+                // Sorted by created_at automatically
+                //list?.sortByDescending { it.emails_forwarded }
 
-                if (!hasSetItemDecoration) {
-                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                    hasSetItemDecoration = true
-                }
-
-                if (shouldAnimateRecyclerview) {
-                    shouldAnimateRecyclerview = false
-                    val resId: Int = R.anim.layout_animation_fall_down
-                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                    binding.recipientsAllRecipientsRecyclerview.layoutAnimation = animation
+                // Check if there are new recipients since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::recipientAdapter.isInitialized && list == recipientAdapter.getList()) {
+                    return@getRecipients
                 }
 
                 if (list != null) {
@@ -181,6 +183,9 @@ class RecipientsFragment : Fragment(),
                     } else {
                         root.recipients_no_recipients.visibility = View.VISIBLE
                     }*/
+
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, list.size)
 
                     recipientAdapter = RecipientAdapter(list)
                     recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
@@ -204,11 +209,11 @@ class RecipientsFragment : Fragment(),
 
                     })
                     adapter = recipientAdapter
-                    binding.recipientsAllRecipientsRecyclerview.hideShimmerAdapter()
                 } else {
                     binding.recipientsLL1.visibility = View.GONE
                     binding.recipientsRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }, verifiedOnly = false)
 
         }

@@ -181,19 +181,15 @@
 
                 </LinearLayout>
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                <com.todkars.shimmer.ShimmerRecyclerView
                     android:id="@+id/alias_all_aliases_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="5"
-                    app:shimmer_demo_grid_child_count="1"
-                    app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
-                    app:shimmer_demo_layout_manager_type="linear_vertical">
-
-                </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:shimmer_recycler_auto_start="true"
+                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
 
                 <TextView
                     android:id="@+id/alias_no_aliases"
@@ -237,20 +233,15 @@
                         app:icon="@drawable/ic_menu_down_outline" />
                 </LinearLayout>
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/alias_deleted_aliases_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    android:visibility="gone"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="5"
-                    app:shimmer_demo_grid_child_count="1"
-                    app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
-                    app:shimmer_demo_layout_manager_type="linear_vertical">
+                    android:visibility="gone">
 
-                </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <TextView
                     android:id="@+id/alias_no_deleted_aliases"

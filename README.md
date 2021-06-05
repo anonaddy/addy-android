@@ -71,9 +71,12 @@ Third party libraries used.
 - [androidx.work](https://developer.android.com/jetpack/androidx/releases/work)
 - [airbnb/lottie-android](https://github.com/airbnb/lottie-android)
 - [kittinunf/fuel](https://github.com/kittinunf/fuel)
-- [sharish/ShimmerRecyclerView](https://github.com/sharish/ShimmerRecyclerView)
+- [omtodkar/ShimmerRecyclerView](https://github.com/omtodkar/ShimmerRecyclerView)
+- [facebook/shimmer-android](https://github.com/facebook/shimmer-android)
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner)
 - [futuredapp/donut](https://github.com/futuredapp/donut)
+- [leandroBorgesFerreira/LoadingButtonAndroid](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid)
+- [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner) (To be enabled in future versions)
 
 
 ## Feedback and contribution

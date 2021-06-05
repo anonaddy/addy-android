@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_3_aliases_recyclerview_list_LL"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,16 +10,8 @@
     android:orientation="horizontal"
     android:padding="@dimen/widget_3_padding"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp">
-
-    <LinearLayout
-        android:id="@+id/widget_3_aliases_recyclerview_list_LL"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:weightSum="10">
+    android:paddingEnd="16dp"
+    android:weightSum="10">
 
         <TextView
             android:id="@+id/widget_3_aliases_listview_list_title"
@@ -49,6 +42,5 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_content_copy_24px" />
 
-    </LinearLayout>
 
 </LinearLayout>

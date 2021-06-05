@@ -1,34 +1,56 @@
 # Changelog
-## [AnonAddy v2.1.0] - 2021-05-16
+
+## [v3.0.0] - TBD
+
+### Added
+
+- Added 2 brand new widgets
+    - Statistic widget for flexing with your forwarded email count
+    - Android 12 style alias widget for showing the 4 most active aliases
+- It's now possible to "forget" your alias from the app
 
 ### Fixed/Improved
+
+- 🎨 Massive UI redesign with Android 12 and simplicity in mind
+    - One-handed interface, simply swipe down from any screen to move content down for better accessibility
+    - Cards and raises are now used for a clean-looking, easier-to-understand design
+    - The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color
+    - Softer colors
+    - Bigger, clearer buttons with more space between elements
+    - Animations! Most progressbars are now replaced with morphing buttons
+    - Improved shimmers
+    - Improved tablet layout
+- Updated shared domains list
+- Select the recipients for an alias when creating a new alias
+- Performance improvements to make the app even smoother
+
+## [v2.1.0] - 2021-05-16
+
+### Fixed/Improved
+
 - [IMPROVED] Support for Android 12
 - [IMPROVED] Added keyboard animations
 - [IMPROVED] Move content from bottomdialogs above keyboard if there is space
 - [IMPROVED] Overall app improvements
 
-
-## [AnonAddy v2.0.3] - 2021-04-19
+## [v2.0.3] - 2021-04-19
 
 ### Fixed/Improved
 - [IMPROVED] Updated libraries
 - [IMPROVED] Added "Use Reply-To Header For Replying" to AnonAddy settings
 - [IMPROVED] Overall app improvements
 
-
-## [AnonAddy v2.0.2] - 2021-02-08
+## [v2.0.2] - 2021-02-08
 
 ### Fixed/Improved
 - [IMPROVED] Updated shared domains
 
-
-## [AnonAddy v2.0.1] - 2021-01-18
+## [v2.0.1] - 2021-01-18
 
 ### Added
 - 📋 [NEW] Sending an email from an alias will now also copy the recipients to the clipboard
 
-
-## [AnonAddy v2.0.0] - 2021-01-11
+## [v2.0.0] - 2021-01-11
 
 ### Added
 - 🌐 [NEW] Get full control over how often background data such as widgets are refreshed
@@ -42,15 +64,13 @@
 - 🧈 [IMPROVED] Lot's of love and butter has gone into this release to make the app smoother and more lightweight than ever before. Especially the widget got a big improvement
 - 🦋 [IMPROVED] Minor bugs have been fixed
 
-
-## [AnonAddy v1.1.3] - 2020-12-08
+## [v1.1.3] - 2020-12-08
 
 ### Fixed/Improved
 - 🐛 [BUG FIX] Deleted alias section is not collapsed by default
 - 🙋 [FEATURE REQUEST] Switch between panels by swiping left/right
 
-
-## [AnonAddy v1.1.2] - 2020-11-21
+## [v1.1.2] - 2020-11-21
 
 ### Fixed/Improved
 - 🖥️ Optimized UI for big screens
@@ -58,15 +78,13 @@
 - 🙋 [FEATURE REQUEST] Added link to gitlab page
 - 🙋 [FEATURE REQUEST] Separated deleted aliases into a different section
 
-
-## [AnonAddy v1.1.1] - 2020-10-24
+## [v1.1.1] - 2020-10-24
 
 ### Fixed/Improved
 -  Added the forgotten piece of the custom alias format >.<
 - Fixed crash at double Biometrics authentication prompt when dark mode was enabled
 
-
-## [AnonAddy v1.1.0] - 2020-10-24
+## [v1.1.0] - 2020-10-24
 
 ### Added
 - 📋 Added new rule-editor (beta)

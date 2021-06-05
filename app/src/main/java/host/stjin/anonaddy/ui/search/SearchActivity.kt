@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,7 +33,6 @@ class SearchActivity : BaseActivity() {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
 
 
     enum class SearchTargets(val activity: String) {
@@ -113,6 +111,9 @@ class SearchActivity : BaseActivity() {
         }
     }
 
+    /*
+    No shimmer, data is already served on opening this activity
+     */
     private fun setUsernames() {
         binding.activitySearchUsernamesRecyclerview.apply {
 
@@ -123,14 +124,6 @@ class SearchActivity : BaseActivity() {
                 LinearLayoutManager(this@SearchActivity)
             }
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchUsernamesRecyclerview.layoutAnimation = animation
-            }
 
             val usernamesAdapter = UsernameAdapter(filteredUsernames!!)
             usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
@@ -150,7 +143,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = usernamesAdapter
-            binding.activitySearchUsernamesRecyclerview.hideShimmerAdapter()
         }
 
     }
@@ -166,14 +158,6 @@ class SearchActivity : BaseActivity() {
                 LinearLayoutManager(this@SearchActivity)
             }
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchRulesRecyclerview.layoutAnimation = animation
-            }
 
             val rulesAdapter = RulesAdapter(filteredRules!!, false)
             rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
@@ -207,7 +191,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = rulesAdapter
-            binding.activitySearchRulesRecyclerview.hideShimmerAdapter()
         }
 
     }
@@ -223,15 +206,6 @@ class SearchActivity : BaseActivity() {
                 LinearLayoutManager(this@SearchActivity)
             }
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchAliasesRecyclerview.layoutAnimation = animation
-            }
-
 
             /**
              * Seperate the deleted and non-deleted aliases
@@ -276,7 +250,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = aliasAdapter
-            binding.activitySearchAliasesRecyclerview.hideShimmerAdapter()
         }
 
     }
@@ -292,14 +265,6 @@ class SearchActivity : BaseActivity() {
                 LinearLayoutManager(this@SearchActivity)
             }
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchRecipientsRecyclerview.layoutAnimation = animation
-            }
 
             val recipientAdapter = RecipientAdapter(filteredRecipients!!)
             recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
@@ -327,7 +292,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = recipientAdapter
-            binding.activitySearchRecipientsRecyclerview.hideShimmerAdapter()
         }
 
     }
@@ -343,14 +307,6 @@ class SearchActivity : BaseActivity() {
                 LinearLayoutManager(this@SearchActivity)
             }
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchDomainsRecyclerview.layoutAnimation = animation
-            }
 
             val domainsAdapter = DomainAdapter(filteredDomains!!)
             domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
@@ -371,7 +327,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = domainsAdapter
-            binding.activitySearchDomainsRecyclerview.hideShimmerAdapter()
         }
     }
 

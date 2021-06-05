@@ -2,14 +2,19 @@ package host.stjin.anonaddy.ui.alias.manage
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
+import com.google.android.material.shape.ShapeAppearanceModel
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -93,13 +98,23 @@ class EditAliasRecipientsBottomDialogFragment(
 
         networkHelper.getRecipients({ result ->
             if (result != null) {
+                // Remove the default "Loading recipients" chip
+                binding.bsEditrecipientsChipgroup.removeAllViewsInLayout()
+                binding.bsEditrecipientsChipgroup.requestLayout()
+                binding.bsEditrecipientsChipgroup.invalidate()
+
                 for (recipient in result) {
-                    val chip = Chip(binding.bsEditrecipientsChipgroup.context)
+                    val chip = Chip(ContextThemeWrapper(binding.bsEditrecipientsChipgroup.context, R.style.AnonAddyChip))
                     chip.text = recipient.email
                     chip.tag = recipient.id
                     chip.isClickable = true
                     chip.isCheckable = true
-
+                    chip.shapeAppearanceModel =
+                        ShapeAppearanceModel().toBuilder().setAllCornerSizes(context.resources.getDimension(R.dimen.corner_radius_chips)).build()
+                    chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.transparent))
+                    chip.checkedIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_outline_check_24, null)
+                    chip.chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.shimmerGray))
+                    chip.chipStrokeWidth = context.resources.getDimension(R.dimen.chip_stroke_width)
 
                     chip.isChecked = recipientUnderThisAliasList.contains(recipient.email)
 

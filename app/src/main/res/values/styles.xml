@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+    <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
         <!-- Customize your theme here. -->
@@ -9,12 +9,14 @@
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="android:textColor">@color/BlackWhite</item>
         <item name="android:navigationBarColor">
-            @android:color/transparent
+            @color/NavbarLightDarkMode
         </item>
         <!-- Optional, if drawing behind the status bar too -->
         <item name="android:statusBarColor">
             @color/primaryColor
         </item>
+        <item name="android:windowLightNavigationBar">true</item>
+
 
         <!-- enable window content transitions -->
         <item name="android:windowContentTransitions">true</item>
@@ -29,6 +31,11 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
 
         <item name="android:windowSplashScreenBackground">@color/primaryColorStatic</item>
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="BaseTheme">
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
     <style name="AppTheme.CollapsingToolbarTitle.Expanded" parent="TextAppearance.AppCompat">
@@ -52,7 +59,6 @@
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
     </style>
 
-    <!-- Base application theme. -->
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -66,20 +72,14 @@
         <item name="android:statusBarColor">
             @android:color/transparent
         </item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
-    <style name="AppTheme.Transparent" parent="AppTheme.NoActionBar">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
+    <style name="AppTheme.NoActionBar.NotYetWhite" parent="AppTheme.NoActionBar">
         <item name="android:navigationBarColor">
-            @android:color/transparent
+            @color/AnonAddyNotYetWhite
         </item>
-        <!-- Optional, if drawing behind the status bar too -->
     </style>
-
 
     <style name="AnonAddyProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
@@ -99,24 +99,6 @@
         <item name="android:minHeight">8dip</item>
     </style>
 
-    <style name="AnonAddyProgressBar.Vertical" parent="AnonAddyProgressBar">
-        <item name="android:progressDrawable">@drawable/progress_scale_drawable</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
-    </style>
-
-    <style name="AnonAddyProgressBarRed.Vertical" parent="AnonAddyProgressBarRed">
-        <item name="android:progressDrawable">@drawable/progress_scale_drawable_red</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
-    </style>
-
-    <style name="AnonAddyProgressBarEasternBlue.Vertical" parent="AnonAddyProgressBarEasternBlue">
-        <item name="android:progressDrawable">@drawable/progress_scale_drawable_eastern_blue</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
-    </style>
-
     <style name="RoundActionButton" parent="Widget.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">@dimen/corner_radius</item>
@@ -131,15 +113,16 @@
         <item name="spinning_bar_padding">8dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="initialCornerAngle">@dimen/corner_radius_button</item>
+        <item name="android:textColor">@color/primaryLightColor</item>
     </style>
 
     <style name="MaterialButtonSecondary" parent="Widget.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.00</item>
         <item name="backgroundTint">@color/primaryColor</item>
-        <item name="android:textColor">@color/primaryLightColor</item>
-        <item name="iconTint">@color/primaryLightColor</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:stateListAnimator">@null</item>
+        <item name="iconTint">@android:color/white</item>
         <item name="cornerRadius">@dimen/corner_radius_button</item>
     </style>
 
@@ -147,6 +130,8 @@
         <item name="android:layout_marginEnd">4dp</item>
         <item name="android:layout_marginStart">4dp</item>
         <item name="backgroundTint">@color/primarySuperSuperLightColor</item>
+        <item name="android:textColor">@color/primaryLightColor</item>
+        <item name="iconTint">@color/primaryLightColor</item>
 
     </style>
 
@@ -350,6 +335,7 @@
 
     <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
+        <item name="android:stateListAnimator">@animator/selector_raise</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_top" parent="">
@@ -362,6 +348,7 @@
 
     <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
+        <item name="android:stateListAnimator">@animator/selector_raise</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_center" parent="">
@@ -374,6 +361,7 @@
 
     <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
+        <item name="android:stateListAnimator">@animator/selector_raise</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_bottom" parent="">
@@ -399,15 +387,6 @@
         <item name="android:layout_marginStart">8dp</item>
     </style>
 
-    <style name="AnonAddyTitleAction2" parent="titleTextView">
-        <item name="android:layout_marginBottom">16dp</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:layout_marginStart">8dp</item>
-        <item name="android:alpha">1</item>
-        <item name="android:layout_height">48dp</item>
-    </style>
-
     <style name="AnonAddyToggleButton" parent="MaterialButtonSecondary">
         <item name="android:backgroundTint">@color/anonaddy_toggle_button_color</item>
         <item name="cornerRadius">@dimen/corner_radius_cardview</item>
@@ -418,6 +397,13 @@
         <item name="cornerRadius">@dimen/corner_radius</item>
         <item name="android:letterSpacing">0.00</item>
         <item name="android:textColor">@color/IconGrayTint</item>
+    </style>
+
+    <style name="AnonAddyChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipCornerRadius">@dimen/corner_radius_chips</item>
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/shimmerGray</item>
     </style>
 
 </resources>

@@ -68,12 +68,10 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_gravity="end|bottom"
-                    android:background="@drawable/circle"
-                    android:backgroundTint="@color/transparentCircle"
+                    android:background="@drawable/circle_ripple"
                     android:clickable="true"
                     android:contentDescription="@string/save_rule"
                     android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
                     android:padding="6dp"
                     android:src="@drawable/ic_outline_check_24"
                     app:tint="@android:color/white" />

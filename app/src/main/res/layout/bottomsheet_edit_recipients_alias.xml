@@ -63,7 +63,17 @@
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/bs_editrecipients_chipgroup"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.chip.Chip
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="false"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:text="@string/loading_recipients" />
+                </com.google.android.material.chip.ChipGroup>
             </com.google.android.material.textfield.TextInputLayout>
 
 

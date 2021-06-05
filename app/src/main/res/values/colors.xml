@@ -8,7 +8,6 @@
     <color name="primarySuperSuperLightColor">#26353C7D</color>
     <color name="primaryDarkColor">#000040</color>
     <color name="secondaryColor">#3ae7e1</color>
-    <color name="secondaryColor10">#1A3AE7E1</color>
     <color name="secondaryDarkColor">#00b4af</color>
 
     <color name="IconGrayTint">#666666</color>
@@ -27,7 +26,6 @@
 
     <color name="colorControlNormal">#89000000</color>
     <color name="transparentCircle">#0FFFFFFF</color>
-
 
     <!--grey-->
     <color name="md_grey_500">#9E9E9E</color>

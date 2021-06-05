@@ -5,11 +5,10 @@
     style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/recyclerview_margin"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardElevation="@dimen/cardview_default_elevation">
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"

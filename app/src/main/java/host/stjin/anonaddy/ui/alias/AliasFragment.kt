@@ -34,7 +34,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
 
     companion object {
@@ -113,6 +113,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         if (binding.aliasDeletedAliasesRecyclerview.visibility == View.GONE) {
             binding.aliasDeletedAliasesRecyclerview.visibility = View.VISIBLE
             binding.aliasShowDeletedAliasToggle.setIconResource(R.drawable.ic_menu_up_outline)
+
+            // Set the adapter (if it wasn't already)
+            setAllDeletedAliases()
         } else {
             binding.aliasDeletedAliasesRecyclerview.visibility = View.GONE
             binding.aliasShowDeletedAliasToggle.setIconResource(R.drawable.ic_menu_down_outline)
@@ -121,21 +124,17 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private lateinit var aliasAdapter: AliasAdapter
     private var previousList: ArrayList<Aliases> = arrayListOf()
-    private var hasSetItemDecoration = false
-    private var hasSetItemDecorationDeleted = false
     private suspend fun getAllAliasesAndSetStatistics() {
 
         binding.aliasAllAliasesRecyclerview.apply {
-
-            networkHelper?.getAliases({ list ->
-                // Sorted by created_at automatically
-                //list?.sortByDescending { it.emails_forwarded }
-
-                // Check if there are new aliases since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                // Unless forceUpdate is true. If forceupdate is true, always update
-                if (::aliasAdapter.isInitialized && list == previousList && !forceUpdate) {
-                    return@getAliases
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ALIAS_COUNT, 10) ?: 10
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
                 }
 
                 layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
@@ -145,16 +144,23 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     LinearLayoutManager(activity)
                 }
 
-                if (!hasSetItemDecoration) {
-                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                    hasSetItemDecoration = true
-                }
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
-                if (shouldAnimateRecyclerview) {
-                    shouldAnimateRecyclerview = false
-                    val resId: Int = R.anim.layout_animation_fall_down
-                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                    layoutAnimation = animation
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+
+                showShimmer()
+            }
+            networkHelper?.getAliases({ list ->
+                // Sorted by created_at automatically
+                //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new aliases since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                // Unless forceUpdate is true. If forceupdate is true, always update
+                if (::aliasAdapter.isInitialized && list == previousList && !forceUpdate) {
+                    return@getAliases
                 }
 
                 /**
@@ -182,7 +188,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
                     val nonDeletedAliases: ArrayList<Aliases> = arrayListOf()
-                    val onlyDeletedList: ArrayList<Aliases> = arrayListOf()
+
+                    // Clear the list first
+                    onlyDeletedList.clear()
                     for (alias in list) {
                         if (alias.deleted_at != null) {
                             onlyDeletedList.add(alias)
@@ -196,6 +204,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     } else {
                         binding.aliasNoAliases.visibility = View.VISIBLE
                     }
+
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ALIAS_COUNT, nonDeletedAliases.size)
 
                     /**
                      * ALIAS LIST
@@ -231,15 +242,13 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                     })
                     adapter = aliasAdapter
-                    hideShimmerAdapter()
-                    setAllDeletedAliases(onlyDeletedList)
+                    setAllDeletedAliases()
                 } else {
                     binding.aliasListLL1.visibility = View.GONE
                     binding.aliasStatisticsRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }, activeOnly = false, includeDeleted = true)
-
-
         }
 
     }
@@ -259,66 +268,56 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
     }
 
+
+    private val onlyDeletedList: ArrayList<Aliases> = arrayListOf()
     private lateinit var deletedAliasAdapter: AliasAdapter
-    private fun setAllDeletedAliases(deletedAliased: ArrayList<Aliases>?) {
-        binding.aliasDeletedAliasesRecyclerview.apply {
+    private var OneTimeDeletedAliasesRecyclerViewActions: Boolean = true
+    private fun setAllDeletedAliases() {
+        // It only makes sense to set this recyclerviews data when its visible.
+        if (binding.aliasDeletedAliasesRecyclerview.visibility == View.VISIBLE) {
+            binding.aliasDeletedAliasesRecyclerview.apply {
+                if (OneTimeDeletedAliasesRecyclerViewActions) {
+                    OneTimeDeletedAliasesRecyclerViewActions = false
+                    layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                        // set a GridLayoutManager for tablets
+                        GridLayoutManager(activity, 2)
+                    } else {
+                        LinearLayoutManager(activity)
+                    }
 
-            // Check if there are new aliases since the latest list
-            // If the list is the same, just return and don't bother re-init the layoutmanager
-            // Unless forceUpdate is true. If forceupdate is true, always update
-            if (::deletedAliasAdapter.isInitialized && deletedAliased == deletedAliasAdapter.getList() && !forceUpdate) {
-                return
-            }
+                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
-            layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(activity, 2)
-            } else {
-                LinearLayoutManager(activity)
-            }
-
-            if (!hasSetItemDecorationDeleted) {
-                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                hasSetItemDecorationDeleted = true
-            }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-            }
-
-            if (deletedAliased != null) {
-
-                /**
-                 * Seperate the deleted and non-deleted aliases
-                 */
+                }
+                // Check if there are new aliases since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                // Unless forceUpdate is true. If forceupdate is true, always update
+                if (::deletedAliasAdapter.isInitialized && onlyDeletedList == deletedAliasAdapter.getList() && !forceUpdate) {
+                    return
+                }
 
 
-                if (deletedAliased.size > 0) {
+                if (onlyDeletedList.size > 0) {
                     binding.aliasNoDeletedAliases.visibility = View.GONE
                 } else {
                     binding.aliasNoDeletedAliases.visibility = View.VISIBLE
                 }
 
-
                 /**
                  * ALIAS LIST
                  */
-                deletedAliasAdapter = AliasAdapter(deletedAliased, context)
+                deletedAliasAdapter = AliasAdapter(onlyDeletedList, context)
                 deletedAliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                     override fun onClick(pos: Int) {
                         val intent = Intent(context, ManageAliasActivity::class.java)
                         // Pass data object in the bundle and populate details activity.
-                        intent.putExtra("alias_id", deletedAliased[pos].id)
+                        intent.putExtra("alias_id", onlyDeletedList[pos].id)
                         resultLauncher.launch(intent)
                     }
 
                     override fun onClickCopy(pos: Int, aView: View) {
                         val clipboard: ClipboardManager =
                             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val aliasEmailAddress = deletedAliased[pos].email
+                        val aliasEmailAddress = onlyDeletedList[pos].email
                         val clip = ClipData.newPlainText("alias", aliasEmailAddress)
                         clipboard.setPrimaryClip(clip)
 
@@ -337,10 +336,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                 })
                 adapter = deletedAliasAdapter
-                hideShimmerAdapter()
-            } else {
-                binding.aliasListLL1.visibility = View.GONE
-                binding.aliasStatisticsRLLottieview.visibility = View.VISIBLE
             }
         }
 

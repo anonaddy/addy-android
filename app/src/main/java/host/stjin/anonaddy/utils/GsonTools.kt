@@ -18,7 +18,7 @@ object GsonTools {
         } catch (e: Exception) {
             val ex = e.message
             println(ex)
-            loggingHelper.addLog(ex.toString(), "jsonToAliasObject")
+            loggingHelper.addLog(ex.toString(), "jsonToAliasObject", null)
             null
         }
     }

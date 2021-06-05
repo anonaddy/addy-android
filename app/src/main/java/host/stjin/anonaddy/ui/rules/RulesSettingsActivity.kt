@@ -33,7 +33,7 @@ class RulesSettingsActivity : BaseActivity() {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     private lateinit var binding: ActivityRuleSettingsBinding
 
@@ -72,10 +72,22 @@ class RulesSettingsActivity : BaseActivity() {
 
 
     private lateinit var rulesAdapter: RulesAdapter
-    private var hasSetItemDecoration = false
     private suspend fun getAllRulesAndSetView() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, 10) ?: 10
 
+                // set a LinearLayoutManager to handle Android
+                // RecyclerView behavior
+                layoutManager = LinearLayoutManager(this@RulesSettingsActivity)
+                // set the custom adapter to the RecyclerView
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+                showShimmer()
+            }
             networkHelper?.getAllRules { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
@@ -86,25 +98,6 @@ class RulesSettingsActivity : BaseActivity() {
                     return@getAllRules
                 }
 
-                // set a LinearLayoutManager to handle Android
-                // RecyclerView behavior
-                layoutManager = LinearLayoutManager(this@RulesSettingsActivity)
-                // set the custom adapter to the RecyclerView
-
-                if (!hasSetItemDecoration) {
-                    addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                    hasSetItemDecoration = true
-                }
-
-                if (shouldAnimateRecyclerview) {
-                    shouldAnimateRecyclerview = false
-                    val resId: Int = R.anim.layout_animation_fall_down
-                    val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                    binding.activityManageRulesAllRulesRecyclerview.layoutAnimation = animation
-                }
-
-
-
                 if (list != null) {
 
                     if (list.size > 0) {
@@ -112,6 +105,10 @@ class RulesSettingsActivity : BaseActivity() {
                     } else {
                         binding.activityManageRulesNoRules.visibility = View.VISIBLE
                     }
+
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, list.size)
+
 
                     rulesAdapter = RulesAdapter(list, true)
                     rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
@@ -177,15 +174,14 @@ class RulesSettingsActivity : BaseActivity() {
 
                     })
                     adapter = rulesAdapter
-                    binding.activityManageRulesAllRulesRecyclerview.hideShimmerAdapter()
 
                     itemTouchHelper.attachToRecyclerView(binding.activityManageRulesAllRulesRecyclerview)
                 } else {
                     binding.activityManageRulesLL1.visibility = View.GONE
                     binding.activityManageRulesRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }
-
         }
 
     }

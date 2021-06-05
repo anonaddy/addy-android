@@ -43,6 +43,7 @@
                 style="@style/AnonAddyCustomCardViewStyleTop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 app:cardElevation="@dimen/cardview_default_elevation">
 
                 <LinearLayout
@@ -281,19 +282,18 @@
 
                 </LinearLayout>
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                <com.todkars.shimmer.ShimmerRecyclerView
                     android:id="@+id/home_most_active_aliases_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="5"
-                    app:shimmer_demo_grid_child_count="1"
-                    app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
-                    app:shimmer_demo_layout_manager_type="linear_vertical">
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:shimmer_recycler_auto_start="true"
+                    app:shimmer_recycler_item_count="5"
+                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer">
 
-                </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+                </com.todkars.shimmer.ShimmerRecyclerView>
 
                 <TextView
                     android:id="@+id/home_no_aliases"

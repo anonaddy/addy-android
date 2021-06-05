@@ -25,6 +25,13 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_CACHE_DATA_DOMAIN_OPTIONS("cache_data_domain_options"),
         BACKGROUND_SERVICE_CACHE_DATA_ALIASES("cache_data_aliases"),
 
+        // Used for the shimmerview
+        BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT("cache_domain_count"),
+        BACKGROUND_SERVICE_CACHE_ALIAS_COUNT("cache_alias_count"),
+        BACKGROUND_SERVICE_CACHE_USERNAME_COUNT("cache_username_count"),
+        BACKGROUND_SERVICE_CACHE_RULES_COUNT("cache_rules_count"),
+        BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT("cache_recipient_count"),
+
         // When BACKGROUND_SERVICE_CACHE_DATA_ALIASES gets updated the current list will move moved to BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS for the AliasWatcher to compare
         BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS("cache_data_aliases_previous"),
         BACKGROUND_SERVICE_WATCH_ALIAS_LIST("background_service_watch_alias_list"),

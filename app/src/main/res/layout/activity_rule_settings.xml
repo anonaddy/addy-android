@@ -67,17 +67,15 @@
 
                 </LinearLayout>
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                <com.todkars.shimmer.ShimmerRecyclerView
                     android:id="@+id/activity_manage_rules_all_rules_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="5"
-                    app:shimmer_demo_grid_child_count="1"
-                    app:shimmer_demo_layout="@layout/rules_recyclerview_list_item_rules_shimmer"
-                    app:shimmer_demo_layout_manager_type="linear_vertical" />
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:shimmer_recycler_auto_start="true"
+                    app:shimmer_recycler_layout="@layout/rules_recyclerview_list_item_rules_shimmer" />
 
                 <TextView
                     android:id="@+id/activity_manage_rules_no_rules"

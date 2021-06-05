@@ -62,17 +62,12 @@
                         android:layout_width="match_parent"
                         android:text="@string/aliases" />
 
-                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/activity_search_aliases_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        app:shimmer_demo_angle="20"
-                        app:shimmer_demo_child_count="5"
-                        app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
-                        app:shimmer_demo_layout_manager_type="linear_vertical" />
+                        android:overScrollMode="never" />
 
                 </LinearLayout>
 
@@ -91,17 +86,12 @@
                         android:layout_width="match_parent"
                         android:text="@string/recipients" />
 
-                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/activity_search_recipients_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        app:shimmer_demo_angle="20"
-                        app:shimmer_demo_child_count="5"
-                        app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/recipients_recyclerview_list_item_recipients_shimmer"
-                        app:shimmer_demo_layout_manager_type="linear_vertical" />
+                        android:overScrollMode="never" />
 
                 </LinearLayout>
 
@@ -120,17 +110,12 @@
                         android:layout_width="match_parent"
                         android:text="@string/domains" />
 
-                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/activity_search_domains_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        app:shimmer_demo_angle="20"
-                        app:shimmer_demo_child_count="5"
-                        app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/domains_recyclerview_list_item_domains_shimmer"
-                        app:shimmer_demo_layout_manager_type="linear_vertical" />
+                        android:overScrollMode="never" />
 
                 </LinearLayout>
 
@@ -149,17 +134,12 @@
                         android:layout_width="match_parent"
                         android:text="@string/usernames" />
 
-                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/activity_search_usernames_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        app:shimmer_demo_angle="20"
-                        app:shimmer_demo_child_count="5"
-                        app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/usernames_recyclerview_list_item_usernames_shimmer"
-                        app:shimmer_demo_layout_manager_type="linear_vertical" />
+                        android:overScrollMode="never" />
 
                 </LinearLayout>
 
@@ -178,17 +158,12 @@
                         android:layout_width="match_parent"
                         android:text="@string/rules" />
 
-                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/activity_search_rules_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        app:shimmer_demo_angle="20"
-                        app:shimmer_demo_child_count="5"
-                        app:shimmer_demo_grid_child_count="1"
-                        app:shimmer_demo_layout="@layout/rules_recyclerview_list_item_rules_shimmer"
-                        app:shimmer_demo_layout_manager_type="linear_vertical" />
+                        android:overScrollMode="never" />
 
                 </LinearLayout>
 
