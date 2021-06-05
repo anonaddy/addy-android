@@ -387,7 +387,7 @@
         <item name="android:layout_marginStart">8dp</item>
     </style>
 
-    <style name="AnonAddyToggleButton" parent="MaterialButtonSecondary">
+    <style name="AnonAddyToggleButton" parent="MaterialButtonSecondaryLight">
         <item name="android:backgroundTint">@color/anonaddy_toggle_button_color</item>
         <item name="cornerRadius">@dimen/corner_radius_cardview</item>
     </style>
