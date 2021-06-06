@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -24,6 +25,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     private var iconEnd: ImageView? = null
 
     private var linearLayout: LinearLayout? = null
+    private var cardView: CardView? = null
 
 
     fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
@@ -121,6 +123,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     init {
         val inflater = LayoutInflater.from(context)
         inflater.inflate(R.layout.custom_view_section, this)
+        cardView = findViewById(R.id.custom_view_section_CV)
         linearLayout = findViewById(R.id.custom_view_section_LL)
         iconStart = findViewById(R.id.custom_view_section_start_icon)
         iconEnd = findViewById(R.id.custom_view_section_end_icon)
@@ -143,7 +146,6 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             if (!a.getBoolean(R.styleable.SectionView_sectionRippleEffect, true)) {
                 linearLayout?.background = null
             }
-
 
             // Set title and description
             setTitle(a.getString(R.styleable.SectionView_sectionTitle))

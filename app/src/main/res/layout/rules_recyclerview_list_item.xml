@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/rule"
-                    android:src="@drawable/ic_clipboard_text_outline" />
+                    android:src="@drawable/ic_assignment_24dp" />
 
             </LinearLayout>
 
@@ -117,7 +117,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/drag_to_change_order"
-                        app:srcCompat="@drawable/ic_outline_menu_24" />
+                        app:srcCompat="@drawable/ic_menu_24dp" />
                 </LinearLayout>
 
             </LinearLayout>

@@ -134,7 +134,7 @@
                             android:fontFamily="sans-serif-medium"
                             android:gravity="center_vertical"
                             android:text="@string/recipients"
-                            app:drawableStartCompat="@drawable/ic_recipients"
+                            app:drawableStartCompat="@drawable/ic_account_arrow_right"
                             app:drawableTint="@color/softRed" />
 
                         <TextView

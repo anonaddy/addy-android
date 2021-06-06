@@ -170,7 +170,7 @@
                         android:layout_height="match_parent"
                         app:sectionDescription="@string/encrypt_emails_to_this_recipient"
                         app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_checkbox_marked_circle_outline"
+                        app:sectionStartIcon="@drawable/ic_task_alt_24dp"
                         app:sectionTitle="@string/encryption_enabled" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -192,7 +192,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionColorAccent="@color/softRed"
-                        app:sectionStartIcon="@drawable/ic_outline_delete_24"
+                        app:sectionStartIcon="@drawable/ic_delete_24dp"
                         app:sectionTitle="@string/delete_recipient" />
                 </LinearLayout>
 

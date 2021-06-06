@@ -56,7 +56,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="16dp"
                         android:contentDescription="@string/emails_forwarded"
-                        app:srcCompat="@drawable/ic_email_send_outline" />
+                        app:srcCompat="@drawable/ic_email_out_24dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginEnd="16dp"
                         android:contentDescription="@string/emails_replied_sent"
-                        app:srcCompat="@drawable/ic_email_receive_outline" />
+                        app:srcCompat="@drawable/ic_email_in_24dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -230,7 +230,7 @@
                         android:id="@+id/alias_show_deleted_alias_toggle"
                         style="@style/MaterialButtonSecondary.IconOnly"
                         android:contentDescription="@string/deleted_aliases"
-                        app:icon="@drawable/ic_menu_down_outline" />
+                        app:icon="@drawable/ic_arrow_drop_down_24dp" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView

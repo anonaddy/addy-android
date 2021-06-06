@@ -48,7 +48,7 @@ class DomainAdapter(
                 holder.mDescription.text = holder.mDescription.context.resources.getString(
                     R.string.configuration_error
                 )
-                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_error_outline_24)
+                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_error_24dp)
             }
             else -> {
                 holder.mDescription.text = holder.mDescription.context.resources.getString(
@@ -56,7 +56,7 @@ class DomainAdapter(
                     aliases,
                     forwardedEmails
                 )
-                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_outline_dns_24)
+                holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_dns_24dp)
             }
         }
     }

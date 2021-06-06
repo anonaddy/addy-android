@@ -76,29 +76,52 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         val color3 = if (listWithAliases[position].active) R.color.secondaryDarkColor else R.color.md_grey_700
         val color4 = if (listWithAliases[position].active) R.color.softRed else R.color.md_grey_800
 
+
+        val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
+        var donutCap = 0f
         // DONUT
         val section1 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
             color = ContextCompat.getColor(holder.mChart.context, color1),
             amount = forwarded
         )
-        val section2 = DonutSection(
-            name = holder.mChart.context.resources.getString(R.string.d_replied, replied.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, color2),
-            amount = replied
-        )
-        val section3 = DonutSection(
-            name = holder.mChart.context.resources.getString(R.string.d_sent, sent.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, color3),
-            amount = replied
-        )
-        val section4 = DonutSection(
-            name = holder.mChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, color4),
-            amount = blocked
-        )
-        holder.mChart.cap = forwarded + replied + blocked + sent
-        holder.mChart.submitData(listOf(section4, section3, section2, section1))
+        // Always show section 1
+        listOfDonutSection.add(section1)
+        donutCap += forwarded
+
+        if (replied > 0) {
+            val section2 = DonutSection(
+                name = holder.mChart.context.resources.getString(R.string.d_replied, replied.toInt()),
+                color = ContextCompat.getColor(holder.mChart.context, color2),
+                amount = replied
+            )
+            listOfDonutSection.add(section2)
+            donutCap += replied
+        }
+
+        if (sent > 0) {
+            val section3 = DonutSection(
+                name = holder.mChart.context.resources.getString(R.string.d_sent, sent.toInt()),
+                color = ContextCompat.getColor(holder.mChart.context, color3),
+                amount = sent
+            )
+            listOfDonutSection.add(section3)
+            donutCap += sent
+        }
+
+        if (blocked > 0) {
+            val section4 = DonutSection(
+                name = holder.mChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
+                color = ContextCompat.getColor(holder.mChart.context, color4),
+                amount = blocked
+            )
+            listOfDonutSection.add(section4)
+            donutCap += blocked
+        }
+
+        holder.mChart.cap = donutCap
+        // Sort the list by amount so that the biggest number will fill the whole ring
+        holder.mChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT
 
 

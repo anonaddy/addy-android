@@ -73,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/background_service_desc"
-                    app:sectionStartIcon="@drawable/ic_widgets_outline"
+                    app:sectionStartIcon="@drawable/ic_widgets_24dp"
                     app:sectionTitle="@string/background_service_interval" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -100,7 +100,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/reset_app_desc"
-                    app:sectionStartIcon="@drawable/ic_restore"
+                    app:sectionStartIcon="@drawable/ic_restart_alt_24dp"
                     android:layout_marginBottom="6dp"
                     app:sectionTitle="@string/reset_app" />
 
@@ -125,7 +125,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/visit_anonaddy_helps_section"
-                    app:sectionStartIcon="@drawable/ic_round_help_outline_24"
+                    app:sectionStartIcon="@drawable/ic_help_24dp"
                     app:sectionTitle="@string/anonaddy_help" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -133,7 +133,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/faq_desc"
-                    app:sectionStartIcon="@drawable/ic_frequently_asked_questions"
+                    app:sectionStartIcon="@drawable/ic_question_answer_24dp"
                     android:layout_marginBottom="6dp"
                     app:sectionTitle="@string/faq" />
 
@@ -165,7 +165,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/report_an_issue_desc"
-                    app:sectionStartIcon="@drawable/ic_bug"
+                    app:sectionStartIcon="@drawable/ic_pest_control_24dp"
                     app:sectionTitle="@string/report_an_issue" />
 
 
@@ -175,7 +175,7 @@
                     android:layout_height="match_parent"
                     app:sectionRippleEffect="false"
                     app:sectionDescription="@string/contributors_list"
-                    app:sectionStartIcon="@drawable/ic_round_people_outline_24"
+                    app:sectionStartIcon="@drawable/ic_people_24dp"
                     app:sectionTitle="@string/contributors" />
 
 

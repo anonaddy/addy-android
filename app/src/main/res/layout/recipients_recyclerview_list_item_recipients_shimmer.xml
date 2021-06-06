@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/recipients"
-                android:src="@drawable/ic_round_mail_outline_24"
+                android:src="@drawable/ic_email_24dp"
                 app:tint="@color/shimmerGray" />
 
         </LinearLayout>

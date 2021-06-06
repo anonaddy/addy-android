@@ -65,7 +65,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/rules_view_condition_action_close"
                     style="@style/MaterialButtonSecondary.IconOnly"
-                    app:icon="@drawable/ic_outline_close_24" />
+                    app:icon="@drawable/ic_round_clear_24" />
             </LinearLayout>
 
         </LinearLayout>

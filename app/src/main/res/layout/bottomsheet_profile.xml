@@ -28,7 +28,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/circle_ripple"
+            android:background="@drawable/circle"
             android:contentDescription="@string/anonaddy_settings"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
@@ -164,7 +164,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/manage_domains"
-                            android:src="@drawable/ic_outline_dns_24" />
+                            android:src="@drawable/ic_dns_24dp" />
 
                     </LinearLayout>
 
@@ -212,7 +212,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/manage_rules"
-                            android:src="@drawable/ic_clipboard_text_outline" />
+                            android:src="@drawable/ic_assignment_24dp" />
 
                     </LinearLayout>
 
@@ -260,7 +260,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/username_settings"
-                            android:src="@drawable/ic_mdi_account_details_outline" />
+                            android:src="@drawable/ic_usernames_24dp" />
 
                     </LinearLayout>
 
@@ -308,7 +308,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/app_settings"
-                            android:src="@drawable/ic_outline_settings" />
+                            android:src="@drawable/ic_settings_24dp" />
 
                     </LinearLayout>
 

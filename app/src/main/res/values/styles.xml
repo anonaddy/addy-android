@@ -335,7 +335,6 @@
 
     <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
-        <item name="android:stateListAnimator">@animator/selector_raise</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_top" parent="">
@@ -348,7 +347,6 @@
 
     <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
-        <item name="android:stateListAnimator">@animator/selector_raise</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_center" parent="">
@@ -361,7 +359,6 @@
 
     <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
-        <item name="android:stateListAnimator">@animator/selector_raise</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_bottom" parent="">
@@ -399,11 +396,13 @@
         <item name="android:textColor">@color/IconGrayTint</item>
     </style>
 
-    <style name="AnonAddyChip" parent="Widget.MaterialComponents.Chip.Choice">
+    <style name="AnonAddyChip" parent="Widget.MaterialComponents.Chip.Filter">
         <item name="chipCornerRadius">@dimen/corner_radius_chips</item>
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="chipStrokeColor">@color/shimmerGray</item>
+        <item name="checkedIcon">@drawable/ic_done_24dp</item>
+        <item name="checkedIconTint">@color/primaryColor</item>
     </style>
 
 </resources>

@@ -37,7 +37,7 @@
                     android:id="@+id/recipients_recyclerview_list_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_round_mail_outline_24"
+                    android:src="@drawable/ic_email_24dp"
                     tools:ignore="ContentDescription" />
 
 

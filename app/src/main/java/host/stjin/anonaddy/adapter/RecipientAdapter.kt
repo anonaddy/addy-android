@@ -50,7 +50,7 @@ class RecipientAdapter(
 
         when {
             listWithRecipients[position].email_verified_at == null -> {
-                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_error_outline_24)
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_error_24dp)
                 holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.not_verified)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
@@ -58,14 +58,14 @@ class RecipientAdapter(
                 holder.recipientsRecyclerviewListSettingsButton.visibility = View.GONE
             }
             listWithRecipients[position].should_encrypt -> {
-                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_enc_email_outline)
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_email_encrypted_24dp)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListResendButton.visibility = View.GONE
                 holder.recipientsRecyclerviewListSettingsButton.visibility = View.VISIBLE
             }
             else -> {
-                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_mail_outline_24)
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_email_24dp)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListResendButton.visibility = View.GONE

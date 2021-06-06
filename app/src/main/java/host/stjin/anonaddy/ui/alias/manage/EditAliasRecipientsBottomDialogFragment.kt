@@ -112,7 +112,8 @@ class EditAliasRecipientsBottomDialogFragment(
                     chip.shapeAppearanceModel =
                         ShapeAppearanceModel().toBuilder().setAllCornerSizes(context.resources.getDimension(R.dimen.corner_radius_chips)).build()
                     chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.transparent))
-                    chip.checkedIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_outline_check_24, null)
+                    chip.checkedIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_done_24dp, null)
+                    chip.checkedIconTint = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryColor))
                     chip.chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.shimmerGray))
                     chip.chipStrokeWidth = context.resources.getDimension(R.dimen.chip_stroke_width)
 

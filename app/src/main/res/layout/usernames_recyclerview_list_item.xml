@@ -39,7 +39,7 @@
                     android:id="@+id/usernames_recyclerview_list_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_account_outline"
+                    android:src="@drawable/ic_person_24dp"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>

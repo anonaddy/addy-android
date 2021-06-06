@@ -132,30 +132,51 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
-
+        val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
+        var donutCap = 0f
         // DONUT
         val section1 = DonutSection(
             name = binding.activityManageAliasChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
             color = ContextCompat.getColor(this, R.color.portalOrange),
             amount = forwarded
         )
-        val section2 = DonutSection(
-            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_replied, replied.toInt()),
-            color = ContextCompat.getColor(this, R.color.portalBlue),
-            amount = replied
-        )
-        val section3 = DonutSection(
-            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_sent, sent.toInt()),
-            color = ContextCompat.getColor(this, R.color.secondaryDarkColor),
-            amount = replied
-        )
-        val section4 = DonutSection(
-            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
-            color = ContextCompat.getColor(this, R.color.softRed),
-            amount = blocked
-        )
-        binding.activityManageAliasChart.cap = forwarded + replied + blocked + sent
-        binding.activityManageAliasChart.submitData(listOf(section4, section3, section2, section1))
+        // Always show section 1
+        listOfDonutSection.add(section1)
+        donutCap += forwarded
+
+        if (replied > 0) {
+            val section2 = DonutSection(
+                name = binding.activityManageAliasChart.context.resources.getString(R.string.d_replied, replied.toInt()),
+                color = ContextCompat.getColor(this, R.color.portalBlue),
+                amount = replied
+            )
+            listOfDonutSection.add(section2)
+            donutCap += replied
+        }
+
+        if (sent > 0) {
+            val section3 = DonutSection(
+                name = binding.activityManageAliasChart.context.resources.getString(R.string.d_sent, sent.toInt()),
+                color = ContextCompat.getColor(this, R.color.secondaryDarkColor),
+                amount = sent
+            )
+            listOfDonutSection.add(section3)
+            donutCap += sent
+        }
+
+        if (blocked > 0) {
+            val section4 = DonutSection(
+                name = binding.activityManageAliasChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
+                color = ContextCompat.getColor(this, R.color.softRed),
+                amount = blocked
+            )
+            listOfDonutSection.add(section4)
+            donutCap += blocked
+        }
+        binding.activityManageAliasChart.cap = donutCap
+
+        // Sort the list by amount so that the biggest number will fill the whole ring
+        binding.activityManageAliasChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT
 
 

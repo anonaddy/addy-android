@@ -102,7 +102,7 @@
                     android:gravity="center_vertical"
                     android:layout_marginStart="8dp"
                     android:text="@string/you_ve_used_d_out_of_d_usernames"
-                    app:drawableStartCompat="@drawable/ic_outline_info_24" />
+                    app:drawableStartCompat="@drawable/ic_info_24dp" />
 
             </LinearLayout>
 

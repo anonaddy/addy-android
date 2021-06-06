@@ -137,7 +137,7 @@
                         android:layout_height="match_parent"
                         app:sectionDescription="@string/domain_status_desc"
                         app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_checkbox_marked_circle_outline"
+                        app:sectionStartIcon="@drawable/ic_task_alt_24dp"
                         app:sectionTitle="@string/domain_status_active" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -155,8 +155,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionDescription="@tools:sample/lorem/random"
-                        app:sectionEndIcon="@drawable/ic_outline_edit_24"
-                        app:sectionStartIcon="@drawable/ic_text"
+                        app:sectionEndIcon="@drawable/ic_edit_24dp"
+                        app:sectionStartIcon="@drawable/ic_notes_24dp"
                         app:sectionTitle="@string/description" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -164,8 +164,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionDescription="@tools:sample/full_names"
-                        app:sectionEndIcon="@drawable/ic_outline_edit_24"
-                        app:sectionStartIcon="@drawable/ic_account_arrow_right_outline"
+                        app:sectionEndIcon="@drawable/ic_edit_24dp"
+                        app:sectionStartIcon="@drawable/ic_account_arrow_right"
                         app:sectionTitle="@string/default_recipient" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -173,7 +173,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionDescription="@string/check_dns_desc"
-                        app:sectionStartIcon="@drawable/ic_outline_dns_24"
+                        app:sectionStartIcon="@drawable/ic_dns_24dp"
                         app:sectionTitle="@string/check_dns" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -182,7 +182,7 @@
                         android:layout_height="match_parent"
                         app:sectionColorAccent="@color/softRed"
                         app:sectionDescription="@string/delete_domain_desc"
-                        app:sectionStartIcon="@drawable/ic_outline_delete_24"
+                        app:sectionStartIcon="@drawable/ic_delete_24dp"
                         app:sectionTitle="@string/delete_domain" />
 
 
