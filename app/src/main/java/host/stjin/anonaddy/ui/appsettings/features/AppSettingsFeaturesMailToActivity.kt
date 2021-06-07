@@ -18,10 +18,6 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
     private lateinit var encryptedSettingsManager: SettingsManager
     private var forceSwitch = false
 
-    enum class COMPONENTS(val componentClassName: String) {
-        MAILTO("host.stjin.anonaddy.ui.intent.IntentContextMenuAliasActivity")
-    }
-
     private lateinit var binding: ActivityAppSettingsFeaturesMailtoBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +38,7 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
             getComponentState(
                 this,
                 BuildConfig.APPLICATION_ID,
-                COMPONENTS.MAILTO.componentClassName
+                AppSettingsFeaturesActivity.COMPONENTS.MAILTO.componentClassName
             )
         )
     }
@@ -55,7 +51,7 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
                     setComponentState(
                         this@AppSettingsFeaturesMailToActivity,
                         BuildConfig.APPLICATION_ID,
-                        COMPONENTS.MAILTO.componentClassName,
+                        AppSettingsFeaturesActivity.COMPONENTS.MAILTO.componentClassName,
                         checked
                     )
                 }

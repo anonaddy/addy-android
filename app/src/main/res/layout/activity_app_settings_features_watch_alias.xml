@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/appsettings_features_mailto_toolbar"
+        android:id="@+id/appsettings_features_watch_alias_toolbar"
         layout="@layout/custom_toolbar_one_handed" />
 
     <androidx.core.widget.NestedScrollView
@@ -40,19 +40,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
-                    android:contentDescription="@string/integration_mailto_alias"
+                    android:contentDescription="@string/watch_alias"
                     android:elevation="50dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/feature_mailto" />
+                    android:src="@drawable/feature_watch_alias" />
 
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
-                    android:id="@+id/activity_app_settings_features_mailto_section_mailto_sheet"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/enable_disable_feature_desc"
+                    app:sectionDescription="@string/enable_feature_always"
+                    app:sectionEnabled="false"
                     app:sectionShowSwitch="true"
-                    app:sectionTitle="@string/enable_integration" />
+                    app:sectionSwitchChecked="true"
+                    app:sectionTitle="@string/enable_feature" />
 
 
             </LinearLayout>
@@ -76,11 +77,10 @@
                     tools:ignore="RtlSymmetry" />
 
                 <TextView
-                    android:id="@+id/activity_app_settings_features_mailto_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="@string/integration_mailto_alias_desc" />
+                    android:text="@string/watch_alias_feature_desc" />
             </LinearLayout>
 
         </LinearLayout>

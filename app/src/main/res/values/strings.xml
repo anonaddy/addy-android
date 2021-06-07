@@ -368,4 +368,8 @@
     <string name="enable_integration">Enable integration</string>
     <string name="enable_disable_feature_desc">It may take a few minutes for the change to take effect</string>
     <string name="Info">Info</string>
+    <string name="enable_feature">Enable feature</string>
+    <string name="enable_feature_always">This feature is always enabled</string>
+    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.</string>
+    <string name="features">Features</string>
 </resources>

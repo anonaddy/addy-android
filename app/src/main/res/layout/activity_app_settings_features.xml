@@ -34,6 +34,39 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="188dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/features_and_integrations"
+                    android:elevation="50dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/feature_banner" />
+
+                <LinearLayout
+                    style="@style/AnonAddyTitleAction"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/features" />
+
+                </LinearLayout>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_features_section_watch_alias_sheet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="6dp"
+                    app:sectionDescription="@string/watch_alias_feature_desc"
+                    app:sectionStartIcon="@drawable/ic_watch_alias_24dp"
+                    app:sectionTitle="@string/watch_alias" />
+
 
                 <LinearLayout
                     style="@style/AnonAddyTitleAction"
@@ -56,6 +89,7 @@
                     app:sectionDescription="@string/integration_mailto_alias_desc"
                     app:sectionShowSwitch="true"
                     app:sectionStartIcon="@drawable/ic_bottom_sheet"
+                    android:layout_marginBottom="6dp"
                     app:sectionTitle="@string/integration_mailto_alias" />
 
 

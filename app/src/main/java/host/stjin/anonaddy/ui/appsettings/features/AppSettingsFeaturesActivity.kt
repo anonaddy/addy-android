@@ -69,6 +69,13 @@ class AppSettingsFeaturesActivity : BaseActivity() {
                 startActivity(intent)
             }
         })
+
+        binding.activityAppSettingsFeaturesSectionWatchAliasSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWatchAliasActivity::class.java)
+                startActivity(intent)
+            }
+        })
     }
 
 

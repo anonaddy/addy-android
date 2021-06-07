@@ -182,6 +182,9 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
                 switchMaterial?.setOnCheckedChangeListener(switchCheckedChangeListener)
             }
 
+            // Set if switch is checked or not
+            switchMaterial?.isChecked = a.getBoolean(R.styleable.SectionView_sectionSwitchChecked, false)
+
 
             // Set layout enabled
             setLayoutEnabled(a.getBoolean(R.styleable.SectionView_sectionEnabled, true))

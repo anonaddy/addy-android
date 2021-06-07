@@ -167,6 +167,9 @@
             android:name=".ui.appsettings.features.AppSettingsFeaturesActivity"
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesWatchAliasActivity"
+            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesMailToActivity"
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
