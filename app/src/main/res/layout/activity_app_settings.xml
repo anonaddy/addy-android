@@ -69,6 +69,14 @@
                     app:sectionTitle="@string/changelog" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_features"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/features_and_integrations_desc"
+                    app:sectionStartIcon="@drawable/ic_auto_awesome_24dp"
+                    app:sectionTitle="@string/features_and_integrations" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_background_service"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

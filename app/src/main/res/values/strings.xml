@@ -79,7 +79,7 @@
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.0.0</h3>
 <h4>Added</h4>
-<p>🔢 Added 2 brand new widgets<br />- Statistic widget for flexing with your forwarded email count<br />- Android 12 style alias widget for showing the 4 most active aliases<br /><br />💭 It\'s now possible to "forget" your alias from the app</p>
+<p>🔢 Added 2 brand new widgets<br />- Statistic widget for flexing with your forwarded email count<br />- Android 12 style alias widget for showing the 4 most active aliases<br /><br />💭 It\'s now possible to "forget" your alias from the app<br />🌟 Introducing "Email action integration", create aliases and send emails from aliases from… anywhere! Without opening the app! Open the new "Features and integrations" section in the app settings to learn more<br /><br /></p>
 <h4>Fixed/Improved</h4>
 <p>🎨 Massive UI redesign with Android 12 and simplicity in mind<br />- One-handed interface, simply swipe down from any screen to move content down for better accessibility<br />- Cards and raises are now used for a clean-looking, easier-to-understand design<br />- The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color<br />- Softer colors<br />- Bigger, clearer buttons with more space between elements<br />- Animations! Most progressbars are now replaced with morphing buttons<br />- Improved shimmers<br />- Improved tablet layout</p>
 <p>📃 Updated shared domains list<br />👤 Select the recipients for an alias when creating a new alias<br />✨ Performance improvements to make the app even smoother</p>]]></string>
@@ -348,4 +348,24 @@
     <string name="_sMB_remaining_this_month">%sMB remaining this month</string>
     <string name="manage_your_anonaddy_account">Manage your AnonAddy account</string>
     <string name="loading_recipients">Loading recipients…</string>
+    <string name="intent_context_menu">Create alias or send email from alias</string>
+    <string name="something_went_wrong_retrieving_domains">Something went wrong while retrieving the domains</string>
+    <string name="you_do_not_own_this_domain">You do not own this domain</string>
+    <string name="alias_created">Alias created</string>
+    <string name="intent_checking_address">Checking address…</string>
+    <string name="intent_creating_alias">Creating alias %1$s…</string>
+    <string name="intent_alias_already_exists">Alias already exists, opening alias settings…</string>
+    <string name="alias">Alias</string>
+    <string name="send_mail_from_alias_from_intent_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from an alias.\n\nAliases you enter that do not exist will be created automatically.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
+    <string name="intent_opening_send_mail_dialog">Opening send mail dialog…</string>
+    <string name="something_went_wrong_retrieving_aliases">Something went wrong retrieving aliases</string>
+    <string name="intent_opening_sharesheet">Opening sharesheet…</string>
+    <string name="features_and_integrations">Features and integrations</string>
+    <string name="features_and_integrations_desc">Check out app-exclusive features and integrations</string>
+    <string name="integrations">Integrations</string>
+    <string name="integration_mailto_alias">Email action integration</string>
+    <string name="integration_mailto_alias_desc">Create aliases on the go and send emails from an alias by highlighting an email address or tapping a mailto hyperlink.\n\nHighlight an email address that doesn\'t exist with your domain name and tap the AnonAddy for Android icon to create this alias.\n\nHighlight an email address and tap the AnonAddy for Android icon to send an email to this email address from an alias. You can also tap email addresses that contain a mailto hyperlink, such as those found on websites.</string>
+    <string name="enable_integration">Enable integration</string>
+    <string name="enable_disable_feature_desc">It may take a few minutes for the change to take effect</string>
+    <string name="Info">Info</string>
 </resources>

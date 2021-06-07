@@ -80,6 +80,7 @@ class EditAliasSendMailRecipientBottomDialogFragment(
         val recipientsTiet = binding.bsSendMailAliasRecipientTiet.text.toString()
         val recipients = recipientsTiet.split(",")
 
+        // Check if all the entered recipients are valid email addresses
         for (email in recipients) {
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                     .matches()

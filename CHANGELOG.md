@@ -8,6 +8,8 @@
     - Statistic widget for flexing with your forwarded email count
     - Android 12 style alias widget for showing the 4 most active aliases
 - It's now possible to "forget" your alias from the app
+- Introducing "Email action integration", create aliases and send emails from aliases from... anywhere! Without opening the app! Open the new "
+  Features and integrations" section in the app settings to learn more
 
 ### Fixed/Improved
 

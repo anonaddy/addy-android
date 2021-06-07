@@ -75,7 +75,8 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_marginBottom="8dp"
-            android:text="@string/new_user" />
+            android:text="@string/new_user"
+            tools:ignore="InefficientWeight" />
 
 
         <br.com.simplepass.loadingbutton.customViews.CircularProgressButton

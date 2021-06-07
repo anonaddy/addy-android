@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_rules_create_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -228,16 +229,27 @@
                     android:layout_width="match_parent"
                     android:layout_marginTop="16dp" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="16dp"
-                    android:alpha="0.8"
-                    android:drawablePadding="16dp"
-                    android:gravity="center_vertical"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/rules_create_info"
-                    app:drawableStartCompat="@drawable/ic_info_24dp" />
+                    android:alpha="0.8">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:contentDescription="@string/Info"
+                        android:paddingEnd="16dp"
+                        android:src="@drawable/ic_info_24dp"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/activity_domain_settings_RL_count_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="@string/rules_create_info" />
+                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>

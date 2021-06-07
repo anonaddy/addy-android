@@ -22,6 +22,7 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
+import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 
@@ -240,6 +241,13 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
+        binding.activityAppSettingsSectionFeatures.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsActivity, AppSettingsFeaturesActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
         binding.activityAppSettingsSectionBackgroundService.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!addBackgroundServiceIntervalBottomDialogFragment.isAdded) {
@@ -289,8 +297,6 @@ class AppSettingsActivity : BaseActivity(),
                 startActivity(i)
             }
         })
-
-
 
 
         binding.activityAppSettingsSectionLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {

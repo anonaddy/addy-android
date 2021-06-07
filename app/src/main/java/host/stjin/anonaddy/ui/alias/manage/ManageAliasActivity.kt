@@ -27,6 +27,7 @@ import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -363,22 +364,6 @@ class ManageAliasActivity : BaseActivity(),
                 )
             }
         }
-    }
-
-    private fun getSendAddress(recipientEmails: String): Array<String?> {
-        val recipients = recipientEmails.split(",")
-        val toAddresses = Array<String?>(recipients.size) { null }
-
-        for ((i, email) in recipients.withIndex()) {
-            // This method generates the to address for sending emails from this alias according to https://anonaddy.com/help/sending-email-from-an-alias/
-            val leftPartOfAlias = this.alias?.local_part
-            val domain = this.alias?.domain
-            val recipientLeftPartOfEmail = email.substringBeforeLast("@", "")
-            val recipientRightPartOfEmail = email.substringAfterLast("@", "")
-            toAddresses[i] = "$leftPartOfAlias+$recipientLeftPartOfEmail=$recipientRightPartOfEmail@$domain"
-        }
-
-        return toAddresses
     }
 
 
@@ -741,13 +726,15 @@ class ManageAliasActivity : BaseActivity(),
         editAliasRecipientsBottomDialogFragment.dismiss()
     }
 
+
     override fun onPressSend(toString: String) {
-        val recipients = getSendAddress(toString)
+        // Get recipients
+        val recipients = alias?.let { getSendAddress(toString, it) }
 
         // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
         val clipboard: ClipboardManager =
             this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
+        val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
 

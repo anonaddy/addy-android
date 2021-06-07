@@ -2,14 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="host.stjin.anonaddy">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Used for scanning the API key -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Used for scanning the API key -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!--
       Include all the "features" under the camera permission,
       and mark them all as optional.
-      -->
+    -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -17,8 +15,8 @@
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
 
-
-    <!-- Starting from Android 11, we need to query to packages with mailto: mailscheme
+    <!--
+    Starting from Android 11, we need to query to packages with mailto: mailscheme
     This is being used in the ManageAliasActivity for sending emails from an alias
     -->
     <queries>
@@ -27,7 +25,6 @@
             <data android:scheme="mailto" />
         </intent>
     </queries>
-
 
     <application
         android:allowBackup="false"
@@ -52,12 +49,9 @@
                 android:resource="@xml/alias_widget_1_info" />
         </receiver>
 
-
         <service
             android:name=".widget.AliasWidget1RemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <!-- Widget 1 -->
-
+            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- Widget 1 -->
         <!-- Widget 2 -->
         <receiver
             android:name=".widget.AliasWidget2Provider"
@@ -70,9 +64,7 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/alias_widget_2_info" />
-        </receiver>
-        <!-- Widget 2 -->
-
+        </receiver> <!-- Widget 2 -->
         <!-- Widget 3 -->
         <receiver
             android:name=".widget.AliasWidget3Provider"
@@ -87,20 +79,12 @@
                 android:resource="@xml/alias_widget_3_info" />
         </receiver>
 
-
         <service
             android:name=".widget.AliasWidget3RemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <!-- Widget 3 -->
-
-
+            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- Widget 3 -->
         <!-- Notification -->
-        <receiver android:name="host.stjin.anonaddy.notifications.ActionReceiver" />
-        <!-- Notification-->
-
+        <receiver android:name=".notifications.ActionReceiver" /> <!-- Notification -->
         <!-- END widget -->
-
-
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
@@ -116,7 +100,6 @@
             android:name=".ui.alias.manage.ManageAliasActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite">
-
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -129,6 +112,26 @@
                     android:scheme="https" />
                 <!-- note that the leading "/" is required for pathPrefix -->
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.intent.IntentContextMenuAliasActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/intent_context_menu"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:theme="@style/AppTheme.Transparent">
+            <!-- Creating aliases on-the-go -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.SENDTO" />
+
+                <data android:scheme="mailto" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <!-- END Creating aliases on-the-go -->
         </activity>
         <activity
             android:name=".ui.appsettings.logs.LogViewerActivity"
@@ -159,6 +162,12 @@
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
             android:name=".ui.appsettings.AppSettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+        <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesActivity"
+            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+        <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesMailToActivity"
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
             android:name=".ui.setup.SetupActivity"

@@ -29,7 +29,6 @@ import host.stjin.anonaddy.AnonAddy.API_URL_USERNAMES
 import host.stjin.anonaddy.AnonAddy.lazyMgr
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -258,12 +257,14 @@ class NetworkHelper(private val context: Context) {
         description: String,
         format: String,
         local_part: String,
-        recipients: ArrayList<String>
+        recipients: ArrayList<String>?
     ) {
         val array = JSONArray()
 
-        for (recipient in recipients) {
-            array.put(recipient)
+        if (recipients != null) {
+            for (recipient in recipients) {
+                array.put(recipient)
+            }
         }
 
         val json = JSONObject()
@@ -1148,12 +1149,9 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 callback("201", null)
             }
-
             // 404 means that the setup is not completed
             404 -> {
-                //TODO Fix getting body the normal way
-                val body = StringUtils.substringBetween(response.toString(), "Body : ", "\n")
-                callback("404", body)
+                callback("404", String(response.data))
             }
             401 -> {
                 invalidApiKey()
