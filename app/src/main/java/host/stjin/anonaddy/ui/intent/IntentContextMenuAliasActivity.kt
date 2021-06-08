@@ -276,6 +276,12 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
     }
 
+    override fun onClose(result: Boolean) {
+        if (!result) {
+            finish()
+        }
+    }
+
     override fun onClose() {
         finish()
     }

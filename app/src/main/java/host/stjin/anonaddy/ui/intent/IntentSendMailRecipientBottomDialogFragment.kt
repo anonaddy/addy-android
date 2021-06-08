@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.intent
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -29,10 +30,19 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     private lateinit var listener: AddIntentSendMailRecipientBottomDialogListener
 
+    // True if the bottomsheet succeeded it's action and the DialogFragment should stay up after this sheet closes
+    // False if bottomsheet was closed by user, thus the other sheet should close as well
+    private var bottomSheetResult = false
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddIntentSendMailRecipientBottomDialogListener {
         suspend fun onPressSend(alias: String, toString: String)
+        fun onClose(result: Boolean)
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        listener.onClose(bottomSheetResult)
+        super.onCancel(dialog)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -134,6 +144,7 @@ class IntentSendMailRecipientBottomDialogFragment(
             binding.bsSendMailFromIntentAliasSendMailButton.isEnabled = false
             // Get the first alias that matched the email address with the one entered in the adapter
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                bottomSheetResult = true
                 listener.onPressSend(
                     binding.bsSendMailFromIntentAliasesMact.text.toString(),
                     binding.bsSendMailFromIntentAliasRecipientTiet.text.toString()

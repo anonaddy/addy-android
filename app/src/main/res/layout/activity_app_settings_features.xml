@@ -34,16 +34,6 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="188dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:contentDescription="@string/features_and_integrations"
-                    android:elevation="50dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/feature_banner" />
-
                 <LinearLayout
                     style="@style/AnonAddyTitleAction"
                     android:layout_width="match_parent"
