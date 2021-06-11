@@ -36,6 +36,7 @@
 
 
                 <ImageView
+                    android:id="@+id/activity_app_settings_features_mailto_image"
                     android:layout_width="match_parent"
                     android:layout_height="132dp"
                     android:layout_marginTop="8dp"

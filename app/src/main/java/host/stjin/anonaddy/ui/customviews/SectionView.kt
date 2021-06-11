@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.View.OnLongClickListener
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -17,6 +18,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     LinearLayout(context, attrs, defStyle) {
     private var listener: OnSwitchCheckedChangedListener? = null
     private var onClicklistener: OnLayoutClickedListener? = null
+    private var onLongClicklistener: OnLayoutLongClickedListener? = null
     private var switchMaterial: SwitchMaterial? = null
     var description: TextView? = null
     private var progressBar: ProgressBar? = null
@@ -27,6 +29,14 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     private var linearLayout: LinearLayout? = null
     private var cardView: CardView? = null
 
+
+    fun getOnLayoutLongClickedListener(): OnLayoutLongClickedListener? {
+        return onLongClicklistener
+    }
+
+    fun setOnLayoutLongClickedListener(listener: OnLayoutLongClickedListener?) {
+        this.onLongClicklistener = listener
+    }
 
     fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
         return onClicklistener
@@ -58,6 +68,16 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             }
         }
 
+    private val layoutLongClickedListener =
+        OnLongClickListener {
+            // If the OnLongClickListener was set (an action was assigned) call onLongClick.
+            // Else flip the switch
+            if (onLongClicklistener != null) {
+                onLongClicklistener?.onLongClick()
+            }
+            false
+        }
+
     fun setSwitchChecked(boolean: Boolean) {
         switchMaterial?.isChecked = boolean
     }
@@ -74,8 +94,10 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
         if (boolean) {
             linearLayout?.setOnClickListener(layoutClickedListener)
+            linearLayout?.setOnLongClickListener(layoutLongClickedListener)
         } else {
             linearLayout?.setOnClickListener(null)
+            linearLayout?.setOnLongClickListener(null)
         }
     }
 
@@ -118,6 +140,10 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
     interface OnLayoutClickedListener {
         fun onClick()
+    }
+
+    interface OnLayoutLongClickedListener {
+        fun onLongClick()
     }
 
     init {

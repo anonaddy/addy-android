@@ -1,7 +1,9 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.widget.CompoundButton
+import android.widget.Toast
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
@@ -30,6 +32,7 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
 
         loadSettings()
         setOnClickListeners()
+        setOnLongClickListeners()
         setOnSwitchListeners()
     }
 
@@ -73,6 +76,17 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
                 binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.getSwitchChecked())
             }
         })
+    }
+
+    private fun setOnLongClickListeners() {
+        binding.activityAppSettingsFeaturesMailtoImage.setOnLongClickListener {
+            binding.activityAppSettingsFeaturesMailtoImage.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            Toast.makeText(
+                this@AppSettingsFeaturesMailToActivity,
+                this@AppSettingsFeaturesMailToActivity.resources.getString(R.string.just_like_that), Toast.LENGTH_SHORT
+            ).show()
+            false
+        }
     }
 
 
