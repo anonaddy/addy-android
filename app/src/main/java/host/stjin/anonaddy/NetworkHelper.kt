@@ -310,7 +310,9 @@ class NetworkHelper(private val context: Context) {
     suspend fun getAliases(
         callback: (ArrayList<Aliases>?) -> Unit,
         activeOnly: Boolean,
-        includeDeleted: Boolean
+        includeDeleted: Boolean,
+        filter: String? = null,
+        page: String? = null
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -318,25 +320,32 @@ class NetworkHelper(private val context: Context) {
         }
 
 
-        val (_, response, result) = if (includeDeleted) {
-            Fuel.get(API_URL_ALIAS, listOf("deleted" to "with"))
-                .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
-                )
-                .awaitStringResponseResult()
-        } else {
-            Fuel.get(API_URL_ALIAS)
-                .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
-                )
-                .awaitStringResponseResult()
+        /*
+        Parameters
+        https://app.anonaddy.com/docs/#get-all-aliases
+         */
+        val parameters: ArrayList<Pair<String, String>> = arrayListOf()
+        if (includeDeleted) {
+            parameters.add("filter[deleted]=" to "with")
         }
+
+        if (!filter.isNullOrEmpty()) {
+            parameters.add("filter[search]" to filter)
+        }
+
+        if (!page.isNullOrEmpty()) {
+            parameters.add("page[number]" to page)
+        }
+
+        val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
 
 
         when (response.statusCode) {

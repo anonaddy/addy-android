@@ -26,6 +26,7 @@
         </intent>
     </queries>
 
+    <!-- Disable backup to prevent encrypted storage to transfer over -->
     <application
         android:allowBackup="false"
         android:exported="true"

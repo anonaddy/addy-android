@@ -131,23 +131,29 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     }
 
     private fun searchForTerm(context: Context) {
-        // Set error to null if domain and alias is valid
-        binding.bsSearchTermTil.error = null
-        binding.bsSearchTermTil.isEnabled = false
-        binding.bsSearchTitle.text = context.resources.getString(R.string.searching)
+        if (binding.bsSearchTermTiet.text.toString().length >= 3) {
+            // Set error to null if domain and alias is valid
+            binding.bsSearchTermTil.error = null
+            binding.bsSearchTermTil.isEnabled = false
+            binding.bsSearchTitle.text = context.resources.getString(R.string.searching)
 
-        // Add search to recent searches
-        val recentSearchesSet = settingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
+            // Add search to recent searches
+            val recentSearchesSet = settingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
 
-        val recentSearches: ArrayList<String> = ArrayList()
-        recentSearchesSet?.let { recentSearches.addAll(it) }
-        // Add search to list
-        recentSearches.add(binding.bsSearchTermTiet.text.toString())
-        // Grab last 5 and put them back
-        settingsManager.putStringSet(SettingsManager.PREFS.RECENT_SEARCHES, recentSearches.takeLast(5).toMutableSet())
+            val recentSearches: ArrayList<String> = ArrayList()
+            recentSearchesSet?.let { recentSearches.addAll(it) }
+            // Add search to list
+            recentSearches.add(binding.bsSearchTermTiet.text.toString())
+            // Grab last 5 and put them back
+            settingsManager.putStringSet(SettingsManager.PREFS.RECENT_SEARCHES, recentSearches.takeLast(5).toMutableSet())
 
-
-        getAndReturnList(context)
+            getAndReturnList(context)
+        } else {
+            binding.bsSearchTitle.text = context.resources.getString(R.string.search)
+            binding.bsSearchTermTil.isEnabled = true
+            binding.bsSearchTermTil.error =
+                context.resources.getString(R.string.search_min_3_char_required)
+        }
     }
 
     var aliases: ArrayList<Aliases>? = null
@@ -168,7 +174,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                     aliases = aliaslist
                     sourcesSearched++
                     performSearch(context)
-                }, activeOnly = false, includeDeleted = true)
+                }, activeOnly = false, includeDeleted = true, binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault()))
             }
         }
 
@@ -233,14 +239,8 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
             if (aliases != null) {
                 for (alias in aliases!!) {
-                    if (
-                        alias.email.lowercase(Locale.getDefault())
-                            .contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault())) ||
-                        alias.description?.lowercase(Locale.getDefault())
-                            ?.contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault())) == true
-                    ) {
-                        filteredAliases.add(alias)
-                    }
+                    // Searching for aliases is being done in the API now, no need to do it again
+                    filteredAliases.add(alias)
                 }
             }
 
