@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_app_settings_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,25 +20,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="8dp"
             android:paddingStart="16dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             android:paddingEnd="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="16dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
 
                 <LinearLayout
-                    android:layout_width="match_parent"
                     style="@style/AnonAddyTitleNoAction"
+                    android:layout_width="match_parent"
                     android:orientation="horizontal">
 
                     <TextView
@@ -107,15 +107,15 @@
                     android:id="@+id/activity_app_settings_section_reset"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="6dp"
                     app:sectionDescription="@string/reset_app_desc"
                     app:sectionStartIcon="@drawable/ic_restart_alt_24dp"
-                    android:layout_marginBottom="6dp"
                     app:sectionTitle="@string/reset_app" />
 
 
                 <LinearLayout
-                    android:layout_width="match_parent"
                     style="@style/AnonAddyTitleNoAction"
+                    android:layout_width="match_parent"
                     android:orientation="horizontal">
 
                     <TextView
@@ -140,14 +140,14 @@
                     android:id="@+id/activity_app_settings_section_faq"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="6dp"
                     app:sectionDescription="@string/faq_desc"
                     app:sectionStartIcon="@drawable/ic_question_answer_24dp"
-                    android:layout_marginBottom="6dp"
                     app:sectionTitle="@string/faq" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
                     style="@style/AnonAddyTitleNoAction"
+                    android:layout_width="match_parent"
                     android:orientation="horizontal">
 
                     <TextView
@@ -181,8 +181,8 @@
                     android:id="@+id/activity_app_settings_section_contributors"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionRippleEffect="false"
                     app:sectionDescription="@string/contributors_list"
+                    app:sectionRippleEffect="false"
                     app:sectionStartIcon="@drawable/ic_people_24dp"
                     app:sectionTitle="@string/contributors" />
 
@@ -195,24 +195,24 @@
                 android:orientation="vertical">
 
                 <TextView
+                    style="@style/DescTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
                     android:text="@string/crafted_with_love_and_privacy"
                     android:textAlignment="center"
-                    style="@style/DescTextStyle"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/activity_app_settings_version"
+                    style="@style/DescTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
                     android:text="v1.0"
                     android:textAlignment="center"
-                    style="@style/DescTextStyle"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 

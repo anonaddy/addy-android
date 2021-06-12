@@ -375,4 +375,5 @@
     <string name="exceeded_bandwidth_limit">You\'ve exceeded your bandwidth limit for this month</string>
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
     <string name="just_like_that">Just like that!</string>
+    <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
 </resources>

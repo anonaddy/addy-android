@@ -47,10 +47,11 @@
                 android:id="@+id/activity_manage_username_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="16dp"
+                android:layout_marginBottom="24dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="16dp"
                 android:visibility="invisible">
 
 
@@ -69,9 +70,9 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    style="@style/AnonAddyDescText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    style="@style/AnonAddyDescText"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -99,9 +100,9 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    style="@style/AnonAddyDescText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    style="@style/AnonAddyDescText"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 

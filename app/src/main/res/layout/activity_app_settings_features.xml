@@ -76,10 +76,10 @@
                     android:id="@+id/activity_app_settings_features_section_mailto_sheet"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="6dp"
                     app:sectionDescription="@string/integration_mailto_alias_desc"
                     app:sectionShowSwitch="true"
                     app:sectionStartIcon="@drawable/ic_bottom_sheet"
-                    android:layout_marginBottom="6dp"
                     app:sectionTitle="@string/integration_mailto_alias" />
 
 

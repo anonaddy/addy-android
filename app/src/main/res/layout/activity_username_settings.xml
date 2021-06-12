@@ -40,11 +40,11 @@
                 android:id="@+id/activity_username_settings_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical"
                 android:padding="8dp"
                 android:paddingStart="16dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
                 android:paddingEnd="16dp">
 
                 <LinearLayout
