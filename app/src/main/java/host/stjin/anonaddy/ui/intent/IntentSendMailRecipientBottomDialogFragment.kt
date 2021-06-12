@@ -36,7 +36,7 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddIntentSendMailRecipientBottomDialogListener {
-        suspend fun onPressSend(alias: String, toString: String)
+        suspend fun onPressSend(alias: String, toString: String, skipAndOpenDefaultMailApp: Boolean = false)
         fun onClose(result: Boolean)
     }
 
@@ -125,39 +125,51 @@ class IntentSendMailRecipientBottomDialogFragment(
             }
         }
 
-        // Check if the alias is a valid email address
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(binding.bsSendMailFromIntentAliasesMact.text.toString())
-                .matches()
-        ) {
-            binding.bsSendMailFromIntentAliasesTil.error =
-                context.resources.getString(R.string.not_a_valid_address)
-            return
-        }
-
-        // As we can dynamically create aliases, we need to check if the entered alias has a domain name that we can use
-        val splittedEmailAddress = binding.bsSendMailFromIntentAliasesMact.text.toString().split("@")
-        if (domainOptions.contains(splittedEmailAddress[1])) {
-            // This is a valid domain name the user has added to their AnonAddy account
-
-            // Set error to null if domain and alias is valid
-            binding.bsSendMailFromIntentAliasRecipientTil.error = null
-            binding.bsSendMailFromIntentAliasSendMailButton.isEnabled = false
-            // Get the first alias that matched the email address with the one entered in the adapter
+        // Check if alias is empty, if alias is empty just forward the recipient to the default mail app without generating an alias
+        if (binding.bsSendMailFromIntentAliasesMact.text.toString().isNullOrEmpty()) {
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                bottomSheetResult = true
                 listener.onPressSend(
                     binding.bsSendMailFromIntentAliasesMact.text.toString(),
-                    binding.bsSendMailFromIntentAliasRecipientTiet.text.toString()
+                    binding.bsSendMailFromIntentAliasRecipientTiet.text.toString(),
+                    true
                 )
             }
         } else {
-            // This is not a domain the user owns
-            binding.bsSendMailFromIntentAliasesTil.error =
-                context.resources.getString(R.string.you_do_not_own_this_domain)
-            return
+
+
+            // Check if the alias is a valid email address
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(binding.bsSendMailFromIntentAliasesMact.text.toString())
+                    .matches()
+            ) {
+                binding.bsSendMailFromIntentAliasesTil.error =
+                    context.resources.getString(R.string.not_a_valid_address)
+                return
+            }
+
+            // As we can dynamically create aliases, we need to check if the entered alias has a domain name that we can use
+            val splittedEmailAddress = binding.bsSendMailFromIntentAliasesMact.text.toString().split("@")
+            if (domainOptions.contains(splittedEmailAddress[1])) {
+                // This is a valid domain name the user has added to their AnonAddy account
+
+                // Set error to null if domain and alias is valid
+                binding.bsSendMailFromIntentAliasRecipientTil.error = null
+                binding.bsSendMailFromIntentAliasSendMailButton.isEnabled = false
+                // Get the first alias that matched the email address with the one entered in the adapter
+                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                    bottomSheetResult = true
+                    listener.onPressSend(
+                        binding.bsSendMailFromIntentAliasesMact.text.toString(),
+                        binding.bsSendMailFromIntentAliasRecipientTiet.text.toString()
+                    )
+                }
+            } else {
+                // This is not a domain the user owns
+                binding.bsSendMailFromIntentAliasesTil.error =
+                    context.resources.getString(R.string.you_do_not_own_this_domain)
+                return
+            }
+
         }
-
-
     }
 
 

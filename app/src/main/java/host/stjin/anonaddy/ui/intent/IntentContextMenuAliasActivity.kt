@@ -224,56 +224,64 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         }, domain, description, format, local_part, null)
     }
 
-    override suspend fun onPressSend(alias: String, toString: String) {
+    override suspend fun onPressSend(alias: String, toString: String, skipAndOpenDefaultMailApp: Boolean) {
         intentSendMailRecipientBottomDialogFragment.dismiss()
 
-        networkHelper.getAliases({ result ->
-            // Check if this alias exists
-            if (result != null) {
-                if (result.count { it.email == alias } > 0) {
-                    // The entered alias exists!
-                    intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_sharesheet))
+        if (skipAndOpenDefaultMailApp) {
+            openMailToShareSheet(toString.split(",").toTypedArray())
+            finish()
+        } else {
+            networkHelper.getAliases({ result ->
+                // Check if this alias exists
+                if (result != null) {
+                    if (result.count { it.email == alias } > 0) {
+                        // The entered alias exists!
+                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_sharesheet))
 
 
-                    // Get actual alias object
-                    val aliasObject = result.first { it.email == alias }
-                    // Get recipients
-                    val recipients = AnonAddyUtils.getSendAddress(toString, aliasObject)
+                        // Get actual alias object
+                        val aliasObject = result.first { it.email == alias }
+                        // Get recipients
+                        val recipients = AnonAddyUtils.getSendAddress(toString, aliasObject)
 
-                    // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
-                    val clipboard: ClipboardManager =
-                        this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
-                    clipboard.setPrimaryClip(clip)
-                    Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
+                        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
+                        val clipboard: ClipboardManager =
+                            this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
 
-                    /**
-                     * SINCE Android 11, we can only query apps that support the mailto: intent :D
-                     */
+                        /**
+                         * SINCE Android 11, we can only query apps that support the mailto: intent :D
+                         */
 
-                    // Open the mailto app select sheet, but make sure to exclude ourselves!
-                    val intent = Intent(Intent.ACTION_SENDTO)
-                    intent.data = Uri.parse("mailto:") // only email apps should handle this
-                    intent.putExtra(Intent.EXTRA_EMAIL, recipients)
-                    if (intent.resolveActivity(packageManager) != null) {
-                        startActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
+                        openMailToShareSheet(recipients)
+                        finish()
+                    } else {
+                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, alias))
+
+                        // Alias does not exist, perhaps the user wants to create it?
+                        val splittedEmailAddress = alias.split("@")
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            addAliasToAccountAndShare(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0], alias, toString)
+                        }
                     }
-                    finish()
                 } else {
-                    intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, alias))
-
-                    // Alias does not exist, perhaps the user wants to create it?
-                    val splittedEmailAddress = alias.split("@")
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                        addAliasToAccountAndShare(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0], alias, toString)
-                    }
+                    Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_aliases), Toast.LENGTH_LONG).show()
+                    finish()
                 }
-            } else {
-                Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_aliases), Toast.LENGTH_LONG).show()
-                finish()
-            }
-        }, true, includeDeleted = false)
+            }, true, includeDeleted = false)
+        }
+    }
 
+    private fun openMailToShareSheet(recipients: Array<String?>) {
+        // Open the mailto app select sheet, but make sure to exclude ourselves!
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, recipients)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
+        }
     }
 
     override fun onClose(result: Boolean) {

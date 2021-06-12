@@ -205,6 +205,16 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         binding.aliasNoAliases.visibility = View.VISIBLE
                     }
 
+
+                    // Hide the aliasShowDeletedAliasToggleLL if there are no deleted aliases
+                    if (onlyDeletedList.size > 0) {
+                        binding.aliasNoDeletedAliases.visibility = View.GONE
+                        binding.aliasShowDeletedAliasToggleLL.visibility = View.VISIBLE
+                    } else {
+                        binding.aliasNoDeletedAliases.visibility = View.VISIBLE
+                        binding.aliasShowDeletedAliasToggleLL.visibility = View.GONE
+                    }
+
                     // Set the count of aliases so that the shimmerview looks better next time
                     settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ALIAS_COUNT, nonDeletedAliases.size)
 
@@ -295,12 +305,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     return
                 }
 
-
-                if (onlyDeletedList.size > 0) {
-                    binding.aliasNoDeletedAliases.visibility = View.GONE
-                } else {
-                    binding.aliasNoDeletedAliases.visibility = View.VISIBLE
-                }
 
                 /**
                  * ALIAS LIST

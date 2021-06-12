@@ -35,7 +35,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleAction"
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
@@ -59,7 +59,7 @@
 
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleAction"
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 

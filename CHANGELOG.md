@@ -17,11 +17,13 @@
     - One-handed interface, simply swipe down from any screen to move content down for better accessibility
     - Cards and raises are now used for a clean-looking, easier-to-understand design
     - The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color
+    - A new app icon, that changes according to your system accent (Android 12 only)
     - Softer colors
     - Bigger, clearer buttons with more space between elements
     - Animations! Most progressbars are now replaced with morphing buttons
     - Improved shimmers
     - Improved tablet layout
+
 - Updated shared domains list
 - Select the recipients for an alias when creating a new alias
 - Performance improvements to make the app even smoother

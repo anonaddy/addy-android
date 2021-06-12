@@ -52,7 +52,7 @@
                 android:visibility="invisible">
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleAction"
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -81,7 +81,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleAction"
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -118,7 +118,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        style="@style/AnonAddyTitleAction"
+                        style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">

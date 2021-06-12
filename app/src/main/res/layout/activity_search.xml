@@ -58,7 +58,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleAction"
+                        style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/aliases" />
 
@@ -82,7 +82,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleAction"
+                        style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/recipients" />
 
@@ -106,7 +106,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleAction"
+                        style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/domains" />
 
@@ -130,7 +130,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleAction"
+                        style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/usernames" />
 
@@ -154,7 +154,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleAction"
+                        style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/rules" />
 
