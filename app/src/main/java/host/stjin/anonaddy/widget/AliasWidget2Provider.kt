@@ -98,7 +98,7 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
     val views = RemoteViews(context.packageName, R.layout.widget_2_alias)
     views.setTextViewText(R.id.widget_aliases_statistics_count, emailsForwarded.toString())
 
-    views.setOnClickPendingIntent(R.id.widget_aliases_statistics, getPendingSelfIntent(context, OPEN_APP))
+    views.setOnClickPendingIntent(android.R.id.background, getPendingSelfIntent(context, OPEN_APP))
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)

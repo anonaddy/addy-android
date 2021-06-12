@@ -1,11 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widget_aliases_statistics"
+    android:id="@android:id/background"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/widget_2_background"
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
+    android:theme="@style/Theme.MaterialComponents.DayNight"
     android:foreground="?android:attr/selectableItemBackground"
     android:padding="@dimen/widget_2_padding">
 
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:text="0"
-            android:textColor="@color/BlackWhite"
+            android:textColor="@android:color/white"
             android:textSize="60sp" />
 
         <TextView
@@ -46,7 +47,8 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="bottom"
             android:text="@string/emails_forwarded"
-            android:textColor="@color/BlackWhite"
+            android:alpha="0.6"
+            android:textColor="@android:color/white"
             android:textSize="14sp" />
     </LinearLayout>
 

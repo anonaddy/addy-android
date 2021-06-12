@@ -36,7 +36,7 @@
 
 
     <!-- Icon -->
-    <color name="ic_launcher_background">#002E6F</color>
+    <color name="ic_launcher_background">@color/primaryColorStatic</color>
     <color name="ic_launcher_foreground">#DFE0FF</color>
 
 

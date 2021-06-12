@@ -6,7 +6,11 @@
     android:maxResizeHeight="110dp"
     android:minWidth="180dp"
     android:minHeight="110dp"
+    android:description="@string/widget_2_description"
+    android:previewLayout="@layout/widget_2_alias"
     android:previewImage="@drawable/alias_widget_2_preview"
+    android:targetCellWidth="3"
+    android:targetCellHeight="2"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen|keyguard" />
