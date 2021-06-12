@@ -70,8 +70,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 if (version != null) {
                     AnonAddy.VERSIONCODE = "${version.major}${version.minor}${version.patch}".toInt()
                     AnonAddy.VERSIONSTRING = version.version.toString()
-                    //0.6.2 translates to 062 aka 62
-                    if (AnonAddy.VERSIONCODE >= 62) {
+                    //0.7.4 translates to 074 aka 074
+                    if (AnonAddy.VERSIONCODE >= 74) {
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             loadUserResourceIntoMemory()
                         }
