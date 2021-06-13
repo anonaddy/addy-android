@@ -126,7 +126,7 @@ class IntentSendMailRecipientBottomDialogFragment(
         }
 
         // Check if alias is empty, if alias is empty just forward the recipient to the default mail app without generating an alias
-        if (binding.bsSendMailFromIntentAliasesMact.text.toString().isNullOrEmpty()) {
+        if (binding.bsSendMailFromIntentAliasesMact.text.toString().isEmpty()) {
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 listener.onPressSend(
                     binding.bsSendMailFromIntentAliasesMact.text.toString(),

@@ -54,7 +54,7 @@
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
         android:layout_weight="0"
-        android:backgroundTint="@color/primaryColor"
+        android:backgroundTint="@color/primaryColorStatic"
         android:text="@string/Copy"
         android:textColor="@android:color/white" />
 
