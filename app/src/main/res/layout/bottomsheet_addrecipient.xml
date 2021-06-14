@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/add_recipient" />
+                android:text="@string/add" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

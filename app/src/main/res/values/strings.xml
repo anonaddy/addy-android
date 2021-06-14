@@ -159,7 +159,6 @@
     <string name="add_public_gpg_key">Add public GPG key</string>
     <string name="manage_recipient_basic_info">Email: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
     <string name="add_public_gpg_key_desc">Enter your PUBLIC key data in the textbox below\n\nMake sure to remove Comment: and Version:</string>
-    <string name="add_key">Add key</string>
     <string name="error_add_gpg_key">Something went wrong while adding your public GPG key</string>
     <string name="error_removing_gpg_key">Something went wrong while removing the public key</string>
     <string name="encrypt_emails_to_this_recipient">Encrypt emails to this recipient</string>
@@ -379,4 +378,6 @@
     <string name="widget_2_description">See how many emails have been forwarded</string>
     <string name="widget_1_description">A handy list of the 15 most used aliases</string>
     <string name="widget_3_description">The 4 most used aliases listed in a handy list</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
 </resources>
