@@ -3,11 +3,7 @@ package host.stjin.anonaddy.ui
 import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +22,6 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.NumberUtils
-import host.stjin.anonaddy.utils.ThemeUtils
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -126,18 +121,6 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     private fun setInfo() {
         val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainProfileSelectDialogUsernameInitials.text = usernameInitials
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            binding.mainProfileSelectDialogUsernameInitials.background.colorFilter = BlendModeColorFilter(
-                ThemeUtils.getDeviceAccentColor(requireContext()),
-                BlendMode.SRC_OVER
-            )
-        } else {
-            binding.mainProfileSelectDialogUsernameInitials.background.setColorFilter(
-                ThemeUtils.getDeviceAccentColor(requireContext()),
-                PorterDuff.Mode.SRC_OVER
-            )
-        }
 
         binding.mainProfileSelectDialogAnonaddyVersion.text =
             if (AnonAddy.VERSIONCODE == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(

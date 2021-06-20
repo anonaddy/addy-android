@@ -2,10 +2,6 @@ package host.stjin.anonaddy.ui
 
 
 import android.content.Intent
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.BaseActivity
@@ -24,7 +20,6 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
-import host.stjin.anonaddy.utils.ThemeUtils
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -130,17 +125,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         // Figure out the from name initials
         val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainAppBarInclude.mainTopBarUserInitials.text = usernameInitials
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            binding.mainAppBarInclude.mainTopBarUserInitials.background.colorFilter = BlendModeColorFilter(
-                ThemeUtils.getDeviceAccentColor(this),
-                BlendMode.SRC_OVER
-            )
-        } else {
-            binding.mainAppBarInclude.mainTopBarUserInitials.background.setColorFilter(
-                ThemeUtils.getDeviceAccentColor(this),
-                PorterDuff.Mode.SRC_OVER
-            )
-        }
 
         binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {
             if (!profileBottomDialogFragment.isAdded) {

@@ -29,11 +29,13 @@
             android:layout_height="48dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/circle"
+            android:backgroundTint="@color/profile_icon_background"
+            android:backgroundTintMode="src_over"
             android:contentDescription="@string/anonaddy_settings"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="SV"
-            android:textColor="@android:color/white"
+            android:textColor="@color/profile_icon_foreground"
             android:textSize="16sp"
             tools:ignore="HardcodedText" />
 

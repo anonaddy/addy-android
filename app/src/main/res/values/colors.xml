@@ -39,5 +39,8 @@
     <color name="ic_launcher_background">@color/primaryColorStatic</color>
     <color name="ic_launcher_foreground">#DFE0FF</color>
 
+    <!-- Profile icon -->
+    <color name="profile_icon_background">@color/primaryColor</color>
+    <color name="profile_icon_foreground">@android:color/white</color>
 
 </resources>
