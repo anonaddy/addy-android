@@ -102,11 +102,11 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
         binding.mainProfileSelectDialogStatisticsMonthlyBandwidthLeftText.text =
             when {
-                currMonthlyBandwidth > maxMonthlyBandwidth -> this.resources.getString(R.string.exceeded_bandwidth_limit)
                 maxMonthlyBandwidth == 0 -> this.resources.getString(
                     R.string._sMB_remaining_this_month,
                     "∞"
                 )
+                currMonthlyBandwidth > maxMonthlyBandwidth -> this.resources.getString(R.string.exceeded_bandwidth_limit)
                 else -> this.resources.getString(
                     R.string._sMB_remaining_this_month,
                     (NumberUtils.roundOffDecimal(maxMonthlyBandwidth.toDouble()) - NumberUtils.roundOffDecimal(currMonthlyBandwidth)).toString()

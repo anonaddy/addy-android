@@ -12,7 +12,6 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
-import host.stjin.anonaddy.widget.AliasWidget3Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -41,14 +40,6 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             .getAppWidgetIds(ComponentName(applicationContext, AliasWidget2Provider::class.java))
         updateWidget2Intent.putExtra(EXTRA_APPWIDGET_IDS, ids2)
         applicationContext.sendBroadcast(updateWidget2Intent)
-
-        // Update widget 3
-        val updateWidget3Intent = Intent(applicationContext, AliasWidget3Provider::class.java)
-        updateWidget3Intent.action = ACTION_APPWIDGET_UPDATE
-        val ids3 = AppWidgetManager.getInstance(applicationContext)
-            .getAppWidgetIds(ComponentName(applicationContext, AliasWidget3Provider::class.java))
-        updateWidget2Intent.putExtra(EXTRA_APPWIDGET_IDS, ids3)
-        applicationContext.sendBroadcast(updateWidget3Intent)
     }
 
     override fun doWork(): Result {
