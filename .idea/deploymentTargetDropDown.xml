@@ -7,22 +7,23 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\Stjin\.android\avd\Pixel_5_API_S.avd" />
+            <value value="C:\Users\Stjin\.android\avd\Pixel_4_API_S.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2021-06-13T08:49:41.389370900Z" />
-    <targetsSelectedWithDialog>
+    <timeTargetWasSelectedWithDropDown value="2021-06-20T10:23:53.223682700Z" />
+    <multipleDevicesSelectedInDropDown value="true" />
+    <runningDeviceTargetsSelectedWithDialog>
       <Target>
-        <type value="QUICK_BOOT_TARGET" />
+        <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\Stjin\.android\avd\8_Fold-out_API_30.avd" />
+            <type value="SERIAL_NUMBER" />
+            <value value="f18261bd" />
           </Key>
         </deviceKey>
       </Target>
-    </targetsSelectedWithDialog>
+    </runningDeviceTargetsSelectedWithDialog>
   </component>
 </project>

@@ -128,7 +128,7 @@
         <item name="spinning_bar_padding">8dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="initialCornerAngle">@dimen/corner_radius_button</item>
-        <item name="android:textColor">@color/primaryLightColor</item>
+        <item name="android:textColor">@color/CircularProgressButtonTextColor</item>
     </style>
 
     <style name="MaterialButtonSecondary" parent="Widget.MaterialComponents.Button">
@@ -147,7 +147,6 @@
         <item name="backgroundTint">@color/primarySuperSuperLightColor</item>
         <item name="android:textColor">@color/primaryLightColor</item>
         <item name="iconTint">@color/primaryLightColor</item>
-
     </style>
 
     <style name="MaterialButtonSecondary.IconOnly" parent="MaterialButtonSecondaryLight">

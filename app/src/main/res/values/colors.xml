@@ -26,6 +26,7 @@
 
     <color name="colorControlNormal">#89000000</color>
     <color name="transparentCircle">#0FFFFFFF</color>
+    <color name="CircularProgressButtonTextColor">@color/primaryLightColor</color>
 
     <!--grey-->
     <color name="md_grey_500">#9E9E9E</color>

@@ -148,7 +148,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
@@ -157,6 +157,7 @@
                     <LinearLayout
                         style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
@@ -188,7 +189,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
@@ -197,6 +198,7 @@
                     <LinearLayout
                         style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
