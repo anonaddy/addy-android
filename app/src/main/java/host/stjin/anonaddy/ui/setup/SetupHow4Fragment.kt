@@ -42,7 +42,7 @@ class SetupHow4Fragment : Fragment() {
             (activity as SetupNewActivity).finish()
         }
 
-        binding.setupHow4ButtonPrevious.setOnClickListener {
+        binding.setupHow4Iv.setOnClickListener {
             (activity as SetupNewActivity).switchFragments(SetupHow3Fragment())
         }
 

@@ -38,6 +38,10 @@ class SetupHow1Fragment : Fragment() {
             (activity as SetupNewActivity).switchFragments(SetupHow2Fragment())
         }
 
+        binding.setupHow1Iv.setOnClickListener {
+            (activity as SetupNewActivity).onBackPressed()
+        }
+
         return root
     }
 

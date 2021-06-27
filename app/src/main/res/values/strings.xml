@@ -52,7 +52,6 @@
     <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.anonaddy.com (or your own hosted instance)</string>
     <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
-    <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="sign_up">Sign up</string>
     <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email</string>
@@ -339,7 +338,6 @@
     <string name="copied_recipients">Copied recipients</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
-    <string name="four_most_active_aliases">4 most active aliases</string>
     <string name="forget_alias_desc">Forgetting an alias will disassociate it from your account</string>
     <string name="forget_alias">Forget alias</string>
     <string name="forget_alias_confirmation_desc">Are you sure you want to forget this alias? Forgetting an alias will disassociate it from your account.\n\nNote: If this alias uses a shared domain then it can never be restored or used again so make sure you are certain. If it is a standard alias then it can be created again since it will be as if it never existed.</string>
@@ -377,7 +375,6 @@
     <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
     <string name="widget_2_description">See how many emails have been forwarded</string>
     <string name="widget_1_description">A handy list of the 15 most used aliases</string>
-    <string name="widget_3_description">The 4 most used aliases listed in a handy list</string>
     <string name="add">Add</string>
     <string name="save">Save</string>
 </resources>

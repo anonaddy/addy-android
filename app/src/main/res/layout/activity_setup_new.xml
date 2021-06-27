@@ -6,11 +6,6 @@
     android:orientation="vertical">
 
 
-    <include
-        android:id="@+id/setup_toolbar"
-        layout="@layout/custom_toolbar_one_handed" />
-
-
     <FrameLayout
         android:id="@+id/setup_fragment"
         android:layout_width="match_parent"

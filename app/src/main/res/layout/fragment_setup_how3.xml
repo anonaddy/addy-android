@@ -1,32 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primaryColor"
     android:orientation="vertical"
     tools:context=".ui.setup.SetupHow3Fragment">
 
-    <ScrollView
+
+    <ImageView
+        android:id="@+id/setup_how_3_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/setup_how_3_button_ll"
+        android:layout_marginBottom="196dp"
+        android:baselineAlignBottom="false"
+        android:padding="96dp"
+        android:src="@drawable/setup_3" />
+
+
+    <ScrollView
+        android:id="@+id/setup_how_3_SV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:overScrollMode="never">
 
         <LinearLayout
             android:id="@+id/setup_how_3_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/shape_rounded_corners_top"
+            android:minHeight="530dp"
             android:orientation="vertical"
             android:padding="8dp"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            tools:context=".ui.setup.SetupHow3Fragment">
+            android:paddingEnd="16dp">
+
+            <ImageView
+                android:id="@+id/setup_how_3_iv"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/ic_round_arrow_back_24"
+                app:tint="@color/BlackWhite" />
 
             <TextView
+                style="@style/AnonAddySetupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/setup_how_3"
-                style="@style/titleTextView" />
+                android:text="@string/how_does_it_work" />
+
+            <TextView
+                style="@style/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_how_3" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -37,44 +66,33 @@
                 android:textColor="@color/BlackWhite"
                 android:textSize="18sp" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="32dp"
-                android:contentDescription="@string/setup_how_3"
-                android:src="@drawable/ic_dashboard" />
 
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/setup_how_3_button_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/setup_how_3_button_next"
+                    style="@style/MaterialButtonSecondaryLight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/next" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/setup_how_3_button_ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:padding="16dp"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/setup_how_3_button_previous"
-            style="@style/MaterialButtonSecondaryLight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/previous" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/setup_how_3_button_next"
-            style="@style/MaterialButtonSecondaryLight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/next" />
-    </LinearLayout>
 
 </RelativeLayout>

@@ -35,7 +35,7 @@ class SetupHow2Fragment : Fragment() {
         binding.setupHow2ButtonNext.setOnClickListener {
             (activity as SetupNewActivity).switchFragments(SetupHow3Fragment())
         }
-        binding.setupHow2ButtonPrevious.setOnClickListener {
+        binding.setupHow2Iv.setOnClickListener {
             (activity as SetupNewActivity).switchFragments(SetupHow1Fragment())
         }
         return root
