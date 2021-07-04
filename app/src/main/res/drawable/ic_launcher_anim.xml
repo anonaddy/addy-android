@@ -54,7 +54,7 @@
     <target android:name="group">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:duration="734"
+                android:duration="534"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
                 android:propertyName="translateX"
                 android:valueFrom="20.78"
@@ -65,7 +65,7 @@
     <target android:name="path_2">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:duration="800"
+                android:duration="700"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
                 android:propertyName="pathData"
                 android:valueFrom="M 21.516 25.14 C 20.761 25.255 19.957 24.976 19.448 24.32 C 18.709 23.368 18.874 22.006 19.825 21.251 L 21.942 19.594 C 22.894 18.855 24.256 19.019 25.011 19.971 C 25.749 20.923 25.585 22.285 24.634 23.04 L 22.517 24.697 C 22.205 24.927 21.86 25.075 21.516 25.14 Z"
@@ -76,7 +76,7 @@
     <target android:name="path_5">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:duration="800"
+                android:duration="700"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
                 android:propertyName="pathData"
                 android:valueFrom="M 20.351 37.858 C 19.596 37.973 18.791 37.694 18.283 37.038 C 17.544 36.086 17.709 34.724 18.66 33.969 L 29.589 25.436 C 30.541 24.697 31.919 24.861 32.658 25.813 C 33.397 26.765 33.232 28.127 32.281 28.882 L 21.352 37.415 C 21.056 37.661 20.712 37.809 20.351 37.858 Z"
@@ -87,7 +87,7 @@
     <target android:name="path_1">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:duration="800"
+                android:duration="700"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
                 android:propertyName="pathData"
                 android:valueFrom="M 9.208 22.826 C 8.453 22.941 7.649 22.662 7.14 22.006 C 6.402 21.054 6.566 19.692 7.518 18.937 L 13.589 14.195 C 14.541 13.456 15.903 13.62 16.658 14.572 C 17.397 15.524 17.233 16.886 16.281 17.641 L 10.209 22.383 C 9.914 22.63 9.569 22.777 9.208 22.826 Z"
@@ -98,7 +98,7 @@
     <target android:name="vector">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:duration="734"
+                android:duration="534"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
                 android:propertyName="alpha"
                 android:valueFrom="0"
