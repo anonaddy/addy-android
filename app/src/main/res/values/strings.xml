@@ -377,4 +377,5 @@
     <string name="widget_1_description">A handy list of the 15 most used aliases</string>
     <string name="add">Add</string>
     <string name="save">Save</string>
+    <string name="back">back</string>
 </resources>

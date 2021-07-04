@@ -124,7 +124,7 @@
                             android:text="@string/d_sent"
                             android:textColor="@color/BlackWhite"
                             app:drawableStartCompat="@drawable/ic_email_out_24dp"
-                            app:drawableTint="@color/secondaryDarkColor" />
+                            app:drawableTint="@color/softGreen" />
 
                         <TextView
                             android:id="@+id/activity_manage_alias_replies_blocked_count"

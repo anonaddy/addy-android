@@ -13,8 +13,13 @@
     <color name="IconGrayTint">#666666</color>
 
 
+    <color name="softGreen">#00B4AF</color>
+    <color name="softGreenSuperLight">#8000B4AF</color>
     <color name="softRed">#FD5842</color>
     <color name="softRedSuperLight">#80FD5842</color>
+
+    <color name="bandwidthColor">#353C7D</color>
+    <color name="bandwidthSuperSuperLightColor">#804D499A</color>
 
     <color name="easternBlue">#16A8B8</color>
     <color name="easternBlueSuperLight">#8016A8B8</color>
@@ -43,4 +48,6 @@
     <color name="profile_icon_background">@color/primaryColor</color>
     <color name="profile_icon_foreground">@android:color/white</color>
 
+    <color name="CircularProgressButtonTextColor">@color/primaryLightColor</color>
+    <color name="splashBackground">@color/primaryColorStatic</color>
 </resources>

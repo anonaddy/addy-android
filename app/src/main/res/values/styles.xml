@@ -17,7 +17,6 @@
         </item>
         <item name="android:windowLightNavigationBar">true</item>
 
-
         <!-- enable window content transitions -->
         <item name="android:windowContentTransitions">true</item>
 
@@ -30,7 +29,9 @@
         </item>
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
 
-        <item name="android:windowSplashScreenBackground">@color/primaryColorStatic</item>
+        <item name="android:windowSplashScreenBackground">@color/splashBackground</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
+        <item name="android:windowSplashScreenAnimationDuration">999</item>
     </style>
 
     <!-- Application theme. -->
@@ -128,7 +129,7 @@
         <item name="spinning_bar_padding">8dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="initialCornerAngle">@dimen/corner_radius_button</item>
-        <item name="android:textColor">@color/primaryLightColor</item>
+        <item name="android:textColor">@color/CircularProgressButtonTextColor</item>
     </style>
 
     <style name="MaterialButtonSecondary" parent="Widget.MaterialComponents.Button">

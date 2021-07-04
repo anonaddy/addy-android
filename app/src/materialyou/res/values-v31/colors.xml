@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Icon -->
+    <color name="ic_launcher_background">@android:color/system_accent1_800</color>
+    <color name="ic_launcher_foreground">@android:color/system_accent2_100</color>
+
+    <!-- Profile icon -->
+    <color name="profile_icon_background">@android:color/system_accent1_800</color>
+    <color name="profile_icon_foreground">@android:color/system_accent2_100</color>
+
+    <color name="CircularProgressButtonTextColor">@android:color/white</color>
+
+    <color name="bandwidthColor">#353C7D</color>
+    <color name="bandwidthSuperSuperLightColor">#804D499A</color>
+
+    <color name="primaryColor">@android:color/system_accent1_700</color>
+    <color name="primaryLightColor">@android:color/system_accent1_500</color>
+    <color name="primarySuperLightColor">@android:color/system_accent1_300</color>
+    <color name="primarySuperSuperLightColor">@android:color/system_accent1_100</color>
+    <color name="primaryDarkColor">@android:color/system_accent1_800</color>
+    <color name="secondaryColor">@android:color/system_accent2_700</color>
+    <color name="secondaryDarkColor">@android:color/system_accent2_800</color>
+
+    <color name="splashBackground">@android:color/system_accent1_800</color>
+</resources>

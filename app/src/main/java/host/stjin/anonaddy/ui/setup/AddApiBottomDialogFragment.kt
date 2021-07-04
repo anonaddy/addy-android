@@ -62,7 +62,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         if (BuildConfig.DEBUG) {
             // Check that the device will let you use the camera
             val pm = context?.packageManager
-            if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA) == true) {
+            if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) == true) {
                 initQrScanner()
             }
         }

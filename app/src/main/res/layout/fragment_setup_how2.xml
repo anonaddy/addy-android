@@ -16,7 +16,8 @@
         android:layout_marginBottom="196dp"
         android:baselineAlignBottom="false"
         android:padding="96dp"
-        android:src="@drawable/setup_2" />
+        android:src="@drawable/setup_2"
+        tools:ignore="ContentDescription" />
 
 
     <ScrollView
@@ -43,6 +44,7 @@
                 android:layout_height="38dp"
                 android:layout_marginTop="24dp"
                 android:src="@drawable/ic_round_arrow_back_24"
+                android:contentDescription="@string/back"
                 app:tint="@color/BlackWhite" />
 
             <TextView

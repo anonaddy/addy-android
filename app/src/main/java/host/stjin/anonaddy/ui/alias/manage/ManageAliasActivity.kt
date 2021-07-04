@@ -158,7 +158,7 @@ class ManageAliasActivity : BaseActivity(),
         if (sent > 0) {
             val section3 = DonutSection(
                 name = binding.activityManageAliasChart.context.resources.getString(R.string.d_sent, sent.toInt()),
-                color = ContextCompat.getColor(this, R.color.secondaryDarkColor),
+                color = ContextCompat.getColor(this, R.color.softGreen),
                 amount = sent
             )
             listOfDonutSection.add(section3)
