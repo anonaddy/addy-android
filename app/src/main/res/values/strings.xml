@@ -378,4 +378,5 @@
     <string name="add">Add</string>
     <string name="save">Save</string>
     <string name="back">back</string>
+    <string name="obtaining_information">obtaining information…</string>
 </resources>
