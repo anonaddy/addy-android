@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import androidx.annotation.Nullable
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityIntentCreateAliasBinding
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
+import host.stjin.anonaddy.utils.AnonAddyUtils.startShareSheetActivityExcludingOwnApp
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -280,7 +280,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         intent.data = Uri.parse("mailto:") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, recipients)
         if (intent.resolveActivity(packageManager) != null) {
-            startActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
+            startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
         }
     }
 
@@ -294,31 +294,4 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         finish()
     }
 
-    private fun startActivityExcludingOwnApp(context: Context, intent: Intent, chooserTitle: String) {
-        val packageManager = context.packageManager
-        val possibleIntents: MutableList<Intent> = ArrayList()
-        val possiblePackageNames: MutableSet<String> = HashSet()
-        for (resolveInfo in packageManager.queryIntentActivities(intent, 0)) {
-            val packageName = resolveInfo.activityInfo.packageName
-            if (packageName != context.packageName) {
-                val possibleIntent = Intent(intent)
-                possibleIntent.setPackage(resolveInfo.activityInfo.packageName)
-                possiblePackageNames.add(resolveInfo.activityInfo.packageName)
-                possibleIntents.add(possibleIntent)
-            }
-        }
-        @Nullable val defaultResolveInfo = packageManager.resolveActivity(intent, 0)
-        if (defaultResolveInfo == null || possiblePackageNames.isEmpty()) {
-            throw ActivityNotFoundException()
-        }
-
-        // If there is a default app to handle the intent (which is not this app), use it.
-        if (possiblePackageNames.contains(defaultResolveInfo.activityInfo.packageName)) {
-            context.startActivity(intent)
-        } else { // Otherwise, let the user choose.
-            val intentChooser = Intent.createChooser(possibleIntents.removeAt(0), chooserTitle)
-            intentChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, possibleIntents.toTypedArray())
-            context.startActivity(intentChooser)
-        }
-    }
 }

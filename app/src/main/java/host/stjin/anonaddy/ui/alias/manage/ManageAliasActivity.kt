@@ -27,6 +27,7 @@ import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineStart
@@ -742,7 +743,7 @@ class ManageAliasActivity : BaseActivity(),
         intent.data = Uri.parse("mailto:") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, recipients)
         if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
+            AnonAddyUtils.startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
         }
         editAliasSendMailRecipientBottomDialogFragment.dismiss()
     }
