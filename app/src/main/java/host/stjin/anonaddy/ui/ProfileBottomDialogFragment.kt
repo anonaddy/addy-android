@@ -10,10 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.AnonAddy
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.R
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.BottomsheetProfileBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
@@ -22,6 +19,10 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.NumberUtils
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -53,8 +54,23 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         setInfo()
         setOnClickListeners()
 
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            checkForUpdates()
+        }
+
         return root
 
+    }
+
+    private suspend fun checkForUpdates() {
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            Updater.isUpdateAvailable({ result ->
+                if (result) {
+                    binding.mainProfileSelectDialogAppSettingsDesc.text =
+                        resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
+                }
+            }, requireContext())
+        }
     }
 
     private fun setOnClickListeners() {

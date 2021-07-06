@@ -35,6 +35,16 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_update_available"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="6dp"
+                    android:visibility="gone"
+                    app:sectionDescription="@string/update_available_desc"
+                    app:sectionStartIcon="@drawable/ic_downloading_24dp"
+                    app:sectionTitle="@string/update_available" />
 
                 <LinearLayout
                     style="@style/AnonAddyTitleNoAction"

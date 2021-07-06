@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -15,16 +16,18 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.YDGooglePlayUtils
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class AppSettingsActivity : BaseActivity(),
     DarkModeBottomDialogFragment.AddDarkmodeBottomDialogListener,
@@ -58,6 +61,18 @@ class AppSettingsActivity : BaseActivity(),
         setOnClickListeners()
         setOnSwitchListeners()
         setOnBiometricSwitchListeners()
+
+        checkForUpdates()
+    }
+
+    private fun checkForUpdates() {
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            Updater.isUpdateAvailable({ result ->
+                if (result) {
+                    binding.activityAppSettingsSectionUpdateAvailable.visibility = View.VISIBLE
+                }
+            }, this@AppSettingsActivity)
+        }
     }
 
     private fun loadSettings() {
@@ -311,6 +326,24 @@ class AppSettingsActivity : BaseActivity(),
                 resetApp()
             }
         })
+
+        binding.activityAppSettingsSectionUpdateAvailable.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                downloadUpdate()
+            }
+        })
+
+    }
+
+    private fun downloadUpdate() {
+        val url = if (YDGooglePlayUtils.isInstalledViaGooglePlay(this)) {
+            "https://play.google.com/store/apps/details?id=host.stjin.anonaddy"
+        } else {
+            "https://gitlab.com/Stjin/anonaddy-android/-/releases"
+        }
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse(url)
+        startActivity(i)
     }
 
     private fun resetApp() {

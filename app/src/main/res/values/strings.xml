@@ -304,6 +304,7 @@
     <string name="manage_rules_desc">Add, modify and reorder rules</string>
     <string name="manage_domains_desc">Add or remove custom domains</string>
     <string name="version_s">Version %s</string>
+    <string name="version_s_update_available">Version %s (Update available)</string>
     <string name="api_setup_qr_code_scan">Scan the QR code displayed</string>
     <string name="qr_permissions_required">Camera permissions are required in order to scan the QR code</string>
     <string name="api_setup_qr_code_scan_desc">Tap the scanning area to start scanning</string>
@@ -379,4 +380,6 @@
     <string name="save">Save</string>
     <string name="back">back</string>
     <string name="obtaining_information">obtaining information…</string>
+    <string name="update_available">Update available</string>
+    <string name="update_available_desc">A new version of AnonAddy for Android is available. Tap here to download it</string>
 </resources>

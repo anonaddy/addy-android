@@ -76,6 +76,7 @@ Third party libraries used.
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner)
 - [futuredapp/donut](https://github.com/futuredapp/donut)
 - [leandroBorgesFerreira/LoadingButtonAndroid](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid)
+- [einmalfel/Earl](https://github.com/einmalfel/Earl) (For built-in updater)
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner) (To be enabled in future versions)
 
 

@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import com.einmalfel.earl.EarlParser
+import com.einmalfel.earl.Feed
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
@@ -26,11 +28,13 @@ import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_RESEND
 import host.stjin.anonaddy.AnonAddy.API_URL_REORDER_RULES
 import host.stjin.anonaddy.AnonAddy.API_URL_RULES
 import host.stjin.anonaddy.AnonAddy.API_URL_USERNAMES
+import host.stjin.anonaddy.AnonAddy.GITLAB_TAGS_RSS_FEED
 import host.stjin.anonaddy.AnonAddy.lazyMgr
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.InputStream
 
 
 class NetworkHelper(private val context: Context) {
@@ -2158,8 +2162,6 @@ class NetworkHelper(private val context: Context) {
         }, activeOnly = false, includeDeleted = true)
     }
 
-
-    // TODO make use of this
     suspend fun cacheDomainsDataForWidget(
         callback: (Boolean) -> Unit
     ) {
@@ -2178,5 +2180,35 @@ class NetworkHelper(private val context: Context) {
                 callback(true)
             }
         }
+    }
+
+    suspend fun getGitlabTags(
+        callback: (Feed?) -> Unit
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) =
+            Fuel.get(GITLAB_TAGS_RSS_FEED)
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val inputStream: InputStream = result.get().byteInputStream()
+                val feed = EarlParser.parseOrThrow(inputStream, 0)
+                callback(feed)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getGitlabTags", String(response.data))
+                callback(null)
+            }
+        }
+
+
     }
 }

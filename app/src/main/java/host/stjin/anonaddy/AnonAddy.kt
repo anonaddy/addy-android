@@ -30,4 +30,7 @@ object AnonAddy {
 
     // 0.6.0
     val API_URL_APP_VERSION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/app-version" }
+
+    // Gitlab built-in updater
+    const val GITLAB_TAGS_RSS_FEED: String = "https://gitlab.com/Stjin/anonaddy-android/-/tags?feed_token=QQ9pQKWGBdsYzCrqkdBN&format=atom"
 }
