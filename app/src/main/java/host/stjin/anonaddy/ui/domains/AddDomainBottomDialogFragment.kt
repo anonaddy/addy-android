@@ -14,15 +14,13 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAdddomainBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -99,7 +97,7 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         // Animate the button to progress
         binding.bsAdddomainDomainAddDomainButton.startAnimation()
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             addDomainToAccount(
                 context,
                 this@AddDomainBottomDialogFragment.domain
@@ -143,7 +141,7 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
 
     private val handler =  Handler(Looper.getMainLooper())
     private val runnableCode = Runnable {
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             addDomainToAccount(
                 requireContext(),
                 this@AddDomainBottomDialogFragment.domain

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,9 +24,6 @@ import host.stjin.anonaddy.databinding.ActivityRuleSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -65,7 +63,7 @@ class RulesSettingsActivity : BaseActivity() {
         binding.activityManageRulesRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             getAllRulesAndSetView()
         }
     }
@@ -115,11 +113,11 @@ class RulesSettingsActivity : BaseActivity() {
 
                         override fun onClickActivate(pos: Int, aView: View) {
                             if (list[pos].active) {
-                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                lifecycleScope.launch {
                                     deactivateRule(list[pos].id)
                                 }
                             } else {
-                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                lifecycleScope.launch {
                                     activateRule(list[pos].id)
                                 }
                             }
@@ -141,7 +139,7 @@ class RulesSettingsActivity : BaseActivity() {
                             list.removeAt(fromPosition)
                             list.add(toPosition, itemToMove)
 
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            lifecycleScope.launch {
                                 networkHelper!!.reorderRules({ result ->
                                     if (result == "200") {
                                         val snackbar = Snackbar.make(
@@ -265,7 +263,7 @@ class RulesSettingsActivity : BaseActivity() {
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteRuleHttpRequest(id, context, anonaddyCustomDialogBinding)
             }
         }
@@ -299,7 +297,7 @@ class RulesSettingsActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             getDataFromWeb()
         }
     }

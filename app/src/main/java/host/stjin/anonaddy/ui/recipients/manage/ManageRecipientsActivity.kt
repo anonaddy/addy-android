@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
@@ -19,9 +20,6 @@ import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -65,7 +63,7 @@ class ManageRecipientsActivity : BaseActivity(),
         binding.activityManageRecipientRLLottieview.visibility = View.GONE
 
         // Get the recipient
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             getRecipientInfo(recipientId)
         }
     }
@@ -81,7 +79,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
                     if (checked) {
                         if (fingerprint != null) {
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            lifecycleScope.launch {
                                 enableEncryption()
                             }
                         } else {
@@ -95,7 +93,7 @@ class ManageRecipientsActivity : BaseActivity(),
                             }
                         }
                     } else {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             disableEncryption()
                         }
                     }
@@ -209,7 +207,7 @@ class ManageRecipientsActivity : BaseActivity(),
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 removeGpgKeyHttpRequest(id, this@ManageRecipientsActivity, anonaddyCustomDialogBinding)
             }
         }
@@ -242,7 +240,7 @@ class ManageRecipientsActivity : BaseActivity(),
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteRecipientHttpRequest(id, this@ManageRecipientsActivity, anonaddyCustomDialogBinding)
             }
         }

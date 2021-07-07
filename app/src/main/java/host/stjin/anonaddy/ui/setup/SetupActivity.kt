@@ -8,12 +8,10 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -94,7 +92,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         // Animate the button to progress
         binding.fragmentSetupInitButtonApi.startAnimation()
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             // AnonAddy.API_BASE_URL is defaulted to the anonaddy.com instance. If the API key is valid there it was meant to use that instance.
             // If the baseURL/API do not work or match it opens the API screen
             verifyApiKey(context, apiKey, baseUrl)

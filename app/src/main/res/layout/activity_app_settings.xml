@@ -35,17 +35,6 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <host.stjin.anonaddy.ui.customviews.SectionView
-                    android:id="@+id/activity_app_settings_section_update_available"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="6dp"
-                    android:visibility="gone"
-                    app:sectionDescription="@string/update_available_desc"
-                    app:sectionStartIcon="@drawable/ic_downloading_24dp"
-                    app:sectionTitle="@string/update_available" />
-
                 <LinearLayout
                     style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
@@ -71,12 +60,12 @@
                 </host.stjin.anonaddy.ui.customviews.SectionView>
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
-                    android:id="@+id/activity_app_settings_section_changelog"
+                    android:id="@+id/activity_app_settings_section_updater"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/see_this_version_changelogs"
-                    app:sectionStartIcon="@drawable/ic_round_restore_24"
-                    app:sectionTitle="@string/changelog" />
+                    app:sectionDescription="@string/anonaddy_updater_desc"
+                    app:sectionStartIcon="@drawable/ic_downloading_24dp"
+                    app:sectionTitle="@string/anonaddy_updater" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_features"

@@ -8,6 +8,7 @@
 - It's now possible to "forget" your alias from the app
 - Introducing "Email action integration", create aliases and send emails from aliases from... anywhere! Without opening the app! Open the new "
   Features and integrations" section in the app settings to learn more
+- Keep the app up-to-date with the new "AnonAddy updater", allowing your to check for updates and get notified when new updates are available
 
 ### Fixed/Improved
 
@@ -24,7 +25,7 @@
 
 - Updated shared domains list
 - Select the recipients for an alias when creating a new alias
-- Performance improvements to make the app even smoother
+- Performance improvements and other things I might have forgot to make the app even smoother
 
 ## [v2.1.0] - 2021-05-16
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -26,9 +27,6 @@ import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -77,7 +75,7 @@ class RecipientsFragment : Fragment(),
         binding.recipientsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             getAllRecipients()
             getUserResource(requireContext())
         }
@@ -198,7 +196,7 @@ class RecipientsFragment : Fragment(),
                         }
 
                         override fun onClickResend(pos: Int, aView: View) {
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            viewLifecycleOwner.lifecycleScope.launch {
                                 resendConfirmationMailRecipient(list[pos].id, context)
                             }
                         }
@@ -286,7 +284,7 @@ class RecipientsFragment : Fragment(),
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 deleteRecipientHttpRequest(id, context, anonaddyCustomDialogBinding)
             }
         }

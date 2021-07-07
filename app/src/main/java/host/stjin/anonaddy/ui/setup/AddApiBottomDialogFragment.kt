@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
+import androidx.lifecycle.lifecycleScope
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -19,9 +20,6 @@ import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
@@ -138,7 +136,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         // Animate the button to progress
         binding.bsSetupApikeySignInButton.startAnimation()
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             verifyApiKey(context, apiKey, baseUrl)
         }
     }

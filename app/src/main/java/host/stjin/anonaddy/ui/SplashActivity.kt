@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
@@ -12,9 +13,6 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener {
@@ -48,7 +46,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             finish()
             return
         } else {
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 loadDataAndStartApp()
             }
         }
@@ -62,7 +60,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             AnonAddy.VERSIONCODE = 9999
             AnonAddy.VERSIONSTRING = this.resources.getString(R.string.latest)
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 loadUserResourceIntoMemory()
             }
         } else {
@@ -72,7 +70,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                     AnonAddy.VERSIONSTRING = version.version.toString()
                     //0.7.4 translates to 074 aka 074
                     if (AnonAddy.VERSIONCODE >= 74) {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             loadUserResourceIntoMemory()
                         }
                     } else {
@@ -104,7 +102,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         networkHelper.getUserResource { user: UserResource?, error: String? ->
             if (user != null) {
                 User.userResource = user
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                lifecycleScope.launch {
                     getDefaultRecipientAddress(user.default_recipient_id)
                 }
             } else {
@@ -150,7 +148,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     override fun onClickIgnore() {
         unsupportedBottomDialogFragment.dismiss()
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             loadUserResourceIntoMemory()
         }
     }

@@ -157,6 +157,9 @@
             android:name=".ui.appsettings.features.AppSettingsFeaturesMailToActivity"
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
+            android:name=".ui.appsettings.update.AppSettingsUpdateActivity"
+            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+        <activity
             android:name=".ui.setup.SetupActivity"
             android:exported="true"
             android:theme="@style/AppTheme.Setup">

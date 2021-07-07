@@ -8,13 +8,13 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
@@ -22,11 +22,8 @@ import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.YDGooglePlayUtils
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class AppSettingsActivity : BaseActivity(),
@@ -35,9 +32,6 @@ class AppSettingsActivity : BaseActivity(),
 
     private val addDarkModeBottomDialogFragment: DarkModeBottomDialogFragment =
         DarkModeBottomDialogFragment.newInstance()
-
-    private val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
-        ChangelogBottomDialogFragment.newInstance()
 
     private val addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
         BackgroundServiceIntervalBottomDialogFragment.newInstance()
@@ -66,10 +60,10 @@ class AppSettingsActivity : BaseActivity(),
     }
 
     private fun checkForUpdates() {
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            Updater.isUpdateAvailable({ result ->
-                if (result) {
-                    binding.activityAppSettingsSectionUpdateAvailable.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+                if (updateAvailable) {
+                    //TODO add a 1 or something
                 }
             }, this@AppSettingsActivity)
         }
@@ -245,17 +239,6 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
-        binding.activityAppSettingsSectionChangelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!addChangelogBottomDialogFragment.isAdded) {
-                    addChangelogBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addChangelogBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
         binding.activityAppSettingsSectionFeatures.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsActivity, AppSettingsFeaturesActivity::class.java)
@@ -327,23 +310,13 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
-        binding.activityAppSettingsSectionUpdateAvailable.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityAppSettingsSectionUpdater.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                downloadUpdate()
+                val intent = Intent(this@AppSettingsActivity, AppSettingsUpdateActivity::class.java)
+                startActivity(intent)
             }
         })
 
-    }
-
-    private fun downloadUpdate() {
-        val url = if (YDGooglePlayUtils.isInstalledViaGooglePlay(this)) {
-            "https://play.google.com/store/apps/details?id=host.stjin.anonaddy"
-        } else {
-            "https://gitlab.com/Stjin/anonaddy-android/-/releases"
-        }
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
-        startActivity(i)
     }
 
     private fun resetApp() {

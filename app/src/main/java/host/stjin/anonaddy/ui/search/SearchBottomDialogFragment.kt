@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -21,9 +22,6 @@ import host.stjin.anonaddy.adapter.SearchAdapter
 import host.stjin.anonaddy.databinding.BottomsheetSearchBinding
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.MarginItemDecoration
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -169,7 +167,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         if (binding.bsSearchChipAliases.isChecked) {
             sourcesToSearch++
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 networkHelper.getAliases({ aliaslist ->
                     aliases = aliaslist
                     sourcesSearched++
@@ -181,7 +179,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         if (binding.bsSearchChipRecipient.isChecked) {
             sourcesToSearch++
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 networkHelper.getRecipients({ recipientlist ->
                     recipients = recipientlist
                     sourcesSearched++
@@ -193,7 +191,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         if (binding.bsSearchChipDomains.isChecked) {
             sourcesToSearch++
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 networkHelper.getAllDomains { domainlist ->
                     domains = domainlist
                     sourcesSearched++
@@ -205,7 +203,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         if (binding.bsSearchChipUsernames.isChecked) {
             sourcesToSearch++
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 networkHelper.getAllUsernames { usernamelist ->
                     usernames = usernamelist
                     sourcesSearched++
@@ -218,7 +216,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         if (binding.bsSearchChipRules.isChecked) {
             sourcesToSearch++
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 networkHelper.getAllRules { rulesList ->
                     rules = rulesList
                     sourcesSearched++

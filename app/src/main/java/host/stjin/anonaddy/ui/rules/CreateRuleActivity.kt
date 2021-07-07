@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
@@ -21,9 +22,6 @@ import host.stjin.anonaddy.models.Action
 import host.stjin.anonaddy.models.Condition
 import host.stjin.anonaddy.models.Rules
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -121,7 +119,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         binding.activityRulesCreateRLLottieview.visibility = View.GONE
 
         // Get the rule
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             ruleId?.let { getRuleInfo(it) }
         }
     }
@@ -342,7 +340,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
             if (ruleId != null) {
                 // Update the rule
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                lifecycleScope.launch {
                     networkHelper.updateRule({ result ->
                         when (result) {
                             "200" -> {
@@ -370,7 +368,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 }
             } else {
                 // Post the rule
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                lifecycleScope.launch {
                     networkHelper.createRule({ result ->
                         when (result) {
                             "201" -> {

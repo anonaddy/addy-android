@@ -10,6 +10,8 @@ import androidx.work.*
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.Updater
+import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
 import kotlinx.coroutines.Dispatchers
@@ -50,8 +52,9 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
         val appContext = applicationContext
         val backgroundWorkerHelper = BackgroundWorkerHelper(appContext)
+        val settingsManager = SettingsManager(false, appContext)
 
-        // True if there are aliases to be watched or there are widgets to be updated
+        // True if there are aliases to be watched, widgets to be updated or checked for updates
         if (backgroundWorkerHelper.isThereWorkTodo()) {
             val networkHelper = NetworkHelper(appContext)
 
@@ -69,6 +72,14 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 networkHelper.cacheDomainsDataForWidget { result ->
                     // Store the result if the data succeeded to update in a boolean
                     domainNetworkCallResult = result
+                }
+
+                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
+                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String? ->
+                        if (updateAvailable) {
+                            latestVersion?.let { NotificationHelper(appContext).createUpdateNotification(it, Updater.figureOutDownloadUrl(appContext)) }
+                        }
+                    }, appContext)
                 }
             }
 
@@ -128,10 +139,11 @@ class BackgroundWorkerHelper(private val context: Context) {
     }
 
     fun isThereWorkTodo(): Boolean {
-        val settingsManager = SettingsManager(true, context)
+        val encryptedSettingsManager = SettingsManager(true, context)
+        val settingsManager = SettingsManager(false, context)
 
         // Count amount of aliases to be watched
-        val aliasToWatch = settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
+        val aliasToWatch = encryptedSettingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
         // Count amount of widgets
         val amountOfWidgets = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
 
@@ -139,8 +151,8 @@ class BackgroundWorkerHelper(private val context: Context) {
             println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets")
         }
 
-        // If there are no aliases to be watched and there are no widgets to be updated, return false
-        return !(aliasToWatch.isNullOrEmpty() && amountOfWidgets == 0)
+        // If there are aliases to be watched, widgets to be updated OR app updates to be checked for in the background, return true
+        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES))
     }
 
     fun cancelScheduledBackgroundWorker() {

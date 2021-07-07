@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
@@ -23,9 +24,6 @@ import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
 import host.stjin.anonaddy.models.SUBSCRIPTIONS
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.utils.LoggingHelper
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -66,7 +64,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // Sent the help text username accordingly
         binding.bsAddaliasDomainHelpTextview.text = requireContext().resources.getString(R.string.add_alias_desc, User.userResource.username)
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             fillSpinners(requireContext())
             getAllRecipients(requireContext())
         }
@@ -268,7 +266,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 R.array.domains_formats_names
             ).indexOf(binding.bsAddaliasAliasFormatMact.text.toString())]
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             addAliasToAccount(context, domain, description, format, localPart, recipients)
         }
     }

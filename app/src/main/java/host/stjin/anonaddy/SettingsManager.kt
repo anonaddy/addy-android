@@ -14,6 +14,8 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         VERSION_CODE("version_code"),
         BACKGROUND_SERVICE_INTERVAL("background_service_interval"),
         WIDGETS_ACTIVE("widgets_active"),
+        NOTIFY_UPDATES("notify_updates"),
+
 
         // Encrypted
         BIOMETRIC_ENABLED("biometric_enabled"),

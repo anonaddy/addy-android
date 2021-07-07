@@ -3,16 +3,13 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion("android-S")
-
-    // The "v" is important, as the updater class compares with the RSS feed on gitlab
-    def version="v3.0.0"
-
     defaultConfig {
         applicationId "host.stjin.anonaddy"
         minSdkVersion 23
         targetSdkVersion 31
         versionCode 22
-        versionName version
+        // The "v" is important, as the updater class compares with the RSS feed on gitlab
+        versionName "v3.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,7 +25,7 @@ android {
         main {
         }
         materialyou {
-            versionName "$version Material You"
+            versionNameSuffix " | Material You"
         }
     }
 

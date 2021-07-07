@@ -11,15 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSendMailFromIntentAliasBinding
 import host.stjin.anonaddy.models.Aliases
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
@@ -127,7 +125,7 @@ class IntentSendMailRecipientBottomDialogFragment(
 
         // Check if alias is empty, if alias is empty just forward the recipient to the default mail app without generating an alias
         if (binding.bsSendMailFromIntentAliasesMact.text.toString().isEmpty()) {
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 listener.onPressSend(
                     binding.bsSendMailFromIntentAliasesMact.text.toString(),
                     binding.bsSendMailFromIntentAliasRecipientTiet.text.toString(),
@@ -155,7 +153,7 @@ class IntentSendMailRecipientBottomDialogFragment(
                 binding.bsSendMailFromIntentAliasRecipientTil.error = null
                 binding.bsSendMailFromIntentAliasSendMailButton.isEnabled = false
                 // Get the first alias that matched the email address with the one entered in the adapter
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                viewLifecycleOwner.lifecycleScope.launch {
                     bottomSheetResult = true
                     listener.onPressSend(
                         binding.bsSendMailFromIntentAliasesMact.text.toString(),

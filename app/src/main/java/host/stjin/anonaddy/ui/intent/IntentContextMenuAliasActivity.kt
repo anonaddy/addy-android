@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -13,9 +14,6 @@ import host.stjin.anonaddy.databinding.ActivityIntentCreateAliasBinding
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.startShareSheetActivityExcludingOwnApp
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -42,7 +40,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
          * This activity can be called by an URI or Widget/Notification Intent.
          * Protect this part
          */
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             isAuthenticated { isAuthenticated ->
                 if (isAuthenticated) {
 
@@ -62,7 +60,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                         if (android.util.Patterns.EMAIL_ADDRESS.matcher(text.substring(7))
                                 .matches()
                         ) {
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            lifecycleScope.launch {
                                 // Figure out what to do next (passes the email address)
                                 figureOutNextAction(text.substring(7))
                             }
@@ -114,13 +112,13 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 if (result.data.contains(splittedEmailAddress[1])) {
                     // The domain of the email address is linked to this AnonAddy account. User most likely wants to either manage or create this Alias.
                     intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, text))
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                    lifecycleScope.launch {
                         checkIfAliasExists(text)
                     }
                 } else {
                     // The domain of the email address is not linked to this AnonAddy account. User most likely wants to send
                     // an email from an alias to this email address
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                    lifecycleScope.launch {
                         sendEmailFromAlias(text)
                     }
                 }
@@ -177,7 +175,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 } else {
                     // ID is empty, this alias is new! Let's create it
                     val splittedEmailAddress = text.split("@")
-                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                    lifecycleScope.launch {
                         addAliasToAccount(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0])
                     }
                 }
@@ -197,7 +195,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         networkHelper.addAlias({ result ->
             if (result == "201") {
                 Toast.makeText(this, this.resources.getString(R.string.alias_created), Toast.LENGTH_LONG).show()
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                lifecycleScope.launch {
                     onPressSend(alias, toString)
                 }
             } else {
@@ -262,7 +260,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
                         // Alias does not exist, perhaps the user wants to create it?
                         val splittedEmailAddress = alias.split("@")
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             addAliasToAccountAndShare(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0], alias, toString)
                         }
                     }

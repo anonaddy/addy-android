@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
@@ -20,9 +21,6 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientsAliasBinding
 import host.stjin.anonaddy.models.Recipients
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -70,7 +68,7 @@ class EditAliasRecipientsBottomDialogFragment(
             // Set button listeners and current description
             binding.bsEditrecipientsSaveButton.setOnClickListener(this)
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 getAllRecipients(requireContext())
             }
         } else {
@@ -153,7 +151,7 @@ class EditAliasRecipientsBottomDialogFragment(
 
 
         // aliasId is never null at this point, hence the !!
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             editRecipientsHttp(context, aliasId!!, recipients)
         }
     }

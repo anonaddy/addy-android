@@ -1,21 +1,17 @@
 package host.stjin.anonaddy.notifications
 
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat
-import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.notifications.NotificationHelper.Companion.ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID
+import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.AliasWatcher
-import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 
 
 class ActionReceiver : BroadcastReceiver() {
 
     object NOTIFICATIONACTIONS {
         const val STOP_WATCHING = "stop_watching"
-        const val EDIT_ALIAS = "edit_alias"
+        const val STOP_DOWNLOAD_UPDATE_CHECK = "stop_download_update_check"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -23,20 +19,13 @@ class ActionReceiver : BroadcastReceiver() {
         val action = intent.action
         val extra = intent.getStringExtra("extra")
 
-        if (action == NOTIFICATIONACTIONS.STOP_WATCHING) {
-            extra?.let { AliasWatcher(context).removeAliasToWatch(it) }
-        } else if (action == NOTIFICATIONACTIONS.EDIT_ALIAS) {
-            val manageAliasIntent = Intent(context, ManageAliasActivity::class.java)
-            manageAliasIntent.putExtra("alias_id", extra)
-            manageAliasIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            ContextCompat.startActivity(context, manageAliasIntent, null)
-        }
-
-        // Dismiss notification
-        if (!BuildConfig.DEBUG) {
-            val notificationManager = context
-                .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.cancel(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID)
+        when (action) {
+            NOTIFICATIONACTIONS.STOP_WATCHING -> {
+                extra?.let { AliasWatcher(context).removeAliasToWatch(it) }
+            }
+            NOTIFICATIONACTIONS.STOP_DOWNLOAD_UPDATE_CHECK -> {
+                SettingsManager(false,context).putSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES, false)
+            }
         }
     }
 

@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -30,9 +31,6 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -114,7 +112,7 @@ class ManageAliasActivity : BaseActivity(),
          * This activity can be called by an URI or Widget/Notification Intent.
          * Protect this part
          */
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             isAuthenticated { isAuthenticated ->
                 if (isAuthenticated) {
                     setPageInfo()
@@ -128,7 +126,7 @@ class ManageAliasActivity : BaseActivity(),
         binding.activityManageAliasSettingsRLLottieview.visibility = View.GONE
 
         // Get the alias
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             getAliasInfo(aliasId)
         }
     }
@@ -200,11 +198,11 @@ class ManageAliasActivity : BaseActivity(),
                     binding.activityManageAliasActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
                     if (checked) {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             activateAlias()
                         }
                     } else {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             deactivateAlias()
                         }
                     }
@@ -391,7 +389,7 @@ class ManageAliasActivity : BaseActivity(),
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 restoreAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
             }
         }
@@ -425,7 +423,7 @@ class ManageAliasActivity : BaseActivity(),
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
             }
         }
@@ -459,7 +457,7 @@ class ManageAliasActivity : BaseActivity(),
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 forgetAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
             }
         }

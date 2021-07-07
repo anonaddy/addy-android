@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.*
@@ -19,9 +20,6 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.NumberUtils
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.roundToInt
@@ -54,7 +52,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         setInfo()
         setOnClickListeners()
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             checkForUpdates()
         }
 
@@ -63,14 +61,12 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private suspend fun checkForUpdates() {
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            Updater.isUpdateAvailable({ result ->
-                if (result) {
-                    binding.mainProfileSelectDialogAppSettingsDesc.text =
-                        resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
-                }
-            }, requireContext())
-        }
+        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+            if (updateAvailable) {
+                binding.mainProfileSelectDialogAppSettingsDesc.text =
+                    resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
+            }
+        }, requireContext())
     }
 
     private fun setOnClickListeners() {

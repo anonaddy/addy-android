@@ -78,10 +78,10 @@
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.0.0</h3>
 <h4>Added</h4>
-<p>🔢 Added a brand new statistic widget for flexing with your forwarded email count<br />💭 It\'s now possible to "forget" your alias from the app<br />🌟 Introducing "Email action integration", create aliases and send emails from aliases from&hellip; anywhere! Without opening the app! Open the new "Features and integrations" section in the app settings to learn more<br /><br /></p>
+<p>🔢 Added a brand new statistic widget for flexing with your forwarded email count<br />💭 It\'s now possible to "forget" your alias from the app<br />🌟 Introducing "Email action integration", create aliases and send emails from aliases from&hellip; anywhere! Without opening the app! Open the new "Features and integrations" section in the app settings to learn more<br />⬇️ Keep the app up-to-date with the new "AnonAddy updater", allowing your to check for updates and get notified when new updates are available</p>
 <h4>Fixed/Improved</h4>
 <p>🎨 Massive UI redesign with Android 12 and simplicity in mind<br />- One-handed interface, simply swipe down from any screen to move content down for better accessibility<br />- Cards and raises are now used for a clean-looking, easier-to-understand design<br />- The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color<br />- A new app icon, that changes according to your system accent (Android 12 only)<br />- Softer colors<br />- Bigger, clearer buttons with more space between elements<br />- Animations! Most progressbars are now replaced with morphing buttons<br />- Improved shimmers<br />- Improved tablet layout</p>
-<p>📃 Updated shared domains list<br />👤 Select the recipients for an alias when creating a new alias<br />✨ Performance improvements to make the app even smoother</p>]]></string>
+<p>📃 Updated shared domains list<br />👤 Select the recipients for an alias when creating a new alias<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -323,6 +323,10 @@
     <string name="notification_channel_watch_alias_desc">Receive a notification when an email is sent to a watched alias</string>
     <string name="notification_new_emails">New emails forwarded</string>
     <string name="notification_new_emails_desc">%1$d new email(s) have been forwarded via %2$s</string>
+    <string name="notification_new_update_available">New update available</string>
+    <string name="notification_new_update_available_desc">Version %s of AnonAddy for Android is available. Tap here to download it</string>
+    <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
+
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
@@ -380,6 +384,18 @@
     <string name="save">Save</string>
     <string name="back">back</string>
     <string name="obtaining_information">obtaining information…</string>
-    <string name="update_available">Update available</string>
+    <string name="new_update_available">New update available</string>
+    <string name="new_update_available_version">%s -> %s</string>
     <string name="update_available_desc">A new version of AnonAddy for Android is available. Tap here to download it</string>
+    <string name="anonaddy_updater">AnonAddy Updater</string>
+    <string name="update_notify_title">Notify for new updates</string>
+    <string name="update_notify_desc">Periodically check for updates in the background and send a notification when one is available</string>
+    <string name="previous_changelogs">Previous changelogs</string>
+    <string name="previous_changelogs_desc">View previous changelogs</string>
+    <string name="version_channel_info">Version: %s\nDownload channel: %s</string>
+    <string name="sideloaded">sideloaded</string>
+    <string name="no_new_update_available">You\'re up to date</string>
+    <string name="no_new_update_available_desc">You are currently using the latest version of AnonAddy for Android. Turn on notifications to get notified when a new version is available.</string>
+    <string name="anonaddy_updater_desc">Check for new updates and view the latest changelog</string>
+    <string name="stop_checking">Stop checking</string>
 </resources>
