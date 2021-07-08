@@ -49,6 +49,7 @@ class AppSettingsUpdateActivity : BaseActivity() {
                     binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available))
                     binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available_desc))
                 }
+                binding.activityAppSettingsUpdateSectionDownload.setSectionAlert(true)
             }, this@AppSettingsUpdateActivity)
         }
     }

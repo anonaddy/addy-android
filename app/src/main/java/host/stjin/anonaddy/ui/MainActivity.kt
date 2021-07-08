@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.BaseActivity
@@ -140,6 +141,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     "searchBottomDialogFragment"
                 )
             }
+        }
+
+        binding.mainAppBarInclude.mainTopBarFailedDeliveriesIcon.setOnClickListener {
+            Toast.makeText(this, "TODO", Toast.LENGTH_SHORT).show()
         }
 
     }

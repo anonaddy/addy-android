@@ -23,6 +23,9 @@ class LoggingHelper(context: Context) {
     }
 
     private fun putLogs(logs: MutableSet<String>) {
+        // Clear logs first (weird bug)
+        // TODO check if this is fixed
+        clearLogs()
         prefs.edit().putStringSet("logs", logs).apply()
     }
 

@@ -62,8 +62,9 @@ class AppSettingsActivity : BaseActivity(),
     private fun checkForUpdates() {
         lifecycleScope.launch {
             Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+                binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
                 if (updateAvailable) {
-                    //TODO add a 1 or something
+                    binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
                 }
             }, this@AppSettingsActivity)
         }

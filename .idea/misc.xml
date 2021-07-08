@@ -8,6 +8,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/circularprogressbutton.xml" value="0.22719298245614036" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/circularprogressbutton_secondary.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/circularprogressbutton_tertiary.xml" value="0.3223684210526316" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/custom_view_dialog_circle.xml" value="0.25219298245614036" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/dialog_shape_rounded_corners.xml" value="0.22587719298245615" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/donut_shimmer.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/drag_pill.xml" value="0.24414414414414415" />
@@ -48,6 +49,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_24dp.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_aliases.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_encrypted_24dp.xml" value="0.24414414414414415" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_error_24dp.xml" value="0.2837719298245614" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_in_24dp.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_out_24dp.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_receive_outline.xml" value="0.24414414414414415" />
@@ -139,11 +141,11 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/widget_3_background.xml" value="0.2219298245614035" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/widget_background_bottom.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/widget_background_top.xml" value="0.3223684210526316" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout-sw600dp/main_app_bar.xml" value="0.33" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout-sw600dp/main_app_bar.xml" value="0.9" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout-sw600dp/main_profile_select_dialog.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout-sw600dp/main_top_bar_user.xml" value="0.15597587719298245" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_anonaddy_settings.xml" value="0.4607329842931937" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings.xml" value="0.3752665245202559" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings.xml" value="0.67" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features.xml" value="0.4024144869215292" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_mailto.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_watch_alias.xml" value="0.33" />

@@ -125,6 +125,20 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         }
     }
 
+    fun setSectionAlert(boolean: Boolean) {
+        if (boolean) {
+            iconStart?.background = context?.let { ContextCompat.getDrawable(it, R.drawable.custom_view_dialog_circle) }
+            // The tint color is set to white
+            ImageViewCompat.setImageTintList(iconStart!!,
+                context?.let { ContextCompat.getColor(it, android.R.color.white) }?.let { ColorStateList.valueOf(it) })
+        } else {
+            iconStart?.background = null
+            // The tint color is set to default
+            ImageViewCompat.setImageTintList(iconStart!!,
+                context?.let { ContextCompat.getColor(it, R.color.colorControlNormal) }?.let { ColorStateList.valueOf(it) })
+        }
+    }
+
     fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
         if (startIcon != null) {
             iconStart?.setImageResource(startIcon)
@@ -176,6 +190,9 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             // Set title and description
             setTitle(a.getString(R.styleable.SectionView_sectionTitle))
             setDescription(a.getString(R.styleable.SectionView_sectionDescription))
+
+            // Set section starticon background and change icon color to white
+            setSectionAlert(a.getBoolean(R.styleable.SectionView_sectionAlert, false))
 
             // Get colorAccent
             val hasColorAccentDefined = a.hasValue(R.styleable.SectionView_sectionColorAccent)

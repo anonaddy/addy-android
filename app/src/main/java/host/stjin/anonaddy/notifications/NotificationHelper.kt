@@ -86,8 +86,7 @@ class NotificationHelper(private val context: Context) {
             .addAction(R.drawable.ic_downloading_24dp, context.resources.getString(R.string.stop_checking), stopCheckingUpdatePendingIntent)
             .setLights(ContextCompat.getColor(context, R.color.primaryColor), 1000, 6000)
             .setContentIntent(downloadUpdatePendingIntent)
-            // Auto cancel only in production
-            .setAutoCancel(!BuildConfig.DEBUG)
+            .setAutoCancel(true)
             .build()
 
         with(NotificationManagerCompat.from(context)) {
@@ -159,8 +158,7 @@ class NotificationHelper(private val context: Context) {
             .addAction(R.drawable.notification_ic_comment_eye_outline, context.resources.getString(R.string.stop_watching), stopWatchingPendingIntent)
             .setLights(ContextCompat.getColor(context, R.color.primaryColor), 1000, 6000)
             .setContentIntent(editAliasPendingIntent)
-            // Auto cancel only in production
-            .setAutoCancel(!BuildConfig.DEBUG)
+            .setAutoCancel(true)
             .build()
 
         with(NotificationManagerCompat.from(context)) {

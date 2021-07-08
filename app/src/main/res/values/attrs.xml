@@ -10,5 +10,6 @@
         <attr name="sectionRippleEffect" format="boolean" />
         <attr name="sectionEnabled" format="boolean" />
         <attr name="sectionColorAccent" format="color" />
+        <attr name="sectionAlert" format="boolean" />
     </declare-styleable>
 </resources>

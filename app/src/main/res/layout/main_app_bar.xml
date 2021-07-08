@@ -44,7 +44,6 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="@dimen/collapsingtoolbar_action_margin">
 
-
             <TextView
                 android:id="@+id/main_top_bar_user_initials"
                 android:layout_width="32dp"
@@ -61,6 +60,24 @@
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@android:color/white"
                 app:layout_collapseMode="pin"
+                app:tint="@android:color/white" />
+
+            <ImageView
+                android:id="@+id/main_top_bar_failed_deliveries_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/circle_ripple"
+                android:clickable="true"
+                android:contentDescription="@string/search"
+                android:focusable="true"
+                android:padding="6dp"
+                android:src="@drawable/ic_email_error_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="H,1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:tint="@android:color/white" />
 
             <ImageView

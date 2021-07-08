@@ -250,8 +250,9 @@
     </style>
 
     <style name="FloatingActionButton">
-        <item name="drawableTint">@android:color/black</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="drawableTint">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@color/primaryColor</item>
     </style>
 
 
