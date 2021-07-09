@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.ui.appsettings
+package host.stjin.anonaddy.ui.appsettings.update
 
 import android.app.Dialog
 import android.os.Build

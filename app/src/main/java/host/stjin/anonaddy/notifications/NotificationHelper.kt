@@ -104,7 +104,7 @@ class NotificationHelper(private val context: Context) {
         )
 
         buildAliasWatcherCallNotification(
-            context.resources.getString(R.string.notification_new_emails),
+            context.resources.getString(R.string.anonaddy_updater),
             context.resources.getString(R.string.notification_new_emails_desc, emailDifference, email),
             id
         )

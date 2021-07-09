@@ -8,7 +8,6 @@ import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityAppSettingsUpdateBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.appsettings.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.YDGooglePlayUtils
 import kotlinx.coroutines.launch

@@ -398,4 +398,8 @@
     <string name="no_new_update_available_desc">You are currently using the latest version of AnonAddy for Android. Turn on notifications to get notified when a new version is available.</string>
     <string name="anonaddy_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td>%7$s</td></tr></tbody></table>]]></string>
+    <string name="code">Code</string>
+    <string name="created">Created</string>
+    <string name="view_details">View details</string>
 </resources>
