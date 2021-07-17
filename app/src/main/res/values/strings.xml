@@ -378,7 +378,7 @@
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
     <string name="just_like_that">Just like that!</string>
     <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
-    <string name="widget_2_description">See how many emails have been forwarded</string>
+    <string name="widget_2_description">An overview of your anonaddy stats that dynamically adapts to size</string>
     <string name="widget_1_description">A handy list of the 15 most used aliases</string>
     <string name="add">Add</string>
     <string name="save">Save</string>

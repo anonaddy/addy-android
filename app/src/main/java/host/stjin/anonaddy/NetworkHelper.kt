@@ -48,7 +48,7 @@ class NetworkHelper(private val context: Context) {
     422	Validation Error -- The given data was invalid
     429	Too Many Requests -- You're sending too many requests or have reached your limit for new aliases
     500	Internal Server Error -- We had a problem with our server. Try again later
-    503	Service Unavailable -- We're temporarially offline for maintanance. Please try again later*/
+    503	Service Unavailable -- We're temporarily offline for maintenance. Please try again later*/
 
     private var API_KEY: String? = null
     private val loggingHelper = LoggingHelper(context)
