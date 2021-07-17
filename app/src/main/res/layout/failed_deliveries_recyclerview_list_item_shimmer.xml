@@ -107,17 +107,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:padding="12dp"
             android:weightSum="12">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -150,7 +145,6 @@
                     android:text="X-Postfix; Host or domain name not found. Name Service error for name=outlookhotmail.com type=AAAA: Host found but no data record of requested type "
                     android:textColor="@android:color/transparent"
                     tools:ignore="HardcodedText" />
-            </LinearLayout>
 
         </LinearLayout>
 

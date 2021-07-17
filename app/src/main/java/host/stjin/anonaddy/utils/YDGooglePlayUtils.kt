@@ -8,8 +8,8 @@ import android.text.TextUtils
 
 
 object YDGooglePlayUtils {
-    var GOOGLE_PLAY = "com.android.vending"
-    var FDROID = "org.fdroid.fdroid"
+    private var GOOGLE_PLAY = "com.android.vending"
+    private var FDROID = "org.fdroid.fdroid"
     fun isInstalledViaGooglePlay(ctx: Context): Boolean {
         return isInstalledVia(ctx, GOOGLE_PLAY)
     }

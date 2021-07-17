@@ -65,7 +65,11 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/alias_widget_2_info" />
-        </receiver> <!-- Widget 2 -->
+        </receiver>
+
+        <service
+            android:name=".widget.AliasWidget2RemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- Widget 2 -->
         <!-- Notification -->
         <receiver android:name=".notifications.ActionReceiver" /> <!-- Notification -->
         <!-- END widget -->

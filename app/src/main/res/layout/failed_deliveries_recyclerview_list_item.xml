@@ -108,29 +108,25 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:padding="12dp"
             android:weightSum="12">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:text="@string/code"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/code"
                     android:textAllCaps="false"
                     android:textColor="@color/BlackWhite"
                     android:textSize="16sp" />
@@ -151,7 +147,7 @@
                     android:singleLine="false"
                     android:text="X-Postfix; Host or domain name not found. Name Service error for name=outlookhotmail.com type=AAAA: Host found but no data record of requested type "
                     tools:ignore="HardcodedText" />
-            </LinearLayout>
+
 
         </LinearLayout>
 

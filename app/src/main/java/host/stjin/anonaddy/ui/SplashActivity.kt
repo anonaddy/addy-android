@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -17,6 +18,7 @@ import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import kotlinx.coroutines.launch
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener {
 
 
@@ -33,7 +35,11 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private lateinit var bindingFailed: ActivityMainFailedBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        skipAndroid12SplashScreenAnimation()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            skipAndroid12SplashScreenAnimation()
+        }
+
         binding = ActivitySplashBinding.inflate(layoutInflater)
         val view = binding.root
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls

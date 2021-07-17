@@ -61,6 +61,9 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             // Stored if the network call succeeds its task
             var aliasNetworkCallResult = false
             var domainNetworkCallResult = false
+            var usernameNetworkCallResult = false
+            var rulesNetworkCallResult = false
+            var recipientNetworkCallResult = false
 
             // Block the thread until this is finished
             runBlocking(Dispatchers.Default) {
@@ -69,15 +72,35 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     aliasNetworkCallResult = result
                 }
 
-                networkHelper.cacheDomainsDataForWidget { result ->
+                networkHelper.cacheDomainCountForWidget { result ->
                     // Store the result if the data succeeded to update in a boolean
                     domainNetworkCallResult = result
+                }
+
+                networkHelper.cacheUsernamesCountForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    usernameNetworkCallResult = result
+                }
+
+                networkHelper.cacheRulesCountForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    rulesNetworkCallResult = result
+                }
+
+                networkHelper.cacheRecipientCountForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    recipientNetworkCallResult = result
                 }
 
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
                     Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String? ->
                         if (updateAvailable) {
-                            latestVersion?.let { NotificationHelper(appContext).createUpdateNotification(it, Updater.figureOutDownloadUrl(appContext)) }
+                            latestVersion?.let {
+                                NotificationHelper(appContext).createUpdateNotification(
+                                    it,
+                                    Updater.figureOutDownloadUrl(appContext)
+                                )
+                            }
                         }
                     }, appContext)
                 }
@@ -87,13 +110,18 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             if (aliasNetworkCallResult) {
                 // Now the data has been updated, perform the AliasWatcher check
                 AliasWatcher(appContext).watchAliasesForDifferences()
-
-                // Now the data has been updated, we can update the widget as well
-                updateWidgets()
             }
 
             // If both tasks are successful return a success()
-            return if (aliasNetworkCallResult && domainNetworkCallResult) {
+            return if (aliasNetworkCallResult &&
+                domainNetworkCallResult &&
+                usernameNetworkCallResult &&
+                rulesNetworkCallResult &&
+                recipientNetworkCallResult
+            ) {
+                // Now the data has been updated, we can update the widget as well
+                updateWidgets()
+
                 Result.success()
             } else {
                 Result.failure()

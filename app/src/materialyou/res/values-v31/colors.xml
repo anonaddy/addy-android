@@ -21,5 +21,8 @@
     <color name="secondaryColor">@android:color/system_accent2_700</color>
     <color name="secondaryDarkColor">@android:color/system_accent2_800</color>
 
+    <color name="widget_2_layout_3_inner_background_color">@android:color/system_accent3_100</color>
+
+
     <color name="splashBackground">@android:color/system_accent1_800</color>
 </resources>

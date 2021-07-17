@@ -12,6 +12,8 @@
 
     <color name="IconGrayTint">#666666</color>
 
+    <color name="widget_2_layout_3_inner_background_color">@color/primaryLightColor</color>
+
 
     <color name="softGreen">#00B4AF</color>
     <color name="softGreenSuperLight">#8000B4AF</color>

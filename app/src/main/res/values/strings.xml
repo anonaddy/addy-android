@@ -402,4 +402,14 @@
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>
+    <string name="widget_2_sent">sent</string>
+    <string name="widget_2_blocked">blocked</string>
+    <string name="widget_2_replied">replied</string>
+    <string name="widget_2_forwarded">forwarded</string>
+    <string name="widget_2_aliases">aliases</string>
+    <string name="widget_2_domains">domains</string>
+    <string name="widget_2_usernames">usernames</string>
+    <string name="widget_2_recipients">recipients</string>
+    <string name="widget_2_rules">rules</string>
+    <string name="details">Details</string>
 </resources>

@@ -309,6 +309,12 @@
         <item name="android:background">@color/IconGrayTint</item>
     </style>
 
+    <style name="divider_vertical">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:alpha">0.2</item>
+        <item name="android:background">@color/IconGrayTint</item>
+    </style>
+
 
     <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>

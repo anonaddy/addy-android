@@ -2162,19 +2162,17 @@ class NetworkHelper(private val context: Context) {
         }, activeOnly = false, includeDeleted = true)
     }
 
-    suspend fun cacheDomainsDataForWidget(
+    suspend fun cacheDomainCountForWidget(
         callback: (Boolean) -> Unit
     ) {
-        getDomainOptions { result ->
+        getAllDomains { result ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
-                return@getDomainOptions
+                return@getAllDomains
             } else {
-                // Turn the list into a json object
-                val data = Gson().toJson(result)
-                // Store a copy of this data locally
-                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_DOMAIN_OPTIONS, data)
+                // Store the result size
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, result.size)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
@@ -2182,6 +2180,65 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun cacheUsernamesCountForWidget(
+        callback: (Boolean) -> Unit
+    ) {
+        getAllUsernames { result ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getAllUsernames
+            } else {
+                // Store the result size
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+        }
+    }
+
+    suspend fun cacheRulesCountForWidget(
+        callback: (Boolean) -> Unit
+    ) {
+        getAllRules { result ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getAllRules
+            } else {
+                // Store the result size
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+        }
+    }
+
+    suspend fun cacheRecipientCountForWidget(
+        callback: (Boolean) -> Unit
+    ) {
+        getRecipients({ result ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getRecipients
+            } else {
+                // Store the result size
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+            // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
+        }, false)
+    }
+
+
+    /**
+     * UPDATE
+     */
     suspend fun getGitlabTags(
         callback: (Feed?) -> Unit
     ) {

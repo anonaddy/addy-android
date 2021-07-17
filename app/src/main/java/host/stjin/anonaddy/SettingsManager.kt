@@ -24,10 +24,9 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         RECENT_SEARCHES("recent_searches"),
 
         // Locally stored data
-        BACKGROUND_SERVICE_CACHE_DATA_DOMAIN_OPTIONS("cache_data_domain_options"),
         BACKGROUND_SERVICE_CACHE_DATA_ALIASES("cache_data_aliases"),
 
-        // Used for the shimmerview
+        // Used for the shimmerview and widget 2
         BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT("cache_domain_count"),
         BACKGROUND_SERVICE_CACHE_ALIAS_COUNT("cache_alias_count"),
         BACKGROUND_SERVICE_CACHE_USERNAME_COUNT("cache_username_count"),
