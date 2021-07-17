@@ -31,7 +31,7 @@
 
         <item name="android:windowSplashScreenBackground">@color/splashBackground</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
-        <item name="android:windowSplashScreenAnimationDuration">999</item>
+        <item name="android:windowSplashScreenAnimationDuration">700</item>
     </style>
 
     <!-- Application theme. -->

@@ -14,6 +14,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
     <dimen name="widget_1_padding">0dp</dimen>
     <dimen name="widget_2_padding">24dp</dimen>
+    <dimen name="widget_2_margin">16dp</dimen>
 
     <dimen name="collapsingtoolbar_title_left_margin">15dp</dimen>
     <dimen name="collapsingtoolbar_action_margin">12dp</dimen>

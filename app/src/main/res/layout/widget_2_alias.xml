@@ -1,55 +1,181 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/background"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/widget_2_background"
-    android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
-    android:theme="@style/Theme.MaterialComponents.DayNight"
     android:foreground="?android:attr/selectableItemBackground"
-    android:padding="@dimen/widget_2_padding">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:weightSum="5">
-
-        <ImageView
-            android:layout_width="165dp"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:paddingEnd="40dp"
-            android:scaleType="fitStart"
-            android:src="@drawable/ic_logo_widget_icon" />
-
-    </LinearLayout>
+    android:layout_marginTop="@dimen/widget_2_margin"
+    android:layout_marginBottom="@dimen/widget_2_margin"
+    android:orientation="vertical"
+    android:padding="@dimen/widget_2_padding"
+    android:theme="@style/Theme.MaterialComponents.DayNight">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:orientation="vertical">
+        android:weightSum="2">
 
-        <TextView
-            android:id="@+id/widget_aliases_statistics_count"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="0"
-            android:textColor="@android:color/white"
-            android:textSize="60sp" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/widget_aliases_statistics_text"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:weightSum="5">
+
+                <ImageView
+                    android:layout_width="165dp"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:paddingEnd="40dp"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/ic_logo_widget_icon" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/widget_aliases_statistics_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="bottom"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="48sp" />
+
+                <TextView
+                    android:id="@+id/widget_aliases_statistics_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.6"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="bottom"
+                    android:text="@string/emails_forwarded"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widget_aliases_statistics_additional"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="bottom"
-            android:text="@string/emails_forwarded"
-            android:alpha="0.6"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/widget_aliases_statistics_blocked_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical|end"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="end|center_vertical"
+                    android:text="blocked"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/widget_aliases_statistics_sent_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical|end"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="end|center_vertical"
+                    android:text="sent"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/widget_aliases_statistics_replied_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical|end"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="end|center_vertical"
+                    android:text="replied"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
 

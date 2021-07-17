@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.os.Bundle
+import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat.startActivity
 import host.stjin.anonaddy.BuildConfig
@@ -56,7 +58,7 @@ class AliasWidget2Provider : AppWidgetProvider() {
         // There may be multiple widgets active, so update all of them
         var amountOfWidgets = 0
         for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
+            updateAppWidget(context, appWidgetManager, appWidgetId, appWidgetManager.getAppWidgetOptions(appWidgetId))
             amountOfWidgets++
         }
 
@@ -78,24 +80,53 @@ class AliasWidget2Provider : AppWidgetProvider() {
         }
     }
 
+    override fun onAppWidgetOptionsChanged(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+
+        // Widget got resized or moved. Update the widget and send the new nums as bundle
+        context?.let { appWidgetManager?.let { it1 -> updateAppWidget(it, it1, appWidgetId, newOptions) } }
+    }
+
 }
 
 
-private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle? = null) {
 
     val settingsManager = SettingsManager(true, context)
     val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
     val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(context, it) }
     var emailsForwarded = 0
+    var emailsBlocked = 0
+    var emailsSent = 0
+    var emailsReplied = 0
     // Count the stats from the cache
     if (aliasesList != null) {
         for (alias in aliasesList) {
             emailsForwarded += alias.emails_forwarded
+            emailsBlocked += alias.emails_blocked
+            emailsSent += alias.emails_sent
+            emailsReplied += alias.emails_replied
         }
     }
 
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.widget_2_alias)
+
+    // Widget got resized or moved
+    if (newOptions != null) {
+        // Width is min 300, show the additional info
+        if (newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) > 300) {
+            views.setViewVisibility(R.id.widget_aliases_statistics_additional, View.VISIBLE)
+            views.setTextViewText(R.id.widget_aliases_statistics_blocked_count, emailsBlocked.toString())
+            views.setTextViewText(R.id.widget_aliases_statistics_sent_count, emailsSent.toString())
+            views.setTextViewText(R.id.widget_aliases_statistics_replied_count, emailsReplied.toString())
+        } else {
+            views.setViewVisibility(R.id.widget_aliases_statistics_additional, View.GONE)
+        }
+    }
+
+
+
     views.setTextViewText(R.id.widget_aliases_statistics_count, emailsForwarded.toString())
 
     views.setOnClickPendingIntent(android.R.id.background, getPendingSelfIntent(context, OPEN_APP))

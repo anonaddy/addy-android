@@ -2,7 +2,9 @@ package host.stjin.anonaddy.ui
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
@@ -23,13 +25,17 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private val unsupportedBottomDialogFragment: UnsupportedBottomDialogFragment =
         UnsupportedBottomDialogFragment.newInstance()
 
+    // True if there is UI stuff to be done, this var is used for Android 12 devices to keep showing the splashscreen until the app is done loading
+    // Pre Android 12 devices will see a progressbar
+    private var loadingDone = false
+
     private lateinit var binding: ActivitySplashBinding
     private lateinit var bindingFailed: ActivityMainFailedBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        skipAndroid12SplashScreenAnimation()
         binding = ActivitySplashBinding.inflate(layoutInflater)
         val view = binding.root
-
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
         setContentView(view)
@@ -41,6 +47,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         networkHelper = NetworkHelper(this)
         // Open setup
         if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+            loadingDone = true
             val intent = Intent(this, SetupActivity::class.java)
             startActivity(intent)
             finish()
@@ -50,6 +57,17 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 loadDataAndStartApp()
             }
         }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun skipAndroid12SplashScreenAnimation() {
+        // Add a callback that's called when the splash screen is animating to
+        // the app content.
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            splashScreenView.remove()
+        }
+
     }
 
     private suspend fun loadDataAndStartApp() {
@@ -74,6 +92,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                             loadUserResourceIntoMemory()
                         }
                     } else {
+                        loadingDone = true
                         if (!unsupportedBottomDialogFragment.isAdded) {
                             unsupportedBottomDialogFragment.show(
                                 supportFragmentManager,
@@ -115,6 +134,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         networkHelper.getSpecificRecipient({ recipient, error ->
             if (recipient != null) {
                 User.userResourceExtended = UserResourceExtended(recipient.email)
+                loadingDone = true
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -125,6 +145,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private fun showErrorScreen(error: String?) {
+        loadingDone = true
+
         bindingFailed = ActivityMainFailedBinding.inflate(layoutInflater)
         val view = bindingFailed.root
         setContentView(view)
