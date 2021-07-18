@@ -57,6 +57,7 @@
         android:contentDescription="@string/copy_alias"
         android:src="@drawable/ic_content_copy_24px"
         android:tint="@android:color/white"
-        app:tint="@android:color/white" />
+        app:tint="@android:color/white"
+        tools:ignore="UseAppTint" />
 
 </LinearLayout>

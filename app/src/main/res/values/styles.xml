@@ -29,9 +29,9 @@
         </item>
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
 
-        <item name="android:windowSplashScreenBackground">@color/splashBackground</item>
+        <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
-        <item name="android:windowSplashScreenAnimationDuration">700</item>
+        <item name="android:windowSplashScreenAnimationDuration">999</item>
     </style>
 
     <!-- Application theme. -->
@@ -309,9 +309,9 @@
         <item name="android:background">@color/IconGrayTint</item>
     </style>
 
-    <style name="divider_vertical">
+    <style name="divider_vertical_widget_2_layout_3">
         <item name="android:layout_width">1dp</item>
-        <item name="android:alpha">0.2</item>
+        <item name="android:alpha">0.5</item>
         <item name="android:background">@color/IconGrayTint</item>
     </style>
 

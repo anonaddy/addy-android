@@ -97,7 +97,7 @@ dependencies {
 // Shimmer
 dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    implementation 'com.todkars:shimmer-recyclerview:0.4.1'
+    implementation 'com.github.omtodkar:ShimmerRecyclerView:v0.4.1'
 }
 
 // Securing app
@@ -118,7 +118,7 @@ dependencies {
 
 // Scanning QR codes
 dependencies {
-    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    implementation 'com.github.yuriy-budiyev:code-scanner:v2.1.0'
 }
 
 // For updating widgets and caching data
@@ -128,15 +128,15 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:library:2.1.0")
+    implementation 'app.futured.donut:donut:2.1.0'
 }
 
 // Loading spinners when execution actions from eg. bottomsheets
 dependencies {
-    implementation 'br.com.simplepass:loading-button-android:2.2.0'
+    implementation 'com.github.leandroBorgesFerreira:LoadingButtonAndroid:2.2.0'
 }
 
 // Built-in updater
 dependencies {
-    implementation "com.einmalfel:earl:1.2.0"
+    implementation 'com.github.einmalfel:Earl:1.2.0'
 }

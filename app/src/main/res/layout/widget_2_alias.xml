@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,6 +19,7 @@
         android:layout_height="match_parent"
         android:padding="@dimen/widget_2_padding_layout_1"
         android:visibility="visible"
+        android:baselineAligned="false"
         android:weightSum="2">
 
         <LinearLayout
@@ -58,7 +60,8 @@
                     android:maxLines="1"
                     android:text="0"
                     android:textColor="@android:color/white"
-                    android:textSize="56sp" />
+                    android:textSize="56sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -98,7 +101,8 @@
                     android:maxLines="1"
                     android:text="0"
                     android:textColor="@android:color/white"
-                    android:textSize="34sp" />
+                    android:textSize="34sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -130,7 +134,8 @@
                     android:maxLines="1"
                     android:text="0"
                     android:textColor="@android:color/white"
-                    android:textSize="34sp" />
+                    android:textSize="34sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -162,7 +167,8 @@
                     android:maxLines="1"
                     android:text="0"
                     android:textColor="@android:color/white"
-                    android:textSize="34sp" />
+                    android:textSize="34sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -188,8 +194,11 @@
         android:layout_marginBottom="@dimen/widget_2_margin_layout_2"
         android:background="@drawable/widget_2_background"
         android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingStart="@dimen/widget_2_padding_layout_2_start_end"
         android:padding="@dimen/widget_2_padding_layout_2"
         android:visibility="gone"
+        android:paddingEnd="@dimen/widget_2_padding_layout_2_start_end"
         android:weightSum="8">
 
         <LinearLayout
@@ -203,22 +212,27 @@
                 android:id="@+id/widget_2_layout_2_aliases_statistics_forwarded_count"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:autoSizeTextType="uniform"
-                android:fontFamily="sans-serif-medium"
                 android:lines="1"
                 android:maxLines="1"
+                android:fontFamily="sans-serif-medium"
                 android:text="0"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="48sp" />
+                android:textSize="48sp"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:gravity="center"
+                android:autoSizeMaxTextSize="14sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="top|center_horizontal"
+                android:lines="1"
+                android:maxLines="1"
                 android:text="@string/widget_2_forwarded"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
@@ -233,10 +247,11 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
+            android:baselineAligned="false"
             android:weightSum="3">
 
             <LinearLayout
-                style="@style/divider_vertical"
+                style="@style/divider_vertical_widget_2_layout_3"
                 android:layout_height="match_parent"
                 android:layout_margin="16dp" />
 
@@ -245,21 +260,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:layout_marginEnd="8dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/widget_2_layout_2_aliases_statistics_blocked_count"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="sans-serif-medium"
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textAlignment="center"
+                    android:gravity="center"
                     android:textColor="@android:color/white"
-                    android:textSize="48sp" />
+                    android:textSize="48sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -267,8 +284,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
+                    android:autoSizeMaxTextSize="14sp"
                     android:text="@string/widget_2_blocked"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="top|center_horizontal"
+
+                    android:lines="1"
+                    android:maxLines="1"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -278,22 +300,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-
+                android:layout_marginEnd="8dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/widget_2_layout_2_aliases_statistics_replied_count"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="sans-serif-medium"
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textAlignment="center"
+                    android:gravity="center"
                     android:textColor="@android:color/white"
-                    android:textSize="48sp" />
+                    android:textSize="48sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -301,8 +324,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
+                    android:autoSizeMaxTextSize="14sp"
                     android:text="@string/widget_2_replied"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="top|center_horizontal"
+
+                    android:lines="1"
+                    android:maxLines="1"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -312,22 +340,22 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/widget_2_layout_2_aliases_statistics_sent_count"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="sans-serif-medium"
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textAlignment="center"
+                    android:gravity="center"
                     android:textColor="@android:color/white"
-                    android:textSize="48sp" />
+                    android:textSize="48sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -335,8 +363,13 @@
                     android:layout_weight="1"
                     android:alpha="0.6"
                     android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
+                    android:autoSizeMaxTextSize="14sp"
                     android:text="@string/widget_2_sent"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="top|center_horizontal"
+
+                    android:lines="1"
+                    android:maxLines="1"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -353,6 +386,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/widget_2_padding_layout_3"
         android:visibility="gone"
+        android:baselineAligned="false"
         android:weightSum="2">
 
         <LinearLayout
@@ -404,7 +438,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -442,7 +477,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -480,7 +516,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -518,7 +555,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -570,7 +608,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -608,7 +647,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -646,7 +686,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -684,7 +725,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
@@ -722,7 +764,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@android:color/white"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
             </LinearLayout>

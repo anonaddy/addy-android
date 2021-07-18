@@ -78,7 +78,7 @@
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.0.0</h3>
 <h4>Added</h4>
-<p>🔢 Added a brand new statistic widget for flexing with your forwarded email count<br />💭 It\'s now possible to "forget" your alias from the app<br />🌟 Introducing "Email action integration", create aliases and send emails from aliases from&hellip; anywhere! Without opening the app! Open the new "Features and integrations" section in the app settings to learn more<br />⬇️ Keep the app up-to-date with the new "AnonAddy updater", allowing your to check for updates and get notified when new updates are available</p>
+<p>🔢 Added a brand new statistic widget for flexing with your AnonAddy stats, resize the widget to show and rearrange the stats<br />💭 It\'s now possible to "forget" your alias from the app<br />🌟 Introducing "Email action integration", create aliases and send emails from aliases from&hellip; anywhere! Without opening the app! Open the new "Features and integrations" section in the app settings to learn more<br />⬇️ Keep the app up-to-date with the new "AnonAddy updater", allowing your to check for updates and get notified when new updates are available</p>
 <h4>Fixed/Improved</h4>
 <p>🎨 Massive UI redesign with Android 12 and simplicity in mind<br />- One-handed interface, simply swipe down from any screen to move content down for better accessibility<br />- Cards and raises are now used for a clean-looking, easier-to-understand design<br />- The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color<br />- A new app icon, that changes according to your system accent (Android 12 only)<br />- Softer colors<br />- Bigger, clearer buttons with more space between elements<br />- Animations! Most progressbars are now replaced with morphing buttons<br />- Improved shimmers<br />- Improved tablet layout</p>
 <p>📃 Updated shared domains list<br />👤 Select the recipients for an alias when creating a new alias<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
@@ -137,7 +137,6 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="enable_biometric_authentication">Enable biometric authentication</string>
     <string name="disable_biometric_authentication">Disable biometric authentication</string>
-
     <string name="logs">Logs</string>
     <string name="clear_logs">Clear logs</string>
     <string name="logs_cleared">Logs cleared</string>

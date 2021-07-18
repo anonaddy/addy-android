@@ -28,17 +28,24 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 > Exciting ✨
 
 - Connect to the [AnonAddy](https://anonaddy.com/) instance or your own hosted instance
-- A unique, sexy and sleek design, based on the [Material Design](https://material.io/) language
+- A unique, sexy and sleek design, based on the [Material You Design](https://material.io/) guidelines
 - Support for Deep Link to easily deactivate aliases from the email banner
 - Lock the app using Biometrics
-- App exclusive features like watching aliases for new emails
+- App exclusive features
+  - Watching aliases for new emails
+  - Get notified when a new update is available
+  - Send emails from aliases by selecting an email address or clicking a mailto link
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Widgets!
 
 > Seriously 👓
 
 - **Security**.
- - Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using the [AndroidX crypto library](https://developer.android.com/jetpack/androidx/releases/security) - No stats, buried points or Device IDs, or even crash reporting (so if you get a crash, please share the crash info with me >_<). - I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.  **What's yours is yours**.
+- Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using
+  the [AndroidX crypto library](https://developer.android.com/jetpack/androidx/releases/security)
+- No stats, buried points or Device IDs, or even crash reporting (Except for Google Play Store builds). So if you get a crash, please share the crash
+  info with me >_<.
+- I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.  **What's yours is yours**.
 
  > Manage (add, edit, delete)
 
@@ -61,8 +68,9 @@ Developer-led download channels:
 - [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy)
 
 ## UI
+
 - Designed by my lovely UI guru @JustPlayingHard (💙)
- - Anything you think doesn't work well is my bad as I recreated the UI drafts into XML.
+- Anything you think doesn't work well is my bad as I recreated the UI drafts into XML.
 
 ## Open Source License.
 Third party libraries used.

@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/custom_view_section_CV"
     style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
@@ -58,7 +59,8 @@
             android:text="TITLE FOR CUSTOM SECTION"
             android:textAllCaps="false"
             android:textColor="@color/BlackWhite"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/custom_view_section_desc"
@@ -68,7 +70,8 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="3"
-            android:text="DESC FOR CUSTOM SECTION\n2LINES\n3lines" />
+            android:text="DESC FOR CUSTOM SECTION\n2LINES\n3lines"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
 

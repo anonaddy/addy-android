@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -28,7 +29,8 @@
             android:src="@drawable/ic_round_refresh_24"
             android:contentDescription="@string/refresh"
             android:tint="@android:color/white"
-            app:tint="@android:color/white" />
+            app:tint="@android:color/white"
+            tools:ignore="UseAppTint" />
     </RelativeLayout>
 
 
