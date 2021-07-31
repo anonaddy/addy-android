@@ -18,12 +18,6 @@
         android:orientation="horizontal"
         android:weightSum="12">
 
-        <!--TODO FIX THIS DIRTY WAY OF MATCHING PARENTS WIDTH-->
-        <View
-            style="@style/divider"
-            android:layout_width="0dp"
-            android:layout_weight="12"
-            android:alpha="0" />
 
     </LinearLayout>
 

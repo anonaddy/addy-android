@@ -41,7 +41,7 @@
                     android:layout_height="132dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
-                    android:contentDescription="@string/watch_alias"
+                    android:contentDescription="@string/anonaddy_updater"
                     android:elevation="50dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/settings_update" />

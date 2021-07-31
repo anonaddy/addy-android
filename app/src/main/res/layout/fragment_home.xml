@@ -9,10 +9,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="8dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
 
@@ -26,8 +26,8 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
                 style="@style/AnonAddyTitleNoAction"
+                android:layout_width="match_parent"
                 android:orientation="horizontal">
 
                 <TextView
@@ -39,198 +39,232 @@
 
             </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
-                style="@style/AnonAddyCustomCardViewStyleTop"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
 
-                app:cardElevation="@dimen/cardview_default_elevation">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/home_statistics_monthly_bandwidth_progress"
+                    style="@style/AnonAddyProgressBarHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:progress="0" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+                    android:layout_height="90dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            style="@style/DescTextStyle"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_marginBottom="4dp"
                             android:drawablePadding="4dp"
                             android:fontFamily="sans-serif-medium"
                             android:gravity="center_vertical"
                             android:text="@string/monthly_bandwidth"
-                            app:drawableStartCompat="@drawable/ic_speedometer_slow"
-                            app:drawableTint="@color/bandwidthColor" />
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/home_statistics_monthly_bandwidth_current"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/home_statistics_monthly_bandwidth_max"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginStart="4dp"
-                            android:alpha="0.5"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            <TextView
+                                android:id="@+id/home_statistics_monthly_bandwidth_current"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+
+                            <TextView
+                                android:id="@+id/home_statistics_monthly_bandwidth_max"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <ProgressBar
-                        android:id="@+id/home_statistics_monthly_bandwidth_progress"
-                        style="@style/AnonAddyProgressBar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:progress="0" />
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="@string/monthly_bandwidth"
+                        android:src="@drawable/ic_speedometer_slow"
+                        android:tint="@android:color/white"
+                        app:tint="@android:color/white"
+                        tools:ignore="UseAppTint" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
+            </RelativeLayout>
 
-            <com.google.android.material.card.MaterialCardView
-                style="@style/AnonAddyCustomCardViewStyleCenter"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                app:cardElevation="@dimen/cardview_default_elevation">
+                android:layout_marginBottom="6dp">
+
+                <ProgressBar
+                    android:id="@+id/home_statistics_recipients_progress"
+                    style="@style/AnonAddyProgressBarRedHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:progress="0" />
 
 
-                <!-- Extra padding because AnonAddyCustomCardViewStyleTop and Bottom take up extra padding -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_height="90dp"
+
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:padding="16dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            style="@style/DescTextStyle"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_marginBottom="4dp"
                             android:drawablePadding="4dp"
                             android:fontFamily="sans-serif-medium"
                             android:gravity="center_vertical"
                             android:text="@string/recipients"
-                            app:drawableStartCompat="@drawable/ic_account_arrow_right"
-                            app:drawableTint="@color/softRed" />
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/home_statistics_recipients_current"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/home_statistics_recipients_max"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginStart="4dp"
-                            android:alpha="0.5"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            <TextView
+                                android:id="@+id/home_statistics_recipients_current"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+
+                            <TextView
+                                android:id="@+id/home_statistics_recipients_max"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <ProgressBar
-                        android:id="@+id/home_statistics_recipients_progress"
-                        style="@style/AnonAddyProgressBarRed"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:progress="0" />
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="@string/recipients"
+                        android:src="@drawable/ic_menu_recipients"
+                        android:tint="@android:color/white"
+                        app:tint="@android:color/white"
+                        tools:ignore="UseAppTint" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
+            </RelativeLayout>
 
-            <com.google.android.material.card.MaterialCardView
-                style="@style/AnonAddyCustomCardViewStyleBottom"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardElevation="@dimen/cardview_default_elevation">
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/home_statistics_aliases_progress"
+                    style="@style/AnonAddyProgressBarEasternBlueHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:progress="0" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+                    android:layout_height="90dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
-                            style="@style/DescTextStyle"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_marginBottom="4dp"
                             android:drawablePadding="4dp"
                             android:fontFamily="sans-serif-medium"
                             android:gravity="center_vertical"
                             android:text="@string/shared_domain_aliases"
-                            app:drawableStartCompat="@drawable/ic_round_alternate_email_24"
-                            app:drawableTint="@color/easternBlue" />
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/home_statistics_aliases_current"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/home_statistics_aliases_max"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginStart="4dp"
-                            android:alpha="0.5"
-                            android:text="\?"
-                            android:textColor="@color/BlackWhite"
-                            tools:ignore="HardcodedText" />
+                            <TextView
+                                android:id="@+id/home_statistics_aliases_current"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+
+                            <TextView
+                                android:id="@+id/home_statistics_aliases_max"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <ProgressBar
-                        android:id="@+id/home_statistics_aliases_progress"
-                        style="@style/AnonAddyProgressBarEasternBlue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:progress="0" />
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="@string/shared_domain_aliases"
+                        android:src="@drawable/ic_round_alternate_email_24"
+                        android:tint="@android:color/white"
+                        app:tint="@android:color/white"
+                        tools:ignore="UseAppTint" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+
+            </RelativeLayout>
+
 
         </LinearLayout>
 

@@ -59,21 +59,45 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 Developer-led download channels:
 
->Recommended (access to beta's, automatic updates and support me :) )
-- [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
- - ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here and download it, otherwise choose another source :)
+> Recommended (access to beta's, automatic updates and support me :) )
 
->Other sources
+- [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
+- ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here
+  and download it, otherwise choose another source :)
+
+> Other sources
+
 - [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
 - [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy)
+
+> Material You builds
+
+- [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
 
 ## UI
 
 - Designed by my lovely UI guru @JustPlayingHard (💙)
 - Anything you think doesn't work well is my bad as I recreated the UI drafts into XML.
 
+### Material You builds
+
+As some know, with Android 12, Google has developed a new design system called [Material You](https://material.io/blog/announcing-material-you).
+Material You allows apps to use a so-called "Color Palette" to match the system theme.
+
+AnonAddy for Android also uses this color palette in the following places:
+
+- Widgets
+- Splash screens
+- App icon
+
+The application itself will keep its own identity with a custom color palette. However, I've made available a special "flavor" of the app that takes
+full advantage of the Material You color palette. With this flavor of the app, the app fully adapts to your system theme. This flavor is only
+available on [Gitlab](https://gitlab.com/Stjin/anonaddy-android/-/releases)
+
 ## Open Source License.
+
 Third party libraries used.
+
 - [androidx.biometric](https://developer.android.com/jetpack/androidx/releases/biometric)
 - [androidx.security.crypto](https://developer.android.com/jetpack/androidx/releases/security)
 - [androidx.work](https://developer.android.com/jetpack/androidx/releases/work)

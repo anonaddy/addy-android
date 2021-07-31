@@ -103,16 +103,16 @@
         <item name="android:minHeight">8dip</item>
     </style>
 
-    <style name="AnonAddyProgressBarRed" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progressbar_drawable_red</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
+    <style name="AnonAddyProgressBarHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_home</item>
     </style>
 
-    <style name="AnonAddyProgressBarEasternBlue" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progressbar_drawable_eastern_blue</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
+    <style name="AnonAddyProgressBarRedHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_red_home</item>
+    </style>
+
+    <style name="AnonAddyProgressBarEasternBlueHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_eastern_blue_home</item>
     </style>
 
     <style name="RoundActionButton" parent="Widget.MaterialComponents.Button">

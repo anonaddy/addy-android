@@ -249,7 +249,7 @@ class HomeFragment : Fragment() {
 
     private fun setAliasesStatistics(count: Int, maxAliases: Int) {
         binding.homeStatisticsAliasesProgress.max = maxAliases * 100
-        binding.homeStatisticsAliasesCurrent.text = count.toString()
+        binding.homeStatisticsAliasesCurrent.text = "$count /"
         binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
         Handler(Looper.getMainLooper()).postDelayed({
             ObjectAnimator.ofInt(
@@ -257,7 +257,7 @@ class HomeFragment : Fragment() {
                 "progress",
                 count * 100
             )
-                .setDuration(300)
+                .setDuration(500)
                 .start()
         }, 400)
     }
@@ -270,8 +270,8 @@ class HomeFragment : Fragment() {
             if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
 
 
-        binding.homeStatisticsMonthlyBandwidthCurrent.text =
-            this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
+        val currentCount = this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
+        binding.homeStatisticsMonthlyBandwidthCurrent.text = "$currentCount /"
 
 
         binding.homeStatisticsMonthlyBandwidthMax.text =
@@ -286,7 +286,7 @@ class HomeFragment : Fragment() {
             "progress",
             currMonthlyBandwidth.roundToInt() * 100
         )
-            .setDuration(300)
+            .setDuration(500)
             .start()
     }
 
@@ -294,7 +294,7 @@ class HomeFragment : Fragment() {
     private fun setRecipientStatistics(currRecipients: Int, maxRecipient: Int) {
         binding.homeStatisticsRecipientsProgress.max =
             maxRecipient * 100
-        binding.homeStatisticsRecipientsCurrent.text = currRecipients.toString()
+        binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
         binding.homeStatisticsRecipientsMax.text =
             if (maxRecipient == 0) "∞" else maxRecipient.toString()
         ObjectAnimator.ofInt(
@@ -302,7 +302,7 @@ class HomeFragment : Fragment() {
             "progress",
             currRecipients * 100
         )
-            .setDuration(300)
+            .setDuration(500)
             .start()
     }
 

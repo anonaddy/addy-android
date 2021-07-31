@@ -76,6 +76,7 @@
                 android:focusable="true"
                 android:padding="6dp"
                 android:src="@drawable/ic_email_error_24dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="H,1:1"
                 app:layout_constraintStart_toStartOf="parent"
