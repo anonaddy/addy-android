@@ -6,45 +6,51 @@
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
-
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
     <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/rules_view_and_or_AND_mbtg"
+    <com.google.android.material.card.MaterialCardView
+        style="@style/AnonAddyCustomCardViewStyleCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        app:checkedButton="@+id/rules_view_and_or_AND_button"
-        app:selectionRequired="true"
-        app:singleSelection="true">
+        app:cardElevation="@dimen/cardview_default_elevation">
 
-        <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/rules_view_and_or_AND_button"
-            app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
-            style="?attr/materialButtonOutlinedStyle"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/rules_view_and_or_AND_mbtg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/and" />
+            app:checkedButton="@+id/rules_view_and_or_AND_button"
+            app:selectionRequired="true"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            app:singleSelection="true">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/rules_view_and_or_OR_button"
-            app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/or" />
+            <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rules_view_and_or_AND_button"
+                app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
+                style="@style/AnonAddyToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/and" />
 
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rules_view_and_or_OR_button"
+                app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
+                style="@style/AnonAddyToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/or" />
 
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+    </com.google.android.material.card.MaterialCardView>
     <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

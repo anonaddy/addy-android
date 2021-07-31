@@ -2,26 +2,25 @@ package host.stjin.anonaddy.ui.domains.manage
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionDomainBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
 class EditDomainDescriptionBottomDialogFragment(
     private val domainId: String?,
     private val description: String?
-) : BottomSheetDialogFragment(), View.OnClickListener {
+) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddEditDomainDescriptionBottomDialogListener
@@ -61,6 +60,10 @@ class EditDomainDescriptionBottomDialogFragment(
             dismiss()
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsEditdomainDomainRoot)
+        }
+
         return root
     }
 
@@ -75,11 +78,12 @@ class EditDomainDescriptionBottomDialogFragment(
 
     private fun verifyKey(context: Context) {
         val description = binding.bsEditdomainDomainDescTiet.text.toString()
-        binding.bsEditdomainDomainSaveButton.isEnabled = false
-        binding.bsEditdomainDomainSaveProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsEditdomainDomainSaveButton.startAnimation()
 
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             editDescriptionHttp(context, description)
         }
     }
@@ -90,8 +94,10 @@ class EditDomainDescriptionBottomDialogFragment(
             if (result == "200") {
                 listener.descriptionEdited(description)
             } else {
-                binding.bsEditdomainDomainSaveButton.isEnabled = true
-                binding.bsEditdomainDomainSaveProgressbar.visibility = View.INVISIBLE
+
+                // Revert the button to normal
+                binding.bsEditdomainDomainSaveButton.revertAnimation()
+
                 binding.bsEditdomainDomainDescTil.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }

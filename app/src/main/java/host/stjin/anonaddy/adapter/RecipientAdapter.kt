@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Recipients
 
@@ -48,7 +50,7 @@ class RecipientAdapter(
 
         when {
             listWithRecipients[position].email_verified_at == null -> {
-                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_error_outline_24)
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_error_24dp)
                 holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.not_verified)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
@@ -56,14 +58,14 @@ class RecipientAdapter(
                 holder.recipientsRecyclerviewListSettingsButton.visibility = View.GONE
             }
             listWithRecipients[position].should_encrypt -> {
-                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_enc_email_outline)
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_email_encrypted_24dp)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListResendButton.visibility = View.GONE
                 holder.recipientsRecyclerviewListSettingsButton.visibility = View.VISIBLE
             }
             else -> {
-                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_round_mail_outline_24)
+                holder.recipientsRecyclerviewListIcon.setImageResource(R.drawable.ic_email_24dp)
 
                 holder.recipientsRecyclerviewListDeleteButton.visibility = View.VISIBLE
                 holder.recipientsRecyclerviewListResendButton.visibility = View.GONE
@@ -79,6 +81,10 @@ class RecipientAdapter(
         onRecipientClicker = aClickListener
     }
 
+    fun getList(): List<Recipients> {
+        return listWithRecipients
+    }
+
 
     interface ClickListener {
         fun onClickSettings(pos: Int, aView: View)
@@ -89,7 +95,7 @@ class RecipientAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
-        private var mLL: LinearLayout = view.findViewById(R.id.recipients_recyclerview_list_LL)
+        private var mCV: MaterialCardView = view.findViewById(R.id.recipients_recyclerview_list_CV)
         private var recipientsRecyclerviewListOptionLl: LinearLayout =
             view.findViewById(R.id.recipients_recyclerview_list_option_LL)
         private var mOptionsButton: LinearLayout =
@@ -109,15 +115,17 @@ class RecipientAdapter(
 
         init {
             mOptionsButton.setOnClickListener(this)
-            mLL.setOnClickListener(this)
+            mCV.setOnClickListener(this)
             recipientsRecyclerviewListSettingsButton.setOnClickListener(this)
             recipientsRecyclerviewListResendButton.setOnClickListener(this)
             recipientsRecyclerviewListDeleteButton.setOnClickListener(this)
+
+            checkForTabletLayout(recipientsRecyclerviewListDeleteButton.context)
         }
 
         override fun onClick(p0: View) {
             when (p0.id) {
-                R.id.recipients_recyclerview_list_LL -> {
+                R.id.recipients_recyclerview_list_CV -> {
                     expandOptions()
                 }
                 R.id.recipients_recyclerview_list_expand_options -> {
@@ -136,11 +144,20 @@ class RecipientAdapter(
         }
 
         private fun expandOptions() {
-            if (recipientsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
-                recipientsRecyclerviewListOptionLl.visibility = View.GONE
-                mOptionsButton.rotation = 0f
-            } else {
-                mOptionsButton.rotation = 180f
+            if (!recipientsRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
+                if (recipientsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                    recipientsRecyclerviewListOptionLl.visibility = View.GONE
+                    mOptionsButton.rotation = 0f
+                } else {
+                    mOptionsButton.rotation = 180f
+                    recipientsRecyclerviewListOptionLl.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        private fun checkForTabletLayout(context: Context) {
+            if (context.resources.getBoolean(R.bool.isTablet)) {
+                mOptionsButton.visibility = View.GONE
                 recipientsRecyclerviewListOptionLl.visibility = View.VISIBLE
             }
         }

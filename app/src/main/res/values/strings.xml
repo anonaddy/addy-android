@@ -2,9 +2,6 @@
     <string name="app_name">AnonAddy</string>
     <string name="title_home">Home</string>
     <string name="title_aliases">Aliases</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="overall_statistics">Overall statistics</string>
-    <string name="title_activity_dialog">Profile dialog</string>
     <string name="app_settings">App settings</string>
     <string name="title_recipients">Recipients</string>
     <string name="recipients">Recipients</string>
@@ -12,9 +9,6 @@
     <string name="anonaddy_settings">AnonAddy settings</string>
     <string name="monthly_bandwidth">Monthly bandwidth</string>
     <string name="view_more">View more</string>
-    <string name="deleted">Deleted</string>
-    <string name="active">Active</string>
-    <string name="inactive">Inactive</string>
     <string name="copied_alias">Copied alias</string>
     <string name="most_active_aliases">Most active aliases</string>
     <string name="created_at_s">Created %s</string>
@@ -58,7 +52,6 @@
     <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.anonaddy.com (or your own hosted instance)</string>
     <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
-    <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="sign_up">Sign up</string>
     <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email</string>
@@ -83,7 +76,12 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<p>&mdash; What\'s new in version 2.0.3 &mdash;<br />[IMPROVED] Updated libraries<br />[IMPROVED] Added \"Use Reply-To Header For Replying\" to AnonAddy settings<br />[IMPROVED] Overall app improvements</p>]]></string>
+    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.0.0</h3>
+<h4>Added</h4>
+<p>🔢 Added a brand new statistic widget for flexing with your AnonAddy stats, resize the widget to show and rearrange the stats<br />💭 It\'s now possible to "forget" your alias from the app<br />🌟 Introducing "Email action integration", create aliases and send emails from aliases from&hellip; anywhere! Without opening the app! Open the new "Features and integrations" section in the app settings to learn more<br />⬇️ Keep the app up-to-date with the new "AnonAddy updater", allowing your to check for updates and get notified when new updates are available</p>
+<h4>Fixed/Improved</h4>
+<p>🎨 Massive UI redesign with Android 12 and simplicity in mind<br />- One-handed interface, simply swipe down from any screen to move content down for better accessibility<br />- Cards and raises are now used for a clean-looking, easier-to-understand design<br />- The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color<br />- A new app icon, that changes according to your system accent (Android 12 only)<br />- Softer colors<br />- Bigger, clearer buttons with more space between elements<br />- Animations! Most progressbars are now replaced with morphing buttons<br />- Improved shimmers<br />- Improved tablet layout</p>
+<p>📃 Updated shared domains list<br />👤 Select the recipients for an alias when creating a new alias<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -139,7 +137,6 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="enable_biometric_authentication">Enable biometric authentication</string>
     <string name="disable_biometric_authentication">Disable biometric authentication</string>
-
     <string name="logs">Logs</string>
     <string name="clear_logs">Clear logs</string>
     <string name="logs_cleared">Logs cleared</string>
@@ -160,7 +157,6 @@
     <string name="add_public_gpg_key">Add public GPG key</string>
     <string name="manage_recipient_basic_info">Email: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
     <string name="add_public_gpg_key_desc">Enter your PUBLIC key data in the textbox below\n\nMake sure to remove Comment: and Version:</string>
-    <string name="add_key">Add key</string>
     <string name="error_add_gpg_key">Something went wrong while adding your public GPG key</string>
     <string name="error_removing_gpg_key">Something went wrong while removing the public key</string>
     <string name="encrypt_emails_to_this_recipient">Encrypt emails to this recipient</string>
@@ -220,7 +216,7 @@
     <string name="delete_username">Delete username</string>
     <string name="delete_username_desc_confirm">Are you sure you want to delete this username? This will also delete all aliases associated with this username. You will no longer be able to receive any emails at this username subdomain. This will still count towards your additional username limit even once deleted.</string>
     <string name="error_deleting_username">Something went wrong while deleting this username</string>
-    <string name="add_username_desc">Please choose additional usernames carefully as you can only add a maximum of three.\n\nYou cannot login with these usernames, only the one you originally signed up with</string>
+    <string name="add_username_desc">Please choose additional usernames carefully as you can only add a limited amount.\n\nYou cannot login with these usernames, only the one you originally signed up with</string>
     <string name="error_adding_username">Something went wrong while adding this username</string>
     <string name="username_deactivated">Username deactivated</string>
     <string name="username_activated">Username activated</string>
@@ -231,18 +227,6 @@
     <string name="aliases">Aliases</string>
     <string name="nothing_found">Nothing found</string>
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
-    <string name="anonaddy_settings_monthly_bandwidth_desc">You’ve used %1$s out of your %2$s limit this calendar month. Your bandwidth usage will reset on 1st %3$s</string>
-    <string name="more_info">More info</string>
-    <string name="usage">Usage</string>
-    <string name="anonaddy_settings_statistics_aliases_desc">You have %1$d active aliases using a shared domain out of your %2$s limit</string>
-    <string name="anonaddy_settings_statistics_recipients_desc">You have added %1$d recipients out of your %2$s limit</string>
-    <string name="update_default_recipient">Update default recipient</string>
-    <string name="update_default_recipient_desc">The default recipient is used for all new aliases and any aliases that do not have any recipients attached</string>
-    <string name="update_default_alias_domain">Update default alias domain</string>
-    <string name="update_default_alias_domain_desc">The default alias domain is the domain you\'d like to be selected by default in the drop down options when generating a new alias on the site or the browser extension</string>
-    <string name="update_default_alias_format">Update default alias format</string>
-    <string name="update_default_alias_format_desc">The default alias format is the format you\'d like to be selected by default in the drop down options when generating a new alias on the site or the browser extension</string>
-    <string name="unlimited">unlimited</string>
     <string name="Copy">Copy</string>
     <string name="no_usernames">You have no usernames, what about creating one?</string>
     <string name="default_base_url">https://app.anonaddy.com</string>
@@ -291,7 +275,6 @@
     <string name="conditions">Conditions</string>
     <string name="actions_then">Actions (then)</string>
     <string name="enter_name">Enter name</string>
-    <string name="rule_name">Rule name</string>
     <string name="banner_location">Banner location</string>
     <string name="match">Match</string>
     <string name="not_a_valid_value">Not a valid value</string>
@@ -320,6 +303,7 @@
     <string name="manage_rules_desc">Add, modify and reorder rules</string>
     <string name="manage_domains_desc">Add or remove custom domains</string>
     <string name="version_s">Version %s</string>
+    <string name="version_s_update_available">Version %s (Update available)</string>
     <string name="api_setup_qr_code_scan">Scan the QR code displayed</string>
     <string name="qr_permissions_required">Camera permissions are required in order to scan the QR code</string>
     <string name="api_setup_qr_code_scan_desc">Tap the scanning area to start scanning</string>
@@ -338,6 +322,10 @@
     <string name="notification_channel_watch_alias_desc">Receive a notification when an email is sent to a watched alias</string>
     <string name="notification_new_emails">New emails forwarded</string>
     <string name="notification_new_emails_desc">%1$d new email(s) have been forwarded via %2$s</string>
+    <string name="notification_new_update_available">New update available</string>
+    <string name="notification_new_update_available_desc">Version %s of AnonAddy for Android is available. Tap here to download it</string>
+    <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
+
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
@@ -352,6 +340,75 @@
     <string name="API_key_received_from_intent">API Key received from intent</string>
     <string name="API_key_invalid">API Key invalid</string>
     <string name="copied_recipients">Copied recipients</string>
-    <string name="use_reply_to_header_for_replying">Use Reply-To Header For Replying</string>
-    <string name="use_reply_to_header_for_replying_desc">This will determine if forwarded emails use the From header or the Reply-To header for sending replies. Some users may find it easier to set up inbox filters having the From: header set as just the alias.</string>
+    <string name="send">Send</string>
+    <string name="username">Username</string>
+    <string name="forget_alias_desc">Forgetting an alias will disassociate it from your account</string>
+    <string name="forget_alias">Forget alias</string>
+    <string name="forget_alias_confirmation_desc">Are you sure you want to forget this alias? Forgetting an alias will disassociate it from your account.\n\nNote: If this alias uses a shared domain then it can never be restored or used again so make sure you are certain. If it is a standard alias then it can be created again since it will be as if it never existed.</string>
+    <string name="rules_create_info">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
+    <string name="_sMB_remaining_this_month">%sMB remaining this month</string>
+    <string name="manage_your_anonaddy_account">Manage your AnonAddy account</string>
+    <string name="loading_recipients">Loading recipients…</string>
+    <string name="intent_context_menu">Create alias or send email from alias</string>
+    <string name="something_went_wrong_retrieving_domains">Something went wrong while retrieving the domains</string>
+    <string name="you_do_not_own_this_domain">You do not own this domain</string>
+    <string name="alias_created">Alias created</string>
+    <string name="intent_checking_address">Checking address…</string>
+    <string name="intent_creating_alias">Creating alias %1$s…</string>
+    <string name="intent_alias_already_exists">Alias already exists, opening alias settings…</string>
+    <string name="alias">Alias</string>
+    <string name="send_mail_from_alias_from_intent_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from an alias.\n\nAliases you enter that do not exist will be created automatically.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.\n\nLeaving the alias field empty allows you to send emails from your own email address (not an alias).</string>
+    <string name="intent_opening_send_mail_dialog">Opening send mail dialog…</string>
+    <string name="something_went_wrong_retrieving_aliases">Something went wrong retrieving aliases</string>
+    <string name="intent_opening_sharesheet">Opening sharesheet…</string>
+    <string name="features_and_integrations">Features and integrations</string>
+    <string name="features_and_integrations_desc">Check out app-exclusive features and integrations</string>
+    <string name="integrations">Integrations</string>
+    <string name="integration_mailto_alias">Email action integration</string>
+    <string name="integration_mailto_alias_desc">Create aliases on the go and send emails from an alias by highlighting an email address or tapping a mailto hyperlink.\n\nHighlight an email address that doesn\'t exist with your domain name and tap the AnonAddy for Android icon to create this alias.\n\nHighlight an email address and tap the AnonAddy for Android icon to send an email to this email address from an alias. You can also tap email addresses that contain a mailto hyperlink, such as those found on websites.</string>
+    <string name="enable_integration">Enable integration</string>
+    <string name="enable_disable_feature_desc">It may take a few minutes for the change to take effect</string>
+    <string name="Info">Info</string>
+    <string name="enable_feature">Enable feature</string>
+    <string name="enable_feature_always">This feature is always enabled</string>
+    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.</string>
+    <string name="features">Features</string>
+    <string name="exceeded_bandwidth_limit">You\'ve exceeded your bandwidth limit for this month</string>
+    <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
+    <string name="just_like_that">Just like that!</string>
+    <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
+    <string name="widget_2_description">An overview of your anonaddy stats that dynamically adapts to size</string>
+    <string name="widget_1_description">A handy list of the 15 most used aliases</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
+    <string name="back">back</string>
+    <string name="obtaining_information">obtaining information…</string>
+    <string name="new_update_available">New update available</string>
+    <string name="new_update_available_version">%s -> %s</string>
+    <string name="update_available_desc">A new version of AnonAddy for Android is available. Tap here to download it</string>
+    <string name="anonaddy_updater">AnonAddy Updater</string>
+    <string name="update_notify_title">Notify for new updates</string>
+    <string name="update_notify_desc">Periodically check for updates in the background and send a notification when one is available</string>
+    <string name="previous_changelogs">Previous changelogs</string>
+    <string name="previous_changelogs_desc">View previous changelogs</string>
+    <string name="version_channel_info">Version: %s\nDownload channel: %s</string>
+    <string name="sideloaded">sideloaded</string>
+    <string name="no_new_update_available">You\'re up to date</string>
+    <string name="no_new_update_available_desc">You are currently using the latest version of AnonAddy for Android. Turn on notifications to get notified when a new version is available.</string>
+    <string name="anonaddy_updater_desc">Check for new updates and view the latest changelog</string>
+    <string name="stop_checking">Stop checking</string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td>%7$s</td></tr></tbody></table>]]></string>
+    <string name="code">Code</string>
+    <string name="created">Created</string>
+    <string name="view_details">View details</string>
+    <string name="widget_2_sent">sent</string>
+    <string name="widget_2_blocked">blocked</string>
+    <string name="widget_2_replied">replied</string>
+    <string name="widget_2_forwarded">forwarded</string>
+    <string name="widget_2_aliases">aliases</string>
+    <string name="widget_2_domains">domains</string>
+    <string name="widget_2_usernames">usernames</string>
+    <string name="widget_2_recipients">recipients</string>
+    <string name="widget_2_rules">rules</string>
+    <string name="details">Details</string>
 </resources>

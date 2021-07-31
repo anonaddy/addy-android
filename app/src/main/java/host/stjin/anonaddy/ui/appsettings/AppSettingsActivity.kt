@@ -14,16 +14,17 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
+import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import kotlinx.coroutines.launch
 
 class AppSettingsActivity : BaseActivity(),
     DarkModeBottomDialogFragment.AddDarkmodeBottomDialogListener,
@@ -31,9 +32,6 @@ class AppSettingsActivity : BaseActivity(),
 
     private val addDarkModeBottomDialogFragment: DarkModeBottomDialogFragment =
         DarkModeBottomDialogFragment.newInstance()
-
-    private val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
-        ChangelogBottomDialogFragment.newInstance()
 
     private val addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
         BackgroundServiceIntervalBottomDialogFragment.newInstance()
@@ -51,12 +49,25 @@ class AppSettingsActivity : BaseActivity(),
         setContentView(view)
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(binding.appsettingsToolbar)
+        setupToolbar(binding.appsettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.settings)
         setVersion()
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
         setOnBiometricSwitchListeners()
+
+        checkForUpdates()
+    }
+
+    private fun checkForUpdates() {
+        lifecycleScope.launch {
+            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+                binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
+                if (updateAvailable) {
+                    binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
+                }
+            }, this@AppSettingsActivity)
+        }
     }
 
     private fun loadSettings() {
@@ -123,7 +134,7 @@ class AppSettingsActivity : BaseActivity(),
                         false
                     )
                     Snackbar.make(
-                        findViewById(R.id.activity_app_settings_LL),
+                        findViewById(R.id.activity_app_settings_CL),
                         resources.getString(
                             R.string.biometric_error_hw_unavailable
                         ),
@@ -158,7 +169,7 @@ class AppSettingsActivity : BaseActivity(),
                 ) {
                     super.onAuthenticationError(errorCode, errString)
                     Snackbar.make(
-                        findViewById(R.id.activity_app_settings_LL),
+                        findViewById(R.id.activity_app_settings_CL),
                         this@AppSettingsActivity.resources.getString(
                             R.string.authentication_error_s,
                             errString
@@ -183,7 +194,7 @@ class AppSettingsActivity : BaseActivity(),
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     Snackbar.make(
-                        findViewById(R.id.activity_app_settings_LL),
+                        findViewById(R.id.activity_app_settings_CL),
                         resources.getString(R.string.authentication_failed),
                         Snackbar.LENGTH_SHORT
                     ).show()
@@ -229,14 +240,10 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
-        binding.activityAppSettingsSectionChangelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityAppSettingsSectionFeatures.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                if (!addChangelogBottomDialogFragment.isAdded) {
-                    addChangelogBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "addChangelogBottomDialogFragment"
-                    )
-                }
+                val intent = Intent(this@AppSettingsActivity, AppSettingsFeaturesActivity::class.java)
+                startActivity(intent)
             }
         })
 
@@ -291,8 +298,6 @@ class AppSettingsActivity : BaseActivity(),
         })
 
 
-
-
         binding.activityAppSettingsSectionLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsActivity, LogViewerActivity::class.java)
@@ -305,6 +310,14 @@ class AppSettingsActivity : BaseActivity(),
                 resetApp()
             }
         })
+
+        binding.activityAppSettingsSectionUpdater.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsActivity, AppSettingsUpdateActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
     }
 
     private fun resetApp() {

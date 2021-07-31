@@ -1,10 +1,10 @@
 package host.stjin.anonaddy.ui
 
-import android.app.Activity
-import android.app.ActivityOptions
+
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -14,7 +14,7 @@ import host.stjin.anonaddy.databinding.ActivityMainBinding
 import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.alias.AliasFragment
-import host.stjin.anonaddy.ui.appsettings.ChangelogBottomDialogFragment
+import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.home.HomeFragment
 import host.stjin.anonaddy.ui.recipients.RecipientsFragment
@@ -22,10 +22,8 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 import kotlin.math.abs
 
 
@@ -35,6 +33,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private val SEARCH_CONSTANT: Int = 1
     private val searchBottomDialogFragment: SearchBottomDialogFragment =
         SearchBottomDialogFragment.newInstance()
+
+    private val profileBottomDialogFragment: ProfileBottomDialogFragment =
+        ProfileBottomDialogFragment.newInstance()
 
 
     private val fragmentList = arrayListOf(
@@ -46,11 +47,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             isAuthenticated { isAuthenticated ->
                 if (isAuthenticated) {
                     loadMainActivity()
@@ -119,23 +121,20 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun initialiseMainAppBar() {
-        binding.mainTopBar.mainTopBarUserInitials.setOnClickListener {
-            val i = Intent(Intent(this, DialogActivity::class.java))
-            val options = ActivityOptions
-                .makeSceneTransitionAnimation(
-                    this as Activity?,
-                    Pair.create(
-                        findViewById(R.id.main_top_bar_user_initials),
-                        "background_transition"
-                    ),
-                    Pair.create(
-                        findViewById(R.id.main_top_bar_user_initials), "image_transition"
-                    )
+        // Figure out the from name initials
+        val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
+        binding.mainAppBarInclude.mainTopBarUserInitials.text = usernameInitials
+
+        binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {
+            if (!profileBottomDialogFragment.isAdded) {
+                profileBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "profileBottomDialogFragment"
                 )
-            startActivity(i, options.toBundle())
+            }
         }
 
-        binding.mainTopBar.mainTopBarSearchIcon.setOnClickListener {
+        binding.mainAppBarInclude.mainTopBarSearchIcon.setOnClickListener {
             if (!searchBottomDialogFragment.isAdded) {
                 searchBottomDialogFragment.show(
                     supportFragmentManager,
@@ -143,11 +142,14 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 )
             }
         }
+
+        binding.mainAppBarInclude.mainTopBarFailedDeliveriesIcon.setOnClickListener {
+            Toast.makeText(this, "TODO", Toast.LENGTH_SHORT).show()
+        }
+
     }
-
-
     private fun changeTopBarTitle(title: String) {
-        binding.mainTopBar.mainTopBarTitle.text = title
+        binding.mainAppBarInclude.collapsingToolbar.title = title
     }
 
     fun switchFragments(fragment: Int) {

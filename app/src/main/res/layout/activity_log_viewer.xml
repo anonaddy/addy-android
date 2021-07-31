@@ -1,40 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/appsettings_logviewer_RL"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/appsettings_logviewer_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.appsettings.logs.LogViewerActivity">
 
 
-    <LinearLayout
+    <include
+        android:id="@+id/appsettings_logviewer_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+
+    <ListView
+        android:id="@+id/appsettings_logviewer_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/appsettings_logviewer_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/primaryColor">
-
-            <TextView
-                android:id="@+id/appsettings_logviewer_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/logs"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
-        </com.google.android.material.appbar.MaterialToolbar>
-
-        <ListView
-            android:id="@+id/appsettings_logviewer_listview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/appsettings_logviewer_efab"
@@ -44,10 +27,11 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="false"
+        android:layout_gravity="bottom|center"
         android:layout_marginStart="@dimen/fab_margin"
         android:layout_marginTop="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
         android:drawableLeft="@drawable/ic_round_clear_24"
         android:text="@string/clear_logs" />
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

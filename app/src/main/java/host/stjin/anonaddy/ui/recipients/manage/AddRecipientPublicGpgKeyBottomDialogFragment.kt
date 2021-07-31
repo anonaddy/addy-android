@@ -2,26 +2,25 @@ package host.stjin.anonaddy.ui.recipients.manage
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditGpgKeyRecipientBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
 class AddRecipientPublicGpgKeyBottomDialogFragment(
     private val aliasId: String?
-) : BottomSheetDialogFragment(), View.OnClickListener {
+) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddEditGpgKeyBottomDialogListener
@@ -69,6 +68,10 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
             dismiss()
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsEditRecipientGpgKeyRoot)
+        }
+
         return root
     }
 
@@ -83,11 +86,12 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
 
     private fun addKey(context: Context) {
         val description = binding.bsEditRecipientGpgKeyTiet.text.toString()
-        binding.bsEditRecipientGpgKeySaveButton.isEnabled = false
-        binding.bsEditRecipientGpgKeySaveProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsEditRecipientGpgKeySaveButton.startAnimation()
 
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             addGpgKeyHttp(context, description)
         }
     }
@@ -98,8 +102,10 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
             if (result == "200") {
                 listener.onKeyAdded()
             } else {
-                binding.bsEditRecipientGpgKeySaveButton.isEnabled = true
-                binding.bsEditRecipientGpgKeySaveProgressbar.visibility = View.INVISIBLE
+
+                // Revert the button to normal
+                binding.bsEditRecipientGpgKeySaveButton.revertAnimation()
+
                 binding.bsEditRecipientGpgKeyTil.error =
                     context.resources.getString(R.string.error_add_gpg_key) + "\n" + result
             }

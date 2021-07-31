@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.domains
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,19 +14,17 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAdddomainBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddDomainBottomDialogListener
@@ -66,6 +65,10 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
             false
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsAddDomainRoot)
+        }
+
         return root
 
     }
@@ -90,9 +93,11 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
         this.domain = binding.bsAdddomainDomainTiet.text.toString()
         // Set error to null if domain and alias is valid
         binding.bsAdddomainDomainTil.error = null
-        binding.bsAdddomainDomainAddDomainButton.isEnabled = false
-        binding.bsAdddomainDomainProgressbar.visibility = View.VISIBLE
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+
+        // Animate the button to progress
+        binding.bsAdddomainDomainAddDomainButton.startAnimation()
+
+        viewLifecycleOwner.lifecycleScope.launch {
             addDomainToAccount(
                 context,
                 this@AddDomainBottomDialogFragment.domain
@@ -123,8 +128,10 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
                     handler.removeCallbacksAndMessages(null)
                     binding.bsAddDomainSetup1.visibility = View.VISIBLE
                     binding.bsAddDomainSetup2.visibility = View.GONE
-                    binding.bsAdddomainDomainAddDomainButton.isEnabled = true
-                    binding.bsAdddomainDomainProgressbar.visibility = View.INVISIBLE
+
+                    // Revert the button to normal
+                    binding.bsAdddomainDomainAddDomainButton.revertAnimation()
+
                     binding.bsAdddomainDomainTil.error =
                         context.resources.getString(R.string.error_adding_domain) + "\n" + result
                 }
@@ -134,7 +141,7 @@ class AddDomainBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
 
     private val handler =  Handler(Looper.getMainLooper())
     private val runnableCode = Runnable {
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             addDomainToAccount(
                 requireContext(),
                 this@AddDomainBottomDialogFragment.domain

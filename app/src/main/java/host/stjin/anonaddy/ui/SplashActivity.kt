@@ -1,10 +1,14 @@
 package host.stjin.anonaddy.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.View
+import androidx.annotation.RequiresApi
+import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
@@ -12,11 +16,9 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener {
 
 
@@ -25,26 +27,25 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private val unsupportedBottomDialogFragment: UnsupportedBottomDialogFragment =
         UnsupportedBottomDialogFragment.newInstance()
 
+    // True if there is UI stuff to be done, this var is used for Android 12 devices to keep showing the splashscreen until the app is done loading
+    // Pre Android 12 devices will see a progressbar
+    private var loadingDone = false
+
     private lateinit var binding: ActivitySplashBinding
     private lateinit var bindingFailed: ActivityMainFailedBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            skipAndroid12SplashScreenAnimation()
+        }
+
         binding = ActivitySplashBinding.inflate(layoutInflater)
         val view = binding.root
-
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
         setContentView(view)
-
-            window.decorView.systemUiVisibility =
-                    // Tells the system that the window wishes the content to
-                    // be laid out at the most extreme scenario. See the docs for
-                    // more information on the specifics
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        // Tells the system that the window wishes the content to
-                        // be laid out as if the navigation bar was hidden
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setInsets()
         val settingsManager = SettingsManager(true, this)
@@ -52,15 +53,27 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         networkHelper = NetworkHelper(this)
         // Open setup
         if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+            loadingDone = true
             val intent = Intent(this, SetupActivity::class.java)
             startActivity(intent)
             finish()
             return
         } else {
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 loadDataAndStartApp()
             }
         }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun skipAndroid12SplashScreenAnimation() {
+        // Add a callback that's called when the splash screen is animating to
+        // the app content.
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            splashScreenView.remove()
+        }
+
     }
 
     private suspend fun loadDataAndStartApp() {
@@ -71,7 +84,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             AnonAddy.VERSIONCODE = 9999
             AnonAddy.VERSIONSTRING = this.resources.getString(R.string.latest)
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 loadUserResourceIntoMemory()
             }
         } else {
@@ -79,12 +92,13 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 if (version != null) {
                     AnonAddy.VERSIONCODE = "${version.major}${version.minor}${version.patch}".toInt()
                     AnonAddy.VERSIONSTRING = version.version.toString()
-                    //0.6.2 translates to 062 aka 62
-                    if (AnonAddy.VERSIONCODE >= 62) {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                    //0.7.4 translates to 074 aka 074
+                    if (AnonAddy.VERSIONCODE >= 74) {
+                        lifecycleScope.launch {
                             loadUserResourceIntoMemory()
                         }
                     } else {
+                        loadingDone = true
                         if (!unsupportedBottomDialogFragment.isAdded) {
                             unsupportedBottomDialogFragment.show(
                                 supportFragmentManager,
@@ -113,7 +127,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         networkHelper.getUserResource { user: UserResource?, error: String? ->
             if (user != null) {
                 User.userResource = user
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                lifecycleScope.launch {
                     getDefaultRecipientAddress(user.default_recipient_id)
                 }
             } else {
@@ -126,6 +140,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         networkHelper.getSpecificRecipient({ recipient, error ->
             if (recipient != null) {
                 User.userResourceExtended = UserResourceExtended(recipient.email)
+                loadingDone = true
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -136,6 +151,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private fun showErrorScreen(error: String?) {
+        loadingDone = true
+
         bindingFailed = ActivityMainFailedBinding.inflate(layoutInflater)
         val view = bindingFailed.root
         setContentView(view)
@@ -159,7 +176,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     override fun onClickIgnore() {
         unsupportedBottomDialogFragment.dismiss()
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             loadUserResourceIntoMemory()
         }
     }

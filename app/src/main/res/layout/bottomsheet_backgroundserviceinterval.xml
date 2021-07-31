@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bs_backgroundserviceinterval_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -10,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="34dp"
@@ -31,8 +34,8 @@
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        style="@style/divider" />
+        style="@style/divider"
+        android:layout_width="match_parent" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -56,6 +59,7 @@
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginBottom="16dp"
                 android:layout_weight="1"
                 app:checkedButton="@+id/bs_backgroundserviceinterval_30"
                 app:selectionRequired="true"
@@ -65,59 +69,49 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_15"
                     style="?attr/materialButtonOutlinedStyle"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_15m" />
+                    android:text="@string/backgroundserviceinterval_15m"
+                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_30"
                     style="?attr/materialButtonOutlinedStyle"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_30m" />
+                    android:text="@string/backgroundserviceinterval_30m"
+                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_60"
                     style="?attr/materialButtonOutlinedStyle"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_1h" />
+                    android:text="@string/backgroundserviceinterval_1h"
+                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_120"
                     style="?attr/materialButtonOutlinedStyle"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_2h" />
+                    android:text="@string/backgroundserviceinterval_2h"
+                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <LinearLayout
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bs_backgroundserviceinterval_set_interval_button"
+                style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_backgroundserviceinterval_set_interval_button"
-                    style="@style/ActionButtonsSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/set_interval" />
-            </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:text="@string/set_interval" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

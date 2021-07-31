@@ -5,15 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
+import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -29,16 +27,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         binding = ActivitySetupBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-
-        window.decorView.systemUiVisibility =
-                // Tells the system that the window wishes the content to
-                // be laid out at the most extreme scenario. See the docs for
-                // more information on the specifics
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    // Tells the system that the window wishes the content to
-                    // be laid out as if the navigation bar was hidden
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
 
         setInsets()
@@ -76,8 +65,8 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             val item = clipboardData?.getItemAt(0)
             val text = item?.text.toString()
 
-            // Most passport keys are 999, as there are plans to move to Sanctum (which has 40char tokens) 40 will also trigger the clipboard readout.
-            if (text.length == 999 || text.length == 40) {
+            // Most passport keys are 999 or 1024, as there are plans to move to Sanctum (which has 40char tokens) 40 will also trigger the clipboard readout.
+            if (text.length == 999 || text.length == 1024 || text.length == 40) {
                 // a 999 length string found. This is most likely the API key
                 verifyKeyAndAdd(this, text)
                 Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()
@@ -98,11 +87,12 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
     private fun verifyKeyAndAdd(context: Context, apiKey: String, baseUrl: String = AnonAddy.API_BASE_URL) {
-        binding.fragmentSetupInitButtonApi.isEnabled = false
         binding.fragmentSetupInitButtonNew.isEnabled = false
-        binding.fragmentSetupApikeyGetProgressbar.visibility = View.VISIBLE
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        // Animate the button to progress
+        binding.fragmentSetupInitButtonApi.startAnimation()
+
+        lifecycleScope.launch {
             // AnonAddy.API_BASE_URL is defaulted to the anonaddy.com instance. If the API key is valid there it was meant to use that instance.
             // If the baseURL/API do not work or match it opens the API screen
             verifyApiKey(context, apiKey, baseUrl)
@@ -117,9 +107,11 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             } else {
                 Toast.makeText(this, resources.getString(R.string.API_key_invalid), Toast.LENGTH_LONG).show()
 
-                binding.fragmentSetupInitButtonApi.isEnabled = true
                 binding.fragmentSetupInitButtonNew.isEnabled = true
-                binding.fragmentSetupApikeyGetProgressbar.visibility = View.INVISIBLE
+
+                // Revert the button to normal
+                binding.fragmentSetupInitButtonApi.revertAnimation()
+
                 if (!addApiBottomDialogFragment.isAdded) {
                     addApiBottomDialogFragment.show(
                         supportFragmentManager,

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_app_settings_features_CL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appsettings_features_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+
+            <LinearLayout
+                style="@style/AnonAddyTitleNoAction"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/features" />
+
+            </LinearLayout>
+
+            <host.stjin.anonaddy.ui.customviews.SectionView
+                android:id="@+id/activity_app_settings_features_section_watch_alias_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="6dp"
+                app:sectionDescription="@string/watch_alias_feature_desc"
+                app:sectionStartIcon="@drawable/ic_watch_alias_24dp"
+                app:sectionTitle="@string/watch_alias" />
+
+
+            <LinearLayout
+                style="@style/AnonAddyTitleNoAction"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/integrations" />
+
+            </LinearLayout>
+
+            <host.stjin.anonaddy.ui.customviews.SectionView
+                android:id="@+id/activity_app_settings_features_section_mailto_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="6dp"
+                app:sectionDescription="@string/integration_mailto_alias_desc"
+                app:sectionShowSwitch="true"
+                app:sectionStartIcon="@drawable/ic_bottom_sheet"
+                app:sectionTitle="@string/integration_mailto_alias" />
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

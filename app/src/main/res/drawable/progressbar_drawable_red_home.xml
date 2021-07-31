@@ -1,0 +1,19 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="@dimen/corner_radius_cardview" />
+            <solid android:color="@color/softRedSuperLight" />
+        </shape>
+    </item>
+
+    <item
+        android:id="@android:id/progress">
+
+        <scale android:scaleWidth="100%">
+            <shape>
+                <corners android:radius="@dimen/corner_radius_cardview" />
+                <solid android:color="@color/softRed" />
+            </shape>
+        </scale>
+    </item>
+</layer-list>

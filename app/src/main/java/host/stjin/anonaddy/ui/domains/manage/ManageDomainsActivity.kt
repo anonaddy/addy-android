@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
@@ -17,9 +18,6 @@ import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -43,7 +41,7 @@ class ManageDomainsActivity : BaseActivity(),
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityManageDomainToolbar)
+        setupToolbar(binding.activityManageDomainToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_domain)
         networkHelper = NetworkHelper(this)
 
 
@@ -62,7 +60,7 @@ class ManageDomainsActivity : BaseActivity(),
     private fun setPage() {
         binding.activityManageDomainRLLottieview.visibility = View.GONE
         // Get the domain
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             getDomainInfo(domainId)
         }
     }
@@ -75,11 +73,11 @@ class ManageDomainsActivity : BaseActivity(),
                     binding.activityManageDomainActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
                     if (checked) {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             activateDomain()
                         }
                     } else {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             deactivateDomain()
                         }
                     }
@@ -94,11 +92,11 @@ class ManageDomainsActivity : BaseActivity(),
                     binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(true)
                     forceSwitch = false
                     if (checked) {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             enableCatchAll()
                         }
                     } else {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             disableCatchAll()
                         }
                     }
@@ -115,7 +113,7 @@ class ManageDomainsActivity : BaseActivity(),
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_domain_CL),
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -139,7 +137,7 @@ class ManageDomainsActivity : BaseActivity(),
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_domain_CL),
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -162,7 +160,7 @@ class ManageDomainsActivity : BaseActivity(),
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_domain_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -185,7 +183,7 @@ class ManageDomainsActivity : BaseActivity(),
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_LL),
+                    findViewById(R.id.activity_manage_domain_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -270,12 +268,14 @@ class ManageDomainsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.delete_domain)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteDomainHttpRequest(id, this@ManageDomainsActivity, anonaddyCustomDialogBinding)
             }
         }
@@ -293,7 +293,9 @@ class ManageDomainsActivity : BaseActivity(),
                 deleteDomainDialog.dismiss()
                 finish()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
@@ -403,10 +405,10 @@ class ManageDomainsActivity : BaseActivity(),
                  */
 
                 if (list.domain_sending_verified_at == null) {
-                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_outline_dns_alert, null)
+                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_alert, null)
                     binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
                 } else {
-                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_outline_dns_24, null)
+                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_24dp, null)
                     binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc))
                 }
 

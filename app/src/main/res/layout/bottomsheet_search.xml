@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bs_search_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -10,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="34dp"
@@ -32,8 +35,8 @@
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        style="@style/divider" />
+        style="@style/divider"
+        android:layout_width="match_parent" />
 
 
     <androidx.core.widget.NestedScrollView
@@ -70,6 +73,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_aliases"
+                        style="@style/AnonAddyChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -78,6 +82,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_recipient"
+                        style="@style/AnonAddyChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -85,6 +90,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_domains"
+                        style="@style/AnonAddyChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -92,6 +98,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_usernames"
+                        style="@style/AnonAddyChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -99,6 +106,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_rules"
+                        style="@style/AnonAddyChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -131,8 +139,8 @@
             </LinearLayout>
 
             <View
-                android:layout_width="match_parent"
-                style="@style/divider" />
+                style="@style/divider"
+                android:layout_width="match_parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -156,26 +164,22 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/bs_search_clear_recent"
-                        style="@style/MaterialTextButtonWithoutSpacing"
+                        style="@style/MaterialButtonSecondaryLight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/clear" />
 
                 </LinearLayout>
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/bs_search_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="16dp"
                     android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="5"
-                    app:shimmer_demo_grid_child_count="1"
-                    app:shimmer_demo_layout_manager_type="linear_vertical">
+                    android:overScrollMode="never">
 
-                </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
 

@@ -20,7 +20,6 @@ class SetupNewActivity : BaseActivity() {
         binding = ActivitySetupNewBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        setupToolbar(binding.setupToolbar)
         switchFragments(SetupHow1Fragment())
     }
 

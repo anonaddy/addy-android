@@ -4,44 +4,38 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat
-import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.notifications.NotificationHelper.Companion.ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID
+import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.AliasWatcher
-import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 
 
 class ActionReceiver : BroadcastReceiver() {
 
     object NOTIFICATIONACTIONS {
         const val STOP_WATCHING = "stop_watching"
-        const val EDIT_ALIAS = "edit_alias"
+        const val STOP_DOWNLOAD_UPDATE_CHECK = "stop_download_update_check"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         //Toast.makeText(context,"received",Toast.LENGTH_SHORT).show();
         val action = intent.action
         val extra = intent.getStringExtra("extra")
+        val notificationManager = context
+            .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        when (action) {
+            NOTIFICATIONACTIONS.STOP_WATCHING -> {
+                extra?.let {
+                    AliasWatcher(context).removeAliasToWatch(it)
+                    // Dismiss notification
+                    notificationManager.cancel(NotificationHelper.ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID)
 
-        if (action == NOTIFICATIONACTIONS.STOP_WATCHING) {
-            extra?.let { AliasWatcher(context).removeAliasToWatch(it) }
-        } else if (action == NOTIFICATIONACTIONS.EDIT_ALIAS) {
-            val manageAliasIntent = Intent(context, ManageAliasActivity::class.java)
-            manageAliasIntent.putExtra("alias_id", extra)
-            manageAliasIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            ContextCompat.startActivity(context, manageAliasIntent, null)
+                }
+            }
+            NOTIFICATIONACTIONS.STOP_DOWNLOAD_UPDATE_CHECK -> {
+                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES, false)
+                // Dismiss notification
+                notificationManager.cancel(NotificationHelper.UPDATER_NOTIFICATION_ID)
+            }
         }
-
-        // Dismiss notification
-        if (!BuildConfig.DEBUG) {
-            val notificationManager = context
-                .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.cancel(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID)
-        }
-
-        //This is used to close the notification tray
-        val it = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
-        context.sendBroadcast(it)
     }
 
 }

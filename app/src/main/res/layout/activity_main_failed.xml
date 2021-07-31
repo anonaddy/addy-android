@@ -42,7 +42,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_main_failed_retry_button"
-        style="@style/ActionButtonsSecondary"
+        style="@style/ActionButtonsTertiary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/try_again" />

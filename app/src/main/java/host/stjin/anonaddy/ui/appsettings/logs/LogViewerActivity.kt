@@ -20,13 +20,13 @@ class LogViewerActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.appsettingsLogviewerToolbar)
+        setupToolbar(binding.appsettingsLogviewerToolbar.customToolbarOneHandedMaterialtoolbar, R.string.logs)
         loggingHelper = LoggingHelper(this)
         loadLogs()
 
         binding.appsettingsLogviewerEfab.setOnClickListener {
             Snackbar.make(
-                findViewById(R.id.appsettings_logviewer_RL),
+                findViewById(R.id.appsettings_logviewer_CL),
                 resources.getString(R.string.logs_cleared),
                 Snackbar.LENGTH_SHORT
             ).show()

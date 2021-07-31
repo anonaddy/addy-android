@@ -3,7 +3,7 @@
 
 <p align="center">
 Easily create and manage your AnonAddy aliases, recipients and more from your phone or tablet with this <b>sexy</b> AnonAddy app for Android.
- </br><p align="center">
+</br><p align="center">
 <img src="static/banner.png"/>
 </p>
 
@@ -17,7 +17,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > AnonAddy
 
-- AnonAddy v0.6.2 or higher (current version of AnonAddy for Android has been tested with v0.6.2)
+- AnonAddy v0.7.4 or higher (current version of AnonAddy for Android has been tested with v0.7.4)
 
 > Android
 
@@ -28,17 +28,24 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 > Exciting ✨
 
 - Connect to the [AnonAddy](https://anonaddy.com/) instance or your own hosted instance
-- A unique, sexy and sleek design, based on the [Material Design](https://material.io/) language
+- A unique, sexy and sleek design, based on the [Material You Design](https://material.io/) guidelines
 - Support for Deep Link to easily deactivate aliases from the email banner
 - Lock the app using Biometrics
-- App exclusive features like watching aliases for new emails
+- App exclusive features
+  - Watching aliases for new emails
+  - Get notified when a new update is available
+  - Send emails from aliases by selecting an email address or clicking a mailto link
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Widgets!
 
 > Seriously 👓
 
 - **Security**.
- - Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using the [AndroidX crypto library](https://developer.android.com/jetpack/androidx/releases/security) - No stats, buried points or Device IDs, or even crash reporting (so if you get a crash, please share the crash info with me >_<). - I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.  **What's yours is yours**.
+- Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using
+  the [AndroidX crypto library](https://developer.android.com/jetpack/androidx/releases/security)
+- No stats, buried points or Device IDs, or even crash reporting (Except for Google Play Store builds). So if you get a crash, please share the crash
+  info with me >_<.
+- I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.  **What's yours is yours**.
 
  > Manage (add, edit, delete)
 
@@ -52,28 +59,57 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 Developer-led download channels:
 
->Recommended (access to beta's, automatic updates and support me :) )
-- [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
- - ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here and download it, otherwise choose another source :)
+> Recommended (access to beta's, automatic updates and support me :) )
 
->Other sources
+- [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
+- ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here
+  and download it, otherwise choose another source :)
+
+> Other sources
+
 - [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
 - [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy)
 
+> Material You builds
+
+- [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
+
 ## UI
+
 - Designed by my lovely UI guru @JustPlayingHard (💙)
- - Anything you think doesn't work well is my bad as I recreated the UI drafts into XML.
+- Anything you think doesn't work well is my bad as I recreated the UI drafts into XML.
+
+### Material You builds
+
+As some know, with Android 12, Google has developed a new design system called [Material You](https://material.io/blog/announcing-material-you).
+Material You allows apps to use a so-called "Color Palette" to match the system theme.
+
+AnonAddy for Android also uses this color palette in the following places:
+
+- Widgets
+- Splash screens
+- App icon
+
+The application itself will keep its own identity with a custom color palette. However, I've made available a special "flavor" of the app that takes
+full advantage of the Material You color palette. With this flavor of the app, the app fully adapts to your system theme. This flavor is only
+available on [Gitlab](https://gitlab.com/Stjin/anonaddy-android/-/releases)
 
 ## Open Source License.
+
 Third party libraries used.
+
 - [androidx.biometric](https://developer.android.com/jetpack/androidx/releases/biometric)
 - [androidx.security.crypto](https://developer.android.com/jetpack/androidx/releases/security)
 - [androidx.work](https://developer.android.com/jetpack/androidx/releases/work)
 - [airbnb/lottie-android](https://github.com/airbnb/lottie-android)
 - [kittinunf/fuel](https://github.com/kittinunf/fuel)
-- [sharish/ShimmerRecyclerView](https://github.com/sharish/ShimmerRecyclerView)
+- [omtodkar/ShimmerRecyclerView](https://github.com/omtodkar/ShimmerRecyclerView)
+- [facebook/shimmer-android](https://github.com/facebook/shimmer-android)
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner)
 - [futuredapp/donut](https://github.com/futuredapp/donut)
+- [leandroBorgesFerreira/LoadingButtonAndroid](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid)
+- [einmalfel/Earl](https://github.com/einmalfel/Earl) (For built-in updater)
+- [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner) (To be enabled in future versions)
 
 
 ## Feedback and contribution

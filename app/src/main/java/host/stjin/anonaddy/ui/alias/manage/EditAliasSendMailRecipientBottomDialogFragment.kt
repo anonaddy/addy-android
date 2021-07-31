@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.alias.manage
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -10,13 +11,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSendMailAliasBinding
 
 class EditAliasSendMailRecipientBottomDialogFragment(
     private val aliasEmail: String?
-) : BottomSheetDialogFragment(), View.OnClickListener {
+) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddEditAliasSendMailRecipientBottomDialogListener
@@ -60,6 +61,9 @@ class EditAliasSendMailRecipientBottomDialogFragment(
             false
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsSendMailAliasRoot)
+        }
         return root
 
     }
@@ -76,6 +80,7 @@ class EditAliasSendMailRecipientBottomDialogFragment(
         val recipientsTiet = binding.bsSendMailAliasRecipientTiet.text.toString()
         val recipients = recipientsTiet.split(",")
 
+        // Check if all the entered recipients are valid email addresses
         for (email in recipients) {
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email)
                     .matches()

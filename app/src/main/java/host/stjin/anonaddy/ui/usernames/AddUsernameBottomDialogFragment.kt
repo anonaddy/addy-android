@@ -2,25 +2,24 @@ package host.stjin.anonaddy.ui.usernames
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddusernameBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class AddUsernameBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddUsernameBottomDialogListener
@@ -61,6 +60,11 @@ class AddUsernameBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
             false
         }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsAddusernameUsernameRoot)
+        }
+
         return root
 
     }
@@ -77,9 +81,11 @@ class AddUsernameBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
         this.username = binding.bsAddusernameUsernameTiet.text.toString()
         // Set error to null if username and alias is valid
         binding.bsAddusernameUsernameTil.error = null
-        binding.bsAddusernameUsernameAddUsernameButton.isEnabled = false
-        binding.bsAddusernameUsernameProgressbar.visibility = View.VISIBLE
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+
+        // Animate the button to progress
+        binding.bsAddusernameUsernameAddUsernameButton.startAnimation()
+
+        viewLifecycleOwner.lifecycleScope.launch {
             addUsernameToAccount(
                 context,
                 this@AddUsernameBottomDialogFragment.username
@@ -98,8 +104,9 @@ class AddUsernameBottomDialogFragment : BottomSheetDialogFragment(), View.OnClic
                     listener.onAdded()
                 }
                 else -> {
-                    binding.bsAddusernameUsernameAddUsernameButton.isEnabled = true
-                    binding.bsAddusernameUsernameProgressbar.visibility = View.INVISIBLE
+                    // Revert the button to normal
+                    binding.bsAddusernameUsernameAddUsernameButton.revertAnimation()
+
                     binding.bsAddusernameUsernameTil.error =
                         context.resources.getString(R.string.error_adding_username) + "\n" + result
                 }

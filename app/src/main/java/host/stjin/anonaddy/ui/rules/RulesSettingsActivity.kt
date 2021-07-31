@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,9 +23,7 @@ import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.databinding.ActivityRuleSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import kotlinx.coroutines.launch
 
 
@@ -32,7 +31,7 @@ class RulesSettingsActivity : BaseActivity() {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     private lateinit var binding: ActivityRuleSettingsBinding
 
@@ -42,7 +41,7 @@ class RulesSettingsActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityManageRulesToolbar)
+        setupToolbar(binding.activityManageRulesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_rules)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -64,31 +63,38 @@ class RulesSettingsActivity : BaseActivity() {
         binding.activityManageRulesRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllRules()
+        lifecycleScope.launch {
+            getAllRulesAndSetView()
         }
     }
 
 
-    private suspend fun getAllRules() {
+    private lateinit var rulesAdapter: RulesAdapter
+    private suspend fun getAllRulesAndSetView() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, 10) ?: 10
 
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(context)
-            // set the custom adapter to the RecyclerView
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
+                // set a LinearLayoutManager to handle Android
+                // RecyclerView behavior
+                layoutManager = LinearLayoutManager(this@RulesSettingsActivity)
+                // set the custom adapter to the RecyclerView
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activityManageRulesAllRulesRecyclerview.layoutAnimation = animation
+                layoutAnimation = animation
+                showShimmer()
             }
-
-
             networkHelper?.getAllRules { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new rules since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::rulesAdapter.isInitialized && list == rulesAdapter.getList()) {
+                    return@getAllRules
+                }
 
                 if (list != null) {
 
@@ -98,16 +104,20 @@ class RulesSettingsActivity : BaseActivity() {
                         binding.activityManageRulesNoRules.visibility = View.VISIBLE
                     }
 
-                    val rulesAdapter = RulesAdapter(list, true)
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, list.size)
+
+
+                    rulesAdapter = RulesAdapter(list, true)
                     rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
 
                         override fun onClickActivate(pos: Int, aView: View) {
                             if (list[pos].active) {
-                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                lifecycleScope.launch {
                                     deactivateRule(list[pos].id)
                                 }
                             } else {
-                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                lifecycleScope.launch {
                                     activateRule(list[pos].id)
                                 }
                             }
@@ -129,18 +139,18 @@ class RulesSettingsActivity : BaseActivity() {
                             list.removeAt(fromPosition)
                             list.add(toPosition, itemToMove)
 
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            lifecycleScope.launch {
                                 networkHelper!!.reorderRules({ result ->
                                     if (result == "200") {
                                         val snackbar = Snackbar.make(
-                                            binding.activityManageRulesLL,
+                                            binding.activityManageRulesCL,
                                             this@RulesSettingsActivity.resources.getString(R.string.changing_rules_order_success),
                                             Snackbar.LENGTH_SHORT
                                         )
                                         snackbar.show()
                                     } else {
                                         val snackbar = Snackbar.make(
-                                            binding.activityManageRulesLL,
+                                            binding.activityManageRulesCL,
                                             this@RulesSettingsActivity.resources.getString(R.string.error_changing_rules_order) + "\n" + result,
                                             Snackbar.LENGTH_SHORT
                                         )
@@ -162,15 +172,14 @@ class RulesSettingsActivity : BaseActivity() {
 
                     })
                     adapter = rulesAdapter
-                    binding.activityManageRulesAllRulesRecyclerview.hideShimmerAdapter()
 
                     itemTouchHelper.attachToRecyclerView(binding.activityManageRulesAllRulesRecyclerview)
                 } else {
                     binding.activityManageRulesLL1.visibility = View.GONE
                     binding.activityManageRulesRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }
-
         }
 
     }
@@ -181,14 +190,14 @@ class RulesSettingsActivity : BaseActivity() {
                 getDataFromWeb()
 
                 val snackbar = Snackbar.make(
-                    binding.activityManageRulesLL,
+                    binding.activityManageRulesCL,
                     this@RulesSettingsActivity.resources.getString(R.string.rule_deactivated),
                     Snackbar.LENGTH_SHORT
                 )
                 snackbar.show()
             } else {
                 val snackbar = Snackbar.make(
-                    binding.activityManageRulesLL,
+                    binding.activityManageRulesCL,
                     this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -209,14 +218,14 @@ class RulesSettingsActivity : BaseActivity() {
                 getDataFromWeb()
 
                 val snackbar = Snackbar.make(
-                    binding.activityManageRulesLL,
+                    binding.activityManageRulesCL,
                     this@RulesSettingsActivity.resources.getString(R.string.rule_activated),
                     Snackbar.LENGTH_SHORT
                 )
                 snackbar.show()
             } else {
                 val snackbar = Snackbar.make(
-                    binding.activityManageRulesLL,
+                    binding.activityManageRulesCL,
                     this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -247,12 +256,14 @@ class RulesSettingsActivity : BaseActivity() {
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete_rule)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteRuleHttpRequest(id, context, anonaddyCustomDialogBinding)
             }
         }
@@ -269,7 +280,9 @@ class RulesSettingsActivity : BaseActivity() {
                 dialog.dismiss()
                 getDataFromWeb()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
@@ -284,7 +297,7 @@ class RulesSettingsActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             getDataFromWeb()
         }
     }

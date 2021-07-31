@@ -6,8 +6,10 @@
         <attr name="sectionStartIcon" format="integer" />
         <attr name="sectionEndIcon" format="integer" />
         <attr name="sectionShowSwitch" format="boolean" />
+        <attr name="sectionSwitchChecked" format="boolean" />
         <attr name="sectionRippleEffect" format="boolean" />
         <attr name="sectionEnabled" format="boolean" />
         <attr name="sectionColorAccent" format="color" />
+        <attr name="sectionAlert" format="boolean" />
     </declare-styleable>
 </resources>

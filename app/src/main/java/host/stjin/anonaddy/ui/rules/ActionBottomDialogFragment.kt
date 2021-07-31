@@ -2,6 +2,8 @@ package host.stjin.anonaddy.ui.rules
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +11,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesActionBinding
 import host.stjin.anonaddy.models.Action
 
 
-class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddActionBottomDialogListener
@@ -56,6 +58,12 @@ class ActionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         spinnerChangeListener(requireContext())
 
         checkForArguments(requireContext())
+
+
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            setIMEAnimation(binding.bsRuleActionRoot)
+        }
+
         return root
     }
 

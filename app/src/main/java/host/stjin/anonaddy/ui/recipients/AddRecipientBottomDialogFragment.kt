@@ -2,25 +2,24 @@ package host.stjin.anonaddy.ui.recipients
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddrecipientBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddRecipientBottomDialogListener
@@ -62,6 +61,11 @@ class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnCli
             false
         }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsAddrecipientRecipientRoot)
+        }
+
         return root
 
     }
@@ -85,9 +89,11 @@ class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnCli
 
         // Set error to null if domain and alias is valid
         binding.bsAddrecipientRecipientTil.error = null
-        binding.bsAddrecipientRecipientAddRecipientButton.isEnabled = false
-        binding.bsAddrecipientRecipientProgressbar.visibility = View.VISIBLE
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+
+        // Animate the button to progress
+        binding.bsAddrecipientRecipientAddRecipientButton.startAnimation()
+
+        viewLifecycleOwner.lifecycleScope.launch {
             addRecipientToAccount(
                 context,
                 binding.bsAddrecipientRecipientTiet.text.toString()
@@ -106,8 +112,9 @@ class AddRecipientBottomDialogFragment : BottomSheetDialogFragment(), View.OnCli
                     listener.onAdded()
                 }
                 else -> {
-                    binding.bsAddrecipientRecipientAddRecipientButton.isEnabled = true
-                    binding.bsAddrecipientRecipientProgressbar.visibility = View.INVISIBLE
+                    // Revert the button to normal
+                    binding.bsAddrecipientRecipientAddRecipientButton.revertAnimation()
+
                     binding.bsAddrecipientRecipientTil.error =
                         context.resources.getString(R.string.error_adding_recipient) + "\n" + result
                 }

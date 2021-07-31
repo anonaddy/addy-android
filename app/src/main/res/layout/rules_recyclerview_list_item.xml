@@ -1,184 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rules_recyclerview_list_CV"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rules_recyclerview_list_LL"
+    style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingBottom="8dp">
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="@dimen/cardview_default_elevation">
 
     <LinearLayout
-        android:id="@+id/rules_recyclerview_list_LL1"
+        android:id="@+id/rules_recyclerview_list_LL"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:weightSum="12">
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/rules_recyclerview_list_icon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/rule"
-                android:src="@drawable/ic_clipboard_text_outline" />
-
-        </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/rules_recyclerview_list_LL1"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="9"
-            android:orientation="vertical">
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="12">
 
-            <TextView
-                android:id="@+id/rules_recyclerview_list_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif"
-                android:lines="1"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:text="Block emails from Microsoft"
-                android:textAllCaps="false"
-                android:textColor="@color/BlackWhite"
-                android:textSize="16sp"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/rules_recyclerview_list_description"
-                style="@style/DescTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif"
-                android:lines="1"
-                android:maxLines="1"
-                android:minLines="1"
-                android:singleLine="false"
-                android:text="if sender is no-reply@microsoft.com block email"
-                tools:ignore="HardcodedText" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/rules_recyclerview_list_expand_options"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/rules_recyclerview_list_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/open_options"
-                    app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+                    android:contentDescription="@string/rule"
+                    android:src="@drawable/ic_assignment_24dp" />
+
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/rules_recyclerview_list_drag"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:layout_weight="8.5"
+                android:orientation="vertical">
 
-                <ImageView
+                <TextView
+                    android:id="@+id/rules_recyclerview_list_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/drag_to_change_order"
-                    app:srcCompat="@drawable/ic_outline_menu_24" />
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="Block emails from Microsoft"
+                    android:textAllCaps="false"
+                    android:textColor="@color/BlackWhite"
+                    android:textSize="16sp"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/rules_recyclerview_list_description"
+                    style="@style/DescTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="false"
+                    android:text="if sender is no-reply@microsoft.com block email"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_weight="2.5"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/rules_recyclerview_list_expand_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/open_options"
+                        app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/rules_recyclerview_list_drag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/drag_to_change_order"
+                        app:srcCompat="@drawable/ic_menu_24dp" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/rules_recyclerview_list_option_LL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:weightSum="12">
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1" />
-
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/rules_recyclerview_list_option_LL"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="11"
-            android:orientation="horizontal">
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_recyclerview_list_activate_button"
-                style="@style/MaterialTextButtonWithoutSpacing"
-                android:layout_width="wrap_content"
+                style="@style/MaterialButtonSecondaryLight"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
                 android:text="@string/activate" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_recyclerview_list_settings_button"
-                style="@style/MaterialTextButtonWithoutSpacing"
-                android:layout_width="wrap_content"
+                style="@style/MaterialButtonSecondaryLight"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
                 android:text="@string/settings" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_recyclerview_list_delete_button"
-                style="@style/MaterialTextButtonWithoutSpacing"
-                android:layout_width="wrap_content"
+                style="@style/MaterialButtonSecondaryLight"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/delete" />
 
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:weightSum="12">
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1" />
-
-        <View
-            style="@style/divider"
-            android:layout_width="0dp"
-            android:layout_weight="11"/>
 
     </LinearLayout>
-</LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

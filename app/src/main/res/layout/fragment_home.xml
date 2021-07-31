@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/home_statistics_NSV"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_statistics_NSV"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:orientation="vertical"
         android:padding="8dp"
         android:paddingStart="16dp"
@@ -18,181 +20,260 @@
             android:id="@+id/home_statistics_LL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="8dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical">
 
             <LinearLayout
+                style="@style/AnonAddyTitleNoAction"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:orientation="horizontal">
 
                 <TextView
+                    style="@style/titleTextView"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/overall_statistics"
-                    style="@style/titleTextView" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/home_statistics_dismiss"
-                    style="@style/MaterialTextButtonWithoutSpacing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dismiss" />
+                    android:text="@string/general" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
 
-                <TextView
-                    style="@style/DescTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawablePadding="4dp"
-                    android:fontFamily="sans-serif-medium"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/home_statistics_monthly_bandwidth_progress"
+                    style="@style/AnonAddyProgressBarHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:progress="0" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
                     android:gravity="center_vertical"
-                    android:text="@string/monthly_bandwidth"
-                    app:drawableStartCompat="@drawable/ic_speedometer_slow"
-                    app:drawableTint="@color/primaryColor" />
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/home_statistics_monthly_bandwidth_current"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:text="\?"
-                    android:textColor="@color/BlackWhite"
-                    tools:ignore="HardcodedText" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/home_statistics_monthly_bandwidth_max"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginStart="4dp"
-                    android:alpha="0.5"
-                    android:text="\?"
-                    android:textColor="@color/BlackWhite"
-                    tools:ignore="HardcodedText" />
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:drawablePadding="4dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center_vertical"
+                            android:text="@string/monthly_bandwidth"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp" />
 
-            <ProgressBar
-                android:id="@+id/home_statistics_monthly_bandwidth_progress"
-                style="@style/AnonAddyProgressBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:progress="0" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/home_statistics_monthly_bandwidth_current"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
 
-                <TextView
-                    style="@style/DescTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawablePadding="4dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center_vertical"
-                    android:text="@string/recipients"
-                    app:drawableStartCompat="@drawable/ic_recipients"
-                    app:drawableTint="@color/softRed" />
+                            <TextView
+                                android:id="@+id/home_statistics_monthly_bandwidth_max"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
+                    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/home_statistics_recipients_current"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:gravity="bottom"
-                    android:text="\?"
-                    android:textColor="@color/BlackWhite"
-                    tools:ignore="HardcodedText" />
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="@string/monthly_bandwidth"
+                        android:src="@drawable/ic_speedometer_slow"
+                        android:tint="@android:color/white"
+                        app:tint="@android:color/white"
+                        tools:ignore="UseAppTint" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/home_statistics_recipients_max"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginStart="4dp"
-                    android:alpha="0.5"
-                    android:text="\?"
-                    android:textColor="@color/BlackWhite"
-                    tools:ignore="HardcodedText" />
+            </RelativeLayout>
 
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/home_statistics_recipients_progress"
-                style="@style/AnonAddyProgressBarRed"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:progress="0" />
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp">
 
-                <TextView
-                    style="@style/DescTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawablePadding="4dp"
-                    android:fontFamily="sans-serif-medium"
+                <ProgressBar
+                    android:id="@+id/home_statistics_recipients_progress"
+                    style="@style/AnonAddyProgressBarRedHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:progress="0" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+
                     android:gravity="center_vertical"
-                    android:text="@string/shared_domain_aliases"
-                    app:drawableStartCompat="@drawable/ic_round_alternate_email_24"
-                    app:drawableTint="@color/easternBlue" />
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/home_statistics_aliases_current"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:gravity="bottom"
-                    android:text="\?"
-                    android:textColor="@color/BlackWhite"
-                    tools:ignore="HardcodedText" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/home_statistics_aliases_max"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginStart="4dp"
-                    android:alpha="0.5"
-                    android:text="\?"
-                    android:textColor="@color/BlackWhite"
-                    tools:ignore="HardcodedText" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:drawablePadding="4dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center_vertical"
+                            android:text="@string/recipients"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp" />
 
-            </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-            <ProgressBar
-                android:id="@+id/home_statistics_aliases_progress"
-                style="@style/AnonAddyProgressBarEasternBlue"
+                            <TextView
+                                android:id="@+id/home_statistics_recipients_current"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+
+                            <TextView
+                                android:id="@+id/home_statistics_recipients_max"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="@string/recipients"
+                        android:src="@drawable/ic_menu_recipients"
+                        android:tint="@android:color/white"
+                        app:tint="@android:color/white"
+                        tools:ignore="UseAppTint" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:progress="0" />
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/home_statistics_aliases_progress"
+                    style="@style/AnonAddyProgressBarEasternBlueHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:progress="0" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:drawablePadding="4dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center_vertical"
+                            android:text="@string/shared_domain_aliases"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/home_statistics_aliases_current"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+
+                            <TextView
+                                android:id="@+id/home_statistics_aliases_max"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="4dp"
+                                android:alpha="0.5"
+                                android:text="\?"
+                                android:textColor="@android:color/white"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="@string/shared_domain_aliases"
+                        android:src="@drawable/ic_round_alternate_email_24"
+                        android:tint="@android:color/white"
+                        app:tint="@android:color/white"
+                        tools:ignore="UseAppTint" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
 
         </LinearLayout>
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/home_statistics_RL_lottieview"
@@ -210,11 +291,13 @@
                 android:id="@+id/home_statistics_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical">
 
                 <LinearLayout
+                    style="@style/AnonAddyTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
@@ -226,27 +309,25 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/home_most_active_aliases_view_more"
-                        style="@style/MaterialTextButtonWithoutSpacing"
+                        style="@style/RoundActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/view_more" />
 
                 </LinearLayout>
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                <com.todkars.shimmer.ShimmerRecyclerView
                     android:id="@+id/home_most_active_aliases_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="5"
-                    app:shimmer_demo_grid_child_count="1"
-                    app:shimmer_demo_layout="@layout/aliases_recyclerview_list_item_shimmer"
-                    app:shimmer_demo_layout_manager_type="linear_vertical">
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:shimmer_recycler_auto_start="true"
+                    app:shimmer_recycler_item_count="5"
+                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer">
 
-                </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+                </com.todkars.shimmer.ShimmerRecyclerView>
 
                 <TextView
                     android:id="@+id/home_no_aliases"

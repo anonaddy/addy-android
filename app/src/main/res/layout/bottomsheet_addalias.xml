@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bs_addalias_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -9,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="34dp"
@@ -30,11 +34,12 @@
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        style="@style/divider" />
+        style="@style/divider"
+        android:layout_width="match_parent" />
 
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/bs_addalias_nsv"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -42,14 +47,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:padding="16dp">
 
             <TextView
                 android:id="@+id/bs_addalias_domain_help_textview"
+                style="@style/DescTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                style="@style/DescTextStyle"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/add_alias_desc"
                 android:textAlignment="center" />
@@ -101,8 +108,8 @@
                     android:gravity="top"
                     android:imeOptions="actionDone"
                     android:inputType="text"
-                    android:maxLength="50"
                     android:lines="1"
+                    android:maxLength="50"
                     android:maxLines="1"
                     android:minLines="1" />
 
@@ -114,6 +121,7 @@
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:hint="@string/description">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -130,33 +138,47 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/bs_addalias_domain_help_textview2"
+                style="@style/DescTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/select_recipients_for_this_alias" />
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:overScrollMode="never">
 
-                <ProgressBar
-                    android:id="@+id/bs_addalias_alias_progressbar"
-                    style="?android:attr/progressBarStyleSmall"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/bs_addalias_recipients_chipgroup"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:padding="4dp"
-                    android:visibility="invisible" />
+                    android:layout_height="match_parent"
+                    app:singleLine="true">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_addalias_alias_add_alias_button"
-                    style="@style/ActionButtonsSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_alias" />
-            </LinearLayout>
+                    <com.google.android.material.chip.Chip
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="false"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:text="@string/loading_recipients" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/bs_addalias_alias_add_alias_button"
+                style="@style/CircularProgressButtonSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/add" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

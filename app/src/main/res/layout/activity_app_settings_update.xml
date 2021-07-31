@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appsettings_update_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="132dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="@string/anonaddy_updater"
+                    android:elevation="50dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/settings_update" />
+
+
+                <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/general" />
+
+                </LinearLayout>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_update_section_download"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/obtaining_information"
+                    app:sectionTitle="@string/obtaining_information"
+                    app:sectionStartIcon="@drawable/ic_downloading_24dp"/>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_update_section_notify"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/update_notify_desc"
+                    app:sectionStartIcon="@drawable/ic_notifications_black_24dp"
+                    app:sectionShowSwitch="true"
+                    app:sectionTitle="@string/update_notify_title" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_update_section_changelog"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/see_this_version_changelogs"
+                    app:sectionStartIcon="@drawable/ic_round_restore_24"
+                    app:sectionTitle="@string/changelog" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_update_section_previous_changelog"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/previous_changelogs_desc"
+                    app:sectionStartIcon="@drawable/ic_history_toggle_off_24dp"
+                    app:sectionTitle="@string/previous_changelogs" />
+            </LinearLayout>
+
+            <View
+                style="@style/divider"
+                android:layout_width="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:alpha="0.8"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/Info"
+                    android:paddingEnd="16dp"
+                    android:src="@drawable/ic_info_24dp"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/activity_app_settings_update_version_channel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/version_channel_info" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

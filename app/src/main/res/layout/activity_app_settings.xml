@@ -1,37 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_app_settings_LL"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_app_settings_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
 
-
-    <com.google.android.material.appbar.MaterialToolbar
+    <include
         android:id="@+id/appsettings_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primaryColor">
-
-        <TextView
-            android:id="@+id/appsettings_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/settings"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-    </com.google.android.material.appbar.MaterialToolbar>
+        layout="@layout/custom_toolbar_one_handed" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="8dp"
             android:paddingStart="16dp"
@@ -40,13 +30,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical">
 
-
                 <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
@@ -64,23 +55,32 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/change_app_theme_to_dark_mode"
                     app:sectionStartIcon="@drawable/ic_round_compare_24"
-                    app:sectionTitle="@string/app_theme" />
+                    app:sectionTitle="@string/app_theme">
 
+                </host.stjin.anonaddy.ui.customviews.SectionView>
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
-                    android:id="@+id/activity_app_settings_section_changelog"
+                    android:id="@+id/activity_app_settings_section_updater"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/see_this_version_changelogs"
-                    app:sectionStartIcon="@drawable/ic_round_restore_24"
-                    app:sectionTitle="@string/changelog" />
+                    app:sectionDescription="@string/anonaddy_updater_desc"
+                    app:sectionStartIcon="@drawable/ic_downloading_24dp"
+                    app:sectionTitle="@string/anonaddy_updater" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_features"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/features_and_integrations_desc"
+                    app:sectionStartIcon="@drawable/ic_auto_awesome_24dp"
+                    app:sectionTitle="@string/features_and_integrations" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_background_service"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/background_service_desc"
-                    app:sectionStartIcon="@drawable/ic_widgets_outline"
+                    app:sectionStartIcon="@drawable/ic_widgets_24dp"
                     app:sectionTitle="@string/background_service_interval" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -106,15 +106,15 @@
                     android:id="@+id/activity_app_settings_section_reset"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="6dp"
                     app:sectionDescription="@string/reset_app_desc"
-                    app:sectionStartIcon="@drawable/ic_restore"
+                    app:sectionStartIcon="@drawable/ic_restart_alt_24dp"
                     app:sectionTitle="@string/reset_app" />
 
 
                 <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -132,21 +132,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/visit_anonaddy_helps_section"
-                    app:sectionStartIcon="@drawable/ic_round_help_outline_24"
+                    app:sectionStartIcon="@drawable/ic_help_24dp"
                     app:sectionTitle="@string/anonaddy_help" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_faq"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="6dp"
                     app:sectionDescription="@string/faq_desc"
-                    app:sectionStartIcon="@drawable/ic_frequently_asked_questions"
+                    app:sectionStartIcon="@drawable/ic_question_answer_24dp"
                     app:sectionTitle="@string/faq" />
 
                 <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -172,7 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/report_an_issue_desc"
-                    app:sectionStartIcon="@drawable/ic_bug"
+                    app:sectionStartIcon="@drawable/ic_pest_control_24dp"
                     app:sectionTitle="@string/report_an_issue" />
 
 
@@ -182,7 +182,7 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/contributors_list"
                     app:sectionRippleEffect="false"
-                    app:sectionStartIcon="@drawable/ic_round_people_outline_24"
+                    app:sectionStartIcon="@drawable/ic_people_24dp"
                     app:sectionTitle="@string/contributors" />
 
 
@@ -194,24 +194,24 @@
                 android:orientation="vertical">
 
                 <TextView
+                    style="@style/DescTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
                     android:text="@string/crafted_with_love_and_privacy"
                     android:textAlignment="center"
-                    style="@style/DescTextStyle"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/activity_app_settings_version"
+                    style="@style/DescTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
                     android:text="v1.0"
                     android:textAlignment="center"
-                    style="@style/DescTextStyle"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
@@ -220,4 +220,4 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,26 +2,25 @@ package host.stjin.anonaddy.ui.usernames.manage
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionUsernameBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
 class EditUsernameDescriptionBottomDialogFragment(
     private val usernameId: String?,
     private val description: String?
-) : BottomSheetDialogFragment(), View.OnClickListener {
+) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddEditUsernameDescriptionBottomDialogListener
@@ -62,6 +61,10 @@ class EditUsernameDescriptionBottomDialogFragment(
             dismiss()
         }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsEditusernameUsernameRoot)
+        }
         return root
 
     }
@@ -77,11 +80,11 @@ class EditUsernameDescriptionBottomDialogFragment(
 
     private fun verifyKey(context: Context) {
         val description = binding.bsEditusernameUsernameDescTiet.text.toString()
-        binding.bsEditusernameUsernameSaveButton.isEnabled = false
-        binding.bsEditusernameUsernameSaveProgressbar.visibility = View.VISIBLE
 
+        // Animate the button to progress
+        binding.bsEditusernameUsernameSaveButton.startAnimation()
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             editDescriptionHttp(context, description)
         }
     }
@@ -92,8 +95,9 @@ class EditUsernameDescriptionBottomDialogFragment(
             if (result == "200") {
                 listener.descriptionEdited(description)
             } else {
-                binding.bsEditusernameUsernameSaveButton.isEnabled = true
-                binding.bsEditusernameUsernameSaveProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                binding.bsEditusernameUsernameSaveButton.revertAnimation()
+
                 binding.bsEditusernameUsernameDescTil.error =
                     context.resources.getString(R.string.error_edit_description) + "\n" + result
             }

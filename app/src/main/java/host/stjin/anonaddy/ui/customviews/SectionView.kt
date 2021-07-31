@@ -6,7 +6,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.View.OnLongClickListener
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -16,6 +18,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     LinearLayout(context, attrs, defStyle) {
     private var listener: OnSwitchCheckedChangedListener? = null
     private var onClicklistener: OnLayoutClickedListener? = null
+    private var onLongClicklistener: OnLayoutLongClickedListener? = null
     private var switchMaterial: SwitchMaterial? = null
     var description: TextView? = null
     private var progressBar: ProgressBar? = null
@@ -24,7 +27,16 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     private var iconEnd: ImageView? = null
 
     private var linearLayout: LinearLayout? = null
+    private var cardView: CardView? = null
 
+
+    fun getOnLayoutLongClickedListener(): OnLayoutLongClickedListener? {
+        return onLongClicklistener
+    }
+
+    fun setOnLayoutLongClickedListener(listener: OnLayoutLongClickedListener?) {
+        this.onLongClicklistener = listener
+    }
 
     fun getOnLayoutClickedListener(): OnLayoutClickedListener? {
         return onClicklistener
@@ -56,6 +68,16 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             }
         }
 
+    private val layoutLongClickedListener =
+        OnLongClickListener {
+            // If the OnLongClickListener was set (an action was assigned) call onLongClick.
+            // Else flip the switch
+            if (onLongClicklistener != null) {
+                onLongClicklistener?.onLongClick()
+            }
+            false
+        }
+
     fun setSwitchChecked(boolean: Boolean) {
         switchMaterial?.isChecked = boolean
     }
@@ -72,8 +94,10 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
         if (boolean) {
             linearLayout?.setOnClickListener(layoutClickedListener)
+            linearLayout?.setOnLongClickListener(layoutLongClickedListener)
         } else {
             linearLayout?.setOnClickListener(null)
+            linearLayout?.setOnLongClickListener(null)
         }
     }
 
@@ -101,6 +125,20 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         }
     }
 
+    fun setSectionAlert(boolean: Boolean) {
+        if (boolean) {
+            iconStart?.background = context?.let { ContextCompat.getDrawable(it, R.drawable.custom_view_dialog_circle) }
+            // The tint color is set to white
+            ImageViewCompat.setImageTintList(iconStart!!,
+                context?.let { ContextCompat.getColor(it, android.R.color.white) }?.let { ColorStateList.valueOf(it) })
+        } else {
+            iconStart?.background = null
+            // The tint color is set to default
+            ImageViewCompat.setImageTintList(iconStart!!,
+                context?.let { ContextCompat.getColor(it, R.color.colorControlNormal) }?.let { ColorStateList.valueOf(it) })
+        }
+    }
+
     fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
         if (startIcon != null) {
             iconStart?.setImageResource(startIcon)
@@ -118,9 +156,14 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         fun onClick()
     }
 
+    interface OnLayoutLongClickedListener {
+        fun onLongClick()
+    }
+
     init {
         val inflater = LayoutInflater.from(context)
         inflater.inflate(R.layout.custom_view_section, this)
+        cardView = findViewById(R.id.custom_view_section_CV)
         linearLayout = findViewById(R.id.custom_view_section_LL)
         iconStart = findViewById(R.id.custom_view_section_start_icon)
         iconEnd = findViewById(R.id.custom_view_section_end_icon)
@@ -144,10 +187,12 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
                 linearLayout?.background = null
             }
 
-
             // Set title and description
             setTitle(a.getString(R.styleable.SectionView_sectionTitle))
             setDescription(a.getString(R.styleable.SectionView_sectionDescription))
+
+            // Set section starticon background and change icon color to white
+            setSectionAlert(a.getBoolean(R.styleable.SectionView_sectionAlert, false))
 
             // Get colorAccent
             val hasColorAccentDefined = a.hasValue(R.styleable.SectionView_sectionColorAccent)
@@ -179,6 +224,9 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
                 switchMaterial?.visibility = VISIBLE
                 switchMaterial?.setOnCheckedChangeListener(switchCheckedChangeListener)
             }
+
+            // Set if switch is checked or not
+            switchMaterial?.isChecked = a.getBoolean(R.styleable.SectionView_sectionSwitchChecked, false)
 
 
             // Set layout enabled

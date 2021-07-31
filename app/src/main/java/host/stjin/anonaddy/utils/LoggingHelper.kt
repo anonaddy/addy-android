@@ -10,10 +10,10 @@ class LoggingHelper(context: Context) {
     private val prefs = context.getSharedPreferences("host.stjin.anonaddy_logs", 0)
     private val settingsManager = SettingsManager(false, context)
 
-    fun addLog(error: String, method: String) {
+    fun addLog(error: String, method: String, body: String?) {
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
             val logs = getLogs()
-            logs.add("${getDateTime()} | $method | $error")
+            logs.add("${getDateTime()} | $method | $error | $body")
             putLogs(logs)
         }
     }
@@ -23,6 +23,9 @@ class LoggingHelper(context: Context) {
     }
 
     private fun putLogs(logs: MutableSet<String>) {
+        // Clear logs first (weird bug)
+        // TODO check if this is fixed
+        clearLogs()
         prefs.edit().putStringSet("logs", logs).apply()
     }
 

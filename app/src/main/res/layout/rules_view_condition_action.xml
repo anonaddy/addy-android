@@ -1,74 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rules_view_condition_action_LL1"
+    android:id="@+id/domains_recyclerview_list_CV"
+    style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="16dp"
-    android:baselineAligned="false"
-    android:orientation="horizontal">
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="@dimen/cardview_default_elevation">
 
     <LinearLayout
-        android:id="@+id/rules_view_condition_action_LL2"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:id="@+id/rules_view_condition_action_LL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:padding="12dp">
 
-        <TextView
-            android:id="@+id/rules_view_condition_action_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:lines="1"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:text="If 'the sender' contains..."
-            android:textAllCaps="false"
-            android:textColor="@color/BlackWhite"
-            android:textSize="16sp"
-            tools:ignore="HardcodedText" />
+        <LinearLayout
+            android:id="@+id/rules_view_condition_action_LL2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/rules_view_condition_action_subtitle"
-            style="@style/DescTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:maxLines="3"
-            android:singleLine="false"
-            android:text="Stjin, AnonAddy, SomeGarbo"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/rules_view_condition_action_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="If 'the sender' contains..."
+                    android:textAllCaps="false"
+                    android:textColor="@color/BlackWhite"
+                    android:textSize="16sp"
+                    tools:ignore="HardcodedText" />
 
-    <LinearLayout
-        style="@style/SettingsSectionIconStyleMarginStart"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="8dp">
+                <TextView
+                    android:id="@+id/rules_view_condition_action_subtitle"
+                    style="@style/DescTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif"
+                    android:maxLines="3"
+                    android:singleLine="false"
+                    android:text="Stjin, AnonAddy, SomeGarbo"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
 
-        <ImageView
-            android:id="@+id/rules_view_condition_action_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/recipients"
-            app:srcCompat="@drawable/ic_outline_edit_24" />
+            <LinearLayout
+                style="@style/SettingsSectionIconStyleMarginStart"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp">
 
-        <Space
-            android:layout_width="18dp"
-            android:layout_height="wrap_content" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/rules_view_condition_action_close"
+                    style="@style/MaterialButtonSecondary.IconOnly"
+                    app:icon="@drawable/ic_round_clear_24" />
+            </LinearLayout>
 
-        <ImageView
-            android:id="@+id/rules_view_condition_action_close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/recipients"
-            app:srcCompat="@drawable/ic_outline_close_24" />
-    </LinearLayout>
+        </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
@@ -19,9 +20,6 @@ import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -44,7 +42,7 @@ class ManageRecipientsActivity : BaseActivity(),
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityManageRecipientToolbar)
+        setupToolbar(binding.activityManageRecipientToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_recipient)
         networkHelper = NetworkHelper(this)
 
 
@@ -65,7 +63,7 @@ class ManageRecipientsActivity : BaseActivity(),
         binding.activityManageRecipientRLLottieview.visibility = View.GONE
 
         // Get the recipient
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             getRecipientInfo(recipientId)
         }
     }
@@ -81,7 +79,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
                     if (checked) {
                         if (fingerprint != null) {
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            lifecycleScope.launch {
                                 enableEncryption()
                             }
                         } else {
@@ -95,7 +93,7 @@ class ManageRecipientsActivity : BaseActivity(),
                             }
                         }
                     } else {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             disableEncryption()
                         }
                     }
@@ -113,7 +111,7 @@ class ManageRecipientsActivity : BaseActivity(),
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_recipient_LL),
+                    findViewById(R.id.activity_manage_recipient_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -137,7 +135,7 @@ class ManageRecipientsActivity : BaseActivity(),
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_recipient_LL),
+                    findViewById(R.id.activity_manage_recipient_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -202,12 +200,14 @@ class ManageRecipientsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.remove_public_key)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 removeGpgKeyHttpRequest(id, this@ManageRecipientsActivity, anonaddyCustomDialogBinding)
             }
         }
@@ -233,12 +233,14 @@ class ManageRecipientsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.delete_recipient)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Revert the button to normal
+            anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteRecipientHttpRequest(id, this@ManageRecipientsActivity, anonaddyCustomDialogBinding)
             }
         }
@@ -255,7 +257,9 @@ class ManageRecipientsActivity : BaseActivity(),
                 deleteRecipientDialog.dismiss()
                 finish()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
@@ -273,7 +277,9 @@ class ManageRecipientsActivity : BaseActivity(),
                 removeGpgKeyDialog.dismiss()
                 setPage()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true

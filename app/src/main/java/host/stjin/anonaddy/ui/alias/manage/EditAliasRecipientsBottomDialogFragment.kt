@@ -2,21 +2,25 @@ package host.stjin.anonaddy.ui.alias.manage
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import com.google.android.material.shape.ShapeAppearanceModel
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientsAliasBinding
 import host.stjin.anonaddy.models.Recipients
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -24,7 +28,7 @@ class EditAliasRecipientsBottomDialogFragment(
     private val aliasId: String?,
     private val recipients: List<Recipients>?
 ) :
-    BottomSheetDialogFragment(),
+    BaseBottomSheetDialogFragment(),
     View.OnClickListener {
 
 
@@ -64,13 +68,16 @@ class EditAliasRecipientsBottomDialogFragment(
             // Set button listeners and current description
             binding.bsEditrecipientsSaveButton.setOnClickListener(this)
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 getAllRecipients(requireContext())
             }
         } else {
             dismiss()
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsEditrecipientsRoot)
+        }
 
         return root
 
@@ -89,13 +96,24 @@ class EditAliasRecipientsBottomDialogFragment(
 
         networkHelper.getRecipients({ result ->
             if (result != null) {
+                // Remove the default "Loading recipients" chip
+                binding.bsEditrecipientsChipgroup.removeAllViewsInLayout()
+                binding.bsEditrecipientsChipgroup.requestLayout()
+                binding.bsEditrecipientsChipgroup.invalidate()
+
                 for (recipient in result) {
-                    val chip = Chip(binding.bsEditrecipientsChipgroup.context)
+                    val chip = Chip(ContextThemeWrapper(binding.bsEditrecipientsChipgroup.context, R.style.AnonAddyChip))
                     chip.text = recipient.email
                     chip.tag = recipient.id
                     chip.isClickable = true
                     chip.isCheckable = true
-
+                    chip.shapeAppearanceModel =
+                        ShapeAppearanceModel().toBuilder().setAllCornerSizes(context.resources.getDimension(R.dimen.corner_radius_chips)).build()
+                    chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.transparent))
+                    chip.checkedIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_done_24dp, null)
+                    chip.checkedIconTint = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryColor))
+                    chip.chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.shimmerGray))
+                    chip.chipStrokeWidth = context.resources.getDimension(R.dimen.chip_stroke_width)
 
                     chip.isChecked = recipientUnderThisAliasList.contains(recipient.email)
 
@@ -120,8 +138,9 @@ class EditAliasRecipientsBottomDialogFragment(
     }
 
     private fun editRecipients(context: Context) {
-        binding.bsEditrecipientsSaveButton.isEnabled = false
-        binding.bsEditrecipientsSaveProgressbar.visibility = View.VISIBLE
+
+        // Animate the button to progress
+        binding.bsEditrecipientsSaveButton.startAnimation()
 
         val recipients = arrayListOf<String>()
         val ids: List<Int> = binding.bsEditrecipientsChipgroup.checkedChipIds
@@ -132,7 +151,7 @@ class EditAliasRecipientsBottomDialogFragment(
 
 
         // aliasId is never null at this point, hence the !!
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             editRecipientsHttp(context, aliasId!!, recipients)
         }
     }
@@ -147,8 +166,9 @@ class EditAliasRecipientsBottomDialogFragment(
             if (result == "200") {
                 listener.recipientsEdited()
             } else {
-                binding.bsEditrecipientsSaveButton.isEnabled = true
-                binding.bsEditrecipientsSaveProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                binding.bsEditrecipientsSaveButton.revertAnimation()
+
                 binding.bsEditrecipientsTil.error =
                     context.resources.getString(R.string.error_edit_recipients) + "\n" + result
             }

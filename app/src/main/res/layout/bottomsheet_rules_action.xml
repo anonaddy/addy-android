@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bs_rule_action_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -9,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="34dp"
@@ -30,8 +33,8 @@
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        style="@style/divider" />
+        style="@style/divider"
+        android:layout_width="match_parent" />
 
 
     <androidx.core.widget.NestedScrollView
@@ -81,8 +84,8 @@
                     android:id="@+id/bs_rule_action_values_spinner_banner_location_mact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/rule_bannerlocation_top"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:text="@string/rule_bannerlocation_top" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,24 +113,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bs_rule_action_add_action_button"
+                style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_rule_action_add_action_button"
-                    style="@style/ActionButtonsSecondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_action" />
-            </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:text="@string/add" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

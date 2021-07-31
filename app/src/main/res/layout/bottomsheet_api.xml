@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bs_setup_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -10,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="34dp"
@@ -31,8 +34,8 @@
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        style="@style/divider" />
+        style="@style/divider"
+        android:layout_width="match_parent" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -151,6 +154,7 @@
                     style="@style/AnonAddyTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:hint="@string/APIKey_desc">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -174,7 +178,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp">
 
                     <com.google.android.material.button.MaterialButton
@@ -190,18 +193,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <ProgressBar
-                        android:id="@+id/bs_setup_apikey_get_progressbar"
-                        style="?android:attr/progressBarStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:padding="4dp"
-                        android:visibility="invisible" />
-
-                    <com.google.android.material.button.MaterialButton
+                    <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                         android:id="@+id/bs_setup_apikey_sign_in_button"
-                        style="@style/ActionButtonsSecondary"
+                        style="@style/CircularProgressButtonSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sign_in" />

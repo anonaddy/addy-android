@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.Rules
 
@@ -55,9 +57,9 @@ class RulesAdapter(
         holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
 
         if (listWithRules[position].active) {
-            holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_clipboard_text_outline)
+            holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_assignment_24dp)
         } else {
-            holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_clipboard_text_off_outline)
+            holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_assignment_off_24dp)
         }
     }
 
@@ -66,6 +68,10 @@ class RulesAdapter(
 
     fun setClickListener(aClickListener: ClickListener) {
         onRuleClicker = aClickListener
+    }
+
+    fun getList(): ArrayList<Rules> {
+        return listWithRules
     }
 
 
@@ -80,7 +86,7 @@ class RulesAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
-        private var mLL: LinearLayout = view.findViewById(R.id.rules_recyclerview_list_LL)
+        private var mCV: MaterialCardView = view.findViewById(R.id.rules_recyclerview_list_CV)
         private var rulesRecyclerviewListOptionLl: LinearLayout =
             view.findViewById(R.id.rules_recyclerview_list_option_LL)
         var rulesRecyclerviewListDragLL: LinearLayout =
@@ -102,7 +108,7 @@ class RulesAdapter(
 
         init {
             mOptionsButton.setOnClickListener(this)
-            mLL.setOnClickListener(this)
+            mCV.setOnClickListener(this)
             rulesRecyclerviewListSettingsButton.setOnClickListener(this)
             rulesRecyclerviewListActivateButton.setOnClickListener(this)
             rulesRecyclerviewListDeleteButton.setOnClickListener(this)
@@ -115,11 +121,13 @@ class RulesAdapter(
                     return@setOnTouchListener true
                 }
             }
+
+            checkForTabletLayout(rulesRecyclerviewListDeleteButton.context)
         }
 
         override fun onClick(p0: View) {
             when (p0.id) {
-                R.id.rules_recyclerview_list_LL -> {
+                R.id.rules_recyclerview_list_CV -> {
                     expandOptions()
                 }
                 R.id.rules_recyclerview_list_expand_options -> {
@@ -138,11 +146,20 @@ class RulesAdapter(
         }
 
         private fun expandOptions() {
-            if (rulesRecyclerviewListOptionLl.visibility == View.VISIBLE) {
-                rulesRecyclerviewListOptionLl.visibility = View.GONE
-                mOptionsButton.rotation = 0f
-            } else {
-                mOptionsButton.rotation = 180f
+            if (!rulesRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
+                if (rulesRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                    rulesRecyclerviewListOptionLl.visibility = View.GONE
+                    mOptionsButton.rotation = 0f
+                } else {
+                    mOptionsButton.rotation = 180f
+                    rulesRecyclerviewListOptionLl.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        private fun checkForTabletLayout(context: Context) {
+            if (context.resources.getBoolean(R.bool.isTablet)) {
+                mOptionsButton.visibility = View.GONE
                 rulesRecyclerviewListOptionLl.visibility = View.VISIBLE
             }
         }

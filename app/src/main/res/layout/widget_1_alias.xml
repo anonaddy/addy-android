@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/widget_1_padding">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/widget_1_background_top"
+        android:backgroundTint="@color/primaryColorStatic"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/widget_aliases_listview_list_open_app"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_logo" />
+
+        <ImageView
+            android:id="@+id/widget_aliases_listview_list_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_round_refresh_24"
+            android:contentDescription="@string/refresh"
+            android:tint="@android:color/white"
+            app:tint="@android:color/white"
+            tools:ignore="UseAppTint" />
+    </RelativeLayout>
+
+
+    <ListView
+        android:id="@+id/widget_alias_list_view"
+        android:layout_width="match_parent"
+        android:background="@drawable/widget_1_background_bottom"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:loopViews="true" />
+
+</LinearLayout>

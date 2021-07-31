@@ -1,37 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_manage_alias_LL"
+    android:id="@+id/activity_manage_alias_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
 
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <include
         android:id="@+id/activity_manage_alias_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primaryColor">
+        layout="@layout/custom_toolbar_one_handed" />
 
-        <TextView
-            android:id="@+id/activity_manage_alias_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/edit_alias"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-    </com.google.android.material.appbar.MaterialToolbar>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical">
 
             <LinearLayout
@@ -105,7 +97,7 @@
                             android:padding="4dp"
                             android:text="@string/d_forwarded"
                             android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_round_mail_outline_24"
+                            app:drawableStartCompat="@drawable/ic_email_24dp"
                             app:drawableTint="@color/portalOrange" />
 
                         <TextView
@@ -131,8 +123,8 @@
                             android:padding="4dp"
                             android:text="@string/d_sent"
                             android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_email_send_outline"
-                            app:drawableTint="@color/secondaryDarkColor" />
+                            app:drawableStartCompat="@drawable/ic_email_out_24dp"
+                            app:drawableTint="@color/softGreen" />
 
                         <TextView
                             android:id="@+id/activity_manage_alias_replies_blocked_count"
@@ -171,7 +163,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_alias_copy"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/MaterialButtonSecondaryLight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -189,7 +181,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_alias_send"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/MaterialButtonSecondaryLight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -197,7 +189,7 @@
                         android:maxLines="1"
                         android:minLines="1"
                         android:text="@string/send_mail"
-                        app:icon="@drawable/ic_email_send_outline"
+                        app:icon="@drawable/ic_email_out_24dp"
                         app:iconSize="18dp" />
 
                     <Space
@@ -215,7 +207,9 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/activity_manage_alias_settings_RL_lottieview"
@@ -240,21 +234,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="24dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:visibility="invisible">
 
-                    <TextView
-                        style="@style/titleTextView"
+                    <LinearLayout
+                        style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="@string/general" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/titleTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/general" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/activity_manage_alias_settings_LL1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
                         android:orientation="vertical">
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -263,7 +269,7 @@
                             android:layout_height="match_parent"
                             app:sectionDescription="@string/alias_status_desc"
                             app:sectionShowSwitch="true"
-                            app:sectionStartIcon="@drawable/ic_checkbox_marked_circle_outline"
+                            app:sectionStartIcon="@drawable/ic_task_alt_24dp"
                             app:sectionTitle="@string/alias_status_active" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -272,7 +278,7 @@
                             android:layout_height="match_parent"
                             app:sectionDescription="@string/watch_alias_desc"
                             app:sectionShowSwitch="true"
-                            app:sectionStartIcon="@drawable/ic_comment_eye_outline"
+                            app:sectionStartIcon="@drawable/ic_watch_alias_24dp"
                             app:sectionTitle="@string/watch_alias" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -280,8 +286,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             app:sectionDescription="@tools:sample/lorem/random"
-                            app:sectionEndIcon="@drawable/ic_outline_edit_24"
-                            app:sectionStartIcon="@drawable/ic_text"
+                            app:sectionEndIcon="@drawable/ic_edit_24dp"
+                            app:sectionStartIcon="@drawable/ic_notes_24dp"
                             app:sectionTitle="@string/description" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -289,8 +295,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             app:sectionDescription="@tools:sample/full_names"
-                            app:sectionEndIcon="@drawable/ic_outline_edit_24"
-                            app:sectionStartIcon="@drawable/ic_account_arrow_right_outline"
+                            app:sectionEndIcon="@drawable/ic_edit_24dp"
+                            app:sectionStartIcon="@drawable/ic_account_arrow_right"
                             app:sectionTitle="@string/recipients" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -308,7 +314,7 @@
                             android:layout_height="match_parent"
                             app:sectionDescription="@tools:sample/date/ddmmyy"
                             app:sectionRippleEffect="false"
-                            app:sectionStartIcon="@drawable/ic_progress_clock"
+                            app:sectionStartIcon="@drawable/ic_history_toggle_off_24dp"
                             app:sectionTitle="@string/updated_at" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -317,8 +323,17 @@
                             android:layout_height="match_parent"
                             app:sectionColorAccent="@color/softRed"
                             app:sectionDescription="@string/delete_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_outline_delete_24"
+                            app:sectionStartIcon="@drawable/ic_delete_24dp"
                             app:sectionTitle="@string/delete_alias" />
+
+                        <host.stjin.anonaddy.ui.customviews.SectionView
+                            android:id="@+id/activity_manage_alias_forget"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:sectionColorAccent="@color/hardRed"
+                            app:sectionDescription="@string/forget_alias_desc"
+                            app:sectionStartIcon="@drawable/ic_delete_forever_24dp"
+                            app:sectionTitle="@string/forget_alias" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
                             android:id="@+id/activity_manage_alias_restore"
@@ -326,7 +341,7 @@
                             android:layout_height="match_parent"
                             app:sectionColorAccent="@color/primaryColor"
                             app:sectionDescription="@string/restore_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_outline_restore_from_trash_24"
+                            app:sectionStartIcon="@drawable/ic_restore_from_trash_24dp"
                             app:sectionTitle="@string/restore_alias" />
                     </LinearLayout>
                 </LinearLayout>
@@ -335,4 +350,4 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

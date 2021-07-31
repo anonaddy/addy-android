@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+    <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
         <!-- Customize your theme here. -->
@@ -28,6 +28,40 @@
             @transition/change_image_transform
         </item>
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
+
+        <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
+        <item name="android:windowSplashScreenAnimationDuration">999</item>
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="BaseTheme">
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <style name="AppTheme.Transparent" parent="AppTheme.NoActionBar">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowTitleStyle">@style/RtlOverlay.DialogWindowTitle.AppCompat</item>
+        <item name="android:windowTitleBackgroundStyle">@style/Base.DialogWindowTitleBackground.AppCompat</item>
+        <item name="android:windowBackground">@drawable/abc_dialog_material_background</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="AppTheme.CollapsingToolbarTitle.Expanded" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.CollapsingToolbarTitle.Collapsed" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="BottomSheet" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
@@ -41,7 +75,6 @@
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
     </style>
 
-    <!-- Base application theme. -->
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -55,20 +88,14 @@
         <item name="android:statusBarColor">
             @android:color/transparent
         </item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
-    <style name="AppTheme.Transparent" parent="AppTheme.NoActionBar">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
+    <style name="AppTheme.NoActionBar.NotYetWhite" parent="AppTheme.NoActionBar">
         <item name="android:navigationBarColor">
-            @android:color/transparent
+            @color/AnonAddyNotYetWhite
         </item>
-        <!-- Optional, if drawing behind the status bar too -->
     </style>
-
 
     <style name="AnonAddyProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
@@ -76,61 +103,94 @@
         <item name="android:minHeight">8dip</item>
     </style>
 
-    <style name="AnonAddyProgressBarRed" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progressbar_drawable_red</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
+    <style name="AnonAddyProgressBarHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_home</item>
     </style>
 
-    <style name="AnonAddyProgressBarEasternBlue" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progressbar_drawable_eastern_blue</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
+    <style name="AnonAddyProgressBarRedHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_red_home</item>
     </style>
 
-    <style name="AnonAddyProgressBar.Vertical" parent="AnonAddyProgressBar">
-        <item name="android:progressDrawable">@drawable/progress_scale_drawable</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
+    <style name="AnonAddyProgressBarEasternBlueHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_eastern_blue_home</item>
     </style>
 
-    <style name="AnonAddyProgressBarRed.Vertical" parent="AnonAddyProgressBarRed">
-        <item name="android:progressDrawable">@drawable/progress_scale_drawable_red</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
-    </style>
-
-    <style name="AnonAddyProgressBarEasternBlue.Vertical" parent="AnonAddyProgressBarEasternBlue">
-        <item name="android:progressDrawable">@drawable/progress_scale_drawable_eastern_blue</item>
-        <item name="android:maxHeight">8dip</item>
-        <item name="android:minHeight">8dip</item>
-    </style>
-
-
-    <style name="MaterialTextButtonWithoutSpacing" parent="Widget.MaterialComponents.Button.TextButton">
+    <style name="RoundActionButton" parent="Widget.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
-        <item name="android:minWidth">0dip</item>
-        <item name="android:minHeight">0dip</item>
-        <item name="android:padding">0dp</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
         <item name="android:letterSpacing">0.00</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="ActionButtonsSecondary" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@color/secondaryColor</item>
-        <item name="android:textColor">@android:color/black</item>
+    <!-- SECONDARY -->
+    <style name="CircularProgressButtonSecondary" parent="MaterialButtonSecondary">
+        <item name="android:background">@drawable/circularprogressbutton_secondary</item>
+        <item name="spinning_bar_color">@color/primaryLightColor</item>
+        <item name="spinning_bar_padding">8dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="initialCornerAngle">@dimen/corner_radius_button</item>
+        <item name="android:textColor">@color/CircularProgressButtonTextColor</item>
+    </style>
+
+    <style name="MaterialButtonSecondary" parent="Widget.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.00</item>
+        <item name="backgroundTint">@color/primaryColor</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="iconTint">@android:color/white</item>
+        <item name="cornerRadius">@dimen/corner_radius_button</item>
     </style>
 
-    <style name="UnelevatedButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
-        <item name="android:textAllCaps">false</item>
+    <style name="MaterialButtonSecondaryLight" parent="MaterialButtonSecondary">
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="backgroundTint">@color/primarySuperSuperLightColor</item>
+        <item name="android:textColor">@color/primaryLightColor</item>
+        <item name="iconTint">@color/primaryLightColor</item>
+
+    </style>
+
+    <style name="MaterialButtonSecondary.IconOnly" parent="MaterialButtonSecondaryLight">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="iconSize">18dp</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="iconTint">@color/primaryColor</item>
     </style>
 
     <style name="TextButtonsSecondary" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/secondaryColor</item>
+        <item name="android:textColor">@color/primaryLightColor</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.00</item>
     </style>
+    <!-- END SECONDARY -->
+
+    <!-- TERTIARY -->
+    <style name="CircularProgressButtonTertiary" parent="ActionButtonsTertiary">
+        <item name="android:background">@drawable/circularprogressbutton_tertiary</item>
+        <item name="spinning_bar_color">@color/black</item>
+        <item name="spinning_bar_padding">8dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="initialCornerAngle">@dimen/corner_radius_button</item>
+    </style>
+
+    <style name="ActionButtonsTertiary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/secondaryColor</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:letterSpacing">0.00</item>
+        <item name="iconTint">@color/primaryLightColor</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="cornerRadius">@dimen/corner_radius_button</item>
+    </style>
+    <!-- END TERTIARY -->
 
     <style name="DescTextStyle">
         <item name="android:alpha">0.7</item>
@@ -142,8 +202,7 @@
     </style>
 
     <style name="SettingsSectionStyle">
-        <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:padding">16dp</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:background">?attr/selectableItemBackground</item>
@@ -163,7 +222,7 @@
         <item name="fontFamily">sans-serif-medium</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/BlackWhite</item>
-        <item name="android:alpha">0.8</item>
+        <item name="android:alpha">0.6</item>
         <item name="android:gravity">center_vertical</item>
     </style>
 
@@ -191,8 +250,9 @@
     </style>
 
     <style name="FloatingActionButton">
-        <item name="drawableTint">@android:color/black</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="drawableTint">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@color/primaryColor</item>
     </style>
 
 
@@ -208,50 +268,10 @@
     </style>
 
 
-    <!-- https://blog.usejournal.com/there-is-no-material-design-spinner-for-android-3261b7c77da8 -->
-
 
     <!-- Style for material design 'Spinner'-->
     <style name="AppTheme.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-        <!-- color of box ONLY, not dropdown -->
-        <item name="boxBackgroundColor">@android:color/transparent</item>
-        <!-- the box outline color depending on state
-             (default, enabled, hovered, focused, but NOT error) -->
-        <item name="boxStrokeColor">@color/material_spinner_box</item>
-        <!-- the box outline color just for errors -->
-        <item name="boxStrokeErrorColor">@color/softRed</item>
-        <!-- enable 8dp space below the box for error message -->
-        <item name="errorEnabled">true</item>
-        <!-- the hint INSIDE the box, before focusing the TextInputEditText -->
-        <item name="android:textColorHint">@color/primaryColor</item>
-        <!-- the hint ON TOP of the box, when the TextInputEditText is focused -->
-        <item name="hintTextColor">@color/primaryColor</item>
-        <!-- Gain access to additional styling for the child AutoCompleteTextView,
-             which includes this spinner's dropdown/popup menu -->
-        <item name="materialThemeOverlay">@style/AppTheme.ExposedDropdownMenu.MaterialThemeOverlay</item>
-    </style>
-
-    <!-- customization of the material theme for use as
-         an overlay for the ExposedDropdownMenu style  -->
-    <style name="AppTheme.ExposedDropdownMenu.MaterialThemeOverlay" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- background color of dropdown (popup) items -->
-        <item name="colorSurface">@color/DropDownSurfaceLightDarkMode</item>
-        <item name="android:popupElevation">4dp</item>
-        <!--
-         When this overlay is applied, the AutoCompleteTextView
-         loses padding. Luckily, can restore it by defining
-         a style that should be applied to all AutoCompletTextView(s)
-         in this theme/overlay
-         -->
-        <item name="autoCompleteTextViewStyle">@style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle</item>
-    </style>
-
-    <!-- style the AutoCompleteTextView of our material spinner -->
-    <style name="AppTheme.ExposedDropdownMenu.AutoCompleteStyle">
-        <!-- restore padding to sanity -->
-        <item name="android:padding">16dp</item>
-        <item name="android:textColor">@color/BlackWhite</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginBottom">16dp</item>
     </style>
 
 
@@ -266,7 +286,6 @@
     </style>
 
     <style name="AnonAddyDialogTitle">
-        <item name="android:layout_marginBottom">2dp</item>
         <item name="android:ellipsize">end</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:lines">1</item>
@@ -280,14 +299,6 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <style name="AnonAddyDialogLayout">
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:layout_marginStart">8dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-    </style>
-
     <style name="AnonAddyMaterialButtonToggleGroupButtonOverlay">
         <item name="colorSurface">?attr/selectableItemBackground</item>
     </style>
@@ -296,6 +307,103 @@
         <item name="android:layout_height">1dp</item>
         <item name="android:alpha">0.2</item>
         <item name="android:background">@color/IconGrayTint</item>
+    </style>
+
+    <style name="divider_vertical_widget_2_layout_3">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:alpha">0.5</item>
+        <item name="android:background">@color/IconGrayTint</item>
+    </style>
+
+
+    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners_top" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">14dp</item>
+        <item name="cornerSizeTopLeft">14dp</item>
+        <item name="cornerSizeBottomRight">@dimen/corner_radius_cardview</item>
+        <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
+    </style>
+
+    <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners_center" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/corner_radius_cardview</item>
+        <item name="cornerSizeTopLeft">@dimen/corner_radius_cardview</item>
+        <item name="cornerSizeBottomRight">@dimen/corner_radius_cardview</item>
+        <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
+    </style>
+
+    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners_bottom" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/corner_radius_cardview</item>
+        <item name="cornerSizeTopLeft">@dimen/corner_radius_cardview</item>
+        <item name="cornerSizeBottomRight">14dp</item>
+        <item name="cornerSizeBottomLeft">14dp</item>
+    </style>
+
+    <style name="AnonAddyTitleAction" parent="titleTextView">
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:alpha">1</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
+
+    <style name="AnonAddySetupTitle" parent="titleTextView">
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:alpha">1</item>
+        =
+        <item name="android:textSize">32sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="AnonAddyTitleNoAction" parent="titleTextView">
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:alpha">1</item>
+        <item name="android:layout_height">32dp</item>
+    </style>
+
+    <style name="AnonAddyDescText">
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
+
+    <style name="AnonAddyToggleButton" parent="MaterialButtonSecondaryLight">
+        <item name="android:backgroundTint">@color/anonaddy_toggle_button_color</item>
+        <item name="cornerRadius">@dimen/corner_radius_cardview</item>
+    </style>
+
+    <style name="RoundFlatButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="android:letterSpacing">0.00</item>
+        <item name="android:textColor">@color/IconGrayTint</item>
+    </style>
+
+    <style name="AnonAddyChip" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipCornerRadius">@dimen/corner_radius_chips</item>
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/shimmerGray</item>
+        <item name="checkedIcon">@drawable/ic_done_24dp</item>
+        <item name="checkedIconTint">@color/primaryColor</item>
     </style>
 
 </resources>

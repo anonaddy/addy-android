@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "host.stjin.anonaddy",
+  "variantName": "materialyouRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 23,
+      "versionName": "v3.0.0 | Material You",
+      "outputFile": "app-materialyou-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

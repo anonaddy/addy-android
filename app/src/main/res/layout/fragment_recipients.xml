@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recipients_NCV"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recipients_NCV"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/recipients_RL_lottieview"
@@ -25,14 +27,16 @@
             android:id="@+id/recipients_LL1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
             <LinearLayout
+                style="@style/AnonAddyTitleAction"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
@@ -44,37 +48,51 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/recipients_add_recipients"
-                    style="@style/MaterialTextButtonWithoutSpacing"
+                    style="@style/RoundActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/add_recipient" />
 
             </LinearLayout>
 
-            <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+            <com.todkars.shimmer.ShimmerRecyclerView
                 android:id="@+id/recipients_all_recipients_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
-                app:shimmer_demo_angle="20"
-                app:shimmer_demo_child_count="5"
-                app:shimmer_demo_grid_child_count="1"
-                app:shimmer_demo_layout="@layout/recipients_recyclerview_list_item_recipients_shimmer"
-                app:shimmer_demo_layout_manager_type="linear_vertical" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:shimmer_recycler_auto_start="true"
+                app:shimmer_recycler_layout="@layout/recipients_recyclerview_list_item_recipients_shimmer" />
 
-            <TextView
-                android:id="@+id/activity_recipient_settings_LL_count"
+            <View
+                style="@style/divider"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="32dp"
-                android:layout_weight="1"
+                android:layout_marginTop="16dp" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
                 android:alpha="0.8"
-                android:drawablePadding="16dp"
-                android:gravity="center_vertical"
-                android:text="@string/you_ve_used_d_out_of_d_recipients"
-                app:drawableStartCompat="@drawable/ic_outline_info_24" />
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/Info"
+                    android:paddingEnd="16dp"
+                    android:src="@drawable/ic_info_24dp"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/activity_recipient_settings_LL_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/you_ve_used_d_out_of_d_recipients" />
+            </LinearLayout>
 
         </LinearLayout>
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -23,16 +24,14 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import kotlinx.coroutines.launch
 
 class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragment.AddUsernameBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance()
 
@@ -44,7 +43,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityUsernameSettingsToolbar)
+        setupToolbar(binding.activityUsernameSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_usernames)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -73,8 +72,8 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         binding.activityUsernameSettingsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllUsernames()
+        lifecycleScope.launch {
+            getAllUsernamesAndSetView()
             getUserResource()
         }
     }
@@ -87,7 +86,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
             } else {
                 val snackbar =
                     Snackbar.make(
-                        binding.activityUsernameSettingsLL,
+                        binding.activityUsernameSettingsCL,
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         Snackbar.LENGTH_SHORT
                     )
@@ -109,27 +108,46 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         binding.activityUsernameSettingsAddUsername.isEnabled = User.userResource.username_count < User.userResource.username_limit
     }
 
-    private suspend fun getAllUsernames() {
+    private lateinit var usernamesAdapter: UsernameAdapter
+    private suspend fun getAllUsernamesAndSetView() {
+
         binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@UsernamesSettingsActivity, 2)
-            } else {
-                LinearLayoutManager(this@UsernamesSettingsActivity)
-            }
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, 2) ?: 2
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@UsernamesSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@UsernamesSettingsActivity)
+                }
 
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
+                layoutManager = if (this@UsernamesSettingsActivity.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@UsernamesSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@UsernamesSettingsActivity)
+                }
+
+
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activityUsernameSettingsAllUsernamesRecyclerview.layoutAnimation = animation
+                layoutAnimation = animation
+
+                showShimmer()
             }
-
-
             networkHelper?.getAllUsernames { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new usernames since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::usernamesAdapter.isInitialized && list == usernamesAdapter.getList()) {
+                    return@getAllUsernames
+                }
 
                 if (list != null) {
 
@@ -139,7 +157,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                         binding.activityUsernameSettingsNoUsernames.visibility = View.VISIBLE
                     }
 
-                    val usernamesAdapter = UsernameAdapter(list)
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, list.size)
+
+
+                    usernamesAdapter = UsernameAdapter(list)
                     usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
 
                         override fun onClickSettings(pos: Int, aView: View) {
@@ -155,11 +177,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
                     })
                     adapter = usernamesAdapter
-                    binding.activityUsernameSettingsAllUsernamesRecyclerview.hideShimmerAdapter()
                 } else {
                     binding.activityUsernameSettingsLL1.visibility = View.GONE
                     binding.activityUsernameSettingsRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }
 
         }
@@ -182,12 +204,14 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete_username)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteUsernameHttpRequest(id, context, anonaddyCustomDialogBinding)
             }
         }
@@ -204,7 +228,9 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 dialog.dismiss()
                 getDataFromWeb()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true

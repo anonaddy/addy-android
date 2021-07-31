@@ -1,30 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primaryColorStatic">#19216b</color>
-    <color name="primaryColor">#19216b</color>
+    <!--<color name="primaryColor">#19216b</color>-->
+    <color name="primaryColor">#353C7D</color>
     <color name="primaryLightColor">#4d499a</color>
     <color name="primarySuperLightColor">#804D499A</color>
+    <color name="primarySuperSuperLightColor">#26353C7D</color>
     <color name="primaryDarkColor">#000040</color>
     <color name="secondaryColor">#3ae7e1</color>
-    <color name="secondarySuperLightColor">#807EFFFF</color>
-    <color name="secondaryLightColor">#7effff</color>
     <color name="secondaryDarkColor">#00b4af</color>
-    <color name="secondaryTextColor">#000000</color>
 
     <color name="IconGrayTint">#666666</color>
 
+    <color name="widget_2_layout_3_inner_background_color">@color/primaryLightColor</color>
 
+
+    <color name="softGreen">#00B4AF</color>
+    <color name="softGreenSuperLight">#5000B4AF</color>
     <color name="softRed">#FD5842</color>
-    <color name="softRedSuperLight">#80FD5842</color>
+    <color name="softRedSuperLight">#50FD5842</color>
+
+    <color name="bandwidthColor">#353C7D</color>
+    <color name="bandwidthSuperSuperLightColor">#504D499A</color>
 
     <color name="easternBlue">#16A8B8</color>
-    <color name="easternBlueSuperLight">#8016A8B8</color>
+    <color name="easternBlueSuperLight">#5016A8B8</color>
     <color name="portalBlue">#4289FD</color>
     <color name="portalOrange">#FF9800</color>
-    <color name="shimmerGray">#CDCDCD</color>
+    <color name="shimmerGray">#74CDCDCD</color>
     <color name="pillColor">#CCCCCC</color>
     <color name="titOutlineColor">#BABABA</color>
 
     <color name="colorControlNormal">#89000000</color>
+    <color name="transparentCircle">#0FFFFFFF</color>
 
+    <!--grey-->
+    <color name="md_grey_500">#9E9E9E</color>
+    <color name="md_grey_600">#757575</color>
+    <color name="md_grey_700">#616161</color>
+    <color name="md_grey_800">#424242</color>
+    <color name="hardRed">#FF0000</color>
+
+
+    <!-- Icon -->
+    <color name="ic_launcher_background">@color/primaryColorStatic</color>
+    <color name="ic_launcher_foreground">#DFE0FF</color>
+
+    <!-- Profile icon -->
+    <color name="profile_icon_background">@color/primaryColor</color>
+    <color name="profile_icon_foreground">@android:color/white</color>
+
+    <color name="CircularProgressButtonTextColor">@color/primaryLightColor</color>
+    <color name="splashBackground">@color/primaryColorStatic</color>
 </resources>

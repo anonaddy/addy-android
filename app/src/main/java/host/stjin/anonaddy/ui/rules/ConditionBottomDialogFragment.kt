@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.rules
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +10,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesConditionBinding
 import host.stjin.anonaddy.models.Condition
 
 
-class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddConditionBottomDialogListener
@@ -54,6 +55,13 @@ class ConditionBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickL
         binding.bsRuleConditionAddConditionButton.setOnClickListener(this)
 
         checkForArguments()
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsRuleConditionRoot)
+        }
+
+
         return root
     }
 

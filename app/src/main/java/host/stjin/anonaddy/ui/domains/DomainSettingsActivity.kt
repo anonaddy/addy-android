@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -23,16 +24,14 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import kotlinx.coroutines.launch
 
 class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
 
@@ -44,7 +43,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityDomainSettingsToolbar)
+        setupToolbar(binding.activityDomainSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_domains)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -73,8 +72,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         binding.activityDomainSettingsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getAllDomains()
+        lifecycleScope.launch {
+            getAllDomainsAndSetView()
             getUserResource()
         }
     }
@@ -87,7 +86,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             } else {
                 val snackbar =
                     Snackbar.make(
-                        binding.activityDomainSettingsLL,
+                        binding.activityDomainSettingsCL,
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         Snackbar.LENGTH_SHORT
                     )
@@ -114,28 +113,42 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
     }
 
-
-    private suspend fun getAllDomains() {
+    private lateinit var domainsAdapter: DomainAdapter
+    private suspend fun getAllDomainsAndSetView() {
         binding.activityDomainSettingsAllDomainsRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@DomainSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@DomainSettingsActivity)
+                }
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@DomainSettingsActivity, 2)
-            } else {
-                LinearLayoutManager(this@DomainSettingsActivity)
-            }
+                layoutManager = if (this@DomainSettingsActivity.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(this@DomainSettingsActivity, 2)
+                } else {
+                    LinearLayoutManager(this@DomainSettingsActivity)
+                }
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activityDomainSettingsAllDomainsRecyclerview.layoutAnimation = animation
+                layoutAnimation = animation
+
+                showShimmer()
             }
-
-
             networkHelper?.getAllDomains { list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new domains since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::domainsAdapter.isInitialized && list == domainsAdapter.getList()) {
+                    return@getAllDomains
+                }
 
                 if (list != null) {
 
@@ -145,7 +158,10 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                         binding.activityDomainSettingsNoDomains.visibility = View.VISIBLE
                     }
 
-                    val domainsAdapter = DomainAdapter(list)
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, list.size)
+
+                    domainsAdapter = DomainAdapter(list)
                     domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
 
                         override fun onClickSettings(pos: Int, aView: View) {
@@ -161,11 +177,12 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
                     })
                     adapter = domainsAdapter
-                    binding.activityDomainSettingsAllDomainsRecyclerview.hideShimmerAdapter()
+
                 } else {
                     binding.activityDomainSettingsLL1.visibility = View.GONE
                     binding.activityDomainSettingsRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }
 
         }
@@ -187,12 +204,14 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete_domain)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteDomainHttpRequest(id, context, anonaddyCustomDialogBinding)
             }
         }
@@ -209,7 +228,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 dialog.dismiss()
                 getDataFromWeb()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true

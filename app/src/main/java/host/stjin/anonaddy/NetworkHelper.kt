@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import com.einmalfel.earl.EarlParser
+import com.einmalfel.earl.Feed
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
@@ -26,12 +28,13 @@ import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_RESEND
 import host.stjin.anonaddy.AnonAddy.API_URL_REORDER_RULES
 import host.stjin.anonaddy.AnonAddy.API_URL_RULES
 import host.stjin.anonaddy.AnonAddy.API_URL_USERNAMES
+import host.stjin.anonaddy.AnonAddy.GITLAB_TAGS_RSS_FEED
 import host.stjin.anonaddy.AnonAddy.lazyMgr
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.InputStream
 
 
 class NetworkHelper(private val context: Context) {
@@ -45,7 +48,7 @@ class NetworkHelper(private val context: Context) {
     422	Validation Error -- The given data was invalid
     429	Too Many Requests -- You're sending too many requests or have reached your limit for new aliases
     500	Internal Server Error -- We had a problem with our server. Try again later
-    503	Service Unavailable -- We're temporarially offline for maintanance. Please try again later*/
+    503	Service Unavailable -- We're temporarily offline for maintenance. Please try again later*/
 
     private var API_KEY: String? = null
     private val loggingHelper = LoggingHelper(context)
@@ -66,7 +69,7 @@ class NetworkHelper(private val context: Context) {
         } catch (e: Exception) {
             val ex = e.message
             println(ex)
-            loggingHelper.addLog(ex.toString(), "invalidApiKey")
+            loggingHelper.addLog(ex.toString(), "invalidApiKey", null)
         }
     }
 
@@ -81,7 +84,7 @@ class NetworkHelper(private val context: Context) {
 
         // Set base URL
         API_BASE_URL = baseUrl
-        val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
+        val (_, response, result) = Fuel.get(API_URL_ACCOUNT_DETAILS)
             .appendHeader(
                 "Authorization" to "Bearer $apiKey",
                 "Content-Type" to "application/json",
@@ -98,8 +101,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "verifyApiKey")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "verifyApiKey", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -150,7 +153,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getAnonAddyInstanceVersion")
+                loggingHelper.addLog(ex.toString(), "getAnonAddyInstanceVersion", String(response.data))
                 callback(null, ex.toString())
             }
         }
@@ -198,7 +201,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getUserResource")
+                loggingHelper.addLog(ex.toString(), "getUserResource", String(response.data))
                 callback(null, ex.toString())
             }
         }
@@ -240,7 +243,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getDomainOptions")
+                loggingHelper.addLog(ex.toString(), "getDomainOptions", String(response.data))
                 callback(null)
             }
         }
@@ -257,13 +260,23 @@ class NetworkHelper(private val context: Context) {
         domain: String,
         description: String,
         format: String,
-        local_part: String
+        local_part: String,
+        recipients: ArrayList<String>?
     ) {
+        val array = JSONArray()
+
+        if (recipients != null) {
+            for (recipient in recipients) {
+                array.put(recipient)
+            }
+        }
+
         val json = JSONObject()
         json.put("domain", domain)
         json.put("description", description)
         json.put("format", format)
         json.put("local_part", local_part)
+        json.put("recipient_ids", array)
 
 
         val (_, response, result) = Fuel.post(API_URL_ALIAS)
@@ -291,8 +304,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addAlias")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "addAlias", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -301,7 +314,9 @@ class NetworkHelper(private val context: Context) {
     suspend fun getAliases(
         callback: (ArrayList<Aliases>?) -> Unit,
         activeOnly: Boolean,
-        includeDeleted: Boolean
+        includeDeleted: Boolean,
+        filter: String? = null,
+        page: String? = null
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -309,25 +324,32 @@ class NetworkHelper(private val context: Context) {
         }
 
 
-        val (_, response, result) = if (includeDeleted) {
-            Fuel.get(API_URL_ALIAS, listOf("deleted" to "with"))
-                .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
-                )
-                .awaitStringResponseResult()
-        } else {
-            Fuel.get(API_URL_ALIAS)
-                .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
-                )
-                .awaitStringResponseResult()
+        /*
+        Parameters
+        https://app.anonaddy.com/docs/#get-all-aliases
+         */
+        val parameters: ArrayList<Pair<String, String>> = arrayListOf()
+        if (includeDeleted) {
+            parameters.add("filter[deleted]=" to "with")
         }
+
+        if (!filter.isNullOrEmpty()) {
+            parameters.add("filter[search]" to filter)
+        }
+
+        if (!page.isNullOrEmpty()) {
+            parameters.add("page[number]" to page)
+        }
+
+        val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
 
 
         when (response.statusCode) {
@@ -359,7 +381,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getAliases")
+                loggingHelper.addLog(ex.toString(), "getAliases", String(response.data))
                 callback(null)
             }
         }
@@ -403,7 +425,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificAlias")
+                loggingHelper.addLog(ex.toString(), "getSpecificAlias", String(response.data))
                 callback(null)
             }
         }
@@ -445,8 +467,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificAlias")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificAlias", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -495,8 +517,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateRecipientsSpecificAlias")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "updateRecipientsSpecificAlias", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -530,8 +552,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deactivateSpecificAlias")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deactivateSpecificAlias", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -569,8 +591,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "activateSpecificAlias")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "activateSpecificAlias", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -604,8 +626,42 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteAlias")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deleteAlias", String(response.data))
+                callback(String(response.data))
+            }
+        }
+    }
+
+    suspend fun forgetAlias(
+        callback: (String?) -> Unit,
+        aliasId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId/forget")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "forgetAlias", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -638,8 +694,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "restoreAlias")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "restoreAlias", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -681,8 +737,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addRecipient")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "addRecipient", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -735,7 +791,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getRecipients")
+                loggingHelper.addLog(ex.toString(), "getRecipients", String(response.data))
                 callback(null)
             }
         }
@@ -769,11 +825,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteRecipient")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deleteRecipient", String(response.data))
+                callback(String(response.data))
             }
         }
     }
+
 
     suspend fun disableEncryptionRecipient(
         callback: (String?) -> Unit?,
@@ -803,8 +860,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "disableEncryptionRecipient")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "disableEncryptionRecipient", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -843,8 +900,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "enableEncryptionRecipient")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "enableEncryptionRecipient", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -878,8 +935,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "removeEncryptionKeyRecipient")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "removeEncryptionKeyRecipient", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -918,8 +975,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addEncryptionKeyRecipient")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "addEncryptionKeyRecipient", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -958,7 +1015,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificRecipient")
+                loggingHelper.addLog(ex.toString(), "getSpecificRecipient", String(response.data))
                 callback(null, ex.toString())
             }
         }
@@ -996,8 +1053,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "resendVerificationEmail")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "resendVerificationEmail", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1044,7 +1101,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getDomains")
+                loggingHelper.addLog(ex.toString(), "getDomains", String(response.data))
                 callback(null)
             }
         }
@@ -1078,8 +1135,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteDomain")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deleteDomain", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1105,12 +1162,9 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 callback("201", null)
             }
-
             // 404 means that the setup is not completed
             404 -> {
-                //TODO Fix getting body the normal way
-                val body = StringUtils.substringBetween(response.toString(), "Body : ", "\n")
-                callback("404", body)
+                callback("404", String(response.data))
             }
             401 -> {
                 invalidApiKey()
@@ -1123,7 +1177,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addDomain")
+                loggingHelper.addLog(ex.toString(), "addDomain", String(response.data))
                 callback(ex.toString(), null)
             }
         }
@@ -1167,7 +1221,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificDomain")
+                loggingHelper.addLog(ex.toString(), "getSpecificDomain", String(response.data))
                 callback(null)
             }
         }
@@ -1210,8 +1264,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDefaultRecipientForSpecificDomain")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "updateDefaultRecipientForSpecificDomain", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1244,8 +1298,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deactivateSpecificDomain")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deactivateSpecificDomain", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1283,8 +1337,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "activateSpecificDomain")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "activateSpecificDomain", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1317,8 +1371,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "disableCatchAllSpecificDomain")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "disableCatchAllSpecificDomain", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1356,8 +1410,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "enableCatchAllSpecificDomain")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "enableCatchAllSpecificDomain", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1399,8 +1453,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificDomain")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificDomain", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1448,7 +1502,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getUsernames")
+                loggingHelper.addLog(ex.toString(), "getUsernames", String(response.data))
                 callback(null)
             }
         }
@@ -1482,8 +1536,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteUsername")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deleteUsername", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1520,7 +1574,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addUsername")
+                loggingHelper.addLog(ex.toString(), "addUsername", String(response.data))
                 callback(ex.toString(), null)
             }
         }
@@ -1564,7 +1618,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificUsername")
+                loggingHelper.addLog(ex.toString(), "getSpecificUsername", String(response.data))
                 callback(null)
             }
         }
@@ -1607,8 +1661,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDefaultRecipientForSpecificUsername")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "updateDefaultRecipientForSpecificUsername", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1641,8 +1695,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deactivateSpecificUsername")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deactivateSpecificUsername", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1680,8 +1734,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "activateSpecificUsername")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "activateSpecificUsername", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1722,8 +1776,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificUsername")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificUsername", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1784,7 +1838,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getAllRules")
+                loggingHelper.addLog(ex.toString(), "getAllRules", String(response.data))
                 callback(null)
             }
         }
@@ -1828,7 +1882,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificRule")
+                loggingHelper.addLog(ex.toString(), "getSpecificRule", String(response.data))
                 callback(null)
             }
         }
@@ -1863,8 +1917,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteRule")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deleteRule", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1899,8 +1953,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "createRule")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "createRule", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1948,8 +2002,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "reorderRules")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "reorderRules", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -1985,8 +2039,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateRule")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "updateRule", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -2019,8 +2073,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deactivateSpecificRule")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "deactivateSpecificRule", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -2058,8 +2112,8 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "activateSpecificRule")
-                callback(ex.toString())
+                loggingHelper.addLog(ex.toString(), "activateSpecificRule", String(response.data))
+                callback(String(response.data))
             }
         }
     }
@@ -2083,7 +2137,6 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheAliasDataForWidget(
         callback: (Boolean) -> Unit
     ) {
-        // Widget 1
         getAliases({ list ->
             if (list == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
@@ -2109,24 +2162,110 @@ class NetworkHelper(private val context: Context) {
         }, activeOnly = false, includeDeleted = true)
     }
 
-    suspend fun cacheDomainsDataForWidget(
+    suspend fun cacheDomainCountForWidget(
         callback: (Boolean) -> Unit
     ) {
-        // Widget 2
-        getDomainOptions { result ->
+        getAllDomains { result ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
-                return@getDomainOptions
+                return@getAllDomains
             } else {
-                // Turn the list into a json object
-                val data = Gson().toJson(result)
-                // Store a copy of this data locally
-                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_DOMAIN_OPTIONS, data)
+                // Store the result size
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, result.size)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
         }
+    }
+
+    suspend fun cacheUsernamesCountForWidget(
+        callback: (Boolean) -> Unit
+    ) {
+        getAllUsernames { result ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getAllUsernames
+            } else {
+                // Store the result size
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+        }
+    }
+
+    suspend fun cacheRulesCountForWidget(
+        callback: (Boolean) -> Unit
+    ) {
+        getAllRules { result ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getAllRules
+            } else {
+                // Store the result size
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+        }
+    }
+
+    suspend fun cacheRecipientCountForWidget(
+        callback: (Boolean) -> Unit
+    ) {
+        getRecipients({ result ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getRecipients
+            } else {
+                // Store the result size
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+            // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
+        }, false)
+    }
+
+
+    /**
+     * UPDATE
+     */
+    suspend fun getGitlabTags(
+        callback: (Feed?) -> Unit
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) =
+            Fuel.get(GITLAB_TAGS_RSS_FEED)
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val inputStream: InputStream = result.get().byteInputStream()
+                val feed = EarlParser.parseOrThrow(inputStream, 0)
+                callback(feed)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getGitlabTags", String(response.data))
+                callback(null)
+            }
+        }
+
+
     }
 }

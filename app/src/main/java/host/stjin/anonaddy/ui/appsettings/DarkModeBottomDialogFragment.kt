@@ -1,19 +1,20 @@
 package host.stjin.anonaddy.ui.appsettings
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.BottomsheetDarkmodeBinding
 
 
-class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class DarkModeBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddDarkmodeBottomDialogListener
@@ -65,6 +66,12 @@ class DarkModeBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickLi
         binding.bsDarkmodeOff.setOnClickListener(this)
         binding.bsDarkmodeOn.setOnClickListener(this)
         binding.bsDarkmodeAutomatic.setOnClickListener(this)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsDarkmodeRoot)
+        }
+
         return root
 
     }

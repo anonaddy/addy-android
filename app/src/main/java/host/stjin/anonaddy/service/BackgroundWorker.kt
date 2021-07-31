@@ -10,7 +10,10 @@ import androidx.work.*
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.widget.AliasWidgetProvider
+import host.stjin.anonaddy.Updater
+import host.stjin.anonaddy.notifications.NotificationHelper
+import host.stjin.anonaddy.widget.AliasWidget1Provider
+import host.stjin.anonaddy.widget.AliasWidget2Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -23,12 +26,22 @@ This BackgroundWorker is used for obtaining data in the background, this data is
 class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
     private fun updateWidgets() {
-        val updateWidgetIntent = Intent(applicationContext, AliasWidgetProvider::class.java)
-        updateWidgetIntent.action = ACTION_APPWIDGET_UPDATE
-        val ids = AppWidgetManager.getInstance(applicationContext)
-            .getAppWidgetIds(ComponentName(applicationContext, AliasWidgetProvider::class.java))
-        updateWidgetIntent.putExtra(EXTRA_APPWIDGET_IDS, ids)
-        applicationContext.sendBroadcast(updateWidgetIntent)
+        // Update widget 1
+        val updateWidget1Intent = Intent(applicationContext, AliasWidget1Provider::class.java)
+        updateWidget1Intent.action = ACTION_APPWIDGET_UPDATE
+        val ids1 = AppWidgetManager.getInstance(applicationContext)
+            .getAppWidgetIds(ComponentName(applicationContext, AliasWidget1Provider::class.java))
+        updateWidget1Intent.putExtra(EXTRA_APPWIDGET_IDS, ids1)
+        applicationContext.sendBroadcast(updateWidget1Intent)
+
+
+        // Update widget 2
+        val updateWidget2Intent = Intent(applicationContext, AliasWidget2Provider::class.java)
+        updateWidget2Intent.action = ACTION_APPWIDGET_UPDATE
+        val ids2 = AppWidgetManager.getInstance(applicationContext)
+            .getAppWidgetIds(ComponentName(applicationContext, AliasWidget2Provider::class.java))
+        updateWidget2Intent.putExtra(EXTRA_APPWIDGET_IDS, ids2)
+        applicationContext.sendBroadcast(updateWidget2Intent)
     }
 
     override fun doWork(): Result {
@@ -39,14 +52,18 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
         val appContext = applicationContext
         val backgroundWorkerHelper = BackgroundWorkerHelper(appContext)
+        val settingsManager = SettingsManager(false, appContext)
 
-        // True if there are aliases to be watched or there are widgets to be updated
+        // True if there are aliases to be watched, widgets to be updated or checked for updates
         if (backgroundWorkerHelper.isThereWorkTodo()) {
             val networkHelper = NetworkHelper(appContext)
 
             // Stored if the network call succeeds its task
             var aliasNetworkCallResult = false
             var domainNetworkCallResult = false
+            var usernameNetworkCallResult = false
+            var rulesNetworkCallResult = false
+            var recipientNetworkCallResult = false
 
             // Block the thread until this is finished
             runBlocking(Dispatchers.Default) {
@@ -55,9 +72,37 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     aliasNetworkCallResult = result
                 }
 
-                networkHelper.cacheDomainsDataForWidget { result ->
+                networkHelper.cacheDomainCountForWidget { result ->
                     // Store the result if the data succeeded to update in a boolean
                     domainNetworkCallResult = result
+                }
+
+                networkHelper.cacheUsernamesCountForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    usernameNetworkCallResult = result
+                }
+
+                networkHelper.cacheRulesCountForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    rulesNetworkCallResult = result
+                }
+
+                networkHelper.cacheRecipientCountForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    recipientNetworkCallResult = result
+                }
+
+                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
+                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String? ->
+                        if (updateAvailable) {
+                            latestVersion?.let {
+                                NotificationHelper(appContext).createUpdateNotification(
+                                    it,
+                                    Updater.figureOutDownloadUrl(appContext)
+                                )
+                            }
+                        }
+                    }, appContext)
                 }
             }
 
@@ -65,13 +110,18 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             if (aliasNetworkCallResult) {
                 // Now the data has been updated, perform the AliasWatcher check
                 AliasWatcher(appContext).watchAliasesForDifferences()
-
-                // Now the data has been updated, we can update the widget as well
-                updateWidgets()
             }
 
             // If both tasks are successful return a success()
-            return if (aliasNetworkCallResult && domainNetworkCallResult) {
+            return if (aliasNetworkCallResult &&
+                domainNetworkCallResult &&
+                usernameNetworkCallResult &&
+                rulesNetworkCallResult &&
+                recipientNetworkCallResult
+            ) {
+                // Now the data has been updated, we can update the widget as well
+                updateWidgets()
+
                 Result.success()
             } else {
                 Result.failure()
@@ -117,10 +167,11 @@ class BackgroundWorkerHelper(private val context: Context) {
     }
 
     fun isThereWorkTodo(): Boolean {
-        val settingsManager = SettingsManager(true, context)
+        val encryptedSettingsManager = SettingsManager(true, context)
+        val settingsManager = SettingsManager(false, context)
 
         // Count amount of aliases to be watched
-        val aliasToWatch = settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
+        val aliasToWatch = encryptedSettingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
         // Count amount of widgets
         val amountOfWidgets = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
 
@@ -128,8 +179,8 @@ class BackgroundWorkerHelper(private val context: Context) {
             println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets")
         }
 
-        // If there are no aliases to be watched and there are no widgets to be updated, return false
-        return !(aliasToWatch.isNullOrEmpty() && amountOfWidgets == 0)
+        // If there are aliases to be watched, widgets to be updated OR app updates to be checked for in the background, return true
+        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES))
     }
 
     fun cancelScheduledBackgroundWorker() {

@@ -4,26 +4,25 @@ import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
+import androidx.lifecycle.lifecycleScope
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
     private var codeScanner: CodeScanner? = null
     private lateinit var listener: AddApiBottomDialogListener
@@ -61,7 +60,7 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         if (BuildConfig.DEBUG) {
             // Check that the device will let you use the camera
             val pm = context?.packageManager
-            if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA) == true) {
+            if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) == true) {
                 initQrScanner()
             }
         }
@@ -88,6 +87,11 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
 
         binding.bsSetupScannerView.setOnClickListener {
             toggleQrCodeScanning()
+        }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsSetupRoot)
         }
 
         return root
@@ -128,11 +132,11 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
         val apiKey = binding.bsSetupApikeyTiet.text.toString()
         val baseUrl = binding.bsSetupInstanceTiet.text.toString()
         binding.bsSetupApikeyGetButton.isEnabled = false
-        binding.bsSetupApikeySignInButton.isEnabled = false
-        binding.bsSetupApikeyGetProgressbar.visibility = View.VISIBLE
 
+        // Animate the button to progress
+        binding.bsSetupApikeySignInButton.startAnimation()
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             verifyApiKey(context, apiKey, baseUrl)
         }
     }
@@ -144,8 +148,10 @@ class AddApiBottomDialogFragment : BottomSheetDialogFragment(), View.OnClickList
                 listener.onClickSave(baseUrl, apiKey)
             } else {
                 binding.bsSetupApikeyGetButton.isEnabled = true
-                binding.bsSetupApikeySignInButton.isEnabled = true
-                binding.bsSetupApikeyGetProgressbar.visibility = View.INVISIBLE
+
+                // Revert the button to normal
+                binding.bsSetupApikeySignInButton.revertAnimation()
+
                 binding.bsSetupApikeyTil.error =
                     context.resources.getString(R.string.api_invalid) + "\n" + result
             }

@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
@@ -20,9 +22,6 @@ import host.stjin.anonaddy.models.Action
 import host.stjin.anonaddy.models.Condition
 import host.stjin.anonaddy.models.Rules
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -54,7 +53,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         val view = binding.root
         setContentView(view)
 
-        setupToolbar(binding.activityRulesCreateToolbar)
+        setupToolbar(binding.activityRulesCreateToolbar, R.string.creating_a_rule)
 
 
         networkHelper = NetworkHelper(this)
@@ -120,7 +119,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         binding.activityRulesCreateRLLottieview.visibility = View.GONE
 
         // Get the rule
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             ruleId?.let { getRuleInfo(it) }
         }
     }
@@ -172,6 +171,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 firstCondition = false
             } else {
                 val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, binding.activityRulesCreateLLConditions as ViewGroup?, false)
+                inflatedLayout.elevation = this.resources.getDimension(R.dimen.cardview_default_elevation)
                 //val materialButtonToggleGroup = inflatedLayout.findViewById<MaterialButtonToggleGroup>(R.id.rules_view_and_or_AND_mbtg)
                 val andButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_AND_button)
                 val orButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_OR_button)
@@ -202,8 +202,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val inflatedLayout: View =
                 inflater.inflate(R.layout.rules_view_condition_action, binding.activityRulesCreateLLConditions as ViewGroup?, false)
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
-            val deleteCondition = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_close)
-            val editCondition = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_edit)
+            val deleteCondition = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_close)
+            val cardView = inflatedLayout.findViewById<CardView>(R.id.domains_recyclerview_list_CV)
 
 
             val typeText =
@@ -236,7 +236,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 setPage()
             }
 
-            editCondition.setOnClickListener {
+            cardView.setOnClickListener {
                 if (!conditionBottomDialogFragment.isAdded) {
                     // Reset the variable to remove the arguments that could be sent with the previous edit button
                     conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance()
@@ -267,6 +267,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 firstActions = false
             } else {
                 val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, binding.activityRulesCreateLLActions as ViewGroup?, false)
+                inflatedLayout.elevation = this.resources.getDimension(R.dimen.cardview_default_elevation)
                 //val materialButtonToggleGroup = inflatedLayout.findViewById<MaterialButtonToggleGroup>(R.id.rules_view_and_or_AND_mbtg)
                 val andButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_AND_button)
                 val orButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_OR_button)
@@ -275,15 +276,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 andButton.isChecked = true
                 orButton.isChecked = false
 
-                andButton.setOnClickListener {
-                    rules.operator = "AND"
-                    setPage()
-                }
-                orButton.setOnClickListener {
-                    rules.operator = "OR"
-                    setPage()
-                }
-
                 binding.activityRulesCreateLLActions.addView(inflatedLayout)
             }
 
@@ -291,8 +283,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val inflatedLayout: View =
                 inflater.inflate(R.layout.rules_view_condition_action, binding.activityRulesCreateLLActions as ViewGroup?, false)
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
-            val deleteAction = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_close)
-            val editAction = inflatedLayout.findViewById<ImageView>(R.id.rules_view_condition_action_edit)
+            val deleteAction = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_close)
+            val cardView = inflatedLayout.findViewById<MaterialCardView>(R.id.domains_recyclerview_list_CV)
 
 
             val typeText =
@@ -308,7 +300,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 setPage()
             }
 
-            editAction.setOnClickListener {
+            cardView.setOnClickListener {
                 if (!actionBottomDialogFragment.isAdded) {
                     // Reset the variable to remove the arguments that could be sent with the previous edit button
                     actionBottomDialogFragment = ActionBottomDialogFragment.newInstance()
@@ -348,7 +340,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
             if (ruleId != null) {
                 // Update the rule
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                lifecycleScope.launch {
                     networkHelper.updateRule({ result ->
                         when (result) {
                             "200" -> {
@@ -359,7 +351,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
                                 val snackbar =
                                     Snackbar.make(
-                                        binding.activityRulesCreateLL, resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                        binding.activityRulesCreateCL, resources.getString(R.string.error_creating_rule) + "\n" + result,
                                         Snackbar.LENGTH_SHORT
                                     )
 
@@ -376,7 +368,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 }
             } else {
                 // Post the rule
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                lifecycleScope.launch {
                     networkHelper.createRule({ result ->
                         when (result) {
                             "201" -> {
@@ -387,7 +379,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
                                 val snackbar =
                                     Snackbar.make(
-                                        binding.activityRulesCreateLL, resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                        binding.activityRulesCreateCL, resources.getString(R.string.error_creating_rule) + "\n" + result,
                                         Snackbar.LENGTH_SHORT
                                     )
 

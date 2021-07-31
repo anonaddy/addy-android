@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,12 +27,12 @@ import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRecipi
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRules
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUsernames
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
+import host.stjin.anonaddy.utils.MarginItemDecoration
 
 class SearchActivity : BaseActivity() {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
 
 
     enum class SearchTargets(val activity: String) {
@@ -70,7 +69,7 @@ class SearchActivity : BaseActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        setupToolbar(binding.activitySearchToolbar)
+        setupToolbar(binding.activitySearchToolbar.customToolbarOneHandedMaterialtoolbar, R.string.search_result)
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -112,22 +111,19 @@ class SearchActivity : BaseActivity() {
         }
     }
 
+    /*
+    No shimmer, data is already served on opening this activity
+     */
     private fun setUsernames() {
         binding.activitySearchUsernamesRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchUsernamesRecyclerview.layoutAnimation = animation
-            }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val usernamesAdapter = UsernameAdapter(filteredUsernames!!)
             usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
@@ -147,7 +143,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = usernamesAdapter
-            binding.activitySearchUsernamesRecyclerview.hideShimmerAdapter()
         }
 
     }
@@ -156,19 +151,13 @@ class SearchActivity : BaseActivity() {
     private fun setRules() {
         binding.activitySearchRulesRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchRulesRecyclerview.layoutAnimation = animation
-            }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val rulesAdapter = RulesAdapter(filteredRules!!, false)
             rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
@@ -202,7 +191,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = rulesAdapter
-            binding.activitySearchRulesRecyclerview.hideShimmerAdapter()
         }
 
     }
@@ -211,20 +199,13 @@ class SearchActivity : BaseActivity() {
     private fun setAliases() {
         binding.activitySearchAliasesRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchAliasesRecyclerview.layoutAnimation = animation
-            }
-
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             /**
              * Seperate the deleted and non-deleted aliases
@@ -243,7 +224,7 @@ class SearchActivity : BaseActivity() {
             }
 
             val finalList = (nonDeletedList + onlyDeletedList)
-            val aliasAdapter = AliasAdapter(finalList, true, context)
+            val aliasAdapter = AliasAdapter(finalList, context)
             aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                 override fun onClick(pos: Int) {
                     val intent = Intent(context, ManageAliasActivity::class.java)
@@ -260,7 +241,7 @@ class SearchActivity : BaseActivity() {
                     clipboard.setPrimaryClip(clip)
 
                     Snackbar.make(
-                        binding.activitySearchLL,
+                        binding.activitySearchCL,
                         context.resources.getString(R.string.copied_alias),
                         Snackbar.LENGTH_SHORT
                     ).show()
@@ -269,7 +250,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = aliasAdapter
-            binding.activitySearchAliasesRecyclerview.hideShimmerAdapter()
         }
 
     }
@@ -278,19 +258,13 @@ class SearchActivity : BaseActivity() {
     private fun setRecipients() {
         binding.activitySearchRecipientsRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchRecipientsRecyclerview.layoutAnimation = animation
-            }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val recipientAdapter = RecipientAdapter(filteredRecipients!!)
             recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
@@ -318,7 +292,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = recipientAdapter
-            binding.activitySearchRecipientsRecyclerview.hideShimmerAdapter()
         }
 
     }
@@ -327,19 +300,13 @@ class SearchActivity : BaseActivity() {
     private fun setDomains() {
         binding.activitySearchDomainsRecyclerview.apply {
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
                 // set a GridLayoutManager for tablets
                 GridLayoutManager(this@SearchActivity, 2)
             } else {
                 LinearLayoutManager(this@SearchActivity)
             }
-
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.activitySearchDomainsRecyclerview.layoutAnimation = animation
-            }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val domainsAdapter = DomainAdapter(filteredDomains!!)
             domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
@@ -360,7 +327,6 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = domainsAdapter
-            binding.activitySearchDomainsRecyclerview.hideShimmerAdapter()
         }
     }
 

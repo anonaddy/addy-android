@@ -1,37 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_manage_recipient_LL"
+    android:id="@+id/activity_manage_recipient_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
     android:orientation="vertical">
 
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <include
         android:id="@+id/activity_manage_recipient_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primaryColor">
+        layout="@layout/custom_toolbar_one_handed" />
 
-        <TextView
-            android:id="@+id/activity_manage_recipient_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/edit_recipient"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-    </com.google.android.material.appbar.MaterialToolbar>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/activity_manage_recipient_RL_lottieview"
@@ -56,21 +48,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="24dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:visibility="invisible">
 
-
-                <TextView
-                    style="@style/titleTextView"
+                <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/basic" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/basic" />
+                </LinearLayout>
 
                 <LinearLayout
+                    style="@style/AnonAddyDescText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="24dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -82,17 +83,25 @@
                         tools:text="@tools:sample/lorem/random" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/activity_manage_recipient_aliases_title_textview"
-                    style="@style/titleTextView"
+                <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/recipient_aliases_d" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/activity_manage_recipient_aliases_title_textview"
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/recipient_aliases_d" />
+                </LinearLayout>
 
                 <LinearLayout
+                    style="@style/AnonAddyDescText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="24dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -104,16 +113,24 @@
                         tools:text="@tools:sample/lorem/random" />
                 </LinearLayout>
 
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/encryption" />
-
                 <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/encryption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/AnonAddyDescText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
@@ -128,13 +145,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:orientation="vertical">
 
-                    <TextView
-                        style="@style/titleTextView"
+                    <LinearLayout
+                        style="@style/AnonAddyTitleNoAction"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/action" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/titleTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/action" />
+                    </LinearLayout>
 
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -143,7 +170,7 @@
                         android:layout_height="match_parent"
                         app:sectionDescription="@string/encrypt_emails_to_this_recipient"
                         app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_checkbox_marked_circle_outline"
+                        app:sectionStartIcon="@drawable/ic_task_alt_24dp"
                         app:sectionTitle="@string/encryption_enabled" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -165,7 +192,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionColorAccent="@color/softRed"
-                        app:sectionStartIcon="@drawable/ic_outline_delete_24"
+                        app:sectionStartIcon="@drawable/ic_delete_24dp"
                         app:sectionTitle="@string/delete_recipient" />
                 </LinearLayout>
 
@@ -174,4 +201,4 @@
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

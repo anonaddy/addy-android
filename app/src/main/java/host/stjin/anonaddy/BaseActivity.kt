@@ -13,6 +13,7 @@ import com.google.android.material.appbar.MaterialToolbar
 
 abstract class BaseActivity : AppCompatActivity() {
 
+
     companion object SecurityStatus {
         // This variable becomes true when the user authenticates. It will only switch back to false whenever the app is closed.
         // That way all the protected parts of the app stay available until the user explicitly closed them.
@@ -63,11 +64,12 @@ abstract class BaseActivity : AppCompatActivity() {
         view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom
     )
 
-    fun setupToolbar(toolbar: MaterialToolbar) {
+    fun setupToolbar(toolbar: MaterialToolbar, title: Int) {
         toolbar.setNavigationIcon(R.drawable.ic_round_arrow_back_24) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
+        toolbar.title = this.resources.getString(title)
     }
 
 

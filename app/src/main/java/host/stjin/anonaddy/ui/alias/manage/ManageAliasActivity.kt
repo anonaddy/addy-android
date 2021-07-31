@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -27,10 +28,9 @@ import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.AnonAddyUtils
+import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -73,7 +73,7 @@ class ManageAliasActivity : BaseActivity(),
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
         setContentView(view)
-        setupToolbar(binding.activityManageAliasToolbar)
+        setupToolbar(binding.activityManageAliasToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_alias)
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
 
@@ -102,13 +102,17 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
+    // Override onbackpressed, this is the only way to close the activity (besides deleting the alias)
+    override fun onBackPressed() {
+        finishWithUpdate()
+    }
 
     private fun setPage() {
         /**
          * This activity can be called by an URI or Widget/Notification Intent.
          * Protect this part
          */
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             isAuthenticated { isAuthenticated ->
                 if (isAuthenticated) {
                     setPageInfo()
@@ -122,36 +126,57 @@ class ManageAliasActivity : BaseActivity(),
         binding.activityManageAliasSettingsRLLottieview.visibility = View.GONE
 
         // Get the alias
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        lifecycleScope.launch {
             getAliasInfo(aliasId)
         }
     }
 
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
-
+        val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
+        var donutCap = 0f
         // DONUT
         val section1 = DonutSection(
             name = binding.activityManageAliasChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
             color = ContextCompat.getColor(this, R.color.portalOrange),
             amount = forwarded
         )
-        val section2 = DonutSection(
-            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_replied, replied.toInt()),
-            color = ContextCompat.getColor(this, R.color.portalBlue),
-            amount = replied
-        )
-        val section3 = DonutSection(
-            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_sent, sent.toInt()),
-            color = ContextCompat.getColor(this, R.color.secondaryDarkColor),
-            amount = replied
-        )
-        val section4 = DonutSection(
-            name = binding.activityManageAliasChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
-            color = ContextCompat.getColor(this, R.color.softRed),
-            amount = blocked
-        )
-        binding.activityManageAliasChart.cap = forwarded + replied + blocked + sent
-        binding.activityManageAliasChart.submitData(listOf(section4, section3, section2, section1))
+        // Always show section 1
+        listOfDonutSection.add(section1)
+        donutCap += forwarded
+
+        if (replied > 0) {
+            val section2 = DonutSection(
+                name = binding.activityManageAliasChart.context.resources.getString(R.string.d_replied, replied.toInt()),
+                color = ContextCompat.getColor(this, R.color.portalBlue),
+                amount = replied
+            )
+            listOfDonutSection.add(section2)
+            donutCap += replied
+        }
+
+        if (sent > 0) {
+            val section3 = DonutSection(
+                name = binding.activityManageAliasChart.context.resources.getString(R.string.d_sent, sent.toInt()),
+                color = ContextCompat.getColor(this, R.color.softGreen),
+                amount = sent
+            )
+            listOfDonutSection.add(section3)
+            donutCap += sent
+        }
+
+        if (blocked > 0) {
+            val section4 = DonutSection(
+                name = binding.activityManageAliasChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
+                color = ContextCompat.getColor(this, R.color.softRed),
+                amount = blocked
+            )
+            listOfDonutSection.add(section4)
+            donutCap += blocked
+        }
+        binding.activityManageAliasChart.cap = donutCap
+
+        // Sort the list by amount so that the biggest number will fill the whole ring
+        binding.activityManageAliasChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT
 
 
@@ -173,11 +198,11 @@ class ManageAliasActivity : BaseActivity(),
                     binding.activityManageAliasActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
                     if (checked) {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             activateAlias()
                         }
                     } else {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                        lifecycleScope.launch {
                             deactivateAlias()
                         }
                     }
@@ -209,7 +234,7 @@ class ManageAliasActivity : BaseActivity(),
             } else {
                 binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_alias_LL),
+                    findViewById(R.id.activity_manage_alias_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -234,7 +259,7 @@ class ManageAliasActivity : BaseActivity(),
             } else {
                 binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_alias_LL),
+                    findViewById(R.id.activity_manage_alias_CL),
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     Snackbar.LENGTH_SHORT
                 )
@@ -294,6 +319,12 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageAliasForget.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forgetAlias()
+            }
+        })
+
         binding.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 restoreAlias()
@@ -306,7 +337,7 @@ class ManageAliasActivity : BaseActivity(),
             val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
             clipboard.setPrimaryClip(clip)
             Snackbar.make(
-                findViewById(R.id.activity_manage_alias_LL),
+                findViewById(R.id.activity_manage_alias_CL),
                 this.resources.getString(R.string.copied_alias),
                 Snackbar.LENGTH_SHORT
             ).show()
@@ -318,7 +349,7 @@ class ManageAliasActivity : BaseActivity(),
             val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
             clipboard.setPrimaryClip(clip)
             Snackbar.make(
-                findViewById(R.id.activity_manage_alias_LL),
+                findViewById(R.id.activity_manage_alias_CL),
                 this.resources.getString(R.string.copied_alias),
                 Snackbar.LENGTH_SHORT
             ).show()
@@ -332,22 +363,6 @@ class ManageAliasActivity : BaseActivity(),
                 )
             }
         }
-    }
-
-    private fun getSendAddress(recipientEmails: String): Array<String?> {
-        val recipients = recipientEmails.split(",")
-        val toAddresses = Array<String?>(recipients.size) { null }
-
-        for ((i, email) in recipients.withIndex()) {
-            // This method generates the to address for sending emails from this alias according to https://anonaddy.com/help/sending-email-from-an-alias/
-            val leftPartOfAlias = this.alias?.local_part
-            val domain = this.alias?.domain
-            val recipientLeftPartOfEmail = email.substringBeforeLast("@", "")
-            val recipientRightPartOfEmail = email.substringAfterLast("@", "")
-            toAddresses[i] = "$leftPartOfAlias+$recipientLeftPartOfEmail=$recipientRightPartOfEmail@$domain"
-        }
-
-        return toAddresses
     }
 
 
@@ -367,12 +382,14 @@ class ManageAliasActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.restore_alias)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 restoreAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
             }
         }
@@ -399,12 +416,14 @@ class ManageAliasActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.delete_alias)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            lifecycleScope.launch {
                 deleteAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
             }
         }
@@ -415,13 +434,49 @@ class ManageAliasActivity : BaseActivity(),
         deleteAliasDialog.show()
     }
 
+    private lateinit var forgetAliasDialog: AlertDialog
+    private fun forgetAlias() {
+        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
+        // create an alert builder
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setView(anonaddyCustomDialogBinding.root)
+
+        forgetAliasDialog = builder.create()
+        forgetAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.forget_alias)
+        anonaddyCustomDialogBinding.dialogText.text =
+            resources.getString(R.string.forget_alias_confirmation_desc)
+        anonaddyCustomDialogBinding.dialogPositiveButton.text =
+            resources.getString(R.string.forget_alias)
+        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
+            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
+            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
+            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
+
+            lifecycleScope.launch {
+                forgetAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
+            }
+        }
+        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
+            forgetAliasDialog.dismiss()
+        }
+        // create and show the alert dialog
+        forgetAliasDialog.show()
+    }
+
     private suspend fun deleteAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
                 deleteAliasDialog.dismiss()
-                finish()
+                finishWithUpdate()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
@@ -433,13 +488,42 @@ class ManageAliasActivity : BaseActivity(),
         }, id)
     }
 
+    private suspend fun forgetAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+        networkHelper.forgetAlias({ result ->
+            if (result == "204") {
+                forgetAliasDialog.dismiss()
+                finishWithUpdate()
+            } else {
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
+                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
+                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
+                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
+                    R.string.s_s,
+                    context.resources.getString(R.string.error_deleting_alias), result
+                )
+            }
+        }, id)
+    }
+
+    private fun finishWithUpdate() {
+        val intent = Intent()
+        intent.putExtra("should_update", true)
+        setResult(RESULT_OK, intent)
+        finish()
+    }
+
     private suspend fun restoreAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper.restoreAlias({ result ->
             if (result == "200") {
                 restoreAliasDialog.dismiss()
                 setPage()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
@@ -503,13 +587,14 @@ class ManageAliasActivity : BaseActivity(),
 
                     // Show restore and hide delete
                     binding.activityManageAliasRestore.visibility = View.VISIBLE
+                    binding.activityManageAliasForget.visibility = View.VISIBLE
                     binding.activityManageAliasDelete.visibility = View.GONE
                     for (i in 0 until layout.childCount) {
                         val child = layout.getChildAt(i)
 
                         // As the childs are only sections, cast and set enabled state
                         // Do not disable the restore button. So disabled everything except the activity_manage_alias_restore
-                        if (child.id != R.id.activity_manage_alias_restore) {
+                        if (child.id != R.id.activity_manage_alias_restore && child.id != R.id.activity_manage_alias_forget) {
                             (child as SectionView).setLayoutEnabled(false)
                         }
                     }
@@ -517,6 +602,7 @@ class ManageAliasActivity : BaseActivity(),
                     // Show delete and hide restore
                     binding.activityManageAliasRestore.visibility = View.GONE
                     binding.activityManageAliasDelete.visibility = View.VISIBLE
+                    binding.activityManageAliasForget.visibility = View.VISIBLE
 
                     // As the childs are only sections, cast and set enabled state
                     // Aliasdeleted is null, thus not deleted. enable all the layouts
@@ -639,13 +725,15 @@ class ManageAliasActivity : BaseActivity(),
         editAliasRecipientsBottomDialogFragment.dismiss()
     }
 
+
     override fun onPressSend(toString: String) {
-        val recipients = getSendAddress(toString)
+        // Get recipients
+        val recipients = alias?.let { getSendAddress(toString, it) }
 
         // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
         val clipboard: ClipboardManager =
             this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
+        val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
 
@@ -653,7 +741,7 @@ class ManageAliasActivity : BaseActivity(),
         intent.data = Uri.parse("mailto:") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, recipients)
         if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
+            AnonAddyUtils.startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
         }
         editAliasSendMailRecipientBottomDialogFragment.dismiss()
     }

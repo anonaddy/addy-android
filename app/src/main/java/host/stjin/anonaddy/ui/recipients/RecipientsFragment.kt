@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,9 +26,7 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import kotlinx.coroutines.launch
 
 
@@ -40,7 +39,7 @@ class RecipientsFragment : Fragment(),
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var shouldAnimateRecyclerview: Boolean = true
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addRecipientsFragment: AddRecipientBottomDialogFragment =
         AddRecipientBottomDialogFragment.newInstance()
@@ -76,7 +75,7 @@ class RecipientsFragment : Fragment(),
         binding.recipientsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+        viewLifecycleOwner.lifecycleScope.launch {
             getAllRecipients()
             getUserResource(requireContext())
         }
@@ -137,27 +136,41 @@ class RecipientsFragment : Fragment(),
     }
 
 
+    private lateinit var recipientAdapter: RecipientAdapter
     private suspend fun getAllRecipients() {
         binding.recipientsAllRecipientsRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
 
-            layoutManager = if (context.resources.getBoolean(R.bool.isTablet)){
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(activity, 2)
-            } else {
-                LinearLayoutManager(activity)
-            }
+                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
+                }
 
-            if (shouldAnimateRecyclerview) {
-                shouldAnimateRecyclerview = false
+                layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                    // set a GridLayoutManager for tablets
+                    GridLayoutManager(activity, 2)
+                } else {
+                    LinearLayoutManager(activity)
+                }
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                binding.recipientsAllRecipientsRecyclerview.layoutAnimation = animation
+                layoutAnimation = animation
+                showShimmer()
             }
-
-
             networkHelper?.getRecipients({ list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
+
+                // Check if there are new recipients since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                if (::recipientAdapter.isInitialized && list == recipientAdapter.getList()) {
+                    return@getRecipients
+                }
 
                 if (list != null) {
 
@@ -169,7 +182,10 @@ class RecipientsFragment : Fragment(),
                         root.recipients_no_recipients.visibility = View.VISIBLE
                     }*/
 
-                    val recipientAdapter = RecipientAdapter(list)
+                    // Set the count of aliases so that the shimmerview looks better next time
+                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, list.size)
+
+                    recipientAdapter = RecipientAdapter(list)
                     recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
 
                         override fun onClickSettings(pos: Int, aView: View) {
@@ -180,7 +196,7 @@ class RecipientsFragment : Fragment(),
                         }
 
                         override fun onClickResend(pos: Int, aView: View) {
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            viewLifecycleOwner.lifecycleScope.launch {
                                 resendConfirmationMailRecipient(list[pos].id, context)
                             }
                         }
@@ -191,11 +207,11 @@ class RecipientsFragment : Fragment(),
 
                     })
                     adapter = recipientAdapter
-                    binding.recipientsAllRecipientsRecyclerview.hideShimmerAdapter()
                 } else {
                     binding.recipientsLL1.visibility = View.GONE
                     binding.recipientsRLLottieview.visibility = View.VISIBLE
                 }
+                hideShimmer()
             }, verifiedOnly = false)
 
         }
@@ -261,12 +277,14 @@ class RecipientsFragment : Fragment(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete_recipient)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.VISIBLE
+            // Animate the button to progress
+            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
+
             anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
             anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
             anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
 
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            viewLifecycleOwner.lifecycleScope.launch {
                 deleteRecipientHttpRequest(id, context, anonaddyCustomDialogBinding)
             }
         }
@@ -283,7 +301,9 @@ class RecipientsFragment : Fragment(),
                 dialog.dismiss()
                 getDataFromWeb()
             } else {
-                anonaddyCustomDialogBinding.dialogProgressbar.visibility = View.INVISIBLE
+                // Revert the button to normal
+                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
+
                 anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
                 anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
                 anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
