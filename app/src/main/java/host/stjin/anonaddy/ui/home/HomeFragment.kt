@@ -256,7 +256,7 @@ class HomeFragment : Fragment() {
         binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
 
         try {
-            startBandwidthCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/")
+            startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/")
         } catch (e: Exception) {
             binding.homeStatisticsAliasesCurrent.text = "$count /"
         }
@@ -274,7 +274,7 @@ class HomeFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun startBandwidthCountAnimation(textView: TextView, count: Int, suffix: String? = null) {
+    private fun startNumberCountAnimation(textView: TextView, count: Int, suffix: String? = null) {
         if (textView.text != "$count$suffix") {
             val animator = ValueAnimator.ofInt(textView.text.toString().substringBefore(" ").toInt(), count)
             animator.duration = STATISTICS_ANIMATION_DURATION
@@ -335,7 +335,7 @@ class HomeFragment : Fragment() {
             if (maxRecipient == 0) "∞" else maxRecipient.toString()
 
         try {
-            startBandwidthCountAnimation(binding.homeStatisticsRecipientsCurrent, currRecipients, "/")
+            startNumberCountAnimation(binding.homeStatisticsRecipientsCurrent, currRecipients, "/")
         } catch (e: Exception) {
             binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
         }
