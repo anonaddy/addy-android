@@ -74,7 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/update_notify_desc"
-                    app:sectionStartIcon="@drawable/ic_notifications_black_24dp"
+                    app:sectionStartIcon="@drawable/ic_notifications"
                     app:sectionShowSwitch="true"
                     app:sectionTitle="@string/update_notify_title" />
 

@@ -71,7 +71,7 @@ class AppSettingsUpdateActivity : BaseActivity() {
     private fun setVersionAndChannel() {
         val installerPackageName = YDGooglePlayUtils.getInstallerPackageName(this)
         val channel = if (installerPackageName != null) {
-            YDGooglePlayUtils.getInstallerPackageName(this)
+            YDGooglePlayUtils.getInstallerPackageName(this)?.let { YDGooglePlayUtils.getInstallerApplicationName(this, it) }
         } else {
             this.resources.getString(R.string.sideloaded)
         }
