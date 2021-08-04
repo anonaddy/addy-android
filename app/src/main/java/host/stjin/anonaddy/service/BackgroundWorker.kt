@@ -53,6 +53,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
         val appContext = applicationContext
         val backgroundWorkerHelper = BackgroundWorkerHelper(appContext)
         val settingsManager = SettingsManager(false, appContext)
+        val encryptedSettingsManager = SettingsManager(true, appContext)
 
         // True if there are aliases to be watched, widgets to be updated or checked for updates
         if (backgroundWorkerHelper.isThereWorkTodo()) {
@@ -64,6 +65,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             var usernameNetworkCallResult = false
             var rulesNetworkCallResult = false
             var recipientNetworkCallResult = false
+            var failedDeliveriesNetworkCallResult = false
 
             // Block the thread until this is finished
             runBlocking(Dispatchers.Default) {
@@ -92,17 +94,34 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     recipientNetworkCallResult = result
                 }
 
+                networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    failedDeliveriesNetworkCallResult = result
+                }
+
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
                     Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String? ->
                         if (updateAvailable) {
                             latestVersion?.let {
                                 NotificationHelper(appContext).createUpdateNotification(
-                                    it,
-                                    Updater.figureOutDownloadUrl(appContext)
+                                    it
                                 )
                             }
                         }
                     }, appContext)
+                }
+
+                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)) {
+                    val currentFailedDeliveries =
+                        encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+                    val previousFailedDeliveries =
+                        encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS)
+                    // If the current failed delivery count is bigger than the previous list. That means there are new failed deliveries
+                    if (currentFailedDeliveries > previousFailedDeliveries) {
+                        NotificationHelper(appContext).createFailedDeliveryNotification(
+                            currentFailedDeliveries - previousFailedDeliveries
+                        )
+                    }
                 }
             }
 
@@ -117,7 +136,8 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 domainNetworkCallResult &&
                 usernameNetworkCallResult &&
                 rulesNetworkCallResult &&
-                recipientNetworkCallResult
+                recipientNetworkCallResult &&
+                failedDeliveriesNetworkCallResult
             ) {
                 // Now the data has been updated, we can update the widget as well
                 updateWidgets()
@@ -175,12 +195,20 @@ class BackgroundWorkerHelper(private val context: Context) {
         // Count amount of widgets
         val amountOfWidgets = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
 
+        val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
+        val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
+
         if (BuildConfig.DEBUG) {
-            println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets")
+            println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets;NOTIFY_UPDATES=$shouldCheckForUpdates;NOTIFY_FAILED_DELIVERIES=$shouldCheckForFailedDeliveries")
         }
 
-        // If there are aliases to be watched, widgets to be updated OR app updates to be checked for in the background, return true
-        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES))
+        // If there are
+        // -aliases to be watched
+        // -widgets to be updated
+        // -app updates to be checked for in the background
+        // -failed deliveries to be checked
+        // --return true
+        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries)
     }
 
     fun cancelScheduledBackgroundWorker() {

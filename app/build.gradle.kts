@@ -11,7 +11,7 @@ android {
         targetSdk = 31
         versionCode = 23
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v3.0.0"
+        versionName = "v3.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

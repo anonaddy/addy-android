@@ -56,14 +56,6 @@ class ManageAliasActivity : BaseActivity(),
     https://stackoverflow.com/questions/50969390/view-visibility-state-loss-when-resuming-activity-with-previously-started-activi
      */
     private var progressBarVisibility = View.VISIBLE
-
-    //TODO check if still required in future versions ,commented since switched to bindings
-    //Bug fix
-/*    override fun onResume() {
-        super.onResume()
-        binding.activityManageAliasSettingsRLProgressbar.visibility = progressBarVisibility
-    }*/
-
     private lateinit var binding: ActivityManageAliasBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,8 +115,6 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun setPageInfo() {
-        binding.activityManageAliasSettingsRLLottieview.visibility = View.GONE
-
         // Get the alias
         lifecycleScope.launch {
             getAliasInfo(aliasId)

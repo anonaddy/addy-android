@@ -132,6 +132,13 @@
         <item name="android:textColor">@color/CircularProgressButtonTextColor</item>
     </style>
 
+    <!-- DELETE STYLE -->
+    <style name="CircularProgressButtonDeleteStyle" parent="CircularProgressButtonSecondary">
+        <item name="backgroundTint">@color/softRed</item>
+        <item name="android:textColor">@color/CircularProgressButtonSoftRedTextColor</item>
+    </style>
+
+
     <style name="MaterialButtonSecondary" parent="Widget.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.00</item>

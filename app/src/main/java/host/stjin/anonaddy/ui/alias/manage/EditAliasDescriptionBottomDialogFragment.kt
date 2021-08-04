@@ -78,7 +78,7 @@ class EditAliasDescriptionBottomDialogFragment(
         }
     }
 
-    private fun verifyKey(context: Context) {
+    private fun editDescription(context: Context) {
         val description = binding.bsEditaliasAliasDescTiet.text.toString()
 
         // Animate the button to progress
@@ -108,7 +108,7 @@ class EditAliasDescriptionBottomDialogFragment(
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_editalias_alias_save_button) {
-                verifyKey(
+                editDescription(
                     requireContext()
                 )
             }

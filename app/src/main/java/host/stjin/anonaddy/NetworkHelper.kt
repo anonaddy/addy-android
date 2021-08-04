@@ -22,6 +22,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy.AnonAddy.API_URL_FAILED_DELIVERIES
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_RESEND
@@ -2233,6 +2234,114 @@ class NetworkHelper(private val context: Context) {
             }
             // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
         }, false)
+    }
+
+
+    suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
+        callback: (Boolean) -> Unit
+    ) {
+        getAllFailedDeliveries { result ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getAllFailedDeliveries
+            } else {
+                // First move the current count to the previous count (for comparison)
+                settingsManager.putSettingsInt(
+                    SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS,
+                    settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+                )
+                // Now store the current count
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+            // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
+        }
+    }
+
+
+    /**
+     * FAILED DELIVERIES
+     */
+
+    suspend fun getAllFailedDeliveries(
+        callback: (ArrayList<FailedDeliveries>?) -> Unit
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, FailedDeliveriesArray::class.java)
+
+                val failedDeliveriesList = ArrayList<FailedDeliveries>()
+                failedDeliveriesList.addAll(anonAddyData.data)
+                callback(failedDeliveriesList)
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getAllFailedDeliveries", String(response.data))
+                callback(null)
+            }
+        }
+    }
+
+    suspend fun deleteFailedDelivery(
+        callback: (String?) -> Unit,
+        id: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_FAILED_DELIVERIES}/$id")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "deleteFailedDelivery", String(response.data))
+                callback(String(response.data))
+            }
+        }
     }
 
 

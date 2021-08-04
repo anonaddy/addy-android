@@ -3,7 +3,6 @@ package host.stjin.anonaddy.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.BaseActivity
@@ -16,6 +15,7 @@ import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy.ui.home.HomeFragment
 import host.stjin.anonaddy.ui.recipients.RecipientsFragment
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
@@ -144,7 +144,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.mainAppBarInclude.mainTopBarFailedDeliveriesIcon.setOnClickListener {
-            Toast.makeText(this, "TODO", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, FailedDeliveriesActivity::class.java)
+            startActivity(intent)
         }
 
     }

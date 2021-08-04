@@ -6,10 +6,6 @@
     style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:stateListAnimator="@animator/selector_raise"
     app:cardElevation="@dimen/cardview_default_elevation">
     <!-- Opens activity so we have a fancy raise -->
 
@@ -152,14 +148,18 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/failed_deliveries_recyclerview_list_details_LL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_rounded_corners_top_bottom_recycleview_cards"
             android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:stateListAnimator="@animator/selector_raise"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/failed_deliveries_recyclerview_list_watched_textview"
                 style="@style/DescTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

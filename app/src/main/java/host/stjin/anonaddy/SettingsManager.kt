@@ -15,6 +15,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_INTERVAL("background_service_interval"),
         WIDGETS_ACTIVE("widgets_active"),
         NOTIFY_UPDATES("notify_updates"),
+        NOTIFY_FAILED_DELIVERIES("notify_failed_deliveries"),
 
 
         // Encrypted
@@ -32,6 +33,12 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_CACHE_USERNAME_COUNT("cache_username_count"),
         BACKGROUND_SERVICE_CACHE_RULES_COUNT("cache_rules_count"),
         BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT("cache_recipient_count"),
+
+        // Also used for background service failed delivery notifications
+        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT("cache_failed_deliveries_count"),
+
+        // This value keeps track of the previous amount of failed deliveries so comparisons can be made in the BackgroundWorker
+        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS("cache_failed_deliveries_count_previous"),
 
         // When BACKGROUND_SERVICE_CACHE_DATA_ALIASES gets updated the current list will move moved to BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS for the AliasWatcher to compare
         BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS("cache_data_aliases_previous"),

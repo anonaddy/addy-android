@@ -324,8 +324,10 @@
     <string name="notification_new_emails_desc">%1$d new email(s) have been forwarded via %2$s</string>
     <string name="notification_new_update_available">New update available</string>
     <string name="notification_new_update_available_desc">Version %s of AnonAddy for Android is available. Tap here to download it</string>
+    <string name="notification_new_failed_delivery">Email delivery failed</string>
+    <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
     <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
-
+    <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
@@ -397,7 +399,7 @@
     <string name="no_new_update_available_desc">You are currently using the latest version of AnonAddy for Android. Turn on notifications to get notified when a new version is available.</string>
     <string name="anonaddy_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
-    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td>%7$s</td></tr></tbody></table>]]></string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %7$s</td></tr></tbody></table>]]></string>
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>
@@ -411,4 +413,13 @@
     <string name="widget_2_recipients">recipients</string>
     <string name="widget_2_rules">rules</string>
     <string name="details">Details</string>
+    <string name="failed_deliveries_info_text">If you would like to search through failed deliveries, go back to the start and use the search button.</string>
+    <string name="all_failed_deliveries">All failed deliveries</string>
+    <string name="no_failed_deliveries">No failed deliveries</string>
+    <string name="failed_deliveries">Failed deliveries</string>
+    <string name="delete_failed_delivery">Delete failed delivery</string>
+    <string name="error_delete_failed_delivery">Something went wrong while deleting this failed delivery</string>
+    <string name="notify_failed_deliveries_feature_desc">Get a notification if an email sent from an alias cannot be delivered. For an overview for all failed deliveries go back to the start and use the failed deliveries button.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for failed deliveries.</string>
+    <string name="feature_notify_failed_deliveries">Failed delivery notifications</string>
+
 </resources>
