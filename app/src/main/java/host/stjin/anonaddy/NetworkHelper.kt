@@ -1793,7 +1793,8 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllRules(
-        callback: (ArrayList<Rules>?) -> Unit
+        callback: (ArrayList<Rules>?) -> Unit,
+        show404Toast: Boolean = false
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -1829,11 +1830,13 @@ class NetworkHelper(private val context: Context) {
             }
             // Not found, aka the AnonAddy version is <0.6.0 (this endpoint was introduced in 0.6.0)
             // OR
-            // Not found, aka the rules API (which is in beta as of 0.6.0) is not enabled.
+            // Not found, aka the rules API (which is in beta as of 0.6.0) is not enabled. (Not part of the user's subscription)
             // =
             // Show a toast letting the user know this feature is only available if the rules API is enabled
             404 -> {
-                Toast.makeText(context, context.resources.getString(R.string.rules_unavailable_404), Toast.LENGTH_LONG).show()
+                if (show404Toast) {
+                    Toast.makeText(context, context.resources.getString(R.string.rules_unavailable_404), Toast.LENGTH_LONG).show()
+                }
                 callback(null)
             }
             else -> {
@@ -2202,7 +2205,7 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheRulesCountForWidget(
         callback: (Boolean) -> Unit
     ) {
-        getAllRules { result ->
+        getAllRules({ result ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
@@ -2214,7 +2217,7 @@ class NetworkHelper(private val context: Context) {
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
-        }
+        })
     }
 
     suspend fun cacheRecipientCountForWidget(
@@ -2240,7 +2243,7 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
         callback: (Boolean) -> Unit
     ) {
-        getAllFailedDeliveries { result ->
+        getAllFailedDeliveries({ result ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
@@ -2258,7 +2261,7 @@ class NetworkHelper(private val context: Context) {
                 callback(true)
             }
             // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
-        }
+        })
     }
 
 
@@ -2267,7 +2270,8 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllFailedDeliveries(
-        callback: (ArrayList<FailedDeliveries>?) -> Unit
+        callback: (ArrayList<FailedDeliveries>?) -> Unit,
+        show404Toast: Boolean = false
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -2299,6 +2303,17 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
+                callback(null)
+            }
+            // Not found, aka the AnonAddy version is <0.8.1 (this endpoint was introduced in 0.8.1)
+            // OR
+            // Not found, aka the failed deliveries API is not enabled. (Not part of the user's subscription)
+            // =
+            // Show a toast (if enabled) letting the user know this feature is only available if the failed deliveries API is enabled
+            404 -> {
+                if (show404Toast) {
+                    Toast.makeText(context, context.resources.getString(R.string.failed_deliveries_unavailable_404), Toast.LENGTH_LONG).show()
+                }
                 callback(null)
             }
             else -> {

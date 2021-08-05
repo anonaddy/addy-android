@@ -86,7 +86,7 @@ class RulesSettingsActivity : BaseActivity() {
                 layoutAnimation = animation
                 showShimmer()
             }
-            networkHelper?.getAllRules { list ->
+            networkHelper?.getAllRules({ list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -179,7 +179,7 @@ class RulesSettingsActivity : BaseActivity() {
                     binding.activityManageRulesRLLottieview.visibility = View.VISIBLE
                 }
                 hideShimmer()
-            }
+            }, show404Toast = true)
         }
 
     }

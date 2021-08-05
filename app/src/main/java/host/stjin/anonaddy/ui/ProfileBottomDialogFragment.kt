@@ -142,19 +142,25 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
         binding.mainProfileSelectDialogCardAccountname.text = User.userResource.username
 
-        if (User.userResource.subscription_ends_at != null) {
-            binding.mainProfileSelectDialogCardSubscription.text = resources.getString(
-                R.string.subscription_user_until,
-                User.userResource.subscription,
-                DateTimeUtils.turnStringIntoLocalString(User.userResource.subscription_ends_at, DateTimeUtils.DATETIMEUTILS.DATE)
-            )
-        } else {
-            binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
+        when {
+            User.userResource.subscription == null -> {
+                binding.mainProfileSelectDialogCardSubscription.visibility = View.GONE
+            }
+            User.userResource.subscription_ends_at != null -> {
+                binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
+                binding.mainProfileSelectDialogCardSubscription.text = resources.getString(
+                    R.string.subscription_user_until,
+                    User.userResource.subscription,
+                    DateTimeUtils.turnStringIntoLocalString(User.userResource.subscription_ends_at, DateTimeUtils.DATETIMEUTILS.DATE)
+                )
+            }
+            else -> {
+                binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
+                binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
+            }
         }
 
-
         binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
-
     }
 
 

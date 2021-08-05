@@ -33,7 +33,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
     private lateinit var listener: AddFailedDeliveryBottomDialogListener
 
     interface AddFailedDeliveryBottomDialogListener {
-        fun onDeleted()
+        fun onDeleted(failedDeliveryId: String)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -109,7 +109,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
         networkHelper.deleteFailedDelivery({ result ->
             if (result == "204") {
-                listener.onDeleted()
+                listener.onDeleted(failedDeliveryId!!)
             } else {
                 // Animate the button to progress
                 binding.bsFailedDeliveriesDeleteButton.revertAnimation()

@@ -135,7 +135,7 @@
     <!-- DELETE STYLE -->
     <style name="CircularProgressButtonDeleteStyle" parent="CircularProgressButtonSecondary">
         <item name="backgroundTint">@color/softRed</item>
-        <item name="android:textColor">@color/CircularProgressButtonSoftRedTextColor</item>
+        <item name="android:textColor">@color/ButtonSoftRedTextColor</item>
     </style>
 
 
@@ -147,6 +147,7 @@
         <item name="android:stateListAnimator">@null</item>
         <item name="iconTint">@android:color/white</item>
         <item name="cornerRadius">@dimen/corner_radius_button</item>
+        <item name="android:height">54dp</item>
     </style>
 
     <style name="MaterialButtonSecondaryLight" parent="MaterialButtonSecondary">
@@ -155,7 +156,12 @@
         <item name="backgroundTint">@color/primarySuperSuperLightColor</item>
         <item name="android:textColor">@color/primaryLightColor</item>
         <item name="iconTint">@color/primaryLightColor</item>
+        <item name="drawableTint">@color/primaryLightColor</item>
+    </style>
 
+    <style name="MaterialButtonSecondaryDeleteStyle" parent="MaterialButtonSecondaryLight">
+        <item name="backgroundTint">@color/softRedSuperLight</item>
+        <item name="android:textColor">@color/softRed</item>
     </style>
 
     <style name="MaterialButtonSecondary.IconOnly" parent="MaterialButtonSecondaryLight">

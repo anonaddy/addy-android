@@ -92,7 +92,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
 
                 showShimmer()
             }
-            networkHelper?.getAllFailedDeliveries { list ->
+            networkHelper?.getAllFailedDeliveries({ list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -120,8 +120,8 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
                             failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(
                                 list[pos].id,
                                 list[pos].created_at,
-                                list[pos].alias_id,
-                                list[pos].recipient_id,
+                                list[pos].alias_email,
+                                list[pos].recipient_email,
                                 list[pos].bounce_type,
                                 list[pos].remote_mta,
                                 list[pos].sender,
@@ -141,14 +141,14 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
                     binding.activityFailedDeliveriesRLLottieview.visibility = View.VISIBLE
                 }
                 hideShimmer()
-            }
+            }, show404Toast = true)
 
         }
 
     }
 
 
-    override fun onDeleted() {
+    override fun onDeleted(failedDeliveryId: String) {
         failedDeliveryDetailsBottomDialogFragment?.dismiss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()

@@ -73,8 +73,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getAllDomainsAndSetView()
             getUserResource()
+            getAllDomainsAndSetView()
         }
     }
 
@@ -82,7 +82,6 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 User.userResource = user
-                setStats()
             } else {
                 val snackbar =
                     Snackbar.make(
@@ -102,15 +101,19 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         }
     }
 
-    private fun setStats() {
+    private fun setStats(currentCount: Int? = null) {
         binding.activityDomainSettingsRLCountText.text = resources.getString(
             R.string.you_ve_used_d_out_of_d_active_domains,
-            User.userResource.active_domain_count,
-            User.userResource.active_domain_limit
+            currentCount ?: User.userResource.active_domain_count,
+            if (User.userResource.subscription != null) User.userResource.active_domain_limit else this.resources.getString(R.string.unlimited)
         )
 
-        binding.activityDomainSettingsAddDomain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
-
+        // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
+        if (User.userResource.subscription != null) {
+            binding.activityDomainSettingsAddDomain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
+        } else {
+            binding.activityDomainSettingsAddDomain.isEnabled = true
+        }
     }
 
     private lateinit var domainsAdapter: DomainAdapter
@@ -151,6 +154,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 }
 
                 if (list != null) {
+                    // Update stats
+                    setStats(list.size)
 
                     if (list.size > 0) {
                         binding.activityDomainSettingsNoDomains.visibility = View.GONE
@@ -183,6 +188,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     binding.activityDomainSettingsRLLottieview.visibility = View.VISIBLE
                 }
                 hideShimmer()
+
+
             }
 
         }

@@ -166,7 +166,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         filteredRecipients: ArrayList<Recipients>,
         filteredDomains: ArrayList<Domains>,
         filteredUsernames: ArrayList<Usernames>,
-        filteredRules: ArrayList<Rules>
+        filteredRules: ArrayList<Rules>,
+        filteredFailedDeliveries: ArrayList<FailedDeliveries>
     ) {
 
         SearchActivity.FilteredLists.filteredAliases = filteredAliases
@@ -174,6 +175,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         SearchActivity.FilteredLists.filteredDomains = filteredDomains
         SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
         SearchActivity.FilteredLists.filteredRules = filteredRules
+        SearchActivity.FilteredLists.filteredFailedDeliveries = filteredFailedDeliveries
 
         searchBottomDialogFragment.dismiss()
         val intent = Intent(this, SearchActivity::class.java)
@@ -204,6 +206,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         }
                         SearchActivity.SearchTargets.RULES.activity -> {
                             val intent = Intent(this, RulesSettingsActivity::class.java)
+                            startActivity(intent)
+                        }
+                        SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
+                            val intent = Intent(this, FailedDeliveriesActivity::class.java)
                             startActivity(intent)
                         }
                     }

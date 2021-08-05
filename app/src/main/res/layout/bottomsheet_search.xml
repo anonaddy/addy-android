@@ -112,6 +112,14 @@
                         android:checkable="true"
                         android:text="@string/rules" />
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_search_chip_failed_deliveries"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/failed_deliveries" />
+
                 </com.google.android.material.chip.ChipGroup>
 
                 <com.google.android.material.textfield.TextInputLayout

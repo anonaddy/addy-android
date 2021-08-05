@@ -3,9 +3,9 @@ package host.stjin.anonaddy.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.models.FailedDeliveries
 import host.stjin.anonaddy.utils.DateTimeUtils
@@ -50,8 +50,8 @@ class FailedDeliveryAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
-        private var mOptionsButton: LinearLayout =
-            view.findViewById(R.id.failed_deliveries_recyclerview_list_details_LL)
+        private var mOptionsButton: MaterialButton =
+            view.findViewById(R.id.failed_deliveries_recyclerview_list_details_button)
         var mAlias: TextView = view.findViewById(R.id.failed_deliveries_recyclerview_list_alias)
         var mCode: TextView =
             view.findViewById(R.id.failed_deliveries_recyclerview_list_code)
@@ -64,7 +64,7 @@ class FailedDeliveryAdapter(
 
         override fun onClick(p0: View) {
             when (p0.id) {
-                R.id.failed_deliveries_recyclerview_list_details_LL -> {
+                R.id.failed_deliveries_recyclerview_list_details_button -> {
                     onFailedDeliveryClicker.onClickDetails(adapterPosition, p0)
                 }
 

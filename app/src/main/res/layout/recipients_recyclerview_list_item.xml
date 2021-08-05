@@ -123,7 +123,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/recipients_recyclerview_list_delete_button"
-                style="@style/MaterialButtonSecondaryLight"
+                style="@style/MaterialButtonSecondaryDeleteStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

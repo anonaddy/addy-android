@@ -233,9 +233,9 @@
     <string name="anonaddy_instance">AnonAddy instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
-    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$d usernames</string>
-    <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$d active domains</string>
-    <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$d recipients</string>
+    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$s usernames</string>
+    <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$s active domains</string>
+    <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$s recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
     <string name="catch_all_desc">Enable catch-all on this domain</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
@@ -248,7 +248,7 @@
     <string name="latest">latest</string>
     <string name="hosted_instance">Hosted instance</string>
     <string name="self_hosted_instance_s">Self hosted instance (%s)</string>
-    <string name="manage_rules">Manage rules (beta)</string>
+    <string name="manage_rules">Manage rules</string>
     <string name="note">Note</string>
     <string name="delete_rule">Delete rule</string>
     <string name="delete_rule_desc_confirm">Are you sure you want to delete this rule?</string>
@@ -291,7 +291,8 @@
     <string name="deactivate">Deactivate</string>
     <string name="rule_activated">Rule activated</string>
     <string name="rule_deactivated">Rule deactivated</string>
-    <string name="rules_unavailable_404">The rules feature is not available in the current instance of AnonAddy. Please make sure that the rules API is available for the current user</string>
+    <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
+    <string name="failed_deliveries_unavailable_404">The failed deliveries feature is not available. Please make sure that the failed deliveries API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="rules">Rules</string>
     <string name="this_field_cannot_be_empty">This field cannot be empty</string>
     <string name="gitlab_project">Gitlab project</string>
@@ -419,7 +420,8 @@
     <string name="failed_deliveries">Failed deliveries</string>
     <string name="delete_failed_delivery">Delete failed delivery</string>
     <string name="error_delete_failed_delivery">Something went wrong while deleting this failed delivery</string>
-    <string name="notify_failed_deliveries_feature_desc">Get a notification if an email sent from an alias cannot be delivered. For an overview for all failed deliveries go back to the start and use the failed deliveries button.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for failed deliveries.</string>
+    <string name="notify_failed_deliveries_feature_desc">Receive a notification if an email sent from an alias cannot be delivered. For an overview of all failed deliveries, go back to main section and tap on the failed deliveries button at the top. (mail with exclamation mark)\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for failed deliveries.</string>
     <string name="feature_notify_failed_deliveries">Failed delivery notifications</string>
+    <string name="unlimited">unlimited</string>
 
 </resources>
