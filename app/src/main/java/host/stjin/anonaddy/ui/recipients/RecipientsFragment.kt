@@ -284,7 +284,6 @@ class RecipientsFragment : Fragment(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete_recipient)
 
-        anonaddyCustomDialogBinding.dialogPositiveButton.tiont
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
