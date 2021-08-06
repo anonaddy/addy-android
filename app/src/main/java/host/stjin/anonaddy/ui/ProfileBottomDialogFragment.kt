@@ -8,10 +8,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.AnonAddy
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetProfileBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
@@ -20,12 +22,12 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.NumberUtils
-import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.roundToInt
 
 
 class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), theme)
@@ -33,6 +35,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         return dialog
     }
 
+    var updateAvailable: Boolean = false
     private var _binding: BottomsheetProfileBinding? = null
 
     // This property is only valid between onCreateView and
@@ -47,26 +50,28 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         // get the views and attach the listener
         val root = binding.root
 
-
         setMonthlyBandwidthStatistics()
         setInfo()
         setOnClickListeners()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            checkForUpdates()
-        }
 
         return root
 
     }
 
-    private suspend fun checkForUpdates() {
-        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
-            if (updateAvailable) {
-                binding.mainProfileSelectDialogAppSettingsDesc.text =
-                    resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
-            }
-        }, requireContext())
+    override fun onResume() {
+        super.onResume()
+
+        // When this view comes into the screen, set the update text
+        checkForUpdates()
+    }
+
+    private fun checkForUpdates() {
+        // The main activity tells the dialog if an update is available
+        if (updateAvailable) {
+            binding.mainProfileSelectDialogAppSettingsDesc.text =
+                resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
+        }
+
     }
 
     private fun setOnClickListeners() {

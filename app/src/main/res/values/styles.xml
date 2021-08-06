@@ -135,7 +135,7 @@
     <!-- DELETE STYLE -->
     <style name="CircularProgressButtonDeleteStyle" parent="CircularProgressButtonSecondary">
         <item name="backgroundTint">@color/softRed</item>
-        <item name="android:textColor">@color/ButtonSoftRedTextColor</item>
+        <item name="android:textColor">@color/CircularProgressButtonSoftRedTextColor</item>
     </style>
 
 
@@ -151,8 +151,6 @@
     </style>
 
     <style name="MaterialButtonSecondaryLight" parent="MaterialButtonSecondary">
-        <item name="android:layout_marginEnd">4dp</item>
-        <item name="android:layout_marginStart">4dp</item>
         <item name="backgroundTint">@color/primarySuperSuperLightColor</item>
         <item name="android:textColor">@color/primaryLightColor</item>
         <item name="iconTint">@color/primaryLightColor</item>
@@ -161,7 +159,7 @@
 
     <style name="MaterialButtonSecondaryDeleteStyle" parent="MaterialButtonSecondaryLight">
         <item name="backgroundTint">@color/softRedSuperLight</item>
-        <item name="android:textColor">@color/softRed</item>
+        <item name="android:textColor">@color/MaterialButtonSecondarySoftRedTextColor</item>
     </style>
 
     <style name="MaterialButtonSecondary.IconOnly" parent="MaterialButtonSecondaryLight">
@@ -215,7 +213,7 @@
     </style>
 
     <style name="SettingsSectionStyle">
-        <item name="android:padding">16dp</item>
+        <item name="android:padding">@dimen/cardview_padding</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:background">?attr/selectableItemBackground</item>

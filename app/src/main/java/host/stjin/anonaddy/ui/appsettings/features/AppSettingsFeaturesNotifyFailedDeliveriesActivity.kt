@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.CompoundButton
 import host.stjin.anonaddy.BaseActivity
@@ -8,6 +9,7 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyFailedDeliveriesBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 
 
 class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
@@ -68,6 +70,14 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
                 binding.activityAppSettingsFeaturesNotifyFailedDeliveriesSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyFailedDeliveriesSection.getSwitchChecked())
             }
         })
+        binding.activityAppSettingsFeaturesNotifyFailedDeliveriesActivity.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesNotifyFailedDeliveriesActivity, FailedDeliveriesActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+
     }
 
 

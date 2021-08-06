@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="@dimen/cardview_padding">
 
         <LinearLayout
             android:id="@+id/rules_recyclerview_list_LL1"
@@ -135,6 +135,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_recyclerview_list_activate_button"
                 style="@style/MaterialButtonSecondaryLight"
+                android:layout_marginEnd="@dimen/cardview_button_padding"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -144,6 +145,8 @@
                 android:id="@+id/rules_recyclerview_list_settings_button"
                 style="@style/MaterialButtonSecondaryLight"
                 android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/cardview_button_padding_middle"
+                android:layout_marginEnd="@dimen/cardview_button_padding_middle"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/settings" />
@@ -153,6 +156,7 @@
                 style="@style/MaterialButtonSecondaryDeleteStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cardview_button_padding"
                 android:layout_weight="1"
                 android:text="@string/delete" />
 

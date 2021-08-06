@@ -16,7 +16,7 @@
         android:layout_gravity="center_vertical"
         android:baselineAligned="false"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="@dimen/cardview_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:weightSum="12">
@@ -146,16 +146,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MaterialButtonSecondaryLight"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
                 android:layout_weight="1"
-                android:drawableRight="@drawable/ic_subject_24dp"
-                android:text="@string/view_details" />
+                app:backgroundTint="@color/shimmerGray" />
 
         </LinearLayout>
     </LinearLayout>

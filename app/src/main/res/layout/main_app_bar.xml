@@ -62,42 +62,82 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@android:color/white" />
 
-            <ImageView
-                android:id="@+id/main_top_bar_failed_deliveries_icon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="end|bottom"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/circle_ripple"
-                android:clickable="true"
-                android:contentDescription="@string/search"
-                android:focusable="true"
-                android:padding="6dp"
-                android:src="@drawable/ic_email_error_24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="H,1:1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@android:color/white" />
 
-            <TextView
-                android:id="@+id/main_top_bar_user_initials"
+            <RelativeLayout
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_gravity="end|bottom"
-                android:background="@drawable/circle_ripple"
-                android:clickable="true"
-                android:contentDescription="@string/open_options"
-                android:focusable="true"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:padding="6dp"
-                android:text="SV"
-                android:textColor="@android:color/white"
-                app:layout_collapseMode="pin"
-                app:tint="@android:color/white"
-                tools:ignore="HardcodedText" />
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+
+                <ImageView
+                    android:id="@+id/main_top_bar_failed_deliveries_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end|bottom"
+                    android:background="@drawable/circle_ripple"
+                    android:clickable="true"
+                    android:contentDescription="@string/search"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_email_error_24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="H,1:1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@android:color/white" />
+
+
+                <ImageView
+                    android:id="@+id/main_top_bar_failed_deliveries_new_items_icon"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_alignParentEnd="true"
+                    android:clickable="true"
+                    android:contentDescription="@string/new_failed_deliveries"
+                    android:focusable="true"
+                    android:src="@drawable/circle"
+                    android:tintMode="src_over"
+                    android:visibility="invisible"
+                    app:tint="@color/softRed" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="32dp"
+                android:layout_height="32dp">
+
+                <TextView
+                    android:id="@+id/main_top_bar_user_initials"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="end|bottom"
+                    android:background="@drawable/circle_ripple"
+                    android:clickable="true"
+                    android:contentDescription="@string/open_options"
+                    android:focusable="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="SV"
+                    android:textColor="@android:color/white"
+                    app:layout_collapseMode="pin"
+                    app:tint="@android:color/white"
+                    tools:ignore="HardcodedText" />
+
+                <ImageView
+                    android:id="@+id/main_top_bar_user_initials_update_icon"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_alignParentEnd="true"
+                    android:clickable="true"
+                    android:contentDescription="@string/new_failed_deliveries"
+                    android:focusable="true"
+                    android:src="@drawable/circle"
+                    android:tintMode="src_over"
+                    android:visibility="invisible"
+                    app:tint="@color/softRed" />
+            </RelativeLayout>
 
         </LinearLayout>
 

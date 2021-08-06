@@ -2,6 +2,9 @@
 <resources>
     <dimen name="corner_radius">28dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="cardview_padding">16dp</dimen>
+    <dimen name="cardview_button_padding">4dp</dimen>
+    <dimen name="cardview_button_padding_middle">2dp</dimen>
     <dimen name="corner_radius_dialog">8dp</dimen>
     <dimen name="corner_radius_widget_1">8dp</dimen>
     <dimen name="corner_radius_widget_2">28dp</dimen>

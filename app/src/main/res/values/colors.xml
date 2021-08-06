@@ -51,6 +51,9 @@
     <color name="profile_icon_foreground">@android:color/white</color>
 
     <color name="CircularProgressButtonTextColor">@color/primaryLightColor</color>
-    <color name="ButtonSoftRedTextColor">@color/softRed</color>
+    <color name="CircularProgressButtonSoftRedTextColor">@color/softRed</color>
     <color name="splashBackground">@color/primaryColorStatic</color>
+
+    <color name="MaterialButtonSecondarySoftRedTextColor">@color/softRed</color>
+
 </resources>

@@ -18,7 +18,7 @@
         android:layout_gravity="center_horizontal"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="@dimen/cardview_padding">
 
         <LinearLayout
             android:id="@+id/rules_view_condition_action_LL2"
