@@ -96,7 +96,6 @@
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:hint="@string/alias_local_part"
                 android:visibility="gone">
 
@@ -121,7 +120,6 @@
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:hint="@string/description">
 
                 <com.google.android.material.textfield.TextInputEditText

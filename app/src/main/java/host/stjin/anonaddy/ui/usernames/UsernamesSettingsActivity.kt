@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -213,7 +214,9 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_username)
         anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_username_desc_confirm)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete_username)
+            context.resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()

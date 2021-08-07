@@ -370,7 +370,7 @@ class ManageAliasActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogText.text =
             resources.getString(R.string.restore_alias_confirmation_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.restore_alias)
+            resources.getString(R.string.restore)
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
@@ -404,7 +404,9 @@ class ManageAliasActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogText.text =
             resources.getString(R.string.delete_alias_confirmation_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.delete_alias)
+            resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
@@ -438,7 +440,9 @@ class ManageAliasActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogText.text =
             resources.getString(R.string.forget_alias_confirmation_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.forget_alias)
+            resources.getString(R.string.forget)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.hardRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -282,7 +283,8 @@ class RecipientsFragment : Fragment(),
         anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_recipient)
         anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_recipient_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete_recipient)
+            context.resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(context, R.color.softRed)
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress

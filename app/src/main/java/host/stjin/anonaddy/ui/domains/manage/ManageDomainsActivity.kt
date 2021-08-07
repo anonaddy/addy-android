@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
@@ -266,7 +267,9 @@ class ManageDomainsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_domain)
         anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.delete_domain_desc_confirm)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.delete_domain)
+            resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()

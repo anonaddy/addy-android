@@ -306,6 +306,7 @@
                         android:orientation="vertical">
 
                         <ImageView
+                            android:id="@+id/main_profile_select_dialog_app_settings_icon"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/app_settings"

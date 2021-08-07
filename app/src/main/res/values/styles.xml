@@ -271,6 +271,7 @@
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
         <item name="android:textColor">@color/BlackWhite</item>
         <item name="android:textColorHint">@color/titOutlineColor</item>
+        <item name="android:layout_marginBottom">16dp</item>
     </style>
 
     <style name="AnonAddyTextInputEditText">

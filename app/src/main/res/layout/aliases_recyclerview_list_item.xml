@@ -136,7 +136,8 @@
                 android:textColor="@color/primaryColor"
                 android:textSize="12sp"
                 android:visibility="gone"
-                app:drawableStartCompat="@drawable/recyclerview_ic_comment_eye_outline" />
+                app:drawableStartCompat="@drawable/ic_watch_alias"
+                app:drawableTint="@color/primaryColor" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

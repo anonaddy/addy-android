@@ -60,7 +60,6 @@
                 android:id="@+id/bs_editrecipient_til"
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="16dp"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.chip.ChipGroup

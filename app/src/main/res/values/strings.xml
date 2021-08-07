@@ -414,7 +414,7 @@
     <string name="widget_2_recipients">recipients</string>
     <string name="widget_2_rules">rules</string>
     <string name="details">Details</string>
-    <string name="failed_deliveries_info_text">If you would like to search through failed deliveries, go back to the start and use the search button.</string>
+    <string name="failed_deliveries_info_text">If you would like to search through failed deliveries, go back to main section and use the search button.</string>
     <string name="all_failed_deliveries">All failed deliveries</string>
     <string name="no_failed_deliveries">No failed deliveries</string>
     <string name="failed_deliveries">Failed deliveries</string>
@@ -427,5 +427,8 @@
     <string name="view_failed_deliveries_desc">Open an overview of recent failed deliveries</string>
     <string name="notify_failed_deliveries_feature_section_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
     <string name="new_failed_deliveries">New failed deliveries</string>
+    <string name="remove">Remove</string>
+    <string name="restore">Restore</string>
+    <string name="forget">Forget</string>
 
 </resources>

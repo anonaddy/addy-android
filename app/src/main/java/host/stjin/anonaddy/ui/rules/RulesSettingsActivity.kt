@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
@@ -256,7 +257,9 @@ class RulesSettingsActivity : BaseActivity() {
         anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_rule)
         anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_rule_desc_confirm)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete_rule)
+            context.resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()

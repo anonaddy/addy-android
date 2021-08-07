@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.AnonAddy
@@ -70,8 +72,26 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         if (updateAvailable) {
             binding.mainProfileSelectDialogAppSettingsDesc.text =
                 resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
+
+            ImageViewCompat.setImageTintList(
+                binding.mainProfileSelectDialogAppSettingsIcon,
+                context?.let { ContextCompat.getColorStateList(it, R.color.softRed) }
+            )
+
         }
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("updateAvailable", updateAvailable)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            updateAvailable = savedInstanceState.getBoolean("updateAvailable")
+        }
     }
 
     private fun setOnClickListeners() {

@@ -98,7 +98,6 @@
                     style="@style/AnonAddyTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="16dp"
                     android:hint="@string/address">
 
                     <com.google.android.material.textfield.TextInputEditText

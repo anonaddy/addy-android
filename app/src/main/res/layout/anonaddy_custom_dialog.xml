@@ -31,23 +31,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/dialog_negative_button"
-            style="@style/TextButtonsSecondary"
-            android:layout_width="wrap_content"
+            style="@style/MaterialButtonSecondaryLight"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="@string/no_wait"
-            android:textColor="@color/IconGrayTint"
-            android:visibility="visible" />
+            android:layout_width="match_parent"
+            android:layout_marginBottom="4dp"
+            android:text="@string/no_wait" />
 
         <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
             android:id="@+id/dialog_positive_button"
             style="@style/CircularProgressButtonSecondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
             android:text="@string/confirm" />
     </LinearLayout>
 

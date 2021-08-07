@@ -58,15 +58,9 @@
                         android:orientation="horizontal"
                         android:padding="@dimen/cardview_padding">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/emails_forwarded"
-                            app:srcCompat="@drawable/ic_inbox" />
-
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
 
@@ -87,6 +81,15 @@
                                 android:gravity="center_vertical"
                                 android:text="@string/obtaining_information" />
                         </LinearLayout>
+
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/emails_forwarded"
+                            app:srcCompat="@drawable/ic_inbox"
+                            app:tint="@color/portalOrange" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -104,15 +107,10 @@
                         android:orientation="horizontal"
                         android:padding="@dimen/cardview_padding">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="16dp"
-                            android:contentDescription="@string/emails_replied_sent"
-                            app:srcCompat="@drawable/ic_mail_forward" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
 
@@ -133,6 +131,15 @@
                                 android:gravity="center_vertical"
                                 android:text="@string/obtaining_information" />
                         </LinearLayout>
+
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/emails_replied_sent"
+                            app:srcCompat="@drawable/ic_mail_forward"
+                            app:tint="@color/portalBlue" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
