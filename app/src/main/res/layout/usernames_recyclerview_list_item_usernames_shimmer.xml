@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/domain"
-                android:src="@drawable/ic_person_24dp"
+                android:src="@drawable/ic_user"
                 app:tint="@color/shimmerGray" />
 
         </LinearLayout>
@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/open_options"
-                app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24"
+                app:srcCompat="@drawable/ic_chevron_down"
                 app:tint="@color/shimmerGray" />
         </LinearLayout>
     </LinearLayout>

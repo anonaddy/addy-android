@@ -12,9 +12,9 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:padding="8dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:padding="@dimen/layout_padding_top"
+        android:paddingStart="@dimen/layout_padding"
+        android:paddingEnd="@dimen/layout_padding">
 
         <LinearLayout
             android:id="@+id/home_statistics_LL"
@@ -40,231 +40,239 @@
             </LinearLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/cardview_extra_padding"
+                android:paddingEnd="@dimen/cardview_extra_padding">
 
-                <ProgressBar
-                    android:id="@+id/home_statistics_monthly_bandwidth_progress"
-                    style="@style/AnonAddyProgressBarHome"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:progress="0" />
+                    android:layout_height="match_parent">
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    <ProgressBar
+                        android:id="@+id/home_statistics_monthly_bandwidth_progress"
+                        style="@style/AnonAddyProgressBarHome"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:progress="0" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:drawablePadding="4dp"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="center_vertical"
-                            android:text="@string/monthly_bandwidth"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp" />
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/cardview_padding">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/home_statistics_monthly_bandwidth_current"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="bottom"
-                                android:text="0MB"
+                                android:layout_marginBottom="4dp"
+                                android:drawablePadding="4dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center_vertical"
+                                android:text="@string/monthly_bandwidth"
                                 android:textColor="@android:color/white"
-                                tools:ignore="HardcodedText" />
+                                android:textSize="16sp" />
 
-                            <TextView
-                                android:id="@+id/home_statistics_monthly_bandwidth_max"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="bottom"
-                                android:layout_marginStart="4dp"
-                                android:alpha="0.5"
-                                android:text="\?"
-                                android:textColor="@android:color/white"
-                                tools:ignore="HardcodedText" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:id="@+id/home_statistics_monthly_bandwidth_current"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:text="0MB"
+                                    android:textColor="@android:color/white"
+                                    tools:ignore="HardcodedText" />
+
+                                <TextView
+                                    android:id="@+id/home_statistics_monthly_bandwidth_max"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:layout_marginStart="4dp"
+                                    android:alpha="0.5"
+                                    android:text="\?"
+                                    android:textColor="@android:color/white"
+                                    tools:ignore="HardcodedText" />
+                            </LinearLayout>
                         </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="@string/monthly_bandwidth"
+                            android:src="@drawable/ic_gauge"
+                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
+                            tools:ignore="UseAppTint" />
                     </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:contentDescription="@string/monthly_bandwidth"
-                        android:src="@drawable/ic_speedometer_slow"
-                        android:tint="@android:color/white"
-                        app:tint="@android:color/white"
-                        tools:ignore="UseAppTint" />
-                </LinearLayout>
+                </RelativeLayout>
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp">
-
-                <ProgressBar
-                    android:id="@+id/home_statistics_recipients_progress"
-                    style="@style/AnonAddyProgressBarRedHome"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:progress="0" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp">
 
+                    <ProgressBar
+                        android:id="@+id/home_statistics_recipients_progress"
+                        style="@style/AnonAddyProgressBarRedHome"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:progress="0" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="90dp"
-
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:drawablePadding="4dp"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="center_vertical"
-                            android:text="@string/recipients"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/cardview_padding">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/home_statistics_recipients_current"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="bottom"
-                                android:text="0"
+                                android:layout_marginBottom="4dp"
+                                android:drawablePadding="4dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center_vertical"
+                                android:text="@string/recipients"
                                 android:textColor="@android:color/white"
-                                tools:ignore="HardcodedText" />
+                                android:textSize="16sp" />
 
-                            <TextView
-                                android:id="@+id/home_statistics_recipients_max"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="bottom"
-                                android:layout_marginStart="4dp"
-                                android:alpha="0.5"
-                                android:text="\?"
-                                android:textColor="@android:color/white"
-                                tools:ignore="HardcodedText" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:id="@+id/home_statistics_recipients_current"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:text="0"
+                                    android:textColor="@android:color/white"
+                                    tools:ignore="HardcodedText" />
+
+                                <TextView
+                                    android:id="@+id/home_statistics_recipients_max"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:layout_marginStart="4dp"
+                                    android:alpha="0.5"
+                                    android:text="\?"
+                                    android:textColor="@android:color/white"
+                                    tools:ignore="HardcodedText" />
+                            </LinearLayout>
                         </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="@string/recipients"
+                            android:src="@drawable/ic_user"
+                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
+                            tools:ignore="UseAppTint" />
                     </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:contentDescription="@string/recipients"
-                        android:src="@drawable/ic_menu_recipients"
-                        android:tint="@android:color/white"
-                        app:tint="@android:color/white"
-                        tools:ignore="UseAppTint" />
-                </LinearLayout>
+                </RelativeLayout>
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ProgressBar
-                    android:id="@+id/home_statistics_aliases_progress"
-                    style="@style/AnonAddyProgressBarEasternBlueHome"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:progress="0" />
+                    android:layout_height="match_parent">
 
+                    <ProgressBar
+                        android:id="@+id/home_statistics_aliases_progress"
+                        style="@style/AnonAddyProgressBarEasternBlueHome"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:progress="0" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:drawablePadding="4dp"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="center_vertical"
-                            android:text="@string/shared_domain_aliases"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp" />
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/cardview_padding">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/home_statistics_aliases_current"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="bottom"
-                                android:text="0"
+                                android:layout_marginBottom="4dp"
+                                android:drawablePadding="4dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center_vertical"
+                                android:text="@string/shared_domain_aliases"
                                 android:textColor="@android:color/white"
-                                tools:ignore="HardcodedText" />
+                                android:textSize="16sp" />
 
-                            <TextView
-                                android:id="@+id/home_statistics_aliases_max"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="bottom"
-                                android:layout_marginStart="4dp"
-                                android:alpha="0.5"
-                                android:text="\?"
-                                android:textColor="@android:color/white"
-                                tools:ignore="HardcodedText" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:id="@+id/home_statistics_aliases_current"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:text="0"
+                                    android:textColor="@android:color/white"
+                                    tools:ignore="HardcodedText" />
+
+                                <TextView
+                                    android:id="@+id/home_statistics_aliases_max"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:layout_marginStart="4dp"
+                                    android:alpha="0.5"
+                                    android:text="\?"
+                                    android:textColor="@android:color/white"
+                                    tools:ignore="HardcodedText" />
+                            </LinearLayout>
                         </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="@string/shared_domain_aliases"
+                            android:src="@drawable/ic_email_at"
+                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
+                            tools:ignore="UseAppTint" />
                     </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:contentDescription="@string/shared_domain_aliases"
-                        android:src="@drawable/ic_round_alternate_email_24"
-                        android:tint="@android:color/white"
-                        app:tint="@android:color/white"
-                        tools:ignore="UseAppTint" />
-                </LinearLayout>
-
-            </RelativeLayout>
-
+                </RelativeLayout>
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -333,7 +341,7 @@
                     android:id="@+id/home_no_aliases"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:padding="@dimen/no_result_textview_padding"
                     android:text="@string/no_active_aliases"
                     android:textAlignment="center"
                     android:textColor="@color/BlackWhite"

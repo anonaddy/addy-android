@@ -110,13 +110,13 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private fun toggleDeletedItems() {
         if (binding.aliasDeletedAliasesRecyclerview.visibility == View.GONE) {
             binding.aliasDeletedAliasesRecyclerview.visibility = View.VISIBLE
-            binding.aliasShowDeletedAliasToggle.setIconResource(R.drawable.ic_arrow_drop_up_24dp)
+            binding.aliasShowDeletedAliasToggle.setIconResource(R.drawable.ic_caret_up)
 
             // Set the adapter (if it wasn't already)
             setAllDeletedAliases()
         } else {
             binding.aliasDeletedAliasesRecyclerview.visibility = View.GONE
-            binding.aliasShowDeletedAliasToggle.setIconResource(R.drawable.ic_arrow_drop_down_24dp)
+            binding.aliasShowDeletedAliasToggle.setIconResource(R.drawable.ic_caret_down)
         }
     }
 

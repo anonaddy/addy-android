@@ -39,7 +39,7 @@
                     android:id="@+id/domains_recyclerview_list_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_dns_24dp"
+                    android:src="@drawable/ic_dns"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
@@ -94,7 +94,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/open_options"
-                    app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+                    app:srcCompat="@drawable/ic_chevron_down" />
             </LinearLayout>
         </LinearLayout>
 

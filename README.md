@@ -78,6 +78,7 @@ Developer-led download channels:
 
 - Designed by my lovely UI guru @JustPlayingHard (💙)
 - Anything you think doesn't work well is my bad as I recreated the UI drafts into XML.
+- The icons used are from [Tabler](https://tablericons.com/) (some icons were modified)
 
 ### Material You builds
 

@@ -23,9 +23,9 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:padding="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                     android:contentDescription="@string/anonaddy_updater"
                     android:elevation="50dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/settings_update" />
+                    android:src="@drawable/ic_settings_update" />
 
 
                 <LinearLayout
@@ -67,14 +67,14 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/obtaining_information"
                     app:sectionTitle="@string/obtaining_information"
-                    app:sectionStartIcon="@drawable/ic_downloading_24dp"/>
+                    app:sectionStartIcon="@drawable/ic_cloud_download"/>
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_update_section_notify"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/update_notify_desc"
-                    app:sectionStartIcon="@drawable/ic_notifications"
+                    app:sectionStartIcon="@drawable/ic_bell"
                     app:sectionShowSwitch="true"
                     app:sectionTitle="@string/update_notify_title" />
 
@@ -83,7 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/see_this_version_changelogs"
-                    app:sectionStartIcon="@drawable/ic_round_restore_24"
+                    app:sectionStartIcon="@drawable/ic_file_diff"
                     app:sectionTitle="@string/changelog" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -91,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/previous_changelogs_desc"
-                    app:sectionStartIcon="@drawable/ic_history_toggle_off_24dp"
+                    app:sectionStartIcon="@drawable/ic_clock_history"
                     app:sectionTitle="@string/previous_changelogs" />
             </LinearLayout>
 
@@ -111,7 +111,7 @@
                     android:layout_height="20dp"
                     android:contentDescription="@string/Info"
                     android:paddingEnd="16dp"
-                    android:src="@drawable/ic_info_24dp"
+                    android:src="@drawable/ic_info"
                     tools:ignore="RtlSymmetry" />
 
                 <TextView

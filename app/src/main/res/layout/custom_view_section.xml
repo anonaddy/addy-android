@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/custom_view_section_CV"
     style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
-    android:layout_marginBottom="3dp"
+    android:layout_margin="@dimen/cardview_extra_padding"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
@@ -25,89 +23,89 @@
         android:orientation="horizontal">
 
         <LinearLayout
-        style="@style/SettingsSectionIconStyleMarginEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+            style="@style/SettingsSectionIconStyleMarginEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/custom_view_section_start_icon"
-            android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/custom_view_section_start_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/security"
+                android:padding="2dp"
+                android:src="@drawable/ic_fingerprint" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/security"
-            android:padding="2dp"
-            android:src="@drawable/ic_jam_fingerprint" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/custom_view_section_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="TITLE FOR CUSTOM SECTION"
+                android:textAllCaps="false"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText" />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+            <TextView
+                android:id="@+id/custom_view_section_desc"
+                style="@style/DescTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:maxLines="3"
+                android:text="DESC FOR CUSTOM SECTION\n2LINES\n3lines"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/custom_view_section_title"
-            android:layout_width="match_parent"
+
+        <LinearLayout
+            style="@style/SettingsSectionIconStyleMarginStart"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/custom_view_section_end_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/security"
+                android:src="@null" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/custom_view_section_progressbar"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:lines="1"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:text="TITLE FOR CUSTOM SECTION"
-            android:textAllCaps="false"
-            android:textColor="@color/BlackWhite"
-            android:textSize="16sp"
-            tools:ignore="HardcodedText" />
+            android:layout_gravity="center_vertical"
+            android:padding="4dp"
+            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/custom_view_section_desc"
-            style="@style/DescTextStyle"
-            android:layout_width="match_parent"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/custom_view_section_switch"
+            style="@style/overrideExpandableCardViewSwitch"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:maxLines="3"
-            android:text="DESC FOR CUSTOM SECTION\n2LINES\n3lines"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        style="@style/SettingsSectionIconStyleMarginStart"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/custom_view_section_end_icon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/security"
-            android:src="@null" />
-
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/custom_view_section_progressbar"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:padding="4dp"
-        android:visibility="gone" />
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/custom_view_section_switch"
-        style="@style/overrideExpandableCardViewSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:enabled="true"
-        android:focusable="true"
-        android:visibility="gone" />
+            android:clickable="true"
+            android:enabled="true"
+            android:focusable="true"
+            android:visibility="gone" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

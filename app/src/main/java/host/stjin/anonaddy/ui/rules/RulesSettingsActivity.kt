@@ -72,6 +72,8 @@ class RulesSettingsActivity : BaseActivity() {
     private lateinit var rulesAdapter: RulesAdapter
     private suspend fun getAllRulesAndSetView() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
+            val test = paddingStart
+            val test2 = paddingEnd
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
                 shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, 10) ?: 10

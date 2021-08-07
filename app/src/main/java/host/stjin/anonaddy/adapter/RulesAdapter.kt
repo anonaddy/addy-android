@@ -57,9 +57,9 @@ class RulesAdapter(
         holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
 
         if (listWithRules[position].active) {
-            holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_assignment_24dp)
+            holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_clipboard_list)
         } else {
-            holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_assignment_off_24dp)
+            holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_clipboard_list_off)
         }
     }
 

@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="@string/copy_alias"
-                    android:src="@drawable/ic_content_copy_24px" />
+                    android:src="@drawable/ic_copy" />
 
             </LinearLayout>
 

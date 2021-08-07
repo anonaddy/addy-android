@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/dialog_shape_rounded_corners"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/layout_padding_dialog">
 
     <TextView
         android:id="@+id/dialog_title"

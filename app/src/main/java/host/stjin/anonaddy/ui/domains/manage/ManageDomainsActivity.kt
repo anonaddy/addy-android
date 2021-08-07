@@ -408,7 +408,7 @@ class ManageDomainsActivity : BaseActivity(),
                     binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_alert, null)
                     binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
                 } else {
-                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_24dp, null)
+                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns, null)
                     binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc))
                 }
 

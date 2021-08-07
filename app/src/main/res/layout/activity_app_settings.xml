@@ -23,9 +23,9 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:padding="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/change_app_theme_to_dark_mode"
-                    app:sectionStartIcon="@drawable/ic_round_compare_24"
+                    app:sectionStartIcon="@drawable/ic_brightness"
                     app:sectionTitle="@string/app_theme">
 
                 </host.stjin.anonaddy.ui.customviews.SectionView>
@@ -64,7 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/anonaddy_updater_desc"
-                    app:sectionStartIcon="@drawable/ic_downloading_24dp"
+                    app:sectionStartIcon="@drawable/ic_cloud_download"
                     app:sectionTitle="@string/anonaddy_updater" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -72,7 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/features_and_integrations_desc"
-                    app:sectionStartIcon="@drawable/ic_auto_awesome_24dp"
+                    app:sectionStartIcon="@drawable/ic_confetti"
                     app:sectionTitle="@string/features_and_integrations" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/background_service_desc"
-                    app:sectionStartIcon="@drawable/ic_widgets_24dp"
+                    app:sectionStartIcon="@drawable/ic_apps"
                     app:sectionTitle="@string/background_service_interval" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -89,7 +89,7 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/security_desc"
                     app:sectionShowSwitch="true"
-                    app:sectionStartIcon="@drawable/ic_jam_fingerprint"
+                    app:sectionStartIcon="@drawable/ic_fingerprint"
                     app:sectionTitle="@string/security" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -98,7 +98,7 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/store_logs_desc"
                     app:sectionShowSwitch="true"
-                    app:sectionStartIcon="@drawable/ic_android_debug_bridge"
+                    app:sectionStartIcon="@drawable/ic_file_alert"
                     app:sectionTitle="@string/store_logs" />
 
 
@@ -108,7 +108,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="6dp"
                     app:sectionDescription="@string/reset_app_desc"
-                    app:sectionStartIcon="@drawable/ic_restart_alt_24dp"
+                    app:sectionStartIcon="@drawable/ic_loader"
                     app:sectionTitle="@string/reset_app" />
 
 
@@ -132,7 +132,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/visit_anonaddy_helps_section"
-                    app:sectionStartIcon="@drawable/ic_help_24dp"
+                    app:sectionStartIcon="@drawable/ic_help"
                     app:sectionTitle="@string/anonaddy_help" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -141,7 +141,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="6dp"
                     app:sectionDescription="@string/faq_desc"
-                    app:sectionStartIcon="@drawable/ic_question_answer_24dp"
+                    app:sectionStartIcon="@drawable/ic_messages"
                     app:sectionTitle="@string/faq" />
 
                 <LinearLayout
@@ -172,7 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/report_an_issue_desc"
-                    app:sectionStartIcon="@drawable/ic_pest_control_24dp"
+                    app:sectionStartIcon="@drawable/ic_bug"
                     app:sectionTitle="@string/report_an_issue" />
 
 
@@ -182,7 +182,7 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/contributors_list"
                     app:sectionRippleEffect="false"
-                    app:sectionStartIcon="@drawable/ic_people_24dp"
+                    app:sectionStartIcon="@drawable/ic_users"
                     app:sectionTitle="@string/contributors" />
 
 

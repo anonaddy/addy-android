@@ -8,6 +8,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
+    android:layout_margin="@dimen/cardview_extra_padding"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardElevation="@dimen/cardview_default_elevation">
 
@@ -65,7 +66,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/rules_view_condition_action_close"
                     style="@style/MaterialButtonSecondary.IconOnly"
-                    app:icon="@drawable/ic_round_clear_24" />
+                    app:icon="@drawable/ic_close" />
             </LinearLayout>
 
         </LinearLayout>

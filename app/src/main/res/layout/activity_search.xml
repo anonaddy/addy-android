@@ -41,11 +41,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="8dp"
-                android:paddingStart="16dp"
-                android:clipChildren="false"
                 android:clipToPadding="false"
-                android:paddingEnd="16dp">
+                android:padding="@dimen/layout_padding_top"
+                android:paddingStart="@dimen/layout_padding"
+                android:clipChildren="false"
+                android:paddingEnd="@dimen/layout_padding">
 
                 <LinearLayout
                     android:id="@+id/activity_search_aliases_LL"

@@ -45,9 +45,9 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:padding="8dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
+                android:padding="@dimen/layout_padding_top"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding">
 
                 <LinearLayout
                     style="@style/AnonAddyTitleAction"
@@ -77,7 +77,7 @@
                     android:id="@+id/activity_failed_deliveries_no_failed_deliveries"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:padding="@dimen/no_result_textview_padding"
                     android:text="@string/no_failed_deliveries"
                     android:textAlignment="center"
                     android:textColor="@color/BlackWhite"
@@ -101,7 +101,7 @@
                         android:layout_height="20dp"
                         android:contentDescription="@string/Info"
                         android:paddingEnd="16dp"
-                        android:src="@drawable/ic_info_24dp"
+                        android:src="@drawable/ic_info"
                         tools:ignore="RtlSymmetry" />
 
                     <TextView

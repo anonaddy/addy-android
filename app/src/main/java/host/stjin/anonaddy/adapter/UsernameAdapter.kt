@@ -60,9 +60,9 @@ class UsernameAdapter(
         }
 
         if (listWithUsernames[position].active) {
-            holder.usernamesRecyclerviewListUser.setImageResource(R.drawable.ic_person_24dp)
+            holder.usernamesRecyclerviewListUser.setImageResource(R.drawable.ic_user)
         } else {
-            holder.usernamesRecyclerviewListUser.setImageResource(R.drawable.ic_person_off_24dp)
+            holder.usernamesRecyclerviewListUser.setImageResource(R.drawable.ic_user_off)
         }
     }
 

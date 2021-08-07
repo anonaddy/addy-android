@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="@dimen/bottomsheet_top_part_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -49,7 +49,7 @@
             android:orientation="vertical"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:padding="16dp">
+            android:padding="@dimen/layout_padding">
 
             <TextView
                 android:id="@+id/bs_addalias_domain_help_textview"

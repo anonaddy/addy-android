@@ -415,7 +415,7 @@
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="chipStrokeColor">@color/shimmerGray</item>
-        <item name="checkedIcon">@drawable/ic_done_24dp</item>
+        <item name="checkedIcon">@drawable/ic_check</item>
         <item name="checkedIconTint">@color/primaryColor</item>
     </style>
 
