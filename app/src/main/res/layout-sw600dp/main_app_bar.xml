@@ -90,8 +90,8 @@
 
                 <ImageView
                     android:id="@+id/main_top_bar_failed_deliveries_new_items_icon"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_alignParentEnd="true"
                     android:clickable="true"
                     android:contentDescription="@string/new_failed_deliveries"
@@ -127,8 +127,8 @@
 
                 <ImageView
                     android:id="@+id/main_top_bar_user_initials_update_icon"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_alignParentEnd="true"
                     android:clickable="true"
                     android:contentDescription="@string/new_failed_deliveries"
