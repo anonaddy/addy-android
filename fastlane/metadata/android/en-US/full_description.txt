@@ -1,5 +1,5 @@
 <p>Manage your AnonAddy aliases, recipients, domains and more with the AnonAddy for Android app.</p>
-<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.7.4 or higher</p>
+<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.8.1 or higher</p>
 <p><strong>Characteristics</strong></p>
 <ul>
 <li>Connect to the AnonAddy instance or your own hosted instance</li>
@@ -11,6 +11,7 @@
 <li>Watching aliases for new emails</li>
 <li>Get notified when a new update is available</li>
 <li>Send emails from aliases by selecting an email address or clicking a mailto link</li>
+<li>Get notified on failed deliveries</li>
 </ul>
 </li>
 <li>Enable error logging to *locally* store exceptions for easy troubleshooting</li>
@@ -29,6 +30,7 @@
 <li>Domains</li>
 <li>Usernames</li>
 <li>Rules</li>
+<li>Failed deliveries</li>
 </ul>
 <p><strong>What is AnonAddy</strong></p>
 <p>AnonAddy is an open source email forwarding service designed to protect an Internet user's email addresses from spam and other unwanted emails. Using the AnonAddy Android app managing your aliased has become easier than ever! <a href="https://anonaddy.com">Learn more about AnonAddy:</a> <a href="https://anonaddy.com">https://anonaddy.com </a></p>

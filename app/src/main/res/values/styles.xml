@@ -158,7 +158,7 @@
     </style>
 
     <style name="MaterialButtonSecondaryDeleteStyle" parent="MaterialButtonSecondaryLight">
-        <item name="backgroundTint">@color/softRedSuperLight</item>
+        <item name="backgroundTint">@color/softRedSuperSuperLight</item>
         <item name="android:textColor">@color/MaterialButtonSecondarySoftRedTextColor</item>
     </style>
 

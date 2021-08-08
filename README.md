@@ -17,7 +17,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > AnonAddy
 
-- AnonAddy v0.7.4 or higher (current version of AnonAddy for Android has been tested with v0.7.4)
+- AnonAddy v0.8.1 or higher (current version of AnonAddy for Android has been tested with v0.8.1)
 
 > Android
 
@@ -35,6 +35,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
   - Watching aliases for new emails
   - Get notified when a new update is available
   - Send emails from aliases by selecting an email address or clicking a mailto link
+  - Get notified on failed deliveries
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Widgets!
 
@@ -54,6 +55,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 - Domains
 - Usernames
 - Rules
+- Failed deliveries
 
 ## Download
 

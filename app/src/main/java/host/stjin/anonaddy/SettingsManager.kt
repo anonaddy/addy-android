@@ -2,9 +2,13 @@ package host.stjin.anonaddy
 
 import android.app.ActivityManager
 import android.content.Context
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
+import androidx.security.crypto.MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE
+import androidx.security.crypto.MasterKey.DEFAULT_MASTER_KEY_ALIAS
 
 
 class SettingsManager(encrypt: Boolean, private val context: Context) {
@@ -52,14 +56,30 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     private val prefs = if (!encrypt) {
         PreferenceManager.getDefaultSharedPreferences(context)
     } else {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKeyAlias = getMasterKey()
         EncryptedSharedPreferences.create(
+            context,
             "host.stjin.anonaddy_enc_user$user",
             masterKeyAlias,
-            context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+    }
+
+    private fun getMasterKey(): MasterKey {
+        // this is equivalent to using deprecated MasterKeys.AES256_GCM_SPEC
+        val spec = KeyGenParameterSpec.Builder(
+            DEFAULT_MASTER_KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        )
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(DEFAULT_AES_GCM_MASTER_KEY_SIZE)
+            .build()
+
+        return MasterKey.Builder(context)
+            .setKeyGenParameterSpec(spec)
+            .build()
     }
 
     fun putSettingsBool(key: PREFS, boolean: Boolean) {

@@ -189,8 +189,6 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     binding.activityDomainSettingsRLLottieview.visibility = View.VISIBLE
                 }
                 hideShimmer()
-
-
             }
 
         }

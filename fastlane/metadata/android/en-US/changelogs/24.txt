@@ -1,0 +1,6 @@
+<h3>What's new in version 3.1.0</h3>
+<h4>Added</h4>
+<p>📧❗ View and manage your failed deliveries! Optionally, you can also receive a notification in case of failed deliveries</p>
+<h4>Fixed/Improved</h4>
+<p>🎨 More UI changes that make the app look better<br />- The iconography has changed from Material to Tabler for a unique experience<br />- More animations</p>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>

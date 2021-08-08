@@ -410,9 +410,11 @@ class ManageDomainsActivity : BaseActivity(),
                 if (list.domain_sending_verified_at == null) {
                     binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_alert, null)
                     binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
+                    binding.activityManageDomainCheckDns.setSectionAlert(true)
                 } else {
                     binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns, null)
                     binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc))
+                    binding.activityManageDomainCheckDns.setSectionAlert(false)
                 }
 
 
