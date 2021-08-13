@@ -428,5 +428,6 @@
     <string name="remove">Remove</string>
     <string name="restore">Restore</string>
     <string name="forget">Forget</string>
+    <string name="version_channel_fdroid_info">Please note that it may take a little longer for updates to be visible in F-Droid</string>
 
 </resources>

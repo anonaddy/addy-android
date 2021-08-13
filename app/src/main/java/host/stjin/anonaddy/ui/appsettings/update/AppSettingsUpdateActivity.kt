@@ -77,6 +77,12 @@ class AppSettingsUpdateActivity : BaseActivity() {
         }
         binding.activityAppSettingsUpdateVersionChannel.text =
             this.resources.getString(R.string.version_channel_info, BuildConfig.VERSION_NAME, channel)
+
+        if (YDGooglePlayUtils.isInstalledViaFDroid(this)) {
+            binding.activityAppSettingsUpdateVersionChannel.text =
+                "${binding.activityAppSettingsUpdateVersionChannel.text}\n\n${this.resources.getString(R.string.version_channel_fdroid_info)}"
+        }
+
     }
 
     private fun loadSettings() {
