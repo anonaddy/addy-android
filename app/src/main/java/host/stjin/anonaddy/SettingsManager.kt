@@ -2,9 +2,13 @@ package host.stjin.anonaddy
 
 import android.app.ActivityManager
 import android.content.Context
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
+import androidx.security.crypto.MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE
+import androidx.security.crypto.MasterKey.DEFAULT_MASTER_KEY_ALIAS
 
 
 class SettingsManager(encrypt: Boolean, private val context: Context) {
@@ -15,6 +19,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_INTERVAL("background_service_interval"),
         WIDGETS_ACTIVE("widgets_active"),
         NOTIFY_UPDATES("notify_updates"),
+        NOTIFY_FAILED_DELIVERIES("notify_failed_deliveries"),
 
 
         // Encrypted
@@ -33,6 +38,12 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_CACHE_RULES_COUNT("cache_rules_count"),
         BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT("cache_recipient_count"),
 
+        // Also used for background service failed delivery notifications
+        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT("cache_failed_deliveries_count"),
+
+        // This value keeps track of the previous amount of failed deliveries so comparisons can be made in the BackgroundWorker
+        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS("cache_failed_deliveries_count_previous"),
+
         // When BACKGROUND_SERVICE_CACHE_DATA_ALIASES gets updated the current list will move moved to BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS for the AliasWatcher to compare
         BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS("cache_data_aliases_previous"),
         BACKGROUND_SERVICE_WATCH_ALIAS_LIST("background_service_watch_alias_list"),
@@ -45,14 +56,30 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     private val prefs = if (!encrypt) {
         PreferenceManager.getDefaultSharedPreferences(context)
     } else {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKeyAlias = getMasterKey()
         EncryptedSharedPreferences.create(
+            context,
             "host.stjin.anonaddy_enc_user$user",
             masterKeyAlias,
-            context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+    }
+
+    private fun getMasterKey(): MasterKey {
+        // this is equivalent to using deprecated MasterKeys.AES256_GCM_SPEC
+        val spec = KeyGenParameterSpec.Builder(
+            DEFAULT_MASTER_KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        )
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(DEFAULT_AES_GCM_MASTER_KEY_SIZE)
+            .build()
+
+        return MasterKey.Builder(context)
+            .setKeyGenParameterSpec(spec)
+            .build()
     }
 
     fun putSettingsBool(key: PREFS, boolean: Boolean) {

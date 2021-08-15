@@ -11,20 +11,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:weightSum="12">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="@dimen/cardview_padding"
         android:weightSum="12">
 
         <LinearLayout
@@ -39,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/domain"
-                android:src="@drawable/ic_person_24dp"
+                android:src="@drawable/ic_user"
                 app:tint="@color/shimmerGray" />
 
         </LinearLayout>
@@ -98,7 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/open_options"
-                app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24"
+                app:srcCompat="@drawable/ic_chevron_down"
                 app:tint="@color/shimmerGray" />
         </LinearLayout>
     </LinearLayout>

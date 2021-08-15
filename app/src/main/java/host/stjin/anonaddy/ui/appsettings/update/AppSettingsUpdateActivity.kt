@@ -48,7 +48,7 @@ class AppSettingsUpdateActivity : BaseActivity() {
                     binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available))
                     binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available_desc))
                 }
-                binding.activityAppSettingsUpdateSectionDownload.setSectionAlert(true)
+                binding.activityAppSettingsUpdateSectionDownload.setSectionAlert(updateAvailable)
             }, this@AppSettingsUpdateActivity)
         }
     }
@@ -71,12 +71,18 @@ class AppSettingsUpdateActivity : BaseActivity() {
     private fun setVersionAndChannel() {
         val installerPackageName = YDGooglePlayUtils.getInstallerPackageName(this)
         val channel = if (installerPackageName != null) {
-            YDGooglePlayUtils.getInstallerPackageName(this)
+            YDGooglePlayUtils.getInstallerPackageName(this)?.let { YDGooglePlayUtils.getInstallerApplicationName(this, it) }
         } else {
             this.resources.getString(R.string.sideloaded)
         }
         binding.activityAppSettingsUpdateVersionChannel.text =
             this.resources.getString(R.string.version_channel_info, BuildConfig.VERSION_NAME, channel)
+
+        if (YDGooglePlayUtils.isInstalledViaFDroid(this)) {
+            binding.activityAppSettingsUpdateVersionChannel.text =
+                "${binding.activityAppSettingsUpdateVersionChannel.text}\n\n${this.resources.getString(R.string.version_channel_fdroid_info)}"
+        }
+
     }
 
     private fun loadSettings() {

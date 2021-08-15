@@ -127,15 +127,9 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
     fun setSectionAlert(boolean: Boolean) {
         if (boolean) {
-            iconStart?.background = context?.let { ContextCompat.getDrawable(it, R.drawable.custom_view_dialog_circle) }
-            // The tint color is set to white
-            ImageViewCompat.setImageTintList(iconStart!!,
-                context?.let { ContextCompat.getColor(it, android.R.color.white) }?.let { ColorStateList.valueOf(it) })
+            ImageViewCompat.setImageTintList(iconStart!!, ContextCompat.getColorStateList(context, R.color.softRed))
         } else {
-            iconStart?.background = null
-            // The tint color is set to default
-            ImageViewCompat.setImageTintList(iconStart!!,
-                context?.let { ContextCompat.getColor(it, R.color.colorControlNormal) }?.let { ColorStateList.valueOf(it) })
+            ImageViewCompat.setImageTintList(iconStart!!, ContextCompat.getColorStateList(context, R.color.colorControlNormal))
         }
     }
 

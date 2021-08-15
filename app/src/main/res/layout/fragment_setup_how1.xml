@@ -34,17 +34,16 @@
             android:background="@drawable/shape_rounded_corners_top"
             android:minHeight="530dp"
             android:orientation="vertical"
-            android:padding="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
 
             <ImageView
                 android:id="@+id/setup_how_1_iv"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:layout_marginTop="24dp"
-                android:src="@drawable/ic_round_arrow_back_24"
                 android:contentDescription="@string/back"
+                android:src="@drawable/ic_arrow_back"
                 app:tint="@color/BlackWhite" />
 
             <TextView

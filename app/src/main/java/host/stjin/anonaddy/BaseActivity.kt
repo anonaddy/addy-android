@@ -65,7 +65,7 @@ abstract class BaseActivity : AppCompatActivity() {
     )
 
     fun setupToolbar(toolbar: MaterialToolbar, title: Int) {
-        toolbar.setNavigationIcon(R.drawable.ic_round_arrow_back_24) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }

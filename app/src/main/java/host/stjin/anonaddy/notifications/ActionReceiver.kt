@@ -12,7 +12,8 @@ class ActionReceiver : BroadcastReceiver() {
 
     object NOTIFICATIONACTIONS {
         const val STOP_WATCHING = "stop_watching"
-        const val STOP_DOWNLOAD_UPDATE_CHECK = "stop_download_update_check"
+        const val STOP_UPDATE_CHECK = "stop_update_check"
+        const val STOP_FAILED_DELIVERY_CHECK = "stop_failed_delivery_check"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -30,10 +31,15 @@ class ActionReceiver : BroadcastReceiver() {
 
                 }
             }
-            NOTIFICATIONACTIONS.STOP_DOWNLOAD_UPDATE_CHECK -> {
+            NOTIFICATIONACTIONS.STOP_UPDATE_CHECK -> {
                 SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.UPDATER_NOTIFICATION_ID)
+            }
+            NOTIFICATIONACTIONS.STOP_FAILED_DELIVERY_CHECK -> {
+                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES, false)
+                // Dismiss notification
+                notificationManager.cancel(NotificationHelper.FAILED_DELIVERIES_NOTIFICATION_ID)
             }
         }
     }

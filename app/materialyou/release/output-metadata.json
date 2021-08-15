@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 23,
-      "versionName": "v3.0.0 | Material You",
+      "versionCode": 24,
+      "versionName": "v3.1.0 | Material You",
       "outputFile": "app-materialyou-release.apk"
     }
   ],

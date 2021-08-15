@@ -74,7 +74,7 @@
                     android:contentDescription="@string/save_rule"
                     android:focusable="true"
                     android:padding="6dp"
-                    android:src="@drawable/ic_done_24dp"
+                    android:src="@drawable/ic_check"
                     app:tint="@android:color/white" />
 
             </LinearLayout>
@@ -120,7 +120,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:padding="16dp"
+                android:padding="@dimen/layout_padding"
                 android:visibility="invisible">
 
 
@@ -149,7 +149,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical">
@@ -243,7 +242,7 @@
                         android:layout_height="20dp"
                         android:contentDescription="@string/Info"
                         android:paddingEnd="16dp"
-                        android:src="@drawable/ic_info_24dp"
+                        android:src="@drawable/ic_info"
                         tools:ignore="RtlSymmetry" />
 
                     <TextView

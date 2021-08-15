@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="@dimen/bottomsheet_top_part_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -45,9 +45,9 @@
             android:id="@+id/bs_darkmode_radiogroup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="16dp">
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding"
+            android:paddingBottom="@dimen/layout_padding">
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/bs_darkmode_off"

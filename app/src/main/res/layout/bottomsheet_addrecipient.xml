@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="@dimen/bottomsheet_top_part_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/layout_padding">
 
             <TextView
                 style="@style/DescTextStyle"
@@ -61,7 +61,6 @@
                 style="@style/AnonAddyTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="16dp"
                 android:hint="@string/address">
 
                 <com.google.android.material.textfield.TextInputEditText

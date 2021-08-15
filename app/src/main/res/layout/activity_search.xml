@@ -41,11 +41,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="8dp"
-                android:paddingStart="16dp"
-                android:clipChildren="false"
                 android:clipToPadding="false"
-                android:paddingEnd="16dp">
+                android:padding="@dimen/layout_padding_top"
+                android:paddingStart="@dimen/layout_padding"
+                android:clipChildren="false"
+                android:paddingEnd="@dimen/layout_padding">
 
                 <LinearLayout
                     android:id="@+id/activity_search_aliases_LL"
@@ -166,6 +166,31 @@
                         android:overScrollMode="never" />
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_search_failed_deliveries_LL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/AnonAddyTitleNoAction"
+                        android:layout_width="match_parent"
+                        android:text="@string/failed_deliveries" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/activity_search_failed_deliveries_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 

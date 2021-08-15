@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="@dimen/bottomsheet_top_part_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/layout_padding">
 
                 <TextView
                     style="@style/titleTextView"
@@ -112,6 +112,14 @@
                         android:checkable="true"
                         android:text="@string/rules" />
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_search_chip_failed_deliveries"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/failed_deliveries" />
+
                 </com.google.android.material.chip.ChipGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -119,7 +127,6 @@
                     style="@style/AnonAddyTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="16dp"
                     android:hint="@string/search">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -146,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/layout_padding">
 
                 <LinearLayout
                     android:layout_width="match_parent"

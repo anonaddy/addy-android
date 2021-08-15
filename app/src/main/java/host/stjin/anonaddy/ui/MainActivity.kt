@@ -3,19 +3,19 @@ package host.stjin.anonaddy.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityMainBinding
 import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy.ui.home.HomeFragment
 import host.stjin.anonaddy.ui.recipients.RecipientsFragment
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
@@ -52,15 +52,21 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val view = binding.root
         setContentView(view)
 
-        lifecycleScope.launch {
-            isAuthenticated { isAuthenticated ->
-                if (isAuthenticated) {
+        isAuthenticated { isAuthenticated ->
+            if (isAuthenticated) {
+                lifecycleScope.launch {
                     loadMainActivity()
+                    checkForUpdates()
                 }
             }
         }
-
     }
+
+    override fun onResume() {
+        super.onResume()
+        initialiseMainAppBar()
+    }
+
 
     private lateinit var binding: ActivityMainBinding
     private fun loadMainActivity() {
@@ -100,7 +106,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             false
         }
 
-        initialiseMainAppBar()
     }
 
     private fun showChangeLog() {
@@ -144,10 +149,121 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.mainAppBarInclude.mainTopBarFailedDeliveriesIcon.setOnClickListener {
-            Toast.makeText(this, "TODO", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, FailedDeliveriesActivity::class.java)
+            startActivity(intent)
         }
 
+        lifecycleScope.launch {
+            checkForNewFailedDeliveries()
+        }
     }
+
+    private suspend fun checkForUpdates() {
+        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+
+            // Set the update status in profileBottomDialogFragment
+            profileBottomDialogFragment.updateAvailable = updateAvailable
+
+            if (updateAvailable) {
+                // An update is available, set the update  profile bottomdialog fragment
+                if (binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility != View.VISIBLE) {
+                    // loading the animation of
+                    // zoom_in.xml file into a variable
+                    val animZoomIn = AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.zoom_in
+                    )
+                    animZoomIn.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(p0: Animation?) {
+                            binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility = View.VISIBLE
+                        }
+
+                        override fun onAnimationEnd(p0: Animation?) {
+                            //
+                        }
+
+                        override fun onAnimationRepeat(p0: Animation?) {
+                            //
+                        }
+                    }
+                    )
+                    binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.startAnimation(animZoomIn)
+                }
+            }
+            // No else because an update does not "just" disappear...
+        }, this)
+    }
+
+    /*
+    This method checks if there are new failed deliveries
+    It does this by getting the current failed delivery count, if that count is bigger than the failed deliveries in the cache that means there are new failed
+    deliveries.
+
+    As BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT is only updated in the service and in the FailedDeliveriesActivity that means that the red
+    indicator is only visible if:
+
+    - The activity has not been opened since there were new items.
+    - There are more failed deliveries than the server cached last time (in which case the user should have got a notification)
+     */
+    private suspend fun checkForNewFailedDeliveries() {
+        val networkHelper = NetworkHelper(this)
+        val encryptedSettingsManager = SettingsManager(true, this)
+        networkHelper.getAllFailedDeliveries({ result ->
+            val currentFailedDeliveries =
+                encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+            if (result?.size ?: 0 > currentFailedDeliveries) {
+                if (binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
+                    // loading the animation of
+                    // zoom_in.xml file into a variable
+                    val animZoomIn = AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.zoom_in
+                    )
+                    animZoomIn.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(p0: Animation?) {
+                            binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.VISIBLE
+                        }
+
+                        override fun onAnimationEnd(p0: Animation?) {
+                            //
+                        }
+
+                        override fun onAnimationRepeat(p0: Animation?) {
+                            //
+                        }
+                    }
+                    )
+                    binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomIn)
+                }
+            } else {
+                if (binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.INVISIBLE) {
+
+                    // loading the animation of
+                    // zoom_in.xml file into a variable
+                    val animZoomOut = AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.zoom_out
+                    )
+                    animZoomOut.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(p0: Animation?) {
+                            //
+                        }
+
+                        override fun onAnimationEnd(p0: Animation?) {
+                            binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.INVISIBLE
+                        }
+
+                        override fun onAnimationRepeat(p0: Animation?) {
+                            //
+                        }
+                    }
+                    )
+                    binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomOut)
+                }
+            }
+        }, show404Toast = false)
+    }
+
     private fun changeTopBarTitle(title: String) {
         binding.mainAppBarInclude.collapsingToolbar.title = title
     }
@@ -165,7 +281,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         filteredRecipients: ArrayList<Recipients>,
         filteredDomains: ArrayList<Domains>,
         filteredUsernames: ArrayList<Usernames>,
-        filteredRules: ArrayList<Rules>
+        filteredRules: ArrayList<Rules>,
+        filteredFailedDeliveries: ArrayList<FailedDeliveries>
     ) {
 
         SearchActivity.FilteredLists.filteredAliases = filteredAliases
@@ -173,6 +290,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         SearchActivity.FilteredLists.filteredDomains = filteredDomains
         SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
         SearchActivity.FilteredLists.filteredRules = filteredRules
+        SearchActivity.FilteredLists.filteredFailedDeliveries = filteredFailedDeliveries
 
         searchBottomDialogFragment.dismiss()
         val intent = Intent(this, SearchActivity::class.java)
@@ -203,6 +321,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         }
                         SearchActivity.SearchTargets.RULES.activity -> {
                             val intent = Intent(this, RulesSettingsActivity::class.java)
+                            startActivity(intent)
+                        }
+                        SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
+                            val intent = Intent(this, FailedDeliveriesActivity::class.java)
                             startActivity(intent)
                         }
                     }

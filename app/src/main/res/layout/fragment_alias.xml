@@ -10,9 +10,9 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:padding="8dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:padding="@dimen/layout_padding_top"
+        android:paddingStart="@dimen/layout_padding"
+        android:paddingEnd="@dimen/layout_padding">
 
         <LinearLayout
             android:id="@+id/alias_statistics_LL"
@@ -37,97 +37,112 @@
 
             </LinearLayout>
 
-
-            <com.google.android.material.card.MaterialCardView
-                style="@style/AnonAddyCustomCardViewStyleTop"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="@dimen/cardview_default_elevation">
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/cardview_extra_padding"
+                android:paddingEnd="@dimen/cardview_extra_padding">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/AnonAddyCustomCardViewStyleTop"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="16dp"
-                        android:contentDescription="@string/emails_forwarded"
-                        app:srcCompat="@drawable/ic_email_out_24dp" />
+                    android:layout_height="wrap_content"
+                    app:cardElevation="@dimen/cardview_default_elevation">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:padding="@dimen/cardview_padding">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="center_vertical"
-                            android:text="@string/emails_forwarded"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/alias_forwarded_blocked_stats_textview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:gravity="center_vertical"
-                            android:text="@string/obtaining_information" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center_vertical"
+                                android:text="@string/emails_forwarded"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/alias_forwarded_blocked_stats_textview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif"
+                                android:gravity="center_vertical"
+                                android:text="@string/obtaining_information" />
+                        </LinearLayout>
+
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/emails_forwarded"
+                            app:srcCompat="@drawable/ic_inbox"
+                            app:tint="@color/portalOrange" />
                     </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                style="@style/AnonAddyCustomCardViewStyleBottom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                app:cardElevation="@dimen/cardview_default_elevation">
-
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/AnonAddyCustomCardViewStyleBottom"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="16dp"
-                        android:contentDescription="@string/emails_replied_sent"
-                        app:srcCompat="@drawable/ic_email_in_24dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    app:cardElevation="@dimen/cardview_default_elevation">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:padding="@dimen/cardview_padding">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="center_vertical"
-                            android:text="@string/emails_replied_sent"
-                            android:textColor="@color/BlackWhite"
-                            android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/alias_replied_sent_stats_textview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:gravity="center_vertical"
-                            android:text="@string/obtaining_information" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:gravity="center_vertical"
+                                android:text="@string/emails_replied_sent"
+                                android:textColor="@color/BlackWhite"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/alias_replied_sent_stats_textview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif"
+                                android:gravity="center_vertical"
+                                android:text="@string/obtaining_information" />
+                        </LinearLayout>
+
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/emails_replied_sent"
+                            app:srcCompat="@drawable/ic_mail_forward"
+                            app:tint="@color/portalBlue" />
                     </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
         </LinearLayout>
 
 
@@ -192,7 +207,7 @@
                     android:id="@+id/alias_no_aliases"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:padding="@dimen/no_result_textview_padding"
                     android:text="@string/no_aliases"
                     android:textAlignment="center"
                     android:textColor="@color/BlackWhite"
@@ -227,7 +242,7 @@
                         android:id="@+id/alias_show_deleted_alias_toggle"
                         style="@style/MaterialButtonSecondary.IconOnly"
                         android:contentDescription="@string/deleted_aliases"
-                        app:icon="@drawable/ic_arrow_drop_down_24dp" />
+                        app:icon="@drawable/ic_caret_down" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -244,7 +259,7 @@
                     android:id="@+id/alias_no_deleted_aliases"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:padding="@dimen/no_result_textview_padding"
                     android:text="@string/no_deleted_aliases"
                     android:textAlignment="center"
                     android:textColor="@color/BlackWhite"

@@ -28,6 +28,10 @@ object AnonAddy {
     val API_URL_ACTIVE_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-rules" }
     val API_URL_REORDER_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/reorder-rules" }
 
+
+    // 0.8.1
+    val API_URL_FAILED_DELIVERIES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/failed-deliveries" }
+
     // 0.6.0
     val API_URL_APP_VERSION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/app-version" }
 

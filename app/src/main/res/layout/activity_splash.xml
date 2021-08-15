@@ -15,8 +15,8 @@
         android:layout_marginBottom="48dp" />
 
     <ImageView
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="288dp"
+        android:layout_height="288dp"
         android:layout_centerInParent="true"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_launcher_foreground" />

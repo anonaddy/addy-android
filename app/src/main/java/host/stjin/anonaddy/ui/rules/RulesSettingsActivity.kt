@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
@@ -72,6 +73,8 @@ class RulesSettingsActivity : BaseActivity() {
     private lateinit var rulesAdapter: RulesAdapter
     private suspend fun getAllRulesAndSetView() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
+            val test = paddingStart
+            val test2 = paddingEnd
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
                 shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, 10) ?: 10
@@ -86,7 +89,7 @@ class RulesSettingsActivity : BaseActivity() {
                 layoutAnimation = animation
                 showShimmer()
             }
-            networkHelper?.getAllRules { list ->
+            networkHelper?.getAllRules({ list ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -179,7 +182,7 @@ class RulesSettingsActivity : BaseActivity() {
                     binding.activityManageRulesRLLottieview.visibility = View.VISIBLE
                 }
                 hideShimmer()
-            }
+            }, show404Toast = true)
         }
 
     }
@@ -254,7 +257,9 @@ class RulesSettingsActivity : BaseActivity() {
         anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_rule)
         anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_rule_desc_confirm)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete_rule)
+            context.resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()

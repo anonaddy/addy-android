@@ -55,7 +55,7 @@
         android:layout_marginStart="16dp"
         android:layout_weight="0"
         android:contentDescription="@string/copy_alias"
-        android:src="@drawable/ic_content_copy_24px"
+        android:src="@drawable/ic_copy"
         android:tint="@android:color/white"
         app:tint="@android:color/white"
         tools:ignore="UseAppTint" />

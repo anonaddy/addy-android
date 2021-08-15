@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -76,25 +77,30 @@ class RecipientsFragment : Fragment(),
 
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
-            getAllRecipients()
             getUserResource(requireContext())
+            getAllRecipients()
         }
     }
 
-    private fun setStats() {
+    private fun setStats(currentCount: Int? = null) {
         binding.activityRecipientSettingsLLCount.text = requireContext().resources.getString(
             R.string.you_ve_used_d_out_of_d_recipients,
-            User.userResource.recipient_count,
-            User.userResource.recipient_limit
+            currentCount ?: User.userResource.recipient_count,
+            if (User.userResource.subscription != null) User.userResource.recipient_limit else this.resources.getString(R.string.unlimited)
         )
-        binding.recipientsAddRecipients.isEnabled = User.userResource.recipient_count < User.userResource.recipient_limit
+
+        // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
+        if (User.userResource.subscription != null) {
+            binding.recipientsAddRecipients.isEnabled = User.userResource.recipient_count < User.userResource.recipient_limit
+        } else {
+            binding.recipientsAddRecipients.isEnabled = true
+        }
     }
 
     private suspend fun getUserResource(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 User.userResource = user
-                setStats()
             } else {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
@@ -173,6 +179,8 @@ class RecipientsFragment : Fragment(),
                 }
 
                 if (list != null) {
+                    // Update stats
+                    setStats(list.size)
 
                     // There is always 1 recipient.
 
@@ -275,7 +283,9 @@ class RecipientsFragment : Fragment(),
         anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_recipient)
         anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_recipient_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete_recipient)
+            context.resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(context, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()

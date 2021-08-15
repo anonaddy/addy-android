@@ -2,7 +2,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="@dimen/corner_radius_cardview" />
-            <solid android:color="@color/softRedSuperLight" />
+            <solid android:color="@color/softRedSuperSuperLight" />
         </shape>
     </item>
 

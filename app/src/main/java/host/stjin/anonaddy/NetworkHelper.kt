@@ -22,6 +22,7 @@ import host.stjin.anonaddy.AnonAddy.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAINS
 import host.stjin.anonaddy.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy.AnonAddy.API_URL_FAILED_DELIVERIES
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy.AnonAddy.API_URL_RECIPIENT_RESEND
@@ -1792,7 +1793,8 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllRules(
-        callback: (ArrayList<Rules>?) -> Unit
+        callback: (ArrayList<Rules>?) -> Unit,
+        show404Toast: Boolean = false
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -1828,11 +1830,13 @@ class NetworkHelper(private val context: Context) {
             }
             // Not found, aka the AnonAddy version is <0.6.0 (this endpoint was introduced in 0.6.0)
             // OR
-            // Not found, aka the rules API (which is in beta as of 0.6.0) is not enabled.
+            // Not found, aka the rules API (which is in beta as of 0.6.0) is not enabled. (Not part of the user's subscription)
             // =
             // Show a toast letting the user know this feature is only available if the rules API is enabled
             404 -> {
-                Toast.makeText(context, context.resources.getString(R.string.rules_unavailable_404), Toast.LENGTH_LONG).show()
+                if (show404Toast) {
+                    Toast.makeText(context, context.resources.getString(R.string.rules_unavailable_404), Toast.LENGTH_LONG).show()
+                }
                 callback(null)
             }
             else -> {
@@ -2201,7 +2205,7 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheRulesCountForWidget(
         callback: (Boolean) -> Unit
     ) {
-        getAllRules { result ->
+        getAllRules({ result ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
@@ -2213,7 +2217,7 @@ class NetworkHelper(private val context: Context) {
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
-        }
+        })
     }
 
     suspend fun cacheRecipientCountForWidget(
@@ -2233,6 +2237,126 @@ class NetworkHelper(private val context: Context) {
             }
             // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
         }, false)
+    }
+
+
+    suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
+        callback: (Boolean) -> Unit
+    ) {
+        getAllFailedDeliveries({ result ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getAllFailedDeliveries
+            } else {
+                // First move the current count to the previous count (for comparison)
+                settingsManager.putSettingsInt(
+                    SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS,
+                    settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+                )
+                // Now store the current count
+                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+            // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
+        })
+    }
+
+
+    /**
+     * FAILED DELIVERIES
+     */
+
+    suspend fun getAllFailedDeliveries(
+        callback: (ArrayList<FailedDeliveries>?) -> Unit,
+        show404Toast: Boolean = false
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES)
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, FailedDeliveriesArray::class.java)
+
+                val failedDeliveriesList = ArrayList<FailedDeliveries>()
+                failedDeliveriesList.addAll(anonAddyData.data)
+                callback(failedDeliveriesList)
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            // Not found, aka the AnonAddy version is <0.8.1 (this endpoint was introduced in 0.8.1)
+            // OR
+            // Not found, aka the failed deliveries API is not enabled. (Not part of the user's subscription)
+            // =
+            // Show a toast (if enabled) letting the user know this feature is only available if the failed deliveries API is enabled
+            404 -> {
+                if (show404Toast) {
+                    Toast.makeText(context, context.resources.getString(R.string.failed_deliveries_unavailable_404), Toast.LENGTH_LONG).show()
+                }
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "getAllFailedDeliveries", String(response.data))
+                callback(null)
+            }
+        }
+    }
+
+    suspend fun deleteFailedDelivery(
+        callback: (String?) -> Unit,
+        id: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_FAILED_DELIVERIES}/$id")
+            .appendHeader(
+                "Authorization" to "Bearer $API_KEY",
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json"
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(ex.toString(), "deleteFailedDelivery", String(response.data))
+                callback(String(response.data))
+            }
+        }
     }
 
 

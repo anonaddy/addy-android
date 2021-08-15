@@ -51,7 +51,9 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:padding="16dp"
+                android:padding="@dimen/layout_padding_top"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding"
                 android:visibility="invisible">
 
 
@@ -141,7 +143,7 @@
                         android:layout_height="match_parent"
                         app:sectionDescription="@string/username_status_desc"
                         app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_task_alt_24dp"
+                        app:sectionStartIcon="@drawable/ic_circle_check"
                         app:sectionTitle="@string/username_status_active" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -149,8 +151,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionDescription="@tools:sample/lorem/random"
-                        app:sectionEndIcon="@drawable/ic_edit_24dp"
-                        app:sectionStartIcon="@drawable/ic_notes_24dp"
+                        app:sectionEndIcon="@drawable/ic_edit"
+                        app:sectionStartIcon="@drawable/ic_align_justified"
                         app:sectionTitle="@string/description" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -158,8 +160,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionDescription="@tools:sample/full_names"
-                        app:sectionEndIcon="@drawable/ic_edit_24dp"
-                        app:sectionStartIcon="@drawable/ic_account_arrow_right"
+                        app:sectionEndIcon="@drawable/ic_edit"
+                        app:sectionStartIcon="@drawable/ic_user"
                         app:sectionTitle="@string/default_recipient" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
@@ -168,7 +170,7 @@
                         android:layout_height="match_parent"
                         app:sectionColorAccent="@color/softRed"
                         app:sectionDescription="@string/delete_username_desc"
-                        app:sectionStartIcon="@drawable/ic_delete_24dp"
+                        app:sectionStartIcon="@drawable/ic_trash"
                         app:sectionTitle="@string/delete_username" />
 
                 </LinearLayout>

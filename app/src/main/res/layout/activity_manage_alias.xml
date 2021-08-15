@@ -31,7 +31,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/layout_padding">
 
 
                 <TextView
@@ -97,7 +97,7 @@
                             android:padding="4dp"
                             android:text="@string/d_forwarded"
                             android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_email_24dp"
+                            app:drawableStartCompat="@drawable/ic_inbox"
                             app:drawableTint="@color/portalOrange" />
 
                         <TextView
@@ -110,7 +110,7 @@
                             android:padding="4dp"
                             android:text="@string/d_replied"
                             android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_round_reply_24"
+                            app:drawableStartCompat="@drawable/ic_arrow_back_up"
                             app:drawableTint="@color/portalBlue" />
 
                         <TextView
@@ -123,7 +123,7 @@
                             android:padding="4dp"
                             android:text="@string/d_sent"
                             android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_email_out_24dp"
+                            app:drawableStartCompat="@drawable/ic_mail_forward"
                             app:drawableTint="@color/softGreen" />
 
                         <TextView
@@ -136,7 +136,7 @@
                             android:padding="4dp"
                             android:text="@string/d_blocked"
                             android:textColor="@color/BlackWhite"
-                            app:drawableStartCompat="@drawable/ic_round_block_24"
+                            app:drawableStartCompat="@drawable/ic_forbid"
                             app:drawableTint="@color/softRed" />
 
                     </LinearLayout>
@@ -171,7 +171,7 @@
                         android:maxLines="1"
                         android:minLines="1"
                         android:text="@string/copy_alias"
-                        app:icon="@drawable/ic_content_copy_24px"
+                        app:icon="@drawable/ic_copy"
                         app:iconSize="18dp" />
 
                     <Space
@@ -189,7 +189,7 @@
                         android:maxLines="1"
                         android:minLines="1"
                         android:text="@string/send_mail"
-                        app:icon="@drawable/ic_email_out_24dp"
+                        app:icon="@drawable/ic_mail_forward"
                         app:iconSize="18dp" />
 
                     <Space
@@ -237,7 +237,7 @@
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="@dimen/layout_padding"
                     android:visibility="invisible">
 
                     <LinearLayout
@@ -269,7 +269,7 @@
                             android:layout_height="match_parent"
                             app:sectionDescription="@string/alias_status_desc"
                             app:sectionShowSwitch="true"
-                            app:sectionStartIcon="@drawable/ic_task_alt_24dp"
+                            app:sectionStartIcon="@drawable/ic_circle_check"
                             app:sectionTitle="@string/alias_status_active" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -278,7 +278,7 @@
                             android:layout_height="match_parent"
                             app:sectionDescription="@string/watch_alias_desc"
                             app:sectionShowSwitch="true"
-                            app:sectionStartIcon="@drawable/ic_watch_alias_24dp"
+                            app:sectionStartIcon="@drawable/ic_watch_alias"
                             app:sectionTitle="@string/watch_alias" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -286,8 +286,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             app:sectionDescription="@tools:sample/lorem/random"
-                            app:sectionEndIcon="@drawable/ic_edit_24dp"
-                            app:sectionStartIcon="@drawable/ic_notes_24dp"
+                            app:sectionEndIcon="@drawable/ic_edit"
+                            app:sectionStartIcon="@drawable/ic_align_justified"
                             app:sectionTitle="@string/description" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -295,8 +295,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             app:sectionDescription="@tools:sample/full_names"
-                            app:sectionEndIcon="@drawable/ic_edit_24dp"
-                            app:sectionStartIcon="@drawable/ic_account_arrow_right"
+                            app:sectionEndIcon="@drawable/ic_edit"
+                            app:sectionStartIcon="@drawable/ic_user"
                             app:sectionTitle="@string/recipients" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -305,7 +305,7 @@
                             android:layout_height="match_parent"
                             app:sectionDescription="@tools:sample/date/ddmmyy"
                             app:sectionRippleEffect="false"
-                            app:sectionStartIcon="@drawable/ic_round_access_time_24"
+                            app:sectionStartIcon="@drawable/ic_clock"
                             app:sectionTitle="@string/created_at" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -314,7 +314,7 @@
                             android:layout_height="match_parent"
                             app:sectionDescription="@tools:sample/date/ddmmyy"
                             app:sectionRippleEffect="false"
-                            app:sectionStartIcon="@drawable/ic_history_toggle_off_24dp"
+                            app:sectionStartIcon="@drawable/ic_clock_history"
                             app:sectionTitle="@string/updated_at" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -323,7 +323,7 @@
                             android:layout_height="match_parent"
                             app:sectionColorAccent="@color/softRed"
                             app:sectionDescription="@string/delete_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_delete_24dp"
+                            app:sectionStartIcon="@drawable/ic_trash"
                             app:sectionTitle="@string/delete_alias" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -332,7 +332,7 @@
                             android:layout_height="match_parent"
                             app:sectionColorAccent="@color/hardRed"
                             app:sectionDescription="@string/forget_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_delete_forever_24dp"
+                            app:sectionStartIcon="@drawable/ic_eraser"
                             app:sectionTitle="@string/forget_alias" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
@@ -341,7 +341,7 @@
                             android:layout_height="match_parent"
                             app:sectionColorAccent="@color/primaryColor"
                             app:sectionDescription="@string/restore_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_restore_from_trash_24dp"
+                            app:sectionStartIcon="@drawable/ic_trash_off"
                             app:sectionTitle="@string/restore_alias" />
                     </LinearLayout>
                 </LinearLayout>

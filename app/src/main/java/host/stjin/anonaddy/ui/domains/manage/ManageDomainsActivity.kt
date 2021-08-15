@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
@@ -266,7 +267,9 @@ class ManageDomainsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_domain)
         anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.delete_domain_desc_confirm)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.delete_domain)
+            resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
@@ -407,9 +410,11 @@ class ManageDomainsActivity : BaseActivity(),
                 if (list.domain_sending_verified_at == null) {
                     binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_alert, null)
                     binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
+                    binding.activityManageDomainCheckDns.setSectionAlert(true)
                 } else {
-                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_24dp, null)
+                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns, null)
                     binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc))
+                    binding.activityManageDomainCheckDns.setSectionAlert(false)
                 }
 
 

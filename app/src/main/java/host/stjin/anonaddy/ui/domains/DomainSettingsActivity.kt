@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,8 +74,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getAllDomainsAndSetView()
             getUserResource()
+            getAllDomainsAndSetView()
         }
     }
 
@@ -82,7 +83,6 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 User.userResource = user
-                setStats()
             } else {
                 val snackbar =
                     Snackbar.make(
@@ -102,15 +102,19 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         }
     }
 
-    private fun setStats() {
+    private fun setStats(currentCount: Int? = null) {
         binding.activityDomainSettingsRLCountText.text = resources.getString(
             R.string.you_ve_used_d_out_of_d_active_domains,
-            User.userResource.active_domain_count,
-            User.userResource.active_domain_limit
+            currentCount ?: User.userResource.active_domain_count,
+            if (User.userResource.subscription != null) User.userResource.active_domain_limit else this.resources.getString(R.string.unlimited)
         )
 
-        binding.activityDomainSettingsAddDomain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
-
+        // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
+        if (User.userResource.subscription != null) {
+            binding.activityDomainSettingsAddDomain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
+        } else {
+            binding.activityDomainSettingsAddDomain.isEnabled = true
+        }
     }
 
     private lateinit var domainsAdapter: DomainAdapter
@@ -151,6 +155,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 }
 
                 if (list != null) {
+                    // Update stats
+                    setStats(list.size)
 
                     if (list.size > 0) {
                         binding.activityDomainSettingsNoDomains.visibility = View.GONE
@@ -202,7 +208,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_domain)
         anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_domain_desc_confirm)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete_domain)
+            context.resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()

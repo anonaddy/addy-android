@@ -19,17 +19,19 @@ import host.stjin.anonaddy.databinding.ActivitySearchBinding
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
+import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveryDetailsBottomDialogFragment
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import host.stjin.anonaddy.ui.rules.CreateRuleActivity
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredAliases
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredDomains
+import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredFailedDeliveries
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRecipients
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRules
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUsernames
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 
-class SearchActivity : BaseActivity() {
+class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
@@ -40,7 +42,8 @@ class SearchActivity : BaseActivity() {
         RECIPIENTS("recipients"),
         DOMAINS("domains"),
         USERNAMES("usernames"),
-        RULES("rules")
+        RULES("rules"),
+        FAILED_DELIVERIES("failed_deliveries")
     }
 
     object FilteredLists {
@@ -49,6 +52,7 @@ class SearchActivity : BaseActivity() {
         var filteredDomains: ArrayList<Domains>? = null
         var filteredUsernames: ArrayList<Usernames>? = null
         var filteredRules: ArrayList<Rules>? = null
+        var filteredFailedDeliveries: ArrayList<FailedDeliveries>? = null
     }
 
     // TODO Get these lists through bundles?
@@ -60,6 +64,7 @@ class SearchActivity : BaseActivity() {
         filteredDomains = null
         filteredUsernames = null
         filteredRules = null
+        filteredFailedDeliveries = null
     }
 
     private lateinit var binding: ActivitySearchBinding
@@ -106,7 +111,18 @@ class SearchActivity : BaseActivity() {
             setRules()
         }
 
-        if (filteredAliases?.size ?: 0 == 0 && filteredDomains?.size ?: 0 == 0 && filteredRecipients?.size ?: 0 == 0 && filteredUsernames?.size ?: 0 == 0 && filteredRules?.size ?: 0 == 0) {
+        if (filteredFailedDeliveries?.size ?: 0 > 0) {
+            binding.activitySearchFailedDeliveriesLL.visibility = View.VISIBLE
+            setFailedDeliveries()
+        }
+
+        if (filteredAliases?.size ?: 0 == 0 &&
+            filteredDomains?.size ?: 0 == 0 &&
+            filteredRecipients?.size ?: 0 == 0 &&
+            filteredUsernames?.size ?: 0 == 0 &&
+            filteredRules?.size ?: 0 == 0 &&
+            filteredFailedDeliveries?.size ?: 0 == 0
+        ) {
             binding.activitySearchRLLottieview.visibility = View.VISIBLE
         }
     }
@@ -191,6 +207,44 @@ class SearchActivity : BaseActivity() {
 
             })
             adapter = rulesAdapter
+        }
+
+    }
+
+
+    private var failedDeliveryDetailsBottomDialogFragment: FailedDeliveryDetailsBottomDialogFragment? = null
+    private fun setFailedDeliveries() {
+        binding.activitySearchFailedDeliveriesRecyclerview.apply {
+
+            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
+                // set a GridLayoutManager for tablets
+                GridLayoutManager(this@SearchActivity, 2)
+            } else {
+                LinearLayoutManager(this@SearchActivity)
+            }
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
+            val failedDeliveryAdapter = FailedDeliveryAdapter(filteredFailedDeliveries!!)
+            failedDeliveryAdapter.setClickListener(object : FailedDeliveryAdapter.ClickListener {
+                override fun onClickDetails(pos: Int, aView: View) {
+                    failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(
+                        filteredFailedDeliveries!![pos].id,
+                        filteredFailedDeliveries!![pos].created_at,
+                        filteredFailedDeliveries!![pos].alias_email,
+                        filteredFailedDeliveries!![pos].recipient_email,
+                        filteredFailedDeliveries!![pos].bounce_type,
+                        filteredFailedDeliveries!![pos].remote_mta,
+                        filteredFailedDeliveries!![pos].sender,
+                        filteredFailedDeliveries!![pos].code
+                    )
+                    failedDeliveryDetailsBottomDialogFragment!!.show(
+                        supportFragmentManager,
+                        "failedDeliveryDetailsBottomDialogFragment"
+                    )
+                }
+
+            })
+            adapter = failedDeliveryAdapter
         }
 
     }
@@ -328,6 +382,13 @@ class SearchActivity : BaseActivity() {
             })
             adapter = domainsAdapter
         }
+    }
+
+    override fun onDeleted(failedDeliveryId: String) {
+        val position = filteredFailedDeliveries?.indexOfFirst { it.id == failedDeliveryId }
+        position?.let { filteredFailedDeliveries?.removeAt(it) }
+        position?.let { binding.activitySearchFailedDeliveriesRecyclerview.adapter?.notifyItemRemoved(it) }
+        failedDeliveryDetailsBottomDialogFragment?.dismiss()
     }
 
 

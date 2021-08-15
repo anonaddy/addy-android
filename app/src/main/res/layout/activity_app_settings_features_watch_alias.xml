@@ -22,9 +22,9 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:padding="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,7 +74,7 @@
                     android:layout_height="20dp"
                     android:contentDescription="@string/Info"
                     android:paddingEnd="16dp"
-                    android:src="@drawable/ic_info_24dp"
+                    android:src="@drawable/ic_info"
                     tools:ignore="RtlSymmetry" />
 
                 <TextView

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="@dimen/cardview_padding">
 
         <LinearLayout
             android:id="@+id/usernames_recyclerview_list_LL1"
@@ -39,7 +39,7 @@
                     android:id="@+id/usernames_recyclerview_list_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_person_24dp"
+                    android:src="@drawable/ic_user"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
@@ -93,7 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/open_options"
-                    app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+                    app:srcCompat="@drawable/ic_chevron_down" />
             </LinearLayout>
         </LinearLayout>
 
@@ -108,6 +108,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/usernames_recyclerview_list_settings_button"
                 style="@style/MaterialButtonSecondaryLight"
+                android:layout_marginEnd="@dimen/cardview_button_padding"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -115,7 +116,8 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/usernames_recyclerview_list_delete_button"
-                style="@style/MaterialButtonSecondaryLight"
+                style="@style/MaterialButtonSecondaryDeleteStyle"
+                android:layout_marginStart="@dimen/cardview_button_padding"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

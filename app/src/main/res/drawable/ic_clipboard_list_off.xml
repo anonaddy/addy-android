@@ -1,0 +1,46 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="@color/colorControlNormal"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#00000000"
+      android:pathData="M9,12H9.01"
+      android:strokeWidth="2"
+      android:strokeColor="#000000"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"/>
+  <path
+      android:fillColor="#00000000"
+      android:pathData="M9,16H9.01"
+      android:strokeWidth="2"
+      android:strokeColor="#000000"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"/>
+  <path
+      android:fillColor="#00000000"
+      android:pathData="M13,16H15"
+      android:strokeWidth="2"
+      android:strokeColor="#000000"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"/>
+  <path
+      android:fillColor="#00000000"
+      android:pathData="M3,4L21,22"
+      android:strokeWidth="2"
+      android:strokeColor="#000000"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"/>
+  <path
+      android:fillColor="#00000000"
+      android:pathData="M13,3H11C9.8954,3 9,3.8954 9,5C9,6.1046 9.8954,7 11,7H13C14.1046,7 15,6.1046 15,5C15,3.8954 14.1046,3 13,3Z"
+      android:strokeWidth="2"
+      android:strokeColor="#000000"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"/>
+  <path
+      android:fillColor="#000000"
+      android:fillType="evenOdd"
+      android:pathData="M15,4C14.4477,4 14,4.4477 14,5C14,5.5523 14.4477,6 15,6H17C17.2652,6 17.5196,6.1054 17.7071,6.2929C17.8946,6.4804 18,6.7348 18,7V16C18,16.5523 18.4477,17 19,17C19.5523,17 20,16.5523 20,16V7C20,6.2043 19.6839,5.4413 19.1213,4.8787C18.5587,4.3161 17.7956,4 17,4H15ZM6.0783,6.6122C6.2924,6.1031 6.0534,5.5168 5.5443,5.3027C5.0352,5.0885 4.4489,5.3275 4.2348,5.8366C4.0813,6.2014 4,6.5965 4,7V19C4,19.7956 4.3161,20.5587 4.8787,21.1213C5.4413,21.6839 6.2043,22 7,22H17C17.7957,22 18.5587,21.6839 19.1213,21.1213C19.5118,20.7308 19.5118,20.0976 19.1213,19.7071C18.7308,19.3166 18.0976,19.3166 17.7071,19.7071C17.5196,19.8946 17.2652,20 17,20H7C6.7348,20 6.4804,19.8946 6.2929,19.7071C6.1054,19.5196 6,19.2652 6,19V7C6,6.8655 6.0271,6.7339 6.0783,6.6122Z"/>
+</vector>

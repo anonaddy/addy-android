@@ -76,12 +76,12 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.0.0</h3>
+    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.1.0</h3>
 <h4>Added</h4>
-<p>🔢 Added a brand new statistic widget for flexing with your AnonAddy stats, resize the widget to show and rearrange the stats<br />💭 It\'s now possible to "forget" your alias from the app<br />🌟 Introducing "Email action integration", create aliases and send emails from aliases from&hellip; anywhere! Without opening the app! Open the new "Features and integrations" section in the app settings to learn more<br />⬇️ Keep the app up-to-date with the new "AnonAddy updater", allowing your to check for updates and get notified when new updates are available</p>
+<p>📧❗ View and manage your failed deliveries! Optionally, you can also receive a notification in case of failed deliveries</p>
 <h4>Fixed/Improved</h4>
-<p>🎨 Massive UI redesign with Android 12 and simplicity in mind<br />- One-handed interface, simply swipe down from any screen to move content down for better accessibility<br />- Cards and raises are now used for a clean-looking, easier-to-understand design<br />- The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color<br />- A new app icon, that changes according to your system accent (Android 12 only)<br />- Softer colors<br />- Bigger, clearer buttons with more space between elements<br />- Animations! Most progressbars are now replaced with morphing buttons<br />- Improved shimmers<br />- Improved tablet layout</p>
-<p>📃 Updated shared domains list<br />👤 Select the recipients for an alias when creating a new alias<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
+<p>🎨 More UI changes that make the app look better<br />- The iconography has changed from Material to Tabler for a unique experience<br />- More animations</p>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -233,9 +233,9 @@
     <string name="anonaddy_instance">AnonAddy instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
-    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$d usernames</string>
-    <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$d active domains</string>
-    <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$d recipients</string>
+    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$s usernames</string>
+    <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$s active domains</string>
+    <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$s recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
     <string name="catch_all_desc">Enable catch-all on this domain</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
@@ -248,7 +248,7 @@
     <string name="latest">latest</string>
     <string name="hosted_instance">Hosted instance</string>
     <string name="self_hosted_instance_s">Self hosted instance (%s)</string>
-    <string name="manage_rules">Manage rules (beta)</string>
+    <string name="manage_rules">Manage rules</string>
     <string name="note">Note</string>
     <string name="delete_rule">Delete rule</string>
     <string name="delete_rule_desc_confirm">Are you sure you want to delete this rule?</string>
@@ -291,7 +291,8 @@
     <string name="deactivate">Deactivate</string>
     <string name="rule_activated">Rule activated</string>
     <string name="rule_deactivated">Rule deactivated</string>
-    <string name="rules_unavailable_404">The rules feature is not available in the current instance of AnonAddy. Please make sure that the rules API is available for the current user</string>
+    <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
+    <string name="failed_deliveries_unavailable_404">The failed deliveries feature is not available. Please make sure that the failed deliveries API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="rules">Rules</string>
     <string name="this_field_cannot_be_empty">This field cannot be empty</string>
     <string name="gitlab_project">Gitlab project</string>
@@ -322,10 +323,11 @@
     <string name="notification_channel_watch_alias_desc">Receive a notification when an email is sent to a watched alias</string>
     <string name="notification_new_emails">New emails forwarded</string>
     <string name="notification_new_emails_desc">%1$d new email(s) have been forwarded via %2$s</string>
-    <string name="notification_new_update_available">New update available</string>
     <string name="notification_new_update_available_desc">Version %s of AnonAddy for Android is available. Tap here to download it</string>
+    <string name="notification_new_failed_delivery">Email delivery failed</string>
+    <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
     <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
-
+    <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
@@ -385,7 +387,6 @@
     <string name="obtaining_information">obtaining information…</string>
     <string name="new_update_available">New update available</string>
     <string name="new_update_available_version">%s -> %s</string>
-    <string name="update_available_desc">A new version of AnonAddy for Android is available. Tap here to download it</string>
     <string name="anonaddy_updater">AnonAddy Updater</string>
     <string name="update_notify_title">Notify for new updates</string>
     <string name="update_notify_desc">Periodically check for updates in the background and send a notification when one is available</string>
@@ -397,7 +398,7 @@
     <string name="no_new_update_available_desc">You are currently using the latest version of AnonAddy for Android. Turn on notifications to get notified when a new version is available.</string>
     <string name="anonaddy_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
-    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td>%7$s</td></tr></tbody></table>]]></string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %7$s</td></tr></tbody></table>]]></string>
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>
@@ -411,4 +412,22 @@
     <string name="widget_2_recipients">recipients</string>
     <string name="widget_2_rules">rules</string>
     <string name="details">Details</string>
+    <string name="failed_deliveries_info_text">If you would like to search through failed deliveries, go back to main section and use the search button.</string>
+    <string name="all_failed_deliveries">All failed deliveries</string>
+    <string name="no_failed_deliveries">No failed deliveries</string>
+    <string name="failed_deliveries">Failed deliveries</string>
+    <string name="delete_failed_delivery">Delete failed delivery</string>
+    <string name="error_delete_failed_delivery">Something went wrong while deleting this failed delivery</string>
+    <string name="notify_failed_deliveries_feature_desc">For an overview of all failed deliveries, go back to main section and tap on the failed deliveries button at the top. (mail with exclamation mark)\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for failed deliveries.</string>
+    <string name="feature_notify_failed_deliveries">Failed delivery notifications</string>
+    <string name="unlimited">unlimited</string>
+    <string name="view_failed_deliveries">View failed deliveries</string>
+    <string name="view_failed_deliveries_desc">Open an overview of recent failed deliveries</string>
+    <string name="notify_failed_deliveries_feature_section_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
+    <string name="new_failed_deliveries">New failed deliveries</string>
+    <string name="remove">Remove</string>
+    <string name="restore">Restore</string>
+    <string name="forget">Forget</string>
+    <string name="version_channel_fdroid_info">Please note that it may take a little longer for updates to be visible in F-Droid</string>
+
 </resources>

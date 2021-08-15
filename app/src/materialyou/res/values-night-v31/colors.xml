@@ -3,4 +3,6 @@
     <color name="primaryColor">@android:color/system_accent1_700</color>
     <color name="primaryLightColor">@android:color/system_accent1_500</color>
     <color name="colorControlNormal">#7AFFFFFF</color>
+    <color name="softRedSuperSuperLight">@color/softRed</color>
+    <color name="MaterialButtonSecondarySoftRedTextColor">@android:color/white</color>
 </resources>

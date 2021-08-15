@@ -5,7 +5,7 @@
     <color name="primaryColor">#353C7D</color>
     <color name="primaryLightColor">#4d499a</color>
     <color name="primarySuperLightColor">#804D499A</color>
-    <color name="primarySuperSuperLightColor">#26353C7D</color>
+    <color name="primarySuperSuperLightColor">#32353C7D</color>
     <color name="primaryDarkColor">#000040</color>
     <color name="secondaryColor">#3ae7e1</color>
     <color name="secondaryDarkColor">#00b4af</color>
@@ -16,9 +16,9 @@
 
 
     <color name="softGreen">#00B4AF</color>
-    <color name="softGreenSuperLight">#5000B4AF</color>
+    <color name="softGreenSuperSuperLight">#3200B4AF</color>
     <color name="softRed">#FD5842</color>
-    <color name="softRedSuperLight">#50FD5842</color>
+    <color name="softRedSuperSuperLight">#32FD5842</color>
 
     <color name="bandwidthColor">#353C7D</color>
     <color name="bandwidthSuperSuperLightColor">#504D499A</color>
@@ -51,5 +51,9 @@
     <color name="profile_icon_foreground">@android:color/white</color>
 
     <color name="CircularProgressButtonTextColor">@color/primaryLightColor</color>
+    <color name="CircularProgressButtonSoftRedTextColor">@color/softRed</color>
     <color name="splashBackground">@color/primaryColorStatic</color>
+
+    <color name="MaterialButtonSecondarySoftRedTextColor">@color/softRed</color>
+
 </resources>

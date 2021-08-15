@@ -13,20 +13,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:weightSum="12">
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="@dimen/cardview_padding"
         android:weightSum="12">
 
         <LinearLayout
@@ -88,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:contentDescription="@string/copy_alias"
-                android:src="@drawable/ic_content_copy_24px"
+                android:src="@drawable/ic_copy"
                 app:tint="@color/shimmerGray" />
 
         </LinearLayout>

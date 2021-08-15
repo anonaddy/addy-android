@@ -40,7 +40,8 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             filteredRecipients: ArrayList<Recipients>,
             filteredDomains: ArrayList<Domains>,
             filteredUsernames: ArrayList<Usernames>,
-            filteredRules: ArrayList<Rules>
+            filteredRules: ArrayList<Rules>,
+            filteredFailedDeliveries: ArrayList<FailedDeliveries>
         )
     }
 
@@ -159,6 +160,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     var domains: ArrayList<Domains>? = null
     var usernames: ArrayList<Usernames>? = null
     var rules: ArrayList<Rules>? = null
+    var failedDeliveries: ArrayList<FailedDeliveries>? = null
     private var sourcesToSearch = 0
     private var sourcesSearched = 0
 
@@ -217,11 +219,23 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllRules { rulesList ->
+                networkHelper.getAllRules({ rulesList ->
                     rules = rulesList
                     sourcesSearched++
                     performSearch(context)
-                }
+                })
+            }
+        }
+
+        if (binding.bsSearchChipFailedDeliveries.isChecked) {
+            sourcesToSearch++
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                networkHelper.getAllFailedDeliveries({ failedDeliveriesList ->
+                    failedDeliveries = failedDeliveriesList
+                    sourcesSearched++
+                    performSearch(context)
+                })
             }
         }
     }
@@ -234,6 +248,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             val filteredDomains = ArrayList<Domains>()
             val filteredUsernames = ArrayList<Usernames>()
             val filteredRules = ArrayList<Rules>()
+            val filteredFailedDeliveries = ArrayList<FailedDeliveries>()
 
             if (aliases != null) {
                 for (alias in aliases!!) {
@@ -286,13 +301,32 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 }
             }
 
-            if (filteredAliases.size == 0 && filteredDomains.size == 0 && filteredRecipients.size == 0 && filteredUsernames.size == 0 && filteredRules.size == 0) {
+            if (failedDeliveries != null) {
+                for (failedDelivery in failedDeliveries!!) {
+                    if (
+                        failedDelivery.alias_email?.lowercase(Locale.ROOT)
+                            ?.contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.ROOT)) == true ||
+                        failedDelivery.recipient_email?.lowercase(Locale.ROOT)
+                            ?.contains(binding.bsSearchTermTiet.text.toString().lowercase(Locale.ROOT)) == true
+                    ) {
+                        filteredFailedDeliveries.add(failedDelivery)
+                    }
+                }
+            }
+
+            if (filteredAliases.size == 0 &&
+                filteredDomains.size == 0 &&
+                filteredRecipients.size == 0 &&
+                filteredUsernames.size == 0 &&
+                filteredRules.size == 0 &&
+                filteredFailedDeliveries.size == 0
+            ) {
                 binding.bsSearchTitle.text = context.resources.getString(R.string.search)
                 binding.bsSearchTermTil.isEnabled = true
                 binding.bsSearchTermTil.error =
                     context.resources.getString(R.string.nothing_found)
             } else {
-                listener.onSearch(filteredAliases, filteredRecipients, filteredDomains, filteredUsernames, filteredRules)
+                listener.onSearch(filteredAliases, filteredRecipients, filteredDomains, filteredUsernames, filteredRules, filteredFailedDeliveries)
             }
         }
     }

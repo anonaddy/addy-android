@@ -32,6 +32,6 @@
         android:layout_marginTop="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
-        android:drawableLeft="@drawable/ic_round_clear_24"
+        android:drawableLeft="@drawable/ic_close"
         android:text="@string/clear_logs" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

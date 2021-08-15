@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -198,7 +199,9 @@ class ManageRecipientsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.remove_public_key)
         anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.remove_public_key_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.remove_public_key)
+            resources.getString(R.string.remove)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
@@ -231,7 +234,9 @@ class ManageRecipientsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_recipient)
         anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.delete_recipient_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.delete_recipient)
+            resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Revert the button to normal
             anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()

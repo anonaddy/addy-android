@@ -122,6 +122,9 @@
             <!-- END Creating aliases on-the-go -->
         </activity>
         <activity
+            android:name=".ui.faileddeliveries.FailedDeliveriesActivity"
+            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+        <activity
             android:name=".ui.appsettings.logs.LogViewerActivity"
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
@@ -159,6 +162,9 @@
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesMailToActivity"
+            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+        <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyFailedDeliveriesActivity"
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
             android:name=".ui.appsettings.update.AppSettingsUpdateActivity"

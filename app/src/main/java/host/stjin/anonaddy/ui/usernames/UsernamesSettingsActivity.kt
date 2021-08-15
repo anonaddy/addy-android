@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,15 +74,14 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getAllUsernamesAndSetView()
             getUserResource()
+            getAllUsernamesAndSetView()
         }
     }
 
     private suspend fun getUserResource() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                User.userResource = user
                 setStats()
             } else {
                 val snackbar =
@@ -102,10 +102,20 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         }
     }
 
-    private fun setStats() {
+    private fun setStats(currentCount: Int? = null) {
         binding.activityUsernameSettingsRLCountText.text =
-            resources.getString(R.string.you_ve_used_d_out_of_d_usernames, User.userResource.username_count, User.userResource.username_limit)
-        binding.activityUsernameSettingsAddUsername.isEnabled = User.userResource.username_count < User.userResource.username_limit
+            resources.getString(
+                R.string.you_ve_used_d_out_of_d_usernames,
+                currentCount ?: User.userResource.username_count,
+                if (User.userResource.subscription != null) User.userResource.username_limit else this.resources.getString(R.string.unlimited)
+            )
+
+        // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
+        if (User.userResource.subscription != null) {
+            binding.activityUsernameSettingsAddUsername.isEnabled = User.userResource.username_count < User.userResource.username_limit
+        } else {
+            binding.activityUsernameSettingsAddUsername.isEnabled = true
+        }
     }
 
     private lateinit var usernamesAdapter: UsernameAdapter
@@ -150,6 +160,8 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 }
 
                 if (list != null) {
+                    // Update stats
+                    setStats(list.size)
 
                     if (list.size > 0) {
                         binding.activityUsernameSettingsNoUsernames.visibility = View.GONE
@@ -202,7 +214,9 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_username)
         anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_username_desc_confirm)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete_username)
+            context.resources.getString(R.string.delete)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
             anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()

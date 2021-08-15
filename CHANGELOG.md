@@ -1,5 +1,19 @@
 # Changelog
 
+## [v3.1.0] - 2021-08-15
+
+### Added
+
+- View and manage your failed deliveries! Optionally, you can also receive a notification in case of failed deliveries
+
+### Fixed/Improved
+
+- More UI changes that make the app look better
+    - The iconography has changed from Material to Tabler for a unique experience
+    - More animations
+
+- Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v3.0.0] - 2021-07-31
 
 ### Added

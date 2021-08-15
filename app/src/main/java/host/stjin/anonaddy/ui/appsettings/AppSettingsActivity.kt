@@ -333,6 +333,8 @@ class AppSettingsActivity : BaseActivity(),
             resources.getString(R.string.reset_app_confirmation_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.reset_app)
+        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
         }

@@ -1,6 +1,8 @@
 package host.stjin.anonaddy.ui.home
 
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -14,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -247,19 +250,49 @@ class HomeFragment : Fragment() {
     }
 
 
+    private val STATISTICS_ANIMATION_DURATION = 500L
     private fun setAliasesStatistics(count: Int, maxAliases: Int) {
         binding.homeStatisticsAliasesProgress.max = maxAliases * 100
-        binding.homeStatisticsAliasesCurrent.text = "$count /"
         binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
+
+        try {
+            startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/")
+        } catch (e: Exception) {
+            binding.homeStatisticsAliasesCurrent.text = "$count /"
+        }
+
         Handler(Looper.getMainLooper()).postDelayed({
             ObjectAnimator.ofInt(
                 binding.homeStatisticsAliasesProgress,
                 "progress",
                 count * 100
             )
-                .setDuration(500)
+                .setDuration(STATISTICS_ANIMATION_DURATION)
                 .start()
         }, 400)
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun startNumberCountAnimation(textView: TextView, count: Int, suffix: String? = null) {
+        if (textView.text != "$count$suffix") {
+            val animator = ValueAnimator.ofInt(textView.text.toString().substringBefore(" ").toInt(), count)
+            animator.duration = STATISTICS_ANIMATION_DURATION
+            animator.addUpdateListener { animation -> textView.text = animation.animatedValue.toString() + " " + suffix }
+            animator.start()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun startBandwidthCountAnimation(textView: TextView, count: Float, suffix: String? = null) {
+        if (textView.text != "$count$suffix") {
+            val animator = ValueAnimator.ofFloat(textView.text.toString().substringBefore("MB ").toFloat(), count)
+            animator.duration = STATISTICS_ANIMATION_DURATION
+            animator.addUpdateListener { animation ->
+                textView.text = roundOffDecimal(animation.animatedValue.toString().toDouble()).toString() + "MB " + suffix
+            }
+            animator.start()
+        }
     }
 
     private fun setMonthlyBandwidthStatistics(
@@ -269,11 +302,6 @@ class HomeFragment : Fragment() {
         binding.homeStatisticsMonthlyBandwidthProgress.max =
             if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
 
-
-        val currentCount = this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
-        binding.homeStatisticsMonthlyBandwidthCurrent.text = "$currentCount /"
-
-
         binding.homeStatisticsMonthlyBandwidthMax.text =
             if (maxMonthlyBandwidth == 0) this.resources.getString(R.string._sMB, "∞") else this.resources.getString(
                 R.string._sMB,
@@ -281,12 +309,20 @@ class HomeFragment : Fragment() {
             )
 
 
+        try {
+            startBandwidthCountAnimation(binding.homeStatisticsMonthlyBandwidthCurrent, roundOffDecimal(currMonthlyBandwidth), "/")
+        } catch (e: Exception) {
+            val currentCount = this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
+            binding.homeStatisticsMonthlyBandwidthCurrent.text = "$currentCount /"
+        }
+
+
         ObjectAnimator.ofInt(
             binding.homeStatisticsMonthlyBandwidthProgress,
             "progress",
             currMonthlyBandwidth.roundToInt() * 100
         )
-            .setDuration(500)
+            .setDuration(STATISTICS_ANIMATION_DURATION)
             .start()
     }
 
@@ -294,15 +330,22 @@ class HomeFragment : Fragment() {
     private fun setRecipientStatistics(currRecipients: Int, maxRecipient: Int) {
         binding.homeStatisticsRecipientsProgress.max =
             maxRecipient * 100
-        binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
+
         binding.homeStatisticsRecipientsMax.text =
             if (maxRecipient == 0) "∞" else maxRecipient.toString()
+
+        try {
+            startNumberCountAnimation(binding.homeStatisticsRecipientsCurrent, currRecipients, "/")
+        } catch (e: Exception) {
+            binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
+        }
+
         ObjectAnimator.ofInt(
             binding.homeStatisticsRecipientsProgress,
             "progress",
             currRecipients * 100
         )
-            .setDuration(500)
+            .setDuration(STATISTICS_ANIMATION_DURATION)
             .start()
     }
 
