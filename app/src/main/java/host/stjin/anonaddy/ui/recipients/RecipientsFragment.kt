@@ -285,6 +285,7 @@ class RecipientsFragment : Fragment(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete)
         anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(context, R.color.softRed)
+        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(context, R.color.AnonAddyCustomDialogSoftRedTextColor))
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
