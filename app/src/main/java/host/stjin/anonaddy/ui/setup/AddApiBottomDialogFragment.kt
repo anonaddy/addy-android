@@ -57,6 +57,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
 
         // TODO ENABLE FEATURE WHEN ANONADDY IMPLEMENTED THIS
+        // Make sure to also uncomment the <!-- BLOCK --> in manifest
         if (BuildConfig.DEBUG) {
             // Check that the device will let you use the camera
             val pm = context?.packageManager
