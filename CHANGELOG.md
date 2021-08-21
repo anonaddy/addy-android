@@ -1,5 +1,12 @@
 # Changelog
 
+## [v3.1.1] - 2021-08-21
+
+### Fixed/Improved
+
+- Fixed the alias integration not working on some devices
+- Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v3.1.0] - 2021-08-15
 
 ### Added
