@@ -11,6 +11,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityIntentCreateAliasBinding
+import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.startShareSheetActivityExcludingOwnApp
@@ -26,6 +27,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
     private lateinit var intentBottomDialogFragment: IntentBottomDialogFragment
     private var domainOptions: List<String> = listOf()
+    var aliases: ArrayList<Aliases> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +131,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         }
     }
 
+
     private lateinit var intentSendMailRecipientBottomDialogFragment: IntentSendMailRecipientBottomDialogFragment
     private suspend fun sendEmailFromAlias(text: CharSequence) {
         intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_send_mail_dialog))
@@ -136,6 +139,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         // Get aliases and pass it through to the send email bottomdialog
         networkHelper.getAliases({ result ->
             if (result != null) {
+                aliases = result
                 intentSendMailRecipientBottomDialogFragment =
                     IntentSendMailRecipientBottomDialogFragment.newInstance(text.toString(), result, domainOptions)
 
@@ -229,46 +233,39 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
             openMailToShareSheet(toString.split(",").toTypedArray())
             finish()
         } else {
-            networkHelper.getAliases({ result ->
-                // Check if this alias exists
-                if (result != null) {
-                    if (result.count { it.email == alias } > 0) {
-                        // The entered alias exists!
-                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_sharesheet))
+            // Check if this alias exists
+            if (aliases.count { it.email == alias } > 0) {
+                // The entered alias exists!
+                intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_sharesheet))
 
 
-                        // Get actual alias object
-                        val aliasObject = result.first { it.email == alias }
-                        // Get recipients
-                        val recipients = AnonAddyUtils.getSendAddress(toString, aliasObject)
+                // Get actual alias object
+                val aliasObject = aliases.first { it.email == alias }
+                // Get recipients
+                val recipients = AnonAddyUtils.getSendAddress(toString, aliasObject)
 
-                        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
-                        val clipboard: ClipboardManager =
-                            this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
-                        clipboard.setPrimaryClip(clip)
-                        Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
+                // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
+                val clipboard: ClipboardManager =
+                    this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
 
-                        /**
-                         * SINCE Android 11, we can only query apps that support the mailto: intent :D
-                         */
+                /**
+                 * SINCE Android 11, we can only query apps that support the mailto: intent :D
+                 */
 
-                        openMailToShareSheet(recipients)
-                        finish()
-                    } else {
-                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, alias))
+                openMailToShareSheet(recipients)
+                finish()
+            } else {
+                intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, alias))
 
-                        // Alias does not exist, perhaps the user wants to create it?
-                        val splittedEmailAddress = alias.split("@")
-                        lifecycleScope.launch {
-                            addAliasToAccountAndShare(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0], alias, toString)
-                        }
-                    }
-                } else {
-                    Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_aliases), Toast.LENGTH_LONG).show()
-                    finish()
+                // Alias does not exist, perhaps the user wants to create it?
+                val splittedEmailAddress = alias.split("@")
+                lifecycleScope.launch {
+                    addAliasToAccountAndShare(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0], alias, toString)
                 }
-            }, true, includeDeleted = false)
+            }
         }
     }
 

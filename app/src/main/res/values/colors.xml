@@ -56,4 +56,7 @@
 
     <color name="MaterialButtonSecondarySoftRedTextColor">@color/softRed</color>
 
+    <color name="AnonAddyCustomDialogSoftRedTextColor">@color/softRed</color>
+    <color name="AnonAddyCustomDialogHardRedTextColor">@color/hardRed</color>
+
 </resources>

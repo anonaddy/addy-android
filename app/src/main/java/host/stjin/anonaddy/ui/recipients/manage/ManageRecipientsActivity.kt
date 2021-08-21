@@ -201,6 +201,7 @@ class ManageRecipientsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.remove)
         anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
@@ -236,6 +237,7 @@ class ManageRecipientsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.delete)
         anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
+        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Revert the button to normal
