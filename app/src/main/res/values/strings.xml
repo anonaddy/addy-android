@@ -69,16 +69,16 @@
     <string name="see_this_version_changelogs">See this version\'s changelog</string>
     <string name="changelog">Changelog</string>
     <string name="contributors">Contributors</string>
-    <string name="visit_anonaddy_helps_section">Visit Anonaddy helps section</string>
-    <string name="anonaddy_help">Anonaddy help</string>
+    <string name="visit_anonaddy_helps_section">Visit AnonAddy helps section</string>
+    <string name="anonaddy_help">AnonAddy help</string>
     <string name="crafted_with_love_and_privacy">Crafted with love and privacy</string>
     <string name="dark_mode">Dark mode</string>
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.1.1</h3>
+    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.1.2</h3>
 <h4>Fixed/Improved</h4>
-<p>- Fixed the alias integration not working on some devices<br />- Performance improvements and other things I might have forgot to make the app even smoother<br /><br /></p>]]></string>
+<p>- Fixed the web intent resolution not working on some devices<br />- Created a separate integration section for web intent resolution under features/integrations settings<br />- Performance improvements and other things I might have forgot to make the app even smoother<br /><br /></p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -426,5 +426,12 @@
     <string name="restore">Restore</string>
     <string name="forget">Forget</string>
     <string name="version_channel_fdroid_info">Please note that it may take a little longer for updates to be visible in F-Droid</string>
+    <string name="integration_webintent_resolution">Web intent resolution</string>
+    <string name="integration_webintent_resolution_desc">Open the AnonAddy for Android app instead of the website for easy access and quick actions such as deactivating your alias via the link in the email banner.\n\nSince this feature is not managed by AnonAddy for Android but by Android itself, manual action is required to link the URL to the app. On many devices this is done automatically, but on devices with Android 12 or higher it is necessary to add this URL manually. The action is easy but cannot be automated.\n\nDue to limitations added in Android 12, it is only possible to use this integration on the hosted instance found at app.anonaddy.com.</string>
+    <string name="webintent_manage_default_apps_pre_sdk24_enable">Click on \"open by default\" and set app links to \"Open in this app\"</string>
+    <string name="webintent_manage_default_apps_pre_sdk24_disable">Click on \"open by default\" and set app links to \"Don\'t open in this app\"</string>
+    <string name="webintent_manage_default_apps_enable">Enable supported links, click on \"Add link\" and tick the checkbox in front of the URL</string>
+    <string name="webintent_manage_default_apps_disable">Disable supported links</string>
+    <string name="enable_disable_feature_manual_action_required_desc">Manual actions must be performed</string>
 
 </resources>

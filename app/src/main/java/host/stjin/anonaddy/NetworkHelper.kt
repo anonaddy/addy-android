@@ -3,7 +3,6 @@ package host.stjin.anonaddy
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import com.einmalfel.earl.EarlParser
 import com.einmalfel.earl.Feed
@@ -324,7 +323,6 @@ class NetworkHelper(private val context: Context) {
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
-        Log.e("KEK", "1")
 
 
         /*
@@ -343,7 +341,6 @@ class NetworkHelper(private val context: Context) {
         if (!page.isNullOrEmpty()) {
             parameters.add("page[number]" to page)
         }
-        Log.e("KEK", "2")
 
         val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
             .appendHeader(
@@ -353,7 +350,6 @@ class NetworkHelper(private val context: Context) {
                 "Accept" to "application/json"
             )
             .awaitStringResponseResult()
-        Log.e("KEK", "3")
 
 
         when (response.statusCode) {

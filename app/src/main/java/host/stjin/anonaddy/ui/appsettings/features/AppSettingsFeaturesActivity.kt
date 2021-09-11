@@ -12,6 +12,7 @@ import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.ComponentUtils.getComponentState
 import host.stjin.anonaddy.utils.ComponentUtils.setComponentState
+import host.stjin.anonaddy.utils.WebIntentManager
 
 
 class AppSettingsFeaturesActivity : BaseActivity() {
@@ -49,6 +50,11 @@ class AppSettingsFeaturesActivity : BaseActivity() {
         binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setSwitchChecked(
             settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
         )
+
+
+        binding.activityAppSettingsFeaturesSectionWebintentSheet.setSwitchChecked(
+            WebIntentManager(this).isCurrentDomainAssociated()
+        )
     }
 
     private fun setOnSwitchListeners() {
@@ -69,6 +75,15 @@ class AppSettingsFeaturesActivity : BaseActivity() {
 
                     // Since failed deliveries should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
                     BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
+                }
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionWebintentSheet.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed) {
+                    WebIntentManager(this@AppSettingsFeaturesActivity).requestSupportedLinks(checked)
                 }
             }
         })
@@ -99,6 +114,22 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyFailedDeliveriesActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyFailedDeliveriesActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionWebintentSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesWebIntentResolutionActivity::class.java)
                 startActivity(intent)
             }
         })

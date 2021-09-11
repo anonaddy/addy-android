@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.1.2] - 2021-09-11
+
+### Fixed/Improved
+
+- Fixed the web intent resolution not working on some devices
+- Created a separate integration section for web intent resolution under features/integrations settings
+- Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v3.1.1] - 2021-08-21
 
 ### Fixed/Improved

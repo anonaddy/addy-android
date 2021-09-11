@@ -88,6 +88,16 @@
                 app:sectionTitle="@string/integration_mailto_alias" />
 
 
+            <host.stjin.anonaddy.ui.customviews.SectionView
+                android:id="@+id/activity_app_settings_features_section_webintent_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="6dp"
+                app:sectionDescription="@string/integration_webintent_resolution_desc"
+                app:sectionShowSwitch="true"
+                app:sectionStartIcon="@drawable/ic_external_link"
+                app:sectionTitle="@string/integration_webintent_resolution" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

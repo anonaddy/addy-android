@@ -9,9 +9,9 @@ android {
         applicationId = "host.stjin.anonaddy"
         minSdk = 23
         targetSdk = 31
-        versionCode = 25
+        versionCode = 26
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v3.1.1"
+        versionName = "v3.1.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -126,7 +126,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.7.0-alpha05")
+    implementation("androidx.work:work-runtime-ktx:2.7.0-beta01")
 }
 
 // For the donut in the aliasview
