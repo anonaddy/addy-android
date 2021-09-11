@@ -99,11 +99,27 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "https://*/deactivate” -->
+
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+
+
+                <!-- If new URLS are added here, also add them to the webintentmanager -->
+
+                <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
                 <data
                     android:host="*"
-                    android:pathPrefix="/deactivate"
-                    android:scheme="https" />
-                <!-- note that the leading "/" is required for pathPrefix -->
+                    android:pathPrefix="/deactivate" />
+                <!-- END -->
+
+                <!-- Hosted hosted instances (Works on > SDK31 devices) -->
+                <data
+                    android:host="app.anonaddy.com"
+                    android:pathPrefix="/deactivate" />
+                <!-- END -->
+
+                <!-- END -->
             </intent-filter>
         </activity>
         <activity
@@ -170,6 +186,9 @@
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyFailedDeliveriesActivity"
+            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+        <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesWebIntentResolutionActivity"
             android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
         <activity
             android:name=".ui.appsettings.update.AppSettingsUpdateActivity"

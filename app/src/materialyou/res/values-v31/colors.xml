@@ -24,9 +24,7 @@
 
     <color name="widget_2_layout_3_inner_background_color">@android:color/system_accent1_700</color>
 
-
     <color name="splashBackground">@android:color/system_accent1_800</color>
-
 
     <color name="AnonAddyCustomDialogSoftRedTextColor">@android:color/white</color>
     <color name="AnonAddyCustomDialogHardRedTextColor">@android:color/white</color>
