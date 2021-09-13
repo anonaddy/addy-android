@@ -89,7 +89,7 @@
     <string name="address">Address</string>
     <string name="add_recipient_desc">Enter the individual email of the new recipient you’d like to add.\n\nYou will receive an email with a verification link that will expire in one hour, you can tap “Resend email” to get a new one</string>
     <string name="not_a_valid_address">This is not a valid address</string>
-    <string name="error_adding_recipient">Something went wrong while creating this alias</string>
+    <string name="error_adding_recipient">Something went wrong while adding this recipient</string>
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
     <string name="no_aliases">You have no aliases, what about creating one?</string>
     <string name="no_deleted_aliases">You have no deleted aliases</string>
