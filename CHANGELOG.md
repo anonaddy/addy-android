@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.1.3] - 2021-10-02
+
+### Fixed/Improved
+
+- Fixed some string issues
+- Changed the return key into a search key on the keyboard when using the global search option
+- Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v3.1.2] - 2021-09-11
 
 ### Fixed/Improved

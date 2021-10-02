@@ -73,7 +73,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         binding.bsSearchClearRecent.setOnClickListener(this)
         // Setup a callback when the "Done" button is pressed on keyboard
         binding.bsSearchTermTiet.setOnEditorActionListener { _, actionId, event ->
-            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
+            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchForTerm(requireContext())
             }
             false
