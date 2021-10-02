@@ -1,0 +1,3 @@
+<!-- F-Droid adds their own "What's new in ..." header -->
+<h4>Fixed/Improved</h4>
+<p>- Fixed some string issues<br />- Changed the return key into a search key on the keyboard when using the global search option<br />- Performance improvements and other things I might have forgot to make the app even smoother<br /><br /></p>
