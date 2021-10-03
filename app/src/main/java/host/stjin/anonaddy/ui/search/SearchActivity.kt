@@ -9,7 +9,6 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -30,6 +29,7 @@ import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRules
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUsernames
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.SnackbarHelper
 
 class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
 
@@ -293,13 +293,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                     val aliasEmailAddress = finalList[pos].email
                     val clip = ClipData.newPlainText("alias", aliasEmailAddress)
                     clipboard.setPrimaryClip(clip)
-
-                    Snackbar.make(
-                        binding.activitySearchCL,
-                        context.resources.getString(R.string.copied_alias),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-
+                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), binding.activitySearchCL, false).show()
                 }
 
             })

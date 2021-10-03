@@ -6,10 +6,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashSet
 
-class LoggingHelper(context: Context) {
-    private val prefs = context.getSharedPreferences("host.stjin.anonaddy_logs", 0)
+class LoggingHelper(context: Context, sharedPreference: LOGFILES = LOGFILES.DEFAULT) {
+    private val prefs = context.getSharedPreferences(sharedPreference.filename, 0)
     private val settingsManager = SettingsManager(false, context)
 
+    enum class LOGFILES(val filename: String) {
+        DEFAULT("host.stjin.anonaddy_logs"),
+        BACKUP_LOGS("host.stjin.anonaddy_logs_backups")
+    }
+
+    // TODO Add warninglevel?
     fun addLog(error: String, method: String, body: String?) {
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
             val logs = getLogs()

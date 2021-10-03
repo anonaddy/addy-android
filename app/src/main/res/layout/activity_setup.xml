@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_setup_RL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primaryColorStatic"
@@ -65,27 +66,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="32dp"
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/fragment_setup_init_button_new"
-            style="@style/ActionButtonsTertiary"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginBottom="8dp"
-            android:text="@string/new_user"
-            tools:ignore="InefficientWeight" />
-
 
         <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-            android:id="@+id/fragment_setup_init_button_api"
+            android:id="@+id/fragment_setup_init_button_new"
             style="@style/CircularProgressButtonTertiary"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/got_the_api_key" />
+            android:layout_marginBottom="16dp"
+            android:text="@string/new_user" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/fragment_setup_init_button_api"
+                style="@style/CircularProgressButtonTertiary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="@string/got_the_api_key" />
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/fragment_setup_init_button_restore_backup"
+                style="@style/CircularProgressButtonTertiary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/restore_backup" />
+        </LinearLayout>
 
     </LinearLayout>
 

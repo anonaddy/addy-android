@@ -3,11 +3,11 @@ package host.stjin.anonaddy.ui.appsettings.logs
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityLogViewerBinding
 import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy.utils.SnackbarHelper
 
 class LogViewerActivity : BaseActivity() {
 
@@ -25,11 +25,7 @@ class LogViewerActivity : BaseActivity() {
         loadLogs()
 
         binding.appsettingsLogviewerEfab.setOnClickListener {
-            Snackbar.make(
-                findViewById(R.id.appsettings_logviewer_CL),
-                resources.getString(R.string.logs_cleared),
-                Snackbar.LENGTH_SHORT
-            ).show()
+            SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.logs_cleared), binding.appsettingsLogviewerCL, false).show()
             loggingHelper.clearLogs()
             loadLogs()
         }

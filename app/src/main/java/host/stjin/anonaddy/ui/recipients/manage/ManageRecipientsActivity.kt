@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.recipients.manage
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -11,16 +10,14 @@ import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityManageRecipientsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 
@@ -111,18 +108,12 @@ class ManageRecipientsActivity : BaseActivity(),
                 binding.activityManageRecipientActive.setTitle(resources.getString(R.string.encryption_disabled))
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(true)
-                val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_recipient_CL),
+                SnackbarHelper.createSnackbar(
+                    this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                    binding.activityManageRecipientCL,
+                    true
+                ).show()
             }
         }, recipientId)
     }
@@ -135,18 +126,12 @@ class ManageRecipientsActivity : BaseActivity(),
                 binding.activityManageRecipientActive.setTitle(resources.getString(R.string.encryption_enabled))
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(false)
-                val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_recipient_CL),
+                SnackbarHelper.createSnackbar(
+                    this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                    binding.activityManageRecipientCL,
+                    true
+                ).show()
             }
         }, recipientId)
     }

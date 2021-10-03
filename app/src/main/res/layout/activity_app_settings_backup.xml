@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appsettings_backup_CL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/AnonAddyNotYetWhite"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appsettings_backup_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="132dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="@string/anonaddy_backup"
+                    android:elevation="50dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_anonaddy_backup_banner" />
+
+
+                <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/general" />
+
+                </LinearLayout>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_backup_section_backup_now"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/last_backup_desc"
+                    app:sectionStartIcon="@drawable/ic_file_export"
+                    app:sectionTitle="@string/backup_now" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_backup_section_backup_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/backup_password_desc"
+                    app:sectionStartIcon="@drawable/ic_key"
+                    app:sectionTitle="@string/backup_password" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_backup_section_backup_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/backup_location_desc"
+                    app:sectionStartIcon="@drawable/ic_folder"
+                    app:sectionTitle="@string/backup_location" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_backup_section_periodic_backups"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/backup_periodic_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_calendar_time"
+                    app:sectionTitle="@string/backup_periodic" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_backup_section_backup_log"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/backup_log_desc"
+                    app:sectionStartIcon="@drawable/ic_clock_history"
+                    app:sectionTitle="@string/backup_log" />
+            </LinearLayout>
+
+            <View
+                style="@style/divider"
+                android:layout_width="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:alpha="0.8"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/Info"
+                    android:paddingEnd="16dp"
+                    android:src="@drawable/ic_info"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/activity_app_settings_backup_version_channel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/anonaddy_backup_desc" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

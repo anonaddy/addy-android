@@ -16,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
@@ -25,9 +24,9 @@ import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
-import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 
@@ -104,22 +103,13 @@ class RecipientsFragment : Fragment(),
             } else {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
-                val snackbar = bottomNavView?.let {
-                    Snackbar.make(
-                        it,
-                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        Snackbar.LENGTH_SHORT
-                    ).apply {
-                        anchorView = bottomNavView
-                    }
+                bottomNavView?.let {
+                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.error_obtaining_user) + "\n" + result, it, true)
+                        .apply {
+                            anchorView = bottomNavView
+                        }.show()
                 }
-                if (SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar?.setAction(R.string.logs) {
-                        val intent = Intent(context, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar?.show()
+
             }
         }
     }
@@ -234,22 +224,13 @@ class RecipientsFragment : Fragment(),
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
 
-                val snackbar = bottomNavView?.let {
-                    Snackbar.make(
-                        it,
-                        context.resources.getString(R.string.error_resend_verification) + "\n" + result,
-                        Snackbar.LENGTH_SHORT
-                    ).apply {
-                        anchorView = bottomNavView
-                    }
+                bottomNavView?.let {
+                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.error_resend_verification) + "\n" + result, it, true)
+                        .apply {
+                            anchorView = bottomNavView
+                        }.show()
                 }
-                if (SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar?.setAction(R.string.logs) {
-                        val intent = Intent(context, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar?.show()
+
             }
         }, id)
 
@@ -261,11 +242,7 @@ class RecipientsFragment : Fragment(),
         val bottomNavView: BottomNavigationView? =
             activity?.findViewById(R.id.nav_view)
         bottomNavView?.let {
-            Snackbar.make(
-                it,
-                context.resources.getString(R.string.verification_email_has_been_sent),
-                Snackbar.LENGTH_SHORT
-            ).apply {
+            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.verification_email_has_been_sent), it, false).apply {
                 anchorView = bottomNavView
             }.show()
         }

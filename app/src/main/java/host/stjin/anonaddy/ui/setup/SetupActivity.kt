@@ -1,11 +1,13 @@
 package host.stjin.anonaddy.ui.setup
 
+import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
@@ -15,7 +17,8 @@ import host.stjin.anonaddy.ui.SplashActivity
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
-class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener {
+class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener,
+    BackupPasswordBottomDialogFragment.AddBackupPasswordBottomDialogListener {
 
     private val addApiBottomDialogFragment: AddApiBottomDialogFragment =
         AddApiBottomDialogFragment.newInstance()
@@ -83,6 +86,35 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         binding.fragmentSetupInitButtonNew.setOnClickListener {
             val intent = Intent(this, SetupNewActivity::class.java)
             startActivity(intent)
+        }
+
+        binding.fragmentSetupInitButtonRestoreBackup.setOnClickListener {
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "application/octet-stream"
+            }
+
+            resultLauncher.launch(intent)
+        }
+    }
+
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            binding.fragmentSetupInitButtonRestoreBackup.startAnimation()
+            // There are no request codes
+            val data: Intent? = result.data
+            data?.data?.let {
+                val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
+                    BackupPasswordBottomDialogFragment.newInstance(it)
+
+                if (!backupPasswordBottomDialogFragment.isAdded) {
+                    backupPasswordBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "backupPasswordBottomDialogFragment"
+                    )
+                }
+            }
         }
     }
 
@@ -157,5 +189,11 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(url)
         startActivity(i)
+    }
+
+    override fun onBackupRestoreCompleted() {
+        val intent = Intent(this, SplashActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

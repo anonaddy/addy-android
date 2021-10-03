@@ -433,5 +433,30 @@
     <string name="webintent_manage_default_apps_enable">Enable supported links, click on \"Add link\" and tick the checkbox in front of the URL</string>
     <string name="webintent_manage_default_apps_disable">Disable supported links</string>
     <string name="enable_disable_feature_manual_action_required_desc">Manual actions must be performed</string>
+    <string name="anonaddy_backup">AnonAddy Backup</string>
+    <string name="anonaddy_backup_desc">With AnonAddy for Android backups you can easily export and import the configuration of the app to another device. These backups include the API key and aliases that are on the watch list, but also other app settings.\n\nTo restore backups, reset AnonAddy for Android and choose \"restore from backup file\" in the setup.</string>
+    <string name="backup_now">Backup now</string>
+    <string name="last_backup_desc">Last backup was done %s</string>
+    <string name="backup_password">Backup password</string>
+    <string name="backup_password_desc">Set the encryption key for backup encryption</string>
+    <string name="backup_location">Backup location</string>
+    <string name="backup_location_desc">Set the location for backups to be stored</string>
+    <string name="backup_periodic">Make backups automatically</string>
+    <string name="backup_periodic_desc">Periodically make backups in the background</string>
+    <string name="backup_log">Backup log</string>
+    <string name="backup_log_desc">View previous backup tasks</string>
+    <string name="backup_location_set">Backup location set</string>
+    <string name="restore_backup">Restore from backup</string>
+    <string name="restore_failed">Unable to restore backup, make sure the password is correct and you have selected a valid file</string>
+    <string name="backup_failed">Backup failed, check the backup logs for more information</string>
+    <string name="backup_completed">Backup completed</string>
+    <string name="set_backup_password">Set backup password</string>
+    <string name="set_backup_password_desc">Enter the backup password with which backups are encrypted.\nBackups contain sensitive information so a strong password is recommended.\n\nThe backup cannot be recovered without this password</string>
+    <string name="password">Password</string>
+    <string name="backup_password_set">Backup password set</string>
+    <string name="enter_backup_password">Enter backup password</string>
+    <string name="enter_backup_password_desc">Enter the backup password with which backups are encrypted.\nBackups contain sensitive information so a deleting the backup file after restoring the backup is recommended.\n\nThe backup cannot be recovered without this password</string>
+    <string name="never">never</string>
+    <string name="backup_location_not_accessible">Backup location not accessible, tap here to set a new location</string>
 
 </resources>

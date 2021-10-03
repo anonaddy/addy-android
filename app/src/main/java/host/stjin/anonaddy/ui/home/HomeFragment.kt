@@ -23,10 +23,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
 import host.stjin.anonaddy.models.Aliases
@@ -34,9 +32,9 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
-import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -108,22 +106,13 @@ class HomeFragment : Fragment() {
             } else {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
-                val snackbar = bottomNavView?.let {
-                    Snackbar.make(
-                        it,
-                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        Snackbar.LENGTH_SHORT
-                    ).apply {
-                        anchorView = bottomNavView
-                    }
+                bottomNavView?.let {
+                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.error_obtaining_user) + "\n" + result, it, true)
+                        .apply {
+                            anchorView = bottomNavView
+                        }.show()
                 }
-                if (SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar?.setAction(R.string.logs) {
-                        val intent = Intent(context, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar?.show()
+
             }
         }
     }
@@ -215,11 +204,7 @@ class HomeFragment : Fragment() {
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)
                             bottomNavView?.let {
-                                Snackbar.make(
-                                    it,
-                                    context.resources.getString(R.string.copied_alias),
-                                    Snackbar.LENGTH_SHORT
-                                ).apply {
+                                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it, false).apply {
                                     anchorView = bottomNavView
                                 }.show()
                             }

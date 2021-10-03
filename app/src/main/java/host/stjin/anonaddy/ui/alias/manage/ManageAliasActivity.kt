@@ -17,20 +17,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
-import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -223,19 +221,12 @@ class ManageAliasActivity : BaseActivity(),
                 binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_deactivated))
             } else {
                 binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
-                val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_alias_CL),
+                SnackbarHelper.createSnackbar(
+                    this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
-
+                    binding.activityManageAliasCL,
+                    true
+                ).show()
             }
         }, aliasId)
     }
@@ -248,18 +239,12 @@ class ManageAliasActivity : BaseActivity(),
                 binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_activated))
             } else {
                 binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
-                val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_alias_CL),
+                SnackbarHelper.createSnackbar(
+                    this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                    binding.activityManageAliasCL,
+                    true
+                ).show()
             }
         }, aliasId)
     }
@@ -326,23 +311,7 @@ class ManageAliasActivity : BaseActivity(),
                 this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
             clipboard.setPrimaryClip(clip)
-            Snackbar.make(
-                findViewById(R.id.activity_manage_alias_CL),
-                this.resources.getString(R.string.copied_alias),
-                Snackbar.LENGTH_SHORT
-            ).show()
-        }
-
-        binding.activityManageAliasCopy.setOnClickListener {
-            val clipboard: ClipboardManager =
-                this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
-            clipboard.setPrimaryClip(clip)
-            Snackbar.make(
-                findViewById(R.id.activity_manage_alias_CL),
-                this.resources.getString(R.string.copied_alias),
-                Snackbar.LENGTH_SHORT
-            ).show()
+            SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.copied_alias), binding.activityManageAliasCL, false).show()
         }
 
         binding.activityManageAliasSend.setOnClickListener {

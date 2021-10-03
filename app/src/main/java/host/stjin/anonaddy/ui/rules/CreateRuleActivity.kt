@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.rules
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,16 +11,14 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityRulesCreateBinding
 import host.stjin.anonaddy.models.Action
 import host.stjin.anonaddy.models.Condition
 import host.stjin.anonaddy.models.Rules
-import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 
@@ -348,20 +345,12 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                             }
                             else -> {
                                 binding.activityRulesCreateProgressbar.visibility = View.INVISIBLE
-
-                                val snackbar =
-                                    Snackbar.make(
-                                        binding.activityRulesCreateCL, resources.getString(R.string.error_creating_rule) + "\n" + result,
-                                        Snackbar.LENGTH_SHORT
-                                    )
-
-                                if (SettingsManager(false, this@CreateRuleActivity).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                                    snackbar.setAction(R.string.logs) {
-                                        val intent = Intent(this@CreateRuleActivity, LogViewerActivity::class.java)
-                                        startActivity(intent)
-                                    }
-                                }
-                                snackbar.show()
+                                SnackbarHelper.createSnackbar(
+                                    this@CreateRuleActivity,
+                                    resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                    binding.activityRulesCreateCL,
+                                    true
+                                ).show()
                             }
                         }
                     }, ruleId!!, rules)
@@ -376,20 +365,12 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                             }
                             else -> {
                                 binding.activityRulesCreateProgressbar.visibility = View.INVISIBLE
-
-                                val snackbar =
-                                    Snackbar.make(
-                                        binding.activityRulesCreateCL, resources.getString(R.string.error_creating_rule) + "\n" + result,
-                                        Snackbar.LENGTH_SHORT
-                                    )
-
-                                if (SettingsManager(false, this@CreateRuleActivity).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                                    snackbar.setAction(R.string.logs) {
-                                        val intent = Intent(this@CreateRuleActivity, LogViewerActivity::class.java)
-                                        startActivity(intent)
-                                    }
-                                }
-                                snackbar.show()
+                                SnackbarHelper.createSnackbar(
+                                    this@CreateRuleActivity,
+                                    resources.getString(R.string.error_creating_rule) + "\n" + result,
+                                    binding.activityRulesCreateCL,
+                                    true
+                                ).show()
                             }
                         }
                     }, rules)
