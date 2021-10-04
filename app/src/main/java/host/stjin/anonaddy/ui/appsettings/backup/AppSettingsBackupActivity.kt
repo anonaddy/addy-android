@@ -91,6 +91,7 @@ class AppSettingsBackupActivity : BaseActivity(),
 
     private fun checkIfBackupLocationIsAccessible() {
         binding.activityAppSettingsBackupSectionBackupLocation.setSectionAlert(!backupHelper.isBackupLocationAccessible())
+        binding.activityAppSettingsBackupSectionBackupNow.setLayoutEnabled(backupHelper.isBackupLocationAccessible())
         if (!backupHelper.isBackupLocationAccessible()) {
             binding.activityAppSettingsBackupSectionBackupLocation.setDescription(this.resources.getString(R.string.backup_location_not_accessible))
         } else {
