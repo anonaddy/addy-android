@@ -9,15 +9,16 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 
 object SnackbarHelper {
-    fun createSnackbar(context: Context, text: String, view: View, showLogs: Boolean): Snackbar {
+    fun createSnackbar(context: Context, text: String, view: View, showLogs: LoggingHelper.LOGFILES? = null): Snackbar {
         val snackbar = Snackbar.make(
             view,
             text,
             Snackbar.LENGTH_SHORT
         )
-        if (showLogs && SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
+        if (showLogs != null && SettingsManager(false, context).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
             snackbar.setAction(R.string.logs) {
                 val intent = Intent(context, LogViewerActivity::class.java)
+                intent.putExtra("logfile", showLogs.filename)
                 context.startActivity(intent)
             }
         }

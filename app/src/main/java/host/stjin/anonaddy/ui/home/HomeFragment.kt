@@ -32,6 +32,7 @@ import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -107,7 +108,12 @@ class HomeFragment : Fragment() {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
                 bottomNavView?.let {
-                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.error_obtaining_user) + "\n" + result, it, true)
+                    SnackbarHelper.createSnackbar(
+                        context,
+                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        it,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    )
                         .apply {
                             anchorView = bottomNavView
                         }.show()
@@ -204,7 +210,7 @@ class HomeFragment : Fragment() {
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)
                             bottomNavView?.let {
-                                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it, false).apply {
+                                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
                                     anchorView = bottomNavView
                                 }.show()
                             }

@@ -20,6 +20,10 @@
     <color name="softRed">#FD5842</color>
     <color name="softRedSuperSuperLight">#32FD5842</color>
 
+    <color name="logImportanceCritical">@color/softRed</color>
+    <color name="logImportanceWarning">@color/portalOrange</color>
+    <color name="logImportanceInfo">@color/green</color>
+
     <color name="bandwidthColor">#353C7D</color>
     <color name="bandwidthSuperSuperLightColor">#504D499A</color>
 

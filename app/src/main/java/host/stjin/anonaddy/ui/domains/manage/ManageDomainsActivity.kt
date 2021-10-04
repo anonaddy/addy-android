@@ -17,6 +17,7 @@ import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
@@ -116,7 +117,7 @@ class ManageDomainsActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
                     binding.activityManageDomainCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, domainId)
@@ -133,7 +134,7 @@ class ManageDomainsActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
                     binding.activityManageDomainCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, domainId)
@@ -150,7 +151,7 @@ class ManageDomainsActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageDomainCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, domainId)
@@ -167,7 +168,7 @@ class ManageDomainsActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageDomainCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, domainId)

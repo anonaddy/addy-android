@@ -8,9 +8,12 @@ import android.widget.CompoundButton
 import androidx.activity.result.contract.ActivityResultContracts
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBackupBinding
+import host.stjin.anonaddy.models.LOGIMPORTANCE
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.service.BackupHelper
+import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
@@ -113,8 +116,14 @@ class AppSettingsBackupActivity : BaseActivity(),
             result?.data?.also { uri ->
                 uri.data?.toString()?.let {
                     settingsManager.putSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION, it)
-                    SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.backup_location_set), binding.appsettingsBackupCL, false)
+                    SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.backup_location_set), binding.appsettingsBackupCL)
                         .show()
+                    LoggingHelper(this, LoggingHelper.LOGFILES.BACKUP_LOGS).addLog(
+                        LOGIMPORTANCE.WARNING.int,
+                        this.resources.getString(R.string.log_backup_location_changed),
+                        "resultLauncher",
+                        null
+                    )
                 }
                 // Perform operations on the document using its URI.
             }
@@ -139,6 +148,9 @@ class AppSettingsBackupActivity : BaseActivity(),
             override fun onClick() {
                 forceSwitch = true
                 binding.activityAppSettingsBackupSectionPeriodicBackups.setSwitchChecked(!binding.activityAppSettingsBackupSectionPeriodicBackups.getSwitchChecked())
+                // Schedule the background worker (this will cancel if already scheduled)
+                BackgroundWorkerHelper(this@AppSettingsBackupActivity).scheduleBackgroundWorker()
+
             }
         })
 
@@ -148,16 +160,14 @@ class AppSettingsBackupActivity : BaseActivity(),
                     SnackbarHelper.createSnackbar(
                         this@AppSettingsBackupActivity,
                         this@AppSettingsBackupActivity.resources.getString(R.string.backup_completed),
-                        binding.appsettingsBackupCL,
-                        false
+                        binding.appsettingsBackupCL
                     ).show()
                     figureOutLastBackup()
                 } else {
                     SnackbarHelper.createSnackbar(
                         this@AppSettingsBackupActivity,
                         this@AppSettingsBackupActivity.resources.getString(R.string.backup_failed),
-                        binding.appsettingsBackupCL,
-                        false
+                        binding.appsettingsBackupCL, LoggingHelper.LOGFILES.BACKUP_LOGS
                     ).show()
                 }
             }
@@ -183,7 +193,9 @@ class AppSettingsBackupActivity : BaseActivity(),
 
         binding.activityAppSettingsBackupSectionBackupLog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-
+                val intent = Intent(this@AppSettingsBackupActivity, LogViewerActivity::class.java)
+                intent.putExtra("logfile", LoggingHelper.LOGFILES.BACKUP_LOGS.filename)
+                startActivity(intent)
             }
         })
     }
@@ -193,9 +205,14 @@ class AppSettingsBackupActivity : BaseActivity(),
         SnackbarHelper.createSnackbar(
             this@AppSettingsBackupActivity,
             this@AppSettingsBackupActivity.resources.getString(R.string.backup_password_set),
-            binding.appsettingsBackupCL,
-            false
+            binding.appsettingsBackupCL
         ).show()
+        LoggingHelper(this, LoggingHelper.LOGFILES.BACKUP_LOGS).addLog(
+            LOGIMPORTANCE.WARNING.int,
+            this.resources.getString(R.string.log_backup_password_changed),
+            "onSaved",
+            null
+        )
     }
 
 

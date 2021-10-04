@@ -18,6 +18,7 @@ import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
@@ -99,7 +100,7 @@ class ManageUsernamesActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageUsernameCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, usernameId)
@@ -117,7 +118,7 @@ class ManageUsernamesActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageUsernameCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, usernameId)

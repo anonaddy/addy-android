@@ -22,6 +22,7 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.databinding.ActivityRuleSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
@@ -147,15 +148,14 @@ class RulesSettingsActivity : BaseActivity() {
                                         SnackbarHelper.createSnackbar(
                                             this@RulesSettingsActivity,
                                             this@RulesSettingsActivity.resources.getString(R.string.changing_rules_order_success),
-                                            binding.activityManageRulesCL,
-                                            false
+                                            binding.activityManageRulesCL
                                         ).show()
                                     } else {
                                         SnackbarHelper.createSnackbar(
                                             this@RulesSettingsActivity,
                                             this@RulesSettingsActivity.resources.getString(R.string.error_changing_rules_order) + "\n" + result,
                                             binding.activityManageRulesCL,
-                                            true
+                                            LoggingHelper.LOGFILES.DEFAULT
                                         ).show()
                                     }
                                 }, list)
@@ -187,15 +187,14 @@ class RulesSettingsActivity : BaseActivity() {
                 SnackbarHelper.createSnackbar(
                     this,
                     this@RulesSettingsActivity.resources.getString(R.string.rule_deactivated),
-                    binding.activityManageRulesCL,
-                    false
+                    binding.activityManageRulesCL
                 ).show()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
                     this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
                     binding.activityManageRulesCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, ruleId)
@@ -208,15 +207,14 @@ class RulesSettingsActivity : BaseActivity() {
                 SnackbarHelper.createSnackbar(
                     this,
                     this@RulesSettingsActivity.resources.getString(R.string.rule_activated),
-                    binding.activityManageRulesCL,
-                    false
+                    binding.activityManageRulesCL
                 ).show()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
                     this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
                     binding.activityManageRulesCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, ruleId)

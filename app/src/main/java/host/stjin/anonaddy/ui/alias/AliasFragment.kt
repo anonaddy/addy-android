@@ -238,7 +238,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)
                             bottomNavView?.let {
-                                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it, false).apply {
+                                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
                                     anchorView = bottomNavView
                                 }.show()
                             }
@@ -322,7 +322,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         val bottomNavView: BottomNavigationView? =
                             activity?.findViewById(R.id.nav_view)
                         bottomNavView?.let {
-                            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it, false).apply {
+                            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
                                 anchorView = bottomNavView
                             }.show()
                         }

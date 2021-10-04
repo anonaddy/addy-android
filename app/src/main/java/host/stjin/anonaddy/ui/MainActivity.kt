@@ -12,6 +12,7 @@ import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityMainBinding
 import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.models.*
+import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
@@ -60,6 +61,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 }
             }
         }
+
+
+        // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
+        BackgroundWorkerHelper(this).scheduleBackgroundWorker()
     }
 
     override fun onResume() {

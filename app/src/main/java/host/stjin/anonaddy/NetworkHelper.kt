@@ -70,7 +70,7 @@ class NetworkHelper(private val context: Context) {
         } catch (e: Exception) {
             val ex = e.message
             println(ex)
-            loggingHelper.addLog(ex.toString(), "invalidApiKey", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidApiKey", null)
         }
     }
 
@@ -102,7 +102,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "verifyApiKey", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "verifyApiKey", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -154,7 +154,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getAnonAddyInstanceVersion", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAnonAddyInstanceVersion", String(response.data))
                 callback(null, ex.toString())
             }
         }
@@ -202,7 +202,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getUserResource", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getUserResource", String(response.data))
                 callback(null, ex.toString())
             }
         }
@@ -244,7 +244,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getDomainOptions", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getDomainOptions", String(response.data))
                 callback(null)
             }
         }
@@ -305,7 +305,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addAlias", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -381,7 +381,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getAliases", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAliases", String(response.data))
                 callback(null)
             }
         }
@@ -425,7 +425,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificAlias", String(response.data))
                 callback(null)
             }
         }
@@ -467,7 +467,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificAlias", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -517,7 +517,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateRecipientsSpecificAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateRecipientsSpecificAlias", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -552,7 +552,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deactivateSpecificAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificAlias", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -591,7 +591,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "activateSpecificAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificAlias", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -626,7 +626,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteAlias", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -660,7 +660,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "forgetAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "forgetAlias", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -694,7 +694,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "restoreAlias", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "restoreAlias", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -737,7 +737,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addRecipient", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addRecipient", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -791,7 +791,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getRecipients", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getRecipients", String(response.data))
                 callback(null)
             }
         }
@@ -825,7 +825,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteRecipient", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteRecipient", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -860,7 +860,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "disableEncryptionRecipient", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "disableEncryptionRecipient", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -900,7 +900,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "enableEncryptionRecipient", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "enableEncryptionRecipient", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -935,7 +935,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "removeEncryptionKeyRecipient", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "removeEncryptionKeyRecipient", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -975,7 +975,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addEncryptionKeyRecipient", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addEncryptionKeyRecipient", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1015,7 +1015,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificRecipient", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificRecipient", String(response.data))
                 callback(null, ex.toString())
             }
         }
@@ -1053,7 +1053,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "resendVerificationEmail", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "resendVerificationEmail", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1101,7 +1101,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getDomains", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getDomains", String(response.data))
                 callback(null)
             }
         }
@@ -1135,7 +1135,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteDomain", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1177,7 +1177,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addDomain", String(response.data))
                 callback(ex.toString(), null)
             }
         }
@@ -1221,7 +1221,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificDomain", String(response.data))
                 callback(null)
             }
         }
@@ -1264,7 +1264,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDefaultRecipientForSpecificDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDefaultRecipientForSpecificDomain", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1298,7 +1298,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deactivateSpecificDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificDomain", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1337,7 +1337,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "activateSpecificDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificDomain", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1371,7 +1371,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "disableCatchAllSpecificDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "disableCatchAllSpecificDomain", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1410,7 +1410,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "enableCatchAllSpecificDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "enableCatchAllSpecificDomain", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1453,7 +1453,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificDomain", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificDomain", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1502,7 +1502,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getUsernames", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getUsernames", String(response.data))
                 callback(null)
             }
         }
@@ -1536,7 +1536,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteUsername", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteUsername", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1574,7 +1574,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "addUsername", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addUsername", String(response.data))
                 callback(ex.toString(), null)
             }
         }
@@ -1618,7 +1618,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificUsername", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificUsername", String(response.data))
                 callback(null)
             }
         }
@@ -1661,7 +1661,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDefaultRecipientForSpecificUsername", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDefaultRecipientForSpecificUsername", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1695,7 +1695,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deactivateSpecificUsername", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificUsername", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1734,7 +1734,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "activateSpecificUsername", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificUsername", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1776,7 +1776,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateDescriptionSpecificUsername", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificUsername", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1841,7 +1841,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getAllRules", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAllRules", String(response.data))
                 callback(null)
             }
         }
@@ -1885,7 +1885,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getSpecificRule", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificRule", String(response.data))
                 callback(null)
             }
         }
@@ -1920,7 +1920,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteRule", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteRule", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -1956,7 +1956,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "createRule", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "createRule", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -2005,7 +2005,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "reorderRules", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "reorderRules", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -2042,7 +2042,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "updateRule", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateRule", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -2076,7 +2076,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deactivateSpecificRule", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificRule", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -2115,7 +2115,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "activateSpecificRule", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificRule", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -2318,7 +2318,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getAllFailedDeliveries", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAllFailedDeliveries", String(response.data))
                 callback(null)
             }
         }
@@ -2352,7 +2352,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "deleteFailedDelivery", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteFailedDelivery", String(response.data))
                 callback(String(response.data))
             }
         }
@@ -2384,7 +2384,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(ex.toString(), "getGitlabTags", String(response.data))
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getGitlabTags", String(response.data))
                 callback(null)
             }
         }

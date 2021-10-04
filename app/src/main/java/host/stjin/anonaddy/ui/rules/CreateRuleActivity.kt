@@ -18,6 +18,7 @@ import host.stjin.anonaddy.databinding.ActivityRulesCreateBinding
 import host.stjin.anonaddy.models.Action
 import host.stjin.anonaddy.models.Condition
 import host.stjin.anonaddy.models.Rules
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
@@ -349,7 +350,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                     this@CreateRuleActivity,
                                     resources.getString(R.string.error_creating_rule) + "\n" + result,
                                     binding.activityRulesCreateCL,
-                                    true
+                                    LoggingHelper.LOGFILES.DEFAULT
                                 ).show()
                             }
                         }
@@ -369,7 +370,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                     this@CreateRuleActivity,
                                     resources.getString(R.string.error_creating_rule) + "\n" + result,
                                     binding.activityRulesCreateCL,
-                                    true
+                                    LoggingHelper.LOGFILES.DEFAULT
                                 ).show()
                             }
                         }

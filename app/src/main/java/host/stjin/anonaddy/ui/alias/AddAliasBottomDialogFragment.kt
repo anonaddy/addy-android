@@ -21,6 +21,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
+import host.stjin.anonaddy.models.LOGIMPORTANCE
 import host.stjin.anonaddy.models.SUBSCRIPTIONS
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.utils.LoggingHelper
@@ -186,7 +187,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                         // To prevent a crash from the ArrayIndexOutOfBoundsException log the error and just continue without filling the spinner
                         val ex = e.message
                         println(ex)
-                        LoggingHelper(context).addLog(ex.toString(), "fillSpinners", null)
+                        LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "fillSpinners", null)
                     }
 
                 }

@@ -86,8 +86,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 SnackbarHelper.createSnackbar(
                     this,
                     resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                    binding.activityDomainSettingsCL,
-                    true
+                    binding.activityDomainSettingsCL
                 ).show()
             }
         }

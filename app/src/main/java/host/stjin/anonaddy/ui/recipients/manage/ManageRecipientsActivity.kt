@@ -17,6 +17,7 @@ import host.stjin.anonaddy.databinding.ActivityManageRecipientsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
@@ -112,7 +113,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageRecipientCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, recipientId)
@@ -130,7 +131,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageRecipientCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, recipientId)

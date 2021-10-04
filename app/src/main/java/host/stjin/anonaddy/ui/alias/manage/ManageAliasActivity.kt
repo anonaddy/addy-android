@@ -28,6 +28,7 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
@@ -225,7 +226,7 @@ class ManageAliasActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageAliasCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, aliasId)
@@ -243,7 +244,7 @@ class ManageAliasActivity : BaseActivity(),
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageAliasCL,
-                    true
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
         }, aliasId)
@@ -311,7 +312,7 @@ class ManageAliasActivity : BaseActivity(),
                 this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
             clipboard.setPrimaryClip(clip)
-            SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.copied_alias), binding.activityManageAliasCL, false).show()
+            SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.copied_alias), binding.activityManageAliasCL).show()
         }
 
         binding.activityManageAliasSend.setOnClickListener {

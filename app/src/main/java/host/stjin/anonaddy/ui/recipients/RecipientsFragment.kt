@@ -25,6 +25,7 @@ import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
@@ -104,7 +105,12 @@ class RecipientsFragment : Fragment(),
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
                 bottomNavView?.let {
-                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.error_obtaining_user) + "\n" + result, it, true)
+                    SnackbarHelper.createSnackbar(
+                        context,
+                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        it,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    )
                         .apply {
                             anchorView = bottomNavView
                         }.show()
@@ -225,7 +231,12 @@ class RecipientsFragment : Fragment(),
                     activity?.findViewById(R.id.nav_view)
 
                 bottomNavView?.let {
-                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.error_resend_verification) + "\n" + result, it, true)
+                    SnackbarHelper.createSnackbar(
+                        context,
+                        context.resources.getString(R.string.error_resend_verification) + "\n" + result,
+                        it,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    )
                         .apply {
                             anchorView = bottomNavView
                         }.show()
@@ -242,7 +253,7 @@ class RecipientsFragment : Fragment(),
         val bottomNavView: BottomNavigationView? =
             activity?.findViewById(R.id.nav_view)
         bottomNavView?.let {
-            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.verification_email_has_been_sent), it, false).apply {
+            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.verification_email_has_been_sent), it).apply {
                 anchorView = bottomNavView
             }.show()
         }

@@ -24,6 +24,7 @@ import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
@@ -137,8 +138,7 @@ class AppSettingsActivity : BaseActivity(),
                     SnackbarHelper.createSnackbar(
                         this,
                         this.resources.getString(R.string.biometric_error_hw_unavailable),
-                        binding.activityAppSettingsCL,
-                        false
+                        binding.activityAppSettingsCL
                     ).show()
                     loadSettings()
                 }
@@ -173,7 +173,7 @@ class AppSettingsActivity : BaseActivity(),
                         this@AppSettingsActivity, this@AppSettingsActivity.resources.getString(
                             R.string.authentication_error_s,
                             errString
-                        ), binding.activityAppSettingsCL, false
+                        ), binding.activityAppSettingsCL
                     ).show()
 
                     binding.activityAppSettingsSectionSecurity.setSwitchChecked(!shouldEnableBiometric)
@@ -195,8 +195,7 @@ class AppSettingsActivity : BaseActivity(),
                     SnackbarHelper.createSnackbar(
                         this@AppSettingsActivity,
                         resources.getString(R.string.authentication_failed),
-                        binding.activityAppSettingsCL,
-                        false
+                        binding.activityAppSettingsCL
                     ).show()
                     binding.activityAppSettingsSectionSecurity.setSwitchChecked(!shouldEnableBiometric)
                 }
@@ -300,6 +299,7 @@ class AppSettingsActivity : BaseActivity(),
         binding.activityAppSettingsSectionLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsActivity, LogViewerActivity::class.java)
+                intent.putExtra("logfile", LoggingHelper.LOGFILES.DEFAULT.filename)
                 startActivity(intent)
             }
         })

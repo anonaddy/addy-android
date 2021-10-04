@@ -293,7 +293,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                     val aliasEmailAddress = finalList[pos].email
                     val clip = ClipData.newPlainText("alias", aliasEmailAddress)
                     clipboard.setPrimaryClip(clip)
-                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), binding.activitySearchCL, false).show()
+                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), binding.activitySearchCL).show()
                 }
 
             })

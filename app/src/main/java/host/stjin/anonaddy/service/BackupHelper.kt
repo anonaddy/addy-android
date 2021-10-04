@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.models.LOGIMPORTANCE
 import host.stjin.anonaddy.utils.LoggingHelper
 import java.io.InputStream
 import java.io.OutputStream
@@ -14,12 +16,14 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
 import javax.crypto.CipherOutputStream
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.PBEParameterSpec
+import kotlin.system.measureTimeMillis
 
 
 // isAppInForeground is being used to determine if a notification or a snackbar should be used
@@ -39,7 +43,7 @@ class BackupHelper(private val context: Context) {
             val sortedList = f?.sortedWith(compareBy { it.lastModified() })
             return sortedList?.last()?.lastModified()
         } catch (e: Exception) {
-            loggingHelper.addLog(e.toString(), "getLatestBackupDate", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getLatestBackupDate", null)
         }
         return null
     }
@@ -63,7 +67,7 @@ class BackupHelper(private val context: Context) {
             // Let the caller know the task is finished
             return true
         } catch (e: Exception) {
-            loggingHelper.addLog(e.toString(), "deleteBackupsOlderThanXDays", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "deleteBackupsOlderThanXDays", null)
         }
         return false
     }
@@ -75,7 +79,7 @@ class BackupHelper(private val context: Context) {
             val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))
             return f?.canRead() ?: false && f?.canWrite() ?: false
         } catch (e: Exception) {
-            loggingHelper.addLog(e.toString(), "getLatestBackupDate", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getLatestBackupDate", null)
         }
         return false
     }
@@ -97,7 +101,7 @@ class BackupHelper(private val context: Context) {
                 uriOfFile?.let { context.contentResolver.openOutputStream(it) }
             }
         } catch (e: Exception) {
-            loggingHelper.addLog(e.toString(), "createEmptyFileAndGetOutputStream", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createEmptyFileAndGetOutputStream", null)
         }
         return null
     }
@@ -140,38 +144,47 @@ class BackupHelper(private val context: Context) {
                 uri.let { context.contentResolver.openInputStream(it) }
             }
         } catch (e: Exception) {
-            loggingHelper.addLog(e.toString(), "createEmptyFileAndGetOutputStream", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createEmptyFileAndGetOutputStream", null)
         }
         return null
     }
 
     fun createBackup(): Boolean {
-        try {
-            val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
-            val backupDestinationStream = backupDestinationPath?.let {
-                // Default back to "anonaddy" as password
-                createEmptyFileAndGetOutputStream(
-                    it,
-                    "BACKUP_${getDateTime()}.anon",
-                    encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_PASSWORD) ?: "anonaddy"
-                )
-            }
-
-            backupDestinationStream?.use {
-                if (saveSharedPreferences(it, arrayListOf(settingsManager.prefs, encryptedSettingsManager.prefs))
-                ) {
-                    // Backup for both sharedprefs succeeded!
-                    // .use closes the stream :)
-                    // Let the caller know the backup succeeded
-                    return true
+        var backupCompleted = false
+        val timeElapsed = measureTimeMillis {
+            try {
+                val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
+                val backupDestinationStream = backupDestinationPath?.let {
+                    // Default back to "anonaddy" as password
+                    createEmptyFileAndGetOutputStream(
+                        it,
+                        "BACKUP_${getDateTime()}.anon",
+                        encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BACKUPS_PASSWORD) ?: "anonaddy"
+                    )
                 }
-            }
-        } catch (e: Exception) {
-            loggingHelper.addLog(e.toString(), "createBackup", null)
-        }
 
-        // Let the caller know the backup failed, user should refer to the backup log to see what went wrong
-        return false
+                backupDestinationStream?.use {
+                    if (saveSharedPreferences(it, arrayListOf(settingsManager.prefs, encryptedSettingsManager.prefs))
+                    ) {
+                        // Backup for both sharedprefs succeeded!
+                        // .use closes the stream :)
+                        // Let the caller know the backup succeeded
+                        backupCompleted = true
+                    }
+                }
+            } catch (e: Exception) {
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createBackup", null)
+            }
+        }
+        if (backupCompleted) {
+            loggingHelper.addLog(
+                LOGIMPORTANCE.INFO.int,
+                context.resources.getString(R.string.log_backup_completed, TimeUnit.MILLISECONDS.toSeconds(timeElapsed)),
+                "createBackup",
+                null
+            )
+        }
+        return backupCompleted
     }
 
     fun restoreBackup(uri: Uri, password: String): Boolean {
@@ -188,7 +201,7 @@ class BackupHelper(private val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            loggingHelper.addLog(e.toString(), "createBackup", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "createBackup", null)
         }
 
         // Let the caller know the backup failed, user should refer to the backup log to see what went wrong
@@ -210,7 +223,7 @@ class BackupHelper(private val context: Context) {
                         }
                     }
                 } catch (e: Exception) {
-                    loggingHelper.addLog(e.toString(), "saveSharedPreferences", null)
+                    loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "saveSharedPreferences", null)
                     return false
                 }
             }
@@ -246,7 +259,7 @@ class BackupHelper(private val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            loggingHelper.addLog(e.toString(), "loadSharedPreferences", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "loadSharedPreferences", null)
             return false
         }
         inputStream.close()

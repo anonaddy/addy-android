@@ -2,11 +2,15 @@ package host.stjin.anonaddy.ui.appsettings.logs
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.Toast
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.adapter.LogsAdapter
 import host.stjin.anonaddy.databinding.ActivityLogViewerBinding
 import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 
 class LogViewerActivity : BaseActivity() {
@@ -21,41 +25,72 @@ class LogViewerActivity : BaseActivity() {
         setContentView(view)
 
         setupToolbar(binding.appsettingsLogviewerToolbar.customToolbarOneHandedMaterialtoolbar, R.string.logs)
-        loggingHelper = LoggingHelper(this)
-        loadLogs()
+
+        val filename = intent.getStringExtra("logfile")
+        if (filename.isNullOrEmpty()) {
+            Toast.makeText(this, this.resources.getString(R.string.no_logfile_selected), Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        loggingHelper = LoggingHelper(this, LoggingHelper.LOGFILES.values().first { it.filename == filename })
+        getAllLogsAndSetRecyclerview()
 
         binding.appsettingsLogviewerEfab.setOnClickListener {
-            SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.logs_cleared), binding.appsettingsLogviewerCL, false).show()
+            SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.logs_cleared), binding.appsettingsLogviewerCL).show()
             loggingHelper.clearLogs()
-            loadLogs()
+            getAllLogsAndSetRecyclerview()
         }
     }
 
-    private fun loadLogs() {
-        val logs = loggingHelper.getLogs()
 
-        if (logs.size > 0) {
-            binding.appsettingsLogviewerEfab.show()
-        } else {
-            binding.appsettingsLogviewerEfab.hide()
-        }
+    private lateinit var logsAdapter: LogsAdapter
+    private var OneTimeRecyclerViewActions: Boolean = true
 
-        val listOfLogs = arrayListOf<String>()
-
-        for (log in logs) {
-            listOfLogs.add(log)
-        }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listOfLogs)
-        binding.appsettingsLogviewerListview.adapter = adapter
-
-        binding.appsettingsLogviewerListview.setOnItemClickListener { _, _, i, _ ->
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, listOfLogs[i])
-                type = "text/plain"
+    private fun getAllLogsAndSetRecyclerview() {
+        binding.appsettingsLogviewerRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
             }
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            startActivity(shareIntent)
+
+            //Retrieve the values
+            //Retrieve the values
+            val list = loggingHelper.getLogs()
+            list?.reverse()
+
+            if (list != null) {
+                if (list.size > 0) {
+                    binding.activityFailedDeliveriesNoLogs.visibility = View.GONE
+                } else {
+                    binding.activityFailedDeliveriesNoLogs.visibility = View.VISIBLE
+                }
+
+
+                logsAdapter = LogsAdapter(list)
+                logsAdapter.setClickListener(object : LogsAdapter.ClickListener {
+
+                    override fun onClickDetails(pos: Int, aView: View) {
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, list[pos].message + "\n" + list[pos].method + "\n" + list[pos].extra)
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        startActivity(shareIntent)
+                    }
+
+                })
+                adapter = logsAdapter
+
+            } else {
+                binding.appsettingsLogviewerRecyclerview.visibility = View.GONE
+                binding.activityFailedDeliveriesNoLogs.visibility = View.VISIBLE
+            }
         }
+
     }
 }
