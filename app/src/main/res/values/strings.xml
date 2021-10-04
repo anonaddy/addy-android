@@ -465,9 +465,10 @@
     <string name="notification_new_backup_delivery_desc">Unable to make periodic backup of app configuration. Tap here to view the backup log</string>
     <string name="disable_periodic_backups">Disable periodic backups</string>
     <string name="no_logfile_selected">No logfile selected</string>
-    <string name="no_logs">No logs</string>
+    <string name="no_logs">No logs, make sure to enable storing logs in the app settings</string>
     <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>
     <string name="log_backup_location_changed">Backup location changed</string>
     <string name="log_backup_password_changed">Backup password changed</string>
+    <string name="log_backup_retention_deleted">%1$d file(s) deleted because they were older than %2$d days</string>
 
 </resources>

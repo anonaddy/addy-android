@@ -40,6 +40,7 @@ class BackupHelper(private val context: Context) {
         val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
         try {
             val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))?.listFiles()
+                ?.filter { it.name?.substringAfterLast(".") ?: "" == "anon" }
             val sortedList = f?.sortedWith(compareBy { it.lastModified() })
             return sortedList?.last()?.lastModified()
         } catch (e: Exception) {
@@ -48,12 +49,12 @@ class BackupHelper(private val context: Context) {
         return null
     }
 
-    // TODO set this by user?
     fun deleteBackupsOlderThanXDays(retentionPeriod: Long = 30): Boolean {
         val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
         try {
             val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))?.listFiles()
-
+                ?.filter { it.name?.substringAfterLast(".") ?: "" == "anon" }
+            var filesDeleted = 0
             for (file in f!!) {
                 val date: LocalDate = Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDate()
                 val today: LocalDate = LocalDate.now()
@@ -61,14 +62,25 @@ class BackupHelper(private val context: Context) {
                 if (date.isBefore(today.minusDays(retentionPeriod))) {
                     // The backup is *older* than retentionPeriod days. Delete it
                     file.delete()
+                    filesDeleted++
                 }
             }
 
             // Let the caller know the task is finished
+            if (filesDeleted > 0) {
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.WARNING.int,
+                    context.resources.getString(R.string.log_backup_retention_deleted, filesDeleted, retentionPeriod),
+                    "deleteBackupsOlderThanXDays",
+                    null
+                )
+            }
             return true
         } catch (e: Exception) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "deleteBackupsOlderThanXDays", null)
         }
+
+
         return false
     }
 
@@ -108,17 +120,16 @@ class BackupHelper(private val context: Context) {
 
 
     private fun makeCipher(pass: CharArray, decryptMode: Boolean): Cipher? {
-
         // Use a KeyFactory to derive the corresponding key from the passphrase:
         val keySpec = PBEKeySpec(pass)
-        val keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES")
+        val keyFactory = SecretKeyFactory.getInstance("PBEWITHSHA256AND128BITAES-CBC-BC")
         val key = keyFactory.generateSecret(keySpec)
 
         // Create parameters from the salt and an arbitrary number of iterations:
         val pbeParamSpec = PBEParameterSpec("anonaddy".toByteArray(), 43)
 
         // Set up the cipher:
-        val cipher = Cipher.getInstance("PBEWithMD5AndDES")
+        val cipher = Cipher.getInstance("PBEWITHSHA256AND128BITAES-CBC-BC")
 
         // Set the cipher mode to decryption or encryption:
         if (decryptMode) {

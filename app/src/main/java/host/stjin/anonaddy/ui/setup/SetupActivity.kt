@@ -101,7 +101,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            binding.fragmentSetupInitButtonRestoreBackup.startAnimation()
             // There are no request codes
             val data: Intent? = result.data
             data?.data?.let {

@@ -1,11 +1,13 @@
 package host.stjin.anonaddy.ui
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.*
@@ -31,7 +33,6 @@ import kotlin.math.abs
 class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener {
 
 
-    private val SEARCH_CONSTANT: Int = 1
     private val searchBottomDialogFragment: SearchBottomDialogFragment =
         SearchBottomDialogFragment.newInstance()
 
@@ -58,13 +59,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 lifecycleScope.launch {
                     loadMainActivity()
                     checkForUpdates()
+                    // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
+                    BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
                 }
             }
         }
 
-
-        // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
-        BackgroundWorkerHelper(this).scheduleBackgroundWorker()
     }
 
     override fun onResume() {
@@ -106,7 +106,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         })
 
-        binding.navView.setOnNavigationItemSelectedListener {
+        binding.navView.setOnItemSelectedListener {
             switchFragments(it.itemId)
             false
         }
@@ -299,14 +299,16 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         searchBottomDialogFragment.dismiss()
         val intent = Intent(this, SearchActivity::class.java)
-        startActivityForResult(intent, SEARCH_CONSTANT)
+        resultLauncher.launch(intent)
     }
 
 
     // When returning from the search activity, load the appropriate screen
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == SEARCH_CONSTANT) {
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+
             if (data != null) {
                 if (data.hasExtra("target")) {
                     when (data.extras?.getString("target")) {
@@ -335,6 +337,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     }
                 }
             }
+
         }
     }
 

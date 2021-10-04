@@ -40,7 +40,7 @@ class AppSettingsBackupActivity : BaseActivity(),
         backupHelper = BackupHelper(this)
         setupToolbar(binding.appsettingsBackupToolbar.customToolbarOneHandedMaterialtoolbar, R.string.anonaddy_backup)
 
-        loadSettings()
+        // loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
     }

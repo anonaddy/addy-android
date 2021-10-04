@@ -22,11 +22,10 @@ class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = L
         BACKUP_LOGS("host.stjin.anonaddy_logs_backups")
     }
 
-//TODO Auto clean logs on setList?
-
     private fun <Logs> setList(list: ArrayList<Logs>?) {
         val gson = Gson()
-        val json = gson.toJson(list)
+        // Only save the 100 last results on saving to prevent more than 100 logs to be stored
+        val json = gson.toJson(list?.takeLast(100))
         set("logs", json)
     }
 
