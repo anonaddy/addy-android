@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
@@ -48,7 +50,25 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setInsets()
-        val settingsManager = SettingsManager(true, this)
+
+
+        // This is prone to fail when users have restored the app data from any restore app as the
+        // encryption key has changed. So we catch this once in the app and that's at launch
+
+        val settingsManager = try {
+            SettingsManager(true, this)
+        } catch (e: Exception) {
+            null
+        }
+
+        if (settingsManager == null) {
+            showErrorScreen(this.resources.getString(R.string.app_data_corrupted))
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Clear settings
+                SettingsManager(false, this).clearSettingsAndCloseApp()
+            }, 15000)
+            return
+        }
 
         networkHelper = NetworkHelper(this)
         // Open setup

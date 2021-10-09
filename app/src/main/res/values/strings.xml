@@ -438,11 +438,11 @@
     <string name="backup_now">Backup now</string>
     <string name="last_backup_desc">Last backup was done %s</string>
     <string name="backup_password">Backup password</string>
-    <string name="backup_password_desc">Set the encryption key for backup encryption</string>
+    <string name="backup_password_desc">Set the encryption key for backup encryption. The default password when not set is \"anonaddy\"</string>
     <string name="backup_location">Backup location</string>
     <string name="backup_location_desc">Set the location for backups to be stored</string>
     <string name="backup_periodic">Make backups automatically</string>
-    <string name="backup_periodic_desc">Periodically make backups in the background. Backups are stored for 30 days and will be automatically deleted after this period</string>
+    <string name="backup_periodic_desc">Periodically make backups in the background every other day. Backups are stored for 30 days and will be automatically deleted after this period</string>
     <string name="backup_log">Backup log</string>
     <string name="backup_log_desc">View previous backup tasks</string>
     <string name="backup_location_set">Backup location set</string>
@@ -470,5 +470,6 @@
     <string name="log_backup_location_changed">Backup location changed</string>
     <string name="log_backup_password_changed">Backup password changed</string>
     <string name="log_backup_retention_deleted">%1$d file(s) deleted because they were older than %2$d days</string>
+    <string name="app_data_corrupted">The app data can no longer be read. You may have recovered the app data from another device which is not supported because AnonAddy for Android encrypts all the app data with a device specific key. Please use the built-in AnonAddy backup feature in the app settings next time. The app will be reset in 15 seconds…</string>
 
 </resources>
