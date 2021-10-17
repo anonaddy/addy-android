@@ -5,7 +5,7 @@
     android:id="@+id/activity_setup_RL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryColorStatic"
+    android:background="@color/primaryColor"
     android:orientation="vertical"
     tools:context=".ui.setup.SetupActivity">
 
