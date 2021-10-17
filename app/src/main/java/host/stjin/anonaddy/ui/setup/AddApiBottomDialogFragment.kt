@@ -132,6 +132,17 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     private fun verifyKey(context: Context) {
         val apiKey = binding.bsSetupApikeyTiet.text.toString()
         val baseUrl = binding.bsSetupInstanceTiet.text.toString()
+
+        binding.bsSetupInstanceTil.error = null
+        // Check if the alias is a valid web address and starts with https:// or http://
+        if (!android.util.Patterns.WEB_URL.matcher(binding.bsSetupInstanceTiet.text.toString())
+                .matches() || !(binding.bsSetupInstanceTiet.text?.startsWith("https://") == true || binding.bsSetupInstanceTiet.text?.startsWith("http://") == true)
+        ) {
+            binding.bsSetupInstanceTil.error =
+                context.resources.getString(R.string.not_a_valid_web_address)
+            return
+        }
+
         binding.bsSetupApikeyGetButton.isEnabled = false
 
         // Animate the button to progress
@@ -140,6 +151,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         viewLifecycleOwner.lifecycleScope.launch {
             verifyApiKey(context, apiKey, baseUrl)
         }
+
     }
 
     private suspend fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
