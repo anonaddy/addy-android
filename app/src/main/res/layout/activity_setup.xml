@@ -10,6 +10,7 @@
     tools:context=".ui.setup.SetupActivity">
 
     <TextView
+        android:id="@+id/activity_setup_api_textview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.05"
@@ -74,10 +75,13 @@
         <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
             android:id="@+id/fragment_setup_init_button_api"
             style="@style/CircularProgressButtonTertiary"
+            android:drawableEnd="@drawable/ic_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:gravity="center"
+            android:drawableTint="@color/primaryLightColor"
+            android:gravity="center_vertical"
+            android:textColor="@color/primaryLightColor"
             android:text="@string/got_the_api_key" />
 
 
@@ -87,21 +91,23 @@
 
             <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/fragment_setup_init_button_new"
-                style="@style/CircularProgressButtonTertiary"
+                style="@style/CircularProgressButtonPrimaryLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
+                android:drawableEnd="@drawable/ic_mdi_hand_wave_outline"
+                android:gravity="center_vertical"
                 android:text="@string/new_user" />
 
             <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/fragment_setup_init_button_restore_backup"
-                style="@style/CircularProgressButtonTertiary"
+                style="@style/CircularProgressButtonPrimaryLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:gravity="center"
+                android:drawableEnd="@drawable/ic_database_export"
+                android:gravity="center_vertical"
                 android:text="@string/restore_backup" />
         </LinearLayout>
 

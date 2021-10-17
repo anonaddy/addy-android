@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
@@ -16,6 +18,7 @@ import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
+import kotlin.random.Random
 
 class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener,
     BackupPasswordBottomDialogFragment.AddBackupPasswordBottomDialogListener {
@@ -24,6 +27,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         AddApiBottomDialogFragment.newInstance()
 
     private lateinit var binding: ActivitySetupBinding
+    lateinit var mainHandler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,33 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         setInsets()
         setButtonClickListeners()
         checkForIntents()
+
+        mainHandler = Handler(Looper.getMainLooper())
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        mainHandler.removeCallbacks(updateBackground)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainHandler.post(updateBackground)
+    }
+
+    private val updateBackground = object : Runnable {
+        override fun run() {
+            binding.activitySetupApiTextview.text = getDummyAPIKey()
+            mainHandler.postDelayed(this, Random.nextLong(300, 1500))
+        }
+    }
+
+    private fun getDummyAPIKey(): StringBuilder {
+        val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        val dummyApi = StringBuilder(binding.activitySetupApiTextview.text)
+        dummyApi.setCharAt(Random.nextInt(binding.activitySetupApiTextview.length()), chars.random())
+        return dummyApi
     }
 
     private fun checkForIntents() {

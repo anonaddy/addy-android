@@ -9,7 +9,7 @@ android {
         applicationId = "host.stjin.anonaddy"
         minSdk = 23
         targetSdk = 31
-        versionCode = 27
+        versionCode = 28
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
         versionName = "v3.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
