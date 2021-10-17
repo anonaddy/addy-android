@@ -76,7 +76,7 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.2.0</h3>
+    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.2.1</h3>
 <h4>Added</h4>
 <p>- 🗃️ Introducing AnonAddy Backup, securely backup app configuration for the move to another device or re-installation of the app.<br />— Choose the location where the backups are stored on your device<br />— Encrypt the backup with your own password<br />— Make periodic backups without worry<br />— Use the backup log to view the status of previous backup jobs<br />— Get notified when a periodic backup fails<br />- Added the ability to restore backups from the setup screen</p>
 <h4>Fixed/Improved</h4>

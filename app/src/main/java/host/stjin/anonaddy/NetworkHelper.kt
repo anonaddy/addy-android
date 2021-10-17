@@ -33,8 +33,6 @@ import host.stjin.anonaddy.AnonAddy.GITLAB_TAGS_RSS_FEED
 import host.stjin.anonaddy.AnonAddy.lazyMgr
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.InputStream
@@ -2380,11 +2378,8 @@ class NetworkHelper(private val context: Context) {
         when (response.statusCode) {
             200 -> {
                 val inputStream: InputStream = result.get().byteInputStream()
-                withContext(Dispatchers.IO) {
-                    // This warning can be ignored
-                    val feed = EarlParser.parseOrThrow(inputStream, 0)
-                    callback(feed)
-                }
+                val feed = EarlParser.parse(inputStream, 0)
+                callback(feed)
             }
             else -> {
                 val ex = result.component2()?.message
