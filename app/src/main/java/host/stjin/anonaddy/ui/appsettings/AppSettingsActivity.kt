@@ -15,15 +15,17 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
+import host.stjin.anonaddy.ui.appsettings.backup.AppSettingsBackupActivity
 import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 class AppSettingsActivity : BaseActivity(),
@@ -133,12 +135,10 @@ class AppSettingsActivity : BaseActivity(),
                         SettingsManager.PREFS.BIOMETRIC_ENABLED,
                         false
                     )
-                    Snackbar.make(
-                        findViewById(R.id.activity_app_settings_CL),
-                        resources.getString(
-                            R.string.biometric_error_hw_unavailable
-                        ),
-                        Snackbar.LENGTH_SHORT
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.biometric_error_hw_unavailable),
+                        binding.activityAppSettingsCL
                     ).show()
                     loadSettings()
                 }
@@ -168,13 +168,12 @@ class AppSettingsActivity : BaseActivity(),
                     errString: CharSequence
                 ) {
                     super.onAuthenticationError(errorCode, errString)
-                    Snackbar.make(
-                        findViewById(R.id.activity_app_settings_CL),
-                        this@AppSettingsActivity.resources.getString(
+
+                    SnackbarHelper.createSnackbar(
+                        this@AppSettingsActivity, this@AppSettingsActivity.resources.getString(
                             R.string.authentication_error_s,
                             errString
-                        ),
-                        Snackbar.LENGTH_SHORT
+                        ), binding.activityAppSettingsCL
                     ).show()
 
                     binding.activityAppSettingsSectionSecurity.setSwitchChecked(!shouldEnableBiometric)
@@ -193,12 +192,11 @@ class AppSettingsActivity : BaseActivity(),
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Snackbar.make(
-                        findViewById(R.id.activity_app_settings_CL),
+                    SnackbarHelper.createSnackbar(
+                        this@AppSettingsActivity,
                         resources.getString(R.string.authentication_failed),
-                        Snackbar.LENGTH_SHORT
+                        binding.activityAppSettingsCL
                     ).show()
-
                     binding.activityAppSettingsSectionSecurity.setSwitchChecked(!shouldEnableBiometric)
                 }
             })
@@ -301,6 +299,7 @@ class AppSettingsActivity : BaseActivity(),
         binding.activityAppSettingsSectionLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsActivity, LogViewerActivity::class.java)
+                intent.putExtra("logfile", LoggingHelper.LOGFILES.DEFAULT.filename)
                 startActivity(intent)
             }
         })
@@ -314,6 +313,13 @@ class AppSettingsActivity : BaseActivity(),
         binding.activityAppSettingsSectionUpdater.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsActivity, AppSettingsUpdateActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsSectionBackup.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsActivity, AppSettingsBackupActivity::class.java)
                 startActivity(intent)
             }
         })

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -23,8 +22,9 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.databinding.ActivityRuleSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 
@@ -145,25 +145,18 @@ class RulesSettingsActivity : BaseActivity() {
                             lifecycleScope.launch {
                                 networkHelper!!.reorderRules({ result ->
                                     if (result == "200") {
-                                        val snackbar = Snackbar.make(
-                                            binding.activityManageRulesCL,
+                                        SnackbarHelper.createSnackbar(
+                                            this@RulesSettingsActivity,
                                             this@RulesSettingsActivity.resources.getString(R.string.changing_rules_order_success),
-                                            Snackbar.LENGTH_SHORT
-                                        )
-                                        snackbar.show()
+                                            binding.activityManageRulesCL
+                                        ).show()
                                     } else {
-                                        val snackbar = Snackbar.make(
-                                            binding.activityManageRulesCL,
+                                        SnackbarHelper.createSnackbar(
+                                            this@RulesSettingsActivity,
                                             this@RulesSettingsActivity.resources.getString(R.string.error_changing_rules_order) + "\n" + result,
-                                            Snackbar.LENGTH_SHORT
-                                        )
-                                        if (SettingsManager(false, this@RulesSettingsActivity).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                                            snackbar.setAction(R.string.logs) {
-                                                val intent = Intent(this@RulesSettingsActivity, LogViewerActivity::class.java)
-                                                startActivity(intent)
-                                            }
-                                        }
-                                        snackbar.show()
+                                            binding.activityManageRulesCL,
+                                            LoggingHelper.LOGFILES.DEFAULT
+                                        ).show()
                                     }
                                 }, list)
                             }
@@ -191,26 +184,18 @@ class RulesSettingsActivity : BaseActivity() {
         networkHelper?.deactivateSpecificRule({ result ->
             if (result == "204") {
                 getDataFromWeb()
-
-                val snackbar = Snackbar.make(
-                    binding.activityManageRulesCL,
+                SnackbarHelper.createSnackbar(
+                    this,
                     this@RulesSettingsActivity.resources.getString(R.string.rule_deactivated),
-                    Snackbar.LENGTH_SHORT
-                )
-                snackbar.show()
+                    binding.activityManageRulesCL
+                ).show()
             } else {
-                val snackbar = Snackbar.make(
-                    binding.activityManageRulesCL,
+                SnackbarHelper.createSnackbar(
+                    this,
                     this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this@RulesSettingsActivity).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this@RulesSettingsActivity, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                    binding.activityManageRulesCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, ruleId)
     }
@@ -219,26 +204,18 @@ class RulesSettingsActivity : BaseActivity() {
         networkHelper?.activateSpecificRule({ result ->
             if (result == "200") {
                 getDataFromWeb()
-
-                val snackbar = Snackbar.make(
-                    binding.activityManageRulesCL,
+                SnackbarHelper.createSnackbar(
+                    this,
                     this@RulesSettingsActivity.resources.getString(R.string.rule_activated),
-                    Snackbar.LENGTH_SHORT
-                )
-                snackbar.show()
+                    binding.activityManageRulesCL
+                ).show()
             } else {
-                val snackbar = Snackbar.make(
-                    binding.activityManageRulesCL,
+                SnackbarHelper.createSnackbar(
+                    this,
                     this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this@RulesSettingsActivity).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this@RulesSettingsActivity, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                    binding.activityManageRulesCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, ruleId)
     }

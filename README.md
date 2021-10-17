@@ -37,13 +37,15 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
   - Send emails from aliases by selecting an email address or clicking a mailto link
   - Get notified on failed deliveries
 - Enable error logging to *locally* store exceptions for easy troubleshooting
+- Export and import *encrypted* backups of the app configuration
 - Widgets!
 
 > Seriously 👓
 
-- **Security**.
+**Security**
 - Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using
   the [AndroidX crypto library](https://developer.android.com/jetpack/androidx/releases/security)
+- Encrypted app backups, when making a backup of the app configuration through the built-in backup manager
 - No stats, buried points or Device IDs, or even crash reporting (Except for Google Play Store builds). So if you get a crash, please share the crash
   info with me >_<.
 - I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.  **What's yours is yours**.
@@ -113,6 +115,7 @@ Third party libraries used.
 - [leandroBorgesFerreira/LoadingButtonAndroid](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid)
 - [einmalfel/Earl](https://github.com/einmalfel/Earl) (For built-in updater)
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner) (To be enabled in future versions)
+- [ocpsoft/prettytime](https://github.com/ocpsoft/prettytime)
 
 
 ## Feedback and contribution

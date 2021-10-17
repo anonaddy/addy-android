@@ -12,13 +12,13 @@ import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 
@@ -113,19 +113,12 @@ class ManageDomainsActivity : BaseActivity(),
                 binding.activityManageDomainCatchAllSwitchLayout.setTitle(resources.getString(R.string.catch_all_disabled))
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(true)
-                val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_CL),
+                SnackbarHelper.createSnackbar(
+                    this,
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
-
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, domainId)
     }
@@ -137,18 +130,12 @@ class ManageDomainsActivity : BaseActivity(),
                 binding.activityManageDomainCatchAllSwitchLayout.setTitle(resources.getString(R.string.catch_all_enabled))
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(false)
-                val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_CL),
+                SnackbarHelper.createSnackbar(
+                    this,
                     this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, domainId)
     }
@@ -160,18 +147,12 @@ class ManageDomainsActivity : BaseActivity(),
                 binding.activityManageDomainActiveSwitchLayout.setTitle(resources.getString(R.string.domain_deactivated))
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(true)
-                val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_CL),
+                SnackbarHelper.createSnackbar(
+                    this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, domainId)
     }
@@ -183,18 +164,12 @@ class ManageDomainsActivity : BaseActivity(),
                 binding.activityManageDomainActiveSwitchLayout.setTitle(resources.getString(R.string.domain_activated))
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(false)
-                val snackbar = Snackbar.make(
-                    findViewById(R.id.activity_manage_domain_CL),
+                SnackbarHelper.createSnackbar(
+                    this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    Snackbar.LENGTH_SHORT
-                )
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, domainId)
     }

@@ -76,9 +76,11 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.1.3</h3>
+    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.2.0</h3>
+<h4>Added</h4>
+<p>- 🗃️ Introducing AnonAddy Backup, securely backup app configuration for the move to another device or re-installation of the app.<br />— Choose the location where the backups are stored on your device<br />— Encrypt the backup with your own password<br />— Make periodic backups without worry<br />— Use the backup log to view the status of previous backup jobs<br />— Get notified when a periodic backup fails<br />- Added the ability to restore backups from the setup screen</p>
 <h4>Fixed/Improved</h4>
-<p>- Fixed some string issues<br />- Changed the return key into a search key on the keyboard when using the global search option<br />- Performance improvements and other things I might have forgot to make the app even smoother<br /><br /></p>]]></string>
+<p>- Re-designed the logmanager <br />- Re-designed the setup screen<br />- Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="no_wait">No, wait!</string>
@@ -433,5 +435,43 @@
     <string name="webintent_manage_default_apps_enable">Enable supported links, click on \"Add link\" and tick the checkbox in front of the URL</string>
     <string name="webintent_manage_default_apps_disable">Disable supported links</string>
     <string name="enable_disable_feature_manual_action_required_desc">Manual actions must be performed</string>
+    <string name="anonaddy_backup">AnonAddy Backup</string>
+    <string name="anonaddy_backup_desc">With AnonAddy for Android backups you can easily export and import the configuration of the app to another device. These backups include the API key and aliases that are on the watch list, but also other app settings.\n\nTo restore backups, reset AnonAddy for Android and choose \"restore from backup\" in the setup.</string>
+    <string name="backup_now">Backup now</string>
+    <string name="last_backup_desc">Last backup was done %s</string>
+    <string name="backup_password">Backup password</string>
+    <string name="backup_password_desc">Set the encryption key for backup encryption. The default password when not set is \"anonaddy\"</string>
+    <string name="backup_location">Backup location</string>
+    <string name="backup_location_desc">Set the location for backups to be stored</string>
+    <string name="backup_periodic">Make backups automatically</string>
+    <string name="backup_periodic_desc">Periodically make backups in the background every other day. Backups are stored for 30 days and will be automatically deleted after this period</string>
+    <string name="backup_log">Backup log</string>
+    <string name="backup_log_desc">View previous backup tasks</string>
+    <string name="backup_location_set">Backup location set</string>
+    <string name="restore_backup">Restore backup</string>
+    <string name="restore_failed">Unable to restore backup, make sure the password is correct and you have selected a valid file</string>
+    <string name="backup_failed">Backup failed, check the backup logs for more information</string>
+    <string name="backup_completed">Backup completed</string>
+    <string name="log_backup_completed">Backup completed in %d seconds</string>
+    <string name="set_backup_password">Set backup password</string>
+    <string name="set_backup_password_desc">Enter the backup password with which backups are encrypted.\nBackups contain sensitive information so a strong password is recommended.\n\nThe backup cannot be recovered without this password</string>
+    <string name="password">Password</string>
+    <string name="backup_password_set">Backup password set</string>
+    <string name="enter_backup_password">Enter backup password</string>
+    <string name="enter_backup_password_desc">Enter the backup password with which backups are encrypted.\nBackups contain sensitive information so a deleting the backup file after restoring the backup is recommended.\n\nThe backup cannot be recovered without this password</string>
+    <string name="never">never</string>
+    <string name="backup_location_not_accessible">Backup location not accessible, tap here to set a new location</string>
+    <string name="notification_channel_failed_backups">Failed backups</string>
+    <string name="notification_channel_failed_backups_desc">Receive a notification when periodic AnonAddy backups fail</string>
+    <string name="notification_new_backup_delivery">Periodic backup failed</string>
+    <string name="notification_new_backup_delivery_desc">Unable to make periodic backup of app configuration. Tap here to view the backup log</string>
+    <string name="disable_periodic_backups">Disable periodic backups</string>
+    <string name="no_logfile_selected">No logfile selected</string>
+    <string name="no_logs">No logs, make sure to enable storing logs in the app settings</string>
+    <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>
+    <string name="log_backup_location_changed">Backup location changed</string>
+    <string name="log_backup_password_changed">Backup password changed</string>
+    <string name="log_backup_retention_deleted">%1$d file(s) deleted because they were older than %2$d days</string>
+    <string name="app_data_corrupted">The app data can no longer be read. You may have recovered the app data from another device which is not supported because AnonAddy for Android encrypts all the app data with a device specific key. Please use the built-in AnonAddy backup feature in the app settings next time. The app will be reset in 15 seconds…</string>
 
 </resources>

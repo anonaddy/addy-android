@@ -16,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
@@ -25,6 +24,7 @@ import host.stjin.anonaddy.databinding.FragmentAliasBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 
@@ -238,11 +238,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)
                             bottomNavView?.let {
-                                Snackbar.make(
-                                    it,
-                                    context.resources.getString(R.string.copied_alias),
-                                    Snackbar.LENGTH_SHORT
-                                ).apply {
+                                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
                                     anchorView = bottomNavView
                                 }.show()
                             }
@@ -326,11 +322,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         val bottomNavView: BottomNavigationView? =
                             activity?.findViewById(R.id.nav_view)
                         bottomNavView?.let {
-                            Snackbar.make(
-                                it,
-                                context.resources.getString(R.string.copied_alias),
-                                Snackbar.LENGTH_SHORT
-                            ).apply {
+                            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
                                 anchorView = bottomNavView
                             }.show()
                         }

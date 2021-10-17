@@ -7,8 +7,8 @@
     <color name="primarySuperLightColor">#804D499A</color>
     <color name="primarySuperSuperLightColor">#32353C7D</color>
     <color name="primaryDarkColor">#000040</color>
-    <color name="secondaryColor">#3ae7e1</color>
-    <color name="secondaryDarkColor">#00b4af</color>
+    <color name="secondaryColor">#94F0ED</color>
+    <color name="secondaryDarkColor">#A1E6E4</color>
 
     <color name="IconGrayTint">#666666</color>
 
@@ -19,6 +19,10 @@
     <color name="softGreenSuperSuperLight">#3200B4AF</color>
     <color name="softRed">#FD5842</color>
     <color name="softRedSuperSuperLight">#32FD5842</color>
+
+    <color name="logImportanceCritical">@color/softRed</color>
+    <color name="logImportanceWarning">@color/portalOrange</color>
+    <color name="logImportanceInfo">@color/green</color>
 
     <color name="bandwidthColor">#353C7D</color>
     <color name="bandwidthSuperSuperLightColor">#504D499A</color>

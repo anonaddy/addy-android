@@ -2,6 +2,7 @@ package host.stjin.anonaddy
 
 import android.app.ActivityManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.preference.PreferenceManager
@@ -12,48 +13,61 @@ import androidx.security.crypto.MasterKey.DEFAULT_MASTER_KEY_ALIAS
 
 
 class SettingsManager(encrypt: Boolean, private val context: Context) {
-    enum class PREFS(val key: String) {
-        DARK_MODE("dark_mode"),
-        STORE_LOGS("store_logs"),
-        VERSION_CODE("version_code"),
-        BACKGROUND_SERVICE_INTERVAL("background_service_interval"),
-        WIDGETS_ACTIVE("widgets_active"),
-        NOTIFY_UPDATES("notify_updates"),
-        NOTIFY_FAILED_DELIVERIES("notify_failed_deliveries"),
+
+    enum class PREFTYPES {
+        BOOLEAN,
+        STRING,
+        INT,
+        FLOAT,
+        STRINGSET
+    }
+
+    enum class PREFS(val encrypted: Boolean, val type: PREFTYPES, val key: String) {
+        DARK_MODE(false, PREFTYPES.BOOLEAN, "dark_mode"),
+        STORE_LOGS(false, PREFTYPES.BOOLEAN, "store_logs"),
+        VERSION_CODE(false, PREFTYPES.INT, "version_code"),
+        BACKGROUND_SERVICE_INTERVAL(false, PREFTYPES.INT, "background_service_interval"),
+        WIDGETS_ACTIVE(false, PREFTYPES.INT, "widgets_active"),
+        NOTIFY_UPDATES(false, PREFTYPES.BOOLEAN, "notify_updates"),
+        PERIODIC_BACKUPS(false, PREFTYPES.BOOLEAN, "periodic_backups"),
+        BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
+        NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
 
 
         // Encrypted
-        BIOMETRIC_ENABLED("biometric_enabled"),
-        API_KEY("API_KEY"),
-        BASE_URL("BASE_URL"),
-        RECENT_SEARCHES("recent_searches"),
+        BIOMETRIC_ENABLED(true, PREFTYPES.BOOLEAN, "biometric_enabled"),
+        API_KEY(true, PREFTYPES.STRING, "API_KEY"),
+        BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
+        RECENT_SEARCHES(true, PREFTYPES.STRINGSET, "recent_searches"),
+        BACKUPS_PASSWORD(true, PREFTYPES.STRING, "backups_password"),
+
 
         // Locally stored data
-        BACKGROUND_SERVICE_CACHE_DATA_ALIASES("cache_data_aliases"),
+        BACKGROUND_SERVICE_CACHE_DATA_ALIASES(true, PREFTYPES.STRING, "cache_data_aliases"),
 
         // Used for the shimmerview and widget 2
-        BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT("cache_domain_count"),
-        BACKGROUND_SERVICE_CACHE_ALIAS_COUNT("cache_alias_count"),
-        BACKGROUND_SERVICE_CACHE_USERNAME_COUNT("cache_username_count"),
-        BACKGROUND_SERVICE_CACHE_RULES_COUNT("cache_rules_count"),
-        BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT("cache_recipient_count"),
+        BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT(true, PREFTYPES.INT, "cache_domain_count"),
+        BACKGROUND_SERVICE_CACHE_ALIAS_COUNT(true, PREFTYPES.INT, "cache_alias_count"),
+        BACKGROUND_SERVICE_CACHE_USERNAME_COUNT(true, PREFTYPES.INT, "cache_username_count"),
+        BACKGROUND_SERVICE_CACHE_RULES_COUNT(true, PREFTYPES.INT, "cache_rules_count"),
+        BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT(true, PREFTYPES.INT, "cache_recipient_count"),
 
         // Also used for background service failed delivery notifications
-        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT("cache_failed_deliveries_count"),
+        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT(true, PREFTYPES.INT, "cache_failed_deliveries_count"),
 
         // This value keeps track of the previous amount of failed deliveries so comparisons can be made in the BackgroundWorker
-        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS("cache_failed_deliveries_count_previous"),
+        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_failed_deliveries_count_previous"),
 
         // When BACKGROUND_SERVICE_CACHE_DATA_ALIASES gets updated the current list will move moved to BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS for the AliasWatcher to compare
-        BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS("cache_data_aliases_previous"),
-        BACKGROUND_SERVICE_WATCH_ALIAS_LIST("background_service_watch_alias_list"),
+        BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS(true, PREFTYPES.STRING, "cache_data_aliases_previous"),
+        BACKGROUND_SERVICE_WATCH_ALIAS_LIST(true, PREFTYPES.STRINGSET, "background_service_watch_alias_list"),
     }
 
     /*
     This user val is made for possible multiple user support. Defaulting to 1 for now.
      */
     private val user = 1
-    private val prefs = if (!encrypt) {
+    val prefs: SharedPreferences = if (!encrypt) {
         PreferenceManager.getDefaultSharedPreferences(context)
     } else {
         val masterKeyAlias = getMasterKey()
@@ -65,6 +79,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     }
+
 
     private fun getMasterKey(): MasterKey {
         // this is equivalent to using deprecated MasterKeys.AES256_GCM_SPEC

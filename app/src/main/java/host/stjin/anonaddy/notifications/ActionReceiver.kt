@@ -14,6 +14,7 @@ class ActionReceiver : BroadcastReceiver() {
         const val STOP_WATCHING = "stop_watching"
         const val STOP_UPDATE_CHECK = "stop_update_check"
         const val STOP_FAILED_DELIVERY_CHECK = "stop_failed_delivery_check"
+        const val STOP_PERIODIC_BACKUPS = "stop_periodic_backups"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -40,6 +41,11 @@ class ActionReceiver : BroadcastReceiver() {
                 SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.FAILED_DELIVERIES_NOTIFICATION_ID)
+            }
+            NOTIFICATIONACTIONS.STOP_PERIODIC_BACKUPS -> {
+                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS, false)
+                // Dismiss notification
+                notificationManager.cancel(NotificationHelper.FAILED_BACKUP_NOTIFICATION_ID)
             }
         }
     }

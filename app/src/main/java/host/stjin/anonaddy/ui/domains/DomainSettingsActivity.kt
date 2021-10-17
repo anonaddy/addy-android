@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -23,9 +22,9 @@ import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
-import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {
@@ -84,20 +83,11 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             if (user != null) {
                 User.userResource = user
             } else {
-                val snackbar =
-                    Snackbar.make(
-                        binding.activityDomainSettingsCL,
-                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        Snackbar.LENGTH_SHORT
-                    )
-
-                if (SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
-                    snackbar.setAction(R.string.logs) {
-                        val intent = Intent(this, LogViewerActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-                snackbar.show()
+                SnackbarHelper.createSnackbar(
+                    this,
+                    resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                    binding.activityDomainSettingsCL
+                ).show()
             }
         }
     }

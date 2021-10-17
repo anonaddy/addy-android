@@ -23,7 +23,6 @@ class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
 
 
     private lateinit var listener: AddUsernameBottomDialogListener
-    private lateinit var username: String
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddUsernameBottomDialogListener {
@@ -78,7 +77,6 @@ class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
 
     private fun addUsername(context: Context) {
 
-        this.username = binding.bsAddusernameUsernameTiet.text.toString()
         // Set error to null if username and alias is valid
         binding.bsAddusernameUsernameTil.error = null
 
@@ -88,7 +86,7 @@ class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
         viewLifecycleOwner.lifecycleScope.launch {
             addUsernameToAccount(
                 context,
-                this@AddUsernameBottomDialogFragment.username
+                binding.bsAddusernameUsernameTiet.text.toString()
             )
         }
     }

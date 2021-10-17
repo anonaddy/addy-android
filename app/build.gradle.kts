@@ -9,9 +9,9 @@ android {
         applicationId = "host.stjin.anonaddy"
         minSdk = 23
         targetSdk = 31
-        versionCode = 27
+        versionCode = 28
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v3.1.3"
+        versionName = "v3.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -142,4 +142,9 @@ dependencies {
 // Built-in updater
 dependencies {
     implementation("com.github.einmalfel:Earl:1.2.0")
+}
+
+// Backup manager
+dependencies {
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
 }

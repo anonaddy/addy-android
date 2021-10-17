@@ -76,6 +76,14 @@
                     app:sectionTitle="@string/features_and_integrations" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_backup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/anonaddy_backup_desc"
+                    app:sectionStartIcon="@drawable/ic_database_export"
+                    app:sectionTitle="@string/anonaddy_backup" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_background_service"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

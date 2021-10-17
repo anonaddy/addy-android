@@ -1,5 +1,23 @@
 # Changelog
 
+## [v3.2.0] - 2021-10-17
+
+### Added
+
+- 🗃️ Introducing AnonAddy Backup, securely backup app configuration for the move to another device or re-installation of the app.
+  - Choose the location where the backups are stored on your device
+  - Encrypt the backup with your own password
+  - Make periodic backups without worry
+  - Use the backup log to view the status of previous backup jobs
+  - Get notified when a periodic backup fails
+- Added the ability to restore backups from the setup screen
+
+### Fixed/Improved
+
+- Re-designed the logmanager
+- Re-designed the setup screen
+- Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v3.1.3] - 2021-10-02
 
 ### Fixed/Improved

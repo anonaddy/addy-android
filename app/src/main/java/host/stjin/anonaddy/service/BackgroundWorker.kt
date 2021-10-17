@@ -16,6 +16,9 @@ import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
 
@@ -69,6 +72,11 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
             // Block the thread until this is finished
             runBlocking(Dispatchers.Default) {
+
+                /*
+                CACHE DATA
+                 */
+
                 networkHelper.cacheAliasDataForWidget { result ->
                     // Store the result if the data succeeded to update in a boolean
                     aliasNetworkCallResult = result
@@ -99,6 +107,10 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     failedDeliveriesNetworkCallResult = result
                 }
 
+                /*
+                UPDATES
+                 */
+
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
                     Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String? ->
                         if (updateAvailable) {
@@ -110,6 +122,33 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                         }
                     }, appContext)
                 }
+
+                /*
+                BACKUPS
+                 */
+                if (settingsManager.getSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS)) {
+                    BackupHelper(appContext).let {
+                        val date: LocalDate? =
+                            it.getLatestBackupDate()?.let { it1 -> Instant.ofEpochMilli(it1).atZone(ZoneId.systemDefault()).toLocalDate() }
+                        val today: LocalDate = LocalDate.now()
+                        // If the previous backup is *older* than 1 day OR if there is no backup at-all. Create a new backup
+                        // Else don't make a new backup
+                        if (date?.isBefore(today.minusDays(1)) != false) {
+                            if (it.createBackup()) {
+                                // When the backup is successful delete backups older than 30 days
+                                it.deleteBackupsOlderThanXDays(30)
+                            } else {
+                                NotificationHelper(appContext).createFailedBackupNotification()
+                            }
+                        }
+
+                    }
+
+                }
+
+                /*
+                FAILED DELIVERIES
+                 */
 
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)) {
                     val currentFailedDeliveries =
@@ -197,6 +236,7 @@ class BackgroundWorkerHelper(private val context: Context) {
 
         val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
         val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
+        val shouldMakePeriodicBackups = settingsManager.getSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS)
 
         if (BuildConfig.DEBUG) {
             println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets;NOTIFY_UPDATES=$shouldCheckForUpdates;NOTIFY_FAILED_DELIVERIES=$shouldCheckForFailedDeliveries")
@@ -208,7 +248,7 @@ class BackgroundWorkerHelper(private val context: Context) {
         // -app updates to be checked for in the background
         // -failed deliveries to be checked
         // --return true
-        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries)
+        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldMakePeriodicBackups)
     }
 
     fun cancelScheduledBackgroundWorker() {

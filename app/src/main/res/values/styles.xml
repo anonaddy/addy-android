@@ -189,6 +189,7 @@
         <item name="spinning_bar_padding">8dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="initialCornerAngle">@dimen/corner_radius_button</item>
+        <item name="android:drawableTint">@android:color/white</item>
     </style>
 
     <style name="ActionButtonsTertiary" parent="Widget.MaterialComponents.Button">
@@ -202,6 +203,28 @@
         <item name="cornerRadius">@dimen/corner_radius_button</item>
     </style>
     <!-- END TERTIARY -->
+
+    <!-- PRIMARY -->
+    <style name="CircularProgressButtonPrimaryLight" parent="ActionButtonsPrimaryLight">
+        <item name="android:background">@drawable/circularprogressbutton_primarylight</item>
+        <item name="spinning_bar_color">@android:color/white</item>
+        <item name="spinning_bar_padding">8dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:drawableTint">@android:color/white</item>
+        <item name="initialCornerAngle">@dimen/corner_radius_button</item>
+    </style>
+
+    <style name="ActionButtonsPrimaryLight" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/primaryLightColor</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:letterSpacing">0.00</item>
+        <item name="iconTint">@android:color/white</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="cornerRadius">@dimen/corner_radius_button</item>
+    </style>
+    <!-- END PRIMARY -->
 
     <style name="DescTextStyle">
         <item name="android:alpha">0.7</item>
