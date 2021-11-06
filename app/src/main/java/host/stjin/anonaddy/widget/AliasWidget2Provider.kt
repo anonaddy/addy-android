@@ -148,7 +148,7 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
 
     if (newOptions != null) {
 
-        // Layout 2 - if less than 2 rows
+        // Layout 2 (the small height one) - if less than 2 rows
         if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)) < 2) {
             views.setViewVisibility(R.id.widget_2_layout_2, View.VISIBLE)
             views.setViewVisibility(R.id.widget_2_layout_1, View.GONE)
@@ -166,8 +166,8 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
                 views.setViewVisibility(R.id.widget_2_layout_2_additional, View.GONE)
             }
 
-            // Layout 3 - if more than 2 rows and if more than 2 columns
-        } else if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)) > 2 && getCellsForSize(
+            // Layout 3 (the BIG one) - if more than 3 rows and if more than 2 columns
+        } else if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)) > 3 && getCellsForSize(
                 newOptions.getInt(
                     AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH
                 )
@@ -217,15 +217,10 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
                 )
 
             views.setPendingIntentTemplate(R.id.widget_2_layout_3_aliases_listview, onClickPendingIntent)
-            views.setOnClickPendingIntent(
-                R.id.widget_aliases_listview_list_open_app, getPendingSelfIntent(
-                    context,
-                    OPEN_APP
-                )
-            )
 
             // Tell every widget there is new data for the listview
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_2_layout_3_aliases_listview)
+
             // Layout 1 - 2 > rows
         } else {
             views.setViewVisibility(R.id.widget_2_layout_1, View.VISIBLE)
