@@ -74,6 +74,8 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activitySearchNSVRL)
+
         setupToolbar(binding.activitySearchToolbar.customToolbarOneHandedMaterialtoolbar, R.string.search_result)
 
         settingsManager = SettingsManager(true, this)

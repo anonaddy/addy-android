@@ -5,7 +5,7 @@
     android:id="@+id/activity_setup_RL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryColor"
+    android:background="?colorOnPrimaryContainer"
     android:orientation="vertical"
     tools:context=".ui.setup.SetupActivity">
 
@@ -16,7 +16,7 @@
         android:alpha="0.05"
         android:text="@string/setup_api_key"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="?colorOnPrimary"
         android:textSize="88sp" />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="48dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/hi_there"
         android:textColor="@android:color/white"
@@ -79,9 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:drawableTint="@color/primaryLightColor"
             android:gravity="center_vertical"
-            android:textColor="@color/primaryLightColor"
             android:text="@string/got_the_api_key" />
 
 
@@ -91,7 +89,7 @@
 
             <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/fragment_setup_init_button_new"
-                style="@style/CircularProgressButtonPrimaryLight"
+                style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -101,7 +99,7 @@
 
             <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/fragment_setup_init_button_restore_backup"
-                style="@style/CircularProgressButtonPrimaryLight"
+                style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

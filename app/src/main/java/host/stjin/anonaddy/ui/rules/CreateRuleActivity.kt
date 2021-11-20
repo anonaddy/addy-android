@@ -50,6 +50,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         binding = ActivityRulesCreateBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityRulesCreateRLNSVRL)
 
         setupToolbar(binding.activityRulesCreateToolbar, R.string.creating_a_rule)
 

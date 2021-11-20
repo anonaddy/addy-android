@@ -64,6 +64,8 @@ class ManageAliasActivity : BaseActivity(),
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
         setContentView(view)
+        drawBehindNavBar(view, binding.activityManageAliasNSVLL)
+
         setupToolbar(binding.activityManageAliasToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_alias)
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)

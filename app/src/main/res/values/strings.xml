@@ -64,7 +64,6 @@
     <string name="faq">FAQ</string>
     <string name="general">General</string>
     <string name="app_theme">App theme</string>
-    <string name="change_app_theme_to_dark_mode">Change app theme to dark mode</string>
     <string name="faq_desc">Visit the Frequently asked questions</string>
     <string name="see_this_version_changelogs">See this version\'s changelog</string>
     <string name="changelog">Changelog</string>
@@ -72,6 +71,7 @@
     <string name="visit_anonaddy_helps_section">Visit AnonAddy helps section</string>
     <string name="anonaddy_help">AnonAddy help</string>
     <string name="crafted_with_love_and_privacy">Crafted with love and privacy</string>
+    <string name="appearance">Appearance</string>
     <string name="dark_mode">Dark mode</string>
     <string name="off">Off</string>
     <string name="on">On</string>
@@ -474,5 +474,9 @@
     <string name="log_backup_password_changed">Backup password changed</string>
     <string name="log_backup_retention_deleted">%1$d file(s) deleted because they were older than %2$d days</string>
     <string name="app_data_corrupted">The app data can no longer be read. You may have recovered the app data from another device which is not supported because AnonAddy for Android encrypts all the app data with a device specific key. Please use the built-in AnonAddy backup feature in the app settings next time. The app will be reset in 15 seconds…</string>
+    <string name="use_dynamic_colors">Use dynamic colors</string>
+    <string name="use_dynamic_colors_desc">Apply dynamic colors provided by de system. (requires a restart of the app)</string>
+    <string name="appearance_desc">Change the looks of the app</string>
+    <string name="restart_app_required">Restart the app to apply the dynamic color changes</string>
 
 </resources>

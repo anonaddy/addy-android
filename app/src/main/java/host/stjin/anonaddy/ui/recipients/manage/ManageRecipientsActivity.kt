@@ -40,6 +40,7 @@ class ManageRecipientsActivity : BaseActivity(),
         binding = ActivityManageRecipientsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityManageRecipientNSVRL)
 
         setupToolbar(binding.activityManageRecipientToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_recipient)
         networkHelper = NetworkHelper(this)

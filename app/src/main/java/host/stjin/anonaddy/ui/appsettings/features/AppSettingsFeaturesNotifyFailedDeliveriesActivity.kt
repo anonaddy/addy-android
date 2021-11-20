@@ -24,6 +24,8 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesNotifyFailedDeliveriesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityAppSettingsFeaturesNotifyFailedDeliveriesNSVLL)
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(

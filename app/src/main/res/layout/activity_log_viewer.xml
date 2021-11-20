@@ -14,12 +14,13 @@
 
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/appsettings_logviewer_NSC"
+        android:id="@+id/appsettings_logviewer_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
+            android:id="@+id/appsettings_logviewer_NSV_LL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipChildren="false"
@@ -52,7 +53,6 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/appsettings_logviewer_efab"
-        style="@style/FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

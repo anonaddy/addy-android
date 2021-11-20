@@ -2,21 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fitsSystemWindows="true"
     app:expanded="false">
 
-    <com.google.android.material.appbar.CollapsingToolbarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primaryColor"
-        app:collapsedTitleGravity="center"
-        app:collapsedTitleTextAppearance="@style/AppTheme.CollapsingToolbarTitle.Collapsed"
-        app:expandedTitleGravity="left|bottom"
-        app:expandedTitleMarginBottom="@dimen/collapsingtoolbar_title_bottom_margin"
-        app:expandedTitleMarginStart="@dimen/collapsingtoolbar_title_left_margin"
-        app:expandedTitleMarginTop="0dp"
-        app:expandedTitleTextAppearance="@style/AppTheme.CollapsingToolbarTitle.Expanded"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+    <com.google.android.material.appbar.CollapsingToolbarLayout style="@style/AnonAddyCollapsingToolbarLayout">
 
         <Space
             android:id="@+id/expanded_size"
@@ -26,16 +14,10 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/custom_toolbar_one_handed_materialtoolbar"
             android:layout_width="match_parent"
+            app:navigationIconTint="@color/md_theme_onPrimary"
             android:layout_height="?attr/actionBarSize"
-            app:contentInsetEnd="?attr/actionBarSize"
-            app:contentInsetLeft="?attr/actionBarSize"
-            app:contentInsetRight="?attr/actionBarSize"
-            app:contentInsetStart="?attr/actionBarSize"
-            app:contentInsetStartWithNavigation="?attr/actionBarSize"
             app:layout_collapseMode="pin"
-            app:title="TITLE"
-            app:titleMargin="0dp"
-            app:titleMargins="0dp" />
+            app:title="TITLE" />
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 </com.google.android.material.appbar.AppBarLayout>

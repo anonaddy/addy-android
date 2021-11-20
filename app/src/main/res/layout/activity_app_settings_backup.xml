@@ -19,6 +19,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/activity_app_settings_backup_NSV_LL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"
@@ -109,6 +110,7 @@
                 android:layout_width="match_parent" />
 
             <LinearLayout
+                android:id="@+id/activity_app_settings_backup_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
@@ -124,7 +126,6 @@
                     tools:ignore="RtlSymmetry" />
 
                 <TextView
-                    android:id="@+id/activity_app_settings_backup_version_channel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"

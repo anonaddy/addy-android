@@ -12,21 +12,9 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         app:expanded="false">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primaryColor"
-            app:collapsedTitleGravity="center"
-            app:collapsedTitleTextAppearance="@style/AppTheme.CollapsingToolbarTitle.Collapsed"
-            app:expandedTitleGravity="left|bottom"
-            app:expandedTitleMarginBottom="@dimen/collapsingtoolbar_title_bottom_margin"
-            app:expandedTitleMarginStart="@dimen/collapsingtoolbar_title_left_margin"
-            app:expandedTitleMarginTop="0dp"
-            app:expandedTitleTextAppearance="@style/AppTheme.CollapsingToolbarTitle.Expanded"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+        <com.google.android.material.appbar.CollapsingToolbarLayout style="@style/AnonAddyCollapsingToolbarLayout">
 
             <Space
                 android:id="@+id/expanded_size"
@@ -37,15 +25,7 @@
                 android:id="@+id/activity_rules_create_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:contentInsetEnd="?attr/actionBarSize"
-                app:contentInsetLeft="?attr/actionBarSize"
-                app:contentInsetRight="?attr/actionBarSize"
-                app:contentInsetStart="?attr/actionBarSize"
-                app:contentInsetStartWithNavigation="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:title="TITLE"
-                app:titleMargin="0dp"
-                app:titleMargins="0dp" />
+                app:layout_collapseMode="pin" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -75,7 +55,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_check"
-                    app:tint="@android:color/white" />
+                    app:tint="?colorOnSecondaryContainer" />
 
             </LinearLayout>
 
@@ -90,6 +70,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
+            android:id="@+id/activity_rules_create_RL_NSV_RL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"

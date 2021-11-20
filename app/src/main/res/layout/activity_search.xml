@@ -14,13 +14,14 @@
 
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/activity_search_NCV"
+        android:id="@+id/activity_search_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <RelativeLayout
+            android:id="@+id/activity_search_NSV_RL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipChildren="false"

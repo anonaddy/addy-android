@@ -10,8 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.WindowCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
@@ -34,10 +32,8 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         binding = ActivitySetupBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        drawBehindNavBar(null, binding.fragmentSetupInitButtonLl)
 
-
-        setInsets()
         setButtonClickListeners()
         checkForIntents()
 
@@ -193,21 +189,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         finish()
     }
 
-    private fun setInsets() {
-        binding.fragmentSetupInitButtonLl.doOnApplyWindowInsets { view, insets, padding ->
-            // padding contains the original padding values after inflation
-            view.updatePadding(
-                bottom = padding.bottom + insets.systemWindowInsetBottom
-            )
-        }
-
-        binding.fragmentSetupHiThere.doOnApplyWindowInsets { view, insets, padding ->
-            // padding contains the original padding values after inflation
-            view.updatePadding(
-                top = padding.top + insets.systemWindowInsetTop
-            )
-        }
-    }
 
     override fun onClickSave(baseUrl: String, apiKey: String) {
         addApiBottomDialogFragment.dismiss()

@@ -24,6 +24,9 @@ class LogViewerActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
 
+        // TODO Fix this eFab being hidden below navbar
+        drawBehindNavBar(view, binding.appsettingsLogviewerNSVLL)
+
         setupToolbar(binding.appsettingsLogviewerToolbar.customToolbarOneHandedMaterialtoolbar, R.string.logs)
 
         val filename = intent.getStringExtra("logfile")

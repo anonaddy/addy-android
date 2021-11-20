@@ -20,6 +20,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/activity_manage_alias_NSV_LL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"
@@ -44,7 +45,7 @@
                     android:maxLines="1"
                     android:textAlignment="center"
                     android:textAllCaps="true"
-                    android:textColor="@color/primaryColor"
+                    android:textColor="?colorPrimary"
                     android:textSize="18sp"
                     tools:text="@tools:sample/lorem/random" />
 
@@ -233,7 +234,6 @@
                     android:id="@+id/activity_manage_alias_settings_LL"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="24dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical"
@@ -327,6 +327,15 @@
                             app:sectionTitle="@string/delete_alias" />
 
                         <host.stjin.anonaddy.ui.customviews.SectionView
+                            android:id="@+id/activity_manage_alias_restore"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:sectionColorAccent="?colorPrimary"
+                            app:sectionDescription="@string/restore_alias_desc"
+                            app:sectionStartIcon="@drawable/ic_trash_off"
+                            app:sectionTitle="@string/restore_alias" />
+
+                        <host.stjin.anonaddy.ui.customviews.SectionView
                             android:id="@+id/activity_manage_alias_forget"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -335,14 +344,6 @@
                             app:sectionStartIcon="@drawable/ic_eraser"
                             app:sectionTitle="@string/forget_alias" />
 
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_restore"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionColorAccent="@color/primaryColor"
-                            app:sectionDescription="@string/restore_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_trash_off"
-                            app:sectionTitle="@string/restore_alias" />
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>

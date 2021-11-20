@@ -20,6 +20,9 @@ class SetupNewActivity : BaseActivity() {
         binding = ActivitySetupNewBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view)
+
+
         switchFragments(SetupHow1Fragment())
     }
 

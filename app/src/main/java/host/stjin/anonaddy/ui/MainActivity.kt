@@ -8,6 +8,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.*
@@ -53,6 +54,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view)
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {

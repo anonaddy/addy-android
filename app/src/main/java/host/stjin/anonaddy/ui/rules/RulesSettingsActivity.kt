@@ -41,6 +41,7 @@ class RulesSettingsActivity : BaseActivity() {
         binding = ActivityRuleSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityManageRulesNSVRL)
 
         setupToolbar(binding.activityManageRulesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_rules)
 

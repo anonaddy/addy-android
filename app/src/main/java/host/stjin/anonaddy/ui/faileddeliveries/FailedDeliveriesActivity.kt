@@ -30,6 +30,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
         binding = ActivityFailedDeliveriesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityFailedDeliveriesNSVRL)
 
         setupToolbar(binding.activityFailedDeliveriesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.failed_deliveries)
 

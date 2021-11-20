@@ -63,7 +63,7 @@
                     android:id="@+id/bs_anonaddy_instance_version_unsupported_ignore_button"
                     style="@style/TextButtonsSecondary"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="16dp"
                     android:text="@string/ignore_and_continue" />
 

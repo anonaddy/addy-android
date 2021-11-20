@@ -7,5 +7,5 @@
     <!-- results in the track looking smaller than the thumb -->
     <stroke
         android:width="10dp"
-        android:color="@color/primaryColor" />
+        android:color="?colorSecondary" />
 </shape>

@@ -43,6 +43,7 @@ class ManageUsernamesActivity : BaseActivity(),
         binding = ActivityManageUsernamesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityManageUsernameNSVRL)
 
         setupToolbar(binding.activityManageUsernameToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_username)
         networkHelper = NetworkHelper(this)

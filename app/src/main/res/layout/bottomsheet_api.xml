@@ -183,7 +183,7 @@
                         android:id="@+id/bs_setup_apikey_get_button"
                         style="@style/TextButtonsSecondary"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="16dp"
                         android:text="@string/get_my_key" />
 

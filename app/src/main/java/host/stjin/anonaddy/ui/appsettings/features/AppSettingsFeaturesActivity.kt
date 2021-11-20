@@ -30,6 +30,8 @@ class AppSettingsFeaturesActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityAppSettingsFeaturesSectionsNSVLL)
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(binding.appsettingsFeaturesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.features_and_integrations)

@@ -41,6 +41,7 @@ class ManageDomainsActivity : BaseActivity(),
         binding = ActivityManageDomainsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityManageDomainNSVRL)
 
         setupToolbar(binding.activityManageDomainToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_domain)
         networkHelper = NetworkHelper(this)

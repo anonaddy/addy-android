@@ -13,11 +13,13 @@
         layout="@layout/custom_toolbar_one_handed" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/activity_app_settings_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/activity_app_settings_NSV_LL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"
@@ -53,9 +55,9 @@
                     android:id="@+id/activity_app_settings_section_app_theme"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/change_app_theme_to_dark_mode"
+                    app:sectionDescription="@string/appearance_desc"
                     app:sectionStartIcon="@drawable/ic_brightness"
-                    app:sectionTitle="@string/app_theme">
+                    app:sectionTitle="@string/appearance">
 
                 </host.stjin.anonaddy.ui.customviews.SectionView>
 
@@ -199,6 +201,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
                 android:orientation="vertical">
 
                 <TextView

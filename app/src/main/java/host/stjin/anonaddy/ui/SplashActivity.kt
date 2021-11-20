@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresApi
-import androidx.core.view.WindowCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
@@ -47,9 +45,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
         setContentView(view)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        drawBehindNavBar(null, binding.activitySplashProgressbar)
 
-        setInsets()
 
 
         // This is prone to fail when users have restored the app data from any restore app as the
@@ -130,15 +127,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                     showErrorScreen(error)
                 }
             }
-        }
-    }
-
-    private fun setInsets() {
-        binding.activitySplashProgressbar.doOnApplyWindowInsets { view, insets, padding ->
-            // padding contains the original padding values after inflation
-            view.updatePadding(
-                bottom = padding.bottom + insets.systemWindowInsetBottom
-            )
         }
     }
 

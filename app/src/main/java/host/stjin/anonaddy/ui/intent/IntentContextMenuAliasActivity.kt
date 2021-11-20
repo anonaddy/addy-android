@@ -36,6 +36,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
         setContentView(view)
+
         networkHelper = NetworkHelper(this)
 
         /**

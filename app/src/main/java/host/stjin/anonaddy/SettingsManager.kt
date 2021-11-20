@@ -24,6 +24,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
     enum class PREFS(val encrypted: Boolean, val type: PREFTYPES, val key: String) {
         DARK_MODE(false, PREFTYPES.BOOLEAN, "dark_mode"),
+        DYNAMIC_COLORS(false, PREFTYPES.BOOLEAN, "dynamic_colors"),
         STORE_LOGS(false, PREFTYPES.BOOLEAN, "store_logs"),
         VERSION_CODE(false, PREFTYPES.INT, "version_code"),
         BACKGROUND_SERVICE_INTERVAL(false, PREFTYPES.INT, "background_service_interval"),

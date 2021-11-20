@@ -2,14 +2,16 @@ package host.stjin.anonaddy
 
 import android.annotation.SuppressLint
 import android.view.View
-import android.view.WindowInsets
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.view.*
 import com.google.android.material.appbar.MaterialToolbar
+
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -19,21 +21,6 @@ abstract class BaseActivity : AppCompatActivity() {
         // That way all the protected parts of the app stay available until the user explicitly closed them.
         var isSessionAuthenticated = false
     }
-
-    fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
-        // Create a snapshot of the view's padding state
-        val initialPadding = recordInitialPaddingForView(this)
-        // Set an actual OnApplyWindowInsetsListener which proxies to the given
-        // lambda, also passing in the original padding state
-        setOnApplyWindowInsetsListener { v, insets ->
-            f(v, insets, initialPadding)
-            // Always return the insets, so that children can also use them
-            insets
-        }
-        // request some insets
-        //requestApplyInsetsWhenAttached()
-    }
-
 
     /*
     This method forces the use of dark/light/auto mode
@@ -150,4 +137,26 @@ abstract class BaseActivity : AppCompatActivity() {
         }
 
     }
+
+    /**
+     * bottomViewToShiftUp should be the last view in a NSV or CL to add a margin bottom to
+     */
+    fun drawBehindNavBar(topViewToShiftDown: View? = null, bottomViewToShiftUp: View? = null) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        topViewToShiftDown?.setOnApplyWindowInsetsListener { view, insets ->
+            val params = view.layoutParams as ViewGroup.MarginLayoutParams
+            params.topMargin = view.paddingTop + insets.systemWindowInsetTop
+            view.layoutParams = params
+            insets
+        }
+
+        bottomViewToShiftUp?.setOnApplyWindowInsetsListener { view, insets ->
+            val params = view.layoutParams as ViewGroup.MarginLayoutParams
+            params.bottomMargin = view.marginBottom + insets.systemWindowInsetBottom
+            view.layoutParams = params
+            insets
+        }
+    }
+
 }

@@ -29,11 +29,11 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 class AppSettingsActivity : BaseActivity(),
-    DarkModeBottomDialogFragment.AddDarkmodeBottomDialogListener,
+    AppearanceBottomDialogFragment.AddAppearanceBottomDialogListener,
     BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
 
-    private val addDarkModeBottomDialogFragment: DarkModeBottomDialogFragment =
-        DarkModeBottomDialogFragment.newInstance()
+    private val addAppearanceBottomDialogFragment: AppearanceBottomDialogFragment =
+        AppearanceBottomDialogFragment.newInstance()
 
     private val addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
         BackgroundServiceIntervalBottomDialogFragment.newInstance()
@@ -49,6 +49,8 @@ class AppSettingsActivity : BaseActivity(),
         binding = ActivityAppSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(view, binding.activityAppSettingsNSVLL)
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(binding.appsettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.settings)
@@ -229,8 +231,8 @@ class AppSettingsActivity : BaseActivity(),
     private fun setOnClickListeners() {
         binding.activityAppSettingsSectionAppTheme.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                if (!addDarkModeBottomDialogFragment.isAdded) {
-                    addDarkModeBottomDialogFragment.show(
+                if (!addAppearanceBottomDialogFragment.isAdded) {
+                    addAppearanceBottomDialogFragment.show(
                         supportFragmentManager,
                         "addDarkModeBottomDialogFragment"
                     )
@@ -374,6 +376,12 @@ class AppSettingsActivity : BaseActivity(),
         settingsManager.putSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)
         delegate.applyDayNight()
     }
+
+    override fun onApplyDynamicColors() {
+        binding.activityAppSettingsSectionAppTheme.setDescription(this.resources.getString(R.string.restart_app_required))
+        binding.activityAppSettingsSectionAppTheme.setSectionAlert(true)
+    }
+
 
     override fun setInterval(minutes: Int) {
         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, minutes)

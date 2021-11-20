@@ -29,9 +29,9 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_2_margin_layout_2">0dp</dimen>
     <dimen name="widget_2_margin_layout_3">8dp</dimen>
 
-    <dimen name="collapsingtoolbar_title_left_margin">15dp</dimen>
-    <dimen name="collapsingtoolbar_action_margin">12dp</dimen>
-    <dimen name="collapsingtoolbar_title_bottom_margin">18dp</dimen>
+    <dimen name="collapsingtoolbar_title_left_margin">22dp</dimen>
+    <dimen name="collapsingtoolbar_action_margin">15dp</dimen>
+    <dimen name="collapsingtoolbar_title_bottom_margin">22dp</dimen>
     <dimen name="corner_radius_button">8dp</dimen>
     <dimen name="recyclerview_margin">6dp</dimen>
     <dimen name="touch_raise">12dp</dimen>

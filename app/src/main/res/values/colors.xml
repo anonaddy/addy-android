@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primaryColorStatic">#19216b</color>
-    <!--<color name="primaryColor">#19216b</color>-->
-    <color name="primaryColor">#353C7D</color>
-    <color name="primaryLightColor">#4d499a</color>
     <color name="primarySuperLightColor">#804D499A</color>
     <color name="primarySuperSuperLightColor">#32353C7D</color>
     <color name="primaryDarkColor">#000040</color>
@@ -12,7 +9,7 @@
 
     <color name="IconGrayTint">#666666</color>
 
-    <color name="widget_2_layout_3_inner_background_color">@color/primaryLightColor</color>
+    <color name="widget_2_layout_3_inner_background_color">@color/md_theme_secondary</color>
 
 
     <color name="softGreen">#00B4AF</color>
@@ -51,10 +48,10 @@
     <color name="ic_launcher_foreground">#DFE0FF</color>
 
     <!-- Profile icon -->
-    <color name="profile_icon_background">@color/primaryColor</color>
+    <color name="profile_icon_background">?colorPrimary</color>
     <color name="profile_icon_foreground">@android:color/white</color>
 
-    <color name="CircularProgressButtonTextColor">@color/primaryLightColor</color>
+    <color name="CircularProgressButtonTextColor">@color/md_theme_secondary</color>
     <color name="CircularProgressButtonSoftRedTextColor">@color/softRed</color>
     <color name="splashBackground">@color/primaryColorStatic</color>
 
@@ -63,4 +60,42 @@
     <color name="AnonAddyCustomDialogSoftRedTextColor">@color/softRed</color>
     <color name="AnonAddyCustomDialogHardRedTextColor">@color/hardRed</color>
 
+
+    <!-- MATERIAL 3 -->
+    <color name="md_theme_primary">#4E57A9</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#DEE0FF</color>
+    <color name="md_theme_onPrimaryContainer">#010965</color>
+
+    <color name="md_theme_secondary">#4E57A9</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#DEE0FF</color>
+    <color name="md_theme_onSecondaryContainer">#010965</color>
+
+    <color name="md_theme_tertiary">#006A68</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#6FF7F4</color>
+    <color name="md_theme_onTertiaryContainer">#002020</color>
+
+    <color name="md_theme_error">#BA1B1B</color>
+    <color name="md_theme_errorContainer">#FFDAD4</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_onErrorContainer">#410001</color>
+
+    <color name="md_theme_background">#FFFBFF</color>
+    <color name="md_theme_onBackground">#1B1B1F</color>
+
+    <color name="md_theme_surface">#FFFBFF</color>
+    <color name="md_theme_onSurface">#1B1B1F</color>
+    <color name="md_theme_surfaceVariant">#E3E1EC</color>
+    <color name="md_theme_onSurfaceVariant">#46464F</color>
+
+    <color name="md_theme_outline">#77767F</color>
+
+    <color name="md_theme_inverseOnSurface">#F3F0F5</color>
+    <color name="md_theme_inverseSurface">#303034</color>
+    <color name="md_theme_primaryInverse">#BBC2FF</color>
+
+    <color name="seed">#19216B</color>
+    <color name="error">#BA1B1B</color>
 </resources>

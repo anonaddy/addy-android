@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bs_appearance_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="16dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/bottomsheet_top_part_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/drag_down_to_close"
+            android:src="@drawable/drag_pill" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/appearance"
+            android:textAlignment="center"
+            android:textColor="@color/BlackWhite"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        style="@style/divider"
+        android:layout_width="match_parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <host.stjin.anonaddy.ui.customviews.SectionView
+                android:id="@+id/bs_appearance_section_dynamic_colors"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:sectionDescription="@string/use_dynamic_colors_desc"
+                app:sectionShowSwitch="true"
+                app:sectionStartIcon="@drawable/ic_palette"
+                app:sectionTitle="@string/use_dynamic_colors" />
+
+            <TextView
+                style="@style/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingTop="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding"
+                android:paddingBottom="@dimen/layout_padding"
+                android:text="@string/dark_mode" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/bs_appearance_chipgroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding"
+                android:paddingBottom="@dimen/layout_padding"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/bs_appearance_automatic"
+                    style="@style/AnonAddyChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/system_default" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/bs_appearance_on"
+                    style="@style/AnonAddyChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/on" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/bs_appearance_off"
+                    style="@style/AnonAddyChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="@string/off" />
+
+
+            </com.google.android.material.chip.ChipGroup>
+
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>
