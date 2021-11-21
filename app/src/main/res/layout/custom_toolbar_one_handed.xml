@@ -14,7 +14,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/custom_toolbar_one_handed_materialtoolbar"
             android:layout_width="match_parent"
-            app:navigationIconTint="@color/md_theme_onPrimary"
+            app:navigationIconTint="?colorOnPrimary"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
             app:title="TITLE" />

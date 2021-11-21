@@ -90,7 +90,7 @@
                     app:frameCornersSize="@dimen/corner_radius"
                     app:frameSize="1"
                     app:frameThickness="0dp"
-                    app:maskColor="@color/NavbarLightDarkMode">
+                    app:maskColor="?android:colorBackground">
 
                 </com.budiyev.android.codescanner.CodeScannerView>
 

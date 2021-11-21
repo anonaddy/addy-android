@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.recipients
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,6 +25,7 @@ import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
 import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
+import host.stjin.anonaddy.utils.AttributeHelper
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -272,8 +273,12 @@ class RecipientsFragment : Fragment(),
         anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_recipient_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             context.resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(context, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(context, R.color.AnonAddyCustomDialogSoftRedTextColor))
+        anonaddyCustomDialogBinding.dialogPositiveButton.drawableBackground.setColorFilter(
+            AttributeHelper.getValueByAttr(context, R.attr.colorError),
+            PorterDuff.Mode.SRC_ATOP
+        )
+        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(AttributeHelper.getValueByAttr(context, R.attr.colorOnError))
+        anonaddyCustomDialogBinding.dialogPositiveButton.spinningBarColor = AttributeHelper.getValueByAttr(context, R.attr.colorOnError)
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress

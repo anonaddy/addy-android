@@ -5,7 +5,7 @@
     android:id="@+id/activity_manage_alias_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/AnonAddyNotYetWhite"
+
     android:orientation="vertical">
 
 
@@ -164,7 +164,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_alias_copy"
-                        style="@style/MaterialButtonSecondaryLight"
+                        style="@style/MaterialButtonSecondaryDark"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -182,7 +182,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_alias_send"
-                        style="@style/MaterialButtonSecondaryLight"
+                        style="@style/MaterialButtonSecondaryDark"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

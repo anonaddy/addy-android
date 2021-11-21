@@ -29,10 +29,16 @@
             @transition/change_image_transform
         </item>
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
+        <item name="chipStyle">@style/AnonAddyChip</item>
 
         <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
+
+        <!-- ADDED FOR COMPATIBILITY MD3 -->
+        <item name="android:colorAccent">@color/md_theme_tertiary</item>
+        <item name="colorAccent">@color/md_theme_tertiary</item>
+
 
         <!-- DEFAULT MD3 -->
         <item name="colorPrimary">@color/md_theme_primary</item>
@@ -97,15 +103,15 @@
 
 
     <!-- TODO MOVE TO MD3 -->
-    <style name="BottomSheet" parent="Theme.Material3.DayNight.BottomSheetDialog">
+    <style name="BottomSheet" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@color/NavbarLightDarkMode</item>
-        <item name="android:navigationBarDividerColor">@color/NavbarLightDarkMode</item>
-        <item name="colorPrimary">@color/md_theme_primary</item>
-        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/secondaryColor</item>
+        <item name="android:navigationBarColor">?android:colorBackground</item>
+        <item name="android:navigationBarDividerColor">?android:colorBackground</item>
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
+
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/Animation.MaterialComponents.BottomSheetDialog</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -179,19 +185,19 @@
         <item name="android:height">54dp</item>
     </style>
 
-    <style name="MaterialButtonSecondaryLight" parent="MaterialButtonSecondary">
+    <style name="MaterialButtonSecondaryDark" parent="MaterialButtonSecondary">
         <item name="backgroundTint">?colorPrimaryContainer</item>
         <item name="android:textColor">?colorOnPrimaryContainer</item>
         <item name="iconTint">?colorOnPrimaryContainer</item>
         <item name="drawableTint">?colorOnPrimaryContainer</item>
     </style>
 
-    <style name="MaterialButtonSecondaryDeleteStyle" parent="MaterialButtonSecondaryLight">
+    <style name="MaterialButtonSecondaryDeleteStyle" parent="MaterialButtonSecondaryDark">
         <item name="backgroundTint">?colorError</item>
         <item name="android:textColor">?colorOnError</item>
     </style>
 
-    <style name="MaterialButtonSecondary.IconOnly" parent="MaterialButtonSecondaryLight">
+    <style name="MaterialButtonSecondary.IconOnly" parent="MaterialButtonSecondaryDark">
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
@@ -284,15 +290,13 @@
 
     <style name="AnonAddyTextInputEditText">
         <item name="android:textColor">@color/BlackWhite</item>
-        <item name="placeholderTextColor">@color/titOutlineColor</item> <!-- TODO delete ?? -->
     </style>
 
 
     <!-- Style for material design 'Spinner'-->
-    <style name="AppTheme.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+    <style name="AppTheme.ExposedDropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="android:layout_marginBottom">16dp</item>
     </style>
-
 
     <!-- style for material spinner 'item' layout -->
     <style name="MaterialSpinnerItem" parent="Widget.AppCompat.TextView">
@@ -327,17 +331,18 @@
     <style name="divider">
         <item name="android:layout_height">1dp</item>
         <item name="android:alpha">0.2</item>
-        <item name="android:background">@color/IconGrayTint</item>
+        <item name="android:background">?colorSurfaceVariant</item>
     </style>
 
     <style name="divider_vertical_widget_2_layout_3">
         <item name="android:layout_width">1dp</item>
         <item name="android:alpha">0.5</item>
-        <item name="android:background">@color/IconGrayTint</item>
+        <item name="android:background">?colorSurfaceVariant</item>
     </style>
 
 
-    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.MaterialComponents.CardView">
+    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
+
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
     </style>
 
@@ -349,7 +354,8 @@
         <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.MaterialComponents.CardView">
+    <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/cardview_background_color</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
     </style>
 
@@ -361,7 +367,7 @@
         <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.MaterialComponents.CardView">
+    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
     </style>
 
@@ -406,12 +412,12 @@
         <item name="android:layout_marginStart">8dp</item>
     </style>
 
-    <style name="AnonAddyToggleButton" parent="MaterialButtonSecondaryLight">
+    <style name="AnonAddyToggleButton" parent="MaterialButtonSecondaryDark">
         <item name="android:backgroundTint">@color/anonaddy_toggle_button_color</item>
         <item name="cornerRadius">@dimen/corner_radius_cardview</item>
     </style>
 
-    <style name="RoundFlatButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="RoundFlatButton" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">@dimen/corner_radius</item>
         <item name="android:letterSpacing">0.00</item>
@@ -420,11 +426,7 @@
         <item name="strokeColor">@color/colorControlNormal</item>
     </style>
 
-    <style name="AnonAddyChip" parent="Widget.MaterialComponents.Chip.Filter">
-        <item name="chipCornerRadius">@dimen/corner_radius_chips</item>
-        <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipStrokeWidth">1dp</item>
-        <item name="chipStrokeColor">@color/shimmerGray</item>
+    <style name="AnonAddyChip" parent="Widget.Material3.Chip.Filter">
         <item name="checkedIcon">@drawable/ic_check</item>
         <item name="checkedIconTint">?colorPrimary</item>
     </style>
@@ -443,6 +445,10 @@
         <item name="collapsedTitleTextColor">?colorOnPrimary</item>
         <item name="expandedTitleTextAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
         <item name="layout_scrollFlags">scroll|exitUntilCollapsed|snap</item>
+    </style>
+
+    <style name="AnonAddyChipDropdown">
+        <item name="cornerSize">100%</item>
     </style>
 
 

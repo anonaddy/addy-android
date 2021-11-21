@@ -60,8 +60,8 @@
 
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
@@ -110,8 +110,8 @@
 
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
@@ -177,12 +177,39 @@
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
+                    <!--                    <TextView
+                                            style="@style/titleTextView"
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:text="@string/all_aliases" />-->
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/alias_alias_dropdown"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/all_aliases" />
+                        android:overScrollMode="never"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:hintEnabled="false"
+                        app:shapeAppearanceOverlay="@style/AnonAddyChipDropdown">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/alias_alias_dropdown_mact"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="none"
+                            android:paddingTop="8dp"
+                            android:text="@string/all_aliases" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/alias_add_alias"
@@ -209,58 +236,6 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/no_result_textview_padding"
                     android:text="@string/no_aliases"
-                    android:textAlignment="center"
-                    android:textColor="@color/BlackWhite"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/alias_list_LL2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/alias_list_LL1"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/alias_show_deleted_alias_toggle_LL"
-                    style="@style/AnonAddyTitleAction"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/deleted_aliases" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/alias_show_deleted_alias_toggle"
-                        style="@style/MaterialButtonSecondary.IconOnly"
-                        android:contentDescription="@string/deleted_aliases"
-                        app:icon="@drawable/ic_caret_down" />
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/alias_deleted_aliases_recyclerview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    android:visibility="gone">
-
-                </androidx.recyclerview.widget.RecyclerView>
-
-                <TextView
-                    android:id="@+id/alias_no_deleted_aliases"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/no_result_textview_padding"
-                    android:text="@string/no_deleted_aliases"
                     android:textAlignment="center"
                     android:textColor="@color/BlackWhite"
                     android:visibility="gone" />

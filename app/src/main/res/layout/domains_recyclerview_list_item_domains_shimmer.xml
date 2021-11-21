@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/domain"
                 android:src="@drawable/ic_dns"
-                app:tint="@color/shimmerGray" />
+                app:tint="?colorSurfaceVariant" />
 
         </LinearLayout>
 
@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/shimmerGray"
+                    android:background="?colorSurfaceVariant"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
@@ -66,7 +66,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/shimmerGray"
+                    android:background="?colorSurfaceVariant"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/open_options"
                 app:srcCompat="@drawable/ic_chevron_down"
-                app:tint="@color/shimmerGray" />
+                app:tint="?colorSurfaceVariant" />
         </LinearLayout>
     </LinearLayout>
 

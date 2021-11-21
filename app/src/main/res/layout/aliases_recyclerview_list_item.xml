@@ -114,7 +114,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_rounded_corners_top_bottom_recycleview_cards"
+            android:background="@drawable/shape_rounded_corners_top_recyclerview_cards"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -135,7 +135,6 @@
                 android:text="@string/you_ll_be_notified_if_this_alias_has_activity"
                 android:textColor="?colorPrimary"
                 android:textSize="12sp"
-                android:visibility="gone"
                 app:drawableStartCompat="@drawable/ic_watch_alias"
                 app:drawableTint="?colorPrimary" />
         </LinearLayout>

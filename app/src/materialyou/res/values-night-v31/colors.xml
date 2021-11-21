@@ -2,7 +2,6 @@
 <resources>
     <color name="colorControlNormal">#7AFFFFFF</color>
     <color name="softRedSuperSuperLight">@color/softRed</color>
-    <color name="MaterialButtonSecondarySoftRedTextColor">@android:color/white</color>
 
 
     <!-- MATERIAL 3 -->

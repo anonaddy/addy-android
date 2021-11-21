@@ -2,13 +2,13 @@ package host.stjin.anonaddy.ui.recipients.manage
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
@@ -16,6 +16,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageRecipientsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.AttributeHelper
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -187,8 +188,12 @@ class ManageRecipientsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.remove_public_key_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.remove)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
+        anonaddyCustomDialogBinding.dialogPositiveButton.drawableBackground.setColorFilter(
+            AttributeHelper.getValueByAttr(this, R.attr.colorError),
+            PorterDuff.Mode.SRC_ATOP
+        )
+        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(AttributeHelper.getValueByAttr(this, R.attr.colorOnError))
+        anonaddyCustomDialogBinding.dialogPositiveButton.spinningBarColor = AttributeHelper.getValueByAttr(this, R.attr.colorOnError)
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
@@ -223,8 +228,12 @@ class ManageRecipientsActivity : BaseActivity(),
         anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.delete_recipient_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
+        anonaddyCustomDialogBinding.dialogPositiveButton.drawableBackground.setColorFilter(
+            AttributeHelper.getValueByAttr(this, R.attr.colorError),
+            PorterDuff.Mode.SRC_ATOP
+        )
+        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(AttributeHelper.getValueByAttr(this, R.attr.colorOnError))
+        anonaddyCustomDialogBinding.dialogPositiveButton.spinningBarColor = AttributeHelper.getValueByAttr(this, R.attr.colorOnError)
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Revert the button to normal

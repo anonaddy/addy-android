@@ -4,22 +4,11 @@
     <color name="profile_icon_background">@android:color/system_accent1_800</color>
     <color name="profile_icon_foreground">@android:color/system_accent2_100</color>
 
-    <color name="CircularProgressButtonTextColor">@android:color/white</color>
-    <color name="CircularProgressButtonSoftRedTextColor">@android:color/white</color>
 
     <color name="bandwidthColor">#353C7D</color>
     <color name="bandwidthSuperSuperLightColor">#804D499A</color>
 
-    <color name="primarySuperLightColor">@android:color/system_accent1_300</color>
-    <color name="primarySuperSuperLightColor">@android:color/system_accent1_100</color>
-    <color name="primaryDarkColor">@android:color/system_accent1_800</color>
-    <color name="secondaryColor">@android:color/system_accent2_200</color>
-    <color name="secondaryDarkColor">@android:color/system_accent2_300</color>
-
     <color name="widget_2_layout_3_inner_background_color">@android:color/system_accent1_700</color>
-
-    <color name="AnonAddyCustomDialogSoftRedTextColor">@android:color/white</color>
-    <color name="AnonAddyCustomDialogHardRedTextColor">@android:color/white</color>
 
 
     <!-- MATERIAL 3 -->

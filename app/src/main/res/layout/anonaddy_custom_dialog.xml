@@ -35,7 +35,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/dialog_negative_button"
-            style="@style/MaterialButtonSecondaryLight"
+            style="@style/MaterialButtonSecondaryDark"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginBottom="4dp"
@@ -45,7 +45,7 @@
             android:id="@+id/dialog_positive_button"
             style="@style/CircularProgressButtonSecondary"
             android:layout_width="match_parent"
-            android:layout_height="42dp"
+            android:layout_height="46dp"
             android:text="@string/confirm" />
     </LinearLayout>
 

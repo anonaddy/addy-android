@@ -134,7 +134,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_recyclerview_list_activate_button"
-                style="@style/MaterialButtonSecondaryLight"
+                style="@style/MaterialButtonSecondaryDark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/cardview_button_padding"
@@ -143,7 +143,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_recyclerview_list_settings_button"
-                style="@style/MaterialButtonSecondaryLight"
+                style="@style/MaterialButtonSecondaryDark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/cardview_button_padding_middle"

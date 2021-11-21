@@ -4,5 +4,5 @@
     <corners
         android:topLeftRadius="@dimen/corner_radius"
         android:topRightRadius="@dimen/corner_radius" />
-    <solid android:color="@color/NavbarLightDarkMode" />
+    <solid android:color="?android:colorBackground" />
 </shape>

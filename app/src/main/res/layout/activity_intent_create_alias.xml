@@ -3,5 +3,5 @@
     android:id="@+id/activity_intent_create_alias_RL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/AnonAddyNotYetWhite"
+
     android:orientation="vertical" />

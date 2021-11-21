@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -25,11 +26,8 @@ import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.AnonAddyUtils
+import host.stjin.anonaddy.utils.*
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
-import host.stjin.anonaddy.utils.DateTimeUtils
-import host.stjin.anonaddy.utils.LoggingHelper
-import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -377,8 +375,13 @@ class ManageAliasActivity : BaseActivity(),
             resources.getString(R.string.delete_alias_confirmation_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
+
+        anonaddyCustomDialogBinding.dialogPositiveButton.drawableBackground.setColorFilter(
+            AttributeHelper.getValueByAttr(this, R.attr.colorError),
+            PorterDuff.Mode.SRC_ATOP
+        )
+        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(AttributeHelper.getValueByAttr(this, R.attr.colorOnError))
+        anonaddyCustomDialogBinding.dialogPositiveButton.spinningBarColor = AttributeHelper.getValueByAttr(this, R.attr.colorOnError)
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
@@ -414,8 +417,12 @@ class ManageAliasActivity : BaseActivity(),
             resources.getString(R.string.forget_alias_confirmation_desc)
         anonaddyCustomDialogBinding.dialogPositiveButton.text =
             resources.getString(R.string.forget)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.hardRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogHardRedTextColor))
+        anonaddyCustomDialogBinding.dialogPositiveButton.drawableBackground.setColorFilter(
+            AttributeHelper.getValueByAttr(this, R.attr.colorError),
+            PorterDuff.Mode.SRC_ATOP
+        )
+        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(AttributeHelper.getValueByAttr(this, R.attr.colorOnError))
+        anonaddyCustomDialogBinding.dialogPositiveButton.spinningBarColor = AttributeHelper.getValueByAttr(this, R.attr.colorOnError)
 
         anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
             // Animate the button to progress
@@ -439,8 +446,8 @@ class ManageAliasActivity : BaseActivity(),
     private suspend fun deleteAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
-                deleteAliasDialog.dismiss()
-                finishWithUpdate()
+                //deleteAliasDialog.dismiss()
+                //finishWithUpdate()
             } else {
                 // Revert the button to normal
                 anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()

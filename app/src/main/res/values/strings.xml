@@ -478,5 +478,8 @@
     <string name="use_dynamic_colors_desc">Apply dynamic colors provided by de system. (requires a restart of the app)</string>
     <string name="appearance_desc">Change the looks of the app</string>
     <string name="restart_app_required">Restart the app to apply the dynamic color changes</string>
+    <string name="active_aliases">Active aliases</string>
+    <string name="inactive_aliases">Inactive aliases</string>
+    <string name="watched_aliases">Watched aliases</string>
 
 </resources>

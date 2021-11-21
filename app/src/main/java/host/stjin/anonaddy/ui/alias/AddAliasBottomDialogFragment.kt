@@ -2,21 +2,17 @@ package host.stjin.anonaddy.ui.alias
 
 import android.app.Dialog
 import android.content.Context
-import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
-import com.google.android.material.shape.ShapeAppearanceModel
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -82,8 +78,6 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
     private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
-
-
         networkHelper.getRecipients({ result ->
             if (result != null) {
                 // Remove the default "Loading recipients" chip
@@ -91,18 +85,11 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasRecipientsChipgroup.requestLayout()
                 binding.bsAddaliasRecipientsChipgroup.invalidate()
                 for (recipient in result) {
-                    val chip = Chip(ContextThemeWrapper(binding.bsAddaliasRecipientsChipgroup.context, R.style.AnonAddyChip), null, 0)
+
+                    val chipView = layoutInflater.inflate(R.layout.chip_view, null)
+                    val chip = chipView.findViewById<Chip>(R.id.chip)
                     chip.text = recipient.email
                     chip.tag = recipient.id
-                    chip.isClickable = true
-                    chip.isCheckable = true
-                    chip.shapeAppearanceModel =
-                        ShapeAppearanceModel().toBuilder().setAllCornerSizes(context.resources.getDimension(R.dimen.corner_radius_chips)).build()
-                    chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.transparent))
-                    chip.checkedIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_check, null)
-                    chip.checkedIconTint = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.md_theme_primary))
-                    chip.chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.shimmerGray))
-                    chip.chipStrokeWidth = context.resources.getDimension(R.dimen.chip_stroke_width)
 
                     binding.bsAddaliasRecipientsChipgroup.addView(chip)
                 }
@@ -253,10 +240,9 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
 
         val recipients = arrayListOf<String>()
-        val ids: List<Int> = binding.bsAddaliasRecipientsChipgroup.checkedChipIds
-        for (id in ids) {
-            val chip: Chip = binding.bsAddaliasRecipientsChipgroup.findViewById(id)
-            recipients.add(chip.tag.toString())
+        for (child in binding.bsAddaliasRecipientsChipgroup.children) {
+            val chip: Chip = child as Chip
+            if (chip.isChecked) recipients.add(chip.tag.toString())
         }
 
         val domain = binding.bsAddaliasDomainMact.text.toString()

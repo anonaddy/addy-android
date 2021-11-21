@@ -10,8 +10,7 @@
     <dimen name="corner_radius_widget_1">8dp</dimen>
     <dimen name="corner_radius_widget_2">28dp</dimen>
     <dimen name="corner_radius_widget_2_inner_layout">20dp</dimen>
-    <dimen name="corner_radius_cardview">8dp</dimen>
-    <dimen name="corner_radius_chips">8dp</dimen>
+    <dimen name="corner_radius_cardview">12dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information
@@ -35,7 +34,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="corner_radius_button">8dp</dimen>
     <dimen name="recyclerview_margin">6dp</dimen>
     <dimen name="touch_raise">12dp</dimen>
-    <dimen name="chip_stroke_width">1dp</dimen>
     <dimen name="layout_padding_top">8dp</dimen>
     <dimen name="bottomsheet_top_part_padding">16dp</dimen>
     <dimen name="layout_padding_dialog">16dp</dimen>

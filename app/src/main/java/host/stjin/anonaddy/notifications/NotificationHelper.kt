@@ -82,9 +82,11 @@ class NotificationHelper(private val context: Context) {
             )
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
             .setSmallIcon(R.drawable.ic_cloud_download)
             .addAction(R.drawable.ic_cloud_download, context.resources.getString(R.string.stop_checking), stopCheckingUpdatePendingIntent)
+            // Notifications should always have a static color to identify the app
             .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
             .setContentIntent(downloadUpdatePendingIntent)
             .setAutoCancel(true)
@@ -142,9 +144,11 @@ class NotificationHelper(private val context: Context) {
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
             .setSmallIcon(R.drawable.ic_mail_error)
             .addAction(R.drawable.ic_mail_error, context.resources.getString(R.string.stop_checking), stopCheckingFailedDeliveryPendingIntent)
+            // Notifications should always have a static color to identify the app
             .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
             .setContentIntent(openFailedDeliveriesPendingIntent)
             .setAutoCancel(true)
@@ -202,6 +206,7 @@ class NotificationHelper(private val context: Context) {
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
             .setSmallIcon(R.drawable.ic_database_export)
             .addAction(
@@ -209,6 +214,7 @@ class NotificationHelper(private val context: Context) {
                 context.resources.getString(R.string.disable_periodic_backups),
                 stopPeriodicBackupsPendingIntent
             )
+            // Notifications should always have a static color to identify the app
             .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
             .setContentIntent(openBackupLogsPendingIntent)
             .setAutoCancel(true)
@@ -274,14 +280,15 @@ class NotificationHelper(private val context: Context) {
             )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(visibility)
+            // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
             .setSmallIcon(R.drawable.ic_watch_alias)
             .addAction(R.drawable.ic_watch_alias, context.resources.getString(R.string.stop_watching), stopWatchingPendingIntent)
+            // Notifications should always have a static color to identify the app
             .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
             .setContentIntent(editAliasPendingIntent)
             .setAutoCancel(true)
             .build()
-
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID, notification)
@@ -298,6 +305,7 @@ class NotificationHelper(private val context: Context) {
             )
             channel.description = description
             channel.enableLights(true)
+            // Notifications should always have a static color to identify the app
             channel.lightColor = ContextCompat.getColor(context, R.color.md_theme_primary)
             mNotificationManager.createNotificationChannel(channel)
         }
