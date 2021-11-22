@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.appsettings.logs
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -24,8 +25,6 @@ class LogViewerActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
 
-        // TODO Fix this eFab being hidden below navbar
-        drawBehindNavBar(view, binding.appsettingsLogviewerNSVLL)
 
         setupToolbar(binding.appsettingsLogviewerToolbar.customToolbarOneHandedMaterialtoolbar, R.string.logs)
 
@@ -46,6 +45,10 @@ class LogViewerActivity : BaseActivity() {
         }
     }
 
+    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onPostCreate(savedInstanceState, persistentState)
+        drawBehindNavBar(binding.root, binding.appsettingsLogviewerEfab)
+    }
 
     private lateinit var logsAdapter: LogsAdapter
     private var OneTimeRecyclerViewActions: Boolean = true

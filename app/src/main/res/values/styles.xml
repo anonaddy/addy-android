@@ -99,7 +99,6 @@
     </style>
 
 
-    <!-- TODO MOVE TO MD3 -->
     <style name="BottomSheet" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
