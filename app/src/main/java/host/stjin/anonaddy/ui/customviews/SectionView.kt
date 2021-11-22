@@ -8,9 +8,9 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.*
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import host.stjin.anonaddy.R
 
@@ -27,7 +27,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     private var iconEnd: ImageView? = null
 
     private var linearLayout: LinearLayout? = null
-    private var cardView: CardView? = null
+    private var cardView: MaterialCardView? = null
 
 
     fun getOnLayoutLongClickedListener(): OnLayoutLongClickedListener? {
@@ -179,6 +179,16 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             // Set ripple, default is enabled. Ripple pref is only set once
             if (!a.getBoolean(R.styleable.SectionView_sectionRippleEffect, true)) {
                 linearLayout?.background = null
+            }
+
+            // Set elevation (if set)
+            if (a.getFloat(R.styleable.SectionView_sectionElevation, 999F) != 999F) {
+                cardView?.cardElevation = a.getFloat(R.styleable.SectionView_sectionElevation, 999F)
+            }
+
+            // Set stroke (if set)
+            if (a.getInteger(R.styleable.SectionView_sectionOutlineWidth, 999) != 999) {
+                cardView?.strokeWidth = a.getInteger(R.styleable.SectionView_sectionOutlineWidth, 999)
             }
 
             // Set title and description

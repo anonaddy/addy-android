@@ -3,6 +3,7 @@ package host.stjin.anonaddy
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -51,12 +52,16 @@ abstract class BaseActivity : AppCompatActivity() {
         view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom
     )
 
-    fun setupToolbar(toolbar: MaterialToolbar, title: Int) {
+    fun setupToolbar(toolbar: MaterialToolbar, title: Int, customToolbarOneHandedImage: ImageView? = null, image: Int? = null) {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
         toolbar.title = this.resources.getString(title)
+
+        if (customToolbarOneHandedImage != null && image != null) {
+            customToolbarOneHandedImage.setImageDrawable(ContextCompat.getDrawable(this, image))
+        }
     }
 
 
@@ -141,20 +146,29 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * bottomViewToShiftUp should be the last view in a NSV or CL to add a margin bottom to
      */
+
+    var originalPaddingTop: Int? = null
+    var originalBottomMargin: Int? = null
     fun drawBehindNavBar(topViewToShiftDown: View? = null, bottomViewToShiftUp: View? = null) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         topViewToShiftDown?.setOnApplyWindowInsetsListener { view, insets ->
-            val params = view.layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = view.paddingTop + insets.systemWindowInsetTop
-            view.layoutParams = params
+            if (originalPaddingTop == null) {
+                originalPaddingTop = view.paddingTop
+                val params = view.layoutParams as ViewGroup.MarginLayoutParams
+                params.topMargin = view.paddingTop + insets.systemWindowInsetTop
+                view.layoutParams = params
+            }
             insets
         }
 
         bottomViewToShiftUp?.setOnApplyWindowInsetsListener { view, insets ->
-            val params = view.layoutParams as ViewGroup.MarginLayoutParams
-            params.bottomMargin = view.marginBottom + insets.systemWindowInsetBottom
-            view.layoutParams = params
+            if (originalBottomMargin == null) {
+                originalBottomMargin = view.marginBottom
+                val params = view.layoutParams as ViewGroup.MarginLayoutParams
+                params.bottomMargin = view.marginBottom + insets.systemWindowInsetBottom
+                view.layoutParams = params
+            }
             insets
         }
     }

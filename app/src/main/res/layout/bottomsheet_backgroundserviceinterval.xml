@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/backgroundserviceinterval_15m"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
+                     />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_30"
@@ -81,8 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_30m"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
+                    android:text="@string/backgroundserviceinterval_30m" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_60"
@@ -90,8 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_1h"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
+                    android:text="@string/backgroundserviceinterval_1h" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_120"
@@ -99,8 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_2h"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
+                    android:text="@string/backgroundserviceinterval_2h" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 

@@ -53,6 +53,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                app:sectionElevation="0"
+                app:sectionOutlineWidth="5"
                 app:sectionDescription="@string/use_dynamic_colors_desc"
                 app:sectionShowSwitch="true"
                 app:sectionStartIcon="@drawable/ic_palette"

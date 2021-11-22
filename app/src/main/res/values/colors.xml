@@ -25,9 +25,6 @@
 
     <color name="pillColor">#CCCCCC</color>
     <color name="titOutlineColor">#BABABA</color>-->
-
-    <color name="cardview_background_color">@color/cardview_light_background</color>
-
     <color name="colorControlNormal">#89000000</color> <!-- TODO Hmm -->
     <color name="transparentCircle">#0FFFFFFF</color> <!-- TODO Hmm -->
 

@@ -40,7 +40,12 @@ class AppSettingsBackupActivity : BaseActivity(),
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         backupHelper = BackupHelper(this)
-        setupToolbar(binding.appsettingsBackupToolbar.customToolbarOneHandedMaterialtoolbar, R.string.anonaddy_backup)
+        setupToolbar(
+            binding.appsettingsBackupToolbar.customToolbarOneHandedMaterialtoolbar,
+            R.string.anonaddy_backup,
+            binding.appsettingsBackupToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_anonaddy_backup_banner
+        )
 
         // loadSettings()
         setOnClickListeners()

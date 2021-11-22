@@ -35,7 +35,6 @@
             <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_view_and_or_AND_button"
-                app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
                 style="@style/AnonAddyToggleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -43,7 +42,6 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rules_view_and_or_OR_button"
-                app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay"
                 style="@style/AnonAddyToggleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

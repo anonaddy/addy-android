@@ -30,7 +30,12 @@ class AppSettingsUpdateActivity : BaseActivity() {
 
         settingsManager = SettingsManager(false, this)
 
-        setupToolbar(binding.appsettingsUpdateToolbar.customToolbarOneHandedMaterialtoolbar, R.string.anonaddy_updater)
+        setupToolbar(
+            binding.appsettingsUpdateToolbar.customToolbarOneHandedMaterialtoolbar,
+            R.string.anonaddy_updater,
+            binding.appsettingsUpdateToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_settings_update
+        )
 
         setVersionAndChannel()
         loadSettings()

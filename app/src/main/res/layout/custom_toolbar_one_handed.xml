@@ -1,10 +1,29 @@
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_toolbar_appbar"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:expanded="false">
+    app:expanded="true">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout style="@style/AnonAddyCollapsingToolbarLayout">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:gravity="end"
+            android:weightSum="2">
+
+            <ImageView
+                android:id="@+id/custom_toolbar_one_handed_image"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.2"
+                android:alpha="0.2"
+                app:tint="?colorSecondaryContainer" />
+        </LinearLayout>
+
 
         <Space
             android:id="@+id/expanded_size"

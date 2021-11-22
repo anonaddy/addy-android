@@ -33,6 +33,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     private lateinit var binding: ActivitySplashBinding
     private lateinit var bindingFailed: ActivityMainFailedBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

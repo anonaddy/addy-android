@@ -4,4 +4,16 @@
     <style name="AppTheme" parent="BaseTheme">
         <item name="android:windowLightNavigationBar">false</item>
     </style>
+
+    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
+    </style>
+
+    <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
+    </style>
+
+    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
+    </style>
 </resources>

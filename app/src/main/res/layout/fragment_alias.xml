@@ -202,6 +202,7 @@
                             android:layout_height="match_parent"
                             android:inputType="none"
                             android:paddingTop="8dp"
+                            android:textColor="?colorOnPrimaryContainer"
                             android:text="@string/all_aliases" />
 
                     </com.google.android.material.textfield.TextInputLayout>

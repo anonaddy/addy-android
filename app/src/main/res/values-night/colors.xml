@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorControlNormal">#7AFFFFFF</color>
-    <color name="cardview_background_color">@color/cardview_dark_background</color>
 
     <!-- MATERIAL 3 -->
     <color name="md_theme_primary">#BBC2FF</color>

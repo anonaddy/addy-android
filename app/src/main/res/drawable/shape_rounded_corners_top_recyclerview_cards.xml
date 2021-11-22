@@ -4,5 +4,5 @@
     <corners
         android:topLeftRadius="@dimen/corner_radius_cardview"
         android:topRightRadius="@dimen/corner_radius_cardview" />
-    <solid android:color="@color/ProfileDialogColor" />
+    <solid android:color="?colorSurface" />
 </shape>

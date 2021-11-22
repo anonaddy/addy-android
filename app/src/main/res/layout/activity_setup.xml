@@ -5,7 +5,7 @@
     android:id="@+id/activity_setup_RL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?colorOnPrimaryContainer"
+    android:background="@color/primaryColorStatic"
     android:orientation="vertical"
     tools:context=".ui.setup.SetupActivity">
 
@@ -16,7 +16,7 @@
         android:alpha="0.05"
         android:text="@string/setup_api_key"
         android:textAlignment="center"
-        android:textColor="?colorOnPrimary"
+        android:textColor="@android:color/white"
         android:textSize="88sp" />
 
     <TextView
@@ -67,7 +67,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -75,10 +78,10 @@
         <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
             android:id="@+id/fragment_setup_init_button_api"
             style="@style/CircularProgressButtonTertiary"
-            android:drawableEnd="@drawable/ic_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
+            android:drawableEnd="@drawable/ic_key"
             android:gravity="center_vertical"
             android:text="@string/got_the_api_key" />
 

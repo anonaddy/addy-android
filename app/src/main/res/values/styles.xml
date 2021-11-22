@@ -35,9 +35,6 @@
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
 
-        <!-- ADDED FOR COMPATIBILITY MD3 -->
-        <item name="android:colorAccent">@color/md_theme_tertiary</item>
-        <item name="colorAccent">@color/md_theme_tertiary</item>
 
 
         <!-- DEFAULT MD3 -->
@@ -106,8 +103,8 @@
     <style name="BottomSheet" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">?android:colorBackground</item>
-        <item name="android:navigationBarDividerColor">?android:colorBackground</item>
+        <item name="android:navigationBarColor">?colorSurface</item>
+        <item name="android:navigationBarDividerColor">?colorSurface</item>
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
 
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -165,12 +162,14 @@
         <item name="android:layout_gravity">center</item>
         <item name="initialCornerAngle">@dimen/corner_radius_button</item>
         <item name="android:textColor">?colorOnPrimary</item>
+        <item name="drawableTint">?colorOnPrimary</item>
     </style>
 
     <!-- DELETE STYLE -->
     <style name="CircularProgressButtonDeleteStyle" parent="CircularProgressButtonSecondary">
         <item name="backgroundTint">?colorError</item>
         <item name="android:textColor">?colorOnError</item>
+        <item name="drawableTint">?colorOnError</item>
     </style>
 
 
@@ -224,7 +223,8 @@
         <item name="spinning_bar_padding">8dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="initialCornerAngle">@dimen/corner_radius_button</item>
-        <item name="android:drawableTint">?colorOnTertiaryContainer</item>
+        <item name="drawableTint">?colorOnTertiary</item>
+        <item name="android:textColor">?colorOnTertiary</item>
     </style>
 
     <style name="ActionButtonsTertiary" parent="Widget.Material3.Button">
@@ -236,6 +236,7 @@
         <item name="iconTint">?colorOnTertiary</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="cornerRadius">@dimen/corner_radius_button</item>
+        <item name="android:height">54dp</item>
     </style>
     <!-- END TERTIARY -->
 
@@ -324,14 +325,10 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <style name="AnonAddyMaterialButtonToggleGroupButtonOverlay">
-        <item name="colorSurface">?attr/selectableItemBackground</item>
-    </style>
-
     <style name="divider">
         <item name="android:layout_height">1dp</item>
-        <item name="android:alpha">0.2</item>
-        <item name="android:background">?colorSurfaceVariant</item>
+        <item name="android:alpha">0.4</item>
+        <item name="android:background">?colorControlHighlight</item>
     </style>
 
     <style name="divider_vertical_widget_2_layout_3">
@@ -341,11 +338,6 @@
     </style>
 
 
-    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
-
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
-    </style>
-
     <style name="ShapeAppearanceOverlay_card_custom_corners_top" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">14dp</item>
@@ -354,9 +346,19 @@
         <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
     </style>
 
+    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@android:color/white</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
+    </style>
+
     <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@color/cardview_background_color</item>
+        <item name="cardBackgroundColor">@android:color/white</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
+    </style>
+
+    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@android:color/white</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_center" parent="">
@@ -367,9 +369,6 @@
         <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
-    </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_bottom" parent="">
         <item name="cornerFamily">rounded</item>
