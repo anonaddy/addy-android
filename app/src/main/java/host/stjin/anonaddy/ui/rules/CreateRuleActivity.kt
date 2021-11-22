@@ -52,7 +52,9 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         setContentView(view)
         drawBehindNavBar(view, binding.activityRulesCreateRLNSVRL)
 
-        setupToolbar(binding.activityRulesCreateToolbar, R.string.creating_a_rule)
+        setupToolbar(
+            binding.activityRulesCreateToolbar, R.string.creating_a_rule
+        )
 
 
         networkHelper = NetworkHelper(this)

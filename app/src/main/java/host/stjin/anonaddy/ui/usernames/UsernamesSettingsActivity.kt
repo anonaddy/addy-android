@@ -46,7 +46,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         setContentView(view)
         drawBehindNavBar(view, binding.activityUsernameSettingsNSVRL)
 
-        setupToolbar(binding.activityUsernameSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_usernames)
+        setupToolbar(
+            binding.activityUsernameSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_usernames,
+            binding.activityUsernameSettingsToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_user_menu
+        )
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)

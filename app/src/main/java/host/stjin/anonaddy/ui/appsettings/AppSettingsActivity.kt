@@ -55,7 +55,11 @@ class AppSettingsActivity : BaseActivity(),
 
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(binding.appsettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.settings)
+        setupToolbar(
+            binding.appsettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.settings,
+            binding.appsettingsToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_settings
+        )
         setVersion()
         loadSettings()
         setOnClickListeners()

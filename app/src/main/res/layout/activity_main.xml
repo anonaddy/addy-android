@@ -9,6 +9,8 @@
         android:id="@+id/mainAppBarInclude"
         layout="@layout/main_app_bar" />
 
+    <!-- TODO fix -->
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/activity_main_viewpager"
         android:layout_width="match_parent"

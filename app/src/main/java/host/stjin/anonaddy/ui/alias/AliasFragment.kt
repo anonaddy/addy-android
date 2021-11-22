@@ -62,7 +62,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         networkHelper = NetworkHelper(requireContext())
 
 
-        setAliasDropDown()
         setOnClickListeners()
 
         // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments

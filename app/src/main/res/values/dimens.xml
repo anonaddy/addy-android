@@ -42,5 +42,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <!-- Because recyclerview seem to add an extra padding to the list items, this attribute is used to perfectly align some elements on pages where
      recyclerview are being shown -->
     <dimen name="cardview_extra_padding">3dp</dimen>
+    <dimen name="anonaddy_popup_menu_background_radius">28dp</dimen>
 
 </resources>

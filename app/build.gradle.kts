@@ -9,9 +9,9 @@ android {
         applicationId = "host.stjin.anonaddy"
         minSdk = 23
         targetSdk = 31
-        versionCode = 29
+        versionCode = 30
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v3.2.1"
+        versionName = "v3.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -26,9 +26,6 @@ android {
     flavorDimensions.add("flavor")
     productFlavors {
         create("main") {
-        }
-        create("materialyou") {
-            versionNameSuffix = " | Material You"
         }
     }
 

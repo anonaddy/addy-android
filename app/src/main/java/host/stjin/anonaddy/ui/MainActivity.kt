@@ -4,7 +4,6 @@ package host.stjin.anonaddy.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -55,6 +54,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(binding.root)
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {
@@ -67,11 +67,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onPostCreate(savedInstanceState, persistentState)
-        drawBehindNavBar(binding.root, binding.activityMainViewpager)
     }
 
     override fun onResume() {

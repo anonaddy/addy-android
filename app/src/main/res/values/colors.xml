@@ -25,8 +25,7 @@
 
     <color name="pillColor">#CCCCCC</color>
     <color name="titOutlineColor">#BABABA</color>-->
-    <color name="colorControlNormal">#89000000</color> <!-- TODO Hmm -->
-    <color name="transparentCircle">#0FFFFFFF</color> <!-- TODO Hmm -->
+    <color name="colorControlNormal">#89000000</color> <!-- I decided to keep this one -->
 
     <!--grey-->
     <color name="md_grey_500">#9E9E9E</color>

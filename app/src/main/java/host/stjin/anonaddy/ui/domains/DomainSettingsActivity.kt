@@ -45,7 +45,11 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         setContentView(view)
         drawBehindNavBar(view, binding.activityDomainSettingsNSVRL)
 
-        setupToolbar(binding.activityDomainSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_domains)
+        setupToolbar(
+            binding.activityDomainSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_domains,
+            binding.activityDomainSettingsToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_dns
+        )
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)

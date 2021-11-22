@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/anonaddy_popup_menu_background.xml" value="0.16052631578947368" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/circle.xml" value="0.3092105263157895" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/circle_ripple.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/circularprogressbutton.xml" value="0.22719298245614036" />
@@ -79,6 +80,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_24dp.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_aliases.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_at.xml" value="0.24298245614035088" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_at_anim.xml" value="0.19736842105263158" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_encrypted_24dp.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_error_24dp.xml" value="0.2837719298245614" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_email_in_24dp.xml" value="0.24414414414414415" />
@@ -237,7 +239,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_backup.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features.xml" value="0.22" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_mailto.xml" value="0.25" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_notify_failed_deliveries.xml" value="0.5" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_notify_failed_deliveries.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_watch_alias.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_webintent_resolution.xml" value="0.2548245614035088" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_update.xml" value="0.5" />

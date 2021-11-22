@@ -13,6 +13,7 @@ import androidx.core.widget.ImageViewCompat
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.utils.AttributeHelper
 
 class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle) {
@@ -129,7 +130,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         if (boolean) {
             ImageViewCompat.setImageTintList(iconStart!!, ContextCompat.getColorStateList(context, R.color.softRed))
         } else {
-            ImageViewCompat.setImageTintList(iconStart!!, ContextCompat.getColorStateList(context, R.color.colorControlNormal))
+            ImageViewCompat.setImageTintList(iconStart!!, ColorStateList.valueOf(AttributeHelper.getValueByAttr(context, R.attr.colorControlNormal)))
         }
     }
 

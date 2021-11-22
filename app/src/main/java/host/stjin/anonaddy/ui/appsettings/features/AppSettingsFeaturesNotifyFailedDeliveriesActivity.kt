@@ -30,7 +30,9 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             binding.appsettingsFeaturesNotifyFailedDeliveriesToolbar.customToolbarOneHandedMaterialtoolbar,
-            R.string.feature_notify_failed_deliveries
+            R.string.feature_notify_failed_deliveries,
+            binding.appsettingsFeaturesNotifyFailedDeliveriesToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_mail_error
         )
 
         loadSettings()

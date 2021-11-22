@@ -32,7 +32,11 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
         setContentView(view)
         drawBehindNavBar(view, binding.activityFailedDeliveriesNSVRL)
 
-        setupToolbar(binding.activityFailedDeliveriesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.failed_deliveries)
+        setupToolbar(
+            binding.activityFailedDeliveriesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.failed_deliveries,
+            binding.activityFailedDeliveriesToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_mail_error
+        )
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)

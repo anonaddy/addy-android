@@ -22,7 +22,12 @@ class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
 
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(binding.appsettingsFeaturesWatchAliasToolbar.customToolbarOneHandedMaterialtoolbar, R.string.watch_alias)
+        setupToolbar(
+            binding.appsettingsFeaturesWatchAliasToolbar.customToolbarOneHandedMaterialtoolbar,
+            R.string.watch_alias,
+            binding.appsettingsFeaturesWatchAliasToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_watch_alias
+        )
 
         loadSettings()
         setOnClickListeners()

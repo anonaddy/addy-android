@@ -28,7 +28,9 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             binding.appsettingsFeaturesWebintentResolutionToolbar.customToolbarOneHandedMaterialtoolbar,
-            R.string.integration_webintent_resolution
+            R.string.integration_webintent_resolution,
+            binding.appsettingsFeaturesWebintentResolutionToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_external_link
         )
 
         loadSettings()

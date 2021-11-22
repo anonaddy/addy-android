@@ -25,8 +25,12 @@ class LogViewerActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
 
-
-        setupToolbar(binding.appsettingsLogviewerToolbar.customToolbarOneHandedMaterialtoolbar, R.string.logs)
+        setupToolbar(
+            binding.appsettingsLogviewerToolbar.customToolbarOneHandedMaterialtoolbar,
+            R.string.logs,
+            binding.appsettingsLogviewerToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_file_alert
+        )
 
         val filename = intent.getStringExtra("logfile")
         if (filename.isNullOrEmpty()) {
@@ -47,7 +51,10 @@ class LogViewerActivity : BaseActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onPostCreate(savedInstanceState, persistentState)
-        drawBehindNavBar(binding.root, binding.appsettingsLogviewerEfab)
+        drawBehindNavBar(
+            binding.root,
+            binding.appsettingsLogviewerEfab
+        )
     }
 
     private lateinit var logsAdapter: LogsAdapter

@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/navigation_alias"
-        android:icon="@drawable/ic_email_at"
+        android:icon="@drawable/ic_email_at_anim_settings"
         android:title="@string/title_aliases" />
 
     <item

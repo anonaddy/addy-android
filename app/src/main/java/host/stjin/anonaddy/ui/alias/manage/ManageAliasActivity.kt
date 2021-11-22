@@ -64,7 +64,12 @@ class ManageAliasActivity : BaseActivity(),
         setContentView(view)
         drawBehindNavBar(view, binding.activityManageAliasNSVLL)
 
-        setupToolbar(binding.activityManageAliasToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_alias)
+        setupToolbar(
+            binding.activityManageAliasToolbar.customToolbarOneHandedMaterialtoolbar,
+            R.string.edit_alias,
+            binding.activityManageAliasToolbar.customToolbarOneHandedImage,
+            R.drawable.ic_email_at
+        )
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
 
