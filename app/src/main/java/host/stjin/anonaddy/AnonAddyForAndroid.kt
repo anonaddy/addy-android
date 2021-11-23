@@ -2,6 +2,8 @@ package host.stjin.anonaddy
 
 import android.app.Application
 import com.google.android.material.color.DynamicColors
+import host.stjin.anonaddy.models.UserResource
+import host.stjin.anonaddy.models.UserResourceExtended
 
 class AnonAddyForAndroid : Application() {
     override fun onCreate() {
@@ -12,5 +14,11 @@ class AnonAddyForAndroid : Application() {
             // Apply dynamic color
             DynamicColors.applyToActivitiesIfAvailable(this)
         }
+    }
+
+
+    object User {
+        lateinit var userResource: UserResource
+        lateinit var userResourceExtended: UserResourceExtended
     }
 }

@@ -6,11 +6,6 @@ enum class SUBSCRIPTIONS(val subscription: String) {
     PRO("pro")
 }
 
-object User {
-    lateinit var userResource: UserResource
-    lateinit var userResourceExtended: UserResourceExtended
-}
-
 data class SingleUserResource(
     val `data`: UserResource
 )

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import host.stjin.anonaddy.AnonAddyForAndroid.User
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -20,7 +21,6 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.UsernameAdapter
 import host.stjin.anonaddy.databinding.ActivityUsernameSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.AttributeHelper
@@ -80,8 +80,8 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getUserResource()
             getAllUsernamesAndSetView()
+            getUserResource()
         }
     }
 

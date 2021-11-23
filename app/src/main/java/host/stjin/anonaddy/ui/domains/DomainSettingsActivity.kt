@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import host.stjin.anonaddy.AnonAddyForAndroid.User
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -20,7 +21,6 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.DomainAdapter
 import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import host.stjin.anonaddy.utils.AttributeHelper
@@ -79,8 +79,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getUserResource()
             getAllDomainsAndSetView()
+            getUserResource()
         }
     }
 

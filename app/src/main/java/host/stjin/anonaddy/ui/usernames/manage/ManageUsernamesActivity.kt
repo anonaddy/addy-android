@@ -10,12 +10,12 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
+import host.stjin.anonaddy.AnonAddyForAndroid.User
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageUsernamesBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.AttributeHelper
 import host.stjin.anonaddy.utils.DateTimeUtils

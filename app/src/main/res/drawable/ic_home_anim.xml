@@ -1,0 +1,114 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <group
+                android:name="house"
+                android:pivotX="12"
+                android:pivotY="12">
+                <group
+                    android:name="roof"
+                    android:pivotX="12"
+                    android:pivotY="12">
+                    <path
+                        android:name="path_3"
+                        android:fillColor="#00000000"
+                        android:pathData="M 5 12 L 3 12 L 12 3 L 21 12 L 19 12"
+                        android:strokeWidth="2"
+                        android:strokeColor="#000000"
+                        android:strokeLineCap="round"
+                        android:strokeLineJoin="round" />
+                </group>
+                <group android:name="house_bottom">
+                    <path
+                        android:name="path_4"
+                        android:fillColor="#00000000"
+                        android:pathData="M 5 12 L 5 19 C 5 19.53 5.211 20.039 5.586 20.414 C 5.961 20.789 6.47 21 7 21 L 17 21 C 17.53 21 18.039 20.789 18.414 20.414 C 18.789 20.039 19 19.53 19 19 L 19 12"
+                        android:strokeWidth="2"
+                        android:strokeColor="#000000"
+                        android:strokeLineCap="round"
+                        android:strokeLineJoin="round" />
+                    <path
+                        android:name="path_6"
+                        android:fillColor="#00000000"
+                        android:pathData="M 9 21 L 9 15 C 9 14.47 9.211 13.961 9.586 13.586 C 9.961 13.211 10.47 13 11 13 L 13 13 C 13.53 13 14.039 13.211 14.414 13.586 C 14.789 13.961 15 14.47 15 15 L 15 21"
+                        android:strokeWidth="2"
+                        android:strokeColor="#000000"
+                        android:strokeLineCap="round"
+                        android:strokeLineJoin="round" />
+                </group>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="house">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="100"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="scaleX"
+                    android:valueFrom="1"
+                    android:valueTo="0.7"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="100"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="scaleY"
+                    android:valueFrom="1"
+                    android:valueTo="0.7"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="175"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="scaleX"
+                    android:startOffset="425"
+                    android:valueFrom="0.7"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="175"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="scaleY"
+                    android:startOffset="425"
+                    android:valueFrom="0.7"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="roof">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="125"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="translateY"
+                    android:startOffset="50"
+                    android:valueFrom="0"
+                    android:valueTo="-7"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="450"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="rotation"
+                    android:startOffset="50"
+                    android:valueFrom="0"
+                    android:valueTo="360"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="275"
+                    android:interpolator="@android:anim/anticipate_overshoot_interpolator"
+                    android:propertyName="translateY"
+                    android:startOffset="325"
+                    android:valueFrom="-7"
+                    android:valueTo="0"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
