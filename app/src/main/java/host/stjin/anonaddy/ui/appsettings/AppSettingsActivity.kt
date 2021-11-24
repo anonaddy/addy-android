@@ -37,7 +37,7 @@ class AppSettingsActivity : BaseActivity(),
     private val addAppearanceBottomDialogFragment: AppearanceBottomDialogFragment =
         AppearanceBottomDialogFragment.newInstance()
 
-    private val addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
+    private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
         BackgroundServiceIntervalBottomDialogFragment.newInstance()
 
 
@@ -71,7 +71,7 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun checkForUpdates() {
         lifecycleScope.launch {
-            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
                 binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
                 if (updateAvailable) {
                     binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))

@@ -167,7 +167,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private suspend fun checkForUpdates() {
-        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
 
             // Set the update status in profileBottomDialogFragment
             profileBottomDialogFragment.updateAvailable = updateAvailable

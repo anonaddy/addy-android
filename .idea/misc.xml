@@ -112,6 +112,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_home_anim_settings.xml" value="0.19736842105263158" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_human_greeting.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_inbox.xml" value="0.19210526315789472" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_infinity.xml" value="0.18782894736842104" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_info.xml" value="0.19210526315789472" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_info_24dp.xml" value="0.24414414414414415" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_jam_fingerprint.xml" value="0.24414414414414415" />
@@ -247,7 +248,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_notify_failed_deliveries.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_watch_alias.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_webintent_resolution.xml" value="0.2548245614035088" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_update.xml" value="0.5" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_update.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_domain_settings.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_failed_deliveries.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_intent_create_alias.xml" value="0.2918918918918919" />

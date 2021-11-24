@@ -8,7 +8,7 @@
     android:gravity="center"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
-    android:theme="@style/Theme.Material3.DayNight">
+    android:theme="@style/AppTheme">
 
     <LinearLayout
         android:id="@+id/widget_2_layout_1"

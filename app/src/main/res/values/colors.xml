@@ -2,7 +2,8 @@
 <resources>
     <color name="primaryColorStatic">#19216b</color>
 
-    <color name="widget_2_layout_3_inner_background_color">@color/md_theme_secondary</color>
+    <color name="widget_inner_background">@color/md_theme_primary</color>
+    <color name="widget_background">@color/ic_launcher_background</color>
 
     <color name="softGreen">#00B4AF</color>
     <color name="softGreenSuperSuperLight">#3200B4AF</color>

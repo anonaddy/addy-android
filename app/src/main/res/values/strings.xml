@@ -481,5 +481,7 @@
     <string name="active_aliases">Active aliases</string>
     <string name="inactive_aliases">Inactive aliases</string>
     <string name="watched_aliases">Watched aliases</string>
+    <string name="greetings_time_traveller">Greetings, time traveller</string>
+    <string name="greetings_time_traveller_desc">It appears that you are using a future version of AnonAddy for Android. Report any bugs you find!</string>
 
 </resources>

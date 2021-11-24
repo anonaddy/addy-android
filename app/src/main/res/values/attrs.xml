@@ -14,10 +14,4 @@
         <attr name="sectionOutlineWidth" format="integer" />
         <attr name="sectionElevation" format="float" />
     </declare-styleable>
-
-    <declare-styleable name="AppWidgetAttrs">
-        <attr name="appWidgetPadding" format="dimension" />
-        <attr name="appWidgetInnerRadius" format="dimension" />
-        <attr name="appWidgetRadius" format="dimension" />
-    </declare-styleable>
 </resources>

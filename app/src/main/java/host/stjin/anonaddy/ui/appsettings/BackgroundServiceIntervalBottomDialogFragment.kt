@@ -45,6 +45,20 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
         val root = binding.root
         listener = activity as AddBackgroundServiceIntervalBottomDialogListener
 
+        binding.bsBackgroundserviceintervalSetIntervalButton.setOnClickListener(this)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setIMEAnimation(binding.bsBackgroundserviceintervalRoot)
+        }
+
+        return root
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         val settingsManager = SettingsManager(false, requireContext())
         when (settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)) {
             15 -> {
@@ -61,15 +75,6 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
             }
         }
 
-
-        binding.bsBackgroundserviceintervalSetIntervalButton.setOnClickListener(this)
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsBackgroundserviceintervalRoot)
-        }
-
-        return root
 
     }
 
