@@ -16,8 +16,7 @@ class AnonAddyForAndroid : Application() {
         }
     }
 
-
-    object User {
+    companion object User {
         lateinit var userResource: UserResource
         lateinit var userResourceExtended: UserResourceExtended
     }

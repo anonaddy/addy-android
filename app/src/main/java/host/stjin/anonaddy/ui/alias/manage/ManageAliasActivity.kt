@@ -451,8 +451,8 @@ class ManageAliasActivity : BaseActivity(),
     private suspend fun deleteAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
-                //deleteAliasDialog.dismiss()
-                //finishWithUpdate()
+                deleteAliasDialog.dismiss()
+                finishWithUpdate()
             } else {
                 // Revert the button to normal
                 anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()

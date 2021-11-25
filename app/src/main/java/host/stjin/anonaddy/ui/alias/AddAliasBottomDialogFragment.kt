@@ -86,8 +86,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasRecipientsChipgroup.invalidate()
                 for (recipient in result) {
 
-                    val chipView = layoutInflater.inflate(R.layout.chip_view, null)
-                    val chip = chipView.findViewById<Chip>(R.id.chip)
+                    val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsAddaliasRecipientsChipgroup, false) as Chip
                     chip.text = recipient.email
                     chip.tag = recipient.id
 
