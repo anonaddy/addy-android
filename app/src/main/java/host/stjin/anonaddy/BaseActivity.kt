@@ -43,15 +43,6 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    data class InitialPadding(
-        val left: Int, val top: Int,
-        val right: Int, val bottom: Int
-    )
-
-    private fun recordInitialPaddingForView(view: View) = InitialPadding(
-        view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom
-    )
-
     fun setupToolbar(toolbar: MaterialToolbar, title: Int, customToolbarOneHandedImage: ImageView? = null, image: Int? = null) {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
         toolbar.setNavigationOnClickListener {
@@ -147,8 +138,8 @@ abstract class BaseActivity : AppCompatActivity() {
      * bottomViewToShiftUp should be the last view in a NSV or CL to add a margin bottom to
      */
 
-    var originalPaddingTop: Int? = null
-    var originalBottomMargin: Int? = null
+    private var originalPaddingTop: Int? = null
+    private var originalBottomMargin: Int? = null
     fun drawBehindNavBar(topViewToShiftDown: View? = null, bottomViewToShiftUp: View? = null) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

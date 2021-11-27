@@ -23,7 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import host.stjin.anonaddy.AnonAddyForAndroid.User
+import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
@@ -102,7 +102,7 @@ class HomeFragment : Fragment() {
     private suspend fun getWebStatistics(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                User.userResource = user
+                (activity?.application as AnonAddyForAndroid).userResource = user
                 getStatistics()
             } else {
                 val bottomNavView: BottomNavigationView? =
@@ -232,12 +232,18 @@ class HomeFragment : Fragment() {
 
     private fun getStatistics() {
         //  / 1024 / 1024 because api returns bytes
-        val currMonthlyBandwidth = User.userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = User.userResource.bandwidth_limit / 1024 / 1024
+        val currMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth.toDouble() / 1024 / 1024
+        val maxMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth_limit / 1024 / 1024
 
         setMonthlyBandwidthStatistics(currMonthlyBandwidth, maxMonthlyBandwidth)
-        setAliasesStatistics(User.userResource.active_shared_domain_alias_count, User.userResource.active_shared_domain_alias_limit)
-        setRecipientStatistics(User.userResource.recipient_count, User.userResource.recipient_limit)
+        setAliasesStatistics(
+            (activity?.application as AnonAddyForAndroid).userResource.active_shared_domain_alias_count,
+            (activity?.application as AnonAddyForAndroid).userResource.active_shared_domain_alias_limit
+        )
+        setRecipientStatistics(
+            (activity?.application as AnonAddyForAndroid).userResource.recipient_count,
+            (activity?.application as AnonAddyForAndroid).userResource.recipient_limit
+        )
     }
 
 

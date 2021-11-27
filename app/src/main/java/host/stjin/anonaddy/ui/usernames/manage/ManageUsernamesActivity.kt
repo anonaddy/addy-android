@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
-import host.stjin.anonaddy.AnonAddyForAndroid.User
+import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -289,7 +289,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
                 // Set recipient
                 val recipients: String = list.default_recipient?.email ?: this.resources.getString(
-                    R.string.default_recipient_s, User.userResourceExtended.default_recipient_email
+                    R.string.default_recipient_s, (this.application as AnonAddyForAndroid).userResourceExtended.default_recipient_email
                 )
 
                 binding.activityManageUsernameRecipientsEdit.setDescription(recipients)

@@ -1,248 +1,264 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:padding="@dimen/layout_padding_top"
-        android:paddingStart="@dimen/layout_padding"
-        android:paddingEnd="@dimen/layout_padding">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/alias_statistics_LL"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                style="@style/AnonAddyTitleNoAction"
-                android:layout_width="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center_vertical"
-                    android:text="@string/aliases_statistics"
-                    android:textSize="18sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:paddingStart="@dimen/cardview_extra_padding"
-                android:paddingEnd="@dimen/cardview_extra_padding">
-
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/AnonAddyCustomCardViewStyleTop"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardElevation="@dimen/cardview_default_elevation">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/cardview_padding">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-medium"
-                                android:gravity="center_vertical"
-                                android:text="@string/emails_forwarded"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/alias_forwarded_blocked_stats_textview"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:gravity="center_vertical"
-                                android:text="@string/obtaining_information" />
-                        </LinearLayout>
-
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="16dp"
-                            android:contentDescription="@string/emails_forwarded"
-                            app:srcCompat="@drawable/ic_inbox"
-                            app:tint="@color/portalOrange" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/AnonAddyCustomCardViewStyleBottom"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
-                    app:cardElevation="@dimen/cardview_default_elevation">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/cardview_padding">
-
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-medium"
-                                android:gravity="center_vertical"
-                                android:text="@string/emails_replied_sent"
-                                android:textColor="@color/BlackWhite"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/alias_replied_sent_stats_textview"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif"
-                                android:gravity="center_vertical"
-                                android:text="@string/obtaining_information" />
-                        </LinearLayout>
-
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="16dp"
-                            android:contentDescription="@string/emails_replied_sent"
-                            app:srcCompat="@drawable/ic_mail_forward"
-                            app:tint="@color/portalBlue" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"
-            android:clipToPadding="false">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/alias_statistics_RL_lottieview"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="32dp"
-                android:visibility="gone"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/no_internet_connection" />
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
 
             <LinearLayout
-                android:id="@+id/alias_list_LL1"
+                android:id="@+id/alias_statistics_LL"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleAction"
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
-                    <!--                    <TextView
-                                            style="@style/titleTextView"
-                                            android:layout_width="0dp"
-                                            android:layout_height="match_parent"
-                                            android:layout_weight="1"
-                                            android:text="@string/all_aliases" />-->
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/alias_alias_dropdown"
-                        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:overScrollMode="never"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="0dp"
-                        app:hintEnabled="false"
-                        app:shapeAppearanceOverlay="@style/AnonAddyChipDropdown">
-
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/alias_alias_dropdown_mact"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:inputType="none"
-                            android:paddingTop="8dp"
-                            android:textColor="?colorOnPrimaryContainer"
-                            android:text="@string/all_aliases" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <Space
+                    <TextView
+                        style="@style/titleTextView"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/alias_add_alias"
-                        style="@style/RoundActionButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_alias" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:text="@string/aliases_statistics"
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
-                <com.todkars.shimmer.ShimmerRecyclerView
-                    android:id="@+id/alias_all_aliases_recyclerview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:shimmer_recycler_auto_start="true"
-                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
-
-                <TextView
-                    android:id="@+id/alias_no_aliases"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/no_result_textview_padding"
-                    android:text="@string/no_aliases"
-                    android:textAlignment="center"
-                    android:textColor="@color/BlackWhite"
-                    android:visibility="gone" />
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/cardview_extra_padding"
+                    android:paddingEnd="@dimen/cardview_extra_padding">
 
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/AnonAddyCustomCardViewStyleTop"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardElevation="@dimen/cardview_default_elevation">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/cardview_padding">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/emails_forwarded"
+                                    android:textColor="@color/BlackWhite"
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/alias_forwarded_blocked_stats_textview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/obtaining_information" />
+                            </LinearLayout>
+
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="16dp"
+                                android:contentDescription="@string/emails_forwarded"
+                                app:srcCompat="@drawable/ic_inbox"
+                                app:tint="@color/portalOrange" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/AnonAddyCustomCardViewStyleBottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="6dp"
+                        app:cardElevation="@dimen/cardview_default_elevation">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/cardview_padding">
+
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/emails_replied_sent"
+                                    android:textColor="@color/BlackWhite"
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/alias_replied_sent_stats_textview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/obtaining_information" />
+                            </LinearLayout>
+
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="16dp"
+                                android:contentDescription="@string/emails_replied_sent"
+                                app:srcCompat="@drawable/ic_mail_forward"
+                                app:tint="@color/portalBlue" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
             </LinearLayout>
 
-        </RelativeLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/alias_statistics_RL_lottieview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="32dp"
+                    android:visibility="gone"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/no_internet_connection" />
+
+                <LinearLayout
+                    android:id="@+id/alias_list_LL1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        style="@style/AnonAddyTitleAction"
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal">
+
+                        <!--                    <TextView
+                                                style="@style/titleTextView"
+                                                android:layout_width="0dp"
+                                                android:layout_height="match_parent"
+                                                android:layout_weight="1"
+                                                android:text="@string/all_aliases" />-->
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/alias_alias_dropdown"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:overScrollMode="never"
+                            app:boxStrokeWidth="0dp"
+                            app:boxStrokeWidthFocused="0dp"
+                            app:hintEnabled="false"
+                            app:shapeAppearanceOverlay="@style/AnonAddyChipDropdown">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/alias_alias_dropdown_mact"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:inputType="none"
+                                android:paddingTop="8dp"
+                                android:text="@string/all_aliases"
+                                android:textColor="?colorOnPrimaryContainer" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/alias_add_alias"
+                            style="@style/RoundActionButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/add_alias" />
+
+                    </LinearLayout>
+
+                    <com.todkars.shimmer.ShimmerRecyclerView
+                        android:id="@+id/alias_all_aliases_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:shimmer_recycler_auto_start="true"
+                        app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
+
+                    <TextView
+                        android:id="@+id/alias_no_aliases"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/no_result_textview_padding"
+                        android:text="@string/no_aliases"
+                        android:textAlignment="center"
+                        android:textColor="@color/BlackWhite"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/alias_add_alias_fab"
+        style="?attr/floatingActionButtonPrimaryStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_alias"
+        app:srcCompat="@drawable/ic_add" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

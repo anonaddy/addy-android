@@ -32,7 +32,8 @@
                     android:layout_weight="1.3"
                     android:alpha="0.2"
                     android:scaleType="fitEnd"
-                    app:tint="?colorSecondaryContainer" />
+                    app:tint="?colorSecondaryContainer"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
             <Space

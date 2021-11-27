@@ -16,7 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import host.stjin.anonaddy.AnonAddyForAndroid.User
+import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
@@ -86,13 +86,16 @@ class RecipientsFragment : Fragment(),
     private fun setStats(currentCount: Int? = null) {
         binding.activityRecipientSettingsLLCount.text = requireContext().resources.getString(
             R.string.you_ve_used_d_out_of_d_recipients,
-            currentCount ?: User.userResource.recipient_count,
-            if (User.userResource.subscription != null) User.userResource.recipient_limit else this.resources.getString(R.string.unlimited)
+            currentCount ?: (activity?.application as AnonAddyForAndroid).userResource.recipient_count,
+            if ((activity?.application as AnonAddyForAndroid).userResource.subscription != null) (activity?.application as AnonAddyForAndroid).userResource.recipient_limit else this.resources.getString(
+                R.string.unlimited
+            )
         )
 
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if (User.userResource.subscription != null) {
-            binding.recipientsAddRecipients.isEnabled = User.userResource.recipient_count < User.userResource.recipient_limit
+        if ((activity?.application as AnonAddyForAndroid).userResource.subscription != null) {
+            binding.recipientsAddRecipients.isEnabled =
+                (activity?.application as AnonAddyForAndroid).userResource.recipient_count < (activity?.application as AnonAddyForAndroid).userResource.recipient_limit
         } else {
             binding.recipientsAddRecipients.isEnabled = true
         }
@@ -101,7 +104,7 @@ class RecipientsFragment : Fragment(),
     private suspend fun getUserResource(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                User.userResource = user
+                (activity?.application as AnonAddyForAndroid).userResource = user
             } else {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)

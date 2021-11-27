@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
-import host.stjin.anonaddy.AnonAddyForAndroid.User
+import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -59,7 +59,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         listener = parentFragment as AddAliasBottomDialogListener
 
         // Sent the help text username accordingly
-        binding.bsAddaliasDomainHelpTextview.text = requireContext().resources.getString(R.string.add_alias_desc, User.userResource.username)
+        binding.bsAddaliasDomainHelpTextview.text =
+            requireContext().resources.getString(R.string.add_alias_desc, (activity?.application as AnonAddyForAndroid).userResource.username)
 
         viewLifecycleOwner.lifecycleScope.launch {
             fillSpinners(requireContext())
@@ -208,7 +209,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // If the selected domain format is random words
         if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_random_words)) {
             // If the user has a free subscription
-            if (User.userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            if ((activity?.application as AnonAddyForAndroid).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
                 binding.bsAddaliasAliasFormatTil.error =
                     context.resources.getString(R.string.domains_format_random_words_not_available_for_this_subscription)
                 return

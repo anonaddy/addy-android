@@ -49,6 +49,11 @@ class ManageAliasActivity : BaseActivity(),
     private var forceSwitch = false
     private var shouldDeactivateThisAlias = false
 
+
+    // This value is here to keep track if the activity to which we return on finishWithUpdate should update its data.
+    // Basically, whenever some information is changed we flip the boolean to true.
+    private var shouldUpdate: Boolean = false
+
     /*
     https://stackoverflow.com/questions/50969390/view-visibility-state-loss-when-resuming-activity-with-previously-started-activi
      */
@@ -151,7 +156,7 @@ class ManageAliasActivity : BaseActivity(),
         if (sent > 0) {
             val section3 = DonutSection(
                 name = binding.activityManageAliasChart.context.resources.getString(R.string.d_sent, sent.toInt()),
-                color = ContextCompat.getColor(this, R.color.softGreen),
+                color = ContextCompat.getColor(this, R.color.easternBlue),
                 amount = sent
             )
             listOfDonutSection.add(section3)
@@ -191,6 +196,7 @@ class ManageAliasActivity : BaseActivity(),
                 if (compoundButton.isPressed || forceSwitch) {
                     binding.activityManageAliasActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
+                    shouldUpdate = true
                     if (checked) {
                         lifecycleScope.launch {
                             activateAlias()
@@ -209,6 +215,7 @@ class ManageAliasActivity : BaseActivity(),
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
                     forceSwitch = false
+                    shouldUpdate = true
                     if (checked) {
                         aliasWatcher.addAliasToWatch(aliasId)
                     } else {
@@ -452,6 +459,7 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
                 deleteAliasDialog.dismiss()
+                shouldUpdate = true
                 finishWithUpdate()
             } else {
                 // Revert the button to normal
@@ -472,6 +480,7 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.forgetAlias({ result ->
             if (result == "204") {
                 forgetAliasDialog.dismiss()
+                shouldUpdate = true
                 finishWithUpdate()
             } else {
                 // Revert the button to normal
@@ -490,7 +499,7 @@ class ManageAliasActivity : BaseActivity(),
 
     private fun finishWithUpdate() {
         val intent = Intent()
-        intent.putExtra("should_update", true)
+        intent.putExtra("should_update", shouldUpdate)
         setResult(RESULT_OK, intent)
         finish()
     }
@@ -499,6 +508,7 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.restoreAlias({ result ->
             if (result == "200") {
                 restoreAliasDialog.dismiss()
+                shouldUpdate = true
                 setPage()
             } else {
                 // Revert the button to normal
@@ -695,6 +705,7 @@ class ManageAliasActivity : BaseActivity(),
 
     override fun descriptionEdited(description: String) {
         setPage()
+        shouldUpdate = true
         editAliasDescriptionBottomDialogFragment.dismiss()
     }
 
@@ -702,6 +713,10 @@ class ManageAliasActivity : BaseActivity(),
     override fun recipientsEdited() {
         // Reload all info
         setPage()
+
+        // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasFragment.
+        // So we update the list when coming back
+        shouldUpdate = true
         editAliasRecipientsBottomDialogFragment.dismiss()
     }
 

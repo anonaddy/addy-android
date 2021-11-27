@@ -41,6 +41,8 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
         RECENT_SEARCHES(true, PREFTYPES.STRINGSET, "recent_searches"),
         BACKUPS_PASSWORD(true, PREFTYPES.STRING, "backups_password"),
+        USER_RESOURCE(true, PREFTYPES.STRING, "user_resource"),
+        USER_RESOURCE_EXTENDED(true, PREFTYPES.STRING, "user_resource_extended"),
 
 
         // Locally stored data
@@ -138,6 +140,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     fun getStringSet(key: PREFS): MutableSet<String>? {
         return prefs.getStringSet(key.key, HashSet())
     }
+
 
     fun removeSetting(value: PREFS) {
         prefs.edit().remove(value.key).apply()

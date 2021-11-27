@@ -10,7 +10,6 @@ import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
-import host.stjin.anonaddy.AnonAddyForAndroid.User
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.models.UserResource
@@ -136,7 +135,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private suspend fun loadUserResourceIntoMemory() {
         networkHelper.getUserResource { user: UserResource?, error: String? ->
             if (user != null) {
-                User.userResource = user
+                (this.application as AnonAddyForAndroid).userResource = user
                 lifecycleScope.launch {
                     getDefaultRecipientAddress(user.default_recipient_id)
                 }
@@ -149,7 +148,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private suspend fun getDefaultRecipientAddress(recipientId: String) {
         networkHelper.getSpecificRecipient({ recipient, error ->
             if (recipient != null) {
-                User.userResourceExtended = UserResourceExtended(recipient.email)
+                (this.application as AnonAddyForAndroid).userResourceExtended = UserResourceExtended(recipient.email)
+                (this.application as AnonAddyForAndroid).userResourceExtended = UserResourceExtended(recipient.email)
                 loadingDone = true
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

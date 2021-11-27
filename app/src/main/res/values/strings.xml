@@ -63,7 +63,6 @@
     <string name="alias_format">Alias format</string>
     <string name="faq">FAQ</string>
     <string name="general">General</string>
-    <string name="app_theme">App theme</string>
     <string name="faq_desc">Visit the Frequently asked questions</string>
     <string name="see_this_version_changelogs">See this version\'s changelog</string>
     <string name="changelog">Changelog</string>
@@ -94,8 +93,7 @@
     <string name="not_a_valid_web_address">This is not a valid address</string>
     <string name="error_adding_recipient">Something went wrong while adding this recipient</string>
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
-    <string name="no_aliases">You have no aliases, what about creating one?</string>
-    <string name="no_deleted_aliases">You have no deleted aliases</string>
+    <string name="no_aliases">No aliases with these filter settings.\n\nLooking for a specific alias? Use the global search function by clicking the magnifying glass in the app bar.</string>
     <string name="alias_status_active">Alias active</string>
     <string name="alias_status_desc">Use this alias for mail forwarding</string>
     <string name="delete_alias">Delete alias</string>

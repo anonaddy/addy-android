@@ -13,11 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import host.stjin.anonaddy.AnonAddyForAndroid.User
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.adapter.UsernameAdapter
 import host.stjin.anonaddy.databinding.ActivityUsernameSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
@@ -104,13 +100,16 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         binding.activityUsernameSettingsRLCountText.text =
             resources.getString(
                 R.string.you_ve_used_d_out_of_d_usernames,
-                currentCount ?: User.userResource.username_count,
-                if (User.userResource.subscription != null) User.userResource.username_limit else this.resources.getString(R.string.unlimited)
+                currentCount ?: (this.application as AnonAddyForAndroid).userResource.username_count,
+                if ((this.application as AnonAddyForAndroid).userResource.subscription != null) (this.application as AnonAddyForAndroid).userResource.username_limit else this.resources.getString(
+                    R.string.unlimited
+                )
             )
 
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if (User.userResource.subscription != null) {
-            binding.activityUsernameSettingsAddUsername.isEnabled = User.userResource.username_count < User.userResource.username_limit
+        if ((this.application as AnonAddyForAndroid).userResource.subscription != null) {
+            binding.activityUsernameSettingsAddUsername.isEnabled =
+                (this.application as AnonAddyForAndroid).userResource.username_count < (this.application as AnonAddyForAndroid).userResource.username_limit
         } else {
             binding.activityUsernameSettingsAddUsername.isEnabled = true
         }

@@ -6,6 +6,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,8 +65,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
         setOnClickListeners()
-
-        // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
         getDataFromWeb()
 
         return root
@@ -91,6 +91,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private fun getDataFromWeb() {
         binding.aliasListLL1.visibility = View.VISIBLE
         binding.aliasStatisticsRLLottieview.visibility = View.GONE
+        binding.aliasNoAliases.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
@@ -112,6 +113,14 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun setOnClickListeners() {
+        binding.aliasAddAliasFab.setOnClickListener {
+            if (!addAliasBottomDialogFragment.isAdded) {
+                addAliasBottomDialogFragment.show(
+                    childFragmentManager,
+                    "addAliasBottomDialogFragment"
+                )
+            }
+        }
 
         binding.aliasAddAlias.setOnClickListener {
             if (!addAliasBottomDialogFragment.isAdded) {
@@ -189,14 +198,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     // Set the actual statistics
                     setAliasesStatistics(context, forwarded, blocked, replied, sent)
 
-
-                    if (list.size > 0) {
-                        binding.aliasNoAliases.visibility = View.GONE
-                    } else {
-                        binding.aliasNoAliases.visibility = View.VISIBLE
-                    }
-
-
                     // Set the count of aliases so that the shimmerview looks better next time
                     settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ALIAS_COUNT, list.size)
 
@@ -231,6 +232,15 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         }
                     }
 
+
+
+                    if (list.size == 0) {
+                        // Set to GONE in getDataFromWeb
+                        binding.aliasNoAliases.visibility = View.VISIBLE
+                    }
+
+
+
                     aliasAdapter = AliasAdapter(list, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {
@@ -247,6 +257,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             val clip = ClipData.newPlainText("alias", aliasEmailAddress)
                             clipboard.setPrimaryClip(clip)
 
+
+                            hideFabForSnackBarTime()
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)
                             bottomNavView?.let {
@@ -268,6 +280,13 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     }
 
+    private fun hideFabForSnackBarTime() {
+        binding.aliasAddAliasFab.hide()
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.aliasAddAliasFab.show()
+        }, 3500)
+    }
+
     // This value is there to force updating the alias recyclerview in case "Watch alias" has been enabled.
     private var forceUpdate = false
 
@@ -278,6 +297,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             if (data != null) {
                 if (data.getBooleanExtra("should_update", false)) {
                     forceUpdate = true
+                    getDataFromWeb()
                 }
             }
         }

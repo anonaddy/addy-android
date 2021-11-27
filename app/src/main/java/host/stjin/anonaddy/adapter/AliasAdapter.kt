@@ -73,7 +73,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
 
         val color1 = if (listWithAliases[position].active) R.color.portalOrange else R.color.md_grey_500
         val color2 = if (listWithAliases[position].active) R.color.portalBlue else R.color.md_grey_600
-        val color3 = if (listWithAliases[position].active) R.color.softGreen else R.color.md_grey_700
+        val color3 = if (listWithAliases[position].active) R.color.easternBlue else R.color.md_grey_700
         val color4 = if (listWithAliases[position].active) R.color.softRed else R.color.md_grey_800
 
 

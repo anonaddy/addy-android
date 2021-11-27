@@ -13,11 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import host.stjin.anonaddy.AnonAddyForAndroid.User
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.adapter.DomainAdapter
 import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
 import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
@@ -87,7 +83,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     private suspend fun getUserResource() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                User.userResource = user
+                (this.application as AnonAddyForAndroid).userResource = user
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -101,13 +97,16 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     private fun setStats(currentCount: Int? = null) {
         binding.activityDomainSettingsRLCountText.text = resources.getString(
             R.string.you_ve_used_d_out_of_d_active_domains,
-            currentCount ?: User.userResource.active_domain_count,
-            if (User.userResource.subscription != null) User.userResource.active_domain_limit else this.resources.getString(R.string.unlimited)
+            currentCount ?: (this.application as AnonAddyForAndroid).userResource.active_domain_count,
+            if ((this.application as AnonAddyForAndroid).userResource.subscription != null) (this.application as AnonAddyForAndroid).userResource.active_domain_limit else this.resources.getString(
+                R.string.unlimited
+            )
         )
 
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if (User.userResource.subscription != null) {
-            binding.activityDomainSettingsAddDomain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
+        if ((this.application as AnonAddyForAndroid).userResource.subscription != null) {
+            binding.activityDomainSettingsAddDomain.isEnabled =
+                (this.application as AnonAddyForAndroid).userResource.active_domain_count < (this.application as AnonAddyForAndroid).userResource.active_domain_limit
         } else {
             binding.activityDomainSettingsAddDomain.isEnabled = true
         }

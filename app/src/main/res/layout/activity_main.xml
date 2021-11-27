@@ -9,8 +9,6 @@
         android:id="@+id/mainAppBarInclude"
         layout="@layout/main_app_bar" />
 
-    <!-- TODO fix -->
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/activity_main_viewpager"
         android:layout_width="match_parent"
@@ -26,6 +24,5 @@
         app:layout_anchor="@+id/activity_main_viewpager"
         app:layout_anchorGravity="bottom"
         app:menu="@menu/bottom_nav_menu" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

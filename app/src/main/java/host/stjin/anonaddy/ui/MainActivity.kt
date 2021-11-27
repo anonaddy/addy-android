@@ -12,7 +12,6 @@ import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.*
-import host.stjin.anonaddy.AnonAddyForAndroid.User
 import host.stjin.anonaddy.databinding.ActivityMainBinding
 import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.models.*
@@ -55,7 +54,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(binding.root)
+        drawBehindNavBar(binding.root, binding.activityMainViewpager)
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {
@@ -135,7 +134,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private fun initialiseMainAppBar() {
         // Figure out the from name initials
-        val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
+        val usernameInitials = (this.application as AnonAddyForAndroid).userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainAppBarInclude.mainTopBarUserInitials.text = usernameInitials
 
         binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {

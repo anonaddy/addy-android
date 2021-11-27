@@ -5,8 +5,6 @@
     <color name="widget_inner_background">@color/md_theme_primary</color>
     <color name="widget_background">@color/ic_launcher_background</color>
 
-    <color name="softGreen">#00B4AF</color>
-    <color name="softGreenSuperSuperLight">#3200B4AF</color>
     <color name="softRed">#FD5842</color>
     <color name="softRedSuperSuperLight">#32FD5842</color>
 

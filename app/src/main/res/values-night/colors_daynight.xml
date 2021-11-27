@@ -2,7 +2,4 @@
 <resources>
     <color name="BlackWhite">#FFFFFF</color>
     <color name="DropDownSurfaceLightDarkMode">#2E2E2E</color>
-    <color name="LightDarkMode">#151515</color>
-    <color name="AnonAddyNotYetWhite">#151515</color>
-
 </resources>
