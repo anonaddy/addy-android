@@ -94,7 +94,7 @@
                                 android:layout_marginStart="16dp"
                                 android:contentDescription="@string/emails_forwarded"
                                 app:srcCompat="@drawable/ic_inbox"
-                                app:tint="@color/portalOrange" />
+                                app:tint="?colorPrimary" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
@@ -144,7 +144,7 @@
                                 android:layout_marginStart="16dp"
                                 android:contentDescription="@string/emails_replied_sent"
                                 app:srcCompat="@drawable/ic_mail_forward"
-                                app:tint="@color/portalBlue" />
+                                app:tint="?colorPrimary" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
