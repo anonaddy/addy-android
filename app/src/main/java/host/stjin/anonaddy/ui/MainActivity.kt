@@ -113,6 +113,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             false
         }
 
+        binding.mainAppBarInclude.toolbar.setOnClickListener {
+            val intent = Intent("scroll_up")
+            sendBroadcast(intent)
+            binding.mainAppBarInclude.appBar.setExpanded(true, true)
+        }
+
     }
 
     private fun showChangeLog() {

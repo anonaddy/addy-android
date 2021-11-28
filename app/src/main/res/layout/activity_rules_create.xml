@@ -9,83 +9,12 @@
     android:orientation="vertical">
 
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/activity_rules_create_appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:expanded="true">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout style="@style/AnonAddyCollapsingToolbarLayout">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="?attr/actionBarSize"
-                android:gravity="end"
-                android:weightSum="2">
-
-                <ImageView
-                    android:id="@+id/activity_rules_create_toolbar_image"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1.3"
-                    android:alpha="0.2"
-                    android:scaleType="fitEnd"
-                    app:tint="?colorSecondaryContainer"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
-
-            <Space
-                android:id="@+id/expanded_size"
-                android:layout_width="match_parent"
-                android:layout_height="148dp" />
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/activity_rules_create_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="@dimen/collapsingtoolbar_action_margin">
-
-
-                <ProgressBar
-                    android:id="@+id/activity_rules_create_progressbar"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:indeterminateTint="?colorSecondaryContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginEnd="16dp"
-                    android:padding="4dp"
-                    android:visibility="invisible" />
-
-                <ImageView
-                    android:id="@+id/activity_rules_create_check"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="end|bottom"
-                    android:background="@drawable/circle_ripple"
-                    android:clickable="true"
-                    android:contentDescription="@string/save_rule"
-                    android:focusable="true"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_check"
-                    app:tint="?colorOnSecondaryContainer" />
-
-            </LinearLayout>
-
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <include
+        android:id="@+id/activity_rules_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/activity_rules_create_RL_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">

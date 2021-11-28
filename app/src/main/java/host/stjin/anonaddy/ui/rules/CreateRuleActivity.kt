@@ -53,7 +53,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         drawBehindNavBar(view, binding.activityRulesCreateRLNSVRL)
 
         setupToolbar(
-            binding.activityRulesCreateToolbar, R.string.creating_a_rule
+            R.string.creating_a_rule,
+            binding.activityRulesCreateRLNSV,
+            binding.activityRulesToolbar,
+            showAction = true
         )
 
 
@@ -335,9 +338,9 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private fun setOnClickListeners() {
-        binding.activityRulesCreateCheck.setOnClickListener {
+        binding.activityRulesToolbar.customToolbarOneHandedActionButton.setOnClickListener {
             // Update title
-            binding.activityRulesCreateProgressbar.visibility = View.VISIBLE
+            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
 
             if (ruleId != null) {
                 // Update the rule
@@ -348,7 +351,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                 finish()
                             }
                             else -> {
-                                binding.activityRulesCreateProgressbar.visibility = View.INVISIBLE
+                                binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE
                                 SnackbarHelper.createSnackbar(
                                     this@CreateRuleActivity,
                                     resources.getString(R.string.error_creating_rule) + "\n" + result,
@@ -368,7 +371,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                 finish()
                             }
                             else -> {
-                                binding.activityRulesCreateProgressbar.visibility = View.INVISIBLE
+                                binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE
                                 SnackbarHelper.createSnackbar(
                                     this@CreateRuleActivity,
                                     resources.getString(R.string.error_creating_rule) + "\n" + result,

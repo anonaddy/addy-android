@@ -43,7 +43,11 @@ class ManageRecipientsActivity : BaseActivity(),
         setContentView(view)
         drawBehindNavBar(view, binding.activityManageRecipientNSVRL)
 
-        setupToolbar(binding.activityManageRecipientToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_recipient)
+        setupToolbar(
+            R.string.edit_recipient,
+            binding.activityManageRecipientNSV,
+            binding.activityManageRecipientToolbar
+        )
         networkHelper = NetworkHelper(this)
 
 

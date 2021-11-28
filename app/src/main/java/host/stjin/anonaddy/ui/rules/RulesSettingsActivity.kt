@@ -45,8 +45,9 @@ class RulesSettingsActivity : BaseActivity() {
         drawBehindNavBar(view, binding.activityManageRulesNSVRL)
 
         setupToolbar(
-            binding.activityManageRulesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_rules,
-            binding.activityManageRulesToolbar.customToolbarOneHandedImage,
+            R.string.manage_rules,
+            binding.activityManageRulesNSV,
+            binding.activityManageRulesToolbar,
             R.drawable.ic_clipboard_list
         )
 

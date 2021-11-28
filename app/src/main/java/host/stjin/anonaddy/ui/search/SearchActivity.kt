@@ -77,8 +77,9 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         drawBehindNavBar(view, binding.activitySearchNSVRL)
 
         setupToolbar(
-            binding.activitySearchToolbar.customToolbarOneHandedMaterialtoolbar, R.string.search_result,
-            binding.activitySearchToolbar.customToolbarOneHandedImage,
+            R.string.search_result,
+            binding.activitySearchNSV,
+            binding.activitySearchToolbar,
             R.drawable.ic_search
         )
 

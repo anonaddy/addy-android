@@ -1,9 +1,13 @@
 package host.stjin.anonaddy
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -11,7 +15,9 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.view.*
-import com.google.android.material.appbar.MaterialToolbar
+import androidx.core.widget.NestedScrollView
+import com.google.android.material.appbar.AppBarLayout
+import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
 
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -43,18 +49,54 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun setupToolbar(toolbar: MaterialToolbar, title: Int, customToolbarOneHandedImage: ImageView? = null, image: Int? = null) {
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
-        toolbar.setNavigationOnClickListener {
+    fun setupToolbar(
+        title: Int,
+        nestedScrollView: NestedScrollView?,
+        customToolbarOneHandedBinding: CustomToolbarOneHandedBinding? = null,
+        image: Int? = null,
+        showAction: Boolean = false
+    ) {
+        customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
+        customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationOnClickListener {
             onBackPressed()
         }
-        toolbar.title = this.resources.getString(title)
+        customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.title = this.resources.getString(title)
 
-        if (customToolbarOneHandedImage != null && image != null) {
-            customToolbarOneHandedImage.setImageDrawable(ContextCompat.getDrawable(this, image))
+        if (customToolbarOneHandedBinding?.customToolbarOneHandedImage != null && image != null) {
+            customToolbarOneHandedBinding.customToolbarOneHandedImage.setImageDrawable(ContextCompat.getDrawable(this, image))
+        }
+
+        customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setOnClickListener {
+            val intent = Intent("scroll_up")
+            sendBroadcast(intent)
+        }
+
+        if (showAction) {
+            customToolbarOneHandedBinding?.customToolbarOneHandedActions?.visibility = View.VISIBLE
+        }
+
+        this.nestedScrollView = nestedScrollView
+        this.appBarLayout = customToolbarOneHandedBinding?.customToolbarAppbar
+    }
+
+    private var nestedScrollView: NestedScrollView? = null
+    private var appBarLayout: AppBarLayout? = null
+    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            nestedScrollView?.post { nestedScrollView?.fullScroll(ScrollView.FOCUS_UP) }
+            appBarLayout?.setExpanded(true, true)
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(mScrollUpBroadcastReceiver)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
+    }
 
     /*
     This method is getting called in multiple places to check if the user is Authenticated to use the app.

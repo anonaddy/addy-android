@@ -35,9 +35,9 @@ class AppSettingsFeaturesActivity : BaseActivity() {
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
-            binding.appsettingsFeaturesToolbar.customToolbarOneHandedMaterialtoolbar,
             R.string.features_and_integrations,
-            binding.appsettingsFeaturesToolbar.customToolbarOneHandedImage,
+            binding.activityAppSettingsFeaturesSectionsNSV,
+            binding.appsettingsFeaturesToolbar,
             R.drawable.ic_features_integrations_banner
         )
         loadSettings()

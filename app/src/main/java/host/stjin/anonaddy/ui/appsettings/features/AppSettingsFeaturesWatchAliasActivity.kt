@@ -23,9 +23,9 @@ class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
-            binding.appsettingsFeaturesWatchAliasToolbar.customToolbarOneHandedMaterialtoolbar,
             R.string.watch_alias,
-            binding.appsettingsFeaturesWatchAliasToolbar.customToolbarOneHandedImage,
+            binding.appsettingsFeaturesWatchAliasNSV,
+            binding.appsettingsFeaturesWatchAliasToolbar,
             R.drawable.ic_watch_alias
         )
 

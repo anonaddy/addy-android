@@ -12,6 +12,7 @@
         layout="@layout/custom_toolbar_one_handed" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/activity_manage_domain_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">

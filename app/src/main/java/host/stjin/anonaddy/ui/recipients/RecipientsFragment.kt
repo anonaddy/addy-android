@@ -1,7 +1,9 @@
 package host.stjin.anonaddy.ui.recipients
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
@@ -10,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -124,9 +127,22 @@ class RecipientsFragment : Fragment(),
         }
     }
 
+
+    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.recipientsNSV.post { binding.recipientsNSV.fullScroll(ScrollView.FOCUS_UP) }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
+    }
+
     // Update the recipients list when coming back
     override fun onResume() {
         super.onResume()
+        activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
         getDataFromWeb()
     }
 

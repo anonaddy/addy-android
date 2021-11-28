@@ -31,9 +31,9 @@ class AppSettingsUpdateActivity : BaseActivity() {
         settingsManager = SettingsManager(false, this)
 
         setupToolbar(
-            binding.appsettingsUpdateToolbar.customToolbarOneHandedMaterialtoolbar,
             R.string.anonaddy_updater,
-            binding.appsettingsUpdateToolbar.customToolbarOneHandedImage,
+            binding.appsettingsUpdateNSV,
+            binding.appsettingsUpdateToolbar,
             R.drawable.ic_settings_update
         )
 

@@ -28,9 +28,9 @@ class LogViewerActivity : BaseActivity() {
             binding.appsettingsLogviewerEfab
         )
         setupToolbar(
-            binding.appsettingsLogviewerToolbar.customToolbarOneHandedMaterialtoolbar,
             R.string.logs,
-            binding.appsettingsLogviewerToolbar.customToolbarOneHandedImage,
+            binding.appsettingsLogviewerNSV,
+            binding.appsettingsLogviewerToolbar,
             R.drawable.ic_file_alert
         )
 

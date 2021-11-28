@@ -46,7 +46,11 @@ class ManageUsernamesActivity : BaseActivity(),
         setContentView(view)
         drawBehindNavBar(view, binding.activityManageUsernameNSVRL)
 
-        setupToolbar(binding.activityManageUsernameToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_username)
+        setupToolbar(
+            R.string.edit_username,
+            binding.activityManageUsernameNSV,
+            binding.activityManageUsernameToolbar
+        )
         networkHelper = NetworkHelper(this)
 
 

@@ -31,9 +31,9 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
-            binding.appsettingsFeaturesMailtoToolbar.customToolbarOneHandedMaterialtoolbar,
             R.string.integration_mailto_alias,
-            binding.appsettingsFeaturesMailtoToolbar.customToolbarOneHandedImage,
+            binding.activityAppSettingsFeaturesMailtoNSV,
+            binding.appsettingsFeaturesMailtoToolbar,
             R.drawable.ic_dots_circle_horizontal
         )
 

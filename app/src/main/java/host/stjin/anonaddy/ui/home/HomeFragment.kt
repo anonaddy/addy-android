@@ -4,11 +4,8 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -73,6 +71,20 @@ class HomeFragment : Fragment() {
         return root
     }
 
+
+    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.fullScroll(ScrollView.FOCUS_UP) }
+        }
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
+    }
+
+
     private fun getDataFromWeb(context: Context) {
         binding.homeStatisticsLL1.visibility = View.VISIBLE
         binding.homeStatisticsRLLottieview.visibility = View.GONE
@@ -89,11 +101,11 @@ class HomeFragment : Fragment() {
     // Update information when coming back, such as aliases and statistics
     override fun onResume() {
         super.onResume()
+        activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
         getDataFromWeb(requireContext())
     }
 
     private fun setOnClickListeners() {
-
         binding.homeMostActiveAliasesViewMore.setOnClickListener {
             (activity as MainActivity).switchFragments(R.id.navigation_alias)
         }

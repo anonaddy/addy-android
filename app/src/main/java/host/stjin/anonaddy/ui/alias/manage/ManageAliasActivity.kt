@@ -1,9 +1,6 @@
 package host.stjin.anonaddy.ui.alias.manage
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
@@ -70,14 +67,14 @@ class ManageAliasActivity : BaseActivity(),
         drawBehindNavBar(view, binding.activityManageAliasNSVLL)
 
         setupToolbar(
-            binding.activityManageAliasToolbar.customToolbarOneHandedMaterialtoolbar,
             R.string.edit_alias,
-            binding.activityManageAliasToolbar.customToolbarOneHandedImage,
+            binding.activityManageAliasNSV,
+            binding.activityManageAliasToolbar,
             R.drawable.ic_email_at
         )
+
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
-
 
         val intent = intent
         val b = intent.extras

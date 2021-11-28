@@ -42,8 +42,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         drawBehindNavBar(view, binding.activityDomainSettingsNSVRL)
 
         setupToolbar(
-            binding.activityDomainSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_domains,
-            binding.activityDomainSettingsToolbar.customToolbarOneHandedImage,
+            R.string.manage_domains,
+            binding.activityDomainSettingsNSV,
+            binding.activityDomainSettingsToolbar,
             R.drawable.ic_dns
         )
 

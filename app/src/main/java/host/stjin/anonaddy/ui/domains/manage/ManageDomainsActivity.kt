@@ -44,7 +44,11 @@ class ManageDomainsActivity : BaseActivity(),
         setContentView(view)
         drawBehindNavBar(view, binding.activityManageDomainNSVRL)
 
-        setupToolbar(binding.activityManageDomainToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_domain)
+        setupToolbar(
+            R.string.edit_domain,
+            binding.activityManageDomainNSV,
+            binding.activityManageDomainToolbar
+        )
         networkHelper = NetworkHelper(this)
 
 

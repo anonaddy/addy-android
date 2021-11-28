@@ -1,10 +1,7 @@
 package host.stjin.anonaddy.ui.alias
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
+import android.widget.ScrollView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -70,6 +68,18 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         return root
     }
 
+    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.fullScroll(ScrollView.FOCUS_UP) }
+        }
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
+    }
+
     private fun setAliasDropDown() {
         val items = listOf(
             this.resources.getString(R.string.all_aliases),
@@ -107,6 +117,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     override fun onResume() {
         super.onResume()
+        activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
 
         // There is a bug where the dropdown does not get populated after refreshing the view (eg. switching dark/light mode)
         setAliasDropDown()
@@ -232,14 +243,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         }
                     }
 
-
-
                     if (list.size == 0) {
                         // Set to GONE in getDataFromWeb
                         binding.aliasNoAliases.visibility = View.VISIBLE
                     }
-
-
 
                     aliasAdapter = AliasAdapter(list, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {

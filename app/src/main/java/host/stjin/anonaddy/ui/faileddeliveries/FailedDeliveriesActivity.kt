@@ -33,8 +33,9 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
         drawBehindNavBar(view, binding.activityFailedDeliveriesNSVRL)
 
         setupToolbar(
-            binding.activityFailedDeliveriesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.failed_deliveries,
-            binding.activityFailedDeliveriesToolbar.customToolbarOneHandedImage,
+            R.string.failed_deliveries,
+            binding.activityFailedDeliveriesNSV,
+            binding.activityFailedDeliveriesToolbar,
             R.drawable.ic_mail_error
         )
 
