@@ -52,7 +52,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:padding="@dimen/layout_padding"
-                android:visibility="invisible">
+                android:visibility="visible">
 
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -76,6 +76,53 @@
                         android:minLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/run_rule_on" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/activity_rules_create_rule_run_chipgroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="16dp"
+                    app:selectionRequired="true"
+                    app:singleLine="true"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/activity_rules_create_rule_run_chip_forwards"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:checked="true"
+                        android:text="@string/forwards" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/activity_rules_create_rule_run_chip_replies"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:checked="true"
+                        android:text="@string/replies" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/activity_rules_create_rule_run_chip_sends"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:checked="true"
+                        android:text="@string/sends" />
+
+                </com.google.android.material.chip.ChipGroup>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -155,6 +202,7 @@
                         android:clipToPadding="false"
                         android:orientation="vertical" />
                 </LinearLayout>
+
 
                 <View
                     style="@style/divider"

@@ -114,7 +114,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             operator = "AND",
             order = 0,
             updated_at = "",
-            user_id = ""
+            user_id = "",
+            forwards = true,
+            replies = true,
+            sends = true
         )
         rules = rule
     }
@@ -158,6 +161,21 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
         // Set name
         binding.activityRulesCreateRuleNameTiet.setText(rules.name)
+
+        // Set apply rules
+        binding.activityRulesCreateRuleRunChipForwards.isChecked = rules.forwards
+        binding.activityRulesCreateRuleRunChipSends.isChecked = rules.sends
+        binding.activityRulesCreateRuleRunChipReplies.isChecked = rules.replies
+
+        binding.activityRulesCreateRuleRunChipForwards.setOnCheckedChangeListener { _, isChecked ->
+            rules.forwards = isChecked
+        }
+        binding.activityRulesCreateRuleRunChipSends.setOnCheckedChangeListener { _, isChecked ->
+            rules.sends = isChecked
+        }
+        binding.activityRulesCreateRuleRunChipReplies.setOnCheckedChangeListener { _, isChecked ->
+            rules.replies = isChecked
+        }
 
         /**
          * CONDITIONS
