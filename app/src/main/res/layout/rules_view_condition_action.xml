@@ -2,15 +2,16 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/domains_recyclerview_list_CV"
+    android:id="@+id/rules_view_condition_CV"
     style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/cardview_extra_padding"
+    app:cardBackgroundColor="?colorSurface"
     android:clickable="true"
     android:focusable="true"
-    android:layout_margin="@dimen/cardview_extra_padding"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardElevation="@dimen/cardview_default_elevation">
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:id="@+id/rules_view_condition_action_LL"
@@ -21,54 +22,61 @@
         android:orientation="horizontal"
         android:padding="@dimen/cardview_padding">
 
+        <Space
+            style="@style/MaterialButtonSecondary.IconOnly"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp" />
+
         <LinearLayout
             android:id="@+id/rules_view_condition_action_LL2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="100"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/rules_view_condition_action_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:text="If 'the sender' contains..."
-                    android:textAllCaps="false"
-                    android:textColor="@color/BlackWhite"
-                    android:textSize="16sp"
-                    tools:ignore="HardcodedText" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="If 'the sender' contains..."
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/BlackWhite"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText" />
 
-                <TextView
-                    android:id="@+id/rules_view_condition_action_subtitle"
-                    style="@style/DescTextStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif"
-                    android:maxLines="3"
-                    android:singleLine="false"
-                    android:text="Stjin, AnonAddy, SomeGarbo"
-                    tools:ignore="HardcodedText" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/SettingsSectionIconStyleMarginStart"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/rules_view_condition_action_close"
-                    style="@style/MaterialButtonSecondary.IconOnly"
-                    app:icon="@drawable/ic_close" />
-            </LinearLayout>
-
+            <TextView
+                android:id="@+id/rules_view_condition_action_subtitle"
+                style="@style/DescTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:maxLines="3"
+                android:singleLine="false"
+                android:text="Stjin, AnonAddy, SomeGarbo,Stjin, AnonAddy, SomeGarbo,Stjin, AnonAddy, SomeGarbo"
+                android:textAlignment="center"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
+
+        <LinearLayout
+            style="@style/SettingsSectionIconStyleMarginStart"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rules_view_condition_action_close"
+                style="@style/MaterialButtonSecondary.IconOnly"
+                app:icon="@drawable/ic_close" />
+        </LinearLayout>
+
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
 

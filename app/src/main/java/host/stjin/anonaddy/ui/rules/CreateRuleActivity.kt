@@ -11,6 +11,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -63,18 +64,29 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         networkHelper = NetworkHelper(this)
 
 
-        val b = intent.extras
-        val ruleId = b?.getString("rule_id")
-
-        if (ruleId == null) {
-            // No ruleID, generate an empty rule
-            generateEmptyRule()
+        // Check if there is an instance to restore (in case of rotations or folding)
+        val json = savedInstanceState?.getString("rules")
+        if (json?.isNotEmpty() == true) {
+            val gson = Gson()
+            rules = gson.fromJson(json, Rules::class.java)
+            this.ruleId = savedInstanceState.getString("rule_id")
             setPage()
         } else {
-            // ruleID, generate the rule
-            this.ruleId = ruleId
-            getRule()
+            val b = intent.extras
+            val ruleId = b?.getString("rule_id")
+
+            if (ruleId == null) {
+                // No ruleID, generate an empty rule
+                generateEmptyRule()
+                setPage()
+            } else {
+                // ruleID, generate the rule
+                this.ruleId = ruleId
+                getRule()
+            }
         }
+
+
     }
 
     private fun generateEmptyRule() {
@@ -177,6 +189,18 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             rules.replies = isChecked
         }
 
+
+        /**
+         * AND/OR
+         */
+
+        if (rules.operator == "AND") {
+            binding.rulesViewAndOrANDButton.isChecked = true
+        } else {
+            binding.rulesViewAndOrORButton.isChecked = true
+        }
+
+
         /**
          * CONDITIONS
          */
@@ -185,35 +209,11 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         // For every condition, add a condition view and append an id to all subviews
         for ((conditionNumber, condition) in rules.conditions.withIndex()) {
 
-            /**
-             * AND/OR
-             */
             // If this is NOT the first condition, add a AND/OR before the condition
             if (firstCondition) {
                 firstCondition = false
             } else {
-                val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, binding.activityRulesCreateLLConditions as ViewGroup?, false)
-                inflatedLayout.elevation = this.resources.getDimension(R.dimen.cardview_default_elevation)
-                //val materialButtonToggleGroup = inflatedLayout.findViewById<MaterialButtonToggleGroup>(R.id.rules_view_and_or_AND_mbtg)
-                val andButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_AND_button)
-                val orButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_OR_button)
-
-                if (rules.operator == "AND") {
-                    andButton.isChecked = true
-                } else {
-                    orButton.isChecked = true
-                }
-
-
-                andButton.setOnClickListener {
-                    rules.operator = "AND"
-                    setPage()
-                }
-                orButton.setOnClickListener {
-                    rules.operator = "OR"
-                    setPage()
-                }
-
+                val inflatedLayout: View = inflater.inflate(R.layout.rules_action, binding.activityRulesCreateLLConditions as ViewGroup?, false)
                 binding.activityRulesCreateLLConditions.addView(inflatedLayout)
             }
 
@@ -225,7 +225,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 inflater.inflate(R.layout.rules_view_condition_action, binding.activityRulesCreateLLConditions as ViewGroup?, false)
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
             val deleteCondition = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_close)
-            val cardView = inflatedLayout.findViewById<CardView>(R.id.domains_recyclerview_list_CV)
+            val cardView = inflatedLayout.findViewById<CardView>(R.id.rules_view_condition_CV)
 
 
             val typeText =
@@ -276,6 +276,20 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             binding.activityRulesCreateLLConditions.addView(inflatedLayout)
         }
 
+        val inflatedAddConditionLayout: View =
+            inflater.inflate(R.layout.rules_view_condition_action_add, binding.activityRulesCreateLLConditions as ViewGroup?, false)
+        inflatedAddConditionLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_add).setOnClickListener {
+            if (!conditionBottomDialogFragment.isAdded) {
+                // Remove the arguments that could be sent with the edit button
+                conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance()
+                conditionBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "conditionBottomDialogFragment"
+                )
+            }
+        }
+        binding.activityRulesCreateLLConditions.addView(inflatedAddConditionLayout)
+
         /**
          * ACTIONS
          */
@@ -288,16 +302,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             if (firstActions) {
                 firstActions = false
             } else {
-                val inflatedLayout: View = inflater.inflate(R.layout.rules_view_and_or, binding.activityRulesCreateLLActions as ViewGroup?, false)
-                inflatedLayout.elevation = this.resources.getDimension(R.dimen.cardview_default_elevation)
-                //val materialButtonToggleGroup = inflatedLayout.findViewById<MaterialButtonToggleGroup>(R.id.rules_view_and_or_AND_mbtg)
-                val andButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_AND_button)
-                val orButton = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_and_or_OR_button)
-                orButton.visibility = View.GONE
-                // Actions are al-ways AND
-                andButton.isChecked = true
-                orButton.isChecked = false
-
+                val inflatedLayout: View = inflater.inflate(R.layout.rules_action, binding.activityRulesCreateLLActions as ViewGroup?, false)
                 binding.activityRulesCreateLLActions.addView(inflatedLayout)
             }
 
@@ -306,7 +311,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 inflater.inflate(R.layout.rules_view_condition_action, binding.activityRulesCreateLLActions as ViewGroup?, false)
             val title = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_title)
             val deleteAction = inflatedLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_close)
-            val cardView = inflatedLayout.findViewById<MaterialCardView>(R.id.domains_recyclerview_list_CV)
+            val cardView = inflatedLayout.findViewById<MaterialCardView>(R.id.rules_view_condition_CV)
 
 
             val typeText =
@@ -340,6 +345,20 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
             binding.activityRulesCreateLLActions.addView(inflatedLayout)
         }
+
+        val inflatedAddActionLayout: View =
+            inflater.inflate(R.layout.rules_view_condition_action_add, binding.activityRulesCreateLLConditions as ViewGroup?, false)
+        inflatedAddActionLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_add).setOnClickListener {
+            if (!actionBottomDialogFragment.isAdded) {
+                // Reset the variable to remove the arguments that could be sent with the edit button
+                actionBottomDialogFragment = ActionBottomDialogFragment.newInstance()
+                actionBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "actionBottomDialogFragment"
+                )
+            }
+        }
+        binding.activityRulesCreateLLActions.addView(inflatedAddActionLayout)
 
 
         binding.activityRulesCreateRLProgressbar.visibility = View.GONE
@@ -403,26 +422,11 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             }
         }
 
-        binding.activityRulesCreateAddCondition.setOnClickListener {
-            if (!conditionBottomDialogFragment.isAdded) {
-                // Remove the arguments that could be sent with the edit button
-                conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance()
-                conditionBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "conditionBottomDialogFragment"
-                )
-            }
+        binding.rulesViewAndOrANDButton.setOnClickListener {
+            rules.operator = "AND"
         }
-
-        binding.activityRulesCreateAddAction.setOnClickListener {
-            if (!actionBottomDialogFragment.isAdded) {
-                // Reset the variable to remove the arguments that could be sent with the edit button
-                actionBottomDialogFragment = ActionBottomDialogFragment.newInstance()
-                actionBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "actionBottomDialogFragment"
-                )
-            }
+        binding.rulesViewAndOrORButton.setOnClickListener {
+            rules.operator = "OR"
         }
     }
 
@@ -447,6 +451,14 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         setPage()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val gson = Gson()
+        val json = gson.toJson(rules)
+        outState.putSerializable("rules", json)
+        outState.putString("rule_id", this.ruleId)
+    }
 
     // Actions
     override fun onAddedAction(actionEditIndex: Int?, type: String, value: String) {

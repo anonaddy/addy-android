@@ -264,7 +264,8 @@
     <string name="select">Select</string>
     <string name="enter_value">Enter value</string>
     <string name="add_condition">Add condition</string>
-    <string name="add_condition_desc">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time</string>
+    <string name="add_condition_desc">Add a condition which must be met before actions are performed</string>
+    <string name="add_rule_desc">Decide what action should be performed when conditions are met</string>
     <string name="add_action">Add action</string>
     <string name="not_a_valid_condition_type">Not a valid condition type</string>
     <string name="not_a_valid_action_type">Not a valid action type</string>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/cardview_extra_padding"
+    android:baselineAligned="false"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="horizontal"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
+
+    <LinearLayout
+        android:id="@+id/rules_view_condition_action_add_LL"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="32dp"
+            android:background="@drawable/rules_action_line"
+            android:backgroundTint="?colorPrimaryContainer" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/rules_view_condition_action_add"
+            style="@style/MaterialButtonSecondary.IconOnly"
+            android:layout_marginTop="16dp"
+            app:icon="@drawable/ic_add" />
+    </LinearLayout>
+</LinearLayout>
+
