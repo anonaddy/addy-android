@@ -17,7 +17,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > AnonAddy
 
-- AnonAddy v0.8.1 or higher (current version of AnonAddy for Android has been tested with v0.8.1)
+- AnonAddy v0.8.8 or higher (current version of AnonAddy for Android has been tested with v0.8.8)
 
 > Android
 
@@ -28,7 +28,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 > Exciting ✨
 
 - Connect to the [AnonAddy](https://anonaddy.com/) instance or your own hosted instance
-- A unique, sexy and sleek design, based on the [Material You Design](https://material.io/) guidelines
+- A unique, sexy and sleek design, based on the [Material You Design](https://m3.material.io/) guidelines
 - Support for Deep Link to easily deactivate aliases from the email banner
 - Lock the app using Biometrics
 - App exclusive features
@@ -74,30 +74,11 @@ Developer-led download channels:
 - [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
 - [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy)
 
-> Material You builds
-
-- [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
-
 ## UI
 
 - Designed by my lovely UI guru @JustPlayingHard (💙)
 - Anything you think doesn't work well is my bad as I recreated the UI drafts into XML.
 - The icons used are from [Tabler](https://tablericons.com/) (some icons were modified)
-
-### Material You builds
-
-As some know, with Android 12, Google has developed a new design system called [Material You](https://material.io/blog/announcing-material-you).
-Material You allows apps to use a so-called "Color Palette" to match the system theme.
-
-AnonAddy for Android also uses this color palette in the following places:
-
-- Widgets
-- Splash screens
-- App icon
-
-The application itself will keep its own identity with a custom color palette. However, I've made available a special "flavor" of the app that takes
-full advantage of the Material You color palette. With this flavor of the app, the app fully adapts to your system theme. This flavor is only
-available on [Gitlab](https://gitlab.com/Stjin/anonaddy-android/-/releases)
 
 ## Open Source License.
 

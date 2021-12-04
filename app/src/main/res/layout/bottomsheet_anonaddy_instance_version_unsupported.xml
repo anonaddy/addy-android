@@ -61,7 +61,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_anonaddy_instance_version_unsupported_ignore_button"
-                    style="@style/TextButtonsSecondary"
+                    style="?borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="16dp"

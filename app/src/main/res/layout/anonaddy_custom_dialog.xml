@@ -45,7 +45,7 @@
             android:id="@+id/dialog_positive_button"
             style="@style/CircularProgressButtonSecondary"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="42dp"
             android:text="@string/confirm" />
     </LinearLayout>
 

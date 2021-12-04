@@ -317,7 +317,6 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/home_most_active_aliases_view_more"
-                        style="@style/RoundActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/view_more" />

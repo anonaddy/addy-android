@@ -64,7 +64,6 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_domain_settings_add_domain"
-                        style="@style/RoundActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_domain" />

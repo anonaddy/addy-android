@@ -110,8 +110,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 if (version != null) {
                     AnonAddy.VERSIONCODE = "${version.major}${version.minor}${version.patch}".toInt()
                     AnonAddy.VERSIONSTRING = version.version.toString()
-                    //0.8.1 translates to 081 aka 81
-                    if (AnonAddy.VERSIONCODE >= 81) {
+                    //0.8.8 translates to 088 aka 88
+                    if (AnonAddy.VERSIONCODE >= AnonAddy.MINIMUMVERSIONCODE) {
                         lifecycleScope.launch {
                             loadUserResourceIntoMemory()
                         }

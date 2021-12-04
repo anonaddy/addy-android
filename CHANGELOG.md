@@ -1,5 +1,26 @@
 # Changelog
 
+## [v3.3.0] - TBD
+
+### Added
+
+- 📧 You can now filter aliases in the aliases tab for a clearer view
+- ➕ Thanks to a new floating action button you can now create aliases while scrolling
+
+### Fixed/Improved
+
+- 🎨 Moved to MD3 design
+  - The app got a slightly different but more vibrant color palette
+  - Enable "use dynamic colors" in the appearance settings of the app to let it blend in with your system theme (Android 12 or higher required). This
+    eliminates the need for the "Material You" builds
+  - You can now tap the appbar to scroll up the page
+  - The (new) bottomnavigation now has animated icons
+- 📃 Added the "Run rule on" options for creating rules
+- 🕷 Fixed a bug where folding/unfolding your foldable while creating a rule would reset the screen
+- 🕷 Fixed a bug where the app would crash when coming back to it after having it idle for a certain amount of time
+- ✨ The number of API requests that are made is now reduced.
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v3.2.1] - 2021-10-17
 
 ### Added
