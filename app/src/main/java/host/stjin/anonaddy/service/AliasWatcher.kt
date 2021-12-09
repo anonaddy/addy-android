@@ -8,6 +8,8 @@ import host.stjin.anonaddy.utils.GsonTools
 class AliasWatcher(private val context: Context) {
     val settingsManager = SettingsManager(true, context)
 
+
+    // TODO for aliasWatcher we would have to loop and get aliasinfo for every alias watched
     fun watchAliasesForDifferences() {
         val aliasesToWatch = settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
         val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)

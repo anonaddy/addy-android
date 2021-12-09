@@ -126,6 +126,9 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
     var emailsSent = 0
     var emailsReplied = 0
     // Count the stats from the cache
+
+    // TODO obtain this information for the (todo) cached userResource
+
     if (aliasesList != null) {
         for (alias in aliasesList) {
             emailsForwarded += alias.emails_forwarded

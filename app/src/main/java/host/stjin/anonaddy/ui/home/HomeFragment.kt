@@ -178,31 +178,33 @@ class HomeFragment : Fragment() {
 
                 showShimmer()
             }
+
+            // TODO This needs to have a filter to get the most active aliases. Due to pagination this won't work properly anymore
             networkHelper?.getAliases({ list ->
 
                 // Check if there are new aliases since the latest list
                 // If the list is the same, just return and don't bother re-init the layoutmanager
                 // Unless forceUpdate is true. If forceupdate is true, always update
-                if (::aliasAdapter.isInitialized && list == previousList && !forceUpdate) {
+                if (::aliasAdapter.isInitialized && list?.data == previousList && !forceUpdate) {
                     return@getAliases
                 }
 
 
                 if (list != null) {
                     previousList.clear()
-                    previousList.addAll(list)
+                    previousList.addAll(list.data)
 
-                    if (list.size > 0) {
+                    if (list.data.size > 0) {
                         binding.homeNoAliases.visibility = View.GONE
                     } else {
                         binding.homeNoAliases.visibility = View.VISIBLE
                     }
 
                     // Sort by emails forwarded
-                    list.sortByDescending { it.emails_forwarded }
+                    list.data.sortByDescending { it.emails_forwarded }
 
                     // Get the top 5
-                    val aliasList = list.take(5)
+                    val aliasList = list.data.take(5)
                     aliasAdapter = AliasAdapter(aliasList, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {

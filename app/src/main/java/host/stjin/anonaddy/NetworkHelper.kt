@@ -313,11 +313,13 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun getAliases(
-        callback: (ArrayList<Aliases>?) -> Unit,
+        callback: (AliasesArray?) -> Unit,
         activeOnly: Boolean,
         includeDeleted: Boolean,
         filter: String? = null,
-        page: String? = null
+        page: Int? = null,
+        // TODO Make size bigger
+        size: Int? = 20
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -334,12 +336,16 @@ class NetworkHelper(private val context: Context) {
             parameters.add("filter[deleted]=" to "with")
         }
 
+        if (size != null) {
+            parameters.add("page[size]" to size.toString())
+        }
+
         if (!filter.isNullOrEmpty()) {
             parameters.add("filter[search]" to filter)
         }
 
-        if (!page.isNullOrEmpty()) {
-            parameters.add("page[number]" to page)
+        if (page != null) {
+            parameters.add("page[number]" to page.toString())
         }
 
         val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
@@ -357,18 +363,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, AliasesArray::class.java)
-                val aliasList = ArrayList<Aliases>()
-
-                if (activeOnly) {
-                    for (alias in anonAddyData.data) {
-                        if (alias.active) {
-                            aliasList.add(alias)
-                        }
-                    }
-                } else {
-                    aliasList.addAll(anonAddyData.data)
-                }
-                callback(aliasList)
+                callback(anonAddyData)
             }
             401 -> {
                 invalidApiKey()

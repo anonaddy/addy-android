@@ -147,7 +147,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
-        private var mCV: MaterialCardView = view.findViewById(R.id.aliases_recyclerview_list_CV)
+        private var mCV: MaterialCardView = view.findViewById(R.id.recyclerview_list_CV)
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
@@ -162,7 +162,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         }
 
         override fun onClick(p0: View) {
-            if (p0.id == R.id.aliases_recyclerview_list_CV) {
+            if (p0.id == R.id.recyclerview_list_CV) {
                 onAliasClickListener.onClick(adapterPosition)
             } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
                 onAliasClickListener.onClickCopy(adapterPosition, p0)

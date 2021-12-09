@@ -147,6 +147,7 @@
     <!-- SECONDARY -->
     <style name="CircularProgressButtonSecondary" parent="MaterialButtonSecondary">
         <item name="android:background">@drawable/circularprogressbutton_secondary</item>
+        <!-- TODO Why is this not working anymore? -->
         <item name="spinning_bar_color">?colorOnPrimary</item>
         <item name="spinning_bar_padding">8dp</item>
         <item name="android:layout_gravity">center</item>

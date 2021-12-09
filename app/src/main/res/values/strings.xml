@@ -487,5 +487,6 @@
     <string name="replies">Replies</string>
     <string name="forwards">Forwards</string>
     <string name="run_rule_on">Run rule on</string>
+    <string name="load_more">Load more</string>
 
 </resources>

@@ -77,6 +77,9 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 CACHE DATA
                  */
 
+                // TODO caching all the aliases is not gonna work anymore. Let's only obtain the most active aliases for widget 1
+                // TODO for aliasWatcher we would have to loop and get aliasinfo for every alias watched
+
                 networkHelper.cacheAliasDataForWidget { result ->
                     // Store the result if the data succeeded to update in a boolean
                     aliasNetworkCallResult = result

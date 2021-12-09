@@ -312,7 +312,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/dropdown_menu_popup_item.xml" value="0.21228070175438596" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/failed_deliveries_recyclerview_list_item.xml" value="0.43253234750462105" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/failed_deliveries_recyclerview_list_item_shimmer.xml" value="0.33" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/fragment_alias.xml" value="0.33" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/fragment_alias.xml" value="0.22" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/fragment_home.xml" value="0.22" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/fragment_recipients.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/fragment_setup_how1.xml" value="0.22" />
@@ -327,6 +327,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/recipients_recyclerview_list_item.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/recipients_recyclerview_list_item_new.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/recipients_recyclerview_list_item_recipients_shimmer.xml" value="0.5" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/recyclerview_load_more_list_item.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/rules_action.xml" value="0.21973684210526315" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/rules_recyclerview_list_item.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/rules_recyclerview_list_item_rules_shimmer.xml" value="0.33" />

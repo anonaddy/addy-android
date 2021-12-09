@@ -302,7 +302,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                     clipboard.setPrimaryClip(clip)
                     SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), binding.activitySearchCL).show()
                 }
-
             })
             adapter = aliasAdapter
         }

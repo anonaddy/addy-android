@@ -182,14 +182,6 @@
                         android:layout_width="match_parent"
                         android:orientation="horizontal">
 
-                        <!--                    <TextView
-                                                style="@style/titleTextView"
-                                                android:layout_width="0dp"
-                                                android:layout_height="match_parent"
-                                                android:layout_weight="1"
-                                                android:text="@string/all_aliases" />-->
-
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/alias_alias_dropdown"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
@@ -260,5 +252,13 @@
         android:layout_margin="16dp"
         android:contentDescription="@string/add_alias"
         app:srcCompat="@drawable/ic_add" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/alias_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

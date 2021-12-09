@@ -1,7 +1,9 @@
 package host.stjin.anonaddy.models
 
 data class AliasesArray(
-    val `data`: List<Aliases>
+    var `data`: ArrayList<Aliases>,
+    var links: Links,
+    var meta: Meta
 )
 
 data class SingleAlias(
@@ -27,4 +29,28 @@ data class Aliases(
     val recipients: List<Recipients>?,
     val updated_at: String,
     val user_id: String
+)
+
+data class Meta(
+    val current_page: Int,
+    val from: Int,
+    val last_page: Int,
+    val links: List<Link>,
+    val path: String,
+    val per_page: Int,
+    val to: Int,
+    val total: Int
+)
+
+data class Link(
+    val active: Boolean,
+    val label: String,
+    val url: Any
+)
+
+data class Links(
+    val first: String,
+    val last: String,
+    val next: Any,
+    val prev: Any
 )

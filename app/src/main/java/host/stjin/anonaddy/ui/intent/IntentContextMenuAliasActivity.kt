@@ -138,11 +138,13 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_send_mail_dialog))
 
         // Get aliases and pass it through to the send email bottomdialog
+
+        // TODO due to pagination it might be required to have a filter-on-type feature. Else not all aliases will be available in the spinner
         networkHelper.getAliases({ result ->
             if (result != null) {
-                aliases = result
+                aliases = result.data
                 intentSendMailRecipientBottomDialogFragment =
-                    IntentSendMailRecipientBottomDialogFragment.newInstance(text.toString(), result, domainOptions)
+                    IntentSendMailRecipientBottomDialogFragment.newInstance(text.toString(), result.data, domainOptions)
 
                 if (!intentSendMailRecipientBottomDialogFragment.isAdded) {
                     intentSendMailRecipientBottomDialogFragment.show(
@@ -163,7 +165,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
             if (result != null) {
 
                 // Check if there is an alias with this email address and get its ID
-                val aliasId: String? = result.firstOrNull { it.email == text }?.id
+                val aliasId: String? = result.data.firstOrNull { it.email == text }?.id
                 if (!aliasId.isNullOrEmpty()) {
                     // ID is not empty, thus there was a match
                     // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity

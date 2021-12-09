@@ -171,10 +171,11 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
             viewLifecycleOwner.lifecycleScope.launch {
                 networkHelper.getAliases({ aliaslist ->
-                    aliases = aliaslist
+                    // TODO check if pagination is required. We obtain 100 aliases here. How big is the chance that a search result will return over 100 results?
+                    aliases = aliaslist?.data
                     sourcesSearched++
                     performSearch(context)
-                }, activeOnly = false, includeDeleted = true, binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault()))
+                }, activeOnly = false, includeDeleted = true, binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault()), size = 100)
             }
         }
 

@@ -96,6 +96,8 @@ class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteView
 
     override fun onDataSetChanged() {
         val settingsManager = SettingsManager(true, mContext)
+
+        // TODO only obtain the most popular ones through API
         val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
 
         val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(mContext, it) }
