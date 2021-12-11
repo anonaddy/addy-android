@@ -149,7 +149,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         networkHelper.getSpecificRecipient({ recipient, error ->
             if (recipient != null) {
                 (this.application as AnonAddyForAndroid).userResourceExtended = UserResourceExtended(recipient.email)
-                (this.application as AnonAddyForAndroid).userResourceExtended = UserResourceExtended(recipient.email)
                 loadingDone = true
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

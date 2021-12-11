@@ -126,7 +126,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
 
 
         holder.mWatchedTextView.visibility =
-            if (aliasesToWatch?.contains(listWithAliases[position].id) == true && listWithAliases[position].active) View.VISIBLE else View.GONE
+            if (aliasesToWatch?.contains(listWithAliases[position].id) == true) View.VISIBLE else View.GONE
     }
 
     override fun getItemCount(): Int = listWithAliases.size

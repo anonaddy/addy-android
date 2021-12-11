@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.LOGIMPORTANCE
+import host.stjin.anonaddy.models.UserResource
 
 object GsonTools {
     fun jsonToAliasObject(context: Context, json: String): ArrayList<Aliases>? {
@@ -20,6 +21,23 @@ object GsonTools {
             val ex = e.message
             println(ex)
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToAliasObject", null)
+            null
+        }
+    }
+
+    fun jsonToUserResourceObject(context: Context, json: String): UserResource? {
+        val loggingHelper = LoggingHelper(context)
+
+        return try {
+            Gson().fromJson(
+                json,
+                object : TypeToken<UserResource?>() {}.type
+            ) as UserResource
+
+        } catch (e: Exception) {
+            val ex = e.message
+            println(ex)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToUserResourceObject", null)
             null
         }
     }

@@ -151,95 +151,78 @@
             </LinearLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/alias_list_LL1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
                 android:clipChildren="false"
-                android:clipToPadding="false">
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/alias_statistics_RL_lottieview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="300dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="32dp"
-                    android:visibility="gone"
-                    app:lottie_autoPlay="true"
-                    app:lottie_loop="true"
-                    app:lottie_rawRes="@raw/no_internet_connection" />
+                android:clipToPadding="false"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/alias_list_LL1"
+                    style="@style/AnonAddyTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        style="@style/AnonAddyTitleAction"
-                        android:layout_width="match_parent"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/alias_alias_dropdown"
-                            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:overScrollMode="never"
-                            app:boxStrokeWidth="0dp"
-                            app:boxStrokeWidthFocused="0dp"
-                            app:hintEnabled="false"
-                            app:shapeAppearanceOverlay="@style/AnonAddyChipDropdown">
-
-                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                                android:id="@+id/alias_alias_dropdown_mact"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:inputType="none"
-                                android:paddingTop="8dp"
-                                android:text="@string/all_aliases"
-                                android:textColor="?colorOnPrimaryContainer" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/alias_add_alias"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/add_alias" />
-
-                    </LinearLayout>
-
-                    <com.todkars.shimmer.ShimmerRecyclerView
-                        android:id="@+id/alias_all_aliases_recyclerview"
-                        android:layout_width="match_parent"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/alias_alias_dropdown"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:shimmer_recycler_auto_start="true"
-                        app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:hintEnabled="false"
+                        app:shapeAppearanceOverlay="@style/AnonAddyChipDropdown">
 
-                    <TextView
-                        android:id="@+id/alias_no_aliases"
-                        android:layout_width="match_parent"
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/alias_alias_dropdown_mact"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="none"
+                            android:minWidth="196dp"
+                            android:paddingTop="8dp"
+                            android:text="@string/all_aliases"
+                            android:textColor="?colorOnPrimaryContainer" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Space
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/no_result_textview_padding"
-                        android:text="@string/no_aliases"
-                        android:textAlignment="center"
-                        android:textColor="@color/BlackWhite"
-                        android:visibility="gone" />
+                        android:layout_weight="1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/alias_add_alias"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_alias" />
 
                 </LinearLayout>
 
-            </RelativeLayout>
+                <com.todkars.shimmer.ShimmerRecyclerView
+                    android:id="@+id/alias_all_aliases_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:shimmer_recycler_auto_start="true"
+                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
+
+                <TextView
+                    android:id="@+id/alias_no_aliases"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/no_result_textview_padding"
+                    android:text="@string/no_aliases"
+                    android:textAlignment="center"
+                    android:textColor="@color/BlackWhite"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

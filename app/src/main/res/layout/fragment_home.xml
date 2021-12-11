@@ -277,77 +277,58 @@
         </LinearLayout>
 
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/home_statistics_LL1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"
-            android:clipToPadding="false">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/home_statistics_RL_lottieview"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="32dp"
-                android:visibility="gone"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/no_internet_connection" />
-
+            android:clipToPadding="false"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/home_statistics_LL1"
+                style="@style/AnonAddyTitleAction"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    style="@style/AnonAddyTitleAction"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/most_active_aliases" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/home_most_active_aliases_view_more"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/view_more" />
-
-                </LinearLayout>
-
-                <com.todkars.shimmer.ShimmerRecyclerView
-                    android:id="@+id/home_most_active_aliases_recyclerview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:shimmer_recycler_auto_start="true"
-                    app:shimmer_recycler_item_count="5"
-                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer">
-
-                </com.todkars.shimmer.ShimmerRecyclerView>
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/home_no_aliases"
-                    android:layout_width="match_parent"
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/most_active_aliases" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/home_most_active_aliases_view_more"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/no_result_textview_padding"
-                    android:text="@string/no_active_aliases"
-                    android:textAlignment="center"
-                    android:textColor="@color/BlackWhite"
-                    android:visibility="gone" />
+                    android:text="@string/view_more" />
 
             </LinearLayout>
-        </RelativeLayout>
+
+            <com.todkars.shimmer.ShimmerRecyclerView
+                android:id="@+id/home_most_active_aliases_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:shimmer_recycler_auto_start="true"
+                app:shimmer_recycler_item_count="5"
+                app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer">
+
+            </com.todkars.shimmer.ShimmerRecyclerView>
+
+            <TextView
+                android:id="@+id/home_no_aliases"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/no_result_textview_padding"
+                android:text="@string/no_active_aliases"
+                android:textAlignment="center"
+                android:textColor="@color/BlackWhite"
+                android:visibility="gone" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

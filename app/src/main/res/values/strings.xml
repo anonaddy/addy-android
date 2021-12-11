@@ -120,6 +120,7 @@
     <string name="alias_activated">Alias activated</string>
     <string name="delete_alias_confirmation_desc">Are you sure you want to delete this alias? You can restore this alias if you later change your mind. Once deleted, this alias will reject any emails sent to it.</string>
     <string name="error_deleting_alias">Something went wrong while deleting this alias</string>
+    <string name="error_forgetting_alias">Something went wrong while forgetting this alias</string>
     <string name="restore_alias">Restore alias</string>
     <string name="restore_alias_desc">Once restored, this alias will be able to receive emails again</string>
     <string name="restore_alias_confirmation_desc">Are you sure you want to restore this alias? Once restored, this alias will be able to receive emails again.</string>
@@ -148,7 +149,7 @@
     <string name="edit_recipient">Edit recipient</string>
     <string name="basic">Basic</string>
     <string name="encryption">Encryption</string>
-    <string name="remove_public_key">Remove Public Key</string>
+    <string name="remove_public_key">Remove public key</string>
     <string name="action">Action</string>
     <string name="recipient_aliases_d">Recipient aliases (%d)</string>
     <string name="encryption_disabled">Encryption disabled</string>
@@ -171,6 +172,8 @@
     <string name="subscription_user_until">%1$s user until %2$s</string>
     <string name="error_resend_verification">Could not resend verification email</string>
     <string name="error_obtaining_user">Could not refresh data</string>
+    <string name="error_obtaining_aliases">Could not refresh data</string>
+    <string name="error_obtaining_recipients">Could not refresh data</string>
     <string name="manage_domains">Manage domains</string>
     <string name="all_domains">All domains</string>
     <string name="add_domain">Add domain</string>
@@ -178,6 +181,7 @@
     <string name="delete_domain">Delete domain</string>
     <string name="delete_domain_desc_confirm">Are you sure you want to delete this domain? This will also delete all aliases associated with this domain. You will no longer be able to receive any emails at this domain.</string>
     <string name="error_deleting_domain">Something went wrong while deleting this domain</string>
+    <string name="error_deleting_rule">Something went wrong while deleting this rule</string>
     <string name="add_domain_desc">Enter the domain you would like to add.\n\nYou will have to verify the ownership of the domain, so make sure you have access to the DNS settings of this domain</string>
     <string name="error_adding_domain">Something went wrong while adding this domain</string>
     <string name="configuration_error">Configuration error</string>
@@ -488,5 +492,15 @@
     <string name="forwards">Forwards</string>
     <string name="run_rule_on">Run rule on</string>
     <string name="load_more">Load more</string>
+    <string name="alias_global_search_hint">Looking for a specific alias? Try the global search instead.</string>
+    <string name="cancel">Cancel</string>
+    <string name="deleting_alias">Deleting alias…</string>
+    <string name="restoring_alias">Restoring alias…</string>
+    <string name="forgetting_alias">Forgetting alias…</string>
+    <string name="deleting_domain">Deleting domain…</string>
+    <string name="deleting_recipient">Deleting recipient…</string>
+    <string name="removing_public_key">Removing public key…</string>
+    <string name="deleting_rule">Deleting rule…</string>
+    <string name="deleting_username">Deleting username…</string>
 
 </resources>

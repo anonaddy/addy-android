@@ -153,12 +153,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.mainAppBarInclude.mainTopBarSearchIcon.setOnClickListener {
-            if (!searchBottomDialogFragment.isAdded) {
-                searchBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "searchBottomDialogFragment"
-                )
-            }
+            openSearch()
         }
 
         binding.mainAppBarInclude.mainTopBarFailedDeliveriesIcon.setOnClickListener {
@@ -168,6 +163,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         lifecycleScope.launch {
             checkForNewFailedDeliveries()
+        }
+    }
+
+    fun openSearch() {
+        if (!searchBottomDialogFragment.isAdded) {
+            searchBottomDialogFragment.show(
+                supportFragmentManager,
+                "searchBottomDialogFragment"
+            )
         }
     }
 

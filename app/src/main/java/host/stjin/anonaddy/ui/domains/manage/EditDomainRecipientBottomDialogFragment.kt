@@ -77,7 +77,7 @@ class EditDomainRecipientBottomDialogFragment(
     private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
 
-        networkHelper.getRecipients({ result ->
+        networkHelper.getRecipients({ result, _ ->
             if (result != null) {
                 // Remove the default "Loading recipients" chip
                 binding.bsEditrecipientChipgroup.removeAllViewsInLayout()

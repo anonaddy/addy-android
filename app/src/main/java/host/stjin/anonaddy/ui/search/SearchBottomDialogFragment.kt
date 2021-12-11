@@ -170,12 +170,18 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAliases({ aliaslist ->
-                    // TODO check if pagination is required. We obtain 100 aliases here. How big is the chance that a search result will return over 100 results?
-                    aliases = aliaslist?.data
-                    sourcesSearched++
-                    performSearch(context)
-                }, activeOnly = false, includeDeleted = true, binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault()), size = 100)
+                networkHelper.getAliases(
+                    { aliaslist, _ ->
+                        // TODO check if pagination is required. We obtain 100 aliases here. How big is the chance that a search result will return over 100 results?
+                        aliases = aliaslist?.data
+                        sourcesSearched++
+                        performSearch(context)
+                    },
+                    activeOnly = false,
+                    includeDeleted = true,
+                    filter = binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault()),
+                    size = 100
+                )
             }
         }
 
@@ -183,7 +189,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getRecipients({ recipientlist ->
+                networkHelper.getRecipients({ recipientlist, _ ->
                     recipients = recipientlist
                     sourcesSearched++
                     performSearch(context)

@@ -86,9 +86,6 @@ class HomeFragment : Fragment() {
 
 
     private fun getDataFromWeb(context: Context) {
-        binding.homeStatisticsLL1.visibility = View.VISIBLE
-        binding.homeStatisticsRLLottieview.visibility = View.GONE
-
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
             getMostActiveAliases()
@@ -179,8 +176,7 @@ class HomeFragment : Fragment() {
                 showShimmer()
             }
 
-            // TODO This needs to have a filter to get the most active aliases. Due to pagination this won't work properly anymore
-            networkHelper?.getAliases({ list ->
+            networkHelper?.getAliases({ list, result ->
 
                 // Check if there are new aliases since the latest list
                 // If the list is the same, just return and don't bother re-init the layoutmanager
@@ -200,24 +196,19 @@ class HomeFragment : Fragment() {
                         binding.homeNoAliases.visibility = View.VISIBLE
                     }
 
-                    // Sort by emails forwarded
-                    list.data.sortByDescending { it.emails_forwarded }
-
-                    // Get the top 5
-                    val aliasList = list.data.take(5)
-                    aliasAdapter = AliasAdapter(aliasList, context)
+                    aliasAdapter = AliasAdapter(list.data, context)
                     aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
                         override fun onClick(pos: Int) {
                             val intent = Intent(context, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
-                            intent.putExtra("alias_id", aliasList[pos].id)
+                            intent.putExtra("alias_id", list.data[pos].id)
                             resultLauncher.launch(intent)
                         }
 
                         override fun onClickCopy(pos: Int, aView: View) {
                             val clipboard: ClipboardManager =
                                 context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                            val aliasEmailAddress = aliasList[pos].email
+                            val aliasEmailAddress = list.data[pos].email
                             val clip = ClipData.newPlainText("alias", aliasEmailAddress)
                             clipboard.setPrimaryClip(clip)
 
@@ -233,11 +224,23 @@ class HomeFragment : Fragment() {
                     })
                     adapter = aliasAdapter
                 } else {
-                    binding.homeStatisticsLL1.visibility = View.GONE
-                    binding.homeStatisticsRLLottieview.visibility = View.VISIBLE
+                    // Data could not be loaded
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
                 }
                 hideShimmer()
-            }, activeOnly = true, includeDeleted = false)
+            }, activeOnly = true, includeDeleted = false, sort = "-emails_forwarded", size = 6)
 
         }
 

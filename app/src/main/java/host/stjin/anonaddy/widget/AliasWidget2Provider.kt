@@ -117,27 +117,11 @@ class AliasWidget2Provider : AppWidgetProvider() {
 private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle? = null) {
 
     val settingsManager = SettingsManager(true, context)
-    val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
-    val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(context, it) }
+    val userResourceJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USER_RESOURCE)
+    val userResource = userResourceJson?.let { GsonTools.jsonToUserResourceObject(context, it) }
 
-    var aliasCount = 0
-    var emailsForwarded = 0
-    var emailsBlocked = 0
-    var emailsSent = 0
-    var emailsReplied = 0
+
     // Count the stats from the cache
-
-    // TODO obtain this information for the (todo) cached userResource
-
-    if (aliasesList != null) {
-        for (alias in aliasesList) {
-            emailsForwarded += alias.emails_forwarded
-            emailsBlocked += alias.emails_blocked
-            emailsSent += alias.emails_sent
-            emailsReplied += alias.emails_replied
-            aliasCount += 1
-        }
-    }
 
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.widget_2_alias)
@@ -157,14 +141,14 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
             views.setViewVisibility(R.id.widget_2_layout_1, View.GONE)
             views.setViewVisibility(R.id.widget_2_layout_3, View.GONE)
 
-            views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_forwarded_count, emailsForwarded.toString())
+            views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_forwarded_count, userResource?.total_emails_forwarded.toString())
 
             // if more than 2 columns
             if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)) > 3) {
                 views.setViewVisibility(R.id.widget_2_layout_2_additional, View.VISIBLE)
-                views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_blocked_count, emailsBlocked.toString())
-                views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_sent_count, emailsSent.toString())
-                views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_replied_count, emailsReplied.toString())
+                views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_blocked_count, userResource?.total_emails_blocked.toString())
+                views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_sent_count, userResource?.total_emails_sent.toString())
+                views.setTextViewText(R.id.widget_2_layout_2_aliases_statistics_replied_count, userResource?.total_emails_replied.toString())
             } else {
                 views.setViewVisibility(R.id.widget_2_layout_2_additional, View.GONE)
             }
@@ -180,12 +164,13 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
             views.setViewVisibility(R.id.widget_2_layout_1, View.GONE)
             views.setViewVisibility(R.id.widget_2_layout_2, View.GONE)
 
-            views.setTextViewText(R.id.widget_2_layout_3_aliases_statistics_blocked_count, emailsBlocked.toString())
-            views.setTextViewText(R.id.widget_2_layout_3_aliases_statistics_sent_count, emailsSent.toString())
-            views.setTextViewText(R.id.widget_2_layout_3_aliases_statistics_replied_count, emailsReplied.toString())
-            views.setTextViewText(R.id.widget_2_layout_3_aliases_statistics_forwarded_count, emailsForwarded.toString())
+            views.setTextViewText(R.id.widget_2_layout_3_aliases_statistics_blocked_count, userResource?.total_emails_blocked.toString())
+            views.setTextViewText(R.id.widget_2_layout_3_aliases_statistics_sent_count, userResource?.total_emails_sent.toString())
+            views.setTextViewText(R.id.widget_2_layout_3_aliases_statistics_replied_count, userResource?.total_emails_replied.toString())
+            views.setTextViewText(R.id.widget_2_layout_3_aliases_statistics_forwarded_count, userResource?.total_emails_forwarded.toString())
 
-            views.setTextViewText(R.id.widget_2_layout_3_account_statistics_aliases_count, aliasCount.toString())
+            // TODO FIX THIS, redesign that widget anyways
+            views.setTextViewText(R.id.widget_2_layout_3_account_statistics_aliases_count, 0.toString())
             views.setTextViewText(
                 R.id.widget_2_layout_3_account_statistics_domains_count,
                 settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT).toString()
@@ -230,15 +215,15 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
             views.setViewVisibility(R.id.widget_2_layout_2, View.GONE)
             views.setViewVisibility(R.id.widget_2_layout_3, View.GONE)
 
-            views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_forwarded_count, emailsForwarded.toString())
+            views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_forwarded_count, userResource?.total_emails_forwarded.toString())
 
             // if more than 2 columns
             if (getCellsForSize(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)) > 3) {
                 views.setViewVisibility(R.id.widget_2_layout_1_additional, View.VISIBLE)
 
-                views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_blocked_count, emailsBlocked.toString())
-                views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_sent_count, emailsSent.toString())
-                views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_replied_count, emailsReplied.toString())
+                views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_blocked_count, userResource?.total_emails_blocked.toString())
+                views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_sent_count, userResource?.total_emails_sent.toString())
+                views.setTextViewText(R.id.widget_2_layout_1_aliases_statistics_replied_count, userResource?.total_emails_replied.toString())
             } else {
                 views.setViewVisibility(R.id.widget_2_layout_1_additional, View.GONE)
             }

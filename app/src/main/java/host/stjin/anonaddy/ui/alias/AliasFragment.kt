@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -28,6 +29,7 @@ import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.AliasesArray
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.service.AliasWatcher
+import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
@@ -68,21 +70,25 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
         setOnClickListeners()
-        setOnNestedScrollViewListener()
+        setOnNestedScrollViewListener(true)
         getDataFromWeb()
 
         return root
     }
 
-    private fun setOnNestedScrollViewListener() {
-        binding.fragmentAliasNsv.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-            if (-scrollY == v.measuredHeight - v.getChildAt(0).measuredHeight) {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    // Bottom of NSV reached. Time to load more data (if available)
-                    getAliasesAndAddThemToList()
+    private fun setOnNestedScrollViewListener(set: Boolean) {
+        if (set) {
+            binding.fragmentAliasNsv.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+                if (-scrollY == v.measuredHeight - v.getChildAt(0).measuredHeight) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        // Bottom of NSV reached. Time to load more data (if available)
+                        getAliasesAndAddThemToList()
+                    }
                 }
-            }
-        })
+            })
+        } else {
+            binding.fragmentAliasNsv.setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
+        }
     }
 
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -152,8 +158,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
     private fun getDataFromWeb() {
-        binding.aliasListLL1.visibility = View.VISIBLE
-        binding.aliasStatisticsRLLottieview.visibility = View.GONE
         binding.aliasNoAliases.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
@@ -238,7 +242,16 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         // If the page we're currently on is LOWER than the last page
         if (aliasList == null || aliasList?.meta?.current_page ?: 0 < aliasList?.meta?.last_page ?: 0) {
             binding.aliasProgress.visibility = View.VISIBLE
-            networkHelper?.getAliases({ list ->
+
+            // When loading data disable the scrollviewlistener to prevent double loading
+            setOnNestedScrollViewListener(set = false)
+
+            // When the user reached page 5, offer to use search instead
+            if (aliasList?.meta?.current_page == 5) {
+                showSearchHintSnackbar()
+            }
+
+            networkHelper?.getAliases({ list: AliasesArray?, result: String? ->
                 if (list != null) {
                     if (aliasList == null || forceReload) {
                         // If aliasList is empty, assign it
@@ -261,30 +274,92 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         aliasList?.data?.addAll(filteredAliases)
 
 
+                        // If there are 0 new items in this page but there are more pages, continue searching to the next page
+                        if (filteredAliases.size == 0 && aliasList?.meta?.current_page ?: 0 < aliasList?.meta?.last_page ?: 0) {
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                getAliasesAndAddThemToList()
+                            }
+                            return@getAliases
+                        }
+
                         // Get the totalsize of the adapteritems
                         val totalSize = aliasAdapter?.itemCount ?: 0
                         // Tell the adapter there is new data (from the original size to the added items)
                         binding.aliasAllAliasesRecyclerview.post { aliasAdapter?.notifyItemRangeInserted(totalSize, filteredAliases.size - 1) }
+
+
                     }
 
-                    // Set the count of aliases so that the shimmerview looks better next time (always 10 as of v3.3.0)
+                    // Set the count of aliases so that the shimmerview looks better next time (always 20 as of v3.3.0)
                     settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ALIAS_COUNT, list.data.size)
 
+
+                    // TODO fix workaround?
+                    // WORKAROUND #0001 START
+                    /*
+                        Situation: An alias on the 2nd page of the API is being watched or inactive.
+                        The aliasfragment shows only 2 results (as the first page only contains 2 inactive/watched aliases)
+                        Due to the 2 results the NSV is not scrollable thus this method will not be called again which results in missing results.
+
+                        Solution: As long as there are less than 20 items (which is the default number of aliases to obtain as seen in getAllAliases)
+                                  Keep loading results as long as there are more pages
+                     */
+
+                    if (aliasList?.data?.size ?: 0 < 20 && aliasList?.meta?.current_page ?: 0 < aliasList?.meta?.last_page ?: 0) {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            getAliasesAndAddThemToList()
+                        }
+                    }
+
+                    // WORKAROUND END
 
                     // Okay we got data, init the recyclerview
                     // If we do a force reload the recyclerview also needs to be re-init to show shimmerview as well as clear the adapter
                     initRecyclerview(forceReload)
 
+
                 } else {
                     // Data could not be loaded
-                    //TODO show toast instead?
-                    binding.aliasListLL1.visibility = View.GONE
-                    binding.aliasStatisticsRLLottieview.visibility = View.VISIBLE
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
                 }
 
                 binding.aliasAllAliasesRecyclerview.hideShimmer()
                 binding.aliasProgress.visibility = View.GONE
-            }, activeOnly, includeDeleted, page = (aliasList?.meta?.current_page ?: 0) + 1)
+
+                // Enable scrollviewlistener again
+                setOnNestedScrollViewListener(set = true)
+                // Size 100 is being used for above WORKAROUND #0001
+            }, activeOnly, includeDeleted, page = (aliasList?.meta?.current_page ?: 0) + 1, size = 100)
+        }
+    }
+
+    private fun showSearchHintSnackbar() {
+        hideFabForSnackBarTime()
+        val bottomNavView: BottomNavigationView? =
+            activity?.findViewById(R.id.nav_view)
+        bottomNavView?.let {
+            val snackbar = Snackbar.make(
+                it,
+                requireContext().resources.getString(R.string.alias_global_search_hint),
+                Snackbar.LENGTH_SHORT
+            )
+            snackbar.setAction(R.string.search) {
+                (activity as MainActivity).openSearch()
+            }
+            snackbar.anchorView = bottomNavView
+            snackbar.show()
         }
     }
 
@@ -357,8 +432,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         // Here the alias list is being modified to only have the items included that are in the MACT filter
         when (binding.aliasAliasDropdownMact.text.toString()) {
             this.resources.getString(R.string.all_aliases) -> {
-                activeOnly = false
-                includeDeleted = true
                 // This filter is already being done on the networkHelper side
             }
             this.resources.getString(R.string.active_aliases) -> {
@@ -374,8 +447,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 aliasesList.removeAll { alias -> alias.deleted_at == null }
             }
             this.resources.getString(R.string.watched_aliases) -> {
-                activeOnly = false
-                includeDeleted = true
                 // Filter out all the non-watched aliases
                 val aliasesToWatch = context?.let { AliasWatcher(it).getAliasesToWatch() }
                 if (aliasesToWatch != null) {

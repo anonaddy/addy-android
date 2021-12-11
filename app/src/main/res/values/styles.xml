@@ -147,13 +147,13 @@
     <!-- SECONDARY -->
     <style name="CircularProgressButtonSecondary" parent="MaterialButtonSecondary">
         <item name="android:background">@drawable/circularprogressbutton_secondary</item>
-        <!-- TODO Why is this not working anymore? -->
-        <item name="spinning_bar_color">?colorOnPrimary</item>
         <item name="spinning_bar_padding">8dp</item>
+        <item name="spinning_bar_color">?colorOnPrimary</item>
         <item name="android:layout_gravity">center</item>
         <item name="initialCornerAngle">@dimen/corner_radius_button</item>
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="drawableTint">?colorOnPrimary</item>
+        <item name="android:singleLine">false</item>
     </style>
 
     <!-- DELETE STYLE -->
@@ -397,10 +397,7 @@
         <item name="strokeColor">?colorControlNormal</item>
     </style>
 
-    <style name="AnonAddyChip" parent="Widget.Material3.Chip.Filter">
-        <item name="checkedIcon">@drawable/ic_check</item>
-        <item name="checkedIconTint">?colorPrimary</item>
-    </style>
+    <style name="AnonAddyChip" parent="Widget.Material3.Chip.Filter" />
 
 
     <style name="AnonAddyCollapsingToolbarLayout" parent="Widget.Material3.CollapsingToolbar.Large">
@@ -422,5 +419,20 @@
         <item name="cornerSize">100%</item>
     </style>
 
+
+    <style name="Widget.Catalog.Button.TextButton.Dialog.FullWidth" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:maxWidth">@null</item>
+    </style>
+
+    <!-- A theme overlay for dialogs with a center aligned title text, icon and buttons that span the width of the dialog. -->
+    <style name="ThemeOverlay.Catalog.MaterialAlertDialog.Centered.FullWidthButtons" parent="ThemeOverlay.Material3.MaterialAlertDialog.Centered">
+        <!-- Mark spacer as gone when showing full width buttons -->
+        <item name="materialAlertDialogButtonSpacerVisibility">@integer/mtrl_view_gone</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Catalog.Button.TextButton.Dialog.FullWidth</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Catalog.Button.TextButton.Dialog.FullWidth</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Catalog.Button.TextButton.Dialog.FullWidth</item>
+    </style>
 
 </resources>

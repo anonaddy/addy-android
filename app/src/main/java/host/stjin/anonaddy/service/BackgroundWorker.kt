@@ -7,10 +7,12 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import androidx.work.*
+import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.Updater
+import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
@@ -63,7 +65,9 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             val networkHelper = NetworkHelper(appContext)
 
             // Stored if the network call succeeds its task
+            var userResourceNetworkCallResult = false
             var aliasNetworkCallResult = false
+            var aliasWatcherNetworkCallResult = false
             var domainNetworkCallResult = false
             var usernameNetworkCallResult = false
             var rulesNetworkCallResult = false
@@ -80,11 +84,24 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 // TODO caching all the aliases is not gonna work anymore. Let's only obtain the most active aliases for widget 1
                 // TODO for aliasWatcher we would have to loop and get aliasinfo for every alias watched
 
-                networkHelper.cacheAliasDataForWidget { result ->
+                networkHelper.cacheUserResourceForWidget { result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    userResourceNetworkCallResult = result
+                }
+
+                networkHelper.cache15MostPopularAliasesDataForWidget { result ->
                     // Store the result if the data succeeded to update in a boolean
                     aliasNetworkCallResult = result
                 }
 
+                /**
+                ALIAS_WATCHER FUNCTIONALITY
+                 **/
+
+                aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, settingsManager)
+
+
+                // TODO new widget design for widget 3?
                 networkHelper.cacheDomainCountForWidget { result ->
                     // Store the result if the data succeeded to update in a boolean
                     domainNetworkCallResult = result
@@ -104,6 +121,8 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     // Store the result if the data succeeded to update in a boolean
                     recipientNetworkCallResult = result
                 }
+                // TODO new widget design for widget 3?
+
 
                 networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
                     // Store the result if the data succeeded to update in a boolean
@@ -174,7 +193,9 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             }
 
             // If both tasks are successful return a success()
-            return if (aliasNetworkCallResult &&
+            return if (userResourceNetworkCallResult &&
+                aliasNetworkCallResult &&
+                aliasWatcherNetworkCallResult &&
                 domainNetworkCallResult &&
                 usernameNetworkCallResult &&
                 rulesNetworkCallResult &&
@@ -193,6 +214,46 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             backgroundWorkerHelper.cancelScheduledBackgroundWorker()
             return Result.success()
         }
+    }
+
+    private suspend fun aliasWatcherTask(appContext: Context, networkHelper: NetworkHelper, settingsManager: SettingsManager): Boolean {
+
+        /*
+        This method loops through all the aliases that need to be watched and caches those aliases locally
+         */
+
+        // Get and turn the current list (before this call) into a string
+        val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
+        // If the list is not null, move the current list (before this call) to the PREV position for AliasWatcher to compare
+        // List could be null if this would be the first time the service is running
+        currentList?.let { settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS, it) }
+
+
+        val aliasWatcher = AliasWatcher(appContext)
+        val aliasesToWatch = aliasWatcher.getAliasesToWatch()?.toList()
+
+        if (aliasesToWatch != null) {
+            val newList: ArrayList<Aliases> = arrayListOf()
+            // Loop through the aliases on the watchlist
+            for (alias in aliasesToWatch) {
+                // Get alias data
+                networkHelper.getSpecificAlias({ result ->
+                    // Store the result if the data succeeded to update in a boolean
+                    if (result != null) {
+                        newList.add(result)
+                    }
+                }, alias)
+            }
+
+
+            // Turn the list into a json object
+            val data = Gson().toJson(newList)
+
+            // Store a copy of the just received data locally
+            settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
+        }
+
+        return true
     }
 
 }

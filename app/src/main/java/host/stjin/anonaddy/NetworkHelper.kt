@@ -313,13 +313,13 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun getAliases(
-        callback: (AliasesArray?) -> Unit,
+        callback: (AliasesArray?, String?) -> Unit,
         activeOnly: Boolean,
         includeDeleted: Boolean,
         filter: String? = null,
         page: Int? = null,
-        // TODO Make size bigger
-        size: Int? = 20
+        size: Int? = 20,
+        sort: String? = null
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -348,6 +348,10 @@ class NetworkHelper(private val context: Context) {
             parameters.add("page[number]" to page.toString())
         }
 
+        if (!sort.isNullOrEmpty()) {
+            parameters.add("sort" to sort)
+        }
+
         val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
             .appendHeader(
                 "Authorization" to "Bearer $API_KEY",
@@ -363,7 +367,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, AliasesArray::class.java)
-                callback(anonAddyData)
+                callback(anonAddyData, null)
             }
             401 -> {
                 invalidApiKey()
@@ -371,13 +375,13 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAliases", String(response.data))
-                callback(null)
+                callback(null, ex.toString())
             }
         }
     }
@@ -739,7 +743,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun getRecipients(
-        callback: (ArrayList<Recipients>?) -> Unit,
+        callback: (ArrayList<Recipients>?, String?) -> Unit,
         verifiedOnly: Boolean
     ) {
 
@@ -773,7 +777,7 @@ class NetworkHelper(private val context: Context) {
                 } else {
                     recipientList.addAll(anonAddyData.data)
                 }
-                callback(recipientList)
+                callback(recipientList, null)
             }
             401 -> {
                 invalidApiKey()
@@ -781,13 +785,13 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getRecipients", String(response.data))
-                callback(null)
+                callback(null, ex.toString())
             }
         }
     }
@@ -2132,32 +2136,47 @@ class NetworkHelper(private val context: Context) {
     // Widget 1: Aliases
     // Widget 2: Domain options
 
-    suspend fun cacheAliasDataForWidget(
+    suspend fun cache15MostPopularAliasesDataForWidget(
         callback: (Boolean) -> Unit
     ) {
-        getAliases({ list ->
+        getAliases({ list, _ ->
             if (list == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
                 return@getAliases
             } else {
                 // Turn the list into a json object
-                val data = Gson().toJson(list)
-
-                // Get and turn the current list (before this call) into a string
-                val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
-
-                // If the list is not null, move the current list (before this call) to the PREV position for AliasWatcher to compare
-                // List could be null if this would be the first time the service is running
-                currentList?.let { settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS, it) }
+                val data = Gson().toJson(list.data)
 
                 // Store a copy of the just received data locally
-                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES, data)
+                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA, data)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
-        }, activeOnly = false, includeDeleted = true)
+        }, activeOnly = true, includeDeleted = false, size = 15, sort = "-emails_forwarded")
+    }
+
+
+    suspend fun cacheUserResourceForWidget(
+        callback: (Boolean) -> Unit
+    ) {
+        getUserResource { userResource: UserResource?, _: String? ->
+            if (userResource == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getUserResource
+            } else {
+                // Turn the list into a json object
+                val data = Gson().toJson(userResource)
+
+                // Store a copy of the just received data locally
+                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USER_RESOURCE, data)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+        }
     }
 
     suspend fun cacheDomainCountForWidget(
@@ -2217,7 +2236,7 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheRecipientCountForWidget(
         callback: (Boolean) -> Unit
     ) {
-        getRecipients({ result ->
+        getRecipients({ result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)

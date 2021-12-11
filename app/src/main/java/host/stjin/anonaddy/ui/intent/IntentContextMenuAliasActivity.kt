@@ -140,7 +140,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         // Get aliases and pass it through to the send email bottomdialog
 
         // TODO due to pagination it might be required to have a filter-on-type feature. Else not all aliases will be available in the spinner
-        networkHelper.getAliases({ result ->
+        networkHelper.getAliases({ result, _ ->
             if (result != null) {
                 aliases = result.data
                 intentSendMailRecipientBottomDialogFragment =
@@ -161,9 +161,8 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
     }
 
     private suspend fun checkIfAliasExists(text: CharSequence) {
-        networkHelper.getAliases({ result ->
+        networkHelper.getAliases({ result, _ ->
             if (result != null) {
-
                 // Check if there is an alias with this email address and get its ID
                 val aliasId: String? = result.data.firstOrNull { it.email == text }?.id
                 if (!aliasId.isNullOrEmpty()) {
@@ -186,8 +185,11 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                         addAliasToAccount(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0])
                     }
                 }
+            } else {
+                Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_aliases), Toast.LENGTH_LONG).show()
+                finish()
             }
-        }, activeOnly = false, includeDeleted = true)
+        }, activeOnly = false, includeDeleted = true, filter = text.toString())
 
     }
 

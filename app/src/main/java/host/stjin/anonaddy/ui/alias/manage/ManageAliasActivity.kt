@@ -1,25 +1,21 @@
 package host.stjin.anonaddy.ui.alias.manage
 
 import android.content.*
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
@@ -335,161 +331,114 @@ class ManageAliasActivity : BaseActivity(),
     }
 
 
-    private lateinit var restoreAliasDialog: AlertDialog
+    private lateinit var restoreAliasSnackbar: Snackbar
     private fun restoreAlias() {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        restoreAliasDialog = builder.create()
-        restoreAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.restore_alias)
-        anonaddyCustomDialogBinding.dialogText.text =
-            resources.getString(R.string.restore_alias_confirmation_desc)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.restore)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                restoreAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.restore_alias))
+            .setIcon(R.drawable.ic_trash_off)
+            .setMessage(resources.getString(R.string.restore_alias_confirmation_desc))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            restoreAliasDialog.dismiss()
-        }
-        // create and show the alert dialog
-        restoreAliasDialog.show()
+            .setPositiveButton(resources.getString(R.string.restore)) { dialog, which ->
+                restoreAliasSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.restoring_alias),
+                    binding.activityManageAliasCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                restoreAliasSnackbar.show()
+                lifecycleScope.launch {
+                    restoreAliasHttpRequest(aliasId, this@ManageAliasActivity)
+                }
+            }
+            .show()
     }
 
-    private lateinit var deleteAliasDialog: AlertDialog
+    private lateinit var deleteAliasSnackbar: Snackbar
     private fun deleteAlias() {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-
-        deleteAliasDialog = builder.create()
-        deleteAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_alias)
-        anonaddyCustomDialogBinding.dialogText.text =
-            resources.getString(R.string.delete_alias_confirmation_desc)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.delete)
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.drawableBackground.setColorFilter(
-            AttributeHelper.getValueByAttr(this, R.attr.colorError),
-            PorterDuff.Mode.SRC_ATOP
-        )
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(AttributeHelper.getValueByAttr(this, R.attr.colorOnError))
-        anonaddyCustomDialogBinding.dialogPositiveButton.spinningBarColor = AttributeHelper.getValueByAttr(this, R.attr.colorOnError)
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                deleteAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.delete_alias))
+            .setIcon(R.drawable.ic_trash)
+            .setMessage(resources.getString(R.string.delete_alias_confirmation_desc))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            deleteAliasDialog.dismiss()
-        }
-        // create and show the alert dialog
-        deleteAliasDialog.show()
+            .setPositiveButton(resources.getString(R.string.delete)) { dialog, which ->
+                deleteAliasSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.deleting_alias),
+                    binding.activityManageAliasCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteAliasSnackbar.show()
+                lifecycleScope.launch {
+                    deleteAliasHttpRequest(aliasId, this@ManageAliasActivity)
+                }
+            }
+            .show()
     }
 
-    private lateinit var forgetAliasDialog: AlertDialog
+    private lateinit var forgetAliasSnackbar: Snackbar
     private fun forgetAlias() {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-
-        forgetAliasDialog = builder.create()
-        forgetAliasDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.forget_alias)
-        anonaddyCustomDialogBinding.dialogText.text =
-            resources.getString(R.string.forget_alias_confirmation_desc)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.forget)
-        anonaddyCustomDialogBinding.dialogPositiveButton.drawableBackground.setColorFilter(
-            AttributeHelper.getValueByAttr(this, R.attr.colorError),
-            PorterDuff.Mode.SRC_ATOP
-        )
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(AttributeHelper.getValueByAttr(this, R.attr.colorOnError))
-        anonaddyCustomDialogBinding.dialogPositiveButton.spinningBarColor = AttributeHelper.getValueByAttr(this, R.attr.colorOnError)
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                forgetAliasHttpRequest(aliasId, this@ManageAliasActivity, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.forget_alias))
+            .setIcon(R.drawable.ic_eraser)
+            .setMessage(resources.getString(R.string.forget_alias_confirmation_desc))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            forgetAliasDialog.dismiss()
-        }
-        // create and show the alert dialog
-        forgetAliasDialog.show()
+            .setPositiveButton(resources.getString(R.string.forget)) { dialog, which ->
+                forgetAliasSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.forgetting_alias),
+                    binding.activityManageAliasCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                forgetAliasSnackbar.show()
+                lifecycleScope.launch {
+                    forgetAliasHttpRequest(aliasId, this@ManageAliasActivity)
+                }
+            }
+            .show()
     }
 
-    private suspend fun deleteAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
-                deleteAliasDialog.dismiss()
+                deleteAliasSnackbar.dismiss()
                 shouldUpdate = true
                 finishWithUpdate()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_deleting_alias), result
-                )
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(
+                        R.string.s_s,
+                        context.resources.getString(R.string.error_deleting_alias), result
+                    ),
+                    binding.activityManageAliasCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }
 
-    private suspend fun forgetAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun forgetAliasHttpRequest(id: String, context: Context) {
         networkHelper.forgetAlias({ result ->
             if (result == "204") {
-                forgetAliasDialog.dismiss()
+                forgetAliasSnackbar.dismiss()
                 shouldUpdate = true
                 finishWithUpdate()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_deleting_alias), result
-                )
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(
+                        R.string.s_s,
+                        context.resources.getString(R.string.error_forgetting_alias), result
+                    ),
+                    binding.activityManageAliasCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }
@@ -501,23 +450,22 @@ class ManageAliasActivity : BaseActivity(),
         finish()
     }
 
-    private suspend fun restoreAliasHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun restoreAliasHttpRequest(id: String, context: Context) {
         networkHelper.restoreAlias({ result ->
             if (result == "200") {
-                restoreAliasDialog.dismiss()
+                restoreAliasSnackbar.dismiss()
                 shouldUpdate = true
                 setPage()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_restoring_alias), result
-                )
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(
+                        R.string.s_s,
+                        context.resources.getString(R.string.error_restoring_alias), result
+                    ),
+                    binding.activityManageAliasCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }

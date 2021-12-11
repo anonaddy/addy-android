@@ -60,7 +60,7 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.0")
     implementation("com.google.android.material:material:1.6.0-alpha01")
@@ -91,7 +91,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.2.3")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.2.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 }
 
 // Shimmer
@@ -133,7 +133,7 @@ dependencies {
 
 // Loading spinners when execution actions from eg. bottomsheets
 dependencies {
-    implementation("com.github.leandroBorgesFerreira:LoadingButtonAndroid:2.2.0")
+    implementation("com.github.Stjin:LoadingButtonAndroid:2.2.0")
 }
 
 // Built-in updater

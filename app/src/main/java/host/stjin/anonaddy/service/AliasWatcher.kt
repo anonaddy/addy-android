@@ -9,11 +9,10 @@ class AliasWatcher(private val context: Context) {
     val settingsManager = SettingsManager(true, context)
 
 
-    // TODO for aliasWatcher we would have to loop and get aliasinfo for every alias watched
     fun watchAliasesForDifferences() {
         val aliasesToWatch = settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
-        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
-        val previousAliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS)
+        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
+        val previousAliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS)
 
         // Turn the 2 alias en previousAlias jsons into objects.
         val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(context, it) }
@@ -24,7 +23,7 @@ class AliasWatcher(private val context: Context) {
 
         // if aliasesToWatch is empty, skip everything, don't compare because there is nothing to be compared
         if (!aliasesToWatch.isNullOrEmpty()) {
-            // if aliasesList is empty or null, skip everything, don't compare ad there is no list
+            // if aliasesList is empty or null, skip everything, don't compare as there is no list
             if (!aliasesList.isNullOrEmpty()) {
 
                 // Loop through all the aliases in the aliasList (this only contains active and non-deleted aliases)
