@@ -83,8 +83,6 @@
 <p>📃 Added the "Run rule on" options for creating rules&nbsp;<br />🕷 Fixed a bug where folding/unfolding your foldable while creating a rule would reset the screen<br />🕷 Fixed a bug where the app would crash when coming back to it after having it idle for a certain amount of time<br />✨ The number of API requests that are made is now reduced.<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
-    <string name="no_wait">No, wait!</string>
-    <string name="confirm">Confirm</string>
     <string name="delete_recipient">Delete recipient</string>
     <string name="delete_recipient_desc">Are you sure you want to delete this recipient?</string>
     <string name="error_deleting_recipient">Something went wrong while deleting the recipient</string>
@@ -491,7 +489,6 @@
     <string name="replies">Replies</string>
     <string name="forwards">Forwards</string>
     <string name="run_rule_on">Run rule on</string>
-    <string name="load_more">Load more</string>
     <string name="alias_global_search_hint">Looking for a specific alias? Try the global search instead.</string>
     <string name="cancel">Cancel</string>
     <string name="deleting_alias">Deleting alias…</string>
@@ -502,5 +499,6 @@
     <string name="removing_public_key">Removing public key…</string>
     <string name="deleting_rule">Deleting rule…</string>
     <string name="deleting_username">Deleting username…</string>
+    <string name="start_typing_to_show_aliases">Start typing to show aliases</string>
 
 </resources>

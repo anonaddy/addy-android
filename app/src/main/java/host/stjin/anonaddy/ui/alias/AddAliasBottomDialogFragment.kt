@@ -267,7 +267,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         recipients: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addAlias({ result ->
+        networkHelper.addAlias({ result, _ ->
             if (result == "201") {
                 listener.onAdded()
             } else {

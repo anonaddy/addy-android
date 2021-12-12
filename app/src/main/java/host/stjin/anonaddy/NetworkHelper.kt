@@ -155,7 +155,7 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAnonAddyInstanceVersion", String(response.data))
-                callback(null, ex.toString())
+                callback(null, String(response.data))
             }
         }
     }
@@ -203,7 +203,7 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getUserResource", String(response.data))
-                callback(null, ex.toString())
+                callback(null, String(response.data))
             }
         }
     }
@@ -257,7 +257,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun addAlias(
-        callback: (String?) -> Unit,
+        callback: (String?, Aliases?) -> Unit,
         domain: String,
         description: String,
         format: String,
@@ -292,7 +292,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             201 -> {
-                callback("201")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
+                callback("201", anonAddyData.data)
             }
             401 -> {
                 invalidApiKey()
@@ -300,13 +303,13 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addAlias", String(response.data))
-                callback(String(response.data))
+                callback(String(response.data), null)
             }
         }
     }
@@ -381,7 +384,7 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAliases", String(response.data))
-                callback(null, ex.toString())
+                callback(null, String(response.data))
             }
         }
     }
@@ -791,7 +794,7 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getRecipients", String(response.data))
-                callback(null, ex.toString())
+                callback(null, String(response.data))
             }
         }
     }
@@ -1015,7 +1018,7 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificRecipient", String(response.data))
-                callback(null, ex.toString())
+                callback(null, String(response.data))
             }
         }
     }
@@ -1177,7 +1180,7 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addDomain", String(response.data))
-                callback(ex.toString(), null)
+                callback(String(response.data), null)
             }
         }
     }
@@ -1574,7 +1577,7 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addUsername", String(response.data))
-                callback(ex.toString(), null)
+                callback(String(response.data), null)
             }
         }
     }
