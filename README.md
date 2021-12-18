@@ -17,7 +17,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > AnonAddy
 
-- AnonAddy v0.8.8 or higher (current version of AnonAddy for Android has been tested with v0.8.8)
+- AnonAddy v0.8.9 or higher (current version of AnonAddy for Android has been tested with v0.8.9)
 
 > Android
 

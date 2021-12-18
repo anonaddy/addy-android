@@ -260,12 +260,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         // Make sure to have the aliases in the array be filtered, aliases are being filtered on API level
                         // But some filters can only be applied locally
                         aliasList!!.data = getFilteredAliasList(list.data)
-
-                        // If the list is empty, set noAliasVisibility to visible
-                        if (list.data.size == 0) {
-                            // Set to GONE in getDataFromWeb
-                            binding.aliasNoAliases.visibility = View.VISIBLE
-                        }
                     } else {
                         // If aliasList is not empty, set the meta and links and append the retrieved aliases to the list (as pagination is being used)
                         aliasList?.meta = list.meta
@@ -290,9 +284,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                     }
 
-                    // Set the count of aliases so that the shimmerview looks better next time (always 20 as of v3.3.0)
-                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ALIAS_COUNT, list.data.size)
-
 
                     // TODO fix workaround?
                     // WORKAROUND #0001 START
@@ -313,10 +304,18 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                     // WORKAROUND END
 
+
+                    // If the list is empty, set noAliasVisibility to visible
+                    if (aliasList!!.data.size == 0) {
+                        // Set to GONE in getDataFromWeb
+                        binding.aliasNoAliases.visibility = View.VISIBLE
+                    } else {
+                        binding.aliasNoAliases.visibility = View.GONE
+                    }
+
                     // Okay we got data, init the recyclerview
                     // If we do a force reload the recyclerview also needs to be re-init to show shimmerview as well as clear the adapter
                     initRecyclerview(forceReload)
-
 
                 } else {
                     // Data could not be loaded
@@ -345,6 +344,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
     }
 
+
     private fun showSearchHintSnackbar() {
         hideFabForSnackBarTime()
         val bottomNavView: BottomNavigationView? =
@@ -371,7 +371,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         binding.aliasAllAliasesRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
-                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ALIAS_COUNT, 10) ?: 10
+                shimmerItemCount = 100
                 shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
                     // set a GridLayoutManager for tablets
                     GridLayoutManager(activity, 2)
@@ -498,6 +498,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         addAliasBottomDialogFragment.dismiss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()
+    }
+
+    override fun onCancel() {
+        // Nothing
     }
 
 

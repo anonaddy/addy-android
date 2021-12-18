@@ -68,10 +68,6 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             var userResourceNetworkCallResult = false
             var aliasNetworkCallResult = false
             var aliasWatcherNetworkCallResult = false
-            var domainNetworkCallResult = false
-            var usernameNetworkCallResult = false
-            var rulesNetworkCallResult = false
-            var recipientNetworkCallResult = false
             var failedDeliveriesNetworkCallResult = false
 
             // Block the thread until this is finished
@@ -80,9 +76,6 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 /*
                 CACHE DATA
                  */
-
-                // TODO caching all the aliases is not gonna work anymore. Let's only obtain the most active aliases for widget 1
-                // TODO for aliasWatcher we would have to loop and get aliasinfo for every alias watched
 
                 networkHelper.cacheUserResourceForWidget { result ->
                     // Store the result if the data succeeded to update in a boolean
@@ -99,29 +92,6 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                  **/
 
                 aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, settingsManager)
-
-
-                // TODO new widget design for widget 3?
-                networkHelper.cacheDomainCountForWidget { result ->
-                    // Store the result if the data succeeded to update in a boolean
-                    domainNetworkCallResult = result
-                }
-
-                networkHelper.cacheUsernamesCountForWidget { result ->
-                    // Store the result if the data succeeded to update in a boolean
-                    usernameNetworkCallResult = result
-                }
-
-                networkHelper.cacheRulesCountForWidget { result ->
-                    // Store the result if the data succeeded to update in a boolean
-                    rulesNetworkCallResult = result
-                }
-
-                networkHelper.cacheRecipientCountForWidget { result ->
-                    // Store the result if the data succeeded to update in a boolean
-                    recipientNetworkCallResult = result
-                }
-                // TODO new widget design for widget 3?
 
 
                 networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
@@ -196,10 +166,6 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             return if (userResourceNetworkCallResult &&
                 aliasNetworkCallResult &&
                 aliasWatcherNetworkCallResult &&
-                domainNetworkCallResult &&
-                usernameNetworkCallResult &&
-                rulesNetworkCallResult &&
-                recipientNetworkCallResult &&
                 failedDeliveriesNetworkCallResult
             ) {
                 // Now the data has been updated, we can update the widget as well

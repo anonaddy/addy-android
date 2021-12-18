@@ -334,10 +334,10 @@ class AppSettingsActivity : BaseActivity(),
             .setTitle(resources.getString(R.string.reset_app))
             .setIcon(R.drawable.ic_loader)
             .setMessage(resources.getString(R.string.reset_app_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.reset_app)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.reset_app)) { _, _ ->
                 (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
             }
             .show()

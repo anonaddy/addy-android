@@ -227,10 +227,10 @@ class RulesSettingsActivity : BaseActivity() {
             .setTitle(resources.getString(R.string.delete_rule))
             .setIcon(R.drawable.ic_trash)
             .setMessage(resources.getString(R.string.delete_rule_desc_confirm))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.delete)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 deleteRuleSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_rule),

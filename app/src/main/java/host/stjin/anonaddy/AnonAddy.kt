@@ -5,7 +5,7 @@ object AnonAddy {
 
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
-    var MINIMUMVERSIONCODE = 88
+    var MINIMUMVERSIONCODE = 89
 
     var VERSIONCODE = 0
     var VERSIONSTRING = ""

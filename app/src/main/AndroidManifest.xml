@@ -2,10 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="host.stjin.anonaddy">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- BLOCK -->
-    <!--    &lt;!&ndash; Used for scanning the API key &ndash;&gt;
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- BLOCK -->
+    <!--
+    &lt;!&ndash; Used for scanning the API key &ndash;&gt;
         <uses-permission android:name="android.permission.CAMERA" />
         &lt;!&ndash;
           Include all the "features" under the camera permission,
@@ -16,10 +15,9 @@
             android:required="false" />
         <uses-feature
             android:name="android.hardware.camera.autofocus"
-            android:required="false" />-->
+            android:required="false" />
+    -->
     <!-- END BLOCK -->
-
-
     <!--
     Starting from Android 11, we need to query to packages with mailto: mailscheme
     This is being used in the ManageAliasActivity for sending emails from an alias
@@ -27,11 +25,11 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.SENDTO" />
+
             <data android:scheme="mailto" />
         </intent>
     </queries>
 
-    <!-- Disable backup to prevent encrypted storage to transfer over -->
     <application
         android:name=".AnonAddyForAndroid"
         android:allowBackup="false"
@@ -75,7 +73,17 @@
 
         <service
             android:name=".widget.AliasWidget2RemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- Widget 2 -->
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity
+            android:name=".widget.AliasWidget2BottomSheetAddActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:theme="@style/AppTheme.Transparent" />
+
+        <!-- Widget 2 -->
         <!-- Notification -->
         <receiver android:name=".notifications.ActionReceiver" /> <!-- Notification -->
         <!-- END widget -->
@@ -101,12 +109,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "https://*/deactivate” -->
 
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
 
-
                 <!-- If new URLS are added here, also add them to the webintentmanager -->
+
 
                 <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
                 <data
@@ -114,11 +121,13 @@
                     android:pathPrefix="/deactivate" />
                 <!-- END -->
 
+
                 <!-- Hosted hosted instances (Works on > SDK31 devices) -->
                 <data
                     android:host="app.anonaddy.com"
                     android:pathPrefix="/deactivate" />
                 <!-- END -->
+
 
                 <!-- END -->
             </intent-filter>
@@ -131,7 +140,8 @@
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:theme="@style/AppTheme.Transparent">
-            <!-- Creating aliases on-the-go -->
+
+        <!-- Creating aliases on-the-go -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.SENDTO" />

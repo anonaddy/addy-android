@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.alias
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
     // 1. Defines the listener interface with a method passing back data result.
     interface AddAliasBottomDialogListener {
         fun onAdded()
+        fun onCancel()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -56,7 +58,12 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         _binding = BottomsheetAddaliasBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = parentFragment as AddAliasBottomDialogListener
+        // Listener only works when called from fragment (this sheet can be called from widget)
+        if (parentFragment != null) {
+            listener = parentFragment as AddAliasBottomDialogListener
+        } else if (activity != null) {
+            listener = activity as AddAliasBottomDialogListener
+        }
 
         // Sent the help text username accordingly
         binding.bsAddaliasDomainHelpTextview.text =
@@ -75,6 +82,11 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         }
 
         return root
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        listener.onCancel()
     }
 
     private suspend fun getAllRecipients(context: Context) {

@@ -151,6 +151,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 (this.application as AnonAddyForAndroid).userResourceExtended = UserResourceExtended(recipient.email)
                 loadingDone = true
                 val intent = Intent(this, MainActivity::class.java)
+                // Widgets pass a target to splashActivity, so always pass a target to MainActivity (onCreate will check if there are any pending targets)
+                intent.putExtra("target", this.intent.getStringExtra("target"))
                 startActivity(intent)
                 finish()
             } else {

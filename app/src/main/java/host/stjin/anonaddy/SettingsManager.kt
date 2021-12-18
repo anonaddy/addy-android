@@ -55,7 +55,6 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         // Used for the shimmerview and widget 2
         BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT(true, PREFTYPES.INT, "cache_domain_count"),
         BACKGROUND_SERVICE_CACHE_USER_RESOURCE(true, PREFTYPES.INT, USER_RESOURCE.key),
-        BACKGROUND_SERVICE_CACHE_ALIAS_COUNT(true, PREFTYPES.INT, "cache_alias_count"),
         BACKGROUND_SERVICE_CACHE_USERNAME_COUNT(true, PREFTYPES.INT, "cache_username_count"),
         BACKGROUND_SERVICE_CACHE_RULES_COUNT(true, PREFTYPES.INT, "cache_rules_count"),
         BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT(true, PREFTYPES.INT, "cache_recipient_count"),

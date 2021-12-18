@@ -2,7 +2,7 @@
 <resources>
     <color name="primaryColorStatic">#19216b</color>
 
-    <color name="widget_inner_background">@color/md_theme_primary</color>
+    <color name="widget_inner_background">#2D38A1</color>
     <color name="widget_background">@color/ic_launcher_background</color>
 
     <color name="softRed">#FD5842</color>
@@ -80,4 +80,5 @@
 
     <color name="seed">#4E548D</color>
     <color name="error">#BA1B1B</color>
+    <color name="widget_1_background">#ffffff</color>
 </resources>

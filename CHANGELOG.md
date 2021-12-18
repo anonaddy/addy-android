@@ -15,6 +15,7 @@
     eliminates the need for the "Material You" builds
   - You can now tap the appbar to scroll up the page
   - The (new) bottomnavigation now has animated icons
+  - The big widget-style has been redesigned
 - 📃 Added the "Run rule on" options for creating rules
 - 🕷 Fixed a bug where folding/unfolding your foldable while creating a rule would reset the screen
 - 🕷 Fixed a bug where the app would crash when coming back to it after having it idle for a certain amount of time

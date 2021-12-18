@@ -119,6 +119,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             binding.mainAppBarInclude.appBar.setExpanded(true, true)
         }
 
+        checkForTargetExtras()
+
+    }
+
+    private fun checkForTargetExtras() {
+        val target = intent.getStringExtra("target")
+        if (!target.isNullOrEmpty()) {
+            goToTarget(target)
+        }
     }
 
     private fun showChangeLog() {
@@ -323,33 +332,37 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
             if (data != null) {
                 if (data.hasExtra("target")) {
-                    when (data.extras?.getString("target")) {
-                        SearchActivity.SearchTargets.ALIASES.activity -> {
-                            switchFragments(R.id.navigation_alias)
-                        }
-                        SearchActivity.SearchTargets.RECIPIENTS.activity -> {
-                            switchFragments(R.id.navigation_recipients)
-                        }
-                        SearchActivity.SearchTargets.DOMAINS.activity -> {
-                            val intent = Intent(this, DomainSettingsActivity::class.java)
-                            startActivity(intent)
-                        }
-                        SearchActivity.SearchTargets.USERNAMES.activity -> {
-                            val intent = Intent(this, UsernamesSettingsActivity::class.java)
-                            startActivity(intent)
-                        }
-                        SearchActivity.SearchTargets.RULES.activity -> {
-                            val intent = Intent(this, RulesSettingsActivity::class.java)
-                            startActivity(intent)
-                        }
-                        SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
-                            val intent = Intent(this, FailedDeliveriesActivity::class.java)
-                            startActivity(intent)
-                        }
-                    }
+                    data.extras?.getString("target")?.let { goToTarget(it) }
                 }
             }
 
+        }
+    }
+
+    private fun goToTarget(string: String) {
+        when (string) {
+            SearchActivity.SearchTargets.ALIASES.activity -> {
+                switchFragments(R.id.navigation_alias)
+            }
+            SearchActivity.SearchTargets.RECIPIENTS.activity -> {
+                switchFragments(R.id.navigation_recipients)
+            }
+            SearchActivity.SearchTargets.DOMAINS.activity -> {
+                val intent = Intent(this, DomainSettingsActivity::class.java)
+                startActivity(intent)
+            }
+            SearchActivity.SearchTargets.USERNAMES.activity -> {
+                val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                startActivity(intent)
+            }
+            SearchActivity.SearchTargets.RULES.activity -> {
+                val intent = Intent(this, RulesSettingsActivity::class.java)
+                startActivity(intent)
+            }
+            SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
+                val intent = Intent(this, FailedDeliveriesActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

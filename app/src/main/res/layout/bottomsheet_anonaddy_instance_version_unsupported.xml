@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/BlackWhite"
                 android:layout_marginBottom="16dp"
-                tools:text="@tools:sample/lorem/random" />
+                tools:text="@string/anonaddy_instance_version_unsupported" />
 
             <LinearLayout
                 android:layout_width="match_parent"

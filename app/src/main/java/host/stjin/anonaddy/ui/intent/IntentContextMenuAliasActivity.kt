@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.ActivityIntentCreateAliasBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
@@ -22,7 +21,6 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
     IntentBottomDialogFragment.IntentBottomDialogListener {
 
 
-    private lateinit var binding: ActivityIntentCreateAliasBinding
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var intentBottomDialogFragment: IntentBottomDialogFragment
@@ -30,11 +28,9 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityIntentCreateAliasBinding.inflate(layoutInflater)
-        val view = binding.root
+
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
-        setContentView(view)
 
         networkHelper = NetworkHelper(this)
 

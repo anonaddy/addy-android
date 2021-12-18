@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorControlNormal">#7AFFFFFF</color>
+    <color name="widget_1_background">#1B1B1F</color>
 
     <!-- MATERIAL 3 -->
     <color name="md_theme_primary">#BBC2FF</color>

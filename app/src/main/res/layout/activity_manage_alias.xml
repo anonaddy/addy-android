@@ -156,19 +156,19 @@
                     android:layout_height="wrap_content"
                     android:alpha="0"
                     android:orientation="horizontal"
-                    android:weightSum="7">
+                    android:weightSum="9.5">
 
                     <Space
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2" />
+                        android:layout_weight="0.5" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_alias_copy"
                         style="@style/MaterialButtonSecondaryDark"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="4"
                         android:lines="1"
                         android:maxLines="1"
                         android:minLines="1"
@@ -177,16 +177,16 @@
                         app:iconSize="18dp" />
 
                     <Space
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="0.5" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_alias_send"
                         style="@style/MaterialButtonSecondaryDark"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="4"
                         android:lines="1"
                         android:maxLines="1"
                         android:minLines="1"
@@ -195,9 +195,9 @@
                         app:iconSize="18dp" />
 
                     <Space
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2" />
+                        android:layout_weight="0.5" />
                 </LinearLayout>
 
 

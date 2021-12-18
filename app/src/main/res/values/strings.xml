@@ -79,7 +79,7 @@
 <h4>Added</h4>
 <p>📧 You can now filter aliases in the aliases tab for a clearer view<br />➕ Thanks to a new floating action button you can now create aliases while scrolling</p>
 <h4>Fixed/Improved</h4>
-<p>🎨 Moved to MD3 design<br />- The app got a slightly different but more vibrant color palette<br />- Enable "use dynamic colors" in the appearance settings of the app to let it blend in with your system theme (Android 12 or higher required). This eliminates the need for the "Material You" builds<br />- You can now tap the appbar to scroll up the page<br />- The (new) bottomnavigation now has animated icons</p>
+<p>🎨 Moved to MD3 design<br />- The app got a slightly different but more vibrant color palette<br />- Enable "use dynamic colors" in the appearance settings of the app to let it blend in with your system theme (Android 12 or higher required). This eliminates the need for the "Material You" builds<br />- You can now tap the appbar to scroll up the page<br />- The (new) bottomnavigation now has animated icons<br />- The big widget-style has been redesigned</p>
 <p>📃 Added the "Run rule on" options for creating rules&nbsp;<br />🕷 Fixed a bug where folding/unfolding your foldable while creating a rule would reset the screen<br />🕷 Fixed a bug where the app would crash when coming back to it after having it idle for a certain amount of time<br />✨ The number of API requests that are made is now reduced.<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
@@ -408,11 +408,6 @@
     <string name="widget_2_blocked">blocked</string>
     <string name="widget_2_replied">replied</string>
     <string name="widget_2_forwarded">forwarded</string>
-    <string name="widget_2_aliases">aliases</string>
-    <string name="widget_2_domains">domains</string>
-    <string name="widget_2_usernames">usernames</string>
-    <string name="widget_2_recipients">recipients</string>
-    <string name="widget_2_rules">rules</string>
     <string name="details">Details</string>
     <string name="failed_deliveries_info_text">If you would like to search through failed deliveries, go back to main section and use the search button.</string>
     <string name="all_failed_deliveries">All failed deliveries</string>
