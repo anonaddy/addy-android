@@ -143,18 +143,25 @@ class IntentSendMailRecipientBottomDialogFragment(
         if (searchQuery.count() >= 3) {
             binding.bsSendMailFromIntentAliasesTil.hint = context?.resources?.getString(R.string.alias)
             lifecycleScope.launch {
-                NetworkHelper(requireContext()).getAliases({ list, _ ->
-                    if (list != null) {
-                        aliases = list.data
-                        setAliasesAdapter()
-                        binding.bsSendMailFromIntentAliasesMact.showDropDown()
-                    } else {
-                        binding.bsSendMailFromIntentAliasesTil.error =
-                            requireContext().resources.getString(R.string.something_went_wrong_retrieving_aliases)
-                    }
+                NetworkHelper(requireContext()).getAliases(
+                    { list, _ ->
+                        if (list != null) {
+                            aliases = list.data
+                            setAliasesAdapter()
+                            binding.bsSendMailFromIntentAliasesMact.showDropDown()
+                        } else {
+                            binding.bsSendMailFromIntentAliasesTil.error =
+                                requireContext().resources.getString(R.string.something_went_wrong_retrieving_aliases)
+                        }
 
-                    binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null
-                }, activeOnly = false, includeDeleted = true, filter = searchQuery, size = 100)
+                        binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null
+                    },
+                    activeOnly = false,
+                    includeDeleted = true,
+                    deletedOnly = false,
+                    filter = searchQuery,
+                    size = 100
+                )
             }
         } else {
             binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null

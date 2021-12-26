@@ -174,6 +174,10 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             startActivity(intent)
             finish()
         }
+
+        bindingFailed.activityMainFailedResetButton.setOnClickListener {
+            SettingsManager(true, this).clearSettingsAndCloseApp()
+        }
     }
 
     override fun onClickHowToUpdate() {

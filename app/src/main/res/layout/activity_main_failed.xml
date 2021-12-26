@@ -47,4 +47,11 @@
         android:layout_height="wrap_content"
         android:text="@string/try_again" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/activity_main_failed_reset_button"
+        style="@style/ActionButtonsTertiary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_app" />
+
 </LinearLayout>

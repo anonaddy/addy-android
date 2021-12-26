@@ -178,6 +178,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                     },
                     activeOnly = false,
                     includeDeleted = true,
+                    deletedOnly = false,
                     filter = binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault()),
                     // This will return max 100 items
                     size = 100

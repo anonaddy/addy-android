@@ -145,35 +145,41 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
     }
 
     private suspend fun checkIfAliasExists(text: CharSequence) {
-        networkHelper.getAliases({ result, _ ->
-            if (result != null) {
-                // Check if there is an alias with this email address and get its ID
-                val aliasId: String? = result.data.firstOrNull { it.email == text }?.id
-                if (!aliasId.isNullOrEmpty()) {
-                    // ID is not empty, thus there was a match
-                    // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity
-                    intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_alias_already_exists))
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        intentBottomDialogFragment.dismiss()
-                        // There is an alias with this exact email address. It already exists! Open the ManageAliasActivity
-                        val intent = Intent(this, ManageAliasActivity::class.java)
-                        // Pass data object in the bundle and populate details activity.
-                        intent.putExtra("alias_id", aliasId)
-                        startActivity(intent)
-                        finish()
-                    }, 1000)
-                } else {
-                    // ID is empty, this alias is new! Let's create it
-                    val splittedEmailAddress = text.split("@")
-                    lifecycleScope.launch {
-                        addAliasToAccount(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0])
+        networkHelper.getAliases(
+            { result, _ ->
+                if (result != null) {
+                    // Check if there is an alias with this email address and get its ID
+                    val aliasId: String? = result.data.firstOrNull { it.email == text }?.id
+                    if (!aliasId.isNullOrEmpty()) {
+                        // ID is not empty, thus there was a match
+                        // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity
+                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_alias_already_exists))
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            intentBottomDialogFragment.dismiss()
+                            // There is an alias with this exact email address. It already exists! Open the ManageAliasActivity
+                            val intent = Intent(this, ManageAliasActivity::class.java)
+                            // Pass data object in the bundle and populate details activity.
+                            intent.putExtra("alias_id", aliasId)
+                            startActivity(intent)
+                            finish()
+                        }, 1000)
+                    } else {
+                        // ID is empty, this alias is new! Let's create it
+                        val splittedEmailAddress = text.split("@")
+                        lifecycleScope.launch {
+                            addAliasToAccount(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0])
+                        }
                     }
+                } else {
+                    Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_aliases), Toast.LENGTH_LONG).show()
+                    finish()
                 }
-            } else {
-                Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_aliases), Toast.LENGTH_LONG).show()
-                finish()
-            }
-        }, activeOnly = false, includeDeleted = true, filter = text.toString())
+            },
+            activeOnly = false,
+            includeDeleted = true,
+            deletedOnly = false,
+            filter = text.toString()
+        )
 
     }
 

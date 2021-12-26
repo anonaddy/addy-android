@@ -102,8 +102,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "verifyApiKey", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "verifyApiKey",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -158,9 +163,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "getAnonAddyInstanceVersion",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(null, ErrorHelper.getErrorMessage(response.data))
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -207,8 +212,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getUserResource", ErrorHelper.getErrorMessage(response.data))
-                callback(null, ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getUserResource",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -249,7 +259,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getDomainOptions", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getDomainOptions",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -313,8 +328,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addAlias", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data), null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()), null)
             }
         }
     }
@@ -324,6 +344,7 @@ class NetworkHelper(private val context: Context) {
         callback: (AliasesArray?, String?) -> Unit,
         activeOnly: Boolean,
         includeDeleted: Boolean,
+        deletedOnly: Boolean,
         filter: String? = null,
         page: Int? = null,
         size: Int? = 20,
@@ -340,7 +361,20 @@ class NetworkHelper(private val context: Context) {
         https://app.anonaddy.com/docs/#get-all-aliases
          */
         val parameters: ArrayList<Pair<String, String>> = arrayListOf()
-        if (includeDeleted) {
+
+
+        //TODO let AnonAddy implement this
+        if (activeOnly) {
+            parameters.add("filter[active]=" to "only")
+        }
+
+
+
+
+
+        if (deletedOnly) {
+            parameters.add("filter[deleted]=" to "only")
+        } else if (includeDeleted) {
             parameters.add("filter[deleted]=" to "with")
         }
 
@@ -389,8 +423,13 @@ class NetworkHelper(private val context: Context) {
                 val ex = result.component2()?.message
                 println(ex)
 
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAliases", ErrorHelper.getErrorMessage(response.data))
-                callback(null, ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAliases",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -433,7 +472,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificAlias", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -479,9 +523,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "updateDescriptionSpecificAlias",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -534,9 +578,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "updateRecipientsSpecificAlias",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -570,8 +614,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificAlias", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deactivateSpecificAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -609,8 +658,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificAlias", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "activateSpecificAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -644,8 +698,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteAlias", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -678,8 +737,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "forgetAlias", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "forgetAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -712,8 +776,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "restoreAlias", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "restoreAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -755,8 +824,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addRecipient", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -809,8 +883,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getRecipients", ErrorHelper.getErrorMessage(response.data))
-                callback(null, ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getRecipients",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -843,8 +922,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteRecipient", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -882,9 +966,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "disableEncryptionRecipient",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -927,9 +1011,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "enableEncryptionRecipient",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -967,9 +1051,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "removeEncryptionKeyRecipient",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1012,9 +1096,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "addEncryptionKeyRecipient",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1053,8 +1137,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificRecipient", ErrorHelper.getErrorMessage(response.data))
-                callback(null, ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1091,8 +1180,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "resendVerificationEmail", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "resendVerificationEmail",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1139,7 +1233,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getDomains", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getDomains",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -1173,8 +1272,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteDomain", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1215,8 +1319,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addDomain", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data), null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()), null)
             }
         }
     }
@@ -1259,7 +1368,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificDomain", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -1307,7 +1421,7 @@ class NetworkHelper(private val context: Context) {
                         response.data
                     )
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1344,9 +1458,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "deactivateSpecificDomain",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1384,8 +1498,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificDomain", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "activateSpecificDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1422,9 +1541,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "disableCatchAllSpecificDomain",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1466,9 +1585,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "enableCatchAllSpecificDomain",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1515,7 +1634,7 @@ class NetworkHelper(private val context: Context) {
                         response.data
                     )
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1563,7 +1682,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getUsernames", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getUsernames",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -1597,8 +1721,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteUsername", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteUsername",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1635,8 +1764,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addUsername", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data), null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addUsername",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()), null)
             }
         }
     }
@@ -1679,7 +1813,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificUsername", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificUsername",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -1727,7 +1866,7 @@ class NetworkHelper(private val context: Context) {
                         response.data
                     )
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1764,9 +1903,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "deactivateSpecificUsername",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1808,9 +1947,9 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "activateSpecificUsername",
-                    ErrorHelper.getErrorMessage(response.data)
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1856,7 +1995,7 @@ class NetworkHelper(private val context: Context) {
                         response.data
                     )
                 )
-                callback(ErrorHelper.getErrorMessage(response.data))
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1920,7 +2059,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAllRules", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAllRules",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -1964,7 +2108,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificRule", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -1999,8 +2148,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteRule", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2035,8 +2189,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "createRule", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "createRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2084,8 +2243,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "reorderRules", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "reorderRules",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2121,8 +2285,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateRule", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "updateRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2155,8 +2324,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificRule", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deactivateSpecificRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2194,8 +2368,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificRule", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "activateSpecificRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2219,22 +2398,29 @@ class NetworkHelper(private val context: Context) {
     suspend fun cache15MostPopularAliasesDataForWidget(
         callback: (Boolean) -> Unit
     ) {
-        getAliases({ list, _ ->
-            if (list == null) {
-                // Result is null, callback false to let the BackgroundWorker know the task failed.
-                callback(false)
-                return@getAliases
-            } else {
-                // Turn the list into a json object
-                val data = Gson().toJson(list.data)
+        getAliases(
+            { list, _ ->
+                if (list == null) {
+                    // Result is null, callback false to let the BackgroundWorker know the task failed.
+                    callback(false)
+                    return@getAliases
+                } else {
+                    // Turn the list into a json object
+                    val data = Gson().toJson(list.data)
 
-                // Store a copy of the just received data locally
-                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA, data)
+                    // Store a copy of the just received data locally
+                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA, data)
 
-                // Stored data, let the BackgroundWorker know the task succeeded
-                callback(true)
-            }
-        }, activeOnly = true, includeDeleted = false, size = 15, sort = "-emails_forwarded")
+                    // Stored data, let the BackgroundWorker know the task succeeded
+                    callback(true)
+                }
+            },
+            activeOnly = true,
+            includeDeleted = false,
+            deletedOnly = false,
+            size = 15,
+            sort = "-emails_forwarded"
+        )
     }
 
 
@@ -2338,7 +2524,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAllFailedDeliveries", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAllFailedDeliveries",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }
@@ -2372,8 +2563,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteFailedDelivery", ErrorHelper.getErrorMessage(response.data))
-                callback(ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteFailedDelivery",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2404,7 +2600,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getGitlabTags", ErrorHelper.getErrorMessage(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getGitlabTags",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
                 callback(null)
             }
         }

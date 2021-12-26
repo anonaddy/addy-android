@@ -176,76 +176,80 @@ class HomeFragment : Fragment() {
                 showShimmer()
             }
 
-            networkHelper?.getAliases({ list, result ->
+            networkHelper?.getAliases(
+                { list, result ->
 
-                // Check if there are new aliases since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                // Unless forceUpdate is true. If forceupdate is true, always update
-                if (::aliasAdapter.isInitialized && list?.data == previousList && !forceUpdate) {
-                    return@getAliases
-                }
-
-
-                if (list != null) {
-                    previousList.clear()
-                    previousList.addAll(list.data)
-
-                    if (list.data.size > 0) {
-                        binding.homeNoAliases.visibility = View.GONE
-                    } else {
-                        binding.homeNoAliases.visibility = View.VISIBLE
+                    // Check if there are new aliases since the latest list
+                    // If the list is the same, just return and don't bother re-init the layoutmanager
+                    // Unless forceUpdate is true. If forceupdate is true, always update
+                    if (::aliasAdapter.isInitialized && list?.data == previousList && !forceUpdate) {
+                        return@getAliases
                     }
 
-                    aliasAdapter = AliasAdapter(list.data, context)
-                    aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
-                        override fun onClick(pos: Int) {
-                            val intent = Intent(context, ManageAliasActivity::class.java)
-                            // Pass data object in the bundle and populate details activity.
-                            intent.putExtra("alias_id", list.data[pos].id)
-                            resultLauncher.launch(intent)
+
+                    if (list != null) {
+                        previousList.clear()
+                        previousList.addAll(list.data)
+
+                        if (list.data.size > 0) {
+                            binding.homeNoAliases.visibility = View.GONE
+                        } else {
+                            binding.homeNoAliases.visibility = View.VISIBLE
                         }
 
-                        override fun onClickCopy(pos: Int, aView: View) {
-                            val clipboard: ClipboardManager =
-                                context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                            val aliasEmailAddress = list.data[pos].email
-                            val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                            clipboard.setPrimaryClip(clip)
+                        aliasAdapter = AliasAdapter(list.data, context)
+                        aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+                            override fun onClick(pos: Int) {
+                                val intent = Intent(context, ManageAliasActivity::class.java)
+                                // Pass data object in the bundle and populate details activity.
+                                intent.putExtra("alias_id", list.data[pos].id)
+                                resultLauncher.launch(intent)
+                            }
 
-                            val bottomNavView: BottomNavigationView? =
-                                activity?.findViewById(R.id.nav_view)
-                            bottomNavView?.let {
-                                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
+                            override fun onClickCopy(pos: Int, aView: View) {
+                                val clipboard: ClipboardManager =
+                                    context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                val aliasEmailAddress = list.data[pos].email
+                                val clip = ClipData.newPlainText("alias", aliasEmailAddress)
+                                clipboard.setPrimaryClip(clip)
+
+                                val bottomNavView: BottomNavigationView? =
+                                    activity?.findViewById(R.id.nav_view)
+                                bottomNavView?.let {
+                                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
+                                        anchorView = bottomNavView
+                                    }.show()
+                                }
+                            }
+
+                        })
+                        adapter = aliasAdapter
+                    } else {
+                        // Data could not be loaded
+                        val bottomNavView: BottomNavigationView? =
+                            activity?.findViewById(R.id.nav_view)
+                        bottomNavView?.let {
+                            SnackbarHelper.createSnackbar(
+                                requireContext(),
+                                requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                it,
+                                LoggingHelper.LOGFILES.DEFAULT
+                            )
+                                .apply {
                                     anchorView = bottomNavView
                                 }.show()
-                            }
                         }
-
-                    })
-                    adapter = aliasAdapter
-                } else {
-                    // Data could not be loaded
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
                     }
-                }
-                hideShimmer()
-            }, activeOnly = true, includeDeleted = false, sort = "-emails_forwarded", size = 6)
-
+                    hideShimmer()
+                },
+                activeOnly = true,
+                includeDeleted = false,
+                deletedOnly = false,
+                sort = "-emails_forwarded",
+                size = 6
+            )
         }
-
     }
-
 
     private fun getStatistics() {
         //  / 1024 / 1024 because api returns bytes
