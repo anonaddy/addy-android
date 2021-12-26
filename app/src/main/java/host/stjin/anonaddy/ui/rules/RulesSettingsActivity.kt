@@ -89,7 +89,7 @@ class RulesSettingsActivity : BaseActivity() {
                 layoutAnimation = animation
                 showShimmer()
             }
-            networkHelper?.getAllRules({ list ->
+            networkHelper?.getAllRules({ list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -171,6 +171,13 @@ class RulesSettingsActivity : BaseActivity() {
 
                     itemTouchHelper.attachToRecyclerView(binding.activityManageRulesAllRulesRecyclerview)
                 } else {
+
+                    SnackbarHelper.createSnackbar(
+                        this@RulesSettingsActivity,
+                        this@RulesSettingsActivity.resources.getString(R.string.error_obtaining_rules) + "\n" + error,
+                        binding.activityManageRulesCL
+                    ).show()
+
                     binding.activityManageRulesLL1.visibility = View.GONE
                     binding.activityManageRulesRLLottieview.visibility = View.VISIBLE
                 }

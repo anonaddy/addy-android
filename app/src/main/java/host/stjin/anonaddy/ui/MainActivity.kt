@@ -234,7 +234,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private suspend fun checkForNewFailedDeliveries() {
         val networkHelper = NetworkHelper(this)
         val encryptedSettingsManager = SettingsManager(true, this)
-        networkHelper.getAllFailedDeliveries({ result ->
+        networkHelper.getAllFailedDeliveries({ result, _ ->
             val currentFailedDeliveries =
                 encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
             if (result?.size ?: 0 > currentFailedDeliveries) {

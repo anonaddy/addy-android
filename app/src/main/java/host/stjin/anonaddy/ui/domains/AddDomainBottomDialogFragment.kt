@@ -115,8 +115,8 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         address: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addDomain({ result, body ->
-            when (result) {
+        networkHelper.addDomain({ _, body, error ->
+            when (body) {
                 "404" -> {
                     openSetup(body)
                 }
@@ -133,7 +133,7 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
                     binding.bsAdddomainDomainAddDomainButton.revertAnimation()
 
                     binding.bsAdddomainDomainTil.error =
-                        context.resources.getString(R.string.error_adding_domain) + "\n" + result
+                        context.resources.getString(R.string.error_adding_domain) + "\n" + error
                 }
             }
         }, address)

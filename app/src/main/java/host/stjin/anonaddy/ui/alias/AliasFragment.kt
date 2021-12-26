@@ -298,11 +298,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         The aliasfragment shows only 2 results (as the first page only contains 2 inactive/watched aliases)
                         Due to the 2 results the NSV is not scrollable thus this method will not be called again which results in missing results.
 
-                        Solution: As long as there are less than 20 items (which is the default number of aliases to obtain as seen in getAllAliases)
+                        Solution: As long as there are less than 100 items (which is the default number of aliases to obtain as seen in getAllAliases)
                                   Keep loading results as long as there are more pages
                      */
 
-                        if (aliasList?.data?.size ?: 0 < 20 && aliasList?.meta?.current_page ?: 0 < aliasList?.meta?.last_page ?: 0) {
+                        if (aliasList?.data?.size ?: 0 < 100 && aliasList?.meta?.current_page ?: 0 < aliasList?.meta?.last_page ?: 0) {
                             viewLifecycleOwner.lifecycleScope.launch {
                                 getAliasesAndAddThemToList()
                             }

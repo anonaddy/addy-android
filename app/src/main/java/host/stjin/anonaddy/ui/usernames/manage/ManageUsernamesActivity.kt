@@ -213,7 +213,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
 
     private suspend fun getUsernameInfo(id: String) {
-        networkHelper.getSpecificUsername({ list ->
+        networkHelper.getSpecificUsername({ list, error ->
 
             if (list != null) {
                 /**
@@ -310,6 +310,13 @@ class ManageUsernamesActivity : BaseActivity(),
                 setOnSwitchChangeListeners()
                 setOnClickListeners()
             } else {
+
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_username) + "\n" + error,
+                    binding.activityManageUsernameCL
+                ).show()
+
                 binding.activityManageUsernameRLProgressbar.visibility = View.GONE
                 binding.activityManageUsernameLL1.visibility = View.GONE
 

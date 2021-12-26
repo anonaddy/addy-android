@@ -8,9 +8,9 @@ object Updater {
     suspend fun isUpdateAvailable(
         callback: (Boolean, String?, Boolean) -> Unit, context: Context
     ) {
-        NetworkHelper(context).getGitlabTags { result ->
+        NetworkHelper(context).getGitlabTags { feed, _ ->
             // Get the title (version name) of the first (thus latest) entry
-            val version = result?.items?.get(0)?.title
+            val version = feed?.items?.get(0)?.title
             if (version != null) {
                 // Take the latest server version and remove the prefix (v) and version separators (.)
                 // Turn the server version into an int.

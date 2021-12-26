@@ -261,7 +261,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
 
     private suspend fun getRecipientInfo(id: String) {
-        networkHelper.getSpecificRecipient({ list, _ ->
+        networkHelper.getSpecificRecipient({ list, error ->
 
             if (list != null) {
 
@@ -341,6 +341,12 @@ class ManageRecipientsActivity : BaseActivity(),
 
                 setOnClickListeners()
             } else {
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_recipient) + "\n" + error,
+                    binding.activityManageRecipientCL
+                ).show()
+
                 binding.activityManageRecipientRLProgressbar.visibility = View.GONE
                 binding.activityManageRecipientLL1.visibility = View.GONE
 

@@ -144,7 +144,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private suspend fun getRuleInfo(id: String) {
-        networkHelper.getSpecificRule({ list ->
+        networkHelper.getSpecificRule({ list, error ->
             if (list != null) {
                 /**
                  *  CREATE RULE
@@ -152,6 +152,13 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 rules = list
                 setPage()
             } else {
+
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_rule) + "\n" + error,
+                    binding.activityRulesCreateCL
+                ).show()
+
                 binding.activityRulesCreateRLProgressbar.visibility = View.GONE
                 binding.activityRulesCreateLL1.visibility = View.GONE
 

@@ -274,7 +274,7 @@ class ManageDomainsActivity : BaseActivity(),
 
 
     private suspend fun getDomainInfo(id: String) {
-        networkHelper.getSpecificDomain({ list ->
+        networkHelper.getSpecificDomain({ list, error ->
 
             if (list != null) {
                 /**
@@ -389,6 +389,13 @@ class ManageDomainsActivity : BaseActivity(),
                 setOnSwitchChangeListeners()
                 setOnClickListeners()
             } else {
+
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_domains) + "\n" + error,
+                    binding.activityManageDomainCL
+                ).show()
+
                 binding.activityManageDomainRLProgressbar.visibility = View.GONE
                 binding.activityManageDomainLL1.visibility = View.GONE
 

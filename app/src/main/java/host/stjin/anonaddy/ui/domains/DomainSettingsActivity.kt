@@ -136,7 +136,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
                 showShimmer()
             }
-            networkHelper?.getAllDomains { list ->
+            networkHelper?.getAllDomains { list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -177,6 +177,13 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     adapter = domainsAdapter
 
                 } else {
+
+                    SnackbarHelper.createSnackbar(
+                        this@DomainSettingsActivity,
+                        this.resources.getString(R.string.error_obtaining_domain) + "\n" + error,
+                        binding.activityDomainSettingsCL
+                    ).show()
+
                     binding.activityDomainSettingsLL1.visibility = View.GONE
                     binding.activityDomainSettingsRLLottieview.visibility = View.VISIBLE
                 }

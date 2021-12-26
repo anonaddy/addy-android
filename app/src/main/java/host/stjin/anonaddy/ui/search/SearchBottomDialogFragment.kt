@@ -202,7 +202,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllDomains { domainlist ->
+                networkHelper.getAllDomains { domainlist, _ ->
                     domains = domainlist
                     sourcesSearched++
                     performSearch(context)
@@ -214,7 +214,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllUsernames { usernamelist ->
+                networkHelper.getAllUsernames { usernamelist, _ ->
                     usernames = usernamelist
                     sourcesSearched++
                     performSearch(context)
@@ -227,7 +227,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllRules({ rulesList ->
+                networkHelper.getAllRules({ rulesList, _ ->
                     rules = rulesList
                     sourcesSearched++
                     performSearch(context)
@@ -239,7 +239,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllFailedDeliveries({ failedDeliveriesList ->
+                networkHelper.getAllFailedDeliveries({ failedDeliveriesList, _ ->
                     failedDeliveries = failedDeliveriesList
                     sourcesSearched++
                     performSearch(context)

@@ -142,7 +142,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
                 showShimmer()
             }
-            networkHelper?.getAllUsernames { list ->
+            networkHelper?.getAllUsernames { list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -183,6 +183,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                     })
                     adapter = usernamesAdapter
                 } else {
+                    SnackbarHelper.createSnackbar(
+                        this@UsernamesSettingsActivity,
+                        this@UsernamesSettingsActivity.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
+                        binding.activityUsernameSettingsCL
+                    ).show()
                     binding.activityUsernameSettingsLL1.visibility = View.GONE
                     binding.activityUsernameSettingsRLLottieview.visibility = View.VISIBLE
                 }

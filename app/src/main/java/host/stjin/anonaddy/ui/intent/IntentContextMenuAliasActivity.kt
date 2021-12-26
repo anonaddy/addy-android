@@ -102,12 +102,12 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         Figure out if the selected email's domain name is part of the user's AnonAddy account or not
          */
 
-        networkHelper.getDomainOptions { result ->
-            if (result != null) {
+        networkHelper.getDomainOptions { domainOptionsObject, _ ->
+            if (domainOptionsObject != null) {
                 // Set variable
-                domainOptions = result.data
+                domainOptions = domainOptionsObject.data
 
-                if (result.data.contains(splittedEmailAddress[1])) {
+                if (domainOptionsObject.data.contains(splittedEmailAddress[1])) {
                     // The domain of the email address is linked to this AnonAddy account. User most likely wants to either manage or create this Alias.
                     intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, text))
                     lifecycleScope.launch {
@@ -191,8 +191,8 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         alias: String,
         toString: String
     ) {
-        networkHelper.addAlias({ result, aliasObject ->
-            if (result == "201") {
+        networkHelper.addAlias({ aliasObject, _ ->
+            if (aliasObject != null) {
                 Toast.makeText(this, this.resources.getString(R.string.alias_created), Toast.LENGTH_LONG).show()
                 lifecycleScope.launch {
                     onPressSend(alias, aliasObject, toString)
@@ -210,8 +210,8 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         format: String,
         local_part: String
     ) {
-        networkHelper.addAlias({ result, _ ->
-            if (result == "201") {
+        networkHelper.addAlias({ alias, _ ->
+            if (alias != null) {
                 Toast.makeText(this, this.resources.getString(R.string.alias_created), Toast.LENGTH_LONG).show()
                 finish()
             } else {

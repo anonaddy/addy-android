@@ -203,7 +203,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             // Loop through the aliases on the watchlist
             for (alias in aliasesToWatch) {
                 // Get alias data
-                networkHelper.getSpecificAlias({ result ->
+                networkHelper.getSpecificAlias({ result, _ ->
                     // Store the result if the data succeeded to update in a boolean
                     if (result != null) {
                         newList.add(result)

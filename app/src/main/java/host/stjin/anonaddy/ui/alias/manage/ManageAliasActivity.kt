@@ -471,7 +471,7 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private suspend fun getAliasInfo(id: String) {
-        networkHelper.getSpecificAlias({ alias ->
+        networkHelper.getSpecificAlias({ alias, error ->
 
             if (alias != null) {
                 this.alias = alias
@@ -635,6 +635,13 @@ class ManageAliasActivity : BaseActivity(),
                     binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 }
             } else {
+
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_alias) + "\n" + error,
+                    binding.activityManageAliasCL
+                ).show()
+
                 binding.activityManageAliasSettingsRLProgressbar.visibility = View.GONE
                 progressBarVisibility = View.GONE
                 binding.activityManageAliasSettingsLL.visibility = View.GONE

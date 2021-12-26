@@ -13,6 +13,7 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.FailedDeliveryAdapter
 import host.stjin.anonaddy.databinding.ActivityFailedDeliveriesBinding
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
@@ -98,7 +99,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
 
                 showShimmer()
             }
-            networkHelper?.getAllFailedDeliveries({ list ->
+            networkHelper?.getAllFailedDeliveries({ list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -143,6 +144,12 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
                     adapter = failedDeliveriesAdapter
 
                 } else {
+                    SnackbarHelper.createSnackbar(
+                        this@FailedDeliveriesActivity,
+                        this@FailedDeliveriesActivity.resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                        binding.activityFailedDeliveriesCL
+                    ).show()
+
                     binding.activityFailedDeliveriesLL1.visibility = View.GONE
                     binding.activityFailedDeliveriesRLLottieview.visibility = View.VISIBLE
                 }

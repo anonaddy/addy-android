@@ -140,12 +140,10 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
     private var FORMATS: List<String> = listOf()
     private suspend fun fillSpinners(context: Context) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.getDomainOptions { result ->
-
-
+        networkHelper.getDomainOptions { domainOptions, _ ->
             // Set domains and default format/domain
-            if (result?.data != null) {
-                DOMAINS = result.data
+            if (domainOptions?.data != null) {
+                DOMAINS = domainOptions.data
 
                 val domainAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
@@ -155,8 +153,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasDomainMact.setAdapter(domainAdapter)
 
                 // Set default domain
-                if (result.defaultAliasDomain != null) {
-                    binding.bsAddaliasDomainMact.setText(result.defaultAliasDomain, false)
+                if (domainOptions.defaultAliasDomain != null) {
+                    binding.bsAddaliasDomainMact.setText(domainOptions.defaultAliasDomain, false)
                 }
 
                 // Set default format
@@ -173,12 +171,12 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasAliasFormatMact.setAdapter(formatAdapter)
 
                 // Set default format
-                if (result.defaultAliasFormat != null) {
+                if (domainOptions.defaultAliasFormat != null) {
                     // Get the string for the default format ID
                     // Try/catch, in case there is a default alias format that's not in the formats array
                     try {
                         binding.bsAddaliasAliasFormatMact.setText(
-                            FORMATS[FORMATSID.indexOf(result.defaultAliasFormat)],
+                            FORMATS[FORMATSID.indexOf(domainOptions.defaultAliasFormat)],
                             false
                         )
                     } catch (e: Exception) {
@@ -279,15 +277,15 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         recipients: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addAlias({ result, _ ->
-            if (result == "201") {
+        networkHelper.addAlias({ alias, error ->
+            if (alias != null) {
                 listener.onAdded()
             } else {
                 // Revert the button to normal
                 binding.bsAddaliasAliasAddAliasButton.revertAnimation()
 
                 binding.bsAddaliasAliasDescTil.error =
-                    context.resources.getString(R.string.error_adding_alias) + "\n" + result
+                    context.resources.getString(R.string.error_adding_alias) + "\n" + error
             }
         }, domain, description, format, local_part, recipients)
     }
