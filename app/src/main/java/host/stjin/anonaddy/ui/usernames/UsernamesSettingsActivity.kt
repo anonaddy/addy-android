@@ -80,7 +80,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     private suspend fun getUserResource() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                setStats()
+                (this.application as AnonAddyForAndroid).userResource = user
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
