@@ -17,7 +17,7 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 
 
 class FilterOptionsAliasBottomDialogFragment(
-    private var aliasSortFilter: AliasSortFilter
+    private val aliasSortFilter: AliasSortFilter
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
