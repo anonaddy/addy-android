@@ -165,28 +165,15 @@
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/alias_alias_dropdown"
-                        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/alias_sort_list"
+                        style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:overScrollMode="never"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="0dp"
-                        app:hintEnabled="false"
-                        app:shapeAppearanceOverlay="@style/AnonAddyChipDropdown">
+                        android:layout_height="wrap_content"
+                        android:text="@string/filtering_and_sorting"
+                        app:icon="@drawable/ic_filter" />
 
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/alias_alias_dropdown_mact"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="none"
-                            android:minWidth="196dp"
-                            android:paddingTop="8dp"
-                            android:text="@string/all_aliases"
-                            android:textColor="?colorOnPrimaryContainer" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <Space
                         android:layout_width="0dp"

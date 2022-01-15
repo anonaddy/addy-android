@@ -61,6 +61,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="16dp"
                 android:layout_weight="1"
+                android:weightSum="4"
                 app:checkedButton="@+id/bs_backgroundserviceinterval_30"
                 app:selectionRequired="true"
                 app:singleSelection="true">

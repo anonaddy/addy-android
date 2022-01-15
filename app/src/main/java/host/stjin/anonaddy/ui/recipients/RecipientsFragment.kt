@@ -80,10 +80,10 @@ class RecipientsFragment : Fragment(),
         }
     }
 
-    private fun setStats(currentCount: Int? = null) {
+    private fun setStats() {
         binding.activityRecipientSettingsLLCount.text = requireContext().resources.getString(
             R.string.you_ve_used_d_out_of_d_recipients,
-            currentCount ?: (activity?.application as AnonAddyForAndroid).userResource.recipient_count,
+            (activity?.application as AnonAddyForAndroid).userResource.recipient_count,
             if ((activity?.application as AnonAddyForAndroid).userResource.subscription != null) (activity?.application as AnonAddyForAndroid).userResource.recipient_limit else this.resources.getString(
                 R.string.unlimited
             )
@@ -102,6 +102,8 @@ class RecipientsFragment : Fragment(),
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 (activity?.application as AnonAddyForAndroid).userResource = user
+                // Update stats
+                setStats()
             } else {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
@@ -189,9 +191,6 @@ class RecipientsFragment : Fragment(),
                 }
 
                 if (list != null) {
-                    // Update stats
-                    setStats(list.size)
-
                     // There is always 1 recipient.
 
                     /*if (list.size > 0) {

@@ -3,6 +3,7 @@ package host.stjin.anonaddy.utils
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.LOGIMPORTANCE
 import host.stjin.anonaddy.models.UserResource
@@ -38,6 +39,23 @@ object GsonTools {
             val ex = e.message
             println(ex)
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToUserResourceObject", null)
+            null
+        }
+    }
+
+    fun jsonToAliasSortFilterObject(context: Context, json: String): AliasSortFilter? {
+        val loggingHelper = LoggingHelper(context)
+
+        return try {
+            Gson().fromJson(
+                json,
+                object : TypeToken<AliasSortFilter?>() {}.type
+            ) as AliasSortFilter
+
+        } catch (e: Exception) {
+            val ex = e.message
+            println(ex)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToAliasSortFilterObject", null)
             null
         }
     }

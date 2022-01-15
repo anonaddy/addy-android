@@ -217,10 +217,23 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "https://*/setup” -->
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+
+                <!-- If new URLS are added here, also add them to the webintentmanager -->
+
+                <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
                 <data
                     android:host="*"
-                    android:pathPrefix="/setup"
-                    android:scheme="https" />
+                    android:pathPrefix="/setup" />
+                <!-- END -->
+
+                <!-- Hosted hosted instances (Works on > SDK31 devices) -->
+                <data
+                    android:host="app.anonaddy.com"
+                    android:pathPrefix="/setup" />
+
                 <!-- note that the leading "/" is required for pathPrefix -->
             </intent-filter>
         </activity>

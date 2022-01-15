@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
@@ -175,10 +176,15 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                     finish()
                 }
             },
-            activeOnly = false,
-            includeDeleted = true,
-            deletedOnly = false,
-            filter = text.toString()
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = false,
+                onlyInactiveAliases = false,
+                includeDeleted = true,
+                onlyWatchedAliases = false,
+                sort = null,
+                sortDesc = true,
+                filter = text.toString()
+            )
         )
 
     }

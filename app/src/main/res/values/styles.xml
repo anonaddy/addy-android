@@ -397,7 +397,7 @@
         <item name="strokeColor">?colorControlNormal</item>
     </style>
 
-    <style name="AnonAddyChip" parent="Widget.Material3.Chip.Filter" />
+    <style name="AnonAddyChip" parent="Widget.Material3.Chip.Filter"></style>
 
 
     <style name="AnonAddyCollapsingToolbarLayout" parent="Widget.Material3.CollapsingToolbar.Large">
@@ -413,10 +413,6 @@
         <item name="collapsedTitleTextColor">?colorOnPrimary</item>
         <item name="expandedTitleTextAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
         <item name="layout_scrollFlags">scroll|exitUntilCollapsed|snap</item>
-    </style>
-
-    <style name="AnonAddyChipDropdown">
-        <item name="cornerSize">100%</item>
     </style>
 
 

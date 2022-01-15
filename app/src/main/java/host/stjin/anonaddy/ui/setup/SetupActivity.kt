@@ -11,6 +11,7 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
@@ -58,6 +59,27 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         }
     }
 
+    private fun addIntentApiKeyConfirmation(data: String) {
+        val hostname = StringUtils.substringBefore(data, "/setup/")
+        val apiKey = StringUtils.substringAfter(data, "/setup/")
+
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.setup_app))
+            .setIcon(R.drawable.ic_letters_case)
+            .setMessage(resources.getString(R.string.setup_intent_message, hostname, apiKey.takeLast(5)))
+            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ ->
+                finish()
+            }
+            .setPositiveButton(resources.getString(R.string.setup_app)) { _, _ ->
+                // Reset app data in case app is already setup
+                //clearAllData() will automatically elevate to encrypt=true
+                SettingsManager(false, this).clearAllData()
+                verifyKeyAndAdd(this, apiKey, hostname)
+                Toast.makeText(this, resources.getString(R.string.API_key_received_from_intent), Toast.LENGTH_LONG).show()
+            }
+            .show()
+    }
+
     private fun getDummyAPIKey(): StringBuilder {
         val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
         val dummyApi = StringBuilder(binding.activitySetupApiTextview.text)
@@ -70,14 +92,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             // /deactivate URI's
             val data: Uri? = intent?.data
             if (data.toString().contains("/setup")) {
-                // Reset app data in case app is already setup
-                //clearAllData() will automatically elevate to encrypt=true
-                SettingsManager(false, this).clearAllData()
-
-                val hostname = StringUtils.substringBefore(data.toString(), "/setup/")
-                val apiKey = StringUtils.substringAfter(data.toString(), "/setup/")
-                verifyKeyAndAdd(this, apiKey, hostname)
-                Toast.makeText(this, resources.getString(R.string.API_key_received_from_intent), Toast.LENGTH_LONG).show()
+                addIntentApiKeyConfirmation(data.toString())
             }
         }
     }

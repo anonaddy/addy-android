@@ -81,6 +81,8 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 (this.application as AnonAddyForAndroid).userResource = user
+                // Update stats
+                setStats()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -92,11 +94,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         }
     }
 
-    private fun setStats(currentCount: Int? = null) {
+    private fun setStats() {
         binding.activityUsernameSettingsRLCountText.text =
             resources.getString(
                 R.string.you_ve_used_d_out_of_d_usernames,
-                currentCount ?: (this.application as AnonAddyForAndroid).userResource.username_count,
+                (this.application as AnonAddyForAndroid).userResource.username_count,
                 if ((this.application as AnonAddyForAndroid).userResource.subscription != null) (this.application as AnonAddyForAndroid).userResource.username_limit else this.resources.getString(
                     R.string.unlimited
                 )
@@ -153,9 +155,6 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 }
 
                 if (list != null) {
-                    // Update stats
-                    setStats(list.size)
-
                     if (list.size > 0) {
                         binding.activityUsernameSettingsNoUsernames.visibility = View.GONE
                     } else {

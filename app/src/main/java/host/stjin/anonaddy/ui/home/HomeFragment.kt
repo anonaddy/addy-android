@@ -26,6 +26,7 @@ import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
+import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.MainActivity
@@ -242,10 +243,15 @@ class HomeFragment : Fragment() {
                     }
                     hideShimmer()
                 },
-                activeOnly = true,
-                includeDeleted = false,
-                deletedOnly = false,
-                sort = "-emails_forwarded",
+                aliasSortFilter = AliasSortFilter(
+                    onlyActiveAliases = true,
+                    onlyInactiveAliases = false,
+                    includeDeleted = false,
+                    onlyWatchedAliases = false,
+                    sort = "emails_forwarded",
+                    sortDesc = true,
+                    filter = null
+                ),
                 size = 6
             )
         }

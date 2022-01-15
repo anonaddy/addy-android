@@ -338,13 +338,9 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun getAliases(
         callback: (AliasesArray?, String?) -> Unit,
-        activeOnly: Boolean,
-        includeDeleted: Boolean,
-        deletedOnly: Boolean,
-        filter: String? = null,
+        aliasSortFilter: AliasSortFilter,
         page: Int? = null,
         size: Int? = 20,
-        sort: String? = null
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -359,18 +355,13 @@ class NetworkHelper(private val context: Context) {
         val parameters: ArrayList<Pair<String, String>> = arrayListOf()
 
 
-        //TODO let AnonAddy implement this
-        if (activeOnly) {
-            parameters.add("filter[active]=" to "only")
+        if (aliasSortFilter.onlyActiveAliases) {
+            parameters.add("filter[active]=" to "true")
+        } else if (aliasSortFilter.onlyInactiveAliases) {
+            parameters.add("filter[active]=" to "false")
         }
 
-
-
-
-
-        if (deletedOnly) {
-            parameters.add("filter[deleted]=" to "only")
-        } else if (includeDeleted) {
+        if (aliasSortFilter.includeDeleted) {
             parameters.add("filter[deleted]=" to "with")
         }
 
@@ -378,16 +369,23 @@ class NetworkHelper(private val context: Context) {
             parameters.add("page[size]" to size.toString())
         }
 
-        if (!filter.isNullOrEmpty()) {
-            parameters.add("filter[search]" to filter)
+        if (!aliasSortFilter.filter.isNullOrEmpty()) {
+            parameters.add("filter[search]" to aliasSortFilter.filter.toString())
         }
 
         if (page != null) {
             parameters.add("page[number]" to page.toString())
         }
 
-        if (!sort.isNullOrEmpty()) {
-            parameters.add("sort" to sort)
+        if (!aliasSortFilter.sort.isNullOrEmpty()) {
+
+            val sortFilter: String = if (aliasSortFilter.sortDesc) {
+                "-${aliasSortFilter.sort.toString()}"
+            } else {
+                aliasSortFilter.sort.toString()
+            }
+
+            parameters.add("sort" to sortFilter)
         }
 
         val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
@@ -2288,11 +2286,16 @@ class NetworkHelper(private val context: Context) {
                     callback(true)
                 }
             },
-            activeOnly = true,
-            includeDeleted = false,
-            deletedOnly = false,
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = true,
+                onlyInactiveAliases = false,
+                includeDeleted = false,
+                onlyWatchedAliases = false,
+                sort = "emails_forwarded",
+                sortDesc = true,
+                filter = null
+            ),
             size = 15,
-            sort = "-emails_forwarded"
         )
     }
 

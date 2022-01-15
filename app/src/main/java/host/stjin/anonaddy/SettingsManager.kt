@@ -34,6 +34,8 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
 
+        // Sorting and Filtering for aliasFragment
+        ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
 
         // Encrypted
         BIOMETRIC_ENABLED(true, PREFTYPES.BOOLEAN, "biometric_enabled"),

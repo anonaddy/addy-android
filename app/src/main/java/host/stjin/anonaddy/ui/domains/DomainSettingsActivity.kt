@@ -81,6 +81,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 (this.application as AnonAddyForAndroid).userResource = user
+                // Update stats
+                setStats()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -91,10 +93,10 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         }
     }
 
-    private fun setStats(currentCount: Int? = null) {
+    private fun setStats() {
         binding.activityDomainSettingsRLCountText.text = resources.getString(
             R.string.you_ve_used_d_out_of_d_active_domains,
-            currentCount ?: (this.application as AnonAddyForAndroid).userResource.active_domain_count,
+            (this.application as AnonAddyForAndroid).userResource.active_domain_count,
             if ((this.application as AnonAddyForAndroid).userResource.subscription != null) (this.application as AnonAddyForAndroid).userResource.active_domain_limit else this.resources.getString(
                 R.string.unlimited
             )
@@ -147,9 +149,6 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 }
 
                 if (list != null) {
-                    // Update stats
-                    setStats(list.size)
-
                     if (list.size > 0) {
                         binding.activityDomainSettingsNoDomains.visibility = View.GONE
                     } else {

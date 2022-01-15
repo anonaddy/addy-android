@@ -176,10 +176,15 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                         sourcesSearched++
                         performSearch(context)
                     },
-                    activeOnly = false,
-                    includeDeleted = true,
-                    deletedOnly = false,
-                    filter = binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault()),
+                    aliasSortFilter = AliasSortFilter(
+                        onlyActiveAliases = false,
+                        onlyInactiveAliases = false,
+                        includeDeleted = true,
+                        onlyWatchedAliases = false,
+                        sort = null,
+                        sortDesc = true,
+                        filter = binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault())
+                    ),
                     // This will return max 100 items
                     size = 100
                 )

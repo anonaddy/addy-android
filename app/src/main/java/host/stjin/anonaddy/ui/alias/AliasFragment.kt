@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ArrayAdapter
 import android.widget.ScrollView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
@@ -19,30 +18,45 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentAliasBinding
+import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.models.AliasesArray
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 
-class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDialogListener {
+class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDialogListener,
+    FilterOptionsAliasBottomDialogFragment.AddFilterOptionsAliasBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
 
+
+    // Default filter
+    private var aliasSortFilter: AliasSortFilter = AliasSortFilter(
+        onlyActiveAliases = false,
+        onlyInactiveAliases = false,
+        includeDeleted = false,
+        onlyWatchedAliases = false,
+        sort = null,
+        sortDesc = false,
+        filter = null
+    )
 
     companion object {
         fun newInstance() = AliasFragment()
@@ -50,6 +64,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
         AddAliasBottomDialogFragment.newInstance()
+
+    private var filterOptionsAliasBottomDialogFragment: FilterOptionsAliasBottomDialogFragment =
+        FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
 
     private var _binding: FragmentAliasBinding? = null
 
@@ -68,12 +85,22 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
-
+        loadFilter()
         setOnClickListeners()
         setOnNestedScrollViewListener(true)
         getDataFromWeb()
 
         return root
+    }
+
+    private fun loadFilter() {
+        val settingsManager = SettingsManager(false, requireContext())
+        val aliasSortFilterJson = settingsManager.getSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER)
+        val aliasSortFilter = aliasSortFilterJson?.let { GsonTools.jsonToAliasSortFilterObject(requireContext(), it) }
+
+        if (aliasSortFilter != null) {
+            this.aliasSortFilter = aliasSortFilter
+        }
     }
 
     private fun setOnNestedScrollViewListener(set: Boolean) {
@@ -101,64 +128,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     override fun onPause() {
         super.onPause()
         activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
-    }
-
-    private fun setAliasDropDown() {
-        val items = listOf(
-            this.resources.getString(R.string.all_aliases),
-            this.resources.getString(R.string.active_aliases),
-            this.resources.getString(R.string.inactive_aliases),
-            this.resources.getString(R.string.deleted_aliases),
-            this.resources.getString(R.string.watched_aliases)
-        )
-        val adapter = ArrayAdapter(binding.aliasAliasDropdownMact.context, R.layout.dropdown_menu_popup_item, items)
-        binding.aliasAliasDropdownMact.setAdapter(adapter)
-
-        binding.aliasAliasDropdownMact.setOnItemClickListener { _, _, _, _ ->
-            setNetworkFilter()
-            getDataFromWeb()
-        }
-    }
-
-    private fun setNetworkFilter() {
-        /**
-         * ALIAS FILTERING
-         */
-
-        // Here the filter settings are being modified to only *retrieve* the items included that are in the MACT filter to
-        // minimize the amount of data to return as much as possible
-        when (binding.aliasAliasDropdownMact.text.toString()) {
-            this.resources.getString(R.string.all_aliases) -> {
-                activeOnly = false
-                includeDeleted = true
-                deletedOnly = false
-                // Do nothing as the received list already contains everything
-            }
-            this.resources.getString(R.string.active_aliases) -> {
-                // Filter out all the inactive aliases
-                activeOnly = true
-                includeDeleted = false
-                deletedOnly = false
-            }
-            this.resources.getString(R.string.inactive_aliases) -> {
-                // Filter out all the active aliases
-                activeOnly = false
-                includeDeleted = true
-                deletedOnly = false
-            }
-            this.resources.getString(R.string.deleted_aliases) -> {
-                // Filter out all the non-deleted aliases
-                activeOnly = false
-                includeDeleted = true
-                deletedOnly = true
-            }
-            this.resources.getString(R.string.watched_aliases) -> {
-                activeOnly = false
-                includeDeleted = true
-                deletedOnly = false
-            }
-        }
-
     }
 
 
@@ -212,7 +181,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
 
         // There is a bug where the dropdown does not get populated after refreshing the view (eg. switching dark/light mode)
-        setAliasDropDown()
+        //setAliasDropDown()
     }
 
     private fun setOnClickListeners() {
@@ -230,6 +199,19 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 addAliasBottomDialogFragment.show(
                     childFragmentManager,
                     "addAliasBottomDialogFragment"
+                )
+            }
+        }
+
+        binding.aliasSortList.setOnClickListener {
+
+            filterOptionsAliasBottomDialogFragment =
+                FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
+
+            if (!filterOptionsAliasBottomDialogFragment.isAdded) {
+                filterOptionsAliasBottomDialogFragment.show(
+                    childFragmentManager,
+                    "filterOptionsAliasBottomDialogFragment"
                 )
             }
         }
@@ -347,9 +329,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     setOnNestedScrollViewListener(set = true)
                     // Size 100 is being used for above WORKAROUND #0001
                 },
-                activeOnly = activeOnly,
-                includeDeleted = includeDeleted,
-                deletedOnly = deletedOnly,
+                aliasSortFilter = aliasSortFilter,
                 page = (aliasList?.meta?.current_page ?: 0) + 1,
                 size = 100
             )
@@ -377,9 +357,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private var aliasAdapter: AliasAdapter? = null
     private var aliasList: AliasesArray? = null
-    private var activeOnly = false
-    private var includeDeleted = true
-    private var deletedOnly = false
+
     private fun initRecyclerview(forceReload: Boolean) {
         binding.aliasAllAliasesRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
@@ -442,32 +420,12 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun getFilteredAliasList(aliasesList: ArrayList<Aliases>): ArrayList<Aliases> {
-        // Here the alias list is being modified to only have the items included that are in the MACT filter
-        when (binding.aliasAliasDropdownMact.text.toString()) {
-            this.resources.getString(R.string.all_aliases) -> {
-                // This filter is already being done on the networkHelper side
-            }
-            this.resources.getString(R.string.active_aliases) -> {
-                // Filter out all the inactive aliases
-                // This filter is already being done on the networkHelper side
-            }
-            this.resources.getString(R.string.inactive_aliases) -> {
-                // Filter out all the active aliases
-                aliasesList.removeAll { alias -> alias.active }
-            }
-            this.resources.getString(R.string.deleted_aliases) -> {
-                // Filter out all the non-deleted aliases
-                // This filter is already being done on the networkHelper side
-            }
-            this.resources.getString(R.string.watched_aliases) -> {
-                // Filter out all the non-watched aliases
-                val aliasesToWatch = context?.let { AliasWatcher(it).getAliasesToWatch() }
-                if (aliasesToWatch != null) {
-                    aliasesList.removeAll { alias -> alias.id !in aliasesToWatch }
-                }
+        if (aliasSortFilter.onlyWatchedAliases) {
+            val aliasesToWatch = context?.let { AliasWatcher(it).getAliasesToWatch() }
+            if (aliasesToWatch != null) {
+                aliasesList.removeAll { alias -> alias.id !in aliasesToWatch }
             }
         }
-
         return aliasesList
     }
 
@@ -521,6 +479,21 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun setFilterAndSortingSettings(aliasSortFilter: AliasSortFilter) {
+        this.aliasSortFilter = aliasSortFilter
+
+        val settingsManager = SettingsManager(false, requireContext())
+
+        // Turn the list into a json object
+        val data = Gson().toJson(aliasSortFilter)
+        // Store a copy of the just received data locally
+        settingsManager.putSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER, data)
+
+
+        filterOptionsAliasBottomDialogFragment.dismiss()
+        getDataFromWeb()
     }
 
 }

@@ -13,5 +13,6 @@
         <attr name="sectionAlert" format="boolean" />
         <attr name="sectionOutlineWidth" format="integer" />
         <attr name="sectionElevation" format="float" />
+        <attr name="sectionBackgroundColor" format="integer" />
     </declare-styleable>
 </resources>

@@ -26,6 +26,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSendMailFromIntentAliasBinding
+import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
@@ -156,10 +157,15 @@ class IntentSendMailRecipientBottomDialogFragment(
 
                         binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null
                     },
-                    activeOnly = false,
-                    includeDeleted = true,
-                    deletedOnly = false,
-                    filter = searchQuery,
+                    aliasSortFilter = AliasSortFilter(
+                        onlyActiveAliases = false,
+                        onlyInactiveAliases = false,
+                        includeDeleted = true,
+                        onlyWatchedAliases = false,
+                        sort = null,
+                        sortDesc = true,
+                        filter = searchQuery
+                    ),
                     size = 100
                 )
             }

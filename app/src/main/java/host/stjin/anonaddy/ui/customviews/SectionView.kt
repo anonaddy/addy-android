@@ -187,9 +187,15 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
                 cardView?.cardElevation = a.getFloat(R.styleable.SectionView_sectionElevation, 999F)
             }
 
+
             // Set stroke (if set)
             if (a.getInteger(R.styleable.SectionView_sectionOutlineWidth, 999) != 999) {
                 cardView?.strokeWidth = a.getInteger(R.styleable.SectionView_sectionOutlineWidth, 999)
+            }
+
+            // Set stroke (if set)
+            if (a.getInteger(R.styleable.SectionView_sectionBackgroundColor, 999) != 999) {
+                cardView?.setCardBackgroundColor(a.getInteger(R.styleable.SectionView_sectionBackgroundColor, 999))
             }
 
             // Set title and description
