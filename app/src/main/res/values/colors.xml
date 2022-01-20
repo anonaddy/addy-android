@@ -41,6 +41,8 @@
     <color name="splashBackground">@color/primaryColorStatic</color>
 
 
+    <color name="widget_1_background">#ffffff</color>
+
     <!-- MATERIAL 3 -->
 
     <color name="md_theme_primary">#4E57A9</color>
@@ -80,5 +82,4 @@
 
     <color name="seed">#4E548D</color>
     <color name="error">#BA1B1B</color>
-    <color name="widget_1_background">#ffffff</color>
 </resources>

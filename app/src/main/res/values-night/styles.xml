@@ -16,4 +16,15 @@
     <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
     </style>
+
+
+    <style name="AnonAddyMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardElevation">12dp</item>
+        <item name="contentPadding">3dp</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="contentPaddingLeft">6dp</item>
+        <item name="contentPaddingRight">6dp</item>
+    </style>
 </resources>

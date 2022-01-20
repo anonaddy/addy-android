@@ -209,6 +209,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
 
             if (!filterOptionsAliasBottomDialogFragment.isAdded) {
+
+                //TODO Add option to save filter or just run the filter
                 filterOptionsAliasBottomDialogFragment.show(
                     childFragmentManager,
                     "filterOptionsAliasBottomDialogFragment"
