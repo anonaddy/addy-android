@@ -159,7 +159,7 @@
                 android:layout_height="0dp"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
-                android:drawableRight="@drawable/ic_align_justified"
+                android:drawableEnd="@drawable/ic_align_justified"
                 android:text="@string/view_details"
                 android:textAlignment="textStart" />
 

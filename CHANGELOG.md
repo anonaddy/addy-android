@@ -1,10 +1,10 @@
 # Changelog
 
-## [v3.3.0] - TBD
+## [v3.3.1] - TBD
 
 ### Added
 
-- 📧 You can now filter aliases in the aliases tab for a clearer view
+- 📧 You can now filter and sort aliases in the aliases tab for a clearer view
 - ➕ Thanks to a new floating action button you can now create aliases while scrolling
 
 ### Fixed/Improved

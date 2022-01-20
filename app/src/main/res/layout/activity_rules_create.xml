@@ -54,7 +54,6 @@
                 android:padding="@dimen/layout_padding"
                 android:visibility="gone">
 
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/activity_rules_create_rule_name_til"
                     style="@style/AnonAddyTextInputLayoutOutlined"
@@ -135,13 +134,11 @@
                         android:layout_weight="1"
                         android:text="@string/conditions" />
 
+
                     <com.google.android.material.button.MaterialButtonToggleGroup
                         android:id="@+id/rules_view_and_or_AND_mbtg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingStart="6dp"
-                        android:paddingEnd="6dp"
                         android:weightSum="2"
                         app:checkedButton="@+id/rules_view_and_or_AND_button"
                         app:selectionRequired="true"
@@ -150,7 +147,7 @@
                         <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/rules_view_and_or_AND_button"
-                            style="?attr/materialButtonOutlinedStyle"
+                            style="@style/AnonAddyMaterialToggleButtonAlternative"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -158,14 +155,13 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/rules_view_and_or_OR_button"
-                            style="?attr/materialButtonOutlinedStyle"
+                            style="@style/AnonAddyMaterialToggleButtonAlternative"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/or" />
 
                     </com.google.android.material.button.MaterialButtonToggleGroup>
-
 
                 </LinearLayout>
 

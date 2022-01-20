@@ -75,9 +75,9 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.3.0</h3>
+    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.3.1</h3>
 <h4>Added</h4>
-<p>📧 You can now filter aliases in the aliases tab for a clearer view<br />➕ Thanks to a new floating action button you can now create aliases while scrolling</p>
+<p>📧 You can now filter and sort aliases in the aliases tab for a clearer view<br />➕ Thanks to a new floating action button you can now create aliases while scrolling</p>
 <h4>Fixed/Improved</h4>
 <p>🎨 Moved to MD3 design<br />- The app got a slightly different but more vibrant color palette<br />- Enable "use dynamic colors" in the appearance settings of the app to let it blend in with your system theme (Android 12 or higher required). This eliminates the need for the "Material You" builds<br />- You can now tap the appbar to scroll up the page<br />- The (new) bottomnavigation now has animated icons<br />- The big widget-style has been redesigned</p>
 <p>📃 Added the "Run rule on" options for creating rules&nbsp;<br />🕷 Fixed a bug where folding/unfolding your foldable while creating a rule would reset the screen<br />🕷 Fixed a bug where the app would crash when coming back to it after having it idle for a certain amount of time<br />✨ The number of API requests that are made is now reduced.<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
@@ -509,7 +509,6 @@
     <string name="filtering_and_sorting_desc">Decide which aliases to display and in which order to display them. Filters are saved and retained on app restart</string>
     <string name="setup_app">Setup app</string>
     <string name="setup_intent_message">Do you want to set up AnonAddy for Android for use with %1$s?\nThe API token that will be used ends with %2$s.\n\n Existing setting will be cleared if present.</string>
-    <string name="sorting">Sorting</string>
     <string name="include_deleted_aliases">Include deleted aliases</string>
     <string name="include_deleted_aliases_desc">Show deleted aliases in the overview. Deleted aliases are always inactive</string>
     <string name="filter_watched_only">Watched only</string>
@@ -527,4 +526,5 @@
     <string name="sort_asc">Ascending</string>
     <string name="clear_filter">Clear filter</string>
     <string name="sort_desc">Descending</string>
+    <string name="sort_by">Sort by</string>
 </resources>
