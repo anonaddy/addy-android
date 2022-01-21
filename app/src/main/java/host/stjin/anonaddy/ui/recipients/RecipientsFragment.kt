@@ -342,7 +342,7 @@ class RecipientsFragment : Fragment(),
     }
 
     override fun onAdded() {
-        addRecipientsFragment.dismiss()
+        addRecipientsFragment.dismissAllowingStateLoss()
         verificationEmailSentSnackbar(requireContext())
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()

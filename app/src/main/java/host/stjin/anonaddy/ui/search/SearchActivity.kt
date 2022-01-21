@@ -388,7 +388,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         val position = filteredFailedDeliveries?.indexOfFirst { it.id == failedDeliveryId }
         position?.let { filteredFailedDeliveries?.removeAt(it) }
         position?.let { binding.activitySearchFailedDeliveriesRecyclerview.adapter?.notifyItemRemoved(it) }
-        failedDeliveryDetailsBottomDialogFragment?.dismiss()
+        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
     }
 
 

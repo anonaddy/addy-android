@@ -179,10 +179,10 @@ class ManageRecipientsActivity : BaseActivity(),
             .setTitle(resources.getString(R.string.remove_public_key))
             .setIcon(R.drawable.ic_forbid)
             .setMessage(resources.getString(R.string.remove_public_key_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.remove)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.remove)) { _, _ ->
                 removeGpgKeySnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.removing_public_key),
@@ -203,10 +203,10 @@ class ManageRecipientsActivity : BaseActivity(),
             .setTitle(resources.getString(R.string.delete_recipient))
             .setIcon(R.drawable.ic_trash)
             .setMessage(resources.getString(R.string.delete_recipient_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.delete)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_recipient),
@@ -359,6 +359,6 @@ class ManageRecipientsActivity : BaseActivity(),
 
     override fun onKeyAdded() {
         setPage()
-        addRecipientPublicGpgKeyBottomDialogFragment.dismiss()
+        addRecipientPublicGpgKeyBottomDialogFragment.dismissAllowingStateLoss()
     }
 }

@@ -337,10 +337,10 @@ class ManageAliasActivity : BaseActivity(),
             .setTitle(resources.getString(R.string.restore_alias))
             .setIcon(R.drawable.ic_trash_off)
             .setMessage(resources.getString(R.string.restore_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.restore)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.restore)) { _, _ ->
                 restoreAliasSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.restoring_alias),
@@ -361,10 +361,10 @@ class ManageAliasActivity : BaseActivity(),
             .setTitle(resources.getString(R.string.delete_alias))
             .setIcon(R.drawable.ic_trash)
             .setMessage(resources.getString(R.string.delete_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.delete)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 deleteAliasSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_alias),
@@ -385,10 +385,10 @@ class ManageAliasActivity : BaseActivity(),
             .setTitle(resources.getString(R.string.forget_alias))
             .setIcon(R.drawable.ic_eraser)
             .setMessage(resources.getString(R.string.forget_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.forget)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.forget)) { _, _ ->
                 forgetAliasSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.forgetting_alias),
@@ -658,7 +658,7 @@ class ManageAliasActivity : BaseActivity(),
     override fun descriptionEdited(description: String) {
         setPage()
         shouldUpdate = true
-        editAliasDescriptionBottomDialogFragment.dismiss()
+        editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
     }
 
 
@@ -669,7 +669,7 @@ class ManageAliasActivity : BaseActivity(),
         // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasFragment.
         // So we update the list when coming back
         shouldUpdate = true
-        editAliasRecipientsBottomDialogFragment.dismiss()
+        editAliasRecipientsBottomDialogFragment.dismissAllowingStateLoss()
     }
 
 
@@ -690,6 +690,6 @@ class ManageAliasActivity : BaseActivity(),
         if (intent.resolveActivity(packageManager) != null) {
             AnonAddyUtils.startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
         }
-        editAliasSendMailRecipientBottomDialogFragment.dismiss()
+        editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }
 }

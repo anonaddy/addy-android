@@ -162,7 +162,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
 
 
     override fun onDeleted(failedDeliveryId: String) {
-        failedDeliveryDetailsBottomDialogFragment?.dismiss()
+        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()
     }

@@ -237,10 +237,10 @@ class ManageDomainsActivity : BaseActivity(),
             .setTitle(resources.getString(R.string.delete_domain))
             .setIcon(R.drawable.ic_trash)
             .setMessage(resources.getString(R.string.delete_domain_desc_confirm))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.delete)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 deleteDomainSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_domain),
@@ -407,11 +407,11 @@ class ManageDomainsActivity : BaseActivity(),
 
     override fun descriptionEdited(description: String) {
         setPage()
-        editDomainDescriptionBottomDialogFragment.dismiss()
+        editDomainDescriptionBottomDialogFragment.dismissAllowingStateLoss()
     }
 
     override fun recipientEdited() {
         setPage()
-        editDomainRecipientBottomDialogFragment.dismiss()
+        editDomainRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }
 }

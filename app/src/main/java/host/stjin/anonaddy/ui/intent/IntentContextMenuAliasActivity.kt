@@ -86,10 +86,10 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
     override fun finish() {
         if (::intentSendMailRecipientBottomDialogFragment.isInitialized) {
-            intentSendMailRecipientBottomDialogFragment.dismiss()
+            intentSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
         }
         if (::intentBottomDialogFragment.isInitialized) {
-            intentBottomDialogFragment.dismiss()
+            intentBottomDialogFragment.dismissAllowingStateLoss()
         }
         super.finish()
     }
@@ -156,7 +156,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                         // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity
                         intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_alias_already_exists))
                         Handler(Looper.getMainLooper()).postDelayed({
-                            intentBottomDialogFragment.dismiss()
+                            intentBottomDialogFragment.dismissAllowingStateLoss()
                             // There is an alias with this exact email address. It already exists! Open the ManageAliasActivity
                             val intent = Intent(this, ManageAliasActivity::class.java)
                             // Pass data object in the bundle and populate details activity.
@@ -228,7 +228,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
     }
 
     override suspend fun onPressSend(alias: String, aliasObject: Aliases?, toString: String, skipAndOpenDefaultMailApp: Boolean) {
-        intentSendMailRecipientBottomDialogFragment.dismiss()
+        intentSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
 
         if (skipAndOpenDefaultMailApp) {
             openMailToShareSheet(toString.split(",").toTypedArray())

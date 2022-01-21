@@ -173,10 +173,10 @@ class ManageUsernamesActivity : BaseActivity(),
             .setTitle(resources.getString(R.string.delete_username))
             .setIcon(R.drawable.ic_trash)
             .setMessage(resources.getString(R.string.delete_username_desc_confirm))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(resources.getString(R.string.delete)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 deleteUsernameSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_username),
@@ -329,11 +329,11 @@ class ManageUsernamesActivity : BaseActivity(),
 
     override fun descriptionEdited(description: String) {
         setPage()
-        editUsernameDescriptionBottomDialogFragment.dismiss()
+        editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
     }
 
     override fun recipientEdited() {
         setPage()
-        editUsernameRecipientBottomDialogFragment.dismiss()
+        editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }
 }

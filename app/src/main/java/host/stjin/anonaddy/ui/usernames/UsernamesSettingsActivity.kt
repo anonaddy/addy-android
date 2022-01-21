@@ -239,7 +239,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     override fun onAdded() {
-        addUsernameFragment.dismiss()
+        addUsernameFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()
     }

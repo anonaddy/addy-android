@@ -440,7 +440,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     // Condition
     override fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String, values: List<String>) {
-        conditionBottomDialogFragment.dismiss()
+        conditionBottomDialogFragment.dismissAllowingStateLoss()
 
         val condition = Condition(
             type = type,
@@ -469,7 +469,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     // Actions
     override fun onAddedAction(actionEditIndex: Int?, type: String, value: String) {
-        actionBottomDialogFragment.dismiss()
+        actionBottomDialogFragment.dismissAllowingStateLoss()
         val action = Action(
             type = type,
             value = value
@@ -485,7 +485,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     override fun onAddedAction(actionEditIndex: Int?, type: String, value: Boolean) {
-        actionBottomDialogFragment.dismiss()
+        actionBottomDialogFragment.dismissAllowingStateLoss()
         val action = Action(
             type = type,
             value = value.toString()

@@ -468,7 +468,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     override fun onAdded() {
-        addAliasBottomDialogFragment.dismiss()
+        addAliasBottomDialogFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()
     }
@@ -494,7 +494,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         settingsManager.putSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER, data)
 
 
-        filterOptionsAliasBottomDialogFragment.dismiss()
+        filterOptionsAliasBottomDialogFragment.dismissAllowingStateLoss()
         getDataFromWeb()
     }
 

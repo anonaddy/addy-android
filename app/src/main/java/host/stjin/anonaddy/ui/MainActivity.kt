@@ -318,7 +318,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         SearchActivity.FilteredLists.filteredRules = filteredRules
         SearchActivity.FilteredLists.filteredFailedDeliveries = filteredFailedDeliveries
 
-        searchBottomDialogFragment.dismiss()
+        searchBottomDialogFragment.dismissAllowingStateLoss()
         val intent = Intent(this, SearchActivity::class.java)
         resultLauncher.launch(intent)
     }

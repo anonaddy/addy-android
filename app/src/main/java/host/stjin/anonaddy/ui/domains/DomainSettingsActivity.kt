@@ -239,7 +239,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     override fun onAdded() {
-        addDomainFragment.dismiss()
+        addDomainFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()
     }

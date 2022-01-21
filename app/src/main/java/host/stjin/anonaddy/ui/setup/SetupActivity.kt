@@ -206,7 +206,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
 
     override fun onClickSave(baseUrl: String, apiKey: String) {
-        addApiBottomDialogFragment.dismiss()
+        addApiBottomDialogFragment.dismissAllowingStateLoss()
         addKey(baseUrl, apiKey)
     }
 

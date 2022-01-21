@@ -181,7 +181,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     override fun onClickHowToUpdate() {
-        unsupportedBottomDialogFragment.dismiss()
+        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
         val url = "https://github.com/anonaddy/anonaddy/blob/master/SELF-HOSTING.md#updating"
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(url)
@@ -190,7 +190,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     override fun onClickIgnore() {
-        unsupportedBottomDialogFragment.dismiss()
+        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
         lifecycleScope.launch {
             loadUserResourceIntoMemory()
         }
