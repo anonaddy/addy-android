@@ -35,7 +35,11 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         binding = ActivityDomainSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(view, binding.activityDomainSettingsNSVRL)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityDomainSettingsNSVRL)
+        )
 
         setupToolbar(
             R.string.manage_domains,

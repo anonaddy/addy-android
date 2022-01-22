@@ -54,7 +54,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(binding.root, binding.activityMainViewpager)
+        drawBehindNavBar(binding.root, arrayListOf(binding.root), arrayListOf(binding.navView, binding.activityMainViewpager))
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {

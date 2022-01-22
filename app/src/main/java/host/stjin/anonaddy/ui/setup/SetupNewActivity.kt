@@ -28,7 +28,7 @@ class SetupNewActivity : BaseActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onPostCreate(savedInstanceState, persistentState)
-        drawBehindNavBar(binding.root, binding.root)
+        drawBehindNavBar(binding.root, topViewsToShiftDownUsingMargin = arrayListOf(binding.root), bottomViewsToShiftUpUsingPadding = arrayListOf())
     }
 
     fun switchFragments(fragment: Fragment) {

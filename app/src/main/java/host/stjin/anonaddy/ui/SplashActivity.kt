@@ -46,7 +46,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
         setContentView(view)
-        drawBehindNavBar(null, binding.activitySplashProgressbar)
+        drawBehindNavBar(binding.root, bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySplashProgressbar))
 
 
 

@@ -37,7 +37,11 @@ class ManageDomainsActivity : BaseActivity(),
         binding = ActivityManageDomainsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(view, binding.activityManageDomainNSVRL)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageDomainNSVRL)
+        )
 
         setupToolbar(
             R.string.edit_domain,

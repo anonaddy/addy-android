@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.alias
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,6 @@ class FilterOptionsAliasBottomDialogFragment(
     private val aliasSortFilter: AliasSortFilter
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
-
     private lateinit var listener: AddFilterOptionsAliasBottomDialogListener
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -28,6 +28,13 @@ class FilterOptionsAliasBottomDialogFragment(
         fun setFilterAndSortingSettings(
             aliasSortFilter: AliasSortFilter
         )
+
+        fun onDismiss()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        listener.onDismiss()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -61,6 +68,7 @@ class FilterOptionsAliasBottomDialogFragment(
         return root
     }
 
+
     private fun loadFilter() {
         binding.bsFilteroptionsAliasesActiveButton.isChecked = aliasSortFilter.onlyActiveAliases
         binding.bsFilteroptionsAliasesInactiveButton.isChecked = aliasSortFilter.onlyInactiveAliases
@@ -90,7 +98,7 @@ class FilterOptionsAliasBottomDialogFragment(
         binding.bsFilteroptionsAliasesSortingEmailReplied.isChecked = aliasSortFilter.sort == "emails_replied"
         binding.bsFilteroptionsAliasesSortingEmailSent.isChecked = aliasSortFilter.sort == "emails_sent"
         binding.bsFilteroptionsAliasesSortingEmailActive.isChecked = aliasSortFilter.sort == "active"
-        binding.bsFilteroptionsAliasesSortingEmailCreatedAt.isChecked = aliasSortFilter.sort == "created_at"
+        binding.bsFilteroptionsAliasesSortingEmailCreatedAt.isChecked = aliasSortFilter.sort == "created_at" || aliasSortFilter.sort == null
         binding.bsFilteroptionsAliasesSortingEmailUpdatedAt.isChecked = aliasSortFilter.sort == "updated_at"
         binding.bsFilteroptionsAliasesSortingEmailDeletedAt.isChecked = aliasSortFilter.sort == "deleted_at"
 
@@ -144,6 +152,9 @@ class FilterOptionsAliasBottomDialogFragment(
             aliasSortFilter.onlyInactiveAliases = false
             aliasSortFilter.onlyWatchedAliases = false
             aliasSortFilter.includeDeleted = false
+            aliasSortFilter.sort = null
+            aliasSortFilter.sortDesc = false
+
             loadFilter()
         }
 
@@ -193,7 +204,9 @@ class FilterOptionsAliasBottomDialogFragment(
             sortDesc = false,
             filter = null
         )
-    )
+    ) {
+        loadFilter()
+    }
 
     companion object {
         fun newInstance(

@@ -35,7 +35,11 @@ class AppSettingsBackupActivity : BaseActivity(),
         binding = ActivityAppSettingsBackupBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(view, binding.activityAppSettingsBackupNSVLL)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsBackupNSVLL)
+        )
 
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)

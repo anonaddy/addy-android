@@ -22,7 +22,11 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesWebintentResolutionBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(view, binding.appsettingsFeaturesWebintentResolutionNSVLL)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsFeaturesWebintentResolutionNSVLL)
+        )
 
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)

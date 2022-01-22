@@ -26,7 +26,11 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesMailtoBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(view, binding.activityAppSettingsFeaturesMailtoNSVLL)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesMailtoNSVLL)
+        )
 
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)

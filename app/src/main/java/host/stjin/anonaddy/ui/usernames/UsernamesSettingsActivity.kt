@@ -35,7 +35,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         binding = ActivityUsernameSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(view, binding.activityUsernameSettingsNSVRL)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityUsernameSettingsNSVRL)
+        )
 
         setupToolbar(
             R.string.manage_usernames,

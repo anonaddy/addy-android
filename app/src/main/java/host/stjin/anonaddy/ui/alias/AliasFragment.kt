@@ -48,7 +48,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
     // Default filter
-    private var aliasSortFilter: AliasSortFilter = AliasSortFilter(
+    private val defaultAliasSortFilter: AliasSortFilter = AliasSortFilter(
         onlyActiveAliases = false,
         onlyInactiveAliases = false,
         includeDeleted = false,
@@ -58,6 +58,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         filter = null
     )
 
+    private var aliasSortFilter: AliasSortFilter = defaultAliasSortFilter.copy()
+
     companion object {
         fun newInstance() = AliasFragment()
     }
@@ -65,8 +67,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
         AddAliasBottomDialogFragment.newInstance()
 
-    private var filterOptionsAliasBottomDialogFragment: FilterOptionsAliasBottomDialogFragment =
-        FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
+    private lateinit var filterOptionsAliasBottomDialogFragment: FilterOptionsAliasBottomDialogFragment
 
     private var _binding: FragmentAliasBinding? = null
 
@@ -96,11 +97,21 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private fun loadFilter() {
         val settingsManager = SettingsManager(false, requireContext())
         val aliasSortFilterJson = settingsManager.getSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER)
-        val aliasSortFilter = aliasSortFilterJson?.let { GsonTools.jsonToAliasSortFilterObject(requireContext(), it) }
+        val aliasSortFilterObject = aliasSortFilterJson?.let { GsonTools.jsonToAliasSortFilterObject(requireContext(), it) }
 
-        if (aliasSortFilter != null) {
-            this.aliasSortFilter = aliasSortFilter
+        if (aliasSortFilterObject != null) {
+            this.aliasSortFilter = aliasSortFilterObject
         }
+
+        if (defaultAliasSortFilter != aliasSortFilter) {
+            // Filter is active, let user know
+            binding.aliasSortList.text = binding.aliasSortList.context.resources.getString(R.string.filter_active)
+        } else {
+            binding.aliasSortList.text = binding.aliasSortList.context.resources.getString(R.string.filter)
+        }
+
+        filterOptionsAliasBottomDialogFragment = FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
+
     }
 
     private fun setOnNestedScrollViewListener(set: Boolean) {
@@ -179,9 +190,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     override fun onResume() {
         super.onResume()
         activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
-
-        // There is a bug where the dropdown does not get populated after refreshing the view (eg. switching dark/light mode)
-        //setAliasDropDown()
     }
 
     private fun setOnClickListeners() {
@@ -205,12 +213,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
         binding.aliasSortList.setOnClickListener {
 
-            filterOptionsAliasBottomDialogFragment =
-                FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
-
             if (!filterOptionsAliasBottomDialogFragment.isAdded) {
-
-                //TODO Add option to save filter or just run the filter
                 filterOptionsAliasBottomDialogFragment.show(
                     childFragmentManager,
                     "filterOptionsAliasBottomDialogFragment"
@@ -496,6 +499,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
         filterOptionsAliasBottomDialogFragment.dismissAllowingStateLoss()
         getDataFromWeb()
+    }
+
+    override fun onDismiss() {
+        loadFilter()
     }
 
 }

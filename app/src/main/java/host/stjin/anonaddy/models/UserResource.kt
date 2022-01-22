@@ -32,7 +32,7 @@ data class UserResource(
     val recipient_count: Int,
     val recipient_limit: Int,
     val subscription: String?,
-    val subscription_ends_at: String,
+    val subscription_ends_at: String?,
     val total_emails_blocked: Int,
     val total_emails_forwarded: Int,
     val total_emails_replied: Int,

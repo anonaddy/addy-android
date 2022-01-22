@@ -26,7 +26,11 @@ class AppSettingsUpdateActivity : BaseActivity() {
         binding = ActivityAppSettingsUpdateBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(view, binding.appsettingsUpdateNSVLL)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsUpdateNSVLL)
+        )
 
         settingsManager = SettingsManager(false, this)
 

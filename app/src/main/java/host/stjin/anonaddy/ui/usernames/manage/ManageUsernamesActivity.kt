@@ -39,7 +39,11 @@ class ManageUsernamesActivity : BaseActivity(),
         binding = ActivityManageUsernamesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(view, binding.activityManageUsernameNSVRL)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageUsernameNSVRL)
+        )
 
         setupToolbar(
             R.string.edit_username,

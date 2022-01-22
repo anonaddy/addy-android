@@ -24,8 +24,10 @@ class LogViewerActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
         drawBehindNavBar(
-            binding.root,
-            binding.appsettingsLogviewerEfab
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsLogviewerRecyclerview),
+            bottomViewsToShiftUpUsingMargin = arrayListOf(binding.appsettingsLogviewerEfab)
         )
         setupToolbar(
             R.string.logs,

@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.lifecycle.lifecycleScope
@@ -196,23 +197,16 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     private val CAMERA_REQUEST_CODE: Int = 1000
 
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            CAMERA_REQUEST_CODE -> {
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() &&
-                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                ) {
-                    toggleQrCodeScanning()
-                } else {
-                    // Explain to the user that the feature is unavailable because
-                    // the features requires a permission that the user has denied.
-                    // At the same time, respect the user's decision. Don't link to
-                    // system settings in an effort to convince the user to change
-                    // their decision.
-                    binding.bsSetupScannerViewDesc.text = requireContext().resources.getString(R.string.qr_permissions_required)
-                }
-                return
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+        when (result) {
+            true -> toggleQrCodeScanning()
+            false -> {
+                // Explain to the user that the feature is unavailable because
+                // the features requires a permission that the user has denied.
+                // At the same time, respect the user's decision. Don't link to
+                // system settings in an effort to convince the user to change
+                // their decision.
+                binding.bsSetupScannerViewDesc.text = requireContext().resources.getString(R.string.qr_permissions_required)
             }
         }
     }
@@ -220,11 +214,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     private fun toggleQrCodeScanning() {
         // Check if camera permissions are granted
         if (checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PermissionChecker.PERMISSION_GRANTED) {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.CAMERA,
-                ), 1000
-            )
+            resultLauncher.launch(Manifest.permission.CAMERA)
         } else {
             // If codeScanner is initialized, switch between start en stopPreview
             if (codeScanner?.isPreviewActive == true) {

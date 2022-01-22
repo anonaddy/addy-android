@@ -180,30 +180,57 @@ abstract class BaseActivity : AppCompatActivity() {
      * bottomViewToShiftUp should be the last view in a NSV or CL to add a margin bottom to
      */
 
-    private var originalPaddingTop: Int? = null
-    private var originalBottomMargin: Int? = null
-    fun drawBehindNavBar(topViewToShiftDown: View? = null, bottomViewToShiftUp: View? = null) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+    private var paddingHasBeenSet = false
 
-        topViewToShiftDown?.setOnApplyWindowInsetsListener { view, insets ->
-            if (originalPaddingTop == null) {
-                originalPaddingTop = view.paddingTop
-                val params = view.layoutParams as ViewGroup.MarginLayoutParams
-                params.topMargin = view.paddingTop + insets.systemWindowInsetTop
-                view.layoutParams = params
+    fun drawBehindNavBar(
+        root: View? = null,
+        topViewsToShiftDownUsingMargin: ArrayList<View>? = null,
+        bottomViewsToShiftUpUsingPadding: ArrayList<View>? = null,
+        bottomViewsToShiftUpUsingMargin: ArrayList<View>? = null
+    ) {
+
+        if (!paddingHasBeenSet) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+
+            root?.let { rootView ->
+                ViewCompat.setOnApplyWindowInsetsListener(rootView) { _, windowInsets ->
+                    if (!paddingHasBeenSet) {
+                        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+                        if (topViewsToShiftDownUsingMargin != null) {
+                            for (view in topViewsToShiftDownUsingMargin) {
+                                val params = view.layoutParams as ViewGroup.MarginLayoutParams
+                                params.topMargin = view.paddingTop + insets.top
+                                view.layoutParams = params
+                            }
+                        }
+
+                        if (bottomViewsToShiftUpUsingMargin != null) {
+                            for (view in bottomViewsToShiftUpUsingMargin) {
+                                val params = view.layoutParams as ViewGroup.MarginLayoutParams
+                                params.bottomMargin = view.paddingBottom + insets.bottom
+                                view.layoutParams = params
+                            }
+                        }
+
+                        if (bottomViewsToShiftUpUsingPadding != null) {
+                            for (view in bottomViewsToShiftUpUsingPadding) {
+                                view.paddingBottom.plus(insets.bottom)
+                                    .let { it -> view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, it) }
+                            }
+                        }
+
+                        paddingHasBeenSet = true
+                    }
+
+                    // Return CONSUMED if you don't want want the window insets to keep being
+                    // passed down to descendant views.
+                    WindowInsetsCompat.CONSUMED
+                }
             }
-            insets
         }
 
-        bottomViewToShiftUp?.setOnApplyWindowInsetsListener { view, insets ->
-            if (originalBottomMargin == null) {
-                originalBottomMargin = view.marginBottom
-                val params = view.layoutParams as ViewGroup.MarginLayoutParams
-                params.bottomMargin = view.marginBottom + insets.systemWindowInsetBottom
-                view.layoutParams = params
-            }
-            insets
-        }
+
     }
 
 }

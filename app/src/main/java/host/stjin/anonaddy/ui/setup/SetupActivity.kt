@@ -33,7 +33,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         binding = ActivitySetupBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(null, binding.fragmentSetupInitButtonLl)
+        drawBehindNavBar(view, bottomViewsToShiftUpUsingPadding = arrayListOf(binding.fragmentSetupInitButtonLl))
 
         setButtonClickListeners()
         checkForIntents()
