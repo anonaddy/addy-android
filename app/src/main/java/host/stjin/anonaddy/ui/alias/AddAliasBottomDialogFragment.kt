@@ -1,6 +1,8 @@
 package host.stjin.anonaddy.ui.alias
 
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Build
@@ -9,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -279,6 +282,12 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         val networkHelper = NetworkHelper(context)
         networkHelper.addAlias({ alias, error ->
             if (alias != null) {
+                val clipboard: ClipboardManager =
+                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("alias", alias.email)
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(context, context.resources.getString(R.string.copied_alias), Toast.LENGTH_LONG).show()
+
                 listener.onAdded()
             } else {
                 // Revert the button to normal
