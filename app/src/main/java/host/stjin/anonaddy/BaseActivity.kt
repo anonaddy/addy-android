@@ -216,7 +216,7 @@ abstract class BaseActivity : AppCompatActivity() {
                         if (bottomViewsToShiftUpUsingPadding != null) {
                             for (view in bottomViewsToShiftUpUsingPadding) {
                                 view.paddingBottom.plus(insets.bottom)
-                                    .let { it -> view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, it) }
+                                    .let { view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, it) }
                             }
                         }
 

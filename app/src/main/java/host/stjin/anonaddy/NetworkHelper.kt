@@ -85,6 +85,38 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
+    suspend fun downloadBody(url: String, callback: (String?, String?) -> Unit) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) =
+            Fuel.get(url)
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                callback(data, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "downloadBody",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
+            }
+        }
+    }
+
+
     suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (String?) -> Unit) {
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")

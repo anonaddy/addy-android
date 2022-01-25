@@ -27,6 +27,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
     private var codeScanner: CodeScanner? = null
     private lateinit var listener: AddApiBottomDialogListener
+    private var networkHelper: NetworkHelper? = null
 
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -55,6 +56,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         val root = binding.root
 
         listener = activity as AddApiBottomDialogListener
+        networkHelper = NetworkHelper(requireContext())
 
 
         // TODO ENABLE FEATURE WHEN ANONADDY IMPLEMENTED THIS
@@ -131,7 +133,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     }
 
     private fun verifyKey(context: Context) {
-        val apiKey = binding.bsSetupApikeyTiet.text.toString()
+        var apiKey = binding.bsSetupApikeyTiet.text.toString()
         val baseUrl = binding.bsSetupInstanceTiet.text.toString()
 
         binding.bsSetupInstanceTil.error = null
@@ -149,25 +151,55 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         // Animate the button to progress
         binding.bsSetupApikeySignInButton.startAnimation()
 
+
+        // WORKAROUND #0002 START
+        // Google (Play) refused my update a few times due to a lack of "testing credentials"
+        // Google Play Console does not allow me to provide 1000+ char API keys for testing credentials.
+        // This workaround checks if the entered API key starts with "https://" and if so. Will download the raw body content from the webpage and
+        // use that as API key instead.
+        //
+        // This way 1000+ char API keys can be shortened to very short URL's
+        // Maybe someone else finds another use for this as well :P
+
         viewLifecycleOwner.lifecycleScope.launch {
-            verifyApiKey(context, apiKey, baseUrl)
+            if (apiKey.startsWith("https://")) {
+                // API key start with https://
+                // Perform a body-download of given URL and set that as API key instead
+                networkHelper?.downloadBody(apiKey) { result, error ->
+                    if (result != null) {
+                        apiKey = result
+                        verifyApiKey(context, apiKey, baseUrl)
+                    } else {
+                        binding.bsSetupApikeyGetButton.isEnabled = true
+
+                        // Revert the button to normal
+                        binding.bsSetupApikeySignInButton.revertAnimation()
+
+                        binding.bsSetupApikeyTil.error =
+                            context.resources.getString(R.string.api_invalid) + "\n" + error
+                    }
+                }
+            } else {
+                verifyApiKey(context, apiKey, baseUrl)
+            }
         }
 
     }
 
-    private suspend fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
-        val networkHelper = NetworkHelper(context)
-        networkHelper.verifyApiKey(baseUrl, apiKey) { result ->
-            if (result == "200") {
-                listener.onClickSave(baseUrl, apiKey)
-            } else {
-                binding.bsSetupApikeyGetButton.isEnabled = true
+    private fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            networkHelper?.verifyApiKey(baseUrl, apiKey) { result ->
+                if (result == "200") {
+                    listener.onClickSave(baseUrl, apiKey)
+                } else {
+                    binding.bsSetupApikeyGetButton.isEnabled = true
 
-                // Revert the button to normal
-                binding.bsSetupApikeySignInButton.revertAnimation()
+                    // Revert the button to normal
+                    binding.bsSetupApikeySignInButton.revertAnimation()
 
-                binding.bsSetupApikeyTil.error =
-                    context.resources.getString(R.string.api_invalid) + "\n" + result
+                    binding.bsSetupApikeyTil.error =
+                        context.resources.getString(R.string.api_invalid) + "\n" + result
+                }
             }
         }
     }
@@ -193,9 +225,6 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         codeScanner?.releaseResources()
         super.onPause()
     }
-
-    private val CAMERA_REQUEST_CODE: Int = 1000
-
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
         when (result) {

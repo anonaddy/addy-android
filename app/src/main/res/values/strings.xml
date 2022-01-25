@@ -75,7 +75,7 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.3.3</h3>
+    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.3.4</h3>
 <h4>Added</h4>
 <p>📧 You can now filter and sort aliases in the aliases tab for a clearer view<br />➕ Thanks to a new floating action button you can now create aliases while scrolling</p>
 <h4>Fixed/Improved</h4>
