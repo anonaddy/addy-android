@@ -2,27 +2,20 @@ package host.stjin.anonaddy.ui.domains
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.adapter.DomainAdapter
 import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
+import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
@@ -42,8 +35,18 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         binding = ActivityDomainSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityDomainSettingsNSVRL)
+        )
 
-        setupToolbar(binding.activityDomainSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_domains)
+        setupToolbar(
+            R.string.manage_domains,
+            binding.activityDomainSettingsNSV,
+            binding.activityDomainSettingsToolbar,
+            R.drawable.ic_dns
+        )
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -73,15 +76,17 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getUserResource()
             getAllDomainsAndSetView()
+            getUserResource()
         }
     }
 
     private suspend fun getUserResource() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                User.userResource = user
+                (this.application as AnonAddyForAndroid).userResource = user
+                // Update stats
+                setStats()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -92,16 +97,19 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         }
     }
 
-    private fun setStats(currentCount: Int? = null) {
+    private fun setStats() {
         binding.activityDomainSettingsRLCountText.text = resources.getString(
             R.string.you_ve_used_d_out_of_d_active_domains,
-            currentCount ?: User.userResource.active_domain_count,
-            if (User.userResource.subscription != null) User.userResource.active_domain_limit else this.resources.getString(R.string.unlimited)
+            (this.application as AnonAddyForAndroid).userResource.active_domain_count,
+            if ((this.application as AnonAddyForAndroid).userResource.subscription != null) (this.application as AnonAddyForAndroid).userResource.active_domain_limit else this.resources.getString(
+                R.string.unlimited
+            )
         )
 
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if (User.userResource.subscription != null) {
-            binding.activityDomainSettingsAddDomain.isEnabled = User.userResource.active_domain_count < User.userResource.active_domain_limit
+        if ((this.application as AnonAddyForAndroid).userResource.subscription != null) {
+            binding.activityDomainSettingsAddDomain.isEnabled =
+                (this.application as AnonAddyForAndroid).userResource.active_domain_count < (this.application as AnonAddyForAndroid).userResource.active_domain_limit
         } else {
             binding.activityDomainSettingsAddDomain.isEnabled = true
         }
@@ -134,7 +142,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
                 showShimmer()
             }
-            networkHelper?.getAllDomains { list ->
+            networkHelper?.getAllDomains { list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -145,9 +153,6 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 }
 
                 if (list != null) {
-                    // Update stats
-                    setStats(list.size)
-
                     if (list.size > 0) {
                         binding.activityDomainSettingsNoDomains.visibility = View.GONE
                     } else {
@@ -175,6 +180,13 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     adapter = domainsAdapter
 
                 } else {
+
+                    SnackbarHelper.createSnackbar(
+                        this@DomainSettingsActivity,
+                        this.resources.getString(R.string.error_obtaining_domain) + "\n" + error,
+                        binding.activityDomainSettingsCL
+                    ).show()
+
                     binding.activityDomainSettingsLL1.visibility = View.GONE
                     binding.activityDomainSettingsRLLottieview.visibility = View.VISIBLE
                 }
@@ -186,63 +198,52 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
 
-    lateinit var dialog: AlertDialog
+    private lateinit var deleteDomainSnackbar: Snackbar
     private fun deleteDomain(id: String, context: Context) {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-// create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_domain)
-        anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_domain_desc_confirm)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                deleteDomainHttpRequest(id, context, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.delete_domain))
+            .setIcon(R.drawable.ic_trash)
+            .setMessage(resources.getString(R.string.delete_domain_desc_confirm))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            dialog.dismiss()
-        }
-        // create and show the alert dialog
-        dialog.show()
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                deleteDomainSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.deleting_domain),
+                    binding.activityDomainSettingsCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteDomainSnackbar.show()
+                lifecycleScope.launch {
+                    deleteDomainHttpRequest(id, context)
+                }
+            }
+            .show()
     }
 
-    private suspend fun deleteDomainHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
         networkHelper?.deleteDomain({ result ->
             if (result == "204") {
-                dialog.dismiss()
+                deleteDomainSnackbar.dismiss()
                 getDataFromWeb()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
 
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_deleting_domain), result
-                )
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(
+                        R.string.s_s,
+                        context.resources.getString(R.string.error_deleting_domain), result
+                    ),
+                    binding.activityDomainSettingsCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }
 
     override fun onAdded() {
-        addDomainFragment.dismiss()
+        addDomainFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()
     }

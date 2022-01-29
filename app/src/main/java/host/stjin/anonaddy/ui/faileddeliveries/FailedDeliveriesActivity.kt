@@ -13,6 +13,7 @@ import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.FailedDeliveryAdapter
 import host.stjin.anonaddy.databinding.ActivityFailedDeliveriesBinding
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
@@ -30,8 +31,18 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
         binding = ActivityFailedDeliveriesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityFailedDeliveriesNSVRL)
+        )
 
-        setupToolbar(binding.activityFailedDeliveriesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.failed_deliveries)
+        setupToolbar(
+            R.string.failed_deliveries,
+            binding.activityFailedDeliveriesNSV,
+            binding.activityFailedDeliveriesToolbar,
+            R.drawable.ic_mail_error
+        )
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -92,7 +103,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
 
                 showShimmer()
             }
-            networkHelper?.getAllFailedDeliveries({ list ->
+            networkHelper?.getAllFailedDeliveries({ list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -137,6 +148,12 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
                     adapter = failedDeliveriesAdapter
 
                 } else {
+                    SnackbarHelper.createSnackbar(
+                        this@FailedDeliveriesActivity,
+                        this@FailedDeliveriesActivity.resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                        binding.activityFailedDeliveriesCL
+                    ).show()
+
                     binding.activityFailedDeliveriesLL1.visibility = View.GONE
                     binding.activityFailedDeliveriesRLLottieview.visibility = View.VISIBLE
                 }
@@ -149,7 +166,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
 
 
     override fun onDeleted(failedDeliveryId: String) {
-        failedDeliveryDetailsBottomDialogFragment?.dismiss()
+        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()
     }

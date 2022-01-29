@@ -6,19 +6,21 @@ import host.stjin.anonaddy.utils.YDGooglePlayUtils
 object Updater {
     // This bit is getting called by default, it checks the Gitlab RSS feed for the latest version
     suspend fun isUpdateAvailable(
-        callback: (Boolean, String?) -> Unit, context: Context
+        callback: (Boolean, String?, Boolean) -> Unit, context: Context
     ) {
-        NetworkHelper(context).getGitlabTags { result ->
+        NetworkHelper(context).getGitlabTags { feed, _ ->
             // Get the title (version name) of the first (thus latest) entry
-            val version = result?.items?.get(0)?.title
+            val version = feed?.items?.get(0)?.title
             if (version != null) {
-                // Latest version and current version names do not match, thus true
-                // Get only the version name BEFORE | and trim it.
-                // This way "v3.0.0 | Material You" becomes "v3.0.0"
-                callback(BuildConfig.VERSION_NAME.substringBefore("|").trim() != version, version)
+                // Take the latest server version and remove the prefix (v) and version separators (.)
+                // Turn the server version into an int.
+
+                val serverVersionCodeAsInt = version.replace("v", "").replace(".", "").toInt()
+                val appVersionCodeAsInt = BuildConfig.VERSION_NAME.replace("v", "").replace(".", "").toInt()
+                callback(serverVersionCodeAsInt > appVersionCodeAsInt, version, appVersionCodeAsInt > serverVersionCodeAsInt)
             } else {
                 // If version is null something must have gone wrong with checking for updates. Return false to make the app think its up-to-date
-                callback(false, null)
+                callback(false, null, false)
             }
 
         }

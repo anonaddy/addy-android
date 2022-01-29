@@ -9,9 +9,9 @@ android {
         applicationId = "host.stjin.anonaddy"
         minSdk = 23
         targetSdk = 31
-        versionCode = 29
+        versionCode = 34
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v3.2.1"
+        versionName = "v3.3.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -26,9 +26,6 @@ android {
     flavorDimensions.add("flavor")
     productFlavors {
         create("main") {
-        }
-        create("materialyou") {
-            versionNameSuffix = " | Material You"
         }
     }
 
@@ -63,11 +60,11 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.30")
-    implementation("androidx.core:core-ktx:1.6.0")
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.1")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("com.google.android.material:material:1.5.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
@@ -94,7 +91,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.2.3")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.2.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 }
 
 // Shimmer
@@ -126,7 +123,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.7.0-rc01")
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
 }
 
 // For the donut in the aliasview
@@ -136,7 +133,7 @@ dependencies {
 
 // Loading spinners when execution actions from eg. bottomsheets
 dependencies {
-    implementation("com.github.leandroBorgesFerreira:LoadingButtonAndroid:2.2.0")
+    implementation("com.github.Stjin:LoadingButtonAndroid:2.2.0")
 }
 
 // Built-in updater

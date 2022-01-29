@@ -1,20 +1,16 @@
 package host.stjin.anonaddy.ui.recipients.manage
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageRecipientsBinding
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.LoggingHelper
@@ -40,8 +36,17 @@ class ManageRecipientsActivity : BaseActivity(),
         binding = ActivityManageRecipientsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRecipientNSVRL)
+        )
 
-        setupToolbar(binding.activityManageRecipientToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_recipient)
+        setupToolbar(
+            R.string.edit_recipient,
+            binding.activityManageRecipientNSV,
+            binding.activityManageRecipientToolbar
+        )
         networkHelper = NetworkHelper(this)
 
 
@@ -172,121 +177,95 @@ class ManageRecipientsActivity : BaseActivity(),
     }
 
 
-    private lateinit var removeGpgKeyDialog: AlertDialog
+    private lateinit var removeGpgKeySnackbar: Snackbar
     private fun removeGpgKey(id: String) {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-
-// create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        removeGpgKeyDialog = builder.create()
-        removeGpgKeyDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.remove_public_key)
-        anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.remove_public_key_desc)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.remove)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                removeGpgKeyHttpRequest(id, this@ManageRecipientsActivity, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.remove_public_key))
+            .setIcon(R.drawable.ic_forbid)
+            .setMessage(resources.getString(R.string.remove_public_key_desc))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            removeGpgKeyDialog.dismiss()
-        }
-        // create and show the alert dialog
-        removeGpgKeyDialog.show()
+            .setPositiveButton(resources.getString(R.string.remove)) { _, _ ->
+                removeGpgKeySnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.removing_public_key),
+                    binding.activityManageRecipientCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                removeGpgKeySnackbar.show()
+                lifecycleScope.launch {
+                    removeGpgKeyHttpRequest(id, this@ManageRecipientsActivity)
+                }
+            }
+            .show()
     }
 
-    private lateinit var deleteRecipientDialog: AlertDialog
+    private lateinit var deleteRecipientSnackbar: Snackbar
     private fun deleteRecipient(id: String) {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        deleteRecipientDialog = builder.create()
-        deleteRecipientDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_recipient)
-        anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.delete_recipient_desc)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Revert the button to normal
-            anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                deleteRecipientHttpRequest(id, this@ManageRecipientsActivity, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.delete_recipient))
+            .setIcon(R.drawable.ic_trash)
+            .setMessage(resources.getString(R.string.delete_recipient_desc))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            deleteRecipientDialog.dismiss()
-        }
-        // create and show the alert dialog
-        deleteRecipientDialog.show()
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.deleting_recipient),
+                    binding.activityManageRecipientCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteRecipientSnackbar.show()
+                lifecycleScope.launch {
+                    deleteRecipientHttpRequest(id, this@ManageRecipientsActivity)
+                }
+            }
+            .show()
     }
 
-    private suspend fun deleteRecipientHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun deleteRecipientHttpRequest(id: String, context: Context) {
         networkHelper.deleteRecipient({ result ->
             if (result == "204") {
-                deleteRecipientDialog.dismiss()
+                deleteRecipientSnackbar.dismiss()
                 finish()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_deleting_recipient), result
-                )
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(
+                        R.string.s_s,
+                        context.resources.getString(R.string.error_deleting_recipient), result
+                    ),
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }
 
-    private suspend fun removeGpgKeyHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun removeGpgKeyHttpRequest(id: String, context: Context) {
         networkHelper.removeEncryptionKeyRecipient({ result ->
             if (result == "204") {
-                removeGpgKeyDialog.dismiss()
+                removeGpgKeySnackbar.dismiss()
                 setPage()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_removing_gpg_key), result
-                )
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(
+                        R.string.s_s,
+                        context.resources.getString(R.string.error_removing_gpg_key), result
+                    ),
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }
 
 
     private suspend fun getRecipientInfo(id: String) {
-        networkHelper.getSpecificRecipient({ list, _ ->
+        networkHelper.getSpecificRecipient({ list, error ->
 
             if (list != null) {
 
@@ -366,6 +345,12 @@ class ManageRecipientsActivity : BaseActivity(),
 
                 setOnClickListeners()
             } else {
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_recipient) + "\n" + error,
+                    binding.activityManageRecipientCL
+                ).show()
+
                 binding.activityManageRecipientRLProgressbar.visibility = View.GONE
                 binding.activityManageRecipientLL1.visibility = View.GONE
 
@@ -378,6 +363,6 @@ class ManageRecipientsActivity : BaseActivity(),
 
     override fun onKeyAdded() {
         setPage()
-        addRecipientPublicGpgKeyBottomDialogFragment.dismiss()
+        addRecipientPublicGpgKeyBottomDialogFragment.dismissAllowingStateLoss()
     }
 }

@@ -90,7 +90,7 @@
                     app:frameCornersSize="@dimen/corner_radius"
                     app:frameSize="1"
                     app:frameThickness="0dp"
-                    app:maskColor="@color/NavbarLightDarkMode">
+                    app:maskColor="?android:colorBackground">
 
                 </com.budiyev.android.codescanner.CodeScannerView>
 
@@ -181,9 +181,9 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/bs_setup_apikey_get_button"
-                        style="@style/TextButtonsSecondary"
+                        style="?borderlessButtonStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="16dp"
                         android:text="@string/get_my_key" />
 

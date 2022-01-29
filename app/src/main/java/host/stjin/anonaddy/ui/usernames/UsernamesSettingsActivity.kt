@@ -2,25 +2,17 @@ package host.stjin.anonaddy.ui.usernames
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
-import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.adapter.UsernameAdapter
 import host.stjin.anonaddy.databinding.ActivityUsernameSettingsBinding
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.LoggingHelper
@@ -43,8 +35,18 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         binding = ActivityUsernameSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityUsernameSettingsNSVRL)
+        )
 
-        setupToolbar(binding.activityUsernameSettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_usernames)
+        setupToolbar(
+            R.string.manage_usernames,
+            binding.activityUsernameSettingsNSV,
+            binding.activityUsernameSettingsToolbar,
+            R.drawable.ic_user_menu
+        )
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -74,14 +76,16 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getUserResource()
             getAllUsernamesAndSetView()
+            getUserResource()
         }
     }
 
     private suspend fun getUserResource() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
+                (this.application as AnonAddyForAndroid).userResource = user
+                // Update stats
                 setStats()
             } else {
                 SnackbarHelper.createSnackbar(
@@ -94,17 +98,20 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         }
     }
 
-    private fun setStats(currentCount: Int? = null) {
+    private fun setStats() {
         binding.activityUsernameSettingsRLCountText.text =
             resources.getString(
                 R.string.you_ve_used_d_out_of_d_usernames,
-                currentCount ?: User.userResource.username_count,
-                if (User.userResource.subscription != null) User.userResource.username_limit else this.resources.getString(R.string.unlimited)
+                (this.application as AnonAddyForAndroid).userResource.username_count,
+                if ((this.application as AnonAddyForAndroid).userResource.subscription != null) (this.application as AnonAddyForAndroid).userResource.username_limit else this.resources.getString(
+                    R.string.unlimited
+                )
             )
 
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if (User.userResource.subscription != null) {
-            binding.activityUsernameSettingsAddUsername.isEnabled = User.userResource.username_count < User.userResource.username_limit
+        if ((this.application as AnonAddyForAndroid).userResource.subscription != null) {
+            binding.activityUsernameSettingsAddUsername.isEnabled =
+                (this.application as AnonAddyForAndroid).userResource.username_count < (this.application as AnonAddyForAndroid).userResource.username_limit
         } else {
             binding.activityUsernameSettingsAddUsername.isEnabled = true
         }
@@ -141,7 +148,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
                 showShimmer()
             }
-            networkHelper?.getAllUsernames { list ->
+            networkHelper?.getAllUsernames { list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -152,9 +159,6 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 }
 
                 if (list != null) {
-                    // Update stats
-                    setStats(list.size)
-
                     if (list.size > 0) {
                         binding.activityUsernameSettingsNoUsernames.visibility = View.GONE
                     } else {
@@ -182,6 +186,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                     })
                     adapter = usernamesAdapter
                 } else {
+                    SnackbarHelper.createSnackbar(
+                        this@UsernamesSettingsActivity,
+                        this@UsernamesSettingsActivity.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
+                        binding.activityUsernameSettingsCL
+                    ).show()
                     binding.activityUsernameSettingsLL1.visibility = View.GONE
                     binding.activityUsernameSettingsRLLottieview.visibility = View.VISIBLE
                 }
@@ -193,62 +202,48 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
 
-    lateinit var dialog: AlertDialog
+    private lateinit var deleteUsernameSnackbar: Snackbar
     private fun deleteUsername(id: String, context: Context) {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_username)
-        anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_username_desc_confirm)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                deleteUsernameHttpRequest(id, context, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.delete_username))
+            .setIcon(R.drawable.ic_trash)
+            .setMessage(resources.getString(R.string.delete_username_desc_confirm))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            dialog.dismiss()
-        }
-        // create and show the alert dialog
-        dialog.show()
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                deleteUsernameSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.deleting_username),
+                    binding.activityUsernameSettingsCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteUsernameSnackbar.show()
+                lifecycleScope.launch {
+                    deleteUsernameHttpRequest(id, context)
+                }
+            }
+            .show()
     }
 
-    private suspend fun deleteUsernameHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {
         networkHelper?.deleteUsername({ result ->
             if (result == "204") {
-                dialog.dismiss()
+                deleteUsernameSnackbar.dismiss()
                 getDataFromWeb()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text =
-                    context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result),
+                    binding.activityUsernameSettingsCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }
 
     override fun onAdded() {
-        addUsernameFragment.dismiss()
+        addUsernameFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()
     }

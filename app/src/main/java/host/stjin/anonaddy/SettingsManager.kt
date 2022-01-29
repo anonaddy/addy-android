@@ -24,6 +24,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
     enum class PREFS(val encrypted: Boolean, val type: PREFTYPES, val key: String) {
         DARK_MODE(false, PREFTYPES.BOOLEAN, "dark_mode"),
+        DYNAMIC_COLORS(false, PREFTYPES.BOOLEAN, "dynamic_colors"),
         STORE_LOGS(false, PREFTYPES.BOOLEAN, "store_logs"),
         VERSION_CODE(false, PREFTYPES.INT, "version_code"),
         BACKGROUND_SERVICE_INTERVAL(false, PREFTYPES.INT, "background_service_interval"),
@@ -33,6 +34,8 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
 
+        // Sorting and Filtering for aliasFragment
+        ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
 
         // Encrypted
         BIOMETRIC_ENABLED(true, PREFTYPES.BOOLEAN, "biometric_enabled"),
@@ -41,13 +44,19 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         RECENT_SEARCHES(true, PREFTYPES.STRINGSET, "recent_searches"),
         BACKUPS_PASSWORD(true, PREFTYPES.STRING, "backups_password"),
 
+        // USER_RESOURCE is also being used by the background service to store the user_resource in
+        USER_RESOURCE(true, PREFTYPES.STRING, "user_resource"),
+
+        USER_RESOURCE_EXTENDED(true, PREFTYPES.STRING, "user_resource_extended"),
+
 
         // Locally stored data
-        BACKGROUND_SERVICE_CACHE_DATA_ALIASES(true, PREFTYPES.STRING, "cache_data_aliases"),
+        BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA(true, PREFTYPES.STRING, "cache_15_most_active_aliases_data"),
+
 
         // Used for the shimmerview and widget 2
         BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT(true, PREFTYPES.INT, "cache_domain_count"),
-        BACKGROUND_SERVICE_CACHE_ALIAS_COUNT(true, PREFTYPES.INT, "cache_alias_count"),
+        BACKGROUND_SERVICE_CACHE_USER_RESOURCE(true, PREFTYPES.INT, USER_RESOURCE.key),
         BACKGROUND_SERVICE_CACHE_USERNAME_COUNT(true, PREFTYPES.INT, "cache_username_count"),
         BACKGROUND_SERVICE_CACHE_RULES_COUNT(true, PREFTYPES.INT, "cache_rules_count"),
         BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT(true, PREFTYPES.INT, "cache_recipient_count"),
@@ -59,8 +68,9 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_failed_deliveries_count_previous"),
 
         // When BACKGROUND_SERVICE_CACHE_DATA_ALIASES gets updated the current list will move moved to BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS for the AliasWatcher to compare
-        BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS(true, PREFTYPES.STRING, "cache_data_aliases_previous"),
         BACKGROUND_SERVICE_WATCH_ALIAS_LIST(true, PREFTYPES.STRINGSET, "background_service_watch_alias_list"),
+        BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA(true, PREFTYPES.STRING, "cache_watch_alias_data"),
+        BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS(true, PREFTYPES.STRING, "cache_watch_alias_data_previous"),
     }
 
     /*
@@ -137,6 +147,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     fun getStringSet(key: PREFS): MutableSet<String>? {
         return prefs.getStringSet(key.key, HashSet())
     }
+
 
     fun removeSetting(value: PREFS) {
         prefs.edit().remove(value.key).apply()

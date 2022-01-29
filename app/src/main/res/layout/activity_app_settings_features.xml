@@ -4,7 +4,7 @@
     android:id="@+id/activity_app_settings_features_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/AnonAddyNotYetWhite"
+
     android:orientation="vertical">
 
     <include
@@ -12,11 +12,13 @@
         layout="@layout/custom_toolbar_one_handed" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/activity_app_settings_features_sections_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/activity_app_settings_features_sections_NSV_LL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
@@ -81,7 +83,6 @@
                 android:id="@+id/activity_app_settings_features_section_mailto_sheet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
                 app:sectionDescription="@string/integration_mailto_alias_desc"
                 app:sectionShowSwitch="true"
                 app:sectionStartIcon="@drawable/ic_dots_circle_horizontal"

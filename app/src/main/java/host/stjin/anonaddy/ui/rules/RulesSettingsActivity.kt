@@ -2,26 +2,22 @@ package host.stjin.anonaddy.ui.rules
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.databinding.ActivityRuleSettingsBinding
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -41,8 +37,18 @@ class RulesSettingsActivity : BaseActivity() {
         binding = ActivityRuleSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRulesNSVRL)
+        )
 
-        setupToolbar(binding.activityManageRulesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.manage_rules)
+        setupToolbar(
+            R.string.manage_rules,
+            binding.activityManageRulesNSV,
+            binding.activityManageRulesToolbar,
+            R.drawable.ic_clipboard_list
+        )
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -73,8 +79,6 @@ class RulesSettingsActivity : BaseActivity() {
     private lateinit var rulesAdapter: RulesAdapter
     private suspend fun getAllRulesAndSetView() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
-            val test = paddingStart
-            val test2 = paddingEnd
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
                 shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, 10) ?: 10
@@ -89,7 +93,7 @@ class RulesSettingsActivity : BaseActivity() {
                 layoutAnimation = animation
                 showShimmer()
             }
-            networkHelper?.getAllRules({ list ->
+            networkHelper?.getAllRules({ list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -171,6 +175,13 @@ class RulesSettingsActivity : BaseActivity() {
 
                     itemTouchHelper.attachToRecyclerView(binding.activityManageRulesAllRulesRecyclerview)
                 } else {
+
+                    SnackbarHelper.createSnackbar(
+                        this@RulesSettingsActivity,
+                        this@RulesSettingsActivity.resources.getString(R.string.error_obtaining_rules) + "\n" + error,
+                        binding.activityManageRulesCL
+                    ).show()
+
                     binding.activityManageRulesLL1.visibility = View.GONE
                     binding.activityManageRulesRLLottieview.visibility = View.VISIBLE
                 }
@@ -221,58 +232,45 @@ class RulesSettingsActivity : BaseActivity() {
     }
 
 
-    lateinit var dialog: AlertDialog
+    private lateinit var deleteRuleSnackbar: Snackbar
     private fun deleteRule(id: String, context: Context) {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_rule)
-        anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_rule_desc_confirm)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                deleteRuleHttpRequest(id, context, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.delete_rule))
+            .setIcon(R.drawable.ic_trash)
+            .setMessage(resources.getString(R.string.delete_rule_desc_confirm))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            dialog.dismiss()
-        }
-        // create and show the alert dialog
-        dialog.show()
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                deleteRuleSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.deleting_rule),
+                    binding.activityManageRulesCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteRuleSnackbar.show()
+                lifecycleScope.launch {
+                    deleteRuleHttpRequest(id, context)
+                }
+            }
+            .show()
     }
 
-    private suspend fun deleteRuleHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun deleteRuleHttpRequest(id: String, context: Context) {
         networkHelper?.deleteRule({ result ->
             if (result == "204") {
-                dialog.dismiss()
+                deleteRuleSnackbar.dismiss()
                 getDataFromWeb()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_deleting_domain), result
-                )
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(
+                        R.string.s_s,
+                        context.resources.getString(R.string.error_deleting_rule), result
+                    ),
+                    binding.activityManageRulesCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }

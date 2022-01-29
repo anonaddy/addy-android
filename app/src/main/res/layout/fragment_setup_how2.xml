@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/primaryColor"
+    android:background="?colorPrimary"
     android:orientation="vertical"
     tools:context=".ui.setup.SetupHow2Fragment">
 
@@ -86,7 +86,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/setup_how_2_button_next"
-                    style="@style/MaterialButtonSecondaryLight"
+                    style="@style/MaterialButtonSecondaryDark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/next" />

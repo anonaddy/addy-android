@@ -6,12 +6,11 @@
     <dimen name="cardview_padding">16dp</dimen>
     <dimen name="cardview_button_padding">4dp</dimen>
     <dimen name="cardview_button_padding_middle">2dp</dimen>
-    <dimen name="corner_radius_dialog">12dp</dimen>
     <dimen name="corner_radius_widget_1">8dp</dimen>
     <dimen name="corner_radius_widget_2">28dp</dimen>
     <dimen name="corner_radius_widget_2_inner_layout">20dp</dimen>
-    <dimen name="corner_radius_cardview">8dp</dimen>
-    <dimen name="corner_radius_chips">8dp</dimen>
+    <dimen name="corner_radius_cardview">12dp</dimen>
+    <dimen name="cardview_default_elevation">2dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information
@@ -21,24 +20,20 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_2_padding_layout_1">24dp</dimen>
     <dimen name="widget_2_padding_layout_2">12dp</dimen>
     <dimen name="widget_2_padding_layout_2_start_end">24dp</dimen>
-    <dimen name="widget_2_padding_layout_3">12dp</dimen>
-    <dimen name="widget_2_padding_layout_3_inner">16dp</dimen>
+    <dimen name="widget_2_padding_layout_3">16dp</dimen>
 
 
     <dimen name="widget_2_margin_layout_1">18dp</dimen>
     <dimen name="widget_2_margin_layout_2">0dp</dimen>
-    <dimen name="widget_2_margin_layout_3">8dp</dimen>
 
-    <dimen name="collapsingtoolbar_title_left_margin">15dp</dimen>
-    <dimen name="collapsingtoolbar_action_margin">12dp</dimen>
-    <dimen name="collapsingtoolbar_title_bottom_margin">18dp</dimen>
+    <dimen name="collapsingtoolbar_title_left_margin">22dp</dimen>
+    <dimen name="collapsingtoolbar_action_margin">15dp</dimen>
+    <dimen name="collapsingtoolbar_title_bottom_margin">22dp</dimen>
     <dimen name="corner_radius_button">8dp</dimen>
     <dimen name="recyclerview_margin">6dp</dimen>
     <dimen name="touch_raise">12dp</dimen>
-    <dimen name="chip_stroke_width">1dp</dimen>
     <dimen name="layout_padding_top">8dp</dimen>
     <dimen name="bottomsheet_top_part_padding">16dp</dimen>
-    <dimen name="layout_padding_dialog">16dp</dimen>
     <dimen name="no_result_textview_padding">16dp</dimen>
 
     <!-- Because recyclerview seem to add an extra padding to the list items, this attribute is used to perfectly align some elements on pages where

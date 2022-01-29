@@ -2,31 +2,14 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recipients_NCV"
+    android:id="@+id/recipients_NSV"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/recipients_RL_lottieview"
-            android:layout_width="wrap_content"
-            android:layout_height="300dp"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="32dp"
-            android:visibility="gone"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/no_internet_connection" />
 
         <LinearLayout
             android:id="@+id/recipients_LL1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
@@ -48,7 +31,6 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/recipients_add_recipients"
-                    style="@style/RoundActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/add_recipient" />
@@ -96,6 +78,5 @@
 
         </LinearLayout>
 
-    </RelativeLayout>
 
 </androidx.core.widget.NestedScrollView>

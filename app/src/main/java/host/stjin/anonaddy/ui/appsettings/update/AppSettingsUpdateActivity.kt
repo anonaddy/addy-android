@@ -26,9 +26,20 @@ class AppSettingsUpdateActivity : BaseActivity() {
         binding = ActivityAppSettingsUpdateBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsUpdateNSVLL)
+        )
+
         settingsManager = SettingsManager(false, this)
 
-        setupToolbar(binding.appsettingsUpdateToolbar.customToolbarOneHandedMaterialtoolbar, R.string.anonaddy_updater)
+        setupToolbar(
+            R.string.anonaddy_updater,
+            binding.appsettingsUpdateNSV,
+            binding.appsettingsUpdateToolbar,
+            R.drawable.ic_settings_update
+        )
 
         setVersionAndChannel()
         loadSettings()
@@ -40,13 +51,27 @@ class AppSettingsUpdateActivity : BaseActivity() {
 
     private fun checkForUpdates() {
         lifecycleScope.launch {
-            Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String? ->
-                if (updateAvailable) {
-                    binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.new_update_available))
-                    binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.new_update_available_version, BuildConfig.VERSION_NAME.substringBefore("|").trim(), latestVersion))
-                } else {
-                    binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available))
-                    binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available_desc))
+            Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, isRunningFutureVersion: Boolean ->
+                when {
+                    updateAvailable -> {
+                        binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.new_update_available))
+                        binding.activityAppSettingsUpdateSectionDownload.setDescription(
+                            this@AppSettingsUpdateActivity.resources.getString(
+                                R.string.new_update_available_version,
+                                BuildConfig.VERSION_NAME,
+                                latestVersion
+                            )
+                        )
+                    }
+                    isRunningFutureVersion -> {
+                        binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.greetings_time_traveller))
+                        binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.greetings_time_traveller_desc))
+                        binding.activityAppSettingsUpdateSectionDownload.setImageResourceIcons(R.drawable.ic_infinity, null)
+                    }
+                    else -> {
+                        binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available))
+                        binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available_desc))
+                    }
                 }
                 binding.activityAppSettingsUpdateSectionDownload.setSectionAlert(updateAvailable)
             }, this@AppSettingsUpdateActivity)

@@ -1,29 +1,29 @@
 package host.stjin.anonaddy.ui.alias
 
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
-import android.content.res.ColorStateList
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
+import android.widget.Toast
+import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
-import com.google.android.material.shape.ShapeAppearanceModel
+import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
 import host.stjin.anonaddy.models.LOGIMPORTANCE
 import host.stjin.anonaddy.models.SUBSCRIPTIONS
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
@@ -37,6 +37,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
     // 1. Defines the listener interface with a method passing back data result.
     interface AddAliasBottomDialogListener {
         fun onAdded()
+        fun onCancel()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -60,10 +61,16 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         _binding = BottomsheetAddaliasBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = parentFragment as AddAliasBottomDialogListener
+        // Listener only works when called from fragment (this sheet can be called from widget)
+        if (parentFragment != null) {
+            listener = parentFragment as AddAliasBottomDialogListener
+        } else if (activity != null) {
+            listener = activity as AddAliasBottomDialogListener
+        }
 
         // Sent the help text username accordingly
-        binding.bsAddaliasDomainHelpTextview.text = requireContext().resources.getString(R.string.add_alias_desc, User.userResource.username)
+        binding.bsAddaliasDomainHelpTextview.text =
+            requireContext().resources.getString(R.string.add_alias_desc, (activity?.application as AnonAddyForAndroid).userResource.username)
 
         viewLifecycleOwner.lifecycleScope.launch {
             fillSpinners(requireContext())
@@ -80,29 +87,24 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         return root
     }
 
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        listener.onCancel()
+    }
+
     private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
-
-
-        networkHelper.getRecipients({ result ->
+        networkHelper.getRecipients({ result, _ ->
             if (result != null) {
                 // Remove the default "Loading recipients" chip
                 binding.bsAddaliasRecipientsChipgroup.removeAllViewsInLayout()
                 binding.bsAddaliasRecipientsChipgroup.requestLayout()
                 binding.bsAddaliasRecipientsChipgroup.invalidate()
                 for (recipient in result) {
-                    val chip = Chip(ContextThemeWrapper(binding.bsAddaliasRecipientsChipgroup.context, R.style.AnonAddyChip), null, 0)
+
+                    val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsAddaliasRecipientsChipgroup, false) as Chip
                     chip.text = recipient.email
                     chip.tag = recipient.id
-                    chip.isClickable = true
-                    chip.isCheckable = true
-                    chip.shapeAppearanceModel =
-                        ShapeAppearanceModel().toBuilder().setAllCornerSizes(context.resources.getDimension(R.dimen.corner_radius_chips)).build()
-                    chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.transparent))
-                    chip.checkedIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_check, null)
-                    chip.checkedIconTint = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryColor))
-                    chip.chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.shimmerGray))
-                    chip.chipStrokeWidth = context.resources.getDimension(R.dimen.chip_stroke_width)
 
                     binding.bsAddaliasRecipientsChipgroup.addView(chip)
                 }
@@ -141,12 +143,10 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
     private var FORMATS: List<String> = listOf()
     private suspend fun fillSpinners(context: Context) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.getDomainOptions { result ->
-
-
+        networkHelper.getDomainOptions { domainOptions, _ ->
             // Set domains and default format/domain
-            if (result?.data != null) {
-                DOMAINS = result.data
+            if (domainOptions?.data != null) {
+                DOMAINS = domainOptions.data
 
                 val domainAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
@@ -156,8 +156,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasDomainMact.setAdapter(domainAdapter)
 
                 // Set default domain
-                if (result.defaultAliasDomain != null) {
-                    binding.bsAddaliasDomainMact.setText(result.defaultAliasDomain, false)
+                if (domainOptions.defaultAliasDomain != null) {
+                    binding.bsAddaliasDomainMact.setText(domainOptions.defaultAliasDomain, false)
                 }
 
                 // Set default format
@@ -174,12 +174,12 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasAliasFormatMact.setAdapter(formatAdapter)
 
                 // Set default format
-                if (result.defaultAliasFormat != null) {
+                if (domainOptions.defaultAliasFormat != null) {
                     // Get the string for the default format ID
                     // Try/catch, in case there is a default alias format that's not in the formats array
                     try {
                         binding.bsAddaliasAliasFormatMact.setText(
-                            FORMATS[FORMATSID.indexOf(result.defaultAliasFormat)],
+                            FORMATS[FORMATSID.indexOf(domainOptions.defaultAliasFormat)],
                             false
                         )
                     } catch (e: Exception) {
@@ -222,7 +222,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // If the selected domain format is random words
         if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_random_words)) {
             // If the user has a free subscription
-            if (User.userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            if ((activity?.application as AnonAddyForAndroid).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
                 binding.bsAddaliasAliasFormatTil.error =
                     context.resources.getString(R.string.domains_format_random_words_not_available_for_this_subscription)
                 return
@@ -253,10 +253,9 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
 
         val recipients = arrayListOf<String>()
-        val ids: List<Int> = binding.bsAddaliasRecipientsChipgroup.checkedChipIds
-        for (id in ids) {
-            val chip: Chip = binding.bsAddaliasRecipientsChipgroup.findViewById(id)
-            recipients.add(chip.tag.toString())
+        for (child in binding.bsAddaliasRecipientsChipgroup.children) {
+            val chip: Chip = child as Chip
+            if (chip.isChecked) recipients.add(chip.tag.toString())
         }
 
         val domain = binding.bsAddaliasDomainMact.text.toString()
@@ -281,15 +280,21 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         recipients: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addAlias({ result ->
-            if (result == "201") {
+        networkHelper.addAlias({ alias, error ->
+            if (alias != null) {
+                val clipboard: ClipboardManager =
+                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("alias", alias.email)
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(context, context.resources.getString(R.string.copied_alias), Toast.LENGTH_LONG).show()
+
                 listener.onAdded()
             } else {
                 // Revert the button to normal
                 binding.bsAddaliasAliasAddAliasButton.revertAnimation()
 
                 binding.bsAddaliasAliasDescTil.error =
-                    context.resources.getString(R.string.error_adding_alias) + "\n" + result
+                    context.resources.getString(R.string.error_adding_alias) + "\n" + error
             }
         }, domain, description, format, local_part, recipients)
     }

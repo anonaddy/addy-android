@@ -26,10 +26,15 @@ data class Rules(
     val active: Boolean,
     val conditions: ArrayList<Condition>,
     val created_at: String,
+    var forwards: Boolean,
     val id: String,
     var name: String,
     var `operator`: String,
     val order: Int,
+    var replies: Boolean,
+    var sends: Boolean,
     val updated_at: String,
     val user_id: String
 )
+
+

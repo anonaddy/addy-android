@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.ActivityIntentCreateAliasBinding
+import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
@@ -22,20 +22,17 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
     IntentBottomDialogFragment.IntentBottomDialogListener {
 
 
-    private lateinit var binding: ActivityIntentCreateAliasBinding
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var intentBottomDialogFragment: IntentBottomDialogFragment
     private var domainOptions: List<String> = listOf()
-    var aliases: ArrayList<Aliases> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityIntentCreateAliasBinding.inflate(layoutInflater)
-        val view = binding.root
+
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
-        setContentView(view)
+
         networkHelper = NetworkHelper(this)
 
         /**
@@ -89,10 +86,10 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
     override fun finish() {
         if (::intentSendMailRecipientBottomDialogFragment.isInitialized) {
-            intentSendMailRecipientBottomDialogFragment.dismiss()
+            intentSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
         }
         if (::intentBottomDialogFragment.isInitialized) {
-            intentBottomDialogFragment.dismiss()
+            intentBottomDialogFragment.dismissAllowingStateLoss()
         }
         super.finish()
     }
@@ -106,12 +103,12 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         Figure out if the selected email's domain name is part of the user's AnonAddy account or not
          */
 
-        networkHelper.getDomainOptions { result ->
-            if (result != null) {
+        networkHelper.getDomainOptions { domainOptionsObject, _ ->
+            if (domainOptionsObject != null) {
                 // Set variable
-                domainOptions = result.data
+                domainOptions = domainOptionsObject.data
 
-                if (result.data.contains(splittedEmailAddress[1])) {
+                if (domainOptionsObject.data.contains(splittedEmailAddress[1])) {
                     // The domain of the email address is linked to this AnonAddy account. User most likely wants to either manage or create this Alias.
                     intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, text))
                     lifecycleScope.launch {
@@ -120,9 +117,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 } else {
                     // The domain of the email address is not linked to this AnonAddy account. User most likely wants to send
                     // an email from an alias to this email address
-                    lifecycleScope.launch {
-                        sendEmailFromAlias(text)
-                    }
+                    sendEmailFromAlias(text)
                 }
             } else {
                 Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_domains), Toast.LENGTH_LONG).show()
@@ -133,58 +128,64 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
 
     private lateinit var intentSendMailRecipientBottomDialogFragment: IntentSendMailRecipientBottomDialogFragment
-    private suspend fun sendEmailFromAlias(text: CharSequence) {
+    private fun sendEmailFromAlias(text: CharSequence) {
         intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_send_mail_dialog))
 
         // Get aliases and pass it through to the send email bottomdialog
-        networkHelper.getAliases({ result ->
-            if (result != null) {
-                aliases = result
-                intentSendMailRecipientBottomDialogFragment =
-                    IntentSendMailRecipientBottomDialogFragment.newInstance(text.toString(), result, domainOptions)
+        intentSendMailRecipientBottomDialogFragment =
+            IntentSendMailRecipientBottomDialogFragment.newInstance(text.toString(), domainOptions)
 
-                if (!intentSendMailRecipientBottomDialogFragment.isAdded) {
-                    intentSendMailRecipientBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "intentSendMailRecipientBottomDialogFragment"
-                    )
-                }
-            } else {
-                Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_aliases), Toast.LENGTH_LONG).show()
-                finish()
-            }
-        }, activeOnly = true, includeDeleted = false)
+        if (!intentSendMailRecipientBottomDialogFragment.isAdded) {
+            intentSendMailRecipientBottomDialogFragment.show(
+                supportFragmentManager,
+                "intentSendMailRecipientBottomDialogFragment"
+            )
+        }
+
 
     }
 
     private suspend fun checkIfAliasExists(text: CharSequence) {
-        networkHelper.getAliases({ result ->
-            if (result != null) {
-
-                // Check if there is an alias with this email address and get its ID
-                val aliasId: String? = result.firstOrNull { it.email == text }?.id
-                if (!aliasId.isNullOrEmpty()) {
-                    // ID is not empty, thus there was a match
-                    // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity
-                    intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_alias_already_exists))
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        intentBottomDialogFragment.dismiss()
-                        // There is an alias with this exact email address. It already exists! Open the ManageAliasActivity
-                        val intent = Intent(this, ManageAliasActivity::class.java)
-                        // Pass data object in the bundle and populate details activity.
-                        intent.putExtra("alias_id", aliasId)
-                        startActivity(intent)
-                        finish()
-                    }, 1000)
-                } else {
-                    // ID is empty, this alias is new! Let's create it
-                    val splittedEmailAddress = text.split("@")
-                    lifecycleScope.launch {
-                        addAliasToAccount(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0])
+        networkHelper.getAliases(
+            { result, _ ->
+                if (result != null) {
+                    // Check if there is an alias with this email address and get its ID
+                    val aliasId: String? = result.data.firstOrNull { it.email == text }?.id
+                    if (!aliasId.isNullOrEmpty()) {
+                        // ID is not empty, thus there was a match
+                        // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity
+                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_alias_already_exists))
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            intentBottomDialogFragment.dismissAllowingStateLoss()
+                            // There is an alias with this exact email address. It already exists! Open the ManageAliasActivity
+                            val intent = Intent(this, ManageAliasActivity::class.java)
+                            // Pass data object in the bundle and populate details activity.
+                            intent.putExtra("alias_id", aliasId)
+                            startActivity(intent)
+                            finish()
+                        }, 1000)
+                    } else {
+                        // ID is empty, this alias is new! Let's create it
+                        val splittedEmailAddress = text.split("@")
+                        lifecycleScope.launch {
+                            addAliasToAccount(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0])
+                        }
                     }
+                } else {
+                    Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_aliases), Toast.LENGTH_LONG).show()
+                    finish()
                 }
-            }
-        }, activeOnly = false, includeDeleted = true)
+            },
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = false,
+                onlyInactiveAliases = false,
+                includeDeleted = true,
+                onlyWatchedAliases = false,
+                sort = null,
+                sortDesc = true,
+                filter = text.toString()
+            )
+        )
 
     }
 
@@ -196,11 +197,11 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         alias: String,
         toString: String
     ) {
-        networkHelper.addAlias({ result ->
-            if (result == "201") {
+        networkHelper.addAlias({ aliasObject, _ ->
+            if (aliasObject != null) {
                 Toast.makeText(this, this.resources.getString(R.string.alias_created), Toast.LENGTH_LONG).show()
                 lifecycleScope.launch {
-                    onPressSend(alias, toString)
+                    onPressSend(alias, aliasObject, toString)
                 }
             } else {
                 Toast.makeText(this, this.resources.getString(R.string.error_adding_alias), Toast.LENGTH_LONG).show()
@@ -215,8 +216,8 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         format: String,
         local_part: String
     ) {
-        networkHelper.addAlias({ result ->
-            if (result == "201") {
+        networkHelper.addAlias({ alias, _ ->
+            if (alias != null) {
                 Toast.makeText(this, this.resources.getString(R.string.alias_created), Toast.LENGTH_LONG).show()
                 finish()
             } else {
@@ -226,21 +227,18 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         }, domain, description, format, local_part, null)
     }
 
-    override suspend fun onPressSend(alias: String, toString: String, skipAndOpenDefaultMailApp: Boolean) {
-        intentSendMailRecipientBottomDialogFragment.dismiss()
+    override suspend fun onPressSend(alias: String, aliasObject: Aliases?, toString: String, skipAndOpenDefaultMailApp: Boolean) {
+        intentSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
 
         if (skipAndOpenDefaultMailApp) {
             openMailToShareSheet(toString.split(",").toTypedArray())
             finish()
         } else {
             // Check if this alias exists
-            if (aliases.count { it.email == alias } > 0) {
+            if (aliasObject != null) {
                 // The entered alias exists!
                 intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_sharesheet))
 
-
-                // Get actual alias object
-                val aliasObject = aliases.first { it.email == alias }
                 // Get recipients
                 val recipients = AnonAddyUtils.getSendAddress(toString, aliasObject)
 

@@ -2,20 +2,15 @@ package host.stjin.anonaddy.ui.usernames.manage
 
 import android.app.Dialog
 import android.content.Context
-import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
-import com.google.android.material.shape.ShapeAppearanceModel
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
@@ -82,7 +77,7 @@ class EditUsernameRecipientBottomDialogFragment(
     private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
 
-        networkHelper.getRecipients({ result ->
+        networkHelper.getRecipients({ result, _ ->
             if (result != null) {
                 // Remove the default "Loading recipients" chip
                 binding.bsEditrecipientChipgroup.removeAllViewsInLayout()
@@ -90,18 +85,9 @@ class EditUsernameRecipientBottomDialogFragment(
                 binding.bsEditrecipientChipgroup.invalidate()
 
                 for (recipient in result) {
-                    val chip = Chip(ContextThemeWrapper(binding.bsEditrecipientChipgroup.context, R.style.AnonAddyChip))
+                    val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsEditrecipientChipgroup, false) as Chip
                     chip.text = recipient.email
                     chip.tag = recipient.id
-                    chip.isClickable = true
-                    chip.isCheckable = true
-                    chip.shapeAppearanceModel =
-                        ShapeAppearanceModel().toBuilder().setAllCornerSizes(context.resources.getDimension(R.dimen.corner_radius_chips)).build()
-                    chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(context, android.R.color.transparent))
-                    chip.checkedIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_check, null)
-                    chip.checkedIconTint = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.primaryColor))
-                    chip.chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.shimmerGray))
-                    chip.chipStrokeWidth = context.resources.getDimension(R.dimen.chip_stroke_width)
                     chip.isChecked = defaultRecipient.equals(recipient.email)
 
                     binding.bsEditrecipientChipgroup.addView(chip)

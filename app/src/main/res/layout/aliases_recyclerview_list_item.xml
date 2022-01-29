@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/aliases_recyclerview_list_CV"
+    android:id="@+id/recyclerview_list_CV"
     style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_rounded_corners_top_bottom_recycleview_cards"
+            android:background="@drawable/shape_rounded_corners_top_recyclerview_cards"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -133,11 +133,10 @@
                 android:maxLines="1"
                 android:singleLine="false"
                 android:text="@string/you_ll_be_notified_if_this_alias_has_activity"
-                android:textColor="@color/primaryColor"
+                android:textColor="?colorPrimary"
                 android:textSize="12sp"
-                android:visibility="gone"
                 app:drawableStartCompat="@drawable/ic_watch_alias"
-                app:drawableTint="@color/primaryColor" />
+                app:drawableTint="?colorPrimary" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

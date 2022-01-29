@@ -1,28 +1,28 @@
 package host.stjin.anonaddy.ui.recipients
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
+import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RecipientAdapter
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import host.stjin.anonaddy.utils.LoggingHelper
@@ -72,8 +72,6 @@ class RecipientsFragment : Fragment(),
     }
 
     private fun getDataFromWeb() {
-        binding.recipientsLL1.visibility = View.VISIBLE
-        binding.recipientsRLLottieview.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
@@ -82,16 +80,19 @@ class RecipientsFragment : Fragment(),
         }
     }
 
-    private fun setStats(currentCount: Int? = null) {
+    private fun setStats() {
         binding.activityRecipientSettingsLLCount.text = requireContext().resources.getString(
             R.string.you_ve_used_d_out_of_d_recipients,
-            currentCount ?: User.userResource.recipient_count,
-            if (User.userResource.subscription != null) User.userResource.recipient_limit else this.resources.getString(R.string.unlimited)
+            (activity?.application as AnonAddyForAndroid).userResource.recipient_count,
+            if ((activity?.application as AnonAddyForAndroid).userResource.subscription != null) (activity?.application as AnonAddyForAndroid).userResource.recipient_limit else this.resources.getString(
+                R.string.unlimited
+            )
         )
 
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if (User.userResource.subscription != null) {
-            binding.recipientsAddRecipients.isEnabled = User.userResource.recipient_count < User.userResource.recipient_limit
+        if ((activity?.application as AnonAddyForAndroid).userResource.subscription != null) {
+            binding.recipientsAddRecipients.isEnabled =
+                (activity?.application as AnonAddyForAndroid).userResource.recipient_count < (activity?.application as AnonAddyForAndroid).userResource.recipient_limit
         } else {
             binding.recipientsAddRecipients.isEnabled = true
         }
@@ -100,7 +101,9 @@ class RecipientsFragment : Fragment(),
     private suspend fun getUserResource(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                User.userResource = user
+                (activity?.application as AnonAddyForAndroid).userResource = user
+                // Update stats
+                setStats()
             } else {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
@@ -120,9 +123,22 @@ class RecipientsFragment : Fragment(),
         }
     }
 
+
+    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.recipientsNSV.post { binding.recipientsNSV.fullScroll(ScrollView.FOCUS_UP) }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
+    }
+
     // Update the recipients list when coming back
     override fun onResume() {
         super.onResume()
+        activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
         getDataFromWeb()
     }
 
@@ -164,7 +180,7 @@ class RecipientsFragment : Fragment(),
                 layoutAnimation = animation
                 showShimmer()
             }
-            networkHelper?.getRecipients({ list ->
+            networkHelper?.getRecipients({ list, result ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -175,9 +191,6 @@ class RecipientsFragment : Fragment(),
                 }
 
                 if (list != null) {
-                    // Update stats
-                    setStats(list.size)
-
                     // There is always 1 recipient.
 
                     /*if (list.size > 0) {
@@ -212,8 +225,20 @@ class RecipientsFragment : Fragment(),
                     })
                     adapter = recipientAdapter
                 } else {
-                    binding.recipientsLL1.visibility = View.GONE
-                    binding.recipientsRLLottieview.visibility = View.VISIBLE
+                    // Data could not be loaded
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
                 }
                 hideShimmer()
             }, verifiedOnly = false)
@@ -259,63 +284,65 @@ class RecipientsFragment : Fragment(),
         }
     }
 
-    lateinit var dialog: AlertDialog
+    private lateinit var deleteRecipientSnackbar: Snackbar
     private fun deleteRecipient(id: String, context: Context) {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(context), null, false)
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = context.resources.getString(R.string.delete_recipient)
-        anonaddyCustomDialogBinding.dialogText.text = context.resources.getString(R.string.delete_recipient_desc)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            context.resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(context, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(context, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                deleteRecipientHttpRequest(id, context, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.delete_recipient))
+            .setIcon(R.drawable.ic_trash)
+            .setMessage(resources.getString(R.string.delete_recipient_desc))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            dialog.dismiss()
-        }
-        // create and show the alert dialog
-        dialog.show()
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                val bottomNavView: BottomNavigationView? =
+                    activity?.findViewById(R.id.nav_view)
+                bottomNavView?.let {
+                    deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
+                        context,
+                        this.resources.getString(R.string.deleting_recipient),
+                        it,
+                        length = Snackbar.LENGTH_INDEFINITE
+                    ).apply {
+                        anchorView = bottomNavView
+                    }
+                    deleteRecipientSnackbar.show()
+                }
+
+                lifecycleScope.launch {
+                    deleteRecipientHttpRequest(id, context)
+                }
+            }
+            .show()
     }
 
-    private suspend fun deleteRecipientHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun deleteRecipientHttpRequest(id: String, context: Context) {
         networkHelper?.deleteRecipient({ result ->
             if (result == "204") {
-                dialog.dismiss()
+                deleteRecipientSnackbar.dismiss()
                 getDataFromWeb()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_deleting_recipient), result
-                )
+                val bottomNavView: BottomNavigationView? =
+                    activity?.findViewById(R.id.nav_view)
+                bottomNavView?.let {
+                    deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
+                        context,
+                        context.resources.getString(
+                            R.string.s_s,
+                            context.resources.getString(R.string.error_deleting_recipient), result
+                        ),
+                        it,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).apply {
+                        anchorView = bottomNavView
+                    }
+                    deleteRecipientSnackbar.show()
+                }
             }
         }, id)
     }
 
     override fun onAdded() {
-        addRecipientsFragment.dismiss()
+        addRecipientsFragment.dismissAllowingStateLoss()
         verificationEmailSentSnackbar(requireContext())
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb()

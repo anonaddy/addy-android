@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 1000dp height is used to make the sheet taller so that it can extend to the top -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bs_filteroptions_aliases_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="16dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/bottomsheet_top_part_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/drag_down_to_close"
+            android:src="@drawable/drag_pill" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/filtering_and_sorting"
+            android:textAlignment="center"
+            android:textColor="@color/BlackWhite"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        style="@style/divider"
+        android:layout_width="match_parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="@dimen/layout_padding">
+
+                <TextView
+                    style="@style/DescTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/filtering_and_sorting_desc"
+                    android:textAlignment="center" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/titleTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/filters"
+                            android:textColor="@color/BlackWhite" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bs_filteroptions_aliases_clear_filter"
+                            style="@style/MaterialButtonSecondaryDark"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/clear_filter"
+                            app:icon="@drawable/ic_filter" />
+
+                    </LinearLayout>
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/AnonAddyMaterialToggleButtonGroupParentCardView"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.button.MaterialButtonToggleGroup
+                            android:id="@+id/bs_filteroptions_aliases_mbtg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:weightSum="3"
+                            app:checkedButton="@+id/bs_filteroptions_aliases_all_button"
+                            app:selectionRequired="true"
+                            app:singleSelection="true">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/bs_filteroptions_aliases_all_button"
+                                style="@style/AnonAddyMaterialToggleButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:text="@string/all_aliases" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/bs_filteroptions_aliases_active_button"
+                                style="@style/AnonAddyMaterialToggleButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/active_aliases" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/bs_filteroptions_aliases_inactive_button"
+                                style="@style/AnonAddyMaterialToggleButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/inactive_aliases" />
+
+                        </com.google.android.material.button.MaterialButtonToggleGroup>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/AnonAddyMaterialToggleButtonGroupParentCardView"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.button.MaterialButtonToggleGroup
+                            android:id="@+id/bs_filteroptions_aliases_watched_mbtg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:weightSum="2"
+                            app:checkedButton="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
+                            app:selectionRequired="true"
+                            app:singleSelection="true">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/bs_filteroptions_aliases_watched_only_button"
+                                style="@style/AnonAddyMaterialToggleButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/filter_watched_only" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
+                                style="@style/AnonAddyMaterialToggleButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/all_aliases" />
+
+                        </com.google.android.material.button.MaterialButtonToggleGroup>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/bs_filteroptions_aliases_include_deleted_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionBackgroundColor="@android:color/transparent"
+                        app:sectionDescription="@string/include_deleted_aliases_desc"
+                        app:sectionElevation="0"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_trash"
+                        app:sectionSwitchChecked="true"
+                        app:sectionTitle="@string/include_deleted_aliases" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <View
+                style="@style/divider"
+                android:layout_width="match_parent" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/layout_padding">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/sort_by"
+                        android:textColor="@color/BlackWhite" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bs_filteroptions_aliases_sort_order"
+                        style="@style/MaterialButtonSecondaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sort_asc"
+                        app:icon="@drawable/ic_sort_descending" />
+
+                </LinearLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/bs_filteroptions_aliases_sorting_chipgroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="16dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_local_part"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_localpart" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_domain"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_domain" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_email" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email_forwarded"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_email_forwarded" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email_blocked"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_email_blocked" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email_replied"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_email_replied" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email_sent"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_email_sent" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email_active"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_active" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email_created_at"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:checked="true"
+                        android:text="@string/sort_created_at" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email_updated_at"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_updated_at" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_email_deleted_at"
+                        style="@style/AnonAddyChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_deleted_at" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                    android:id="@+id/bs_filteroptions_aliases_save_button"
+                    style="@style/CircularProgressButtonSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/save" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

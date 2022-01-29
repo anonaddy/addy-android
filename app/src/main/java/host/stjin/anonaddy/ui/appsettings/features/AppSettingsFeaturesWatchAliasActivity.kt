@@ -18,9 +18,20 @@ class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesWatchAliasBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsFeaturesWatchAliasNSVLL)
+        )
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(binding.appsettingsFeaturesWatchAliasToolbar.customToolbarOneHandedMaterialtoolbar, R.string.watch_alias)
+        setupToolbar(
+            R.string.watch_alias,
+            binding.appsettingsFeaturesWatchAliasNSV,
+            binding.appsettingsFeaturesWatchAliasToolbar,
+            R.drawable.ic_watch_alias
+        )
 
         loadSettings()
         setOnClickListeners()

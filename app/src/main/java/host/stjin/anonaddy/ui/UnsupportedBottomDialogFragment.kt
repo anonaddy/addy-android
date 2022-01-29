@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -71,6 +72,10 @@ class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
 
     }
 
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        listener.onClickIgnore()
+    }
 
     companion object {
         fun newInstance(): UnsupportedBottomDialogFragment {

@@ -5,7 +5,7 @@
     android:id="@+id/activity_domain_settings_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/AnonAddyNotYetWhite"
+
     android:orientation="vertical">
 
 
@@ -15,13 +15,14 @@
 
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/activity_domain_settings_NCV"
+        android:id="@+id/activity_domain_settings_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <RelativeLayout
+            android:id="@+id/activity_domain_settings_NSV_RL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipChildren="false"
@@ -63,7 +64,6 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_domain_settings_add_domain"
-                        style="@style/RoundActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_domain" />

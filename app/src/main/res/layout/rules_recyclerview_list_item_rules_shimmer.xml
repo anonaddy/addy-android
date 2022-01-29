@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/aliases_recyclerview_list_CV"
+    android:id="@+id/recyclerview_list_CV"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/AnonAddyCustomCardViewStyleCenter"
     android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/rule"
                 android:src="@drawable/ic_clipboard_list"
-                app:tint="@color/shimmerGray" />
+                app:tint="?colorSurfaceVariant" />
 
         </LinearLayout>
 
@@ -49,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/shimmerGray"
+                    android:background="?colorSurfaceVariant"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
@@ -67,7 +67,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/shimmerGray"
+                    android:background="?colorSurfaceVariant"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/open_options"
                 app:srcCompat="@drawable/ic_chevron_down"
-                app:tint="@color/shimmerGray" />
+                app:tint="?colorSurfaceVariant" />
         </LinearLayout>
 
     </LinearLayout>

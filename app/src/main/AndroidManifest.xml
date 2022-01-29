@@ -2,10 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="host.stjin.anonaddy">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- BLOCK -->
-    <!--    &lt;!&ndash; Used for scanning the API key &ndash;&gt;
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- BLOCK -->
+    <!--
+    &lt;!&ndash; Used for scanning the API key &ndash;&gt;
         <uses-permission android:name="android.permission.CAMERA" />
         &lt;!&ndash;
           Include all the "features" under the camera permission,
@@ -16,10 +15,9 @@
             android:required="false" />
         <uses-feature
             android:name="android.hardware.camera.autofocus"
-            android:required="false" />-->
+            android:required="false" />
+    -->
     <!-- END BLOCK -->
-
-
     <!--
     Starting from Android 11, we need to query to packages with mailto: mailscheme
     This is being used in the ManageAliasActivity for sending emails from an alias
@@ -27,12 +25,13 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.SENDTO" />
+
             <data android:scheme="mailto" />
         </intent>
     </queries>
 
-    <!-- Disable backup to prevent encrypted storage to transfer over -->
     <application
+        android:name=".AnonAddyForAndroid"
         android:allowBackup="false"
         android:exported="true"
         android:fullBackupContent="false"
@@ -74,7 +73,17 @@
 
         <service
             android:name=".widget.AliasWidget2RemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- Widget 2 -->
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity
+            android:name=".widget.AliasWidget2BottomSheetAddActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:theme="@style/AppTheme.Transparent" />
+
+        <!-- Widget 2 -->
         <!-- Notification -->
         <receiver android:name=".notifications.ActionReceiver" /> <!-- Notification -->
         <!-- END widget -->
@@ -92,7 +101,7 @@
         <activity
             android:name=".ui.alias.manage.ManageAliasActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -100,12 +109,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "https://*/deactivate” -->
 
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
 
-
                 <!-- If new URLS are added here, also add them to the webintentmanager -->
+
 
                 <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
                 <data
@@ -113,11 +121,13 @@
                     android:pathPrefix="/deactivate" />
                 <!-- END -->
 
+
                 <!-- Hosted hosted instances (Works on > SDK31 devices) -->
                 <data
                     android:host="app.anonaddy.com"
                     android:pathPrefix="/deactivate" />
                 <!-- END -->
+
 
                 <!-- END -->
             </intent-filter>
@@ -130,7 +140,8 @@
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:theme="@style/AppTheme.Transparent">
-            <!-- Creating aliases on-the-go -->
+
+        <!-- Creating aliases on-the-go -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.SENDTO" />
@@ -144,58 +155,58 @@
         </activity>
         <activity
             android:name=".ui.faileddeliveries.FailedDeliveriesActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.logs.LogViewerActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.rules.CreateRuleActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.rules.RulesSettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.domains.DomainSettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.usernames.UsernamesSettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.search.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.recipients.manage.ManageRecipientsActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.domains.manage.ManageDomainsActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.usernames.manage.ManageUsernamesActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.AppSettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesWatchAliasActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesMailToActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyFailedDeliveriesActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesWebIntentResolutionActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.update.AppSettingsUpdateActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.backup.AppSettingsBackupActivity"
-            android:theme="@style/AppTheme.NoActionBar.NotYetWhite" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.setup.SetupActivity"
             android:exported="true"
@@ -206,10 +217,23 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "https://*/setup” -->
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+
+                <!-- If new URLS are added here, also add them to the webintentmanager -->
+
+                <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
                 <data
                     android:host="*"
-                    android:pathPrefix="/setup"
-                    android:scheme="https" />
+                    android:pathPrefix="/setup" />
+                <!-- END -->
+
+                <!-- Hosted hosted instances (Works on > SDK31 devices) -->
+                <data
+                    android:host="app.anonaddy.com"
+                    android:pathPrefix="/setup" />
+
                 <!-- note that the leading "/" is required for pathPrefix -->
             </intent-filter>
         </activity>

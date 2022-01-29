@@ -2,19 +2,15 @@ package host.stjin.anonaddy.ui.domains.manage
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.LoggingHelper
@@ -41,8 +37,17 @@ class ManageDomainsActivity : BaseActivity(),
         binding = ActivityManageDomainsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageDomainNSVRL)
+        )
 
-        setupToolbar(binding.activityManageDomainToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_domain)
+        setupToolbar(
+            R.string.edit_domain,
+            binding.activityManageDomainNSV,
+            binding.activityManageDomainToolbar
+        )
         networkHelper = NetworkHelper(this)
 
 
@@ -230,63 +235,50 @@ class ManageDomainsActivity : BaseActivity(),
 
     }
 
-    private lateinit var deleteDomainDialog: AlertDialog
+    private lateinit var deleteDomainSnackbar: Snackbar
     private fun deleteDomain(id: String) {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-        // create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        deleteDomainDialog = builder.create()
-        deleteDomainDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_domain)
-        anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.delete_domain_desc_confirm)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                deleteDomainHttpRequest(id, this@ManageDomainsActivity, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.delete_domain))
+            .setIcon(R.drawable.ic_trash)
+            .setMessage(resources.getString(R.string.delete_domain_desc_confirm))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            deleteDomainDialog.dismiss()
-        }
-        // create and show the alert dialog
-        deleteDomainDialog.show()
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                deleteDomainSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.deleting_domain),
+                    binding.activityManageDomainCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteDomainSnackbar.show()
+                lifecycleScope.launch {
+                    deleteDomainHttpRequest(id, this@ManageDomainsActivity)
+                }
+            }
+            .show()
     }
 
 
-    private suspend fun deleteDomainHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun deleteDomainHttpRequest(id: String, context: Context) {
         networkHelper.deleteDomain({ result ->
             if (result == "204") {
-                deleteDomainDialog.dismiss()
+                deleteDomainSnackbar.dismiss()
                 finish()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text =
-                    context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_domain), result)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_domain), result),
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }
 
 
     private suspend fun getDomainInfo(id: String) {
-        networkHelper.getSpecificDomain({ list ->
+        networkHelper.getSpecificDomain({ list, error ->
 
             if (list != null) {
                 /**
@@ -401,6 +393,13 @@ class ManageDomainsActivity : BaseActivity(),
                 setOnSwitchChangeListeners()
                 setOnClickListeners()
             } else {
+
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_domains) + "\n" + error,
+                    binding.activityManageDomainCL
+                ).show()
+
                 binding.activityManageDomainRLProgressbar.visibility = View.GONE
                 binding.activityManageDomainLL1.visibility = View.GONE
 
@@ -412,11 +411,11 @@ class ManageDomainsActivity : BaseActivity(),
 
     override fun descriptionEdited(description: String) {
         setPage()
-        editDomainDescriptionBottomDialogFragment.dismiss()
+        editDomainDescriptionBottomDialogFragment.dismissAllowingStateLoss()
     }
 
     override fun recipientEdited() {
         setPage()
-        editDomainRecipientBottomDialogFragment.dismiss()
+        editDomainRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }
 }

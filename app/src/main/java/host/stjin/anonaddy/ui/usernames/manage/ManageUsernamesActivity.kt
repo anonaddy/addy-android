@@ -1,21 +1,17 @@
 package host.stjin.anonaddy.ui.usernames.manage
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageUsernamesBinding
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.LoggingHelper
@@ -43,8 +39,17 @@ class ManageUsernamesActivity : BaseActivity(),
         binding = ActivityManageUsernamesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageUsernameNSVRL)
+        )
 
-        setupToolbar(binding.activityManageUsernameToolbar.customToolbarOneHandedMaterialtoolbar, R.string.edit_username)
+        setupToolbar(
+            R.string.edit_username,
+            binding.activityManageUsernameNSV,
+            binding.activityManageUsernameToolbar
+        )
         networkHelper = NetworkHelper(this)
 
 
@@ -166,66 +171,53 @@ class ManageUsernamesActivity : BaseActivity(),
     }
 
 
-    private lateinit var deleteUsernameDialog: AlertDialog
+    private lateinit var deleteUsernameSnackbar: Snackbar
     private fun deleteUsername(id: String) {
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-
-// create an alert builder
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        deleteUsernameDialog = builder.create()
-        deleteUsernameDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.delete_username)
-        anonaddyCustomDialogBinding.dialogText.text = resources.getString(R.string.delete_username_desc_confirm)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.delete)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            // Animate the button to progress
-            anonaddyCustomDialogBinding.dialogPositiveButton.startAnimation()
-
-            anonaddyCustomDialogBinding.dialogError.visibility = View.GONE
-            anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = false
-            anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = false
-
-            lifecycleScope.launch {
-                deleteUsernameHttpRequest(id, this@ManageUsernamesActivity, anonaddyCustomDialogBinding)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.delete_username))
+            .setIcon(R.drawable.ic_trash)
+            .setMessage(resources.getString(R.string.delete_username_desc_confirm))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
             }
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            deleteUsernameDialog.dismiss()
-        }
-        // create and show the alert dialog
-        deleteUsernameDialog.show()
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                deleteUsernameSnackbar = SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.deleting_username),
+                    binding.activityManageUsernameCL,
+                    length = Snackbar.LENGTH_INDEFINITE
+                )
+                deleteUsernameSnackbar.show()
+                lifecycleScope.launch {
+                    deleteUsernameHttpRequest(id, this@ManageUsernamesActivity)
+                }
+            }
+            .show()
     }
 
 
-    private suspend fun deleteUsernameHttpRequest(id: String, context: Context, anonaddyCustomDialogBinding: AnonaddyCustomDialogBinding) {
+    private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {
         networkHelper.deleteUsername({ result ->
             if (result == "204") {
-                deleteUsernameDialog.dismiss()
+                deleteUsernameSnackbar.dismiss()
                 finish()
             } else {
-                // Revert the button to normal
-                anonaddyCustomDialogBinding.dialogPositiveButton.revertAnimation()
-
-                anonaddyCustomDialogBinding.dialogError.visibility = View.VISIBLE
-                anonaddyCustomDialogBinding.dialogNegativeButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogPositiveButton.isEnabled = true
-                anonaddyCustomDialogBinding.dialogError.text = context.resources.getString(
-                    R.string.s_s,
-                    context.resources.getString(R.string.error_deleting_username), result
-                )
+                SnackbarHelper.createSnackbar(
+                    this,
+                    context.resources.getString(
+                        R.string.s_s,
+                        context.resources.getString(R.string.error_deleting_username), result
+                    ),
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
             }
         }, id)
     }
 
 
     private suspend fun getUsernameInfo(id: String) {
-        networkHelper.getSpecificUsername({ list ->
+        networkHelper.getSpecificUsername({ list, error ->
 
             if (list != null) {
                 /**
@@ -283,7 +275,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
                 // Set recipient
                 val recipients: String = list.default_recipient?.email ?: this.resources.getString(
-                    R.string.default_recipient_s, User.userResourceExtended.default_recipient_email
+                    R.string.default_recipient_s, (this.application as AnonAddyForAndroid).userResourceExtended.default_recipient_email
                 )
 
                 binding.activityManageUsernameRecipientsEdit.setDescription(recipients)
@@ -322,6 +314,13 @@ class ManageUsernamesActivity : BaseActivity(),
                 setOnSwitchChangeListeners()
                 setOnClickListeners()
             } else {
+
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_username) + "\n" + error,
+                    binding.activityManageUsernameCL
+                ).show()
+
                 binding.activityManageUsernameRLProgressbar.visibility = View.GONE
                 binding.activityManageUsernameLL1.visibility = View.GONE
 
@@ -334,11 +333,11 @@ class ManageUsernamesActivity : BaseActivity(),
 
     override fun descriptionEdited(description: String) {
         setPage()
-        editUsernameDescriptionBottomDialogFragment.dismiss()
+        editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
     }
 
     override fun recipientEdited() {
         setPage()
-        editUsernameRecipientBottomDialogFragment.dismiss()
+        editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }
 }

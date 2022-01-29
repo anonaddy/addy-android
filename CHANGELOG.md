@@ -1,5 +1,29 @@
 # Changelog
 
+## [v3.3.4] - 2022-01-31
+
+> **_NOTE:_**  3.3.0-3.3.3 Never released because Google refused the new updates multiple times.
+
+### Added
+
+- 📧 You can now filter and sort aliases in the aliases tab for a clearer view
+- ➕ Thanks to a new floating action button you can now create aliases while scrolling
+
+### Fixed/Improved
+
+- 🎨 Moved to MD3 design
+  - The app got a slightly different but more vibrant color palette
+  - Enable "use dynamic colors" in the appearance settings of the app to let it blend in with your system theme (Android 12 or higher required). This
+    eliminates the need for the "Material You" builds
+  - You can now tap the appbar to scroll up the page
+  - The (new) bottomnavigation now has animated icons
+  - The big widget-style has been redesigned
+- 📃 Added the "Run rule on" options for creating rules
+- 🕷 Fixed a bug where folding/unfolding your foldable while creating a rule would reset the screen
+- 🕷 Fixed a bug where the app would crash when coming back to it after having it idle for a certain amount of time
+- ✨ The number of API requests that are made is now reduced.
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v3.2.1] - 2021-10-17
 
 ### Added
@@ -50,8 +74,8 @@
 ### Fixed/Improved
 
 - More UI changes that make the app look better
-    - The iconography has changed from Material to Tabler for a unique experience
-    - More animations
+  - The iconography has changed from Material to Tabler for a unique experience
+  - More animations
 
 - Performance improvements and other things I might have forgot to make the app even smoother
 
@@ -68,15 +92,15 @@
 ### Fixed/Improved
 
 - 🎨 Massive UI redesign with Android 12 and simplicity in mind
-    - One-handed interface, simply swipe down from any screen to move content down for better accessibility
-    - Cards and raises are now used for a clean-looking, easier-to-understand design
-    - The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color
-    - A new app icon, that changes according to your system accent (Android 12 only)
-    - Softer colors
-    - Bigger, clearer buttons with more space between elements
-    - Animations! Most progressbars are now replaced with morphing buttons
-    - Improved shimmers
-    - Improved tablet layout
+  - One-handed interface, simply swipe down from any screen to move content down for better accessibility
+  - Cards and raises are now used for a clean-looking, easier-to-understand design
+  - The initials of your AnonAddy username are now used instead of the user icon, along with your system accent color
+  - A new app icon, that changes according to your system accent (Android 12 only)
+  - Softer colors
+  - Bigger, clearer buttons with more space between elements
+  - Animations! Most progressbars are now replaced with morphing buttons
+  - Improved shimmers
+  - Improved tablet layout
 
 - Updated shared domains list
 - Select the recipients for an alias when creating a new alias
@@ -145,13 +169,15 @@
 ## [v1.1.0] - 2020-10-24
 
 ### Added
+
 - 📋 Added new rule-editor (beta)
- -  The feature is still in beta, and might not be available on the hosted instance -  For self-hosted instanced, enable the rule feature in order to use this editor
- - 🔤 Added catch-all switch for AnonAddy v0.4.0>
- - ⌨ Added custom alias format option
- - 💸 Added subscription check for random words alias format
- - 💌 Show changelog on update
- - 🛠️ Added version check (for self hosted instances)
+- The feature is still in beta, and might not be available on the hosted instance - For self-hosted instanced, enable the rule feature in order to use
+  this editor
+- 🔤 Added catch-all switch for AnonAddy v0.4.0>
+- ⌨ Added custom alias format option
+- 💸 Added subscription check for random words alias format
+- 💌 Show changelog on update
+- 🛠️ Added version check (for self hosted instances)
 
 
 ### Fixed/Improved

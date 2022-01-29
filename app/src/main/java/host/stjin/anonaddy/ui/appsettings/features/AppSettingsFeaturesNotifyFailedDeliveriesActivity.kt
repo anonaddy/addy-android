@@ -24,11 +24,19 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesNotifyFailedDeliveriesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesNotifyFailedDeliveriesNSVLL)
+        )
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
-            binding.appsettingsFeaturesNotifyFailedDeliveriesToolbar.customToolbarOneHandedMaterialtoolbar,
-            R.string.feature_notify_failed_deliveries
+            R.string.feature_notify_failed_deliveries,
+            binding.activityAppSettingsFeaturesNotifyFailedDeliveriesNSV,
+            binding.appsettingsFeaturesNotifyFailedDeliveriesToolbar,
+            R.drawable.ic_mail_error
         )
 
         loadSettings()

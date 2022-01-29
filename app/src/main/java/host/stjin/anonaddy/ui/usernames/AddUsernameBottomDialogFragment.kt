@@ -96,18 +96,15 @@ class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
         address: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addUsername({ result, _ ->
-            when (result) {
-                "201" -> {
-                    listener.onAdded()
-                }
-                else -> {
-                    // Revert the button to normal
-                    binding.bsAddusernameUsernameAddUsernameButton.revertAnimation()
+        networkHelper.addUsername({ username, error ->
+            if (username != null) {
+                listener.onAdded()
+            } else {
+                // Revert the button to normal
+                binding.bsAddusernameUsernameAddUsernameButton.revertAnimation()
 
-                    binding.bsAddusernameUsernameTil.error =
-                        context.resources.getString(R.string.error_adding_username) + "\n" + result
-                }
+                binding.bsAddusernameUsernameTil.error =
+                    context.resources.getString(R.string.error_adding_username) + "\n" + error
             }
         }, address)
     }

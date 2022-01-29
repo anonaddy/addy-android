@@ -26,9 +26,20 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesMailtoBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesMailtoNSVLL)
+        )
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(binding.appsettingsFeaturesMailtoToolbar.customToolbarOneHandedMaterialtoolbar, R.string.integration_mailto_alias)
+        setupToolbar(
+            R.string.integration_mailto_alias,
+            binding.activityAppSettingsFeaturesMailtoNSV,
+            binding.appsettingsFeaturesMailtoToolbar,
+            R.drawable.ic_dots_circle_horizontal
+        )
 
         loadSettings()
         setOnClickListeners()

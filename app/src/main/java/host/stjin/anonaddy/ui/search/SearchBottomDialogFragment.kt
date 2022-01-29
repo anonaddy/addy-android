@@ -170,11 +170,24 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAliases({ aliaslist ->
-                    aliases = aliaslist
-                    sourcesSearched++
-                    performSearch(context)
-                }, activeOnly = false, includeDeleted = true, binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault()))
+                networkHelper.getAliases(
+                    { aliaslist, _ ->
+                        aliases = aliaslist?.data
+                        sourcesSearched++
+                        performSearch(context)
+                    },
+                    aliasSortFilter = AliasSortFilter(
+                        onlyActiveAliases = false,
+                        onlyInactiveAliases = false,
+                        includeDeleted = true,
+                        onlyWatchedAliases = false,
+                        sort = null,
+                        sortDesc = true,
+                        filter = binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault())
+                    ),
+                    // This will return max 100 items
+                    size = 100
+                )
             }
         }
 
@@ -182,7 +195,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getRecipients({ recipientlist ->
+                networkHelper.getRecipients({ recipientlist, _ ->
                     recipients = recipientlist
                     sourcesSearched++
                     performSearch(context)
@@ -194,7 +207,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllDomains { domainlist ->
+                networkHelper.getAllDomains { domainlist, _ ->
                     domains = domainlist
                     sourcesSearched++
                     performSearch(context)
@@ -206,7 +219,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllUsernames { usernamelist ->
+                networkHelper.getAllUsernames { usernamelist, _ ->
                     usernames = usernamelist
                     sourcesSearched++
                     performSearch(context)
@@ -219,7 +232,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllRules({ rulesList ->
+                networkHelper.getAllRules({ rulesList, _ ->
                     rules = rulesList
                     sourcesSearched++
                     performSearch(context)
@@ -231,7 +244,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllFailedDeliveries({ failedDeliveriesList ->
+                networkHelper.getAllFailedDeliveries({ failedDeliveriesList, _ ->
                     failedDeliveries = failedDeliveriesList
                     sourcesSearched++
                     performSearch(context)

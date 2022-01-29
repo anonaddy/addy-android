@@ -1,5 +1,5 @@
 <p>Manage your AnonAddy aliases, recipients, domains and more with the AnonAddy for Android app.</p>
-<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.8.1 or higher</p>
+<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.8.8 or higher</p>
 <p><strong>Characteristics</strong></p>
 <ul>
 <li>Connect to the AnonAddy instance or your own hosted instance</li>
@@ -15,11 +15,13 @@
 </ul>
 </li>
 <li>Enable error logging to *locally* store exceptions for easy troubleshooting</li>
+<li>Export and import encrypted backups of the app configuration</li>
 <li>Widgets!</li>
 </ul>
 <p><strong>Security:</strong></p>
 <ul>
 <li>Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using the AndroidX crypto library</li>
+<li>Encrypted app backups, when making a backup of the app configuration through the built-in backup manager</li>
 <li>No stats, buried points or Device IDs, or even crash reporting (Except for Google Play Store builds). So if you get a crash, please share the crash info with me &gt;_&lt;.</li>
 <li>I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.</li>
 </ul>

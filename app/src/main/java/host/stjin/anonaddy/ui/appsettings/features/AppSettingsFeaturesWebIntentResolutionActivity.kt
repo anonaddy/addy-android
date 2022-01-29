@@ -22,11 +22,19 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesWebintentResolutionBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsFeaturesWebintentResolutionNSVLL)
+        )
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
-            binding.appsettingsFeaturesWebintentResolutionToolbar.customToolbarOneHandedMaterialtoolbar,
-            R.string.integration_webintent_resolution
+            R.string.integration_webintent_resolution,
+            binding.appsettingsFeaturesWebintentResolutionNSV,
+            binding.appsettingsFeaturesWebintentResolutionToolbar,
+            R.drawable.ic_external_link
         )
 
         loadSettings()

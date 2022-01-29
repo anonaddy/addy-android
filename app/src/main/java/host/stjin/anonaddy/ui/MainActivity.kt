@@ -8,6 +8,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import host.stjin.anonaddy.*
@@ -53,6 +54,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(binding.root, arrayListOf(binding.root), arrayListOf(binding.navView, binding.activityMainViewpager))
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {
@@ -111,6 +113,21 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             false
         }
 
+        binding.mainAppBarInclude.toolbar.setOnClickListener {
+            val intent = Intent("scroll_up")
+            sendBroadcast(intent)
+            binding.mainAppBarInclude.appBar.setExpanded(true, true)
+        }
+
+        checkForTargetExtras()
+
+    }
+
+    private fun checkForTargetExtras() {
+        val target = intent.getStringExtra("target")
+        if (!target.isNullOrEmpty()) {
+            goToTarget(target)
+        }
     }
 
     private fun showChangeLog() {
@@ -132,7 +149,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private fun initialiseMainAppBar() {
         // Figure out the from name initials
-        val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
+        val usernameInitials = (this.application as AnonAddyForAndroid).userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainAppBarInclude.mainTopBarUserInitials.text = usernameInitials
 
         binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {
@@ -145,12 +162,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.mainAppBarInclude.mainTopBarSearchIcon.setOnClickListener {
-            if (!searchBottomDialogFragment.isAdded) {
-                searchBottomDialogFragment.show(
-                    supportFragmentManager,
-                    "searchBottomDialogFragment"
-                )
-            }
+            openSearch()
         }
 
         binding.mainAppBarInclude.mainTopBarFailedDeliveriesIcon.setOnClickListener {
@@ -163,8 +175,17 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
+    fun openSearch() {
+        if (!searchBottomDialogFragment.isAdded) {
+            searchBottomDialogFragment.show(
+                supportFragmentManager,
+                "searchBottomDialogFragment"
+            )
+        }
+    }
+
     private suspend fun checkForUpdates() {
-        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
 
             // Set the update status in profileBottomDialogFragment
             profileBottomDialogFragment.updateAvailable = updateAvailable
@@ -213,7 +234,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private suspend fun checkForNewFailedDeliveries() {
         val networkHelper = NetworkHelper(this)
         val encryptedSettingsManager = SettingsManager(true, this)
-        networkHelper.getAllFailedDeliveries({ result ->
+        networkHelper.getAllFailedDeliveries({ result, _ ->
             val currentFailedDeliveries =
                 encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
             if (result?.size ?: 0 > currentFailedDeliveries) {
@@ -297,7 +318,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         SearchActivity.FilteredLists.filteredRules = filteredRules
         SearchActivity.FilteredLists.filteredFailedDeliveries = filteredFailedDeliveries
 
-        searchBottomDialogFragment.dismiss()
+        searchBottomDialogFragment.dismissAllowingStateLoss()
         val intent = Intent(this, SearchActivity::class.java)
         resultLauncher.launch(intent)
     }
@@ -311,33 +332,37 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
             if (data != null) {
                 if (data.hasExtra("target")) {
-                    when (data.extras?.getString("target")) {
-                        SearchActivity.SearchTargets.ALIASES.activity -> {
-                            switchFragments(R.id.navigation_alias)
-                        }
-                        SearchActivity.SearchTargets.RECIPIENTS.activity -> {
-                            switchFragments(R.id.navigation_recipients)
-                        }
-                        SearchActivity.SearchTargets.DOMAINS.activity -> {
-                            val intent = Intent(this, DomainSettingsActivity::class.java)
-                            startActivity(intent)
-                        }
-                        SearchActivity.SearchTargets.USERNAMES.activity -> {
-                            val intent = Intent(this, UsernamesSettingsActivity::class.java)
-                            startActivity(intent)
-                        }
-                        SearchActivity.SearchTargets.RULES.activity -> {
-                            val intent = Intent(this, RulesSettingsActivity::class.java)
-                            startActivity(intent)
-                        }
-                        SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
-                            val intent = Intent(this, FailedDeliveriesActivity::class.java)
-                            startActivity(intent)
-                        }
-                    }
+                    data.extras?.getString("target")?.let { goToTarget(it) }
                 }
             }
 
+        }
+    }
+
+    private fun goToTarget(string: String) {
+        when (string) {
+            SearchActivity.SearchTargets.ALIASES.activity -> {
+                switchFragments(R.id.navigation_alias)
+            }
+            SearchActivity.SearchTargets.RECIPIENTS.activity -> {
+                switchFragments(R.id.navigation_recipients)
+            }
+            SearchActivity.SearchTargets.DOMAINS.activity -> {
+                val intent = Intent(this, DomainSettingsActivity::class.java)
+                startActivity(intent)
+            }
+            SearchActivity.SearchTargets.USERNAMES.activity -> {
+                val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                startActivity(intent)
+            }
+            SearchActivity.SearchTargets.RULES.activity -> {
+                val intent = Intent(this, RulesSettingsActivity::class.java)
+                startActivity(intent)
+            }
+            SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
+                val intent = Intent(this, FailedDeliveriesActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

@@ -5,7 +5,7 @@
     android:id="@+id/activity_manage_rules_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/AnonAddyNotYetWhite"
+
     android:orientation="vertical">
 
     <include
@@ -13,13 +13,14 @@
         layout="@layout/custom_toolbar_one_handed" />
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/activity_manage_rules_NCV"
+        android:id="@+id/activity_manage_rules_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <RelativeLayout
+            android:id="@+id/activity_manage_rules_NSV_RL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipChildren="false"
@@ -61,7 +62,6 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/activity_manage_rules_create_rules"
-                        style="@style/RoundActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/create_rule" />

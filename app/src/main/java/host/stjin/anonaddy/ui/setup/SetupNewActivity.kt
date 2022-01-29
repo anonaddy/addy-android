@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.setup
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
@@ -20,7 +21,14 @@ class SetupNewActivity : BaseActivity() {
         binding = ActivitySetupNewBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+
         switchFragments(SetupHow1Fragment())
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onPostCreate(savedInstanceState, persistentState)
+        drawBehindNavBar(binding.root, topViewsToShiftDownUsingMargin = arrayListOf(binding.root), bottomViewsToShiftUpUsingPadding = arrayListOf())
     }
 
     fun switchFragments(fragment: Fragment) {

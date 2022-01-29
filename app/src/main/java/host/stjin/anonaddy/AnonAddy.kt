@@ -4,6 +4,11 @@ object AnonAddy {
     var API_BASE_URL = "https://app.anonaddy.com"
 
     // The versioncode is a combination of MAJOR MINOR PATCH
+    //TODO Update on every release
+
+    // 0.8.10 = (0)810
+    var MINIMUMVERSIONCODE = 810
+
     var VERSIONCODE = 0
     var VERSIONSTRING = ""
 

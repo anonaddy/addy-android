@@ -22,19 +22,19 @@
             android:contentDescription="@string/drag_down_to_close"
             android:src="@drawable/drag_pill" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/main_profile_select_dialog_username_initials"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/circle"
-            android:backgroundTint="@color/profile_icon_background"
+            android:backgroundTint="?colorPrimary"
             android:backgroundTintMode="src_over"
             android:contentDescription="@string/anonaddy_settings"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="SV"
-            android:textColor="@color/profile_icon_foreground"
+            android:textColor="?colorOnPrimary"
             android:textSize="16sp"
             tools:ignore="HardcodedText" />
 

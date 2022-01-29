@@ -30,9 +30,20 @@ class AppSettingsFeaturesActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesSectionsNSVLL)
+        )
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(binding.appsettingsFeaturesToolbar.customToolbarOneHandedMaterialtoolbar, R.string.features_and_integrations)
+        setupToolbar(
+            R.string.features_and_integrations,
+            binding.activityAppSettingsFeaturesSectionsNSV,
+            binding.appsettingsFeaturesToolbar,
+            R.drawable.ic_features_integrations_banner
+        )
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()

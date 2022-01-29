@@ -8,13 +8,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresApi
-import androidx.core.view.WindowCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
@@ -35,6 +32,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     private lateinit var binding: ActivitySplashBinding
     private lateinit var bindingFailed: ActivityMainFailedBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,9 +46,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
         setContentView(view)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        drawBehindNavBar(binding.root, bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySplashProgressbar))
 
-        setInsets()
 
 
         // This is prone to fail when users have restored the app data from any restore app as the
@@ -112,8 +110,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 if (version != null) {
                     AnonAddy.VERSIONCODE = "${version.major}${version.minor}${version.patch}".toInt()
                     AnonAddy.VERSIONSTRING = version.version.toString()
-                    //0.8.1 translates to 081 aka 81
-                    if (AnonAddy.VERSIONCODE >= 81) {
+                    //0.8.8 translates to 088 aka 88
+                    if (AnonAddy.VERSIONCODE >= AnonAddy.MINIMUMVERSIONCODE) {
                         lifecycleScope.launch {
                             loadUserResourceIntoMemory()
                         }
@@ -133,20 +131,11 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         }
     }
 
-    private fun setInsets() {
-        binding.activitySplashProgressbar.doOnApplyWindowInsets { view, insets, padding ->
-            // padding contains the original padding values after inflation
-            view.updatePadding(
-                bottom = padding.bottom + insets.systemWindowInsetBottom
-            )
-        }
-    }
-
 
     private suspend fun loadUserResourceIntoMemory() {
         networkHelper.getUserResource { user: UserResource?, error: String? ->
             if (user != null) {
-                User.userResource = user
+                (this.application as AnonAddyForAndroid).userResource = user
                 lifecycleScope.launch {
                     getDefaultRecipientAddress(user.default_recipient_id)
                 }
@@ -159,9 +148,11 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private suspend fun getDefaultRecipientAddress(recipientId: String) {
         networkHelper.getSpecificRecipient({ recipient, error ->
             if (recipient != null) {
-                User.userResourceExtended = UserResourceExtended(recipient.email)
+                (this.application as AnonAddyForAndroid).userResourceExtended = UserResourceExtended(recipient.email)
                 loadingDone = true
                 val intent = Intent(this, MainActivity::class.java)
+                // Widgets pass a target to splashActivity, so always pass a target to MainActivity (onCreate will check if there are any pending targets)
+                intent.putExtra("target", this.intent.getStringExtra("target"))
                 startActivity(intent)
                 finish()
             } else {
@@ -183,10 +174,14 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             startActivity(intent)
             finish()
         }
+
+        bindingFailed.activityMainFailedResetButton.setOnClickListener {
+            SettingsManager(true, this).clearSettingsAndCloseApp()
+        }
     }
 
     override fun onClickHowToUpdate() {
-        unsupportedBottomDialogFragment.dismiss()
+        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
         val url = "https://github.com/anonaddy/anonaddy/blob/master/SELF-HOSTING.md#updating"
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(url)
@@ -195,7 +190,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     override fun onClickIgnore() {
-        unsupportedBottomDialogFragment.dismiss()
+        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
         lifecycleScope.launch {
             loadUserResourceIntoMemory()
         }

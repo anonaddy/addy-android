@@ -3,21 +3,17 @@ package host.stjin.anonaddy.ui.appsettings
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.widget.CompoundButton
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
-import host.stjin.anonaddy.databinding.AnonaddyCustomDialogBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.appsettings.backup.AppSettingsBackupActivity
 import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
@@ -29,13 +25,13 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 
 class AppSettingsActivity : BaseActivity(),
-    DarkModeBottomDialogFragment.AddDarkmodeBottomDialogListener,
+    AppearanceBottomDialogFragment.AddAppearanceBottomDialogListener,
     BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
 
-    private val addDarkModeBottomDialogFragment: DarkModeBottomDialogFragment =
-        DarkModeBottomDialogFragment.newInstance()
+    private val addAppearanceBottomDialogFragment: AppearanceBottomDialogFragment =
+        AppearanceBottomDialogFragment.newInstance()
 
-    private val addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
+    private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
         BackgroundServiceIntervalBottomDialogFragment.newInstance()
 
 
@@ -49,9 +45,20 @@ class AppSettingsActivity : BaseActivity(),
         binding = ActivityAppSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsNSVLL)
+        )
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
-        setupToolbar(binding.appsettingsToolbar.customToolbarOneHandedMaterialtoolbar, R.string.settings)
+        setupToolbar(
+            R.string.settings,
+            binding.activityAppSettingsNSV,
+            binding.appsettingsToolbar,
+            R.drawable.ic_settings
+        )
         setVersion()
         loadSettings()
         setOnClickListeners()
@@ -63,7 +70,7 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun checkForUpdates() {
         lifecycleScope.launch {
-            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String? ->
+            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
                 binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
                 if (updateAvailable) {
                     binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
@@ -229,8 +236,8 @@ class AppSettingsActivity : BaseActivity(),
     private fun setOnClickListeners() {
         binding.activityAppSettingsSectionAppTheme.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                if (!addDarkModeBottomDialogFragment.isAdded) {
-                    addDarkModeBottomDialogFragment.show(
+                if (!addAppearanceBottomDialogFragment.isAdded) {
+                    addAppearanceBottomDialogFragment.show(
                         supportFragmentManager,
                         "addDarkModeBottomDialogFragment"
                     )
@@ -327,29 +334,17 @@ class AppSettingsActivity : BaseActivity(),
     }
 
     private fun resetApp() {
-        // create an alert builder
-        val anonaddyCustomDialogBinding = AnonaddyCustomDialogBinding.inflate(LayoutInflater.from(this), null, false)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setView(anonaddyCustomDialogBinding.root)
-        val dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        anonaddyCustomDialogBinding.dialogTitle.text = resources.getString(R.string.reset_app)
-        anonaddyCustomDialogBinding.dialogText.text =
-            resources.getString(R.string.reset_app_confirmation_desc)
-        anonaddyCustomDialogBinding.dialogPositiveButton.text =
-            resources.getString(R.string.reset_app)
-        anonaddyCustomDialogBinding.dialogPositiveButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.softRed)
-        anonaddyCustomDialogBinding.dialogPositiveButton.setTextColor(ContextCompat.getColor(this, R.color.AnonAddyCustomDialogSoftRedTextColor))
-
-        anonaddyCustomDialogBinding.dialogPositiveButton.setOnClickListener {
-            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-        }
-        anonaddyCustomDialogBinding.dialogNegativeButton.setOnClickListener {
-            dialog.dismiss()
-        }
-        // create and show the alert dialog
-        dialog.show()
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.reset_app))
+            .setIcon(R.drawable.ic_loader)
+            .setMessage(resources.getString(R.string.reset_app_confirmation_desc))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(resources.getString(R.string.reset_app)) { _, _ ->
+                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+            }
+            .show()
     }
 
 
@@ -375,12 +370,18 @@ class AppSettingsActivity : BaseActivity(),
         delegate.applyDayNight()
     }
 
+    override fun onApplyDynamicColors() {
+        binding.activityAppSettingsSectionAppTheme.setDescription(this.resources.getString(R.string.restart_app_required))
+        binding.activityAppSettingsSectionAppTheme.setSectionAlert(true)
+    }
+
+
     override fun setInterval(minutes: Int) {
         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, minutes)
 
         // Schedule the background worker (this will cancel if already scheduled)
         BackgroundWorkerHelper(this).scheduleBackgroundWorker()
-        addBackgroundServiceIntervalBottomDialogFragment.dismiss()
+        addBackgroundServiceIntervalBottomDialogFragment.dismissAllowingStateLoss()
     }
 
 

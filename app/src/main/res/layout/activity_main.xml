@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/AnonAddyNotYetWhite">
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/mainAppBarInclude"
@@ -15,18 +14,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:nestedScrollingEnabled="true"
-        android:paddingBottom="56dp"
+        android:paddingBottom="80dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="@color/NavbarLightDarkMode"
+        app:layout_anchor="@+id/activity_main_viewpager"
+        app:layout_anchorGravity="bottom"
         app:menu="@menu/bottom_nav_menu" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

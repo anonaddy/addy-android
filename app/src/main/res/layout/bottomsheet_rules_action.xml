@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="@string/add_condition_desc"
+                android:text="@string/add_rule_desc"
                 android:textAlignment="center" />
 
             <com.google.android.material.textfield.TextInputLayout

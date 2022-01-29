@@ -106,18 +106,15 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
         address: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addRecipient({ result ->
-            when (result) {
-                "201" -> {
-                    listener.onAdded()
-                }
-                else -> {
-                    // Revert the button to normal
-                    binding.bsAddrecipientRecipientAddRecipientButton.revertAnimation()
+        networkHelper.addRecipient({ recipient, error ->
+            if (recipient != null) {
+                listener.onAdded()
+            } else {
+                // Revert the button to normal
+                binding.bsAddrecipientRecipientAddRecipientButton.revertAnimation()
 
-                    binding.bsAddrecipientRecipientTil.error =
-                        context.resources.getString(R.string.error_adding_recipient) + "\n" + result
-                }
+                binding.bsAddrecipientRecipientTil.error =
+                    context.resources.getString(R.string.error_adding_recipient) + "\n" + error
             }
         }, address)
     }

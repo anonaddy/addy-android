@@ -5,18 +5,20 @@
     android:id="@+id/activity_manage_domain_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/AnonAddyNotYetWhite">
+>
 
     <include
         android:id="@+id/activity_manage_domain_toolbar"
         layout="@layout/custom_toolbar_one_handed" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/activity_manage_domain_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
+            android:id="@+id/activity_manage_domain_NSV_RL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"

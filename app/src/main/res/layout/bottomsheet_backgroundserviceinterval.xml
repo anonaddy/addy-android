@@ -61,6 +61,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="16dp"
                 android:layout_weight="1"
+                android:weightSum="4"
                 app:checkedButton="@+id/bs_backgroundserviceinterval_30"
                 app:selectionRequired="true"
                 app:singleSelection="true">
@@ -68,39 +69,36 @@
                 <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_15"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/AnonAddyMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/backgroundserviceinterval_15m"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
+                     />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_30"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/AnonAddyMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_30m"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
+                    android:text="@string/backgroundserviceinterval_30m" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_60"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/AnonAddyMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_1h"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
+                    android:text="@string/backgroundserviceinterval_1h" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_backgroundserviceinterval_120"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/AnonAddyMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/backgroundserviceinterval_2h"
-                    app:materialThemeOverlay="@style/AnonAddyMaterialButtonToggleGroupButtonOverlay" />
+                    android:text="@string/backgroundserviceinterval_2h" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 

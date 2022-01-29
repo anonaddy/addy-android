@@ -62,6 +62,17 @@ class NetworkHelper(private val context: Context) {
     }
 
 
+    private fun getHeaders(apiKey: String? = null): Array<Pair<String, Any>> {
+        val apiKeyToSend = apiKey ?: API_KEY
+        return arrayOf(
+            "Authorization" to "Bearer $apiKeyToSend",
+            "Content-Type" to "application/json",
+            "X-Requested-With" to "XMLHttpRequest",
+            "Accept" to "application/json"
+        )
+    }
+
+
     // Separate method, with a try/catch because you can't toast on a Non-UI thread. And the widgets might call methods and there *is* a chance
     // these calls return a 404
     private fun invalidApiKey() {
@@ -74,8 +85,39 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
-    suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (String?) -> Unit) {
 
+    suspend fun downloadBody(url: String, callback: (String?, String?) -> Unit) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) =
+            Fuel.get(url)
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                callback(data, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "downloadBody",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
+            }
+        }
+    }
+
+
+    suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (String?) -> Unit) {
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -87,10 +129,7 @@ class NetworkHelper(private val context: Context) {
         API_BASE_URL = baseUrl
         val (_, response, result) = Fuel.get(API_URL_ACCOUNT_DETAILS)
             .appendHeader(
-                "Authorization" to "Bearer $apiKey",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders(apiKey)
             )
             .awaitStringResponseResult()
 
@@ -102,8 +141,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "verifyApiKey", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "verifyApiKey",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -123,10 +167,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.get(API_URL_APP_VERSION)
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .awaitStringResponseResult()
 
@@ -154,8 +195,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAnonAddyInstanceVersion", String(response.data))
-                callback(null, ex.toString())
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAnonAddyInstanceVersion",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -176,10 +222,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.get(API_URL_ACCOUNT_DETAILS)
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .awaitStringResponseResult()
 
@@ -202,26 +245,29 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getUserResource", String(response.data))
-                callback(null, ex.toString())
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getUserResource",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
 
     suspend fun getDomainOptions(
-        callback: (DomainOptions?) -> Unit
+        callback: (DomainOptions?, String?) -> Unit
     ) {
 
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
 
+
         val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -231,7 +277,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, DomainOptions::class.java)
-                callback(anonAddyData)
+                callback(anonAddyData, null)
             }
             401 -> {
                 invalidApiKey()
@@ -239,13 +285,18 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getDomainOptions", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getDomainOptions",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -257,7 +308,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun addAlias(
-        callback: (String?) -> Unit,
+        callback: (Aliases?, String?) -> Unit,
         domain: String,
         description: String,
         format: String,
@@ -282,17 +333,17 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_ALIAS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
 
         when (response.statusCode) {
             201 -> {
-                callback("201")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -300,24 +351,28 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addAlias", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
 
 
     suspend fun getAliases(
-        callback: (ArrayList<Aliases>?) -> Unit,
-        activeOnly: Boolean,
-        includeDeleted: Boolean,
-        filter: String? = null,
-        page: String? = null
+        callback: (AliasesArray?, String?) -> Unit,
+        aliasSortFilter: AliasSortFilter,
+        page: Int? = null,
+        size: Int? = 20,
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -330,24 +385,44 @@ class NetworkHelper(private val context: Context) {
         https://app.anonaddy.com/docs/#get-all-aliases
          */
         val parameters: ArrayList<Pair<String, String>> = arrayListOf()
-        if (includeDeleted) {
+
+
+        if (aliasSortFilter.onlyActiveAliases) {
+            parameters.add("filter[active]=" to "true")
+        } else if (aliasSortFilter.onlyInactiveAliases) {
+            parameters.add("filter[active]=" to "false")
+        }
+
+        if (aliasSortFilter.includeDeleted) {
             parameters.add("filter[deleted]=" to "with")
         }
 
-        if (!filter.isNullOrEmpty()) {
-            parameters.add("filter[search]" to filter)
+        if (size != null) {
+            parameters.add("page[size]" to size.toString())
         }
 
-        if (!page.isNullOrEmpty()) {
-            parameters.add("page[number]" to page)
+        if (!aliasSortFilter.filter.isNullOrEmpty()) {
+            parameters.add("filter[search]" to aliasSortFilter.filter.toString())
+        }
+
+        if (page != null) {
+            parameters.add("page[number]" to page.toString())
+        }
+
+        if (!aliasSortFilter.sort.isNullOrEmpty()) {
+
+            val sortFilter: String = if (aliasSortFilter.sortDesc) {
+                "-${aliasSortFilter.sort.toString()}"
+            } else {
+                aliasSortFilter.sort.toString()
+            }
+
+            parameters.add("sort" to sortFilter)
         }
 
         val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -357,18 +432,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, AliasesArray::class.java)
-                val aliasList = ArrayList<Aliases>()
-
-                if (activeOnly) {
-                    for (alias in anonAddyData.data) {
-                        if (alias.active) {
-                            aliasList.add(alias)
-                        }
-                    }
-                } else {
-                    aliasList.addAll(anonAddyData.data)
-                }
-                callback(aliasList)
+                callback(anonAddyData, null)
             }
             401 -> {
                 invalidApiKey()
@@ -376,19 +440,25 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAliases", String(response.data))
-                callback(null)
+
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAliases",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
 
     suspend fun getSpecificAlias(
-        callback: (Aliases?) -> Unit,
+        callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
 
@@ -399,10 +469,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.get("${API_URL_ALIAS}/$aliasId")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .awaitStringResponseResult()
 
@@ -412,7 +479,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
-                callback(anonAddyData.data)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -420,13 +487,18 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificAlias", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -443,10 +515,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.patch("${API_URL_ALIAS}/$aliasId")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
@@ -467,8 +536,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificAlias", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "updateDescriptionSpecificAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -493,10 +567,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.post(API_URL_ALIAS_RECIPIENTS)
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
@@ -517,8 +588,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateRecipientsSpecificAlias", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "updateRecipientsSpecificAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -530,10 +606,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_ALIAS}/$aliasId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -552,8 +625,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificAlias", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deactivateSpecificAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -568,10 +646,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_ACTIVE_ALIAS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -591,8 +666,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificAlias", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "activateSpecificAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -604,10 +684,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -626,8 +703,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteAlias", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -638,10 +720,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId/forget")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -660,8 +739,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "forgetAlias", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "forgetAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -672,10 +756,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.patch("${API_URL_ALIAS}/$aliasId/restore")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -694,8 +775,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "restoreAlias", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "restoreAlias",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -706,7 +792,7 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun addRecipient(
-        callback: (String?) -> Unit,
+        callback: (Recipients?, String?) -> Unit,
         address: String
     ) {
         val json = JSONObject()
@@ -714,17 +800,17 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_RECIPIENTS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
 
         when (response.statusCode) {
             201 -> {
-                callback("201")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -732,19 +818,24 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addRecipient", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
 
     suspend fun getRecipients(
-        callback: (ArrayList<Recipients>?) -> Unit,
+        callback: (ArrayList<Recipients>?, String?) -> Unit,
         verifiedOnly: Boolean
     ) {
 
@@ -754,10 +845,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -778,7 +866,7 @@ class NetworkHelper(private val context: Context) {
                 } else {
                     recipientList.addAll(anonAddyData.data)
                 }
-                callback(recipientList)
+                callback(recipientList, null)
             }
             401 -> {
                 invalidApiKey()
@@ -786,13 +874,18 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getRecipients", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getRecipients",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -803,10 +896,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$recipientId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -825,8 +915,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteRecipient", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -838,10 +933,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_ENCRYPTED_RECIPIENTS}/$recipientId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -860,8 +952,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "disableEncryptionRecipient", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disableEncryptionRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -877,10 +974,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_ENCRYPTED_RECIPIENTS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -900,8 +994,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "enableEncryptionRecipient", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enableEncryptionRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -913,10 +1012,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENT_KEYS}/$recipientId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -935,8 +1031,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "removeEncryptionKeyRecipient", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "removeEncryptionKeyRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -952,10 +1053,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.patch("${API_URL_RECIPIENT_KEYS}/$recipientId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -975,8 +1073,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addEncryptionKeyRecipient", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addEncryptionKeyRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -989,10 +1092,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.get("${API_URL_RECIPIENTS}/$recipientId")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .awaitStringResponseResult()
 
@@ -1015,8 +1115,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificRecipient", String(response.data))
-                callback(null, ex.toString())
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificRecipient",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1030,10 +1135,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_RECIPIENT_RESEND)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -1053,8 +1155,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "resendVerificationEmail", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "resendVerificationEmail",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1065,7 +1172,7 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllDomains(
-        callback: (ArrayList<Domains>?) -> Unit
+        callback: (ArrayList<Domains>?, String?) -> Unit
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -1074,10 +1181,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.get(API_URL_DOMAINS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1088,7 +1192,7 @@ class NetworkHelper(private val context: Context) {
                 val anonAddyData = gson.fromJson(data, DomainsArray::class.java)
                 val domainList = ArrayList<Domains>()
                 domainList.addAll(anonAddyData.data)
-                callback(domainList)
+                callback(domainList, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1096,13 +1200,18 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getDomains", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getDomains",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1113,10 +1222,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_DOMAINS}/$id")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1135,14 +1241,19 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteDomain", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
 
     suspend fun addDomain(
-        callback: (String?, String?) -> Unit,
+        callback: (Domains?, String?, String?) -> Unit,
         domain: String
     ) {
         val json = JSONObject()
@@ -1150,21 +1261,67 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_DOMAINS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
 
         when (response.statusCode) {
             201 -> {
-                callback("201", null)
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
+                callback(anonAddyData.data, "201", null)
             }
             // 404 means that the setup is not completed
             404 -> {
-                callback("404", String(response.data))
+                callback(null, "404", String(response.data))
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
+            }
+        }
+    }
+
+    suspend fun getSpecificDomain(
+        callback: (Domains?, String?) -> Unit,
+        id: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) =
+            Fuel.get("${API_URL_DOMAINS}/$id")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1177,52 +1334,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addDomain", String(response.data))
-                callback(ex.toString(), null)
-            }
-        }
-    }
-
-    suspend fun getSpecificDomain(
-        callback: (Domains?) -> Unit,
-        id: String
-    ) {
-
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
-
-        val (_, response, result) =
-            Fuel.get("${API_URL_DOMAINS}/$id")
-                .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
                 )
-                .awaitStringResponseResult()
-
-
-        when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
-                callback(anonAddyData.data)
-            }
-            401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
-                callback(null)
-            }
-            else -> {
-                val ex = result.component2()?.message
-                println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificDomain", String(response.data))
-                callback(null)
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1240,10 +1358,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.patch("${API_URL_DOMAINS}/$domainId/default-recipient")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
@@ -1264,8 +1379,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDefaultRecipientForSpecificDomain", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDefaultRecipientForSpecificDomain", ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1276,10 +1395,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_DOMAINS}/$domainId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1298,8 +1414,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificDomain", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deactivateSpecificDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1314,10 +1435,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_ACTIVE_DOMAINS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -1337,8 +1455,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificDomain", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "activateSpecificDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1349,10 +1472,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_DOMAINS}/$domainId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1371,8 +1491,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "disableCatchAllSpecificDomain", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disableCatchAllSpecificDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1387,10 +1512,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_CATCH_ALL_DOMAINS)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -1410,8 +1532,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "enableCatchAllSpecificDomain", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enableCatchAllSpecificDomain",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1429,10 +1556,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.patch("${API_URL_DOMAINS}/$domainId")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
@@ -1453,8 +1577,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificDomain", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificDomain", ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1465,7 +1593,7 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllUsernames(
-        callback: (ArrayList<Usernames>?) -> Unit
+        callback: (ArrayList<Usernames>?, String?) -> Unit
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -1474,10 +1602,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.get(API_URL_USERNAMES)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1489,7 +1614,7 @@ class NetworkHelper(private val context: Context) {
 
                 val usernamesList = ArrayList<Usernames>()
                 usernamesList.addAll(anonAddyData.data)
-                callback(usernamesList)
+                callback(usernamesList, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1497,13 +1622,18 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getUsernames", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getUsernames",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1514,10 +1644,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_USERNAMES}/$id")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1536,14 +1663,19 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteUsername", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteUsername",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
 
     suspend fun addUsername(
-        callback: (String?, String?) -> Unit,
+        callback: (Usernames?, String?) -> Unit,
         username: String
     ) {
         val json = JSONObject()
@@ -1551,17 +1683,17 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_USERNAMES)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
 
         when (response.statusCode) {
             201 -> {
-                callback("201", null)
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1574,14 +1706,19 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "addUsername", String(response.data))
-                callback(ex.toString(), null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addUsername",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
 
     suspend fun getSpecificUsername(
-        callback: (Usernames?) -> Unit,
+        callback: (Usernames?, String?) -> Unit,
         id: String
     ) {
 
@@ -1592,10 +1729,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.get("${API_URL_USERNAMES}/$id")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .awaitStringResponseResult()
 
@@ -1605,7 +1739,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
-                callback(anonAddyData.data)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1613,13 +1747,18 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificUsername", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificUsername",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1637,10 +1776,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.patch("${API_URL_USERNAMES}/$userNameId/default-recipient")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
@@ -1661,8 +1797,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDefaultRecipientForSpecificUsername", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDefaultRecipientForSpecificUsername", ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1673,10 +1813,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_USERNAMES}/$usernameId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1695,8 +1832,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificUsername", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deactivateSpecificUsername",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1711,10 +1853,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_ACTIVE_USERNAMES)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -1734,8 +1873,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificUsername", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "activateSpecificUsername",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1752,10 +1896,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.patch("${API_URL_USERNAMES}/$usernameId")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
@@ -1776,8 +1917,12 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificUsername", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificUsername", ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1792,7 +1937,7 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllRules(
-        callback: (ArrayList<Rules>?) -> Unit,
+        callback: (ArrayList<Rules>?, String?) -> Unit,
         show404Toast: Boolean = false
     ) {
 
@@ -1802,10 +1947,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.get(API_URL_RULES)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1817,7 +1959,7 @@ class NetworkHelper(private val context: Context) {
 
                 val domainList = ArrayList<Rules>()
                 domainList.addAll(anonAddyData.data)
-                callback(domainList)
+                callback(domainList, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1825,7 +1967,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             // Not found, aka the AnonAddy version is <0.6.0 (this endpoint was introduced in 0.6.0)
             // OR
@@ -1836,19 +1978,24 @@ class NetworkHelper(private val context: Context) {
                 if (show404Toast) {
                     Toast.makeText(context, context.resources.getString(R.string.rules_unavailable_404), Toast.LENGTH_LONG).show()
                 }
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAllRules", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAllRules",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
 
     suspend fun getSpecificRule(
-        callback: (Rules?) -> Unit,
+        callback: (Rules?, String?) -> Unit,
         id: String
     ) {
 
@@ -1859,10 +2006,7 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.get("${API_URL_RULES}/$id")
                 .appendHeader(
-                    "Authorization" to "Bearer $API_KEY",
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json"
+                    *getHeaders()
                 )
                 .awaitStringResponseResult()
 
@@ -1872,7 +2016,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 val gson = Gson()
                 val anonAddyData = gson.fromJson(data, SingleRule::class.java)
-                callback(anonAddyData.data)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1880,13 +2024,18 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getSpecificRule", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1898,10 +2047,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_RULES}/$id")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -1920,8 +2066,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteRule", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1933,10 +2084,7 @@ class NetworkHelper(private val context: Context) {
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.post(API_URL_RULES)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(ruleJson)
             .awaitStringResponseResult()
@@ -1956,8 +2104,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "createRule", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "createRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -1982,10 +2135,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_REORDER_RULES)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(ruleJson)
             .awaitStringResponseResult()
@@ -2005,8 +2155,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "reorderRules", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "reorderRules",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2019,10 +2174,7 @@ class NetworkHelper(private val context: Context) {
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.patch("${API_URL_RULES}/$ruleId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(ruleJson)
             .awaitStringResponseResult()
@@ -2042,8 +2194,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateRule", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "updateRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2054,10 +2211,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_RULES}/$ruleId")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -2076,8 +2230,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deactivateSpecificRule", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deactivateSpecificRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2092,10 +2251,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.post(API_URL_ACTIVE_RULES)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -2115,8 +2271,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "activateSpecificRule", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "activateSpecificRule",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2137,112 +2298,65 @@ class NetworkHelper(private val context: Context) {
     // Widget 1: Aliases
     // Widget 2: Domain options
 
-    suspend fun cacheAliasDataForWidget(
+    suspend fun cache15MostPopularAliasesDataForWidget(
         callback: (Boolean) -> Unit
     ) {
-        getAliases({ list ->
-            if (list == null) {
+        getAliases(
+            { list, _ ->
+                if (list == null) {
+                    // Result is null, callback false to let the BackgroundWorker know the task failed.
+                    callback(false)
+                    return@getAliases
+                } else {
+                    // Turn the list into a json object
+                    val data = Gson().toJson(list.data)
+
+                    // Store a copy of the just received data locally
+                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA, data)
+
+                    // Stored data, let the BackgroundWorker know the task succeeded
+                    callback(true)
+                }
+            },
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = true,
+                onlyInactiveAliases = false,
+                includeDeleted = false,
+                onlyWatchedAliases = false,
+                sort = "emails_forwarded",
+                sortDesc = true,
+                filter = null
+            ),
+            size = 15,
+        )
+    }
+
+
+    suspend fun cacheUserResourceForWidget(
+        callback: (Boolean) -> Unit
+    ) {
+        getUserResource { userResource: UserResource?, _: String? ->
+            if (userResource == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
-                return@getAliases
+                return@getUserResource
             } else {
                 // Turn the list into a json object
-                val data = Gson().toJson(list)
-
-                // Get and turn the current list (before this call) into a string
-                val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
-
-                // If the list is not null, move the current list (before this call) to the PREV position for AliasWatcher to compare
-                // List could be null if this would be the first time the service is running
-                currentList?.let { settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS, it) }
+                val data = Gson().toJson(userResource)
 
                 // Store a copy of the just received data locally
-                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES, data)
-
-                // Stored data, let the BackgroundWorker know the task succeeded
-                callback(true)
-            }
-        }, activeOnly = false, includeDeleted = true)
-    }
-
-    suspend fun cacheDomainCountForWidget(
-        callback: (Boolean) -> Unit
-    ) {
-        getAllDomains { result ->
-            if (result == null) {
-                // Result is null, callback false to let the BackgroundWorker know the task failed.
-                callback(false)
-                return@getAllDomains
-            } else {
-                // Store the result size
-                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, result.size)
+                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USER_RESOURCE, data)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
         }
     }
-
-    suspend fun cacheUsernamesCountForWidget(
-        callback: (Boolean) -> Unit
-    ) {
-        getAllUsernames { result ->
-            if (result == null) {
-                // Result is null, callback false to let the BackgroundWorker know the task failed.
-                callback(false)
-                return@getAllUsernames
-            } else {
-                // Store the result size
-                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, result.size)
-
-                // Stored data, let the BackgroundWorker know the task succeeded
-                callback(true)
-            }
-        }
-    }
-
-    suspend fun cacheRulesCountForWidget(
-        callback: (Boolean) -> Unit
-    ) {
-        getAllRules({ result ->
-            if (result == null) {
-                // Result is null, callback false to let the BackgroundWorker know the task failed.
-                callback(false)
-                return@getAllRules
-            } else {
-                // Store the result size
-                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, result.size)
-
-                // Stored data, let the BackgroundWorker know the task succeeded
-                callback(true)
-            }
-        })
-    }
-
-    suspend fun cacheRecipientCountForWidget(
-        callback: (Boolean) -> Unit
-    ) {
-        getRecipients({ result ->
-            if (result == null) {
-                // Result is null, callback false to let the BackgroundWorker know the task failed.
-                callback(false)
-                return@getRecipients
-            } else {
-                // Store the result size
-                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, result.size)
-
-                // Stored data, let the BackgroundWorker know the task succeeded
-                callback(true)
-            }
-            // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
-        }, false)
-    }
-
 
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
         callback: (Boolean) -> Unit
     ) {
-        getAllFailedDeliveries({ result ->
+        getAllFailedDeliveries({ result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
@@ -2269,7 +2383,7 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllFailedDeliveries(
-        callback: (ArrayList<FailedDeliveries>?) -> Unit,
+        callback: (ArrayList<FailedDeliveries>?, String?) -> Unit,
         show404Toast: Boolean = false
     ) {
 
@@ -2279,10 +2393,7 @@ class NetworkHelper(private val context: Context) {
 
         val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES)
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -2294,7 +2405,7 @@ class NetworkHelper(private val context: Context) {
 
                 val failedDeliveriesList = ArrayList<FailedDeliveries>()
                 failedDeliveriesList.addAll(anonAddyData.data)
-                callback(failedDeliveriesList)
+                callback(failedDeliveriesList, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2302,7 +2413,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             // Not found, aka the AnonAddy version is <0.8.1 (this endpoint was introduced in 0.8.1)
             // OR
@@ -2313,13 +2424,18 @@ class NetworkHelper(private val context: Context) {
                 if (show404Toast) {
                     Toast.makeText(context, context.resources.getString(R.string.failed_deliveries_unavailable_404), Toast.LENGTH_LONG).show()
                 }
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getAllFailedDeliveries", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAllFailedDeliveries",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2330,10 +2446,7 @@ class NetworkHelper(private val context: Context) {
     ) {
         val (_, response, result) = Fuel.delete("${API_URL_FAILED_DELIVERIES}/$id")
             .appendHeader(
-                "Authorization" to "Bearer $API_KEY",
-                "Content-Type" to "application/json",
-                "X-Requested-With" to "XMLHttpRequest",
-                "Accept" to "application/json"
+                *getHeaders()
             )
             .awaitStringResponseResult()
 
@@ -2352,8 +2465,13 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "deleteFailedDelivery", String(response.data))
-                callback(String(response.data))
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteFailedDelivery",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
     }
@@ -2363,7 +2481,7 @@ class NetworkHelper(private val context: Context) {
      * UPDATE
      */
     suspend fun getGitlabTags(
-        callback: (Feed?) -> Unit
+        callback: (Feed?, String?) -> Unit
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -2379,13 +2497,18 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val inputStream: InputStream = result.get().byteInputStream()
                 val feed = EarlParser.parse(inputStream, 0)
-                callback(feed)
+                callback(feed, null)
             }
             else -> {
                 val ex = result.component2()?.message
                 println(ex)
-                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "getGitlabTags", String(response.data))
-                callback(null)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getGitlabTags",
+                    ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray())
+                )
+                callback(null, ErrorHelper.getErrorMessage(if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()))
             }
         }
 

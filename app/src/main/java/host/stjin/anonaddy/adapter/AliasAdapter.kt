@@ -73,7 +73,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
 
         val color1 = if (listWithAliases[position].active) R.color.portalOrange else R.color.md_grey_500
         val color2 = if (listWithAliases[position].active) R.color.portalBlue else R.color.md_grey_600
-        val color3 = if (listWithAliases[position].active) R.color.softGreen else R.color.md_grey_700
+        val color3 = if (listWithAliases[position].active) R.color.easternBlue else R.color.md_grey_700
         val color4 = if (listWithAliases[position].active) R.color.softRed else R.color.md_grey_800
 
 
@@ -126,7 +126,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
 
 
         holder.mWatchedTextView.visibility =
-            if (aliasesToWatch?.contains(listWithAliases[position].id) == true && listWithAliases[position].active) View.VISIBLE else View.GONE
+            if (aliasesToWatch?.contains(listWithAliases[position].id) == true) View.VISIBLE else View.GONE
     }
 
     override fun getItemCount(): Int = listWithAliases.size
@@ -147,7 +147,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
 
-        private var mCV: MaterialCardView = view.findViewById(R.id.aliases_recyclerview_list_CV)
+        private var mCV: MaterialCardView = view.findViewById(R.id.recyclerview_list_CV)
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
@@ -162,7 +162,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         }
 
         override fun onClick(p0: View) {
-            if (p0.id == R.id.aliases_recyclerview_list_CV) {
+            if (p0.id == R.id.recyclerview_list_CV) {
                 onAliasClickListener.onClick(adapterPosition)
             } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
                 onAliasClickListener.onClickCopy(adapterPosition, p0)

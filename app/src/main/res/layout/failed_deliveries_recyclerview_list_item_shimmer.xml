@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/shimmerGray"
+                    android:background="?colorSurfaceVariant"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif-medium"
                     android:lines="1"
@@ -51,7 +51,7 @@
                     android:id="@+id/failed_deliveries_recyclerview_list_alias"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/shimmerGray"
+                    android:background="?colorSurfaceVariant"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
@@ -73,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:background="@color/shimmerGray"
+                    android:background="?colorSurfaceVariant"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif-medium"
                     android:lines="1"
@@ -88,7 +88,7 @@
                     android:id="@+id/failed_deliveries_recyclerview_list_created"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/shimmerGray"
+                    android:background="?colorSurfaceVariant"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
@@ -112,7 +112,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@color/shimmerGray"
+                android:background="?colorSurfaceVariant"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical"
@@ -127,7 +127,7 @@
                 android:id="@+id/failed_deliveries_recyclerview_list_code"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/shimmerGray"
+                android:background="?colorSurfaceVariant"
                 android:ellipsize="end"
                 android:fadingEdgeLength="150dp"
                 android:fontFamily="sans-serif"
@@ -150,13 +150,13 @@
             android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
-                style="@style/MaterialButtonSecondaryLight"
+                style="@style/MaterialButtonSecondaryDark"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="0dp"
                 android:layout_weight="1"
-                app:backgroundTint="@color/shimmerGray" />
+                app:backgroundTint="?colorSurfaceVariant" />
 
         </LinearLayout>
     </LinearLayout>

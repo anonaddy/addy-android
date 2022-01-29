@@ -4,11 +4,8 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -23,12 +21,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
+import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
@@ -52,7 +51,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
-// onDestroyView.
+    // onDestroyView.
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,10 +72,21 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun getDataFromWeb(context: Context) {
-        binding.homeStatisticsLL1.visibility = View.VISIBLE
-        binding.homeStatisticsRLLottieview.visibility = View.GONE
 
+    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.fullScroll(ScrollView.FOCUS_UP) }
+        }
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
+    }
+
+
+    private fun getDataFromWeb(context: Context) {
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
             getMostActiveAliases()
@@ -89,11 +99,11 @@ class HomeFragment : Fragment() {
     // Update information when coming back, such as aliases and statistics
     override fun onResume() {
         super.onResume()
+        activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
         getDataFromWeb(requireContext())
     }
 
     private fun setOnClickListeners() {
-
         binding.homeMostActiveAliasesViewMore.setOnClickListener {
             (activity as MainActivity).switchFragments(R.id.navigation_alias)
         }
@@ -102,7 +112,7 @@ class HomeFragment : Fragment() {
     private suspend fun getWebStatistics(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                User.userResource = user
+                (activity?.application as AnonAddyForAndroid).userResource = user
                 getStatistics()
             } else {
                 val bottomNavView: BottomNavigationView? =
@@ -166,78 +176,101 @@ class HomeFragment : Fragment() {
 
                 showShimmer()
             }
-            networkHelper?.getAliases({ list ->
 
-                // Check if there are new aliases since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                // Unless forceUpdate is true. If forceupdate is true, always update
-                if (::aliasAdapter.isInitialized && list == previousList && !forceUpdate) {
-                    return@getAliases
-                }
+            networkHelper?.getAliases(
+                { list, result ->
 
-
-                if (list != null) {
-                    previousList.clear()
-                    previousList.addAll(list)
-
-                    if (list.size > 0) {
-                        binding.homeNoAliases.visibility = View.GONE
-                    } else {
-                        binding.homeNoAliases.visibility = View.VISIBLE
+                    // Check if there are new aliases since the latest list
+                    // If the list is the same, just return and don't bother re-init the layoutmanager
+                    // Unless forceUpdate is true. If forceupdate is true, always update
+                    if (::aliasAdapter.isInitialized && list?.data == previousList && !forceUpdate) {
+                        return@getAliases
                     }
 
-                    // Sort by emails forwarded
-                    list.sortByDescending { it.emails_forwarded }
 
-                    // Get the top 5
-                    val aliasList = list.take(5)
-                    aliasAdapter = AliasAdapter(aliasList, context)
-                    aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
-                        override fun onClick(pos: Int) {
-                            val intent = Intent(context, ManageAliasActivity::class.java)
-                            // Pass data object in the bundle and populate details activity.
-                            intent.putExtra("alias_id", aliasList[pos].id)
-                            resultLauncher.launch(intent)
+                    if (list != null) {
+                        previousList.clear()
+                        previousList.addAll(list.data)
+
+                        if (list.data.size > 0) {
+                            binding.homeNoAliases.visibility = View.GONE
+                        } else {
+                            binding.homeNoAliases.visibility = View.VISIBLE
                         }
 
-                        override fun onClickCopy(pos: Int, aView: View) {
-                            val clipboard: ClipboardManager =
-                                context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                            val aliasEmailAddress = aliasList[pos].email
-                            val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                            clipboard.setPrimaryClip(clip)
+                        aliasAdapter = AliasAdapter(list.data, context)
+                        aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+                            override fun onClick(pos: Int) {
+                                val intent = Intent(context, ManageAliasActivity::class.java)
+                                // Pass data object in the bundle and populate details activity.
+                                intent.putExtra("alias_id", list.data[pos].id)
+                                resultLauncher.launch(intent)
+                            }
 
-                            val bottomNavView: BottomNavigationView? =
-                                activity?.findViewById(R.id.nav_view)
-                            bottomNavView?.let {
-                                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
+                            override fun onClickCopy(pos: Int, aView: View) {
+                                val clipboard: ClipboardManager =
+                                    context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                val aliasEmailAddress = list.data[pos].email
+                                val clip = ClipData.newPlainText("alias", aliasEmailAddress)
+                                clipboard.setPrimaryClip(clip)
+
+                                val bottomNavView: BottomNavigationView? =
+                                    activity?.findViewById(R.id.nav_view)
+                                bottomNavView?.let {
+                                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
+                                        anchorView = bottomNavView
+                                    }.show()
+                                }
+                            }
+
+                        })
+                        adapter = aliasAdapter
+                    } else {
+                        // Data could not be loaded
+                        val bottomNavView: BottomNavigationView? =
+                            activity?.findViewById(R.id.nav_view)
+                        bottomNavView?.let {
+                            SnackbarHelper.createSnackbar(
+                                requireContext(),
+                                requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                it,
+                                LoggingHelper.LOGFILES.DEFAULT
+                            )
+                                .apply {
                                     anchorView = bottomNavView
                                 }.show()
-                            }
                         }
-
-                    })
-                    adapter = aliasAdapter
-                } else {
-                    binding.homeStatisticsLL1.visibility = View.GONE
-                    binding.homeStatisticsRLLottieview.visibility = View.VISIBLE
-                }
-                hideShimmer()
-            }, activeOnly = true, includeDeleted = false)
-
+                    }
+                    hideShimmer()
+                },
+                aliasSortFilter = AliasSortFilter(
+                    onlyActiveAliases = true,
+                    onlyInactiveAliases = false,
+                    includeDeleted = false,
+                    onlyWatchedAliases = false,
+                    sort = "emails_forwarded",
+                    sortDesc = true,
+                    filter = null
+                ),
+                size = 6
+            )
         }
-
     }
-
 
     private fun getStatistics() {
         //  / 1024 / 1024 because api returns bytes
-        val currMonthlyBandwidth = User.userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = User.userResource.bandwidth_limit / 1024 / 1024
+        val currMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth.toDouble() / 1024 / 1024
+        val maxMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth_limit / 1024 / 1024
 
         setMonthlyBandwidthStatistics(currMonthlyBandwidth, maxMonthlyBandwidth)
-        setAliasesStatistics(User.userResource.active_shared_domain_alias_count, User.userResource.active_shared_domain_alias_limit)
-        setRecipientStatistics(User.userResource.recipient_count, User.userResource.recipient_limit)
+        setAliasesStatistics(
+            (activity?.application as AnonAddyForAndroid).userResource.active_shared_domain_alias_count,
+            (activity?.application as AnonAddyForAndroid).userResource.active_shared_domain_alias_limit
+        )
+        setRecipientStatistics(
+            (activity?.application as AnonAddyForAndroid).userResource.recipient_count,
+            (activity?.application as AnonAddyForAndroid).userResource.recipient_limit
+        )
     }
 
 

@@ -74,7 +74,18 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        setupToolbar(binding.activitySearchToolbar.customToolbarOneHandedMaterialtoolbar, R.string.search_result)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySearchNSVRL)
+        )
+
+        setupToolbar(
+            R.string.search_result,
+            binding.activitySearchNSV,
+            binding.activitySearchToolbar,
+            R.drawable.ic_search
+        )
 
         settingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -295,7 +306,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                     clipboard.setPrimaryClip(clip)
                     SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), binding.activitySearchCL).show()
                 }
-
             })
             adapter = aliasAdapter
         }
@@ -382,7 +392,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         val position = filteredFailedDeliveries?.indexOfFirst { it.id == failedDeliveryId }
         position?.let { filteredFailedDeliveries?.removeAt(it) }
         position?.let { binding.activitySearchFailedDeliveriesRecyclerview.adapter?.notifyItemRemoved(it) }
-        failedDeliveryDetailsBottomDialogFragment?.dismiss()
+        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
     }
 
 

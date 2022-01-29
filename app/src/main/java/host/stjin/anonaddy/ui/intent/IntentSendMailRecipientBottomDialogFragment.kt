@@ -3,26 +3,36 @@ package host.stjin.anonaddy.ui.intent
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import androidx.core.content.res.getDrawableOrThrow
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputLayout
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSendMailFromIntentAliasBinding
+import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
 class IntentSendMailRecipientBottomDialogFragment(
-    private val recipientEmail: String?, private val aliases: ArrayList<Aliases>, private val domainOptions: List<String>
+    private val recipientEmail: String?, private val domainOptions: List<String>
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -34,7 +44,7 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddIntentSendMailRecipientBottomDialogListener {
-        suspend fun onPressSend(alias: String, toString: String, skipAndOpenDefaultMailApp: Boolean = false)
+        suspend fun onPressSend(alias: String, aliasObject: Aliases?, toString: String, skipAndOpenDefaultMailApp: Boolean = false)
         fun onClose(result: Boolean)
     }
 
@@ -50,10 +60,37 @@ class IntentSendMailRecipientBottomDialogFragment(
     }
 
     private var _binding: BottomsheetSendMailFromIntentAliasBinding? = null
-
-    // This property is only valid between onCreateView and
-// onDestroyView.
     private val binding get() = _binding!!
+
+    private var lastMactText: String = ""
+
+    private var aliases: ArrayList<Aliases> = arrayListOf()
+
+
+    private val TYPING_TIMEOUT = 1000 // 1 seconds timeout
+    private var isTyping: Boolean = false
+    private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
+    private val typingTimeout = Runnable {
+        isTyping = false
+        setAdapterData(binding.bsSendMailFromIntentAliasesMact.text.toString())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        timeoutHandler.removeCallbacks(typingTimeout)
+    }
+
+    private fun Context.getProgressBarDrawable(): Drawable {
+        val value = TypedValue()
+        theme.resolveAttribute(android.R.attr.progressBarStyleSmall, value, false)
+        val progressBarStyle = value.data
+        val attributes = intArrayOf(android.R.attr.indeterminateDrawable)
+        val array = obtainStyledAttributes(progressBarStyle, attributes)
+        val drawable = array.getDrawableOrThrow(0)
+        array.recycle()
+        return drawable
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,15 +101,22 @@ class IntentSendMailRecipientBottomDialogFragment(
 
         listener = activity as AddIntentSendMailRecipientBottomDialogListener
 
-        // Set domains
-        if (!aliases.isNullOrEmpty()) {
-            binding.bsSendMailFromIntentAliasesMact.setAdapter(
-                ArrayAdapter(
-                    requireContext(), android.R.layout.simple_list_item_1, aliases.stream().map { it.email }.collect(
-                        Collectors.toList()
-                    )
-                )
-            )
+        val progressDrawable = context?.getProgressBarDrawable()
+
+        binding.bsSendMailFromIntentAliasesTil.endIconMode = TextInputLayout.END_ICON_CUSTOM
+        binding.bsSendMailFromIntentAliasesMact.addTextChangedListener {
+            if (it.toString() != lastMactText) {
+                if (binding.bsSendMailFromIntentAliasesTil.endIconDrawable != progressDrawable) {
+                    binding.bsSendMailFromIntentAliasesTil.endIconDrawable = progressDrawable
+                    (binding.bsSendMailFromIntentAliasesTil.endIconDrawable as? Animatable)?.start()
+                }
+
+                // reset the timeout
+                timeoutHandler.removeCallbacks(typingTimeout)
+                // schedule the timeout
+                timeoutHandler.postDelayed(typingTimeout, TYPING_TIMEOUT.toLong())
+            }
+            lastMactText = it.toString()
         }
 
         // Set recipient text
@@ -96,15 +140,63 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     }
 
-    constructor() : this(null, arrayListOf(), listOf())
+    private fun setAdapterData(searchQuery: String) {
+        if (searchQuery.count() >= 3) {
+            binding.bsSendMailFromIntentAliasesTil.hint = context?.resources?.getString(R.string.alias)
+            lifecycleScope.launch {
+                NetworkHelper(requireContext()).getAliases(
+                    { list, _ ->
+                        if (list != null) {
+                            aliases = list.data
+                            setAliasesAdapter()
+                            binding.bsSendMailFromIntentAliasesMact.showDropDown()
+                        } else {
+                            binding.bsSendMailFromIntentAliasesTil.error =
+                                requireContext().resources.getString(R.string.something_went_wrong_retrieving_aliases)
+                        }
+
+                        binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null
+                    },
+                    aliasSortFilter = AliasSortFilter(
+                        onlyActiveAliases = false,
+                        onlyInactiveAliases = false,
+                        includeDeleted = true,
+                        onlyWatchedAliases = false,
+                        sort = null,
+                        sortDesc = true,
+                        filter = searchQuery
+                    ),
+                    size = 100
+                )
+            }
+        } else {
+            binding.bsSendMailFromIntentAliasesTil.endIconDrawable = null
+            binding.bsSendMailFromIntentAliasesTil.hint = context?.resources?.getString(R.string.start_typing_to_show_aliases)
+        }
+    }
+
+    private fun setAliasesAdapter() {
+        // Set domains
+        if (!aliases.isNullOrEmpty()) {
+            binding.bsSendMailFromIntentAliasesMact.setAdapter(
+                ArrayAdapter(
+                    requireContext(), android.R.layout.simple_list_item_1, aliases.stream().map { it.email }.collect(
+                        Collectors.toList()
+                    )
+                )
+            )
+        }
+
+    }
+
+    constructor() : this(null, listOf())
 
     companion object {
         fun newInstance(
             recipientEmail: String?,
-            aliases: ArrayList<Aliases>,
             domainOptions: List<String>
         ): IntentSendMailRecipientBottomDialogFragment {
-            return IntentSendMailRecipientBottomDialogFragment(recipientEmail, aliases, domainOptions)
+            return IntentSendMailRecipientBottomDialogFragment(recipientEmail, domainOptions)
         }
     }
 
@@ -128,13 +220,12 @@ class IntentSendMailRecipientBottomDialogFragment(
             viewLifecycleOwner.lifecycleScope.launch {
                 listener.onPressSend(
                     binding.bsSendMailFromIntentAliasesMact.text.toString(),
+                    aliases.firstOrNull { it.email == binding.bsSendMailFromIntentAliasesMact.text.toString() },
                     binding.bsSendMailFromIntentAliasRecipientTiet.text.toString(),
                     true
                 )
             }
         } else {
-
-
             // Check if the alias is a valid email address
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(binding.bsSendMailFromIntentAliasesMact.text.toString())
                     .matches()
@@ -157,6 +248,7 @@ class IntentSendMailRecipientBottomDialogFragment(
                     bottomSheetResult = true
                     listener.onPressSend(
                         binding.bsSendMailFromIntentAliasesMact.text.toString(),
+                        aliases.firstOrNull { it.email == binding.bsSendMailFromIntentAliasesMact.text.toString() },
                         binding.bsSendMailFromIntentAliasRecipientTiet.text.toString()
                     )
                 }

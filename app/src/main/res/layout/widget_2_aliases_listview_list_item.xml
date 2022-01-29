@@ -8,7 +8,9 @@
     android:layout_gravity="center_horizontal"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:background="@drawable/widget_2_inner_background"
+    android:backgroundTint="@color/widget_inner_background"
+    android:padding="16dp">
 
     <LinearLayout
         android:id="@+id/widget_aliases_listview_list"

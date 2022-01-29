@@ -12,12 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.AnonAddy
-import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.R
+import host.stjin.anonaddy.*
 import host.stjin.anonaddy.databinding.BottomsheetProfileBinding
-import host.stjin.anonaddy.models.User
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
@@ -124,8 +120,8 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setMonthlyBandwidthStatistics() {
-        val currMonthlyBandwidth = User.userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = User.userResource.bandwidth_limit / 1024 / 1024
+        val currMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth.toDouble() / 1024 / 1024
+        val maxMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth_limit / 1024 / 1024
 
         binding.mainProfileSelectDialogStatisticsMonthlyBandwidthProgress.max =
             if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
@@ -156,7 +152,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setInfo() {
-        val usernameInitials = User.userResource.username.take(2).uppercase(Locale.getDefault())
+        val usernameInitials = (activity?.application as AnonAddyForAndroid).userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainProfileSelectDialogUsernameInitials.text = usernameInitials
 
         binding.mainProfileSelectDialogAnonaddyVersion.text =
@@ -165,23 +161,27 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                 AnonAddy.VERSIONSTRING
             )
 
-        binding.mainProfileSelectDialogCardAccountname.text = User.userResource.username
+        binding.mainProfileSelectDialogCardAccountname.text = (activity?.application as AnonAddyForAndroid).userResource.username
 
         when {
-            User.userResource.subscription == null -> {
+            (activity?.application as AnonAddyForAndroid).userResource.subscription == null -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.GONE
             }
-            User.userResource.subscription_ends_at != null -> {
+            (activity?.application as AnonAddyForAndroid).userResource.subscription_ends_at != null -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
                 binding.mainProfileSelectDialogCardSubscription.text = resources.getString(
                     R.string.subscription_user_until,
-                    User.userResource.subscription,
-                    DateTimeUtils.turnStringIntoLocalString(User.userResource.subscription_ends_at, DateTimeUtils.DATETIMEUTILS.DATE)
+                    (activity?.application as AnonAddyForAndroid).userResource.subscription,
+                    DateTimeUtils.turnStringIntoLocalString(
+                        (activity?.application as AnonAddyForAndroid).userResource.subscription_ends_at,
+                        DateTimeUtils.DATETIMEUTILS.DATE
+                    )
                 )
             }
             else -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
-                binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_user, User.userResource.subscription)
+                binding.mainProfileSelectDialogCardSubscription.text =
+                    resources.getString(R.string.subscription_user, (activity?.application as AnonAddyForAndroid).userResource.subscription)
             }
         }
 

@@ -6,11 +6,6 @@ enum class SUBSCRIPTIONS(val subscription: String) {
     PRO("pro")
 }
 
-object User {
-    lateinit var userResource: UserResource
-    lateinit var userResourceExtended: UserResourceExtended
-}
-
 data class SingleUserResource(
     val `data`: UserResource
 )
@@ -28,8 +23,8 @@ data class UserResource(
     val bandwidth_limit: Int,
     val banner_location: String,
     val created_at: String,
-    val default_alias_domain: String?,
-    val default_alias_format: String?,
+    val default_alias_domain: String,
+    val default_alias_format: String,
     val default_recipient_id: String,
     val email_subject: String?,
     val from_name: String?,
@@ -38,6 +33,10 @@ data class UserResource(
     val recipient_limit: Int,
     val subscription: String?,
     val subscription_ends_at: String?,
+    val total_emails_blocked: Int,
+    val total_emails_forwarded: Int,
+    val total_emails_replied: Int,
+    val total_emails_sent: Int,
     val updated_at: String,
     val username: String,
     val username_count: Int,

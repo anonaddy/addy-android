@@ -1,22 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primaryColorStatic">#19216b</color>
-    <!--<color name="primaryColor">#19216b</color>-->
-    <color name="primaryColor">#353C7D</color>
-    <color name="primaryLightColor">#4d499a</color>
-    <color name="primarySuperLightColor">#804D499A</color>
-    <color name="primarySuperSuperLightColor">#32353C7D</color>
-    <color name="primaryDarkColor">#000040</color>
-    <color name="secondaryColor">#94F0ED</color>
-    <color name="secondaryDarkColor">#A1E6E4</color>
 
-    <color name="IconGrayTint">#666666</color>
+    <color name="widget_inner_background">#2D38A1</color>
+    <color name="widget_background">@color/ic_launcher_background</color>
 
-    <color name="widget_2_layout_3_inner_background_color">@color/primaryLightColor</color>
-
-
-    <color name="softGreen">#00B4AF</color>
-    <color name="softGreenSuperSuperLight">#3200B4AF</color>
     <color name="softRed">#FD5842</color>
     <color name="softRedSuperSuperLight">#32FD5842</color>
 
@@ -26,17 +14,17 @@
 
     <color name="bandwidthColor">#353C7D</color>
     <color name="bandwidthSuperSuperLightColor">#504D499A</color>
-
     <color name="easternBlue">#16A8B8</color>
     <color name="easternBlueSuperLight">#5016A8B8</color>
     <color name="portalBlue">#4289FD</color>
     <color name="portalOrange">#FF9800</color>
-    <color name="shimmerGray">#74CDCDCD</color>
-    <color name="pillColor">#CCCCCC</color>
-    <color name="titOutlineColor">#BABABA</color>
 
-    <color name="colorControlNormal">#89000000</color>
-    <color name="transparentCircle">#0FFFFFFF</color>
+    <!-- Replaced by ?colorSurfaceVariant -->
+    <!--<color name="shimmerGray">#74CDCDCD</color>
+
+    <color name="pillColor">#CCCCCC</color>
+    <color name="titOutlineColor">#BABABA</color>-->
+    <color name="colorControlNormal">#89000000</color> <!-- I decided to keep this one -->
 
     <!--grey-->
     <color name="md_grey_500">#9E9E9E</color>
@@ -50,17 +38,48 @@
     <color name="ic_launcher_background">@color/primaryColorStatic</color>
     <color name="ic_launcher_foreground">#DFE0FF</color>
 
-    <!-- Profile icon -->
-    <color name="profile_icon_background">@color/primaryColor</color>
-    <color name="profile_icon_foreground">@android:color/white</color>
-
-    <color name="CircularProgressButtonTextColor">@color/primaryLightColor</color>
-    <color name="CircularProgressButtonSoftRedTextColor">@color/softRed</color>
     <color name="splashBackground">@color/primaryColorStatic</color>
 
-    <color name="MaterialButtonSecondarySoftRedTextColor">@color/softRed</color>
 
-    <color name="AnonAddyCustomDialogSoftRedTextColor">@color/softRed</color>
-    <color name="AnonAddyCustomDialogHardRedTextColor">@color/hardRed</color>
+    <color name="widget_1_background">#ffffff</color>
 
+    <!-- MATERIAL 3 -->
+
+    <color name="md_theme_primary">#4E57A9</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#DEE0FF</color>
+    <color name="md_theme_onPrimaryContainer">#010965</color>
+
+    <color name="md_theme_secondary">#4250CA</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#DEE0FF</color>
+    <color name="md_theme_onSecondaryContainer">#00046A</color>
+
+    <color name="md_theme_tertiary">#006A64</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#67F8EF</color>
+    <color name="md_theme_onTertiaryContainer">#00201E</color>
+
+    <color name="md_theme_error">#BA1B1B</color>
+    <color name="md_theme_errorContainer">#FFDAD4</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_onErrorContainer">#410001</color>
+
+    <color name="md_theme_background">#FFFBFF</color>
+    <color name="md_theme_onBackground">#1B1B1F</color>
+
+    <color name="md_theme_surface">#FFFBFF</color>
+    <color name="md_theme_onSurface">#1B1B1F</color>
+    <color name="md_theme_surfaceVariant">#E3E1EC</color>
+    <color name="md_theme_onSurfaceVariant">#46464F</color>
+
+    <color name="md_theme_outline">#77767F</color>
+
+    <color name="md_theme_inverseOnSurface">#F3F0F5</color>
+    <color name="md_theme_inverseSurface">#303034</color>
+
+    <color name="md_theme_primaryInverse">#BBC2FF</color>
+
+    <color name="seed">#4E548D</color>
+    <color name="error">#BA1B1B</color>
 </resources>

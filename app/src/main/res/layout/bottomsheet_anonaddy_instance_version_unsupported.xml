@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/BlackWhite"
                 android:layout_marginBottom="16dp"
-                tools:text="@tools:sample/lorem/random" />
+                tools:text="@string/anonaddy_instance_version_unsupported" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,9 +61,9 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_anonaddy_instance_version_unsupported_ignore_button"
-                    style="@style/TextButtonsSecondary"
+                    style="?borderlessButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="16dp"
                     android:text="@string/ignore_and_continue" />
 

@@ -5,7 +5,7 @@
     android:id="@+id/appsettings_backup_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/AnonAddyNotYetWhite"
+
     android:orientation="vertical">
 
     <include
@@ -14,11 +14,13 @@
 
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/activity_app_settings_backup_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/activity_app_settings_backup_NSV_LL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"
@@ -35,17 +37,6 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical">
-
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="132dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
-                    android:contentDescription="@string/anonaddy_backup"
-                    android:elevation="50dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_anonaddy_backup_banner" />
 
 
                 <LinearLayout
@@ -109,6 +100,7 @@
                 android:layout_width="match_parent" />
 
             <LinearLayout
+                android:id="@+id/activity_app_settings_backup_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
@@ -124,7 +116,6 @@
                     tools:ignore="RtlSymmetry" />
 
                 <TextView
-                    android:id="@+id/activity_app_settings_backup_version_channel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"

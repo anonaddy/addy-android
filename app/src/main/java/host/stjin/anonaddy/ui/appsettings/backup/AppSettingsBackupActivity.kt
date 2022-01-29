@@ -35,10 +35,21 @@ class AppSettingsBackupActivity : BaseActivity(),
         binding = ActivityAppSettingsBackupBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsBackupNSVLL)
+        )
+
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         backupHelper = BackupHelper(this)
-        setupToolbar(binding.appsettingsBackupToolbar.customToolbarOneHandedMaterialtoolbar, R.string.anonaddy_backup)
+        setupToolbar(
+            R.string.anonaddy_backup,
+            binding.activityAppSettingsBackupNSV,
+            binding.appsettingsBackupToolbar,
+            R.drawable.ic_anonaddy_backup_banner
+        )
 
         // loadSettings()
         setOnClickListeners()
@@ -202,7 +213,7 @@ class AppSettingsBackupActivity : BaseActivity(),
     }
 
     override fun onSaved() {
-        backupSetPasswordBottomDialogFragment.dismiss()
+        backupSetPasswordBottomDialogFragment.dismissAllowingStateLoss()
         SnackbarHelper.createSnackbar(
             this@AppSettingsBackupActivity,
             this@AppSettingsBackupActivity.resources.getString(R.string.backup_password_set),

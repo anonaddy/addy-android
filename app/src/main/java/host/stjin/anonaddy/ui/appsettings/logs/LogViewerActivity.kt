@@ -23,8 +23,18 @@ class LogViewerActivity : BaseActivity() {
         binding = ActivityLogViewerBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        setupToolbar(binding.appsettingsLogviewerToolbar.customToolbarOneHandedMaterialtoolbar, R.string.logs)
+        drawBehindNavBar(
+            view,
+            topViewsToShiftDownUsingMargin = arrayListOf(view),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsLogviewerRecyclerview),
+            bottomViewsToShiftUpUsingMargin = arrayListOf(binding.appsettingsLogviewerEfab)
+        )
+        setupToolbar(
+            R.string.logs,
+            binding.appsettingsLogviewerNSV,
+            binding.appsettingsLogviewerToolbar,
+            R.drawable.ic_file_alert
+        )
 
         val filename = intent.getStringExtra("logfile")
         if (filename.isNullOrEmpty()) {
@@ -42,7 +52,6 @@ class LogViewerActivity : BaseActivity() {
             getAllLogsAndSetRecyclerview()
         }
     }
-
 
     private lateinit var logsAdapter: LogsAdapter
     private var OneTimeRecyclerViewActions: Boolean = true

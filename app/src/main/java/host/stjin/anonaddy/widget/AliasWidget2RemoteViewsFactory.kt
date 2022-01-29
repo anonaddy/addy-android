@@ -96,28 +96,16 @@ class AliasWidget2RemoteViewsFactory(private val mContext: Context) : RemoteView
 
     override fun onDataSetChanged() {
         val settingsManager = SettingsManager(true, mContext)
-        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DATA_ALIASES)
+        // Cache contains 15 most popular aliases
+        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA)
 
         val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(mContext, it) }
-        val filteredAliasList = ArrayList<Aliases>()
-
-        if (aliasesList != null) {
-            for (alias in aliasesList) {
-                // Only show active and non-deleted aliases
-                if (alias.active && alias.deleted_at == null) {
-                    filteredAliasList.add(alias)
-                }
-            }
-        }
 
         // List needs more than 2 else it becomes a singleton and will result in an ClassCastException
-        if (filteredAliasList.size >= 2) {
-
-            // Sort by emails forwarded
-            filteredAliasList.sortByDescending { it.emails_forwarded }
-
-            // Get the top 15
-            aliasList = filteredAliasList.take(15) as ArrayList<Aliases>?
+        if (aliasesList != null) {
+            if (aliasesList.size >= 2) {
+                aliasList = aliasesList
+            }
         }
     }
 
