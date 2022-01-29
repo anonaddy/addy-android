@@ -1,6 +1,6 @@
 # Changelog
 
-## [v3.3.4] - TBD
+## [v3.3.4] - 2022-01-31
 
 > **_NOTE:_**  3.3.0-3.3.3 Never released because Google refused the new updates multiple times.
 
