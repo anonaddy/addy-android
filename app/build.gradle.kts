@@ -88,10 +88,10 @@ dependencies {
 
 // Fuel, network requests
 dependencies {
-    implementation("com.github.kittinunf.fuel:fuel:2.2.3")
-    implementation("com.google.code.gson:gson:2.8.6")
-    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.2.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
 }
 
 // Shimmer
@@ -107,7 +107,7 @@ dependencies {
 
 // Animations
 dependencies {
-    implementation("com.airbnb.android:lottie:3.4.1")
+    implementation("com.airbnb.android:lottie:4.2.2")
 }
 
 // Apache for extracting strings ManageAliasActivity
@@ -128,7 +128,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut:2.1.0")
+    implementation("app.futured.donut:donut:2.2.0")
 }
 
 // Loading spinners when execution actions from eg. bottomsheets
