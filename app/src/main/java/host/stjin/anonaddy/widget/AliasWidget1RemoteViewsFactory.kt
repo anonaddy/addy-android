@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.COPY_ACTION
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_ACTION
+import host.stjin.anonaddy_shared.SettingsManager
 
 
 class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteViewsFactory {

@@ -5,6 +5,7 @@ import com.google.android.material.color.DynamicColors
 import com.google.gson.Gson
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
+import host.stjin.anonaddy_shared.SettingsManager
 
 class AnonAddyForAndroid : Application() {
 
@@ -26,7 +27,6 @@ class AnonAddyForAndroid : Application() {
         set(value) {
             encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.USER_RESOURCE_EXTENDED, Gson().toJson(value))
         }
-
     override fun onCreate() {
         super.onCreate()
         val settingsManager = SettingsManager(false, this)

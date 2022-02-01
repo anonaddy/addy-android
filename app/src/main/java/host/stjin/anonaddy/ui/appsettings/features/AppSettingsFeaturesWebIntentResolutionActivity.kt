@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.widget.CompoundButton
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWebintentResolutionBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.WebIntentManager
+import host.stjin.anonaddy_shared.SettingsManager
 
 
 class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {

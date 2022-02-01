@@ -22,9 +22,9 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
-import host.stjin.anonaddy.models.LOGIMPORTANCE
 import host.stjin.anonaddy.models.SUBSCRIPTIONS
 import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import kotlinx.coroutines.launch
 
 

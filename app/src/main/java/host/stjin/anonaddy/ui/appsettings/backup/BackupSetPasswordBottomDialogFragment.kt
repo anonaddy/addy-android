@@ -13,8 +13,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.BottomsheetSetBackupPasswordBinding
+import host.stjin.anonaddy_shared.SettingsManager
 
 
 class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {

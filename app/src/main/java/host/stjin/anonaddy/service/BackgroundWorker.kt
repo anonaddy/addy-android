@@ -10,12 +10,12 @@ import androidx.work.*
 import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.NetworkHelper
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
+import host.stjin.anonaddy_shared.SettingsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
@@ -91,7 +91,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 ALIAS_WATCHER FUNCTIONALITY
                  **/
 
-                aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, settingsManager)
+                aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, encryptedSettingsManager)
 
 
                 networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->

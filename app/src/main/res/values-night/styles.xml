@@ -3,6 +3,30 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="BaseTheme">
         <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <!--
+                <item name="android:textColor">@color/BlackWhite</item>
+        -->
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
+
+        <!-- Optional, if drawing behind the status bar too -->
+        <item name="android:statusBarColor">
+            ?colorPrimary
+        </item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowContentTransitions">true</item>
+
+        <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
+        <item name="chipStyle">@style/AnonAddyChip</item>
+
+        <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
+        <item name="android:windowSplashScreenAnimationDuration">1000</item>
     </style>
 
     <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">

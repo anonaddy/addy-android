@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.models.LOGIMPORTANCE
 import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.PrintWriter

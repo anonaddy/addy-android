@@ -1,5 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">AnonAddy</string>
     <string name="title_home">Home</string>
     <string name="title_aliases">Aliases</string>
     <string name="app_settings">App settings</string>
@@ -324,7 +323,9 @@
     <string name="notification_new_update_available_desc">Version %s of AnonAddy for Android is available. Tap here to download it</string>
     <string name="notification_new_failed_delivery">Email delivery failed</string>
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
+    <string name="notification_channel_update">@string/anonaddy_updater</string>
     <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
+    <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
     <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
@@ -455,8 +456,8 @@
     <string name="enter_backup_password_desc">Enter the backup password with which backups are encrypted.\nBackups contain sensitive information so a deleting the backup file after restoring the backup is recommended.\n\nThe backup cannot be recovered without this password</string>
     <string name="never">never</string>
     <string name="backup_location_not_accessible">Backup location not accessible, tap here to set a new location</string>
-    <string name="notification_channel_failed_backups">Failed backups</string>
-    <string name="notification_channel_failed_backups_desc">Receive a notification when periodic AnonAddy backups fail</string>
+    <string name="notification_channel_backup">@string/anonaddy_backup</string>
+    <string name="notification_channel_backup_desc">Receive a notification when periodic AnonAddy backups fail</string>
     <string name="notification_new_backup_delivery">Periodic backup failed</string>
     <string name="notification_new_backup_delivery_desc">Unable to make periodic backup of app configuration. Tap here to view the backup log</string>
     <string name="disable_periodic_backups">Disable periodic backups</string>
@@ -529,4 +530,40 @@
     <string name="sort_by">Sort by</string>
     <string name="filter_active">Filter active</string>
     <string name="filter">Filter</string>
+    <string name="setup_wearable_app">Setup wearable app</string>
+    <string name="setup_wearable_app_desc">Would you like to setup AnonAddy on %1$s with the account %2$s? The settings will remain on the wearable even after resetting the app on this device.</string>
+    <string name="confirm_and_setup">Confirm and setup</string>
+    <string name="do_not_ask_again">Do not ask again</string>
+    <string name="wearable_device_invalid">Wearable device not recognised, please try again</string>
+    <string name="check_your_wearable">Check your wearable</string>
+    <string name="wearable_setup_success">@string/check_your_wearable</string>
+    <string name="wearable_setup_canceled">Setup on wearable canceled</string>
+    <string name="wearable_setup_failed">Something went wrong while setting up AnonAddy on the wearable device, please try again</string>
+    <string name="wearable_start_success">@string/check_your_wearable</string>
+    <string name="wearable_start_canceled">Start on wearable canceled</string>
+    <string name="wearable_start_failed">Something went wrong while starting AnonAddy on the wearable device, please try again</string>
+    <string name="wearable_reset_success">Reset on wearable complete</string>
+    <string name="wearable_reset_canceled">Reset on wearable canceled</string>
+    <string name="wearable_reset_failed">Something went wrong while resetting AnonAddy on the wearable device, please try again</string>
+    <string name="wearable_setup_skip_setup">To setup AnonAddy on a wearable device, open the AnonAddy settings</string>
+    <string name="wearable_quick_setup">Quick setup</string>
+    <string name="wearable_quick_setup_desc">When AnonAddy is opened for the first time on a wearable. Show a message on this device to quickly set up the app</string>
+    <string name="anonaddy_for_wearables">AnonAddy for wearables</string>
+    <string name="anonaddy_for_wearables_desc">With AnonAddy on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to beautiful watch faces</string>
+    <string name="start_wearable_app">Start app</string>
+    <string name="setup_app_on_wearable">Setup app</string>
+    <string name="reset_app_on_wearable">Reset app</string>
+    <string name="select_wearable_device">Select wearable device</string>
+    <string name="no_wearable_devices_available">No wearable devices available</string>
+    <string name="this_device">This device</string>
+    <string name="wearable">Wearable</string>
+    <string name="log_wearable_requested">A new wearable setup request was received from %1$s</string>
+    <string name="notification_setup_wearable_app">@string/setup_wearable_app</string>
+    <string name="notification_setup_wearable_app_desc">Tap here to setup AnonAddy on %1$s</string>
+    <string name="notification_channel_anonaddy_for_wearables">@string/anonaddy_for_wearables</string>
+    <string name="notification_channel_anonaddy_for_wearables_desc">Receive a notification when a new wearable is requesting setup</string>
+    <string name="disable_quick_setup">Disable quick setup</string>
+    <string name="notification_setup_app_first">Cannot setup wearable app</string>
+    <string name="notification_setup_app_first_desc">AnonAddy for Android has not been set up on this device yet. Tap here to setup the app</string>
+
 </resources>

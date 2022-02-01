@@ -33,6 +33,8 @@ import host.stjin.anonaddy.AnonAddy.GITLAB_TAGS_RSS_FEED
 import host.stjin.anonaddy.AnonAddy.lazyMgr
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.InputStream

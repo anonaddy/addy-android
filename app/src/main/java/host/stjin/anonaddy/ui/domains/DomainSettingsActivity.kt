@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.AnonAddyForAndroid
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.NetworkHelper
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.DomainAdapter
 import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
 import host.stjin.anonaddy.models.UserResource
@@ -18,6 +21,7 @@ import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.SettingsManager
 import kotlinx.coroutines.launch
 
 class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {

@@ -74,9 +74,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
-    // Preferences for storing settings (and crypto settings)
-    implementation("androidx.preference:preference-ktx:1.1.1")
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
+
 
 }
 
@@ -144,4 +142,11 @@ dependencies {
 // Backup manager
 dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
+}
+
+// Communication with Wear OS device
+dependencies {
+    implementation(project(mapOf("path" to ":anonaddy_shared")))
+    wearApp(project(":app-wearos"))
+    implementation("com.google.android.gms:play-services-wearable:17.1.0")
 }

@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.models.LOGIMPORTANCE
-import host.stjin.anonaddy.models.Logs
+import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.Logs
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*

@@ -1,0 +1,6 @@
+<resources>
+    <string name="hello_world">Hello World!</string>
+    <string name="setup">Setup</string>
+    <string name="setup_desc">Tap setup and confirm the action in the app to start using AnonAddy on your watch</string>
+    <string name="app_reset_requested_by">AnonAddy reset requested by %1$s</string>
+</resources>

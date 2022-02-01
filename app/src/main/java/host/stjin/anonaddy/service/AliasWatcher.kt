@@ -1,9 +1,9 @@
 package host.stjin.anonaddy.service
 
 import android.content.Context
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.utils.GsonTools
+import host.stjin.anonaddy_shared.SettingsManager
 
 class AliasWatcher(private val context: Context) {
     val settingsManager = SettingsManager(true, context)

@@ -12,9 +12,13 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.AnonAddy
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.NetworkHelper
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
+import host.stjin.anonaddy_shared.SettingsManager
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import kotlin.random.Random

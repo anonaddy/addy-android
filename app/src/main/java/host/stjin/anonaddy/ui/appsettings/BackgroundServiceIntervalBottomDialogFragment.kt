@@ -10,8 +10,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.BottomsheetBackgroundserviceintervalBinding
+import host.stjin.anonaddy_shared.SettingsManager
 
 
 class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {

@@ -1,4 +1,4 @@
-package host.stjin.anonaddy
+package host.stjin.anonaddy_shared
 
 import android.app.ActivityManager
 import android.content.Context
@@ -34,6 +34,10 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
 
+        //Wear OS
+        DISABLE_WEAROS_QUICK_SETUP_DIALOG(false, PREFTYPES.STRING, "disable_wearos_quick_setup_dialog"),
+        SELECTED_WEAROS_DEVICE(false, PREFTYPES.STRING, "selected_wearos_device"),
+
         // Sorting and Filtering for aliasFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
 
@@ -46,9 +50,10 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
         // USER_RESOURCE is also being used by the background service to store the user_resource in
         USER_RESOURCE(true, PREFTYPES.STRING, "user_resource"),
-
         USER_RESOURCE_EXTENDED(true, PREFTYPES.STRING, "user_resource_extended"),
 
+        // Wear OS
+        WEAROS_CONFIGURATION(true, PREFTYPES.STRING, "wearos_configuration"),
 
         // Locally stored data
         BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA(true, PREFTYPES.STRING, "cache_15_most_active_aliases_data"),

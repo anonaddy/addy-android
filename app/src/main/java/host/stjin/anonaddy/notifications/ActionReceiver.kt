@@ -4,8 +4,8 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.AliasWatcher
+import host.stjin.anonaddy_shared.SettingsManager
 
 
 class ActionReceiver : BroadcastReceiver() {
@@ -15,6 +15,7 @@ class ActionReceiver : BroadcastReceiver() {
         const val STOP_UPDATE_CHECK = "stop_update_check"
         const val STOP_FAILED_DELIVERY_CHECK = "stop_failed_delivery_check"
         const val STOP_PERIODIC_BACKUPS = "stop_periodic_backups"
+        const val DISABLE_WEAROS_QUICK_SETUP = "disable_wearos_quick_setup"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -29,7 +30,6 @@ class ActionReceiver : BroadcastReceiver() {
                     AliasWatcher(context).removeAliasToWatch(it)
                     // Dismiss notification
                     notificationManager.cancel(NotificationHelper.ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID)
-
                 }
             }
             NOTIFICATIONACTIONS.STOP_UPDATE_CHECK -> {
@@ -46,6 +46,11 @@ class ActionReceiver : BroadcastReceiver() {
                 SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.FAILED_BACKUP_NOTIFICATION_ID)
+            }
+            NOTIFICATIONACTIONS.DISABLE_WEAROS_QUICK_SETUP -> {
+                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, true)
+                // Dismiss notification
+                notificationManager.cancel(NotificationHelper.NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID)
             }
         }
     }

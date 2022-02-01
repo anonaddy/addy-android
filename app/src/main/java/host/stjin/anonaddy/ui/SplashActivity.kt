@@ -15,6 +15,7 @@ import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
+import host.stjin.anonaddy_shared.SettingsManager
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")

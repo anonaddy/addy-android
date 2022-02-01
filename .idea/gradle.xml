@@ -10,7 +10,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/anonaddy_shared" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/app-wearos" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

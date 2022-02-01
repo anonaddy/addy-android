@@ -5,8 +5,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.models.LOGIMPORTANCE
 import host.stjin.anonaddy.models.UserResource
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 
 object GsonTools {
     fun jsonToAliasObject(context: Context, json: String): ArrayList<Aliases>? {

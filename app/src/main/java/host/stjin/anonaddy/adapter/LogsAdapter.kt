@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.models.Logs
+import host.stjin.anonaddy_shared.models.Logs
 
 
 class LogsAdapter(

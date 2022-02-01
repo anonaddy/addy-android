@@ -22,7 +22,6 @@ import com.google.gson.Gson
 import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentAliasBinding
 import host.stjin.anonaddy.models.AliasSortFilter
@@ -36,6 +35,7 @@ import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.SettingsManager
 import kotlinx.coroutines.launch
 
 

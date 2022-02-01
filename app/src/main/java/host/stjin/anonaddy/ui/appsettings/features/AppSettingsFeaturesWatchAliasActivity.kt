@@ -3,8 +3,8 @@ package host.stjin.anonaddy.ui.appsettings.features
 import android.os.Bundle
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWatchAliasBinding
+import host.stjin.anonaddy_shared.SettingsManager
 
 
 class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {

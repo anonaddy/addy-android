@@ -5,11 +5,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.databinding.ActivityAppSettingsUpdateBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.YDGooglePlayUtils
+import host.stjin.anonaddy_shared.SettingsManager
 import kotlinx.coroutines.launch
 
 

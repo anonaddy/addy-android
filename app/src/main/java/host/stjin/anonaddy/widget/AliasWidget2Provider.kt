@@ -16,7 +16,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
@@ -26,6 +25,7 @@ import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.NAVIGA
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_ADD_ALIAS_SHEET
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_TARGET
+import host.stjin.anonaddy_shared.SettingsManager
 import kotlin.random.Random
 
 

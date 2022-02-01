@@ -14,10 +14,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.view.*
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
 import com.google.android.material.appbar.AppBarLayout
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
+import host.stjin.anonaddy_shared.SettingsManager
 
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -102,7 +105,7 @@ abstract class BaseActivity : AppCompatActivity() {
     This method is getting called in multiple places to check if the user is Authenticated to use the app.
     It only gived a callback when the user is authenticated
      */
-    fun isAuthenticated(callback: (Boolean) -> Unit) {
+    fun isAuthenticated(shouldFinishOnError: Boolean = true, callback: (Boolean) -> Unit) {
         val settingsManager = SettingsManager(true, this)
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
             if (!isSessionAuthenticated) {
@@ -130,10 +133,14 @@ abstract class BaseActivity : AppCompatActivity() {
                                     callback(true)
                                 }
                                 BiometricPrompt.ERROR_USER_CANCELED -> {
-                                    finish()
+                                    if (shouldFinishOnError) {
+                                        finish()
+                                    }
                                 }
                                 BiometricPrompt.ERROR_CANCELED -> {
-                                    finish()
+                                    if (shouldFinishOnError) {
+                                        finish()
+                                    }
                                 }
                                 else -> {
                                     Toast.makeText(
@@ -142,7 +149,9 @@ abstract class BaseActivity : AppCompatActivity() {
                                             errString
                                         ), Toast.LENGTH_LONG
                                     ).show()
-                                    finish()
+                                    if (shouldFinishOnError) {
+                                        finish()
+                                    }
                                 }
                             }
                         }
