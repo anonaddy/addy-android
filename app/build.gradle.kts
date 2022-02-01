@@ -9,9 +9,9 @@ android {
         applicationId = "host.stjin.anonaddy"
         minSdk = 23
         targetSdk = 31
-        versionCode = 34
+        versionCode = 35
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v3.3.4"
+        versionName = "v3.3.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

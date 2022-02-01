@@ -91,7 +91,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 ALIAS_WATCHER FUNCTIONALITY
                  **/
 
-                aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, settingsManager)
+                aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, encryptedSettingsManager)
 
 
                 networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
