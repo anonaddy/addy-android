@@ -105,6 +105,7 @@ Of course, you can also contact the developer directly via telegram or email and
 
 ## Donation
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=26D39SEWQLBHW)
+[![BuyMeACoffee](static/bmc-button.png)](https://buymeacoffee.com/stjin)
 
 ## Privacy policy
 [Privacy policy](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/PrivacyPolicy.md)
