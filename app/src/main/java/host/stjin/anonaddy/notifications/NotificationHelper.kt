@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.os.Build
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.*
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT
@@ -36,6 +35,11 @@ class NotificationHelper(private val context: Context) {
     private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     companion object {
+        /*
+        ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID is in the method combined (concat) with a Random() because its possible that multiple of these notifications can appear
+        E.g. when 2 aliases have new emails.
+        That means that these notification ID's have a prefix of 1 (so 1000 up to 1999)
+         */
         const val ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID = 1
         const val UPDATER_NOTIFICATION_ID = 2
         const val FAILED_DELIVERIES_NOTIFICATION_ID = 3
@@ -334,14 +338,14 @@ class NotificationHelper(private val context: Context) {
             getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        val notification = NotificationCompat.Builder(context, FAILED_BACKUP_NOTIFICATION_CHANNEL_ID)
+        val notification = Builder(context, FAILED_BACKUP_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(
                 BigTextStyle()
                     .bigText(text)
             )
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(PRIORITY_DEFAULT)
             .setVisibility(VISIBILITY_PUBLIC)
             // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
@@ -387,9 +391,13 @@ class NotificationHelper(private val context: Context) {
         val visibility =
             if (SettingsManager(true, context).getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PUBLIC
 
+        // Decide notificationID here, and send it to the actionReceiver so the correct notification can be cancelled
+        val notificationID = Integer.valueOf(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID.toString() + Random.nextInt(0, 999).toString())
+
         val stopWatchingIntent = Intent(context, ActionReceiver::class.java).apply {
             action = ActionReceiver.NOTIFICATIONACTIONS.STOP_WATCHING
             putExtra("extra", aliasId)
+            putExtra("notificationID", notificationID)
         }
         val stopWatchingPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
@@ -429,9 +437,7 @@ class NotificationHelper(private val context: Context) {
             .build()
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
-            //TODO test this, can it have a static ID?
-            // It can have a static id, but it is important to let the user know that multiple emails have been forwarded via multiple aliases
-            notify(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID, notification)
+            notify(notificationID, notification)
         }
     }
 

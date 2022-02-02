@@ -22,6 +22,7 @@ class ActionReceiver : BroadcastReceiver() {
         //Toast.makeText(context,"received",Toast.LENGTH_SHORT).show();
         val action = intent.action
         val extra = intent.getStringExtra("extra")
+        val notificationID = intent.getIntExtra("notificationID", 0)
         val notificationManager = context
             .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         when (action) {
@@ -29,7 +30,7 @@ class ActionReceiver : BroadcastReceiver() {
                 extra?.let {
                     AliasWatcher(context).removeAliasToWatch(it)
                     // Dismiss notification
-                    notificationManager.cancel(NotificationHelper.ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID)
+                    notificationManager.cancel(notificationID)
                 }
             }
             NOTIFICATIONACTIONS.STOP_UPDATE_CHECK -> {

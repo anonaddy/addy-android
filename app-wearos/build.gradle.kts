@@ -60,5 +60,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.wear:wear:1.2.0")
     implementation(project(mapOf("path" to ":anonaddy_shared")))
+
+    compileOnly("com.google.android.wearable:wearable:2.8.1")
     implementation("com.google.android.support:wearable:2.8.1")
 }

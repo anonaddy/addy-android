@@ -11,6 +11,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.wearable.Wearable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -354,9 +355,74 @@ class AppSettingsActivity : BaseActivity(),
                 dialog.dismiss()
             }
             .setPositiveButton(resources.getString(R.string.reset_app)) { _, _ ->
-                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                Wearable.getNodeClient(this).connectedNodes.addOnCompleteListener { nodes ->
+                    if (nodes.result.any()) {
+                        MaterialAlertDialogBuilder(
+                            this@AppSettingsActivity,
+                            R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons
+                        )
+                            .setTitle(resources.getString(R.string.reset_app))
+                            .setIcon(R.drawable.ic_device_watch)
+                            .setMessage(resources.getString(R.string.reset_app_confirmation_wearable))
+                            .setPositiveButton(resources.getString(R.string.reset_app_all_apps)) { _, _ ->
+                                lifecycleScope.launch {
+                                    resetAppOnAllWearables { result ->
+                                        if (result) {
+                                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                                        } else {
+                                            MaterialAlertDialogBuilder(
+                                                this@AppSettingsActivity,
+                                                R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons
+                                            )
+                                                .setTitle(resources.getString(R.string.reset_app_error_wearable))
+                                                .setIcon(R.drawable.ic_loader)
+                                                .setMessage(resources.getString(R.string.reset_app_error_wearable_desc))
+                                                .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                                                    dialog.dismiss()
+                                                }.setNegativeButton(resources.getString(R.string.reset_app_just_this_app)) { _, _ ->
+                                                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                                                }.show()
+                                        }
+                                    }
+                                }
+                            }.setNegativeButton(resources.getString(R.string.reset_app_just_this_app)) { _, _ ->
+                                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                            }.show()
+                    } else {
+                        (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                    }
+                }.addOnFailureListener {
+                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                }
+            }.show()
+    }
+
+    private fun resetAppOnAllWearables(callback: (Boolean) -> Unit) {
+        val nodeClient = Wearable.getNodeClient(this)
+        nodeClient.connectedNodes.addOnCompleteListener { nodes ->
+            if (nodes.result.any()) {
+                nodeClient.localNode.addOnCompleteListener { localNode ->
+                    for (node in nodes.result) {
+                        Wearable.getMessageClient(this).sendMessage(
+                            node.id,
+                            "/reset",
+                            localNode.result.displayName.toByteArray()
+                        )
+                    }
+                    callback(true)
+                }.addOnFailureListener {
+                    callback(false)
+                }.addOnCanceledListener {
+                    callback(false)
+                }
+            } else {
+                callback(false)
             }
-            .show()
+        }.addOnFailureListener {
+            callback(false)
+        }.addOnCanceledListener {
+            callback(false)
+        }
     }
 
 

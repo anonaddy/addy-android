@@ -140,6 +140,7 @@
     <string name="anonaddy_locked">AnonAddy locked</string>
     <string name="authentication_error_11">Biometric unlocking disabled, no screen lock was found</string>
     <string name="reset_app">Reset app</string>
+    <string name="reset_app_error_wearable">Could not reset app</string>
     <string name="reset_app_desc">Clear all data and start over</string>
     <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your AnonAddy account or anything related)</string>
     <string name="api_key_invalid">API key invalid, app will reset and close in 5 seconds</string>
@@ -565,5 +566,9 @@
     <string name="disable_quick_setup">Disable quick setup</string>
     <string name="notification_setup_app_first">Cannot setup wearable app</string>
     <string name="notification_setup_app_first_desc">AnonAddy for Android has not been set up on this device yet. Tap here to setup the app</string>
+    <string name="reset_app_confirmation_wearable">Connected wearables found, do you want to reset the app on these wearables as well?</string>
+    <string name="reset_app_error_wearable_desc">Could not reset app on connected wearables, reset just this app?</string>
+    <string name="reset_app_just_this_app">Just this app</string>
+    <string name="reset_app_all_apps">Reset all</string>
 
 </resources>
