@@ -1,6 +1,9 @@
 package host.stjin.anonaddy.ui.alias.manage
 
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -19,8 +22,11 @@ import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
 import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.*
+import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
+import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy.utils.SnackbarHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -81,13 +87,16 @@ class ManageAliasActivity : BaseActivity(),
         if (b?.getString("alias_id") != null) {
             // Intents
             val aliasId = b.getString("alias_id")
+
+            // Used in ActionReceiver
+            shouldDeactivateThisAlias = b.getBoolean("shouldDeactivateThisAlias", false)
+
             if (aliasId == null) {
                 finish()
                 return
             }
             this.aliasId = aliasId
             setPage()
-
         } else if (intent.action != null) {
             // /deactivate URI's
             val data: Uri? = intent?.data

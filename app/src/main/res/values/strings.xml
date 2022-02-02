@@ -570,5 +570,6 @@
     <string name="reset_app_error_wearable_desc">Could not reset app on connected wearables, reset just this app?</string>
     <string name="reset_app_just_this_app">Just this app</string>
     <string name="reset_app_all_apps">Reset all</string>
+    <string name="disable_alias">Disable alias</string>
 
 </resources>

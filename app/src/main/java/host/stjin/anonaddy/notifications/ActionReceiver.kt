@@ -4,7 +4,9 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import host.stjin.anonaddy.service.AliasWatcher
+import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy_shared.SettingsManager
 
 
@@ -12,6 +14,7 @@ class ActionReceiver : BroadcastReceiver() {
 
     object NOTIFICATIONACTIONS {
         const val STOP_WATCHING = "stop_watching"
+        const val DISABLE_ALIAS = "disable_alias"
         const val STOP_UPDATE_CHECK = "stop_update_check"
         const val STOP_FAILED_DELIVERY_CHECK = "stop_failed_delivery_check"
         const val STOP_PERIODIC_BACKUPS = "stop_periodic_backups"
@@ -29,6 +32,17 @@ class ActionReceiver : BroadcastReceiver() {
             NOTIFICATIONACTIONS.STOP_WATCHING -> {
                 extra?.let {
                     AliasWatcher(context).removeAliasToWatch(it)
+                    // Dismiss notification
+                    notificationManager.cancel(notificationID)
+                }
+            }
+            NOTIFICATIONACTIONS.DISABLE_ALIAS -> {
+                extra?.let {
+                    val manageAliasIntent = Intent(context, ManageAliasActivity::class.java)
+                    manageAliasIntent.putExtra("alias_id", it)
+                    manageAliasIntent.putExtra("shouldDeactivateThisAlias", true)
+                    manageAliasIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    ContextCompat.startActivity(context, manageAliasIntent, null)
                     // Dismiss notification
                     notificationManager.cancel(notificationID)
                 }

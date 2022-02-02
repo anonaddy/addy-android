@@ -407,6 +407,19 @@ class NotificationHelper(private val context: Context) {
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
+        val disableAliasIntent = Intent(context, ActionReceiver::class.java).apply {
+            action = ActionReceiver.NOTIFICATIONACTIONS.DISABLE_ALIAS
+            putExtra("extra", aliasId)
+            putExtra("notificationID", notificationID)
+        }
+        val disableAliasPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                disableAliasIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
         val editAliasIntent = Intent(context, ManageAliasActivity::class.java).apply {
             putExtra("alias_id", aliasId)
         }
@@ -430,6 +443,7 @@ class NotificationHelper(private val context: Context) {
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
             .setSmallIcon(R.drawable.ic_watch_alias)
             .addAction(R.drawable.ic_watch_alias, context.resources.getString(R.string.stop_watching), stopWatchingPendingIntent)
+            .addAction(R.drawable.ic_watch_alias, context.resources.getString(R.string.disable_alias), disableAliasPendingIntent)
             // Notifications should always have a static color to identify the app
             .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
             .setContentIntent(editAliasPendingIntent)
