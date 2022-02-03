@@ -5,11 +5,13 @@ import com.google.android.material.color.DynamicColors
 import com.google.gson.Gson
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 class AnonAddyForAndroid : Application() {
 
     lateinit var encryptedSettingsManager: SettingsManager
+
+    // Not nullable, the app should crash if these values are not set. That means something is definitely wrong.
     var userResource: UserResource
         get() {
             return Gson().fromJson(encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.USER_RESOURCE), UserResource::class.java)

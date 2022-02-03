@@ -64,3 +64,11 @@ dependencies {
     compileOnly("com.google.android.wearable:wearable:2.8.1")
     implementation("com.google.android.support:wearable:2.8.1")
 }
+
+// Fuel, network requests
+dependencies {
+    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
+}

@@ -13,7 +13,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAppearanceBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {

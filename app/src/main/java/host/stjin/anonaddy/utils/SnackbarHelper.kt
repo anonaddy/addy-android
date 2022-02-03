@@ -6,7 +6,7 @@ import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 object SnackbarHelper {
     fun createSnackbar(

@@ -7,7 +7,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWebintentResolutionBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.WebIntentManager
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {

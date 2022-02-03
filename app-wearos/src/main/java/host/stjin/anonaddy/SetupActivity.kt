@@ -18,6 +18,7 @@ class SetupActivity : Activity(), DataClient.OnDataChangedListener {
         super.onCreate(savedInstanceState)
 
         binding = ActivitySetupBinding.inflate(layoutInflater)
+        setTheme(R.style.BaseTheme)
         setContentView(binding.root)
         startAnimation(binding.wearosActivitySetupLogo)
         requestSetup()
@@ -30,13 +31,21 @@ class SetupActivity : Activity(), DataClient.OnDataChangedListener {
     private fun requestSetup() {
         val nodeClient = Wearable.getNodeClient(this)
         nodeClient.connectedNodes.addOnCompleteListener { nodes ->
-            nodeClient.localNode.addOnCompleteListener { localNode ->
-                // Send a message to all connected nodes basically broadcasting itself.
-                // Nodes with the app installed will receive this message and open the setup sheet
-                for (node in nodes.result) {
-                    Wearable.getMessageClient(this).sendMessage(node.id, "/requestsetup", localNode.result.displayName.toByteArray())
+            if (nodes.result.any()) {
+                nodeClient.localNode.addOnCompleteListener { localNode ->
+                    // Send a message to all connected nodes basically broadcasting itself.
+                    // Nodes with the app installed will receive this message and open the setup sheet
+                    for (node in nodes.result) {
+                        Wearable.getMessageClient(this).sendMessage(node.id, "/requestsetup", localNode.result.displayName.toByteArray())
+                    }
                 }
+            } else {
+                noNodesFound()
             }
+        }.addOnFailureListener {
+            noNodesFound()
+        }.addOnCanceledListener {
+            noNodesFound()
         }
     }
 
@@ -62,7 +71,6 @@ class SetupActivity : Activity(), DataClient.OnDataChangedListener {
     }
 
     override fun onDataChanged(p0: DataEventBuffer) {
-
         finish()
     }
 

@@ -25,7 +25,7 @@ import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.NAVIGA
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_ADD_ALIAS_SHEET
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_TARGET
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlin.random.Random
 
 
@@ -93,6 +93,7 @@ class AliasWidget2Provider : AppWidgetProvider() {
                 OPEN_APP_ADD_ALIAS_SHEET -> {
                     val mainIntent = Intent(context, AliasWidget2BottomSheetAddActivity::class.java)
                     mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                    mainIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
                     startActivity(context, mainIntent, null)
                 }
                 OPEN_APP_TARGET -> {

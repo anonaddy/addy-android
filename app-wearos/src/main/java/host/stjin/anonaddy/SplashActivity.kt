@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
-import host.stjin.anonaddy_shared.SettingsManager
-import host.stjin.anonaddy_shared.utils.GsonTools
 
 class SplashActivity : Activity() {
 
@@ -21,17 +19,15 @@ class SplashActivity : Activity() {
 
 
     private fun loadSettings() {
-        val configuration = SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.WEAROS_CONFIGURATION)
-            ?.let { GsonTools.jsonToWearOSSettingsObject(this, it) }
 
-        if (configuration != null) {
-            binding.text.text = configuration.api_key
-        } else {
+        if ((application as AnonAddyForWearOS).wearOSSettings == null) {
             val intent = Intent(this, SetupActivity::class.java)
             startActivity(intent)
             finish()
-            // Tell the user to setup the app
-            binding.text.text = this.resources.getString(R.string.common_open_on_phone)
+        } else {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 

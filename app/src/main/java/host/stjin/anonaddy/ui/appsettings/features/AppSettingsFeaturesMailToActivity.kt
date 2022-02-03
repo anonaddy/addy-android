@@ -11,7 +11,7 @@ import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesMailtoBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.ComponentUtils.getComponentState
 import host.stjin.anonaddy.utils.ComponentUtils.setComponentState
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesMailToActivity : BaseActivity() {

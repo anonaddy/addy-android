@@ -21,7 +21,7 @@ import host.stjin.anonaddy.adapter.SearchAdapter
 import host.stjin.anonaddy.databinding.BottomsheetSearchBinding
 import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.utils.MarginItemDecoration
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
 import java.util.*
 

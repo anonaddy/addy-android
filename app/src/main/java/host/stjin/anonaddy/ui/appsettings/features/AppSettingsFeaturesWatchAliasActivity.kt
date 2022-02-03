@@ -4,7 +4,7 @@ import android.os.Bundle
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWatchAliasBinding
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {

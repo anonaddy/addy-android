@@ -9,7 +9,7 @@ import android.os.Looper
 import android.widget.Toast
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class WearableListenerService : WearableListenerService() {

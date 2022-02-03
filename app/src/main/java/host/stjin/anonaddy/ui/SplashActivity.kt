@@ -9,13 +9,17 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.AnonAddyForAndroid
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.NetworkHelper
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")

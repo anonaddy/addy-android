@@ -9,12 +9,15 @@ import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.NetworkHelper
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AnonAddy
 import kotlinx.coroutines.launch
 
 

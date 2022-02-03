@@ -5,7 +5,7 @@ import com.google.android.gms.wearable.WearableListenerService
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.utils.LoggingHelper
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 
 class WearableListener : WearableListenerService() {

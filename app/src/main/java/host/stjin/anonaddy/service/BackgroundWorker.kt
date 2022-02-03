@@ -15,7 +15,7 @@ import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.time.Instant

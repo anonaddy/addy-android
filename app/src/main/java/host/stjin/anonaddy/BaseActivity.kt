@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
 import com.google.android.material.appbar.AppBarLayout
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 abstract class BaseActivity : AppCompatActivity() {

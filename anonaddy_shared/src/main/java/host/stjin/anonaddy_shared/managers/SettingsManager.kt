@@ -1,4 +1,4 @@
-package host.stjin.anonaddy_shared
+package host.stjin.anonaddy_shared.managers
 
 import android.app.ActivityManager
 import android.content.Context

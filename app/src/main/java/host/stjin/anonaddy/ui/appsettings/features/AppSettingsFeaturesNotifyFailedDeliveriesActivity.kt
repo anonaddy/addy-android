@@ -9,7 +9,7 @@ import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyFailedDe
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {

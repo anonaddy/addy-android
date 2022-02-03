@@ -13,7 +13,7 @@ import host.stjin.anonaddy.databinding.ActivityAppSettingsUpdateBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.YDGooglePlayUtils
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
 
 

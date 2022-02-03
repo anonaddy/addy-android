@@ -2,7 +2,7 @@ package host.stjin.anonaddy.utils
 
 import android.app.Activity
 import host.stjin.anonaddy.AnonAddyForAndroid
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.WearOSSettings
 
 class WearOSHelper(private val activity: Activity) {

@@ -13,7 +13,7 @@ import host.stjin.anonaddy.databinding.ActivityAppSettingsWearosBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsWearOSActivity : BaseActivity() {

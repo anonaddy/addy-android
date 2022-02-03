@@ -7,9 +7,13 @@
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_foreground.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.147" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_device_mobile_message.xml" value="0.1465" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_launcher_anim.xml" value="0.1465" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_launcher_foreground.xml" value="0.33" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/splash_background.xml" value="0.1465" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/layout/activity_main.xml" value="1.25" />
-        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/layout/activity_setup.xml" value="0.9393939393939394" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/layout/activity_setup.xml" value="0.25" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/layout/activity_splash.xml" value="0.20759962928637626" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/layout/ic_launcher_anim.xml" value="2.2" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2185" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/anonaddy_custom_checkbox.xml" value="0.23941368078175895" />

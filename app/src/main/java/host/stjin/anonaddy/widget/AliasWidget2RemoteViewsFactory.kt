@@ -12,7 +12,7 @@ import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.COPY_ACTION
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_ACTION
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AliasWidget2RemoteViewsFactory(private val mContext: Context) : RemoteViewsFactory {

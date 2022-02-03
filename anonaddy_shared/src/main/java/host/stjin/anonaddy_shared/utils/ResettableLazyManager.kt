@@ -1,4 +1,4 @@
-package host.stjin.anonaddy
+package host.stjin.anonaddy_shared.utils
 
 import java.util.*
 import kotlin.reflect.KProperty

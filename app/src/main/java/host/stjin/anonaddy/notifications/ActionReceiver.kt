@@ -7,7 +7,7 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class ActionReceiver : BroadcastReceiver() {

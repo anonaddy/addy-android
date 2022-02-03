@@ -23,7 +23,7 @@ import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.SetupWearOSBottomSheetActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy.utils.LoggingHelper
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlin.random.Random
 
 class NotificationHelper(private val context: Context) {
@@ -392,6 +392,8 @@ class NotificationHelper(private val context: Context) {
             if (SettingsManager(true, context).getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PUBLIC
 
         // Decide notificationID here, and send it to the actionReceiver so the correct notification can be cancelled
+        // notificationID gets concat here with prefix of ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID
+        // So 1 + 443 = 1443
         val notificationID = Integer.valueOf(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID.toString() + Random.nextInt(0, 999).toString())
 
         val stopWatchingIntent = Intent(context, ActionReceiver::class.java).apply {

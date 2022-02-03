@@ -22,7 +22,7 @@ import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.NAVIGA
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_ACTION
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_APP
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.REFRESH_ACTION
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlin.random.Random
 
 

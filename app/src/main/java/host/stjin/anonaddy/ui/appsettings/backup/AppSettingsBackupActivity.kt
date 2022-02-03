@@ -15,7 +15,7 @@ import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*

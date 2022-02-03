@@ -29,7 +29,7 @@ import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUserna
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
 
