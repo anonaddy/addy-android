@@ -10,14 +10,14 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.DateTimeUtils
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
@@ -309,7 +309,7 @@ class ManageDomainsActivity : BaseActivity(),
                 val buf = StringBuilder()
 
                 if (list.aliases != null) {
-                    for (alias in list.aliases) {
+                    for (alias in list.aliases!!) {
                         totalForwarded += alias.emails_forwarded
                         totalBlocked += alias.emails_blocked
                         totalReplies += alias.emails_replied

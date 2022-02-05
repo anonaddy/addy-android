@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/primaryColorStatic"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".SplashActivity"
+    tools:context=".ui.SplashActivity"
     tools:deviceIds="wear">
 
     <LinearLayout
@@ -14,23 +14,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/inner_frame_layout_padding"
-        android:weightSum="5"
+        android:gravity="center"
         app:layout_boxedEdges="all">
 
         <ImageView
             android:id="@+id/wearos_activity_setup_logo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_launcher_anim" />
+            android:scaleType="center"
+            android:padding="16dp"
+            android:src="@drawable/ic_watch_setup_notification_anim" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/wearos_activity_setup_button"
-            style="@style/Widget.Material3.Button"
-            android:layout_weight="4"
+        <TextView
+            android:id="@+id/wearos_activity_setup_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/setup" />
+            android:layout_height="wrap_content"
+            android:text="@string/setup_wearos_check_paired_device"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:textAlignment="center" />
 
     </LinearLayout>
 </androidx.wear.widget.BoxInsetLayout>

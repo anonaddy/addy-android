@@ -1,10 +1,10 @@
-package host.stjin.anonaddy.utils
+package host.stjin.anonaddy_shared.utils
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import host.stjin.anonaddy.R
+import host.stjin.anonaddy_shared.R
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.Logs

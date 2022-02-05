@@ -9,13 +9,13 @@ import android.content.Intent
 import androidx.work.*
 import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.Updater
-import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
+import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.time.Instant

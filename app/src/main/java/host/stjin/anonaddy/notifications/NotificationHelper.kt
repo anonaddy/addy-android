@@ -22,8 +22,8 @@ import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.SetupWearOSBottomSheetActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlin.random.Random
 
 class NotificationHelper(private val context: Context) {

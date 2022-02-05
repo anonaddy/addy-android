@@ -1,4 +1,4 @@
-package host.stjin.anonaddy
+package host.stjin.anonaddy.service
 
 import android.app.ActivityManager
 import android.content.Context
@@ -9,7 +9,10 @@ import android.os.Looper
 import android.widget.Toast
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.GsonTools
 
 
 class WearableListenerService : WearableListenerService() {
@@ -27,11 +30,8 @@ class WearableListenerService : WearableListenerService() {
                 startActivity(intent)
             }
             p0.path.equals("/setup") -> {
+                // a serialized wearOSConfiguration is being passed containing the API_KEY and the BASE_URL
                 storeSettings(String(p0.data))
-
-                val intent = Intent(this@WearableListenerService, SplashActivity::class.java)
-                intent.flags = FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
             }
             p0.path.equals("/reset") -> {
                 Toast.makeText(this, this.resources.getString(R.string.app_reset_requested_by, String(p0.data)),Toast.LENGTH_LONG).show()
@@ -43,8 +43,21 @@ class WearableListenerService : WearableListenerService() {
         }
     }
 
-    private fun storeSettings(wearOSConfiguration: String?) {
-        // Write configuration to settings
-        wearOSConfiguration?.let { SettingsManager(true, this).putSettingsString(SettingsManager.PREFS.WEAROS_CONFIGURATION, it) }
+    private fun storeSettings(wearOSConfiguration: String) {
+        // Deserialize the configuration
+        val configuration = GsonTools.jsonToWearOSSettingsObject(wearOSConfiguration)
+
+        if (configuration != null) {
+            // If the configuration is valid, set the API_KEY and BASE_URL to encrypted sharedpref
+            val settingsManager = SettingsManager(true, this)
+            settingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, configuration.api_key)
+            settingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, configuration.base_url)
+            val intent = Intent(this, SplashActivity::class.java)
+            intent.flags = FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        } else {
+            // Configuration could not be parsed thus is not valid
+            Toast.makeText(this, this.resources.getString(R.string.app_configuration_not_valid),Toast.LENGTH_LONG).show()
+        }
     }
 }

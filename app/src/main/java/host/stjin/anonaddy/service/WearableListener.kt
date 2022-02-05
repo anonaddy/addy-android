@@ -4,9 +4,9 @@ import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.notifications.NotificationHelper
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 class WearableListener : WearableListenerService() {
     override fun onMessageReceived(p0: MessageEvent) {

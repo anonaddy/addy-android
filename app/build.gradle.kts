@@ -6,7 +6,7 @@ plugins {
 android {
     compileSdk = 31
     defaultConfig {
-        applicationId = "host.stjin.anonaddy"
+        applicationId = rootProject.extra["application_id"] as String
         minSdk = 23
         targetSdk = 31
         versionCode = 40
@@ -53,7 +53,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = rootProject.extra["jvm_target"] as String
     }
 
 }
@@ -84,13 +84,7 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
 
-// Fuel, network requests
-dependencies {
-    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
-    implementation("com.google.code.gson:gson:2.8.9")
-    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
-}
+
 
 // Shimmer
 dependencies {
@@ -134,11 +128,6 @@ dependencies {
     implementation("com.github.Stjin:LoadingButtonAndroid:2.2.0")
 }
 
-// Built-in updater
-dependencies {
-    implementation("com.github.einmalfel:Earl:1.2.0")
-}
-
 // Backup manager
 dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
@@ -149,4 +138,14 @@ dependencies {
     implementation(project(mapOf("path" to ":anonaddy_shared")))
     wearApp(project(":app-wearos"))
     implementation("com.google.android.gms:play-services-wearable:17.1.0")
+}
+
+// Backgroundworker
+dependencies {
+    implementation("com.google.code.gson:gson:2.8.9")
+}
+
+// Built-in updater
+dependencies {
+    implementation("com.github.einmalfel:Earl:1.2.0")
 }

@@ -1,0 +1,72 @@
+package host.stjin.anonaddy.ui
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
+import host.stjin.anonaddy_shared.managers.SettingsManager
+
+class SplashActivity : Activity() {
+
+
+    private lateinit var bindingFailed: ActivityMainFailedBinding
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        loadSettings()
+    }
+
+
+    private fun loadSettings() {
+
+        /*
+        The load procedure in the Wear OS device works a bit different than the handheld app.
+        The goal of a watch app is to quickly give the user access to information without having to wait
+        for resources to be loaded. In the case of the Watch OS app, only the existence of the API key is checked
+        The check if the information is valid as well as retrieving any userResource information is being done on the background while the user
+        is using the app
+         */
+
+        // This is prone to fail when users have restored the app data from any restore app as the
+        // encryption key has changed. So we catch this once in the app and that's at launch
+        val settingsManager = try {
+            SettingsManager(true, this)
+        } catch (e: Exception) {
+            null
+        }
+
+        if (settingsManager == null) {
+            showErrorScreen(this.resources.getString(R.string.app_data_corrupted))
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Clear settings
+                SettingsManager(false, this).clearSettingsAndCloseApp()
+            }, 15000)
+            return
+        }
+
+
+        if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+            val intent = Intent(this, SetupActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun showErrorScreen(error: String?) {
+        bindingFailed = ActivityMainFailedBinding.inflate(layoutInflater)
+        val view = bindingFailed.root
+        setTheme(R.style.AppTheme)
+        setContentView(view)
+
+        bindingFailed.activityMainFailedErrorMessage.text = error
+    }
+
+}

@@ -14,7 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesActionBinding
-import host.stjin.anonaddy.models.Action
+import host.stjin.anonaddy_shared.models.Action
 
 
 class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {

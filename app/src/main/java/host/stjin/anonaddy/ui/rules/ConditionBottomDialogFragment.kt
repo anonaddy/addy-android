@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesConditionBinding
-import host.stjin.anonaddy.models.Condition
+import host.stjin.anonaddy_shared.models.Condition
 
 
 class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {

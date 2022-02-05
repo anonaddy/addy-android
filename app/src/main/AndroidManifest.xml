@@ -31,7 +31,7 @@
     </queries>
 
     <application
-        android:name=".AnonAddyForAndroid"
+        android:name="host.stjin.anonaddy_shared.AnonAddyForAndroid"
         android:allowBackup="false"
         android:exported="true"
         android:fullBackupContent="false"

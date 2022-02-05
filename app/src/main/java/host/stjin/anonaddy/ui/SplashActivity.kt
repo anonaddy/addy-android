@@ -9,17 +9,17 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
-import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
-import host.stjin.anonaddy.models.UserResource
-import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.models.UserResourceExtended
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
@@ -57,7 +57,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
         // This is prone to fail when users have restored the app data from any restore app as the
         // encryption key has changed. So we catch this once in the app and that's at launch
-
         val settingsManager = try {
             SettingsManager(true, this)
         } catch (e: Exception) {
@@ -73,6 +72,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             return
         }
 
+        // This helper inits the BASE_URL var
         networkHelper = NetworkHelper(this)
         // Open setup
         if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {

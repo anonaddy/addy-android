@@ -7,11 +7,14 @@ android {
     compileSdk = 32
 
     defaultConfig {
-        applicationId = "host.stjin.anonaddy"
+        applicationId = rootProject.extra["application_id"] as String
         minSdk = 28
         targetSdk = 32
         versionCode = 1
         versionName = "1.0"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
 
     }
 
@@ -23,7 +26,35 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        //compose = true
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = rootProject.extra["jvm_target"] as String
+    }
+
+
+/*    *//**
+     * COMPOSE
+     *//*
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
+    }*/
+
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    /**
+     * END COMPOSE
+     */
 
     /**
      * FLAVORS
@@ -63,12 +94,53 @@ dependencies {
 
     compileOnly("com.google.android.wearable:wearable:2.8.1")
     implementation("com.google.android.support:wearable:2.8.1")
+
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 }
 
-// Fuel, network requests
+
+/*// Compose
 dependencies {
-    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    // General compose dependencies
+    implementation("androidx.activity:activity-compose:1.4.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.0.5")
+
+    // Animated graphics (for the icon on setup)
+    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha02")
+
+    // Compose for Wear OS Dependencies
+    implementation("androidx.wear.compose:compose-material:1.0.0-alpha15")
+
+    // Foundation is additive, so you can use the mobile version in your Wear OS app.
+    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha15")
+
+    // If you are using Compose Navigation, use the Wear OS version (NOT THE MOBILE VERSION).
+    // Uncomment the line below and update the version number.
+    //implementation("androidx.wear.compose:compose-navigation:1.0.0-alpha15")
+
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"] as String}")
+    debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"] as String}")
+}*/
+
+// For updating widgets and caching data
+dependencies {
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+}
+
+// For parsing wearOSSettings
+dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
-    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
+}
+
+// For the donut in the aliasview
+dependencies {
+    implementation("app.futured.donut:donut:2.2.0")
+}
+
+// Alias list item gradient background
+dependencies {
+    implementation("com.github.GIGAMOLE:QuatroGrade:1.0.0")
+
 }

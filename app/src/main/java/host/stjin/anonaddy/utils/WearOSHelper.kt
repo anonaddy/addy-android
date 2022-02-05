@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.utils
 
 import android.app.Activity
-import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.WearOSSettings
 
@@ -14,10 +13,7 @@ class WearOSHelper(private val activity: Activity) {
         return if (baseUrl != null && apiKey != null) {
             WearOSSettings(
                 base_url = baseUrl,
-                api_key = apiKey,
-                default_alias_domain = (activity.application as AnonAddyForAndroid).userResource.default_alias_domain,
-                default_alias_format = (activity.application as AnonAddyForAndroid).userResource.default_alias_format
-            )
+                api_key = apiKey)
         } else {
             null
         }

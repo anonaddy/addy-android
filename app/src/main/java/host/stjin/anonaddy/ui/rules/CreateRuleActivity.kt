@@ -13,14 +13,14 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityRulesCreateBinding
-import host.stjin.anonaddy.models.Action
-import host.stjin.anonaddy.models.Condition
-import host.stjin.anonaddy.models.Rules
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Action
+import host.stjin.anonaddy_shared.models.Condition
+import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 

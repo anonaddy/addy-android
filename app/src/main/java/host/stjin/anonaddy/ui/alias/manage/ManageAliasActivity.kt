@@ -16,17 +16,17 @@ import app.futured.donut.DonutSection
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
-import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.DateTimeUtils
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -568,11 +568,11 @@ class ManageAliasActivity : BaseActivity(),
                 // Set recipients
                 var recipients: String
                 var count = 0
-                if (alias.recipients != null && alias.recipients.isNotEmpty()) {
+                if (alias.recipients != null && alias.recipients!!.isNotEmpty()) {
                     // get the first 2 recipients and list them
 
                     val buf = StringBuilder()
-                    for (recipient in alias.recipients) {
+                    for (recipient in alias.recipients!!) {
                         if (count < 2) {
                             if (buf.isNotEmpty()) {
                                 buf.append("\n")
@@ -584,13 +584,13 @@ class ManageAliasActivity : BaseActivity(),
                     recipients = buf.toString()
 
                     // Check if there are more than 2 recipients in the list
-                    if (alias.recipients.size > 2) {
+                    if (alias.recipients!!.size > 2) {
                         // If this is the case add a "x more" on the third rule
                         // X is the total amount minus the 2 listed above
                         recipients += "\n"
                         recipients += this.resources.getString(
                             R.string._more,
-                            alias.recipients.size - 2
+                            alias.recipients!!.size - 2
                         )
                     }
                 } else {

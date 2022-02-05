@@ -13,10 +13,10 @@ import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.service.BackupHelper
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 

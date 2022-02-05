@@ -136,14 +136,11 @@
     <string name="disable_biometric_authentication">Disable biometric authentication</string>
     <string name="logs">Logs</string>
     <string name="clear_logs">Clear logs</string>
-    <string name="logs_cleared">Logs cleared</string>
     <string name="anonaddy_locked">AnonAddy locked</string>
     <string name="authentication_error_11">Biometric unlocking disabled, no screen lock was found</string>
-    <string name="reset_app">Reset app</string>
     <string name="reset_app_error_wearable">Could not reset app</string>
     <string name="reset_app_desc">Clear all data and start over</string>
     <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your AnonAddy account or anything related)</string>
-    <string name="api_key_invalid">API key invalid, app will reset and close in 5 seconds</string>
     <string name="edit_recipient">Edit recipient</string>
     <string name="basic">Basic</string>
     <string name="encryption">Encryption</string>
@@ -164,7 +161,6 @@
     <string name="no_active_aliases">You have no active aliases</string>
     <string name="shared_domain_aliases">Shared domain aliases</string>
     <string name="anonaddy_load_error">Something went wrong while loading AnonAddy, you might want to check your internet connection.\nMore information about the error:</string>
-    <string name="whoops">Whoops!</string>
     <string name="try_again">Try again</string>
     <string name="subscription_user">%s user</string>
     <string name="subscription_user_until">%1$s user until %2$s</string>
@@ -290,8 +286,6 @@
     <string name="deactivate">Deactivate</string>
     <string name="rule_activated">Rule activated</string>
     <string name="rule_deactivated">Rule deactivated</string>
-    <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
-    <string name="failed_deliveries_unavailable_404">The failed deliveries feature is not available. Please make sure that the failed deliveries API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="rules">Rules</string>
     <string name="this_field_cannot_be_empty">This field cannot be empty</string>
     <string name="gitlab_project">Gitlab project</string>
@@ -331,10 +325,7 @@
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
-    <string name="d_blocked">%1$d blocked</string>
-    <string name="d_forwarded">%1$d forwarded</string>
-    <string name="d_replied">%1$d replied</string>
-    <string name="d_sent">%1$d sent</string>
+
     <string name="send_mail">Send mail</string>
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
     <string name="addresses">Addresses</string>
@@ -464,7 +455,6 @@
     <string name="disable_periodic_backups">Disable periodic backups</string>
     <string name="no_logfile_selected">No logfile selected</string>
     <string name="no_logs">No logs, make sure to enable storing logs in the app settings</string>
-    <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>
     <string name="log_backup_location_changed">Backup location changed</string>
     <string name="log_backup_password_changed">Backup password changed</string>
     <string name="log_backup_retention_deleted">%1$d file(s) deleted because they were older than %2$d days</string>

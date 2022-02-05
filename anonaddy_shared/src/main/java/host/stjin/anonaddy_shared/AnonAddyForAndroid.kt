@@ -1,11 +1,11 @@
-package host.stjin.anonaddy
+package host.stjin.anonaddy_shared
 
 import android.app.Application
 import com.google.android.material.color.DynamicColors
 import com.google.gson.Gson
-import host.stjin.anonaddy.models.UserResource
-import host.stjin.anonaddy.models.UserResourceExtended
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.models.UserResourceExtended
 
 class AnonAddyForAndroid : Application() {
 

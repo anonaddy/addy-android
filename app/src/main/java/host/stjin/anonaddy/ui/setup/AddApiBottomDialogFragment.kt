@@ -18,9 +18,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
+import host.stjin.anonaddy_shared.NetworkHelper
 import kotlinx.coroutines.launch
 
 class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {

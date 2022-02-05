@@ -4,4 +4,9 @@
     <string name="setup_desc">Tap setup and confirm the action in the app to start using AnonAddy on your watch</string>
     <string name="app_reset_requested_by">AnonAddy reset requested by %1$s</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="app_configuration_not_valid">AnonAddy configuration not valid</string>
+    <string name="app_data_corrupted">The app data can no longer be read. The app will be reset in 15 seconds…</string>
+    <string name="setup_wearos_check_paired_device">Check your paired device to setup the app</string>
+    <string name="send_notification">Send notification</string>
+    <string name="setup_wearos_no_paired_device">Connect your paired device and make sure AnonAddy for Android is installed</string>
 </resources>

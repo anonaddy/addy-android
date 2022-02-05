@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.models
+package host.stjin.anonaddy_shared.models
 
 import com.google.gson.Gson
 

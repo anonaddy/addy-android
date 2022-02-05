@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recyclerview_list_CV"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/Widget.Material3.CardView.Filled"
+    app:cardCornerRadius="999dp"
+    app:cardBackgroundColor="@color/gray"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+>
+
+    <com.gigamole.quatrograde.QuatroGradeView
+        android:id="@+id/recyclerview_list_QGV"
+        android:layout_width="match_parent"
+        android:alpha="0.4"
+        android:layout_height="match_parent">
+    </com.gigamole.quatrograde.QuatroGradeView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+
+        <app.futured.donut.DonutProgressView
+            android:id="@+id/aliases_recyclerview_list_chart"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:donut_animateChanges="false"
+            app:donut_bgLineColor="@android:color/transparent"
+            app:donut_gapAngle="270"
+            app:donut_gapWidth="0"
+            app:donut_strokeWidth="6dp" />
+
+        <TextView
+            android:id="@+id/aliases_recyclerview_list_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:lines="1"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="e4eba4f0-16e5-457a-9648-a6ba518ace43@dontusemy.email"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

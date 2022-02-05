@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.models
+package host.stjin.anonaddy_shared.models
 
 data class UsernamesArray(
     val `data`: List<Usernames>

@@ -15,12 +15,12 @@ import com.google.android.gms.wearable.Wearable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
-import host.stjin.anonaddy.AnonAddyForAndroid
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSetupWearosBinding
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.utils.WearOSHelper
+import host.stjin.anonaddy_shared.AnonAddyForAndroid
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
 

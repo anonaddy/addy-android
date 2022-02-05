@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.models
+package host.stjin.anonaddy_shared.models
 
 import java.io.Serializable
 

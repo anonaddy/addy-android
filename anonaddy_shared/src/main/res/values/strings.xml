@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AnonAddy</string>
+    <string name="whoops">Whoops!</string>
+    <string name="reset_app">Reset app</string>
+    <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>
+    <string name="logs_cleared">Logs cleared</string>
+    <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
+    <string name="api_key_invalid">API key invalid, app will reset and close in 5 seconds</string>
+    <string name="failed_deliveries_unavailable_404">The failed deliveries feature is not available. Please make sure that the failed deliveries API is available for the current user. On hosted instances this feature might require a subscription</string>
+    <string name="d_blocked">%1$d blocked</string>
+    <string name="d_forwarded">%1$d forwarded</string>
+    <string name="d_replied">%1$d replied</string>
+    <string name="d_sent">%1$d sent</string>
 </resources>

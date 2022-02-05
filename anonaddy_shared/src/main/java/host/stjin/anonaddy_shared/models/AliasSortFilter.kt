@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.models
+package host.stjin.anonaddy_shared.models
 
 data class AliasSortFilter(
     var onlyActiveAliases: Boolean,

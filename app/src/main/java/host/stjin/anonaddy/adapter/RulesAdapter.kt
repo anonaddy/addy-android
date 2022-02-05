@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.models.Rules
+import host.stjin.anonaddy_shared.models.Rules
 
 class RulesAdapter(
     private val listWithRules: ArrayList<Rules>,
