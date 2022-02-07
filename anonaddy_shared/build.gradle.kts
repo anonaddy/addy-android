@@ -13,9 +13,9 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
-/*    buildFeatures {
+    buildFeatures {
         compose = true
-    }*/
+    }
 
     buildTypes {
         release {
@@ -31,9 +31,9 @@ android {
     kotlinOptions {
         jvmTarget = rootProject.extra["jvm_target"] as String
     }
-/*    composeOptions {
+    composeOptions {
         kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
-    }*/
+    }
 }
 
 dependencies {
@@ -53,12 +53,12 @@ dependencies {
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
 }
 
-/*// Compose
+// Compose
 dependencies {
     implementation("androidx.compose.ui:ui-text:1.0.5")
     implementation("androidx.compose.ui:ui-graphics:1.0.5")
     implementation("androidx.compose.material3:material3:1.0.0-alpha04")
-}*/
+}
 
 // Fuel, network requests
 dependencies {

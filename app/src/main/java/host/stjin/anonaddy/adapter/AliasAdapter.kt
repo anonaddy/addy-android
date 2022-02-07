@@ -13,8 +13,8 @@ import app.futured.donut.DonutSection
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.service.AliasWatcher
-import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 
 class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context) :

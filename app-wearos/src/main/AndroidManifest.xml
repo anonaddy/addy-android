@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="host.stjin.anonaddy">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.type.watch" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="host.stjin.anonaddy_shared.AnonAddyForAndroid"
@@ -15,15 +15,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/SplashTheme">
-        <activity
-            android:name=".ui.MainActivity"
-            android:exported="false"
-            android:label="@string/title_activity_main"
-            android:theme="@style/SplashTheme" />
-
         <uses-library
             android:name="com.google.android.wearable"
             android:required="true" />
+
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
@@ -31,6 +26,20 @@
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
+
+        <activity android:name="androidx.wear.activity.ConfirmationActivity"></activity>
+
+        <activity
+            android:name=".ui.alias.ManageAliasActivity"
+            android:exported="false"
+            android:label="@string/title_activity_manage_alias"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".service.WearableListenerService"
@@ -67,7 +76,8 @@
         </activity>
         <activity
             android:name=".ui.SetupActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

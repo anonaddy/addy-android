@@ -1,6 +1,7 @@
-package host.stjin.anonaddy.utils
+package host.stjin.anonaddy_shared.utils
 
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -13,6 +14,7 @@ object DateTimeUtils {
         DATE,
         TIME,
         DATETIME,
+        SHORT_DATE,
     }
 
     // This method takes the string as its stored in Anonaddy's database, and turns it into local format
@@ -36,6 +38,7 @@ object DateTimeUtils {
                     DATETIMEUTILS.DATE -> DateFormat.getDateInstance(DateFormat.SHORT).format(date)
                     DATETIMEUTILS.TIME -> DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
                     DATETIMEUTILS.DATETIME -> DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
+                    DATETIMEUTILS.SHORT_DATE -> SimpleDateFormat("E d MMM").format(date)
                 }
             } catch (e: Exception) {
                 "$string (GMT)"

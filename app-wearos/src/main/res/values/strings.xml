@@ -9,4 +9,13 @@
     <string name="setup_wearos_check_paired_device">Check your paired device to setup the app</string>
     <string name="send_notification">Send notification</string>
     <string name="setup_wearos_no_paired_device">Connect your paired device and make sure AnonAddy for Android is installed</string>
+    <string name="aliases_recyclerview_list_item_date_time">%s - %s</string>
+    <string name="aliases_recyclerview_list_item_description">%d forw-%d bloc-%d repl-%d sent</string>
+    <string name="max_favorites_reached">You can only have 5 favorites</string>
+    <string name="title_activity_manage_alias">ManageAliasActivity</string>
+    <string name="activated">Activated</string>
+    <string name="deactivated">Deactivated</string>
+    <string name="changing_status">Changing status</string>
+    <string name="favorite">Favorite</string>
+    <string name="set_watchface">Set watchface</string>
 </resources>

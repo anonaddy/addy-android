@@ -13,10 +13,10 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 

@@ -17,7 +17,9 @@
     <color name="easternBlue">#16A8B8</color>
     <color name="easternBlueSuperLight">#5016A8B8</color>
     <color name="portalBlue">#4289FD</color>
+    <color name="portalBlueSuperLight">#504289FD</color>
     <color name="portalOrange">#FF9800</color>
+    <color name="portalOrangeSuperLight">#50FF9800</color>
     <color name="green">#8BC34A</color>
 
     <!-- Replaced by ?colorSurfaceVariant -->

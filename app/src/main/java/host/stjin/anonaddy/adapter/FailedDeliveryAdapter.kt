@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 class FailedDeliveryAdapter(
     private val listWithFailedDeliveries: ArrayList<FailedDeliveries>

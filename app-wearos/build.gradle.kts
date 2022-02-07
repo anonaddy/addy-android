@@ -26,7 +26,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
-        //compose = true
+        compose = true
     }
 
     compileOptions {
@@ -39,12 +39,12 @@ android {
     }
 
 
-/*    *//**
+    /**
      * COMPOSE
-     *//*
+     */
     composeOptions {
         kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
-    }*/
+    }
 
     packagingOptions {
         resources {
@@ -101,7 +101,7 @@ dependencies {
 }
 
 
-/*// Compose
+// Compose
 dependencies {
     // General compose dependencies
     implementation("androidx.activity:activity-compose:1.4.0")
@@ -122,7 +122,7 @@ dependencies {
 
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"] as String}")
     debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"] as String}")
-}*/
+}
 
 // For updating widgets and caching data
 dependencies {

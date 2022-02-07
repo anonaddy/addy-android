@@ -1,27 +1,30 @@
 package host.stjin.anonaddy.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import app.futured.donut.DonutProgressView
-import app.futured.donut.DonutSection
 import com.gigamole.quatrograde.GradeModel
 import com.gigamole.quatrograde.GradeOrientation
 import com.gigamole.quatrograde.QuatroGradeView
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 
 class AliasAdapter(private val listWithAliases: List<Aliases>, private val context: Context) :
     RecyclerView.Adapter<AliasAdapter.ViewHolder>() {
 
     lateinit var onAliasClickListener: ClickListener
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -32,7 +35,19 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val conte
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+
         holder.mTitle.text = listWithAliases[position].email
+
+
+        if (listWithAliases[position].description != null) {
+            holder.mDescription.text = listWithAliases[position].description
+        } else {
+            holder.mDescription.text = (holder.mDescription.context).resources.getString(
+                R.string.aliases_recyclerview_list_item_date_time,
+                DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at, DateTimeUtils.DATETIMEUTILS.SHORT_DATE),
+                DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at, DateTimeUtils.DATETIMEUTILS.TIME)
+            )
+        }
 
         /*
         CHART
@@ -48,63 +63,36 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val conte
         val color3 = if (listWithAliases[position].active) R.color.easternBlue else R.color.md_grey_700
         val color4 = if (listWithAliases[position].active) R.color.softRed else R.color.md_grey_800
 
+        val colorArray = arrayOf(
+            arrayOf(forwarded, ContextCompat.getColor(context, color1)),
+            arrayOf(replied, ContextCompat.getColor(context, color2)),
+            arrayOf(sent, ContextCompat.getColor(context, color3)),
+            arrayOf(blocked, ContextCompat.getColor(context, color4))
+        ).maxByOrNull { it[0].toFloat() }
 
-        val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
-        var donutCap = 0f
-        // DONUT
-        val section1 = DonutSection(
-            name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
-            color = ContextCompat.getColor(holder.mChart.context, color1),
-            amount = forwarded
+        holder.mDescription.setTextColor(colorArray?.get(1) as Int)
+
+        holder.mStar.backgroundTintList = ColorStateList.valueOf(colorArray[1] as Int)
+
+        if (FavoriteAliasHelper(context).getFavoriteAliases()?.contains(listWithAliases[position].id) == true) {
+            holder.mStar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_starred))
+        } else {
+            holder.mStar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star))
+        }
+
+        holder.mQGV.setGrades(
+            listOf(GradeModel(colorArray[1] as Int, 0f), GradeModel(ContextCompat.getColor(context, R.color.colorSurface), 0.6f)), listOf(
+                GradeModel(
+                    colorArray[1] as Int, 0f
+                ), GradeModel(ContextCompat.getColor(context, R.color.colorSurface), 0f)
+            )
         )
-        // Always show section 1
-        listOfDonutSection.add(section1)
-        donutCap += forwarded
-
-        if (replied > 0) {
-            val section2 = DonutSection(
-                name = holder.mChart.context.resources.getString(R.string.d_replied, replied.toInt()),
-                color = ContextCompat.getColor(holder.mChart.context, color2),
-                amount = replied
-            )
-            listOfDonutSection.add(section2)
-            donutCap += replied
-        }
-
-        if (sent > 0) {
-            val section3 = DonutSection(
-                name = holder.mChart.context.resources.getString(R.string.d_sent, sent.toInt()),
-                color = ContextCompat.getColor(holder.mChart.context, color3),
-                amount = sent
-            )
-            listOfDonutSection.add(section3)
-            donutCap += sent
-        }
-
-        if (blocked > 0) {
-            val section4 = DonutSection(
-                name = holder.mChart.context.resources.getString(R.string.d_blocked, blocked.toInt()),
-                color = ContextCompat.getColor(holder.mChart.context, color4),
-                amount = blocked
-            )
-            listOfDonutSection.add(section4)
-            donutCap += blocked
-        }
-
-        holder.mChart.cap = donutCap
-        // Sort the list by amount so that the biggest number will fill the whole ring
-        holder.mChart.submitData(listOfDonutSection.sortedBy { it.amount })
-        // DONUT
-
-
-        //val colors = intArrayOf(listOfDonutSection.sortedBy { it.amount }.first().color,ContextCompat.getColor(context,R.color.gray),listOfDonutSection.sortedBy { it.amount }.first().color,ContextCompat.getColor(context,R.color.gray))
-
-        holder.mQGV.setGrades(listOf(GradeModel(listOfDonutSection.sortedBy { it.amount }.first().color, 0f), GradeModel(ContextCompat.getColor(context,R.color.gray), 0.4f)), listOf(GradeModel(listOfDonutSection.sortedBy { it.amount }.first().color, 0f), GradeModel(ContextCompat.getColor(context,R.color.gray), 0f)))
         holder.mQGV.orientation = GradeOrientation.HORIZONTAL
 
         holder.mQGV.outlineProvider = ViewOutlineProvider.BACKGROUND
         holder.mQGV.clipToOutline = true
     }
+
 
     override fun getItemCount(): Int = listWithAliases.size
 
@@ -118,6 +106,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val conte
 
     interface ClickListener {
         fun onClick(pos: Int)
+        fun onClickStar(pos: Int)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
@@ -126,16 +115,20 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, private val conte
         private var mCV: MaterialCardView = view.findViewById(R.id.recyclerview_list_CV)
         var mQGV: QuatroGradeView = view.findViewById(R.id.recyclerview_list_QGV)
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
-        var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
-
+        var mStar: ImageView = view.findViewById(R.id.aliases_recyclerview_list_star)
+        var mDescription: TextView =
+            view.findViewById(R.id.aliases_recyclerview_list_description)
 
         init {
             mCV.setOnClickListener(this)
+            mStar.setOnClickListener(this)
         }
 
         override fun onClick(p0: View) {
             if (p0.id == R.id.recyclerview_list_CV) {
                 onAliasClickListener.onClick(adapterPosition)
+            } else if (p0.id == R.id.aliases_recyclerview_list_star) {
+                onAliasClickListener.onClickStar(adapterPosition)
             }
         }
 

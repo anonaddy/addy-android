@@ -114,7 +114,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -216,7 +217,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -272,7 +274,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -323,7 +326,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -395,7 +399,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -491,7 +496,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -543,7 +549,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -705,7 +712,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun activateSpecificAlias(
-        callback: (String?) -> Unit,
+        callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
         val json = JSONObject()
@@ -720,7 +727,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -728,7 +738,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -742,6 +752,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -922,7 +933,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -984,7 +996,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1256,7 +1269,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1358,7 +1372,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1453,7 +1468,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null, null,
+                callback(
+                    null, null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1505,7 +1521,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1838,7 +1855,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1929,7 +1947,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1981,7 +2000,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2240,7 +2260,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2292,7 +2313,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2734,7 +2756,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2819,7 +2842,8 @@ class NetworkHelper(private val context: Context) {
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
                 )
-                callback(null,
+                callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )

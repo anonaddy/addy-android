@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorSurface">#202124</color>
+    <dimen name="inner_frame_layout_padding">0dp</dimen>
 </resources>

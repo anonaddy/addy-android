@@ -23,6 +23,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     enum class PREFS(val encrypted: Boolean, val type: PREFTYPES, val key: String) {
+        //region Not encrypted
         DARK_MODE(false, PREFTYPES.BOOLEAN, "dark_mode"),
         DYNAMIC_COLORS(false, PREFTYPES.BOOLEAN, "dynamic_colors"),
         STORE_LOGS(false, PREFTYPES.BOOLEAN, "store_logs"),
@@ -34,12 +35,9 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
 
-        //Wear OS
-        DISABLE_WEAROS_QUICK_SETUP_DIALOG(false, PREFTYPES.STRING, "disable_wearos_quick_setup_dialog"),
-        SELECTED_WEAROS_DEVICE(false, PREFTYPES.STRING, "selected_wearos_device"),
-
         // Sorting and Filtering for aliasFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
+        //endregion
 
         // Encrypted
         BIOMETRIC_ENABLED(true, PREFTYPES.BOOLEAN, "biometric_enabled"),
@@ -52,12 +50,15 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         USER_RESOURCE(true, PREFTYPES.STRING, "user_resource"),
         USER_RESOURCE_EXTENDED(true, PREFTYPES.STRING, "user_resource_extended"),
 
-        // Wear OS
-        WEAROS_CONFIGURATION(true, PREFTYPES.STRING, "wearos_configuration"),
+        //region Wear OS
+        WEAROS_FAVORITE_ALIASES(true, PREFTYPES.STRINGSET, "wearos_configuration"),
+        DISABLE_WEAROS_QUICK_SETUP_DIALOG(false, PREFTYPES.STRING, "disable_wearos_quick_setup_dialog"),
+        SELECTED_WEAROS_DEVICE(false, PREFTYPES.STRING, "selected_wearos_device"),
+        //endregion
 
+        //region Background service
         // Locally stored data
         BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA(true, PREFTYPES.STRING, "cache_15_most_active_aliases_data"),
-
 
         // Used for the shimmerview and widget 2
         BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT(true, PREFTYPES.INT, "cache_domain_count"),
@@ -76,6 +77,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_WATCH_ALIAS_LIST(true, PREFTYPES.STRINGSET, "background_service_watch_alias_list"),
         BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA(true, PREFTYPES.STRING, "cache_watch_alias_data"),
         BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS(true, PREFTYPES.STRING, "cache_watch_alias_data_previous"),
+        //endregion
     }
 
     /*

@@ -4,27 +4,27 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.wear.widget.WearableLinearLayoutManager
 import kotlin.math.abs
+import kotlin.math.cos
 
-/** How much should we scale the icon at most.  */
-private const val MAX_ICON_PROGRESS = 0.0f
 
 class CustomScrollingLayoutCallback : WearableLinearLayoutManager.LayoutCallback() {
 
-    private var progressToCenter: Float = 0f
-
     override fun onLayoutFinished(child: View, parent: RecyclerView) {
-        child.apply {
-            // Figure out % progress from top to bottom
-            val centerOffset = height.toFloat() / 2.0f / parent.height.toFloat()
-            val yRelativeToCenterOffset = y / parent.height + centerOffset
+        val MAX_ICON_PROGRESS = 1f
 
-            // Normalize for center
-            progressToCenter = abs(0.5f - yRelativeToCenterOffset)
-            // Adjust to the maximum scale
-            progressToCenter = progressToCenter.coerceAtMost(MAX_ICON_PROGRESS)
+        try {
+            val centerOffset = child.height.toFloat() / 2.0f / parent.height.toFloat()
+            val yRelativeToCenterOffset = child.y / parent.height + centerOffset
 
-            scaleX = 1 - progressToCenter
-            scaleY = 1 - progressToCenter
+            // Normalize for center, adjusting to the maximum scale
+            var progressToCenter = abs(0.5f - yRelativeToCenterOffset).coerceAtMost(MAX_ICON_PROGRESS)
+
+            // Follow a curved path, rather than triangular!
+            progressToCenter = cos(progressToCenter * Math.PI * 0.40f).toFloat()
+            child.scaleX = progressToCenter
+            child.scaleY = progressToCenter
+            //child.alpha = abs(-0.5f - yRelativeToCenterOffset)
+        } catch (ignored: Exception) {
         }
     }
 }

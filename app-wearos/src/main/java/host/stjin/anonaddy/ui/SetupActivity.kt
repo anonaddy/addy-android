@@ -21,7 +21,6 @@ class SetupActivity : Activity(), DataClient.OnDataChangedListener {
         super.onCreate(savedInstanceState)
 
         binding = ActivitySetupBinding.inflate(layoutInflater)
-        setTheme(R.style.AppTheme)
         setContentView(binding.root)
         startAnimation(binding.wearosActivitySetupLogo)
         requestSetup()

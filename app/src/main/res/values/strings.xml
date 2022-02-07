@@ -93,7 +93,6 @@
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
     <string name="no_aliases">No aliases with these filter settings.\n\nLooking for a specific alias? Use the global search function by clicking the magnifying glass in the app bar.</string>
     <string name="alias_status_active">Alias active</string>
-    <string name="alias_status_desc">Use this alias for mail forwarding</string>
     <string name="delete_alias">Delete alias</string>
     <string name="delete_alias_desc">Once deleted, this alias will reject any emails sent to it</string>
     <string name="created_at">Created at</string>
@@ -110,7 +109,6 @@
     <string name="edit_recipients">Edit recipients</string>
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>
     <string name="error_edit_recipient">Something went wrong while editing the recipient</string>
-    <string name="error_edit_active">An error occurred while changing the active state</string>
     <string name="error_rules_active">An error occurred while changing the rule state</string>
     <string name="error_edit_catch_all">An error occurred while changing the catch-all state</string>
     <string name="alias_deactivated">Alias deactivated</string>

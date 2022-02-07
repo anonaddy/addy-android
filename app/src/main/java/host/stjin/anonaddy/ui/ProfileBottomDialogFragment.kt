@@ -20,10 +20,10 @@ import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
-import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.NumberUtils
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import java.util.*
 import kotlin.math.roundToInt
 

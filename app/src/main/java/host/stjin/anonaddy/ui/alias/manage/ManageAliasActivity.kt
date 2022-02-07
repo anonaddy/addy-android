@@ -22,10 +22,10 @@ import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
-import host.stjin.anonaddy.utils.DateTimeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
@@ -252,9 +252,9 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private suspend fun activateAlias() {
-        networkHelper.activateSpecificAlias({ result ->
+        networkHelper.activateSpecificAlias({ alias, result ->
             binding.activityManageAliasActiveSwitchLayout.showProgressBar(false)
-            if (result == "200") {
+            if (alias != null) {
                 binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_activated))
             } else {
                 binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
