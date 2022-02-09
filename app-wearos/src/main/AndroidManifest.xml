@@ -26,9 +26,6 @@
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
-
-        <activity android:name="androidx.wear.activity.ConfirmationActivity"></activity>
-
         <activity
             android:name=".ui.alias.ManageAliasActivity"
             android:exported="false"

@@ -13,4 +13,5 @@
     -->
     <dimen name="inner_frame_layout_padding">5dp</dimen>
     <dimen name="recyclerview_margin">1dp</dimen>
+    <dimen name="wearable_padding_bottom">4dp</dimen>
 </resources>

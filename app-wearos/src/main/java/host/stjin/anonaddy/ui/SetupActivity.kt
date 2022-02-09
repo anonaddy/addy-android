@@ -31,6 +31,7 @@ class SetupActivity : Activity(), DataClient.OnDataChangedListener {
         }
     }
 
+
     private fun requestSetup() {
         val nodeClient = Wearable.getNodeClient(this)
         nodeClient.connectedNodes.addOnCompleteListener { nodes ->

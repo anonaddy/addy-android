@@ -13,19 +13,21 @@
         android:id="@+id/activity_manage_alias_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fastScrollEnabled="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:focusedByDefault="true"
         android:overScrollMode="never"
         android:padding="@dimen/inner_frame_layout_padding"
         android:scrollbars="none"
         app:layout_boxedEdges="right|left">
 
+        <requestFocus />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="18dp">
+            android:paddingBottom="@dimen/wearable_padding_bottom">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -64,7 +66,7 @@
                     android:fontFamily="sans-serif-black"
                     android:gravity="center_vertical"
                     android:minWidth="64dp"
-                    android:padding="4dp"
+                    android:padding="2dp"
                     android:singleLine="true"
                     android:text="@string/d_forwarded"
                     android:textColor="@color/portalOrange"
@@ -81,7 +83,7 @@
                     android:fontFamily="sans-serif-black"
                     android:gravity="center_vertical"
                     android:minWidth="64dp"
-                    android:padding="4dp"
+                    android:padding="2dp"
                     android:singleLine="true"
                     android:text="@string/d_replied"
                     android:textColor="@color/portalBlue"
@@ -98,7 +100,7 @@
                     android:fontFamily="sans-serif-black"
                     android:gravity="center_vertical"
                     android:minWidth="64dp"
-                    android:padding="4dp"
+                    android:padding="2dp"
                     android:singleLine="true"
                     android:text="@string/d_sent"
                     android:textColor="@color/easternBlue"
@@ -115,28 +117,16 @@
                     android:fontFamily="sans-serif-black"
                     android:gravity="center_vertical"
                     android:minWidth="64dp"
-                    android:padding="4dp"
+                    android:padding="2dp"
                     android:singleLine="true"
                     android:text="@string/d_blocked"
                     android:textColor="@color/softRed"
                     tools:ignore="UseCompatTextViewDrawableXml" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/activity_manage_alias_scroll_LL_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:drawableTop="@drawable/ic_chevrons_up"
-                android:drawableTint="@android:color/white"
-                android:fontFamily="sans-serif-medium"
-                android:text="General"
-                android:textAlignment="center"
-                tools:ignore="UseCompatTextViewDrawableXml" />
-
             <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/activity_manage_alias_composeview1"
+                android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

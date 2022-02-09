@@ -216,7 +216,6 @@
     <string name="username_status_active">Username active</string>
     <string name="delete_username_desc">This will still count towards your additional username limit</string>
     <string name="search_result">Search result</string>
-    <string name="aliases">Aliases</string>
     <string name="nothing_found">Nothing found</string>
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>

@@ -14,4 +14,5 @@
     <string name="d_sent">%1$d sent</string>
     <string name="alias_status_desc">Use this alias for mail forwarding</string>
     <string name="error_edit_active">An error occurred while changing the active state</string>
+    <string name="aliases">Aliases</string>
 </resources>

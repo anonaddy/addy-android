@@ -19,7 +19,6 @@ import app.futured.donut.DonutSection
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
-import host.stjin.anonaddy.utils.ResizeAnimation
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
@@ -56,19 +55,6 @@ class ManageAliasActivity : ComponentActivity() {
     var isChangingActivationStatus = false
     private fun setPage() {
         if (alias != null) {
-
-            // WearOS needs a focus point
-            binding.activityManageAliasScrollview.requestFocus()
-/*
-            binding.activityManageAliasComposeview0.setContent {
-                AppTheme {
-                    CurvedRow() {
-                        CurvedText(
-                            text = alias!!.email,
-                        )
-                    }
-                }
-            }*/
 
             /**
              * CHART
@@ -191,6 +177,10 @@ class ManageAliasActivity : ComponentActivity() {
                 }
             }
         }
+
+
+        // WearOS needs a focus point
+        //binding.activityManageAliasScrollview.requestFocus()
     }
 
 
@@ -222,16 +212,6 @@ class ManageAliasActivity : ComponentActivity() {
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
 
         binding.activityManageAliasChart.animate().alpha(1.0f)
-
-        ResizeAnimation(
-            binding.activityManageAliasChart,
-            8f,
-            binding.activityManageAliasChart.height.toFloat(),
-            8f,
-            binding.activityManageAliasChart.width.toFloat(),
-            800
-        ).start()
-
 
         val color1 = if (this.alias!!.active) R.color.portalOrange else R.color.md_grey_500
         val color2 = if (this.alias!!.active) R.color.portalBlue else R.color.md_grey_600
