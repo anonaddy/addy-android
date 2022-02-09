@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.focusable
@@ -26,10 +27,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.*
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
+import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
@@ -37,7 +38,7 @@ import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.GsonTools
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+class AliasActivity : ComponentActivity() {
 
     private lateinit var favoriteAliasHelper: FavoriteAliasHelper
 
@@ -45,21 +46,74 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setComposeContent()
+
+    }
+
+    @OptIn(ExperimentalWearMaterialApi::class)
+    private fun setComposeContent() {
         favoriteAliasHelper = FavoriteAliasHelper(this)
         val settingsManager = SettingsManager(encrypt = true, this)
         // Cache contains 15 most popular aliases
         val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA)
         val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(this, it) }
 
-        aliasesList?.let {
+        if (aliasesList != null) {
             setContent {
-                AliasList(it)
+                AliasList(aliasesList)
+            }
+        } else {
+            setContent {
+                Loading()
+            }
+
+            lifecycleScope.launch {
+                NetworkHelper(this@AliasActivity).cache15MostPopularAliasesDataForWidget { result ->
+                    if (result) {
+                        setComposeContent()
+                    } else {
+                        Toast.makeText(this@AliasActivity, "TODO Could not load aliases", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
+    }
 
 
-        // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
-        BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
+    @OptIn(ExperimentalWearMaterialApi::class)
+    @Composable
+    private fun Loading() {
+        AppTheme {
+            Scaffold(
+                modifier = Modifier,
+                timeText = {
+                    CustomTimeText(
+                        visible = true,
+                        showLeadingText = true,
+                        leadingText = resources.getString(R.string.aliases)
+                    )
+                },
+                vignette = {
+                    Vignette(vignettePosition = VignettePosition.TopAndBottom)
+                },
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+
+                    // TODO Fix
+                    //CircularProgressIndicator()
+                }
+            }
+
+
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setComposeContent()
     }
 
     @OptIn(ExperimentalComposeUiApi::class)
@@ -121,7 +175,7 @@ class MainActivity : ComponentActivity() {
                             icon = {
                                 Icon(
                                     painter = painterResource(id = getStarIcon(listWithAliases[index])),
-                                    tint = if (FavoriteAliasHelper(this@MainActivity).getFavoriteAliases()
+                                    tint = if (FavoriteAliasHelper(this@AliasActivity).getFavoriteAliases()
                                             ?.contains(listWithAliases[index].id) == true
                                     ) Color(getMostPopularColor(listWithAliases[index])) else Color.White,
                                     contentDescription = resources.getString(R.string.favorite),
@@ -157,7 +211,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                             onClick = {
-                                val intent = Intent(this@MainActivity, ManageAliasActivity::class.java)
+                                val intent = Intent(this@AliasActivity, ManageAliasActivity::class.java)
                                 intent.putExtra("alias", listWithAliases[index])
                                 startActivity(intent)
                             },
@@ -172,7 +226,6 @@ class MainActivity : ComponentActivity() {
 
 
         }
-
     }
 
 

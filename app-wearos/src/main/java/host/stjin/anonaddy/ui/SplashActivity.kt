@@ -1,15 +1,16 @@
 package host.stjin.anonaddy.ui
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.ComponentActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
+import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
-class SplashActivity : Activity() {
+class SplashActivity : ComponentActivity() {
 
 
     private lateinit var bindingFailed: ActivityMainFailedBinding
@@ -54,7 +55,10 @@ class SplashActivity : Activity() {
             startActivity(intent)
             finish()
         } else {
-            val intent = Intent(this, MainActivity::class.java)
+            // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
+            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
+
+            val intent = Intent(this, AliasActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -67,6 +71,8 @@ class SplashActivity : Activity() {
         setContentView(view)
 
         bindingFailed.activityMainFailedErrorMessage.text = error
+
+
     }
 
 }

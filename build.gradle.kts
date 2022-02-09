@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    val compose_version by extra("1.2.0-alpha02")
+    val compose_version by extra("1.2.0-alpha03")
     val jvm_target by extra("1.8")
     val application_id by extra("host.stjin.anonaddy")
 

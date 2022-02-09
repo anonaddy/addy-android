@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".ui.MainActivity"
+    android:background="@android:color/black"
+    tools:context=".ui.AliasActivity"
     tools:deviceIds="wear">
 
     <LinearLayout
@@ -23,7 +24,7 @@
             android:fontFamily="sans-serif-black"
             android:text="@string/whoops"
             android:textAlignment="center"
-            android:textColor="@color/BlackWhite"
+            android:textColor="@android:color/white"
             android:textSize="36sp" />
 
         <TextView
