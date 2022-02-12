@@ -78,7 +78,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
 
 
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
-        var donutCap = 0f
         // DONUT
         val section1 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
@@ -87,7 +86,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         )
         // Always show section 1
         listOfDonutSection.add(section1)
-        donutCap += forwarded
 
         if (replied > 0) {
             val section2 = DonutSection(
@@ -96,7 +94,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
                 amount = replied
             )
             listOfDonutSection.add(section2)
-            donutCap += replied
         }
 
         if (sent > 0) {
@@ -106,7 +103,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
                 amount = sent
             )
             listOfDonutSection.add(section3)
-            donutCap += sent
         }
 
         if (blocked > 0) {
@@ -116,10 +112,9 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
                 amount = blocked
             )
             listOfDonutSection.add(section4)
-            donutCap += blocked
         }
 
-        holder.mChart.cap = donutCap
+        holder.mChart.cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat()
         // Sort the list by amount so that the biggest number will fill the whole ring
         holder.mChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT

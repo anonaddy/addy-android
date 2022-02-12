@@ -15,4 +15,7 @@
     <string name="alias_status_desc">Use this alias for mail forwarding</string>
     <string name="error_edit_active">An error occurred while changing the active state</string>
     <string name="aliases">Aliases</string>
+    <string name="could_not_refresh_data">Could not refresh data</string>
+    <string name="edit_alias">Edit alias</string>
+
 </resources>

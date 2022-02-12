@@ -104,7 +104,6 @@
     <string name="username_no_description">This username has no description set. Tap here to add one</string>
     <string name="domain_no_description">This domain has no description set. Tap here to add one</string>
     <string name="edit_desc_alias_desc">Change the description for this alias, describe what this alias is used for</string>
-    <string name="edit_alias">Edit alias</string>
     <string name="alias_edit_recipients_desc">The list below shows all verified recipients. Select which recipients you want to set as recipient for this alias</string>
     <string name="edit_recipients">Edit recipients</string>
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>
@@ -493,7 +492,6 @@
     <string name="error_obtaining_rules">@string/could_not_refresh_data</string>
     <string name="error_obtaining_username">@string/could_not_refresh_data</string>
     <string name="error_obtaining_usernames">@string/could_not_refresh_data</string>
-    <string name="could_not_refresh_data">Could not refresh data</string>
     <string name="filtering_and_sorting">Filtering and sorting</string>
     <string name="filtering_and_sorting_desc">Decide which aliases to display and in which order to display them. Filters are saved and retained on app restart</string>
     <string name="setup_app">Setup app</string>

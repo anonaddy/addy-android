@@ -12,7 +12,6 @@
     <string name="aliases_recyclerview_list_item_date_time">%s - %s</string>
     <string name="aliases_recyclerview_list_item_description">%d forw-%d bloc-%d repl-%d sent</string>
     <string name="max_favorites_reached">You can only have 5 favorites</string>
-    <string name="title_activity_manage_alias">ManageAliasActivity</string>
     <string name="activated">Activated</string>
     <string name="deactivated">Deactivated</string>
     <string name="changing_status">Changing status</string>

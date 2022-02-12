@@ -2,12 +2,12 @@ package host.stjin.anonaddy.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -19,14 +19,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.*
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
@@ -47,7 +46,6 @@ class AliasActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setComposeContent()
-
     }
 
     @OptIn(ExperimentalWearMaterialApi::class)
@@ -72,7 +70,13 @@ class AliasActivity : ComponentActivity() {
                     if (result) {
                         setComposeContent()
                     } else {
-                        Toast.makeText(this@AliasActivity, "TODO Could not load aliases", Toast.LENGTH_SHORT).show()
+                        setContent {
+                            ErrorScreen(
+                                this@AliasActivity,
+                                this@AliasActivity.resources.getString(R.string.could_not_refresh_data),
+                                this@AliasActivity.resources.getString(R.string.aliases)
+                            )
+                        }
                     }
                 }
             }
@@ -99,11 +103,11 @@ class AliasActivity : ComponentActivity() {
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
                 ) {
-
-                    // TODO Fix
-                    //CircularProgressIndicator()
+                    CircularProgressIndicator()
                 }
             }
 
@@ -226,17 +230,6 @@ class AliasActivity : ComponentActivity() {
 
 
         }
-    }
-
-
-    @Composable
-    fun Greeting(greetingName: String) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.primary,
-            text = stringResource(R.string.hello_world, greetingName)
-        )
     }
 
     private fun getMostPopularColor(aliases: Aliases): Int {

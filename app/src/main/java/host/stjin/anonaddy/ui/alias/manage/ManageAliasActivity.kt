@@ -138,7 +138,6 @@ class ManageAliasActivity : BaseActivity(),
 
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
-        var donutCap = 0f
         // DONUT
         val section1 = DonutSection(
             name = binding.activityManageAliasChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
@@ -147,7 +146,6 @@ class ManageAliasActivity : BaseActivity(),
         )
         // Always show section 1
         listOfDonutSection.add(section1)
-        donutCap += forwarded
 
         if (replied > 0) {
             val section2 = DonutSection(
@@ -156,7 +154,6 @@ class ManageAliasActivity : BaseActivity(),
                 amount = replied
             )
             listOfDonutSection.add(section2)
-            donutCap += replied
         }
 
         if (sent > 0) {
@@ -166,7 +163,6 @@ class ManageAliasActivity : BaseActivity(),
                 amount = sent
             )
             listOfDonutSection.add(section3)
-            donutCap += sent
         }
 
         if (blocked > 0) {
@@ -176,9 +172,8 @@ class ManageAliasActivity : BaseActivity(),
                 amount = blocked
             )
             listOfDonutSection.add(section4)
-            donutCap += blocked
         }
-        binding.activityManageAliasChart.cap = donutCap
+        binding.activityManageAliasChart.cap = listOfDonutSection.maxOf { it.amount.toInt() }.toFloat()
 
         // Sort the list by amount so that the biggest number will fill the whole ring
         binding.activityManageAliasChart.submitData(listOfDonutSection.sortedBy { it.amount })

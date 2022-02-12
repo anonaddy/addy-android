@@ -83,6 +83,7 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.5.0")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha05")
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("com.google.android.gms:play-services-wearable:17.1.0")
@@ -136,11 +137,5 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut:2.2.0")
-}
-
-// Alias list item gradient background
-dependencies {
-    implementation("com.github.GIGAMOLE:QuatroGrade:1.0.0")
-
+    implementation("app.futured.donut:donut-compose:2.2.0")
 }

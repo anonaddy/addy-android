@@ -29,7 +29,7 @@
         <activity
             android:name=".ui.alias.ManageAliasActivity"
             android:exported="false"
-            android:label="@string/title_activity_manage_alias"
+            android:label="@string/edit_alias"
             android:theme="@style/AppTheme" />
 
         <activity

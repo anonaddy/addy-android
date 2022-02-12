@@ -5,15 +5,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
+import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 class SplashActivity : ComponentActivity() {
-
-
-    private lateinit var bindingFailed: ActivityMainFailedBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +39,10 @@ class SplashActivity : ComponentActivity() {
         }
 
         if (settingsManager == null) {
-            showErrorScreen(this.resources.getString(R.string.app_data_corrupted))
+            setTheme(R.style.AppTheme)
+            setContent {
+                ErrorScreen(this, this.resources.getString(R.string.app_data_corrupted))
+            }
             Handler(Looper.getMainLooper()).postDelayed({
                 // Clear settings
                 SettingsManager(false, this).clearSettingsAndCloseApp()
@@ -50,29 +51,20 @@ class SplashActivity : ComponentActivity() {
         }
 
 
-        if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
-            val intent = Intent(this, SetupActivity::class.java)
-            startActivity(intent)
-            finish()
-        } else {
-            // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
-            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
+        if (settingsManager != null) {
+            if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+                val intent = Intent(this, SetupActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
+                BackgroundWorkerHelper(this).scheduleBackgroundWorker()
 
-            val intent = Intent(this, AliasActivity::class.java)
-            startActivity(intent)
-            finish()
+                val intent = Intent(this, AliasActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
-    }
-
-    private fun showErrorScreen(error: String?) {
-        bindingFailed = ActivityMainFailedBinding.inflate(layoutInflater)
-        val view = bindingFailed.root
-        setTheme(R.style.AppTheme)
-        setContentView(view)
-
-        bindingFailed.activityMainFailedErrorMessage.text = error
-
-
     }
 
 }

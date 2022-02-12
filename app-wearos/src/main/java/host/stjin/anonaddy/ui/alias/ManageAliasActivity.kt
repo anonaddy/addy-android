@@ -3,21 +3,37 @@ package host.stjin.anonaddy.ui.alias
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.*
-import app.futured.donut.DonutSection
+import app.futured.donut.compose.DonutProgress
+import app.futured.donut.compose.data.DonutModel
+import app.futured.donut.compose.data.DonutSection
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
+import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
@@ -26,17 +42,11 @@ import kotlinx.coroutines.launch
 
 class ManageAliasActivity : ComponentActivity() {
 
-    private lateinit var binding: ActivityManageAliasBinding
     private var alias: Aliases? = null
-    lateinit var networkHelper: NetworkHelper
-
+    private lateinit var networkHelper: NetworkHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityManageAliasBinding.inflate(layoutInflater)
-
-        setContentView(binding.root)
 
         networkHelper = NetworkHelper(this)
 
@@ -47,140 +57,218 @@ class ManageAliasActivity : ComponentActivity() {
             return
         }
         this.alias = alias
-        setPage()
 
+        setContent {
+            ComposeContent()
+        }
+    }
+
+    var isChangingActivationStatus = false
+
+
+    private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
+        //binding.activityManageAliasForwardedCount.text = this.resources.getString(R.string.d_forwarded, forwarded.toInt())
+        //binding.activityManageAliasRepliesBlockedCount.text = this.resources.getString(R.string.d_blocked, blocked.toInt())
+        //binding.activityManageAliasSentCount.text = this.resources.getString(R.string.d_sent, sent.toInt())
+        //binding.activityManageAliasRepliedCount.text = this.resources.getString(R.string.d_replied, replied.toInt())
     }
 
 
-    var isChangingActivationStatus = false
-    private fun setPage() {
+    @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
+    @Composable
+    private fun ComposeContent() {
         if (alias != null) {
-
-            /**
-             * CHART
-             */
-
-            // Update chart
-            setChart(
-                alias!!.emails_forwarded.toFloat(),
-                alias!!.emails_replied.toFloat(),
-                alias!!.emails_blocked.toFloat(),
-                alias!!.emails_sent.toFloat()
-            )
-
-
             val favoriteAliasHelper = FavoriteAliasHelper(this)
             val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
             val isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
-            binding.activityManageAliasComposeview1.setContent {
-                AppTheme {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+            AppTheme {
+                val lazyListState: LazyListState = rememberLazyListState()
+                Scaffold(
+                    modifier = Modifier,
+                    timeText = {
+                        CustomTimeText(
+                            visible = true,
+                            showLeadingText = true,
+                            leadingText = resources.getString(R.string.edit_alias)
+                        )
+                    },
+                    vignette = {
+                        Vignette(vignettePosition = VignettePosition.TopAndBottom)
+                    },
+                    positionIndicator = {
+                        PositionIndicator(
+                            lazyListState = lazyListState
+                        )
+
+                    }
+                ) {
+                    val focusRequester = remember { FocusRequester() }
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .onRotaryScrollEvent {
+                                lifecycleScope.launch {
+                                    lazyListState.scrollBy(it.verticalScrollPixels)
+                                }
+                                true
+                            }
+                            .focusRequester(focusRequester)
+                            .focusable(),
+                        contentPadding = PaddingValues(
+                            top = 28.dp,
+                            start = 10.dp,
+                            end = 10.dp,
+                            bottom = 40.dp
+                        ),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        state = lazyListState,
                     ) {
-                        ToggleChip(
-                            label = {
-                                Text(
-                                    if (this@ManageAliasActivity.alias!!.active) resources.getString(R.string.activated) else resources.getString(
-                                        R.string.deactivated
-                                    ), maxLines = 1, overflow = TextOverflow.Ellipsis
+                        item {
+                            GetDonut()
+                            StatTextView(
+                                string = this@ManageAliasActivity.resources.getString(R.string.d_forwarded, alias!!.emails_forwarded),
+                                icon = R.drawable.ic_inbox,
+                                colorResource(
+                                    id = R.color.portalOrange
                                 )
-                            },
-                            checked = alias!!.active,
-                            toggleIcon = {
-                                ToggleChipDefaults.SwitchIcon(checked = alias!!.active)
-                            },
-                            secondaryLabel = {
-                                Text(
-                                    if (isChangingActivationStatus) {
-                                        resources.getString(
-                                            R.string.changing_status
-                                        )
-                                    } else resources.getString(
-                                        R.string.alias_status_desc
-                                    ), maxLines = 1, overflow = TextOverflow.Ellipsis
+                            )
+                            StatTextView(
+                                string = this@ManageAliasActivity.resources.getString(R.string.d_replied, alias!!.emails_replied),
+                                icon = R.drawable.ic_arrow_back_up,
+                                colorResource(
+                                    id = R.color.portalBlue
                                 )
-                            },
-                            onCheckedChange = {
-                                if (!isChangingActivationStatus) {
-                                    alias!!.active = it
-                                    if (alias!!.active) {
-                                        lifecycleScope.launch {
-                                            isChangingActivationStatus = true
-                                            setPage()
-                                            activateAlias()
+                            )
+                            StatTextView(
+                                string = this@ManageAliasActivity.resources.getString(R.string.d_sent, alias!!.emails_sent),
+                                icon = R.drawable.ic_mail_forward,
+                                colorResource(
+                                    id = R.color.easternBlue
+                                )
+                            )
+                            StatTextView(
+                                string = this@ManageAliasActivity.resources.getString(R.string.d_blocked, alias!!.emails_blocked),
+                                icon = R.drawable.ic_forbid,
+                                colorResource(
+                                    id = R.color.softRed
+                                )
+                            )
+                            ToggleChip(
+                                modifier = Modifier.padding(top = 16.dp, bottom = 2.dp),
+                                label = {
+                                    Text(
+                                        if (this@ManageAliasActivity.alias!!.active) resources.getString(R.string.activated) else resources.getString(
+                                            R.string.deactivated
+                                        ), maxLines = 1, overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                checked = alias!!.active,
+                                toggleIcon = {
+                                    ToggleChipDefaults.SwitchIcon(checked = alias!!.active)
+                                },
+                                secondaryLabel = {
+                                    Text(
+                                        if (isChangingActivationStatus) {
+                                            resources.getString(
+                                                R.string.changing_status
+                                            )
+                                        } else resources.getString(
+                                            R.string.alias_status_desc
+                                        ), maxLines = 1, overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                onCheckedChange = {
+                                    if (!isChangingActivationStatus) {
+                                        alias!!.active = it
+                                        if (alias!!.active) {
+                                            lifecycleScope.launch {
+                                                isChangingActivationStatus = true
+                                                setContent {
+                                                    ComposeContent()
+                                                }
+                                                activateAlias()
+                                            }
+                                        } else {
+                                            lifecycleScope.launch {
+                                                isChangingActivationStatus = true
+                                                setContent {
+                                                    ComposeContent()
+                                                }
+                                                deactivateAlias()
+                                            }
+                                        }
+                                    }
+                                },
+                                enabled = true
+                            )
+
+                            ToggleChip(
+                                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+                                label = {
+                                    Text(
+                                        resources.getString(R.string.favorite), maxLines = 1, overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                checked = isAliasFavorite,
+                                onCheckedChange = {
+                                    if (it) {
+                                        if (!favoriteAliasHelper.addAliasAsFavorite(this@ManageAliasActivity.alias!!.id)) {
+                                            Toast.makeText(
+                                                this@ManageAliasActivity,
+                                                resources.getString(R.string.max_favorites_reached),
+                                                Toast.LENGTH_SHORT
+                                            )
+                                                .show()
                                         }
                                     } else {
-                                        lifecycleScope.launch {
-                                            isChangingActivationStatus = true
-                                            setPage()
-                                            deactivateAlias()
-                                        }
+                                        favoriteAliasHelper.removeAliasAsFavorite(this@ManageAliasActivity.alias!!.id)
                                     }
-                                }
-                            },
-                            enabled = true
-                        )
-
-                        ToggleChip(
-                            label = {
-                                Text(
-                                    resources.getString(R.string.favorite), maxLines = 1, overflow = TextOverflow.Ellipsis
-                                )
-                            },
-                            checked = isAliasFavorite,
-                            onCheckedChange = {
-                                if (it) {
-                                    if (!favoriteAliasHelper.addAliasAsFavorite(this@ManageAliasActivity.alias!!.id)) {
-                                        Toast.makeText(
-                                            this@ManageAliasActivity,
-                                            resources.getString(R.string.max_favorites_reached),
-                                            Toast.LENGTH_SHORT
-                                        )
-                                            .show()
+                                    setContent {
+                                        ComposeContent()
                                     }
-                                } else {
-                                    favoriteAliasHelper.removeAliasAsFavorite(this@ManageAliasActivity.alias!!.id)
-                                }
-                                setPage()
-                            },
-                            toggleIcon = {
-                            },
-                            appIcon = {
-                                Icon(
-                                    painter = if (isAliasFavorite) painterResource(id = R.drawable.ic_starred) else painterResource(
-                                        id = R.drawable.ic_star
-                                    ),
-                                    contentDescription = resources.getString(R.string.alias_status_desc),
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .wrapContentSize(align = Alignment.Center),
-                                )
-                            },
-                            enabled = true
-                        )
+                                },
+                                toggleIcon = {
+                                },
+                                appIcon = {
+                                    Icon(
+                                        painter = if (isAliasFavorite) painterResource(id = R.drawable.ic_starred) else painterResource(
+                                            id = R.drawable.ic_star
+                                        ),
+                                        contentDescription = resources.getString(R.string.alias_status_desc),
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .wrapContentSize(align = Alignment.Center),
+                                    )
+                                },
+                                enabled = true
+                            )
 
-                        Chip(
-                            onClick = { /* Do something */ },
-                            enabled = true,
-                            label = { Text(text = resources.getString(R.string.set_watchface)) },
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_clock),
-                                    contentDescription = resources.getString(R.string.set_watchface),
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .wrapContentSize(align = Alignment.Center),
-                                )
-                            }
-                        )
+                            Chip(
+                                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+                                onClick = { /* Do something */ },
+                                enabled = true,
+                                label = { Text(text = resources.getString(R.string.set_watchface)) },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_clock),
+                                        contentDescription = resources.getString(R.string.set_watchface),
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                            .wrapContentSize(align = Alignment.Center),
+                                    )
+                                }
+                            )
+                        }
+                    }
+
+                    LaunchedEffect(Unit) {
+                        focusRequester.requestFocus()
                     }
                 }
+
             }
         }
-
-
-        // WearOS needs a focus point
-        //binding.activityManageAliasScrollview.requestFocus()
     }
 
 
@@ -192,7 +280,9 @@ class ManageAliasActivity : ComponentActivity() {
                 Toast.makeText(this, this.resources.getString(R.string.error_edit_active) + "\n" + result, Toast.LENGTH_SHORT).show()
             }
             isChangingActivationStatus = false
-            setPage()
+            setContent {
+                ComposeContent()
+            }
         }, this.alias!!.id)
     }
 
@@ -205,71 +295,74 @@ class ManageAliasActivity : ComponentActivity() {
                 Toast.makeText(this, this.resources.getString(R.string.error_edit_active) + "\n" + result, Toast.LENGTH_SHORT).show()
             }
             isChangingActivationStatus = false
-            setPage()
+            setContent {
+                ComposeContent()
+            }
         }, this.alias!!.id)
     }
 
-    private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
+    @Composable
+    fun StatTextView(string: String, icon: Int, color: Color) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp)
+        ) {
+            Image(painterResource(icon), contentDescription = string, colorFilter = ColorFilter.tint(color = color))
+            Text(modifier = Modifier.padding(start = 8.dp), text = string, color = color, style = TextStyle(fontWeight = FontWeight.Bold))
+        }
+    }
 
-        binding.activityManageAliasChart.animate().alpha(1.0f)
-
-        val color1 = if (this.alias!!.active) R.color.portalOrange else R.color.md_grey_500
-        val color2 = if (this.alias!!.active) R.color.portalBlue else R.color.md_grey_600
-        val color3 = if (this.alias!!.active) R.color.easternBlue else R.color.md_grey_700
-        val color4 = if (this.alias!!.active) R.color.softRed else R.color.md_grey_800
-
+    @Composable
+    fun GetDonut() {
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
-        var donutCap = 0f
-        // DONUT
+
         val section1 = DonutSection(
-            name = forwarded.toInt().toString(),
-            color = ContextCompat.getColor(this, color1),
-            amount = forwarded
+            color = colorResource(id = R.color.portalOrange),
+            amount = alias!!.emails_forwarded.toFloat()
         )
         // Always show section 1
         listOfDonutSection.add(section1)
-        donutCap += forwarded
 
-        if (replied > 0) {
+        if (alias!!.emails_replied > 0) {
             val section2 = DonutSection(
-                name = replied.toInt().toString(),
-                color = ContextCompat.getColor(this, color2),
-                amount = replied
+                color = colorResource(id = R.color.portalBlue),
+                amount = alias!!.emails_replied.toFloat()
             )
             listOfDonutSection.add(section2)
-            donutCap += replied
         }
 
-        if (sent > 0) {
+        if (alias!!.emails_sent > 0) {
             val section3 = DonutSection(
-                name = sent.toInt().toString(),
-                color = ContextCompat.getColor(this, color3),
-                amount = sent
+                color = colorResource(id = R.color.easternBlue),
+                amount = alias!!.emails_sent.toFloat()
             )
             listOfDonutSection.add(section3)
-            donutCap += sent
         }
 
-        if (blocked > 0) {
+        if (alias!!.emails_blocked > 0) {
             val section4 = DonutSection(
-                name = blocked.toInt().toString(),
-                color = ContextCompat.getColor(this, color4),
-                amount = blocked
+                color = colorResource(id = R.color.softRed),
+                amount = alias!!.emails_blocked.toFloat()
             )
             listOfDonutSection.add(section4)
-            donutCap += blocked
         }
-        binding.activityManageAliasChart.cap = donutCap
 
-        // Sort the list by amount so that the biggest number will fill the whole ring
-        binding.activityManageAliasChart.submitData(listOfDonutSection.sortedBy { it.amount })
-        // DONUT
-
-
-        binding.activityManageAliasForwardedCount.text = this.resources.getString(R.string.d_forwarded, forwarded.toInt())
-        binding.activityManageAliasRepliesBlockedCount.text = this.resources.getString(R.string.d_blocked, blocked.toInt())
-        binding.activityManageAliasSentCount.text = this.resources.getString(R.string.d_sent, sent.toInt())
-        binding.activityManageAliasRepliedCount.text = this.resources.getString(R.string.d_replied, replied.toInt())
+        DonutProgress(
+            model = DonutModel(
+                cap = listOfDonutSection.maxOf { it.amount.toInt() }.toFloat(),
+                gapWidthDegrees = 0f,
+                gapAngleDegrees = 270f,
+                strokeWidth = 16f,
+                backgroundLineColor = Color.Transparent,
+                // Sort the list by amount so that the biggest number will fill the whole ring
+                //TODO For some reason I need to sort by desc on this section while the app sections work properly
+                sections = listOfDonutSection.sortedByDescending { it.amount },
+            ), modifier = Modifier
+                .height(56.dp)
+                .width(56.dp)
+        )
     }
+
 
 }
