@@ -14,7 +14,7 @@ data class SingleAlias(
 )
 
 data class Aliases(
-    var active: Boolean,
+    val active: Boolean,
     val aliasable_id: String,
     val aliasable_type: String,
     val created_at: String,

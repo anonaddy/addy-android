@@ -38,10 +38,11 @@ class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
         }
     }
 
+    var hasPairedDevices by mutableStateOf(false)
+
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class)
     @Composable
-    private fun SetComposeView(hasPairedDevices: Boolean = true) {
-
+    private fun SetComposeView() {
         AppTheme {
             Scaffold(
                 modifier = Modifier.background(color = md_theme_light_primary),
@@ -93,9 +94,8 @@ class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
         nodeClient.connectedNodes.addOnCompleteListener { nodes ->
             if (nodes.result.any()) {
                 nodeClient.localNode.addOnCompleteListener { localNode ->
-                    setContent {
-                        SetComposeView()
-                    }                    // Send a message to all connected nodes basically broadcasting itself.
+                    hasPairedDevices = true
+                    // Send a message to all connected nodes basically broadcasting itself.
                     // Nodes with the app installed will receive this message and open the setup sheet
                     for (node in nodes.result) {
                         Wearable.getMessageClient(this).sendMessage(node.id, "/requestsetup", localNode.result.displayName.toByteArray())
@@ -112,9 +112,7 @@ class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
     }
 
     private fun noNodesFound() {
-        setContent {
-            SetComposeView(false)
-        }
+        hasPairedDevices = false
         // No nodes found, let's check again in 5 seconds
         Handler(Looper.getMainLooper()).postDelayed({
             requestSetup()

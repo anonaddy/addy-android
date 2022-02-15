@@ -51,19 +51,17 @@ class SplashActivity : ComponentActivity() {
         }
 
 
-        if (settingsManager != null) {
-            if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
-                val intent = Intent(this, SetupActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
-                BackgroundWorkerHelper(this).scheduleBackgroundWorker()
+        if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+            val intent = Intent(this, SetupActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
+            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
 
-                val intent = Intent(this, AliasActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+            val intent = Intent(this, AliasActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 

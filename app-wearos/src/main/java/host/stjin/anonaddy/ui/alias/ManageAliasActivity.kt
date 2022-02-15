@@ -6,21 +6,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -63,24 +64,26 @@ class ManageAliasActivity : ComponentActivity() {
         }
     }
 
-    var isChangingActivationStatus = false
-
-
-    private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
-        //binding.activityManageAliasForwardedCount.text = this.resources.getString(R.string.d_forwarded, forwarded.toInt())
-        //binding.activityManageAliasRepliesBlockedCount.text = this.resources.getString(R.string.d_blocked, blocked.toInt())
-        //binding.activityManageAliasSentCount.text = this.resources.getString(R.string.d_sent, sent.toInt())
-        //binding.activityManageAliasRepliedCount.text = this.resources.getString(R.string.d_replied, replied.toInt())
-    }
+    var isAliasActive by mutableStateOf(false)
+    var isChangingActivationStatus by mutableStateOf(false)
+    var isAliasFavorite by mutableStateOf(false)
 
 
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
     @Composable
     private fun ComposeContent() {
         if (alias != null) {
+            isAliasActive = alias!!.active
+
+
+            // Creates a CoroutineScope bound to the lifecycle
+            val scope = rememberCoroutineScope()
+            val haptic = LocalHapticFeedback.current
+
             val favoriteAliasHelper = FavoriteAliasHelper(this)
             val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
-            val isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
+            isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
+
             AppTheme {
                 val lazyListState: LazyListState = rememberLazyListState()
                 Scaffold(
@@ -103,13 +106,22 @@ class ManageAliasActivity : ComponentActivity() {
                     }
                 ) {
                     val focusRequester = remember { FocusRequester() }
-
+                    var currentScrollPosition = 0
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
+                            .onPreRotaryScrollEvent {
+                                if (currentScrollPosition != lazyListState.firstVisibleItemScrollOffset) {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
+
+                                currentScrollPosition = lazyListState.firstVisibleItemScrollOffset
+                                // return false to ignore this event and continue propagation to the child.
+                                false
+                            }
                             .onRotaryScrollEvent {
-                                lifecycleScope.launch {
-                                    lazyListState.scrollBy(it.verticalScrollPixels)
+                                scope.launch {
+                                    lazyListState.animateScrollBy(it.verticalScrollPixels)
                                 }
                                 true
                             }
@@ -154,18 +166,19 @@ class ManageAliasActivity : ComponentActivity() {
                                     id = R.color.softRed
                                 )
                             )
+
                             ToggleChip(
                                 modifier = Modifier.padding(top = 16.dp, bottom = 2.dp),
                                 label = {
                                     Text(
-                                        if (this@ManageAliasActivity.alias!!.active) resources.getString(R.string.activated) else resources.getString(
+                                        if (isAliasActive) resources.getString(R.string.activated) else resources.getString(
                                             R.string.deactivated
                                         ), maxLines = 1, overflow = TextOverflow.Ellipsis
                                     )
                                 },
-                                checked = alias!!.active,
+                                checked = isAliasActive,
                                 toggleIcon = {
-                                    ToggleChipDefaults.SwitchIcon(checked = alias!!.active)
+                                    ToggleChipDefaults.SwitchIcon(checked = isAliasActive)
                                 },
                                 secondaryLabel = {
                                     Text(
@@ -179,22 +192,16 @@ class ManageAliasActivity : ComponentActivity() {
                                     )
                                 },
                                 onCheckedChange = {
+                                    isAliasActive = it
                                     if (!isChangingActivationStatus) {
-                                        alias!!.active = it
-                                        if (alias!!.active) {
+                                        if (isAliasActive) {
                                             lifecycleScope.launch {
                                                 isChangingActivationStatus = true
-                                                setContent {
-                                                    ComposeContent()
-                                                }
                                                 activateAlias()
                                             }
                                         } else {
                                             lifecycleScope.launch {
                                                 isChangingActivationStatus = true
-                                                setContent {
-                                                    ComposeContent()
-                                                }
                                                 deactivateAlias()
                                             }
                                         }
@@ -220,12 +227,12 @@ class ManageAliasActivity : ComponentActivity() {
                                                 Toast.LENGTH_SHORT
                                             )
                                                 .show()
+                                        } else {
+                                            isAliasFavorite = true
                                         }
                                     } else {
                                         favoriteAliasHelper.removeAliasAsFavorite(this@ManageAliasActivity.alias!!.id)
-                                    }
-                                    setContent {
-                                        ComposeContent()
+                                        isAliasFavorite = false
                                     }
                                 },
                                 toggleIcon = {
@@ -274,14 +281,11 @@ class ManageAliasActivity : ComponentActivity() {
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
+            isChangingActivationStatus = false
             if (result == "204") {
-                this.alias!!.active = false
+                isAliasActive = false
             } else {
                 Toast.makeText(this, this.resources.getString(R.string.error_edit_active) + "\n" + result, Toast.LENGTH_SHORT).show()
-            }
-            isChangingActivationStatus = false
-            setContent {
-                ComposeContent()
             }
         }, this.alias!!.id)
     }
@@ -289,14 +293,11 @@ class ManageAliasActivity : ComponentActivity() {
 
     private suspend fun activateAlias() {
         networkHelper.activateSpecificAlias({ alias, result ->
+            isChangingActivationStatus = false
             if (alias != null) {
-                this.alias!!.active = true
+                isAliasActive = true
             } else {
                 Toast.makeText(this, this.resources.getString(R.string.error_edit_active) + "\n" + result, Toast.LENGTH_SHORT).show()
-            }
-            isChangingActivationStatus = false
-            setContent {
-                ComposeContent()
             }
         }, this.alias!!.id)
     }
@@ -350,19 +351,19 @@ class ManageAliasActivity : ComponentActivity() {
 
         DonutProgress(
             model = DonutModel(
-                cap = listOfDonutSection.maxOf { it.amount.toInt() }.toFloat(),
+                cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat(),
+                masterProgress = 1f,
                 gapWidthDegrees = 0f,
                 gapAngleDegrees = 270f,
                 strokeWidth = 16f,
                 backgroundLineColor = Color.Transparent,
                 // Sort the list by amount so that the biggest number will fill the whole ring
-                //TODO For some reason I need to sort by desc on this section while the app sections work properly
+                //TODO For some reason I need to sort by desc on this section while the main app's sections work properly
                 sections = listOfDonutSection.sortedByDescending { it.amount },
             ), modifier = Modifier
                 .height(56.dp)
                 .width(56.dp)
         )
     }
-
 
 }

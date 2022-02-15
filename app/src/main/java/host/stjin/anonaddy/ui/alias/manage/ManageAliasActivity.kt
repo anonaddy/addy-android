@@ -173,7 +173,7 @@ class ManageAliasActivity : BaseActivity(),
             )
             listOfDonutSection.add(section4)
         }
-        binding.activityManageAliasChart.cap = listOfDonutSection.maxOf { it.amount.toInt() }.toFloat()
+        binding.activityManageAliasChart.cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat()
 
         // Sort the list by amount so that the biggest number will fill the whole ring
         binding.activityManageAliasChart.submitData(listOfDonutSection.sortedBy { it.amount })

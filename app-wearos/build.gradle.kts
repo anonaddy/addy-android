@@ -106,16 +106,16 @@ dependencies {
 dependencies {
     // General compose dependencies
     implementation("androidx.activity:activity-compose:1.4.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.0.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.1.0")
 
     // Animated graphics (for the icon on setup)
-    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha02")
+    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha03")
 
     // Compose for Wear OS Dependencies
-    implementation("androidx.wear.compose:compose-material:1.0.0-alpha15")
+    implementation("androidx.wear.compose:compose-material:1.0.0-alpha16")
 
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
-    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha15")
+    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha16")
 
     // If you are using Compose Navigation, use the Wear OS version (NOT THE MOBILE VERSION).
     // Uncomment the line below and update the version number.
@@ -123,6 +123,9 @@ dependencies {
 
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"] as String}")
     debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"] as String}")
+
+    implementation("androidx.compose.material:material:1.1.0")
+
 }
 
 // For updating widgets and caching data

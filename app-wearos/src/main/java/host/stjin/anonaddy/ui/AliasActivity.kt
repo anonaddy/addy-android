@@ -5,19 +5,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -40,35 +41,43 @@ import kotlinx.coroutines.launch
 class AliasActivity : ComponentActivity() {
 
     private lateinit var favoriteAliasHelper: FavoriteAliasHelper
+    private lateinit var settingsManager: SettingsManager
 
     @OptIn(ExperimentalWearMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        favoriteAliasHelper = FavoriteAliasHelper(this)
+        settingsManager = SettingsManager(encrypt = true, this)
 
         setComposeContent()
     }
 
+    var aliases by mutableStateOf<ArrayList<Aliases>?>(null)
+    var favoriteAliases by mutableStateOf<MutableSet<String>?>(null)
+    var isLoading by mutableStateOf(true)
+    private fun loadAliases() {
+        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA)
+        aliases = aliasesJson?.let { GsonTools.jsonToAliasObject(this, it) }
+        favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
+        isLoading = false
+    }
+
+
     @OptIn(ExperimentalWearMaterialApi::class)
     private fun setComposeContent() {
-        favoriteAliasHelper = FavoriteAliasHelper(this)
-        val settingsManager = SettingsManager(encrypt = true, this)
         // Cache contains 15 most popular aliases
-        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA)
-        val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(this, it) }
-
-        if (aliasesList != null) {
+        if (aliases != null) {
             setContent {
-                AliasList(aliasesList)
+                AliasList()
             }
         } else {
-            setContent {
-                Loading()
-            }
-
             lifecycleScope.launch {
                 NetworkHelper(this@AliasActivity).cache15MostPopularAliasesDataForWidget { result ->
                     if (result) {
-                        setComposeContent()
+                        setContent {
+                            AliasList()
+                            loadAliases()
+                        }
                     } else {
                         setContent {
                             ErrorScreen(
@@ -87,43 +96,30 @@ class AliasActivity : ComponentActivity() {
     @OptIn(ExperimentalWearMaterialApi::class)
     @Composable
     private fun Loading() {
-        AppTheme {
-            Scaffold(
-                modifier = Modifier,
-                timeText = {
-                    CustomTimeText(
-                        visible = true,
-                        showLeadingText = true,
-                        leadingText = resources.getString(R.string.aliases)
-                    )
-                },
-                vignette = {
-                    Vignette(vignettePosition = VignettePosition.TopAndBottom)
-                },
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
-
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            CircularProgressIndicator()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        setComposeContent()
+        loadAliases()
     }
 
     @OptIn(ExperimentalComposeUiApi::class)
     @ExperimentalWearMaterialApi
     @Composable
-    private fun AliasList(listWithAliases: ArrayList<Aliases>) {
+    private fun AliasList() {
+
+        // Creates a CoroutineScope bound to the lifecycle
+        val scope = rememberCoroutineScope()
+        val haptic = LocalHapticFeedback.current
+
         AppTheme {
             val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
             Scaffold(
@@ -145,87 +141,108 @@ class AliasActivity : ComponentActivity() {
 
                 }
             ) {
-                val focusRequester = remember { FocusRequester() }
+                if (aliases == null || isLoading) {
+                    Loading()
+                } else {
 
-                ScalingLazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .onRotaryScrollEvent {
-                            lifecycleScope.launch {
-                                scalingLazyListState.scrollBy(it.verticalScrollPixels)
+                    val focusRequester = remember { FocusRequester() }
+                    var currentScrollPosition = 0
+
+                    ScalingLazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .onPreRotaryScrollEvent {
+                                if (currentScrollPosition != scalingLazyListState.centerItemScrollOffset) {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
+
+                                currentScrollPosition = scalingLazyListState.centerItemScrollOffset
+                                // return false to ignore this event and continue propagation to the child.
+                                false
                             }
-                            true
-                        }
-                        .focusRequester(focusRequester)
-                        .focusable(),
-                    contentPadding = PaddingValues(
-                        top = 28.dp,
-                        start = 10.dp,
-                        end = 10.dp,
-                        bottom = 40.dp
-                    ),
-                    verticalArrangement = Arrangement.Center,
-                    state = scalingLazyListState,
-                ) {
-                    items(listWithAliases.size) { index ->
-                        Chip(
-                            colors = ChipDefaults.chipColors(
-                                backgroundColor = MaterialTheme.colors.surface,
-                                secondaryContentColor = Color(getMostPopularColor(listWithAliases[index]))
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 4.dp),
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = getStarIcon(listWithAliases[index])),
-                                    tint = if (FavoriteAliasHelper(this@AliasActivity).getFavoriteAliases()
-                                            ?.contains(listWithAliases[index].id) == true
-                                    ) Color(getMostPopularColor(listWithAliases[index])) else Color.White,
-                                    contentDescription = resources.getString(R.string.favorite),
+                            .onRotaryScrollEvent {
+                                scope.launch {
+                                    scalingLazyListState.animateScrollBy(it.verticalScrollPixels)
+                                }
+                                true
+                            }
+                            .focusRequester(focusRequester)
+                            .focusable(),
+                        contentPadding = PaddingValues(
+                            top = 28.dp,
+                            start = 10.dp,
+                            end = 10.dp,
+                            bottom = 40.dp
+                        ),
+                        verticalArrangement = Arrangement.Center,
+                        state = scalingLazyListState,
+                    ) {
+                        items(count = aliases!!.size,
+                            key = {
+                                aliases!![it].id
+                            },
+                            itemContent = { index ->
+                                Chip(
+                                    colors = ChipDefaults.chipColors(
+                                        backgroundColor = MaterialTheme.colors.surface,
+                                        secondaryContentColor = Color(getMostPopularColor(aliases!![index]))
+                                    ),
                                     modifier = Modifier
-                                        .size(24.dp)
-                                        .wrapContentSize(align = Alignment.Center),
-                                )
-                            },
-                            label = {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(), maxLines = 1, overflow = TextOverflow.Ellipsis,
-                                    text = listWithAliases[index].email
-                                )
-                            },
-                            secondaryLabel = {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(), maxLines = 1, overflow = TextOverflow.Ellipsis,
-                                    text = (if (listWithAliases[index].description != null) {
-                                        listWithAliases[index].description
-                                    } else {
-                                        resources.getString(
-                                            R.string.aliases_recyclerview_list_item_date_time,
-                                            DateTimeUtils.turnStringIntoLocalString(
-                                                listWithAliases[index].created_at,
-                                                DateTimeUtils.DATETIMEUTILS.SHORT_DATE
-                                            ),
-                                            DateTimeUtils.turnStringIntoLocalString(
-                                                listWithAliases[index].created_at,
-                                                DateTimeUtils.DATETIMEUTILS.TIME
-                                            )
+                                        .fillMaxWidth()
+                                        .padding(top = 4.dp),
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(id = getStarIcon(aliases!![index])),
+                                            tint = if (favoriteAliases
+                                                    ?.contains(aliases!![index].id) == true
+                                            ) Color(getMostPopularColor(aliases!![index])) else Color.White,
+                                            contentDescription = resources.getString(R.string.favorite),
+                                            modifier = Modifier
+                                                .size(24.dp)
+                                                .wrapContentSize(align = Alignment.Center),
                                         )
-                                    }).toString()
+                                    },
+                                    label = {
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(), maxLines = 1, overflow = TextOverflow.Ellipsis,
+                                            text = aliases!![index].email
+                                        )
+                                    },
+                                    secondaryLabel = {
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(), maxLines = 1, overflow = TextOverflow.Ellipsis,
+                                            text = (if (aliases!![index].description != null) {
+                                                aliases!![index].description
+                                            } else {
+                                                resources.getString(
+                                                    R.string.aliases_recyclerview_list_item_date_time,
+                                                    DateTimeUtils.turnStringIntoLocalString(
+                                                        aliases!![index].created_at,
+                                                        DateTimeUtils.DATETIMEUTILS.SHORT_DATE
+                                                    ),
+                                                    DateTimeUtils.turnStringIntoLocalString(
+                                                        aliases!![index].created_at,
+                                                        DateTimeUtils.DATETIMEUTILS.TIME
+                                                    )
+                                                )
+                                            }).toString()
+                                        )
+                                    },
+                                    onClick = {
+                                        val intent = Intent(this@AliasActivity, ManageAliasActivity::class.java)
+                                        intent.putExtra("alias", aliases!![index])
+                                        startActivity(intent)
+                                    },
                                 )
-                            },
-                            onClick = {
-                                val intent = Intent(this@AliasActivity, ManageAliasActivity::class.java)
-                                intent.putExtra("alias", listWithAliases[index])
-                                startActivity(intent)
-                            },
-                        )
+
+                            })
+                    }
+                    LaunchedEffect(Unit) {
+                        focusRequester.requestFocus()
                     }
                 }
 
-                LaunchedEffect(Unit) {
-                    focusRequester.requestFocus()
-                }
+
             }
 
 
@@ -249,7 +266,7 @@ class AliasActivity : ComponentActivity() {
     }
 
     private fun getStarIcon(aliases: Aliases): Int {
-        return if (FavoriteAliasHelper(this).getFavoriteAliases()?.contains(aliases.id) == true) {
+        return if (favoriteAliases?.contains(aliases.id) == true) {
             R.drawable.ic_starred
         } else {
             R.drawable.ic_star
