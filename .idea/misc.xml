@@ -3,17 +3,25 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/circle.xml" value="0.1" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_add.xml" value="0.1" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_email_at.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_forbid.xml" value="0.2555" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_anim.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_foreground.xml" value="0.147" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_search.xml" value="0.1195" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/aliases_recylcerview_list_item_background.xml" value="0.1675" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_add.xml" value="0.1" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_add_tinted.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_chevrons_up.xml" value="0.3055" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_device_mobile_message.xml" value="0.1465" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_email_at_tinted.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_launcher_anim.xml" value="0.1465" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_launcher_foreground.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_star.xml" value="0.295" />
+        <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_star_tinted.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_starred.xml" value="0.1855" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/ic_watch_setup_notification_anim.xml" value="0.2835" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/splash_background.xml" value="0.1465" />

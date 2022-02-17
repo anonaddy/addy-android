@@ -142,3 +142,22 @@ dependencies {
 dependencies {
     implementation("app.futured.donut:donut-compose:2.2.0")
 }
+
+// Tiles
+dependencies {
+    // Use to implement support for wear tiles
+    implementation("androidx.wear.tiles:tiles:1.1.0-alpha02")
+
+    // Use to utilize components and layouts with Material design in your tiles
+    implementation("androidx.wear.tiles:tiles-material:1.1.0-alpha02")
+
+    // Use to preview wear tiles in your own app
+    debugImplementation("androidx.wear.tiles:tiles-renderer:1.1.0-alpha02")
+
+    // Use to fetch tiles from a tile provider in your tests
+    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0-alpha02")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.0")
+    implementation("androidx.wear.tiles:tiles-proto:1.1.0-alpha02")
+
+}

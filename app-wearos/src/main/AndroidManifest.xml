@@ -39,6 +39,24 @@
             android:theme="@style/AppTheme" />
 
         <service
+            android:name=".service.FavoriteAliasesTileService"
+            android:description="@string/app_name"
+            android:exported="true"
+            android:icon="@drawable/ic_email_at"
+            android:label="@string/tile_favorite_aliases_label"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+
+
+            <!-- TODO Replace with a screenshot of the tile preview -->
+            <meta-data
+                android:name="androidx.wear.tiles.PREVIEW"
+                android:resource="@drawable/ic_email_at" />
+        </service>
+
+        <service
             android:name=".service.WearableListenerService"
             android:enabled="true"
             android:exported="true">

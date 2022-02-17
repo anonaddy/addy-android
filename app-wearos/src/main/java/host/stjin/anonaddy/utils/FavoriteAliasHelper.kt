@@ -23,7 +23,7 @@ class FavoriteAliasHelper(private val context: Context) {
     fun addAliasAsFavorite(alias: String): Boolean {
         val aliasList = getFavoriteAliases()
         if (aliasList != null) {
-            if (aliasList.size < 5) {
+            if (aliasList.size < 3) {
                 aliasList.add(alias)
                 aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.WEAROS_FAVORITE_ALIASES, it) }
 

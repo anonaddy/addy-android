@@ -22,13 +22,13 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.*
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.ui.components.CustomTimeText
+import host.stjin.anonaddy.utils.ColorUtils
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -185,7 +185,7 @@ class AliasActivity : ComponentActivity() {
                                 Chip(
                                     colors = ChipDefaults.chipColors(
                                         backgroundColor = MaterialTheme.colors.surface,
-                                        secondaryContentColor = Color(getMostPopularColor(aliases!![index]))
+                                        secondaryContentColor = Color(ColorUtils.getMostPopularColor(this@AliasActivity, aliases!![index]))
                                     ),
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -195,7 +195,7 @@ class AliasActivity : ComponentActivity() {
                                             painter = painterResource(id = getStarIcon(aliases!![index])),
                                             tint = if (favoriteAliases
                                                     ?.contains(aliases!![index].id) == true
-                                            ) Color(getMostPopularColor(aliases!![index])) else Color.White,
+                                            ) Color(ColorUtils.getMostPopularColor(this@AliasActivity, aliases!![index])) else Color.White,
                                             contentDescription = resources.getString(R.string.favorite),
                                             modifier = Modifier
                                                 .size(24.dp)
@@ -249,21 +249,7 @@ class AliasActivity : ComponentActivity() {
         }
     }
 
-    private fun getMostPopularColor(aliases: Aliases): Int {
-        val color1 = if (aliases.active) R.color.portalOrange else R.color.md_grey_500
-        val color2 = if (aliases.active) R.color.portalBlue else R.color.md_grey_600
-        val color3 = if (aliases.active) R.color.easternBlue else R.color.md_grey_700
-        val color4 = if (aliases.active) R.color.softRed else R.color.md_grey_800
 
-        val colorArray = arrayOf(
-            arrayOf(aliases.emails_forwarded, ContextCompat.getColor(this, color1)),
-            arrayOf(aliases.emails_replied, ContextCompat.getColor(this, color2)),
-            arrayOf(aliases.emails_sent, ContextCompat.getColor(this, color3)),
-            arrayOf(aliases.emails_blocked, ContextCompat.getColor(this, color4))
-        ).maxByOrNull { it[0].toFloat() }
-
-        return colorArray?.get(1) as Int
-    }
 
     private fun getStarIcon(aliases: Aliases): Int {
         return if (favoriteAliases?.contains(aliases.id) == true) {

@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.service
 
 import android.content.Context
+import androidx.wear.tiles.TileService
 import androidx.work.*
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -14,9 +15,13 @@ import java.util.concurrent.TimeUnit
 This BackgroundWorker is used for obtaining data in the background, this data is then being used to "Watch" aliases and updating the data the widget uses.
  */
 
-class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
+class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
     private fun updateTiles() {
+
+        TileService.getUpdater(ctx)
+            .requestUpdate(FavoriteAliasesTileService::class.java)
+
         /*// Update widget 1
         val updateWidget1Intent = Intent(applicationContext, AliasWidget1Provider::class.java)
         updateWidget1Intent.action = ACTION_APPWIDGET_UPDATE

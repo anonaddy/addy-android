@@ -11,10 +11,17 @@
     <string name="setup_wearos_no_paired_device">Connect your paired device and make sure AnonAddy for Android is installed</string>
     <string name="aliases_recyclerview_list_item_date_time">%s - %s</string>
     <string name="aliases_recyclerview_list_item_description">%d forw-%d bloc-%d repl-%d sent</string>
-    <string name="max_favorites_reached">You can only have 5 favorites</string>
+    <string name="max_favorites_reached">You can only have 3 favorites</string>
     <string name="activated">Activated</string>
     <string name="deactivated">Deactivated</string>
     <string name="changing_status">Changing status</string>
     <string name="favorite">Favorite</string>
     <string name="set_watchface">Set watchface</string>
+    <string name="tile_favorite_aliases_label">Favorite aliases</string>
+    <string name="tile_favorite_aliases_title">Aliases</string>
+    <string name="tile_favorite_aliases_subtitle">Favorites</string>
+    <string name="tile_favorite_aliases_all">All aliases</string>
+    <string name="tile_favorite_aliases_create">Create alias</string>
+    <string name="tile_favorite_aliases_favorite">Favorite alias</string>
+    <string name="tile_favorite_aliases_subtitle_no_aliases">No favorite aliases\n\nOpen AnonAddy to mark aliases as favorite</string>
 </resources>
