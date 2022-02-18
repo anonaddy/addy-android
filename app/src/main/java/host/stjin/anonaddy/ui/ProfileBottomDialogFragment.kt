@@ -156,7 +156,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         binding.mainProfileSelectDialogUsernameInitials.text = usernameInitials
 
         binding.mainProfileSelectDialogAnonaddyVersion.text =
-            if (AnonAddy.VERSIONCODE == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
+            if (AnonAddy.VERSIONMAJOR == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
                 R.string.self_hosted_instance_s,
                 AnonAddy.VERSIONSTRING
             )

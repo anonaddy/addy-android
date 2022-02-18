@@ -1,5 +1,11 @@
 # Changelog
 
+## [v3.3.6] - 2022-02-18
+
+### Fixed/Improved
+
+- Fixed a bug where self-hosted instances with version 0.10.0 or higher would be marked as incompatible
+
 ## [v3.3.5] - 2022-02-02
 
 > **_NOTE:_**  3.3.0-3.3.4 Never released because Google refused the new updates multiple times.

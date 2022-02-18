@@ -49,10 +49,8 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         drawBehindNavBar(binding.root, bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySplashProgressbar))
 
 
-
         // This is prone to fail when users have restored the app data from any restore app as the
         // encryption key has changed. So we catch this once in the app and that's at launch
-
         val settingsManager = try {
             SettingsManager(true, this)
         } catch (e: Exception) {
@@ -99,7 +97,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // However, assume that the creator of AnonAddy keeps the main version up-to-date :P
         // So set the versioncode to 9999 so it will always pass the min version check
         if (AnonAddy.API_BASE_URL == this.resources.getString(R.string.default_base_url)) {
-            AnonAddy.VERSIONCODE = 9999
+            AnonAddy.VERSIONMAJOR = 9999
             AnonAddy.VERSIONSTRING = this.resources.getString(R.string.latest)
 
             lifecycleScope.launch {
@@ -108,10 +106,11 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         } else {
             networkHelper.getAnonAddyInstanceVersion { version, error ->
                 if (version != null) {
-                    AnonAddy.VERSIONCODE = "${version.major}${version.minor}${version.patch}".toInt()
+                    AnonAddy.VERSIONMAJOR = version.major
+                    AnonAddy.VERSIONMINOR = version.minor
+                    AnonAddy.VERSIONPATCH = version.patch
                     AnonAddy.VERSIONSTRING = version.version.toString()
-                    //0.8.8 translates to 088 aka 88
-                    if (AnonAddy.VERSIONCODE >= AnonAddy.MINIMUMVERSIONCODE) {
+                    if (instanceHasTheMinimumRequiredVersion()) {
                         lifecycleScope.launch {
                             loadUserResourceIntoMemory()
                         }
@@ -129,6 +128,21 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
                 }
             }
         }
+    }
+
+    private fun instanceHasTheMinimumRequiredVersion(): Boolean {
+        if (AnonAddy.VERSIONMAJOR > AnonAddy.MINIMUMVERSIONCODEMAJOR) {
+            return true
+        } else if (AnonAddy.VERSIONMAJOR >= AnonAddy.MINIMUMVERSIONCODEMAJOR) {
+            if (AnonAddy.VERSIONMINOR > AnonAddy.MINIMUMVERSIONCODEMINOR) {
+                return true
+            } else if (AnonAddy.VERSIONMINOR >= AnonAddy.MINIMUMVERSIONCODEMINOR) {
+                if (AnonAddy.VERSIONPATCH >= AnonAddy.MINIMUMVERSIONCODEPATCH) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
 
