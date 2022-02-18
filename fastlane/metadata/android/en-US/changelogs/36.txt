@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Fixed a bug where self-hosted instances with version 0.10.0 or higher would be marked as incompatible</p>
