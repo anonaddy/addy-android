@@ -10,9 +10,13 @@ object AnonAddy {
     //TODO Update on every release
 
     // 0.8.10 = (0)810
-    var MINIMUMVERSIONCODE = 810
+    var MINIMUMVERSIONCODEMAJOR = 0
+    var MINIMUMVERSIONCODEMINOR = 8
+    var MINIMUMVERSIONCODEPATCH = 10
 
-    var VERSIONCODE = 0
+    var VERSIONMAJOR = 0
+    var VERSIONMINOR = 0
+    var VERSIONPATCH = 0
     var VERSIONSTRING = ""
 
 
