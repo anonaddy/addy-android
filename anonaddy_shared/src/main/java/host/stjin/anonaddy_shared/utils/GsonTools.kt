@@ -57,9 +57,8 @@ object GsonTools {
         }
     }
 
-    fun jsonToWearOSSettingsObject(json: String): WearOSSettings? {
-        //TODO FIX? maybe log to watch itself??
-        //val loggingHelper = LoggingHelper(context)
+    fun jsonToWearOSSettingsObject(context: Context, json: String): WearOSSettings? {
+        val loggingHelper = LoggingHelper(context)
 
         return try {
             Gson().fromJson(
@@ -70,7 +69,7 @@ object GsonTools {
         } catch (e: Exception) {
             val ex = e.message
             println(ex)
-            //loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToWearOSSettingsObject", null)
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToWearOSSettingsObject", null)
             null
         }
     }

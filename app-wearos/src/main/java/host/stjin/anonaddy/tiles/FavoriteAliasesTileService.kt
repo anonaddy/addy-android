@@ -278,7 +278,6 @@ class FavoriteAliasesTileService : TileService() {
         .build()
 
 
-    //TODO not working
     private fun getClickAction(alias: Aliases): ActionBuilders.Action {
         return ActionBuilders.LaunchAction.Builder()
             .setAndroidActivity(
