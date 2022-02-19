@@ -82,10 +82,10 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     userResourceNetworkCallResult = result
                 }
 
-                networkHelper.cache15MostPopularAliasesDataForWidget { result ->
+                networkHelper.cacheMostPopularAliasesDataForWidget({ result ->
                     // Store the result if the data succeeded to update in a boolean
                     aliasNetworkCallResult = result
-                }
+                })
 
                 /**
                 ALIAS_WATCHER FUNCTIONALITY

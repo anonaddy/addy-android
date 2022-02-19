@@ -39,7 +39,6 @@
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
     <string name="all_aliases">All aliases</string>
-    <string name="add_alias">Add alias</string>
     <string name="replied_forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
     <string name="replied_replied_sent_stat" tools:ignore="PluralsCandidate">%1$d replied; %2$d sent</string>
     <string name="settings">Settings</string>
@@ -55,7 +54,6 @@
     <string name="sign_up">Sign up</string>
     <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email</string>
     <string name="description">Description</string>
-    <string name="error_adding_alias">Something went wrong while adding the alias</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
     <string name="not_a_valid_alias_format">Not a valid alias format</string>
     <string name="domain">Domain</string>

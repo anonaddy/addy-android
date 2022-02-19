@@ -1,4 +1,4 @@
-package host.stjin.anonaddy.service
+package host.stjin.anonaddy.tiles
 
 
 import androidx.core.content.ContextCompat
@@ -20,34 +20,16 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.ui.SplashActivity
+import host.stjin.anonaddy.ui.AliasActivity
+import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.utils.ColorUtils
-import host.stjin.anonaddy.utils.FavoriteAliasHelper
-import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
-import host.stjin.anonaddy_shared.utils.GsonTools
+import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.guava.future
-
-// Updating this version triggers a new call to onResourcesRequest(). This is useful for dynamic
-// resources, the contents of which change even though their id stays the same (e.g. a graph).
-// In this sample, our resources are all fixed, so we use a constant value.
-private const val RESOURCES_VERSION = "1"
-
-// Dimensions
-private const val CIRCLE_SIZE = 48f
-private val SPACING_TITLE_SUBTITLE = dp(4f)
-private val SPACING_SUBTITLE_CONTACTS = dp(12f)
-private val SPACING_CONTACTS = dp(8f)
-private val ICON_SIZE = dp(24f)
-
-// Resource identifiers for images
-private const val ID_IC_EMAIL_AT = "ic_email_at_tinted"
-private const val ID_IC_ADD = "ic_add_tinted"
-private const val ID_IC_STAR = "ic_star_tinted"
 
 /**
  * Creates a Favorite Aliases Tile, showing your favorite aliases and a button to view more aliases.
@@ -60,62 +42,46 @@ class FavoriteAliasesTileService : TileService() {
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
+
+    // Updating this version triggers a new call to onResourcesRequest(). This is useful for dynamic
+// resources, the contents of which change even though their id stays the same (e.g. a graph).
+// In this sample, our resources are all fixed, so we use a constant value.
+    private val RESOURCES_VERSION = "1"
+
+    // Dimensions
+    private val CIRCLE_SIZE = 48f
+    private val SPACING_TITLE_SUBTITLE = dp(4f)
+    private val SPACING_SUBTITLE_ALIASES = dp(12f)
+    private val SPACING_BUTTONS = dp(8f)
+    private val ICON_SIZE = dp(24f)
+
+    // Resource identifiers for images
+    private val ID_IC_EMAIL_AT = "ic_email_at_tinted"
+    private val ID_IC_ADD = "ic_add_tinted"
+    private val ID_IC_STAR = "ic_star_tinted"
+
+
     override fun onTileRequest(
         requestParams: TileRequest
     ): ListenableFuture<Tile> = serviceScope.future {
 
-        val aliases = getFavoriteAliases()
+        val aliases = CacheHelper.getBackgroundServiceCacheFavoriteAliasesData(this@FavoriteAliasesTileService)
 
-        if (!aliases.isNullOrEmpty()) {
-            Tile.Builder()
-                .setResourcesVersion(RESOURCES_VERSION)
-                // Creates a timeline to hold one or more tile entries for a specific time periods.
-                .setTimeline(
-                    Timeline.Builder()
-                        .addTimelineEntry(
-                            TimelineEntry.Builder()
-                                .setLayout(
-                                    Layout.Builder().setRoot(layout(aliases, requestParams.deviceParameters!!)).build()
-                                )
-                                .build()
-                        )
-                        .build()
-                ).build()
-        } else {
-            Tile.Builder()
-                .setResourcesVersion(RESOURCES_VERSION)
-                // Creates a timeline to hold one or more tile entries for a specific time periods.
-                .setTimeline(
-                    Timeline.Builder()
-                        .addTimelineEntry(
-                            TimelineEntry.Builder()
-                                .setLayout(
-                                    Layout.Builder().setRoot(noAliasesLayout(requestParams.deviceParameters!!)).build()
-                                )
-                                .build()
-                        )
-                        .build()
-                ).build()
-        }
-    }
+        Tile.Builder()
+            .setResourcesVersion(RESOURCES_VERSION)
+            // Creates a timeline to hold one or more tile entries for a specific time periods.
+            .setTimeline(
+                Timeline.Builder()
+                    .addTimelineEntry(
+                        TimelineEntry.Builder()
+                            .setLayout(
+                                Layout.Builder().setRoot(layout(aliases, requestParams.deviceParameters!!)).build()
+                            )
+                            .build()
+                    )
+                    .build()
+            ).build()
 
-    private fun getFavoriteAliases(): List<Aliases>? {
-        val favoriteAliases = FavoriteAliasHelper(this@FavoriteAliasesTileService).getFavoriteAliases()
-        val aliasesJson = SettingsManager(
-            true,
-            this@FavoriteAliasesTileService
-        ).getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA)
-
-        val aliasList = aliasesJson?.let { GsonTools.jsonToAliasObject(this@FavoriteAliasesTileService, it) }
-        return if (aliasList.isNullOrEmpty()) {
-            null
-        } else {
-            if (favoriteAliases.isNullOrEmpty()) {
-                aliasList.take(4)
-            } else {
-                aliasList.filter { it.id in favoriteAliases }
-            }
-        }
     }
 
 
@@ -164,7 +130,7 @@ class FavoriteAliasesTileService : TileService() {
     }
 
     private fun layout(
-        aliases: List<Aliases>,
+        aliases: List<Aliases>?,
         deviceParameters: DeviceParameters
     ): LayoutElement = Column.Builder()
         .addContent(
@@ -194,23 +160,30 @@ class FavoriteAliasesTileService : TileService() {
                 )
                 .build()
         )
-        .addContent(Spacer.Builder().setHeight(SPACING_SUBTITLE_CONTACTS).build())
+        .addContent(Spacer.Builder().setHeight(SPACING_SUBTITLE_ALIASES).build())
         .addContent(
             Row.Builder()
                 // There is always 1 alias
                 .addContent(
-                    aliasLayout(
-                        alias = aliases[0],
-                        deviceParameters = deviceParameters,
-                        clickable = Clickable.Builder()
-                            .setOnClick(getClickAction(aliases[0]))
-                            .build()
-                    )
+                    when {
+                        !aliases.isNullOrEmpty() -> {
+                            aliasLayout(
+                                alias = aliases[0],
+                                deviceParameters = deviceParameters,
+                                clickable = Clickable.Builder()
+                                    .setOnClick(getClickAction(aliases[0]))
+                                    .build()
+                            )
+                        }
+                        else -> {
+                            addNoFavoriteLayout()
+                        }
+                    }
                 )
-                .addContent(Spacer.Builder().setWidth(SPACING_CONTACTS).build())
+                .addContent(Spacer.Builder().setWidth(SPACING_BUTTONS).build())
                 .addContent(
                     when {
-                        aliases.size > 1 -> {
+                        !aliases.isNullOrEmpty() && aliases.size > 1 -> {
                             aliasLayout(
                                 alias = aliases[1],
                                 deviceParameters = deviceParameters,
@@ -224,10 +197,10 @@ class FavoriteAliasesTileService : TileService() {
                         }
                     }
                 )
-                .addContent(Spacer.Builder().setWidth(SPACING_CONTACTS).build())
+                .addContent(Spacer.Builder().setWidth(SPACING_BUTTONS).build())
                 .addContent(
                     when {
-                        aliases.size > 2 -> {
+                        !aliases.isNullOrEmpty() && aliases.size > 2 -> {
                             aliasLayout(
                                 alias = aliases[2],
                                 deviceParameters = deviceParameters,
@@ -246,7 +219,7 @@ class FavoriteAliasesTileService : TileService() {
         .addContent(
             Row.Builder()
                 .addContent(allAliasesLayout())
-                .addContent(Spacer.Builder().setWidth(SPACING_CONTACTS).build())
+                .addContent(Spacer.Builder().setWidth(SPACING_BUTTONS).build())
                 .addContent(addAliasesLayout())
                 .build()
         )
@@ -287,7 +260,7 @@ class FavoriteAliasesTileService : TileService() {
                             ActionBuilders.LaunchAction.Builder()
                                 .setAndroidActivity(
                                     ActionBuilders.AndroidActivity.Builder()
-                                        .setClassName(SplashActivity::class.java.toString())
+                                        .setClassName(AliasActivity::class.java.name)
                                         .setPackageName(BuildConfig.APPLICATION_ID)
                                         .build()
                                 ).build()
@@ -306,48 +279,16 @@ class FavoriteAliasesTileService : TileService() {
 
 
     //TODO not working
-    private fun getClickAction(aliases: Aliases): ActionBuilders.Action {
+    private fun getClickAction(alias: Aliases): ActionBuilders.Action {
         return ActionBuilders.LaunchAction.Builder()
             .setAndroidActivity(
                 ActionBuilders.AndroidActivity.Builder()
                     .setClassName(ManageAliasActivity::class.java.name)
-                    //.addKeyToExtraMapping("alias") { ActionProto.AndroidExtra.getDefaultInstance(). }
+                    .addKeyToExtraMapping("alias", ActionBuilders.stringExtra(alias.id))
                     .setPackageName(this@FavoriteAliasesTileService.packageName)
                     .build()
             ).build()
     }
-
-    private fun noAliasesLayout(
-        deviceParameters: DeviceParameters
-    ): LayoutElement = Column.Builder()
-        .addContent(
-            Text.Builder()
-                .setText(resources.getString(R.string.tile_favorite_aliases_title))
-                .setFontStyle(
-                    FontStyles
-                        .title3(deviceParameters)
-                        .setColor(
-                            argb(ContextCompat.getColor(baseContext, R.color.colorSurface))
-                        )
-                        .build()
-                )
-                .build()
-        )
-        .addContent(Spacer.Builder().setHeight(SPACING_TITLE_SUBTITLE).build())
-        .addContent(
-            Text.Builder()
-                .setText(resources.getString(R.string.tile_favorite_aliases_subtitle_no_aliases))
-                .setFontStyle(
-                    FontStyles
-                        .caption1(deviceParameters)
-                        .setColor(
-                            argb(ContextCompat.getColor(baseContext, R.color.md_theme_outline))
-                        )
-                        .build()
-                )
-                .build()
-        )
-        .build()
 
     private fun aliasLayout(
         alias: Aliases,
@@ -423,7 +364,7 @@ class FavoriteAliasesTileService : TileService() {
                             ActionBuilders.LaunchAction.Builder()
                                 .setAndroidActivity(
                                     ActionBuilders.AndroidActivity.Builder()
-                                        .setClassName(SplashActivity::class.java.toString())
+                                        .setClassName(AliasActivity::class.java.name)
                                         .setPackageName(BuildConfig.APPLICATION_ID)
                                         .build()
                                 ).build()
@@ -466,7 +407,7 @@ class FavoriteAliasesTileService : TileService() {
                             ActionBuilders.LaunchAction.Builder()
                                 .setAndroidActivity(
                                     ActionBuilders.AndroidActivity.Builder()
-                                        .setClassName(SplashActivity::class.java.toString())
+                                        .setClassName(CreateAliasActivity::class.java.name)
                                         .setPackageName(BuildConfig.APPLICATION_ID)
                                         .build()
                                 ).build()

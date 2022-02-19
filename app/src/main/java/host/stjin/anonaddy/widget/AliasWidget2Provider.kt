@@ -25,7 +25,7 @@ import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_A
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_ADD_ALIAS_SHEET
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_TARGET
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.utils.GsonTools
+import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlin.random.Random
 
 
@@ -133,10 +133,7 @@ class AliasWidget2Provider : AppWidgetProvider() {
 
 private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle? = null) {
 
-    val settingsManager = SettingsManager(true, context)
-    val userResourceJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USER_RESOURCE)
-    val userResource = userResourceJson?.let { GsonTools.jsonToUserResourceObject(context, it) }
-
+    val userResource = CacheHelper.getBackgroundServiceCacheUserResource(context)
 
     // Count the stats from the cache
 

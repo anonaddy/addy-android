@@ -2611,14 +2611,17 @@ class NetworkHelper(private val context: Context) {
 
 
     /**
-     * WIDGET
+     * WIDGET AND WEAROS
      */
     // The widgets require the following data:
     // Widget 1: Aliases
-    // Widget 2: Domain options
+    // Widget 2: Stats + Aliases
 
-    suspend fun cache15MostPopularAliasesDataForWidget(
-        callback: (Boolean) -> Unit
+    // WearOS uses this data to show in the AliasActivity
+
+    suspend fun cacheMostPopularAliasesDataForWidget(
+        callback: (Boolean) -> Unit,
+        amountOfAliasesToCache: Int? = 15
     ) {
         getAliases(
             { list, _ ->
@@ -2631,7 +2634,7 @@ class NetworkHelper(private val context: Context) {
                     val data = Gson().toJson(list.data)
 
                     // Store a copy of the just received data locally
-                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA, data)
+                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_MOST_ACTIVE_ALIASES_DATA, data)
 
                     // Stored data, let the BackgroundWorker know the task succeeded
                     callback(true)
@@ -2646,7 +2649,7 @@ class NetworkHelper(private val context: Context) {
                 sortDesc = true,
                 filter = null
             ),
-            size = 15,
+            size = amountOfAliasesToCache,
         )
     }
 

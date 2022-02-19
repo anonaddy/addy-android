@@ -17,5 +17,7 @@
     <string name="aliases">Aliases</string>
     <string name="could_not_refresh_data">Could not refresh data</string>
     <string name="edit_alias">Edit alias</string>
+    <string name="add_alias">Add alias</string>
+    <string name="error_adding_alias">Something went wrong while adding the alias</string>
 
 </resources>

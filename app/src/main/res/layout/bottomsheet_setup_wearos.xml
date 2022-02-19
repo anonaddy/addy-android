@@ -59,7 +59,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:src="@drawable/ic_device_watch_illustration" />
+                android:src="@drawable/ic_device_watch_illustration"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/bs_setup_wearos_error_message"

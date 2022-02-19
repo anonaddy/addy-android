@@ -1,9 +1,14 @@
 package host.stjin.anonaddy.ui.alias
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -26,6 +31,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -33,41 +39,146 @@ import androidx.wear.compose.material.*
 import app.futured.donut.compose.DonutProgress
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
+import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
+import host.stjin.anonaddy_shared.ui.theme.getAnonAddyChipColors
+import host.stjin.anonaddy_shared.ui.theme.getAnonAddyToggleChipColors
+import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlinx.coroutines.launch
 
 class ManageAliasActivity : ComponentActivity() {
 
     private var alias: Aliases? = null
     private lateinit var networkHelper: NetworkHelper
+    private lateinit var favoriteAliasHelper: FavoriteAliasHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         networkHelper = NetworkHelper(this)
+        favoriteAliasHelper = FavoriteAliasHelper(this)
 
+        val aliasId: String? = intent.getStringExtra("alias")
+        val aliasList = CacheHelper.getBackgroundServiceCacheMostActiveAliasesData(this)
+        val favoriteAliasList = CacheHelper.getBackgroundServiceCacheFavoriteAliasesData(this)
+        // If there are favorite aliases, add them to local list
+        favoriteAliasList?.let { aliasList?.addAll(it) }
 
-        val alias: Aliases? = intent.getParcelableExtra("alias")
-        if (alias == null) {
+        if (aliasId == null || aliasList == null) {
             finish()
             return
         }
-        this.alias = alias
 
-        setContent {
-            ComposeContent()
+        // Show this alias on paired device(s)
+        if (intent.getBooleanExtra("showOnPairedDevice", false)) {
+            showAliasOnPhone(aliasId)
+        } else {
+            // Check if the alias exists in the local storage
+            this.alias = aliasList.firstOrNull { it.id == aliasId }
+            if (this.alias != null) {
+                setContent {
+                    ComposeContent()
+                }
+
+                // Favorite this alias by default
+                if (intent.getBooleanExtra("favorite", false)) {
+                    favoriteAlias(true)
+                }
+            } else {
+                finish()
+            }
+        }
+
+
+    }
+
+
+    private var hasPairedDevices by mutableStateOf(false)
+
+    @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class)
+    @Composable
+    private fun ShowOnPhoneComposeContent() {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Column {
+                val image = AnimatedImageVector.animatedVectorResource(id = R.drawable.ic_watch_setup_notification_anim)
+                var atEnd by remember { mutableStateOf(false) }
+                Icon(
+                    painter = rememberAnimatedVectorPainter(image, atEnd),
+                    contentDescription = null, // decorative element
+                    modifier = Modifier
+                        .size(96.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                if (hasPairedDevices) {
+                    Text(this@ManageAliasActivity.resources.getString(R.string.wearos_check_paired_device), textAlign = TextAlign.Center)
+                } else {
+                    Text(this@ManageAliasActivity.resources.getString(R.string.setup_wearos_no_paired_device), textAlign = TextAlign.Center)
+                }
+
+
+                DisposableEffect(Unit) {
+                    atEnd = !atEnd
+                    onDispose { }
+                }
+            }
         }
     }
 
-    var isAliasActive by mutableStateOf(false)
-    var isChangingActivationStatus by mutableStateOf(false)
-    var isAliasFavorite by mutableStateOf(false)
+    private fun noNodesFound(aliasId: String) {
+        hasPairedDevices = false
+        // No nodes found, let's check again in 5 seconds
+        Handler(Looper.getMainLooper()).postDelayed({
+            showAliasOnPhone(aliasId)
+        }, 5000)
+    }
 
+
+    private fun showAliasOnPhone(aliasId: String) {
+        setContent {
+            ShowOnPhoneComposeContent()
+        }
+
+        val nodeClient = Wearable.getNodeClient(this)
+        nodeClient.connectedNodes.addOnCompleteListener { nodes ->
+            if (nodes.result.any()) {
+                nodeClient.localNode.addOnCompleteListener {
+                    hasPairedDevices = true
+                    // Send a message to all connected nodes basically broadcasting itself.
+                    // Nodes with the app installed will receive this message and open the setup sheet
+                    for (node in nodes.result) {
+                        Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", aliasId.toByteArray())
+                    }
+
+                    // Close the app after the command has been send
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        finish()
+                    }, 5000)
+                }
+            } else {
+                noNodesFound(aliasId)
+            }
+        }.addOnFailureListener {
+            noNodesFound(aliasId)
+        }.addOnCanceledListener {
+            noNodesFound(aliasId)
+        }
+
+    }
+
+    private var isAliasActive by mutableStateOf(false)
+    private var isChangingActivationStatus by mutableStateOf(false)
+    private var isAliasFavorite by mutableStateOf(false)
 
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
     @Composable
@@ -75,12 +186,10 @@ class ManageAliasActivity : ComponentActivity() {
         if (alias != null) {
             isAliasActive = alias!!.active
 
-
             // Creates a CoroutineScope bound to the lifecycle
             val scope = rememberCoroutineScope()
             val haptic = LocalHapticFeedback.current
 
-            val favoriteAliasHelper = FavoriteAliasHelper(this)
             val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
             isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
 
@@ -128,7 +237,7 @@ class ManageAliasActivity : ComponentActivity() {
                             .focusRequester(focusRequester)
                             .focusable(),
                         contentPadding = PaddingValues(
-                            top = 28.dp,
+                            top = 40.dp,
                             start = 10.dp,
                             end = 10.dp,
                             bottom = 40.dp
@@ -177,6 +286,7 @@ class ManageAliasActivity : ComponentActivity() {
                                     )
                                 },
                                 checked = isAliasActive,
+                                colors = getAnonAddyToggleChipColors(),
                                 toggleIcon = {
                                     ToggleChipDefaults.SwitchIcon(checked = isAliasActive)
                                 },
@@ -219,22 +329,9 @@ class ManageAliasActivity : ComponentActivity() {
                                 },
                                 checked = isAliasFavorite,
                                 onCheckedChange = {
-                                    if (it) {
-                                        if (!favoriteAliasHelper.addAliasAsFavorite(this@ManageAliasActivity.alias!!.id)) {
-                                            Toast.makeText(
-                                                this@ManageAliasActivity,
-                                                resources.getString(R.string.max_favorites_reached),
-                                                Toast.LENGTH_SHORT
-                                            )
-                                                .show()
-                                        } else {
-                                            isAliasFavorite = true
-                                        }
-                                    } else {
-                                        favoriteAliasHelper.removeAliasAsFavorite(this@ManageAliasActivity.alias!!.id)
-                                        isAliasFavorite = false
-                                    }
+                                    favoriteAlias(it)
                                 },
+                                colors = getAnonAddyToggleChipColors(),
                                 toggleIcon = {
                                 },
                                 appIcon = {
@@ -252,14 +349,34 @@ class ManageAliasActivity : ComponentActivity() {
                             )
 
                             Chip(
-                                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+                                modifier = Modifier
+                                    .padding(top = 2.dp, bottom = 2.dp),
                                 onClick = { /* Do something */ },
+                                colors = getAnonAddyChipColors(),
                                 enabled = true,
                                 label = { Text(text = resources.getString(R.string.set_watchface)) },
                                 icon = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.ic_clock),
                                         contentDescription = resources.getString(R.string.set_watchface),
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                            .wrapContentSize(align = Alignment.Center),
+                                    )
+                                }
+                            )
+
+                            Chip(
+                                modifier = Modifier
+                                    .padding(top = 2.dp, bottom = 2.dp),
+                                onClick = { showAliasOnPhone(alias!!.id) },
+                                colors = getAnonAddyChipColors(),
+                                enabled = true,
+                                label = { Text(text = resources.getString(R.string.show_on_paired_device)) },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_devices),
+                                        contentDescription = resources.getString(R.string.show_on_paired_device),
                                         modifier = Modifier
                                             .size(24.dp)
                                             .wrapContentSize(align = Alignment.Center),
@@ -278,6 +395,24 @@ class ManageAliasActivity : ComponentActivity() {
         }
     }
 
+    private fun favoriteAlias(boolean: Boolean) {
+        if (boolean) {
+            if (!favoriteAliasHelper.addAliasAsFavorite(this@ManageAliasActivity.alias!!.id)) {
+                Toast.makeText(
+                    this@ManageAliasActivity,
+                    resources.getString(R.string.max_favorites_reached),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            } else {
+                isAliasFavorite = true
+            }
+        } else {
+            favoriteAliasHelper.removeAliasAsFavorite(this@ManageAliasActivity.alias!!.id)
+            isAliasFavorite = false
+        }
+    }
+
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
@@ -287,6 +422,9 @@ class ManageAliasActivity : ComponentActivity() {
             } else {
                 Toast.makeText(this, this.resources.getString(R.string.error_edit_active) + "\n" + result, Toast.LENGTH_SHORT).show()
             }
+
+            // Since an alias was deactivated , call scheduleBackgroundWorker. This method will schedule the service if its required
+            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
         }, this.alias!!.id)
     }
 
@@ -299,6 +437,9 @@ class ManageAliasActivity : ComponentActivity() {
             } else {
                 Toast.makeText(this, this.resources.getString(R.string.error_edit_active) + "\n" + result, Toast.LENGTH_SHORT).show()
             }
+
+            // Since an alias was activated , call scheduleBackgroundWorker. This method will schedule the service if its required
+            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
         }, this.alias!!.id)
     }
 
@@ -318,12 +459,14 @@ class ManageAliasActivity : ComponentActivity() {
     fun GetDonut() {
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
 
-        val section1 = DonutSection(
-            color = colorResource(id = R.color.portalOrange),
-            amount = alias!!.emails_forwarded.toFloat()
-        )
-        // Always show section 1
-        listOfDonutSection.add(section1)
+        if (alias!!.emails_forwarded > 0) {
+            val section1 = DonutSection(
+                color = colorResource(id = R.color.portalOrange),
+                amount = alias!!.emails_forwarded.toFloat()
+            )
+            // Always show section 1
+            listOfDonutSection.add(section1)
+        }
 
         if (alias!!.emails_replied > 0) {
             val section2 = DonutSection(
@@ -349,21 +492,26 @@ class ManageAliasActivity : ComponentActivity() {
             listOfDonutSection.add(section4)
         }
 
-        DonutProgress(
-            model = DonutModel(
-                cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat(),
-                masterProgress = 1f,
-                gapWidthDegrees = 0f,
-                gapAngleDegrees = 270f,
-                strokeWidth = 16f,
-                backgroundLineColor = Color.Transparent,
-                // Sort the list by amount so that the biggest number will fill the whole ring
-                //TODO For some reason I need to sort by desc on this section while the main app's sections work properly
-                sections = listOfDonutSection.sortedByDescending { it.amount },
-            ), modifier = Modifier
-                .height(56.dp)
-                .width(56.dp)
-        )
+        if (listOfDonutSection.sumOf { it.amount.toInt() } > 0) {
+            DonutProgress(
+                model = DonutModel(
+                    cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat(),
+                    masterProgress = 1f,
+                    gapWidthDegrees = 0f,
+                    gapAngleDegrees = 270f,
+                    strokeWidth = 16f,
+                    backgroundLineColor = Color.Transparent,
+                    // Sort the list by amount so that the biggest number will fill the whole ring
+                    //TODO For some reason I need to sort by desc on this section while the main app's sections work properly
+                    sections = listOfDonutSection.sortedByDescending { it.amount },
+                ), modifier = Modifier
+                    .height(56.dp)
+                    .width(56.dp)
+            )
+        } else {
+            // There is not data to fill the donut, so don't compose anything
+        }
+
     }
 
 }

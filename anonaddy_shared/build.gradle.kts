@@ -46,7 +46,7 @@ dependencies {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.9.0")
 
     // Preferences for storing settings (and crypto settings)
     implementation("androidx.preference:preference-ktx:1.2.0")
@@ -58,14 +58,16 @@ dependencies {
     implementation("androidx.compose.ui:ui-text:1.1.0")
     implementation("androidx.compose.ui:ui-graphics:1.1.0")
     implementation("androidx.compose.material3:material3:1.0.0-alpha05")
+    // Compose for Wear OS Dependencies
+    implementation("androidx.wear.compose:compose-material:1.0.0-alpha16")
 }
 
 // Fuel, network requests
 dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.9.0")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 }
 
 

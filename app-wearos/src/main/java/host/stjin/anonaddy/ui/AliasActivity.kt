@@ -31,65 +31,82 @@ import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.ColorUtils
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
-import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
+import host.stjin.anonaddy_shared.utils.CacheHelper
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
-import host.stjin.anonaddy_shared.utils.GsonTools
 import kotlinx.coroutines.launch
 
 class AliasActivity : ComponentActivity() {
 
     private lateinit var favoriteAliasHelper: FavoriteAliasHelper
-    private lateinit var settingsManager: SettingsManager
 
     @OptIn(ExperimentalWearMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         favoriteAliasHelper = FavoriteAliasHelper(this)
-        settingsManager = SettingsManager(encrypt = true, this)
 
         setComposeContent()
     }
 
-    var aliases by mutableStateOf<ArrayList<Aliases>?>(null)
-    var favoriteAliases by mutableStateOf<MutableSet<String>?>(null)
-    var isLoading by mutableStateOf(true)
+    private var aliases: ArrayList<Aliases>? = null
+    private var favoriteAliases: MutableSet<String>? = null
+    private var isLoading by mutableStateOf(true)
     private fun loadAliases() {
-        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA)
-        aliases = aliasesJson?.let { GsonTools.jsonToAliasObject(this, it) }
-        favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
+        val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
+        // Get all aliases, then remove all the favorite aliases
+        val aliases = CacheHelper.getBackgroundServiceCacheMostActiveAliasesData(this)
+
+        if (!favoriteAliases.isNullOrEmpty()) {
+            aliases?.removeAll { favoriteAliases.contains(it.id) }
+            // Insert the favorite aliases in the first few positions
+            CacheHelper.getBackgroundServiceCacheFavoriteAliasesData(this)?.let { aliases?.addAll(0, it) }
+        }
+
+        this.favoriteAliases = favoriteAliases
+        this.aliases = aliases
+
+        // Triggers recomposition
         isLoading = false
     }
 
 
     @OptIn(ExperimentalWearMaterialApi::class)
     private fun setComposeContent() {
-        // Cache contains 15 most popular aliases
-        if (aliases != null) {
-            setContent {
-                AliasList()
-            }
-        } else {
-            lifecycleScope.launch {
-                NetworkHelper(this@AliasActivity).cache15MostPopularAliasesDataForWidget { result ->
-                    if (result) {
-                        setContent {
-                            AliasList()
-                            loadAliases()
+        val userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
+        if (userResource != null) {
+            // Cache contains 15 most popular aliases
+            if (aliases != null) {
+                setContent {
+                    AliasList()
+                }
+            } else {
+                lifecycleScope.launch {
+                    NetworkHelper(this@AliasActivity).cacheMostPopularAliasesDataForWidget({ result ->
+                        if (result) {
+                            setContent {
+                                AliasList()
+                                loadAliases()
+                            }
+                        } else {
+                            setContent {
+                                ErrorScreen(
+                                    this@AliasActivity,
+                                    this@AliasActivity.resources.getString(R.string.could_not_refresh_data),
+                                    this@AliasActivity.resources.getString(R.string.aliases)
+                                )
+                            }
                         }
-                    } else {
-                        setContent {
-                            ErrorScreen(
-                                this@AliasActivity,
-                                this@AliasActivity.resources.getString(R.string.could_not_refresh_data),
-                                this@AliasActivity.resources.getString(R.string.aliases)
-                            )
-                        }
-                    }
+                    })
                 }
             }
+        } else {
+            // App not setup, open splash
+            val intent = Intent(this, SplashActivity::class.java)
+            startActivity(intent)
+            finish()
         }
+
     }
 
 
@@ -108,6 +125,7 @@ class AliasActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        isLoading = true
         loadAliases()
     }
 
@@ -178,9 +196,6 @@ class AliasActivity : ComponentActivity() {
                         state = scalingLazyListState,
                     ) {
                         items(count = aliases!!.size,
-                            key = {
-                                aliases!![it].id
-                            },
                             itemContent = { index ->
                                 Chip(
                                     colors = ChipDefaults.chipColors(
@@ -230,7 +245,7 @@ class AliasActivity : ComponentActivity() {
                                     },
                                     onClick = {
                                         val intent = Intent(this@AliasActivity, ManageAliasActivity::class.java)
-                                        intent.putExtra("alias", aliases!![index])
+                                        intent.putExtra("alias", aliases!![index].id)
                                         startActivity(intent)
                                     },
                                 )
@@ -248,7 +263,6 @@ class AliasActivity : ComponentActivity() {
 
         }
     }
-
 
 
     private fun getStarIcon(aliases: Aliases): Int {

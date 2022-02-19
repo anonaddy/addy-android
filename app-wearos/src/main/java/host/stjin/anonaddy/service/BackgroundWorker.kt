@@ -3,9 +3,13 @@ package host.stjin.anonaddy.service
 import android.content.Context
 import androidx.wear.tiles.TileService
 import androidx.work.*
+import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.tiles.FavoriteAliasesTileService
+import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -66,9 +70,33 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
                 userResourceNetworkCallResult = result
             }
 
-            networkHelper.cache15MostPopularAliasesDataForWidget { result ->
+            networkHelper.cacheMostPopularAliasesDataForWidget({ result ->
                 // Store the result if the data succeeded to update in a boolean
                 aliasNetworkCallResult = result
+            })
+
+
+            /*
+            STORE FAVORITE ALIASES SEPARATELY
+             */
+            val favoriteAliases = FavoriteAliasHelper(ctx).getFavoriteAliases()
+            val settingsManager = SettingsManager(encrypt = true, context = ctx)
+            if (favoriteAliases != null) {
+                val favoriteAliasesObjects = ArrayList<Aliases>()
+                for (favAlias in favoriteAliases) {
+                    networkHelper.getSpecificAlias({ alias, _ ->
+                        alias?.let { favoriteAliasesObjects.add(it) }
+                    }, favAlias)
+                }
+
+                // Turn the list into a json object
+                val data = Gson().toJson(favoriteAliasesObjects)
+
+                // Store a copy of the just received data locally
+                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA, data)
+            } else {
+                // Store a copy of the just received data locally
+                settingsManager.removeSetting(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA)
             }
 
 

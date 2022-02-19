@@ -11,6 +11,7 @@ class FavoriteAliasHelper(private val context: Context) {
         return settingsManager.getStringSet(SettingsManager.PREFS.WEAROS_FAVORITE_ALIASES)
     }
 
+
     fun removeAliasAsFavorite(alias: String) {
         val aliasList = getFavoriteAliases()
         aliasList?.remove(alias)
@@ -27,7 +28,7 @@ class FavoriteAliasHelper(private val context: Context) {
                 aliasList.add(alias)
                 aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.WEAROS_FAVORITE_ALIASES, it) }
 
-                // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
+                // Since an alias was added to the favorites, call scheduleBackgroundWorker. This method will schedule the service if its required
                 BackgroundWorkerHelper(context).scheduleBackgroundWorker()
 
                 return true

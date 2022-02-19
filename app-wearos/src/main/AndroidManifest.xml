@@ -26,20 +26,27 @@
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
+
         <activity
             android:name=".ui.alias.ManageAliasActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/edit_alias"
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".ui.alias.CreateAliasActivity"
+            android:exported="true"
+            android:label="@string/add_alias"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".ui.AliasActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
 
         <service
-            android:name=".service.FavoriteAliasesTileService"
+            android:name=".tiles.FavoriteAliasesTileService"
             android:description="@string/app_name"
             android:exported="true"
             android:icon="@drawable/ic_email_at"
@@ -49,11 +56,9 @@
                 <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
             </intent-filter>
 
-
-            <!-- TODO Replace with a screenshot of the tile preview -->
             <meta-data
                 android:name="androidx.wear.tiles.PREVIEW"
-                android:resource="@drawable/ic_email_at" />
+                android:resource="@drawable/favorite_aliases_tile" />
         </service>
 
         <service

@@ -159,7 +159,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     var domains: ArrayList<Domains>? = null
     var usernames: ArrayList<Usernames>? = null
     var rules: ArrayList<Rules>? = null
-    var failedDeliveries: ArrayList<FailedDeliveries>? = null
+    private var failedDeliveries: ArrayList<FailedDeliveries>? = null
     private var sourcesToSearch = 0
     private var sourcesSearched = 0
 

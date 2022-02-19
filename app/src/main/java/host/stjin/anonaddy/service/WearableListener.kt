@@ -1,9 +1,11 @@
 package host.stjin.anonaddy.service
 
+import android.content.Intent
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.notifications.NotificationHelper
+import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -35,6 +37,11 @@ class WearableListener : WearableListenerService() {
             }
 
 
+        } else if (p0.path.equals("/showAlias")) {
+            val intent = Intent(this, ManageAliasActivity::class.java)
+            intent.putExtra("alias_id", String(p0.data))
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
         }
     }
 }

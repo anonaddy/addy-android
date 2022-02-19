@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
@@ -26,7 +27,6 @@ import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
-import host.stjin.anonaddy_shared.ui.theme.md_theme_light_primary
 
 class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
 
@@ -38,14 +38,14 @@ class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
         }
     }
 
-    var hasPairedDevices by mutableStateOf(false)
+    private var hasPairedDevices by mutableStateOf(false)
 
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class)
     @Composable
     private fun SetComposeView() {
         AppTheme {
             Scaffold(
-                modifier = Modifier.background(color = md_theme_light_primary),
+                modifier = Modifier.background(color = colorResource(id = R.color.md_theme_primary)),
                 timeText = {
                     CustomTimeText(
                         visible = true,
