@@ -199,7 +199,7 @@ class ManageAliasActivity : ComponentActivity() {
                     modifier = Modifier,
                     timeText = {
                         CustomTimeText(
-                            visible = true,
+                            visible = lazyListState.firstVisibleItemScrollOffset == 0,
                             showLeadingText = true,
                             leadingText = resources.getString(R.string.edit_alias)
                         )

@@ -46,6 +46,7 @@ class AliasActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         favoriteAliasHelper = FavoriteAliasHelper(this)
 
+        loadAliases()
         setComposeContent()
     }
 
@@ -144,7 +145,7 @@ class AliasActivity : ComponentActivity() {
                 modifier = Modifier,
                 timeText = {
                     CustomTimeText(
-                        visible = true,
+                        visible = scalingLazyListState.centerItemIndex == 0,
                         showLeadingText = true,
                         leadingText = resources.getString(R.string.aliases)
                     )

@@ -20,5 +20,7 @@
     <string name="tile_favorite_aliases_favorite">Favorite alias</string>
     <string name="wearos_check_paired_device">Check your paired device</string>
     <string name="show_on_paired_device">Show on device</string>
+    <string name="i_understand">I understand</string>
+    <string name="wearos_create_alias_guide">When creating a new alias on your wearable, the default settings of your AnonAddy account are used. In the case of a custom default alias format, UUID is used. To change these settings, open the app on your paired device and choose "Manage AnonAddy account". It can take up to 30 minutes for default settings to be applied to this device</string>
 
 </resources>

@@ -5,15 +5,22 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -31,56 +38,72 @@ import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
+import host.stjin.anonaddy_shared.ui.theme.getAnonAddyChipColors
 import host.stjin.anonaddy_shared.utils.CacheHelper
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class CreateAliasActivity : ComponentActivity() {
 
     private lateinit var favoriteAliasHelper: FavoriteAliasHelper
+    private lateinit var settingsManager: SettingsManager
     private lateinit var networkHelper: NetworkHelper
+    private var userResource: UserResource? = null
     private val SPACING_ALIAS_BUTTONS = Dp(36f)
+    private val SPACING_GUIDE_BUTTONS = Dp(18f)
     private val SPACING_BUTTONS = Dp(8f)
+
+    private var skipAliasCreateGuide by mutableStateOf(true)
 
     @OptIn(ExperimentalWearMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         favoriteAliasHelper = FavoriteAliasHelper(this)
         networkHelper = NetworkHelper(this)
+        settingsManager = SettingsManager(false, this)
+        skipAliasCreateGuide = settingsManager.getSettingsBool(SettingsManager.PREFS.WEAROS_SKIP_ALIAS_CREATE_GUIDE)
 
         setComposeContent()
 
         if (alias == null) {
-            val userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
-
-            lifecycleScope.launch {
-                if (userResource != null) {
-                    NetworkHelper(this@CreateAliasActivity).addAlias({ alias, error ->
-                        if (alias != null) {
-                            this@CreateAliasActivity.alias = alias
-
-                            // Since an alias was added, call scheduleBackgroundWorker. This method will schedule the service if its required
-                            BackgroundWorkerHelper(this@CreateAliasActivity).scheduleBackgroundWorker()
-                        } else {
-                            setContent {
-                                ErrorScreen(
-                                    this@CreateAliasActivity,
-                                    this@CreateAliasActivity.resources.getString(R.string.error_adding_alias) + "\n" + error,
-                                    this@CreateAliasActivity.resources.getString(R.string.add_alias)
-                                )
-                            }
-                        }
-                        // TODO description? And this is not gonna work with custom alias format
-                    }, domain = userResource.default_alias_domain, "", userResource.default_alias_format, local_part = "", null)
-                } else {
-                    // App not setup, open splash
-                    val intent = Intent(this@CreateAliasActivity, SplashActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
+            userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
+            if (userResource != null) {
+                if (skipAliasCreateGuide) {
+                    createAlias(userResource!!)
+                } // If this value is false the guide will be shown in composeContent
+            } else {
+                // App not setup, open splash
+                val intent = Intent(this@CreateAliasActivity, SplashActivity::class.java)
+                startActivity(intent)
+                finish()
             }
+        }
+    }
 
+    private fun createAlias(userResource: UserResource) {
+        lifecycleScope.launch {
+            NetworkHelper(this@CreateAliasActivity).addAlias({ alias, error ->
+                if (alias != null) {
+                    this@CreateAliasActivity.alias = alias
+
+                    // Since an alias was added, call scheduleBackgroundWorker. This method will schedule the service if its required
+                    BackgroundWorkerHelper(this@CreateAliasActivity).scheduleBackgroundWorker()
+                } else {
+
+                    setContent {
+                        ErrorScreen(
+                            this@CreateAliasActivity,
+                            this@CreateAliasActivity.resources.getString(R.string.error_adding_alias) + "\n" + error,
+                            this@CreateAliasActivity.resources.getString(R.string.add_alias)
+                        )
+                    }
+                }
+                // TODO description? And this is not gonna work with custom alias format
+            }, domain = userResource.default_alias_domain, "", userResource.default_alias_format, local_part = "", null)
         }
     }
 
@@ -90,7 +113,7 @@ class CreateAliasActivity : ComponentActivity() {
     @OptIn(ExperimentalWearMaterialApi::class)
     private fun setComposeContent() {
         setContent {
-            AliasList()
+            ComposeContent()
         }
     }
 
@@ -99,7 +122,7 @@ class CreateAliasActivity : ComponentActivity() {
     @Composable
     private fun Loading() {
         Box(
-            contentAlignment = Alignment.Center,
+            contentAlignment = Center,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
@@ -139,7 +162,7 @@ class CreateAliasActivity : ComponentActivity() {
                     contentDescription = getString(R.string.tile_favorite_aliases_favorite),
                     modifier = Modifier
                         .size(24.dp)
-                        .wrapContentSize(align = Alignment.Center),
+                        .wrapContentSize(align = Center),
                 )
             }
         }
@@ -168,35 +191,48 @@ class CreateAliasActivity : ComponentActivity() {
                     contentDescription = getString(R.string.show_on_paired_device),
                     modifier = Modifier
                         .size(24.dp)
-                        .wrapContentSize(align = Alignment.Center),
+                        .wrapContentSize(align = Center),
                 )
             }
         }
     }
 
+
     @OptIn(ExperimentalComposeUiApi::class)
     @ExperimentalWearMaterialApi
     @Composable
-    private fun AliasList() {
+    private fun ComposeContent() {
         val haptic = LocalHapticFeedback.current
+        val scope = rememberCoroutineScope()
+
         AppTheme {
-            rememberScalingLazyListState()
+            val lazyListState: LazyListState = rememberLazyListState()
             Scaffold(
                 modifier = Modifier,
                 timeText = {
                     CustomTimeText(
-                        visible = true,
+                        visible = lazyListState.firstVisibleItemScrollOffset == 0,
                         showLeadingText = true,
                         leadingText = resources.getString(R.string.add_alias)
                     )
+                },
+                vignette = {
+                    Vignette(vignettePosition = VignettePosition.TopAndBottom)
+                },
+                positionIndicator = {
+                    PositionIndicator(
+                        lazyListState = lazyListState
+                    )
                 }
             ) {
-                if (alias == null) {
+                if (!skipAliasCreateGuide) {
+                    CreateAliasGuide(lazyListState, scope)
+                } else if (alias == null) {
                     Loading()
                 } else {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     Box(
-                        contentAlignment = Alignment.Center,
+                        contentAlignment = Center,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
@@ -204,7 +240,7 @@ class CreateAliasActivity : ComponentActivity() {
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = CenterHorizontally
                         ) {
                             Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS))
                             Text(alias!!.email, fontSize = 16.sp, textAlign = TextAlign.Center)
@@ -222,6 +258,75 @@ class CreateAliasActivity : ComponentActivity() {
             }
 
 
+        }
+    }
+
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    @Composable
+    private fun CreateAliasGuide(lazyListState: LazyListState, scope: CoroutineScope) {
+        val haptic = LocalHapticFeedback.current
+        val focusRequester = remember { FocusRequester() }
+        var currentScrollPosition = 0
+        Box(
+            contentAlignment = Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp)
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onPreRotaryScrollEvent {
+                        if (currentScrollPosition != lazyListState.firstVisibleItemScrollOffset) {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        }
+                        currentScrollPosition = lazyListState.firstVisibleItemScrollOffset
+                        // return false to ignore this event and continue propagation to the child.
+                        false
+                    }
+                    .onRotaryScrollEvent {
+                        scope.launch {
+                            lazyListState.animateScrollBy(it.verticalScrollPixels)
+                        }
+                        true
+                    }
+                    .focusRequester(focusRequester)
+                    .focusable(),
+                contentPadding = PaddingValues(
+                    top = 40.dp,
+                    start = 10.dp,
+                    end = 10.dp,
+                    bottom = 40.dp
+                ),
+                horizontalAlignment = CenterHorizontally,
+                state = lazyListState,
+            ) {
+                item {
+                    Text(text = resources.getString(R.string.wearos_create_alias_guide), textAlign = TextAlign.Center)
+                    Spacer(modifier = Modifier.height(SPACING_GUIDE_BUTTONS))
+                    Chip(
+                        modifier = Modifier
+                            .padding(top = 2.dp, bottom = 2.dp),
+                        onClick = {
+                            settingsManager.putSettingsBool(SettingsManager.PREFS.WEAROS_SKIP_ALIAS_CREATE_GUIDE, true)
+                            skipAliasCreateGuide = true
+                            createAlias(userResource!!)
+                        },
+                        colors = getAnonAddyChipColors(),
+                        enabled = true,
+                        label = {
+                            Text(
+                                text = resources.getString(R.string.i_understand)
+                            )
+                        },
+                    )
+                }
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
         }
     }
 }

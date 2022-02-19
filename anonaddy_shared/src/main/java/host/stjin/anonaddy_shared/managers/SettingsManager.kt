@@ -51,7 +51,8 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         USER_RESOURCE_EXTENDED(true, PREFTYPES.STRING, "user_resource_extended"),
 
         //region Wear OS
-        WEAROS_FAVORITE_ALIASES(true, PREFTYPES.STRINGSET, "wearos_configuration"),
+        WEAROS_SKIP_ALIAS_CREATE_GUIDE(false, PREFTYPES.BOOLEAN, "wearos_skip_alias_create_guide"),
+        WEAROS_FAVORITE_ALIASES(true, PREFTYPES.STRINGSET, "wearos_favorite_aliases"),
         DISABLE_WEAROS_QUICK_SETUP_DIALOG(false, PREFTYPES.STRING, "disable_wearos_quick_setup_dialog"),
         SELECTED_WEAROS_DEVICE(false, PREFTYPES.STRING, "selected_wearos_device"),
         BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA(true, PREFTYPES.STRING, "cache_favorite_aliases_data"),

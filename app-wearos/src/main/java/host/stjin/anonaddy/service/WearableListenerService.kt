@@ -45,7 +45,7 @@ class WearableListenerService : WearableListenerService() {
 
     private fun storeSettings(wearOSConfiguration: String) {
         // Deserialize the configuration
-        val configuration = GsonTools.jsonToWearOSSettingsObject(wearOSConfiguration)
+        val configuration = GsonTools.jsonToWearOSSettingsObject(this, wearOSConfiguration)
 
         if (configuration != null) {
             // If the configuration is valid, set the API_KEY and BASE_URL to encrypted sharedpref
