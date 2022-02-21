@@ -117,7 +117,7 @@
     <string name="default_recipient_s">Default recipient (%s)</string>
     <string name="security">Security</string>
     <string name="security_desc">Use your biometric or pin/pattern to open AnonAddy</string>
-    <string name="store_logs">Store logs</string>
+
     <string name="store_logs_desc">Tap here to see or clear the stored logs</string>
     <string name="biometric_error_no_hardware">No biometric features available on this device</string>
     <string name="biometric_error_hw_unavailable">Biometric features are currently unavailable</string>
@@ -131,7 +131,6 @@
     <string name="anonaddy_locked">AnonAddy locked</string>
     <string name="authentication_error_11">Biometric unlocking disabled, no screen lock was found</string>
     <string name="reset_app_error_wearable">Could not reset app</string>
-    <string name="reset_app_desc">Clear all data and start over</string>
     <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your AnonAddy account or anything related)</string>
     <string name="edit_recipient">Edit recipient</string>
     <string name="basic">Basic</string>
@@ -294,8 +293,7 @@
     <string name="api_obtain_camera_available">Or manually enter your API key</string>
     <string name="api_obtain">Manually enter your API key</string>
     <string name="api_setup_qr_code_scan_wrong">This is not a valid QR code</string>
-    <string name="background_service_interval">Background service interval</string>
-    <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
+
     <string name="backgroundserviceinterval_15m">15m</string>
     <string name="backgroundserviceinterval_30m">30m</string>
     <string name="backgroundserviceinterval_1h">1h</string>
@@ -316,6 +314,7 @@
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
+    <string name="reset_app_desc">Clear all data and start over</string>
 
     <string name="send_mail">Send mail</string>
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
@@ -551,5 +550,11 @@
     <string name="reset_app_just_this_app">Just this app</string>
     <string name="reset_app_all_apps">Reset all</string>
     <string name="disable_alias">Disable alias</string>
+    <string name="logs_wearable">Logs (wearable)</string>
+    <string name="wearos_show_logs">Show logs</string>
+    <string name="wearos_show_logs_desc">On your wearable device, tap \"Send logs to device\" in the settings</string>
+    <string name="setup_app_on_wearable_desc">Set up the app on your wearable with the same account that this app is set up with</string>
+    <string name="reset_app_on_wearable_desc">Remotely reset the AnonAddy app on your wearable</string>
+    <string name="start_wearable_app_desc">Remotely open the AnonAddy app on your wearable</string>
 
 </resources>

@@ -12,6 +12,12 @@ object CacheHelper {
         return aliasesJson?.let { GsonTools.jsonToAliasObject(context, it) }
     }
 
+    fun getBackgroundServiceCacheLastUpdatedAliasesData(context: Context): ArrayList<Aliases>? {
+        val aliasesJson =
+            SettingsManager(encrypt = true, context).getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_LAST_UPDATED_ALIASES_DATA)
+        return aliasesJson?.let { GsonTools.jsonToAliasObject(context, it) }
+    }
+
     fun getBackgroundServiceCacheFavoriteAliasesData(context: Context): ArrayList<Aliases>? {
         val aliasesJson =
             SettingsManager(encrypt = true, context).getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA)

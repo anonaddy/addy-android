@@ -57,7 +57,7 @@ abstract class BaseActivity : AppCompatActivity() {
         nestedScrollView: NestedScrollView?,
         customToolbarOneHandedBinding: CustomToolbarOneHandedBinding? = null,
         image: Int? = null,
-        showAction: Boolean = false
+        actionImage: Int = R.drawable.ic_check
     ) {
         customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
         customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationOnClickListener {
@@ -74,12 +74,21 @@ abstract class BaseActivity : AppCompatActivity() {
             sendBroadcast(intent)
         }
 
-        if (showAction) {
-            customToolbarOneHandedBinding?.customToolbarOneHandedActions?.visibility = View.VISIBLE
-        }
+        customToolbarOneHandedBinding?.customToolbarOneHandedActionButton?.setImageDrawable(ContextCompat.getDrawable(this, actionImage))
+
 
         this.nestedScrollView = nestedScrollView
         this.appBarLayout = customToolbarOneHandedBinding?.customToolbarAppbar
+    }
+
+    fun toolbarSetAction(customToolbarOneHandedBinding: CustomToolbarOneHandedBinding, onClickListener: View.OnClickListener?) {
+        if (onClickListener != null) {
+            customToolbarOneHandedBinding.customToolbarOneHandedActionButton.animate()?.alpha(1.0f)
+        } else {
+            customToolbarOneHandedBinding.customToolbarOneHandedActionButton.animate()?.alpha(0.0f)
+        }
+
+        customToolbarOneHandedBinding.customToolbarOneHandedActionButton.setOnClickListener(onClickListener)
     }
 
     private var nestedScrollView: NestedScrollView? = null

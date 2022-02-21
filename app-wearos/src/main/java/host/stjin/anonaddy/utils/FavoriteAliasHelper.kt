@@ -36,4 +36,8 @@ class FavoriteAliasHelper(private val context: Context) {
         }
         return false
     }
+
+    fun clearFavoriteAliases() {
+        settingsManager.removeSetting(SettingsManager.PREFS.WEAROS_FAVORITE_ALIASES)
+    }
 }

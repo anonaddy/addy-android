@@ -263,6 +263,10 @@
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/requestsetup"/>
                 <data
                     android:host="*"
+                    android:pathPrefix="/showLogs"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
                     android:pathPrefix="/showAlias"
                     android:scheme="wear" />
             </intent-filter>

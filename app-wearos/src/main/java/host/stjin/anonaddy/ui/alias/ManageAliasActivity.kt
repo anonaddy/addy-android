@@ -6,9 +6,6 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
-import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -31,7 +28,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -41,6 +37,9 @@ import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
 import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.components.ErrorScreen
+import host.stjin.anonaddy.components.Loading
+import host.stjin.anonaddy.components.ShowOnPhoneComposeContent
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
@@ -65,7 +64,7 @@ class ManageAliasActivity : ComponentActivity() {
         favoriteAliasHelper = FavoriteAliasHelper(this)
 
         val aliasId: String? = intent.getStringExtra("alias")
-        val aliasList = CacheHelper.getBackgroundServiceCacheMostActiveAliasesData(this)
+        val aliasList = CacheHelper.getBackgroundServiceCacheLastUpdatedAliasesData(this)
         val favoriteAliasList = CacheHelper.getBackgroundServiceCacheFavoriteAliasesData(this)
         // If there are favorite aliases, add them to local list
         favoriteAliasList?.let { aliasList?.addAll(it) }
@@ -85,55 +84,38 @@ class ManageAliasActivity : ComponentActivity() {
                 setContent {
                     ComposeContent()
                 }
-
                 // Favorite this alias by default
                 if (intent.getBooleanExtra("favorite", false)) {
                     favoriteAlias(true)
                 }
             } else {
-                finish()
-            }
-        }
-
-
-    }
-
-
-    private var hasPairedDevices by mutableStateOf(false)
-
-    @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class)
-    @Composable
-    private fun ShowOnPhoneComposeContent() {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Column {
-                val image = AnimatedImageVector.animatedVectorResource(id = R.drawable.ic_watch_setup_notification_anim)
-                var atEnd by remember { mutableStateOf(false) }
-                Icon(
-                    painter = rememberAnimatedVectorPainter(image, atEnd),
-                    contentDescription = null, // decorative element
-                    modifier = Modifier
-                        .size(96.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-                if (hasPairedDevices) {
-                    Text(this@ManageAliasActivity.resources.getString(R.string.wearos_check_paired_device), textAlign = TextAlign.Center)
-                } else {
-                    Text(this@ManageAliasActivity.resources.getString(R.string.setup_wearos_no_paired_device), textAlign = TextAlign.Center)
+                setContent {
+                    Loading()
                 }
-
-
-                DisposableEffect(Unit) {
-                    atEnd = !atEnd
-                    onDispose { }
+                // The alias does not exist in local storage, the alias could be sent from the paired device
+                // Try to obtain the alias from web
+                lifecycleScope.launch {
+                    NetworkHelper(this@ManageAliasActivity).getSpecificAlias({ result, error ->
+                        if (result != null) {
+                            this@ManageAliasActivity.alias = result
+                            setContent {
+                                ComposeContent()
+                            }
+                        } else {
+                            setContent {
+                                ErrorScreen(
+                                    this@ManageAliasActivity,
+                                    this@ManageAliasActivity.resources.getString(R.string.error_adding_alias) + "\n" + error,
+                                    this@ManageAliasActivity.resources.getString(R.string.edit_alias)
+                                )
+                            }
+                        }
+                    }, aliasId)
                 }
             }
         }
     }
+
 
     private fun noNodesFound(aliasId: String) {
         hasPairedDevices = false
@@ -143,10 +125,10 @@ class ManageAliasActivity : ComponentActivity() {
         }, 5000)
     }
 
-
+    private var hasPairedDevices by mutableStateOf(false)
     private fun showAliasOnPhone(aliasId: String) {
         setContent {
-            ShowOnPhoneComposeContent()
+            ShowOnPhoneComposeContent(this, hasPairedDevices)
         }
 
         val nodeClient = Wearable.getNodeClient(this)

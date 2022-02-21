@@ -60,8 +60,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         setupToolbar(
             R.string.creating_a_rule,
             binding.activityRulesCreateRLNSV,
-            binding.activityRulesToolbar,
-            showAction = true
+            binding.activityRulesToolbar
         )
 
 
@@ -386,7 +385,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private fun setOnClickListeners() {
-        binding.activityRulesToolbar.customToolbarOneHandedActionButton.setOnClickListener {
+        toolbarSetAction(binding.activityRulesToolbar) {
             // Update title
             binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
 
@@ -432,6 +431,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 }
             }
         }
+
 
         binding.rulesViewAndOrANDButton.setOnClickListener {
             rules.operator = "AND"

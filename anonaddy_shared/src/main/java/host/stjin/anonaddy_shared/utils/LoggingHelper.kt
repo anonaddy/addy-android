@@ -19,7 +19,8 @@ class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = L
 
     enum class LOGFILES(val filename: String) {
         DEFAULT("host.stjin.anonaddy_logs"),
-        BACKUP_LOGS("host.stjin.anonaddy_logs_backups")
+        BACKUP_LOGS("host.stjin.anonaddy_logs_backups"),
+        WEAROS_LOGS("host.stjin.anonaddy_logs_wearos")
     }
 
     private fun <Logs> setList(list: ArrayList<Logs>?) {

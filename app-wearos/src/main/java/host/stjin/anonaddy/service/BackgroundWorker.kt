@@ -56,7 +56,6 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
         // Stored if the network call succeeds its task
         var userResourceNetworkCallResult = false
         var aliasNetworkCallResult = false
-        var failedDeliveriesNetworkCallResult = false
 
         // Block the thread until this is finished
         runBlocking(Dispatchers.Default) {
@@ -70,7 +69,7 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
                 userResourceNetworkCallResult = result
             }
 
-            networkHelper.cacheMostPopularAliasesDataForWidget({ result ->
+            networkHelper.cacheLastUpdatedAliasesDataForWidget({ result ->
                 // Store the result if the data succeeded to update in a boolean
                 aliasNetworkCallResult = result
             })
@@ -98,23 +97,12 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
                 // Store a copy of the just received data locally
                 settingsManager.removeSetting(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA)
             }
-
-
-            /*
-            FAILED DELIVERIES
-             */
-
-            networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
-                // Store the result if the data succeeded to update in a boolean
-                failedDeliveriesNetworkCallResult = result
-            }
         }
 
 
         // If both tasks are successful return a success()
         return if (userResourceNetworkCallResult &&
-            aliasNetworkCallResult &&
-            failedDeliveriesNetworkCallResult
+            aliasNetworkCallResult
         ) {
             // Now the data has been updated, we can update the tiles as well
             updateTiles()
@@ -150,8 +138,6 @@ class BackgroundWorkerHelper(private val context: Context) {
             .build()
 
         // Get the amount of minutes from the settings
-
-        //TODO make this a setting?
         val minutes = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30).toLong()
         val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundWorker::class.java, minutes, TimeUnit.MINUTES)
             .setConstraints(myConstraints)

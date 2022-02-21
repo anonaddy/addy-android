@@ -23,6 +23,7 @@
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
         -->
+
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
@@ -34,13 +35,19 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="false"
+            android:label="@string/settings"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".ui.alias.CreateAliasActivity"
             android:exported="true"
             android:label="@string/add_alias"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".ui.AliasActivity"
+            android:name=".ui.alias.AliasActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
@@ -80,6 +87,10 @@
                 <data
                     android:host="*"
                     android:pathPrefix="/reset"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/showAlias"
                     android:scheme="wear" />
             </intent-filter>
         </service>

@@ -11,6 +11,7 @@ import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.SplashActivity
+import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.GsonTools
 
@@ -34,11 +35,17 @@ class WearableListenerService : WearableListenerService() {
                 storeSettings(String(p0.data))
             }
             p0.path.equals("/reset") -> {
-                Toast.makeText(this, this.resources.getString(R.string.app_reset_requested_by, String(p0.data)),Toast.LENGTH_LONG).show()
+                Toast.makeText(this, this.resources.getString(R.string.app_reset_requested_by, String(p0.data)), Toast.LENGTH_LONG).show()
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     (this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                 }, 2500)
+            }
+            p0.path.equals("/showAlias") -> {
+                val intent = Intent(this@WearableListenerService, ManageAliasActivity::class.java)
+                intent.putExtra("alias", String(p0.data))
+                intent.flags = FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
             }
         }
     }

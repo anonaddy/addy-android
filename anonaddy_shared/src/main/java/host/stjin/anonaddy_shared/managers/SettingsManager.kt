@@ -61,6 +61,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         //region Background service
         // Locally stored data
         BACKGROUND_SERVICE_CACHE_MOST_ACTIVE_ALIASES_DATA(true, PREFTYPES.STRING, "cache_most_active_aliases_data"),
+        BACKGROUND_SERVICE_CACHE_LAST_UPDATED_ALIASES_DATA(true, PREFTYPES.STRING, "cache_last_updated_aliases_data"),
 
         // Used for the shimmerview and widget 2
         BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT(true, PREFTYPES.INT, "cache_domain_count"),

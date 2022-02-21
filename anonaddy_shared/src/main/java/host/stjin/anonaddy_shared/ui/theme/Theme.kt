@@ -5,8 +5,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
+import androidx.wear.compose.material.ButtonColors
+import androidx.wear.compose.material.ButtonDefaults.buttonColors
 import androidx.wear.compose.material.ChipColors
 import androidx.wear.compose.material.ChipDefaults.chipColors
+import androidx.wear.compose.material.InlineSliderColors
+import androidx.wear.compose.material.InlineSliderDefaults.colors
 import androidx.wear.compose.material.ToggleChipColors
 import androidx.wear.compose.material.ToggleChipDefaults.toggleChipColors
 import host.stjin.anonaddy_shared.R
@@ -66,6 +70,31 @@ fun getAnonAddyChipColors(): ChipColors {
         contentColor = colorResource(id = R.color.md_theme_onSecondaryContainer),
         secondaryContentColor = colorResource(id = R.color.md_theme_onSecondaryContainer),
         iconTintColor = colorResource(id = R.color.md_theme_onSecondaryContainer)
+    )
+}
+
+@Composable
+fun getAnonAddyDangerChipColors(): ChipColors {
+    return chipColors(
+        backgroundColor = colorResource(id = R.color.md_theme_errorContainer),
+        contentColor = colorResource(id = R.color.md_theme_onErrorContainer),
+        secondaryContentColor = colorResource(id = R.color.md_theme_onErrorContainer),
+        iconTintColor = colorResource(id = R.color.md_theme_onErrorContainer)
+    )
+}
+
+@Composable
+fun getAnonAddyInlineSliderColors(): InlineSliderColors {
+    return colors(
+        selectedBarColor = colorResource(id = R.color.md_theme_secondaryContainer),
+    )
+}
+
+@Composable
+fun getAnonAddyButtonColors(): ButtonColors {
+    return buttonColors(
+        backgroundColor = colorResource(id = R.color.md_theme_secondaryContainer),
+        contentColor = colorResource(id = R.color.md_theme_onSecondaryContainer)
     )
 }
 

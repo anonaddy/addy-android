@@ -55,7 +55,6 @@
                     android:id="@+id/activity_app_settings_wearos_section_select_device"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="TODO 5 devices found"
                     app:sectionStartIcon="@drawable/ic_device_watch"
                     app:sectionTitle="@string/select_wearable_device"
                     app:sectionEndIcon="@drawable/ic_chevron_down"/>
@@ -65,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionStartIcon="@drawable/ic_player_play"
+                    app:sectionDescription="@string/start_wearable_app_desc"
                     app:sectionTitle="@string/start_wearable_app" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
@@ -73,7 +73,7 @@
                     android:layout_height="match_parent"
                     app:sectionStartIcon="@drawable/ic_letters_case"
                     app:sectionTitle="@string/setup_app_on_wearable"
-                    />
+                    app:sectionDescription="@string/setup_app_on_wearable_desc" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_wearos_section_reset"
@@ -81,8 +81,16 @@
                     android:layout_height="match_parent"
                     app:sectionStartIcon="@drawable/ic_loader"
                     app:sectionTitle="@string/reset_app_on_wearable"
-                    android:layout_marginBottom="8dp"
-                    />
+                    app:sectionDescription="@string/reset_app_on_wearable_desc" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_wearos_section_show_logs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/wearos_show_logs_desc"
+                    app:sectionStartIcon="@drawable/ic_file_alert"
+                    app:sectionTitle="@string/wearos_show_logs"
+                    android:layout_marginBottom="8dp" />
 
                 <LinearLayout
                     style="@style/AnonAddyTitleNoAction"

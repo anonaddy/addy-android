@@ -19,5 +19,7 @@
     <string name="edit_alias">Edit alias</string>
     <string name="add_alias">Add alias</string>
     <string name="error_adding_alias">Something went wrong while adding the alias</string>
-
+    <string name="store_logs">Store logs</string>
+    <string name="background_service_interval">Background service interval</string>
+    <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
 </resources>

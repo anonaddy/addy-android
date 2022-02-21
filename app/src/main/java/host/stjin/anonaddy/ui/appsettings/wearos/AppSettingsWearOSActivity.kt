@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings.wearos
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.CompoundButton
 import com.google.android.gms.wearable.Node
@@ -10,10 +11,12 @@ import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsWearosBinding
+import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
 class AppSettingsWearOSActivity : BaseActivity() {
@@ -53,8 +56,6 @@ class AppSettingsWearOSActivity : BaseActivity() {
         nodeClient = Wearable.getNodeClient(this)
         nodeClient!!.connectedNodes.addOnCompleteListener { nodes ->
             listOfNodes.clear()
-            // Send a message to all connected nodes basically broadcasting itself.
-            // Nodes with the app installed will receive this message and open the setup sheet
             for (node in nodes.result) {
                 listOfNodes.add(node)
             }
@@ -87,6 +88,7 @@ class AppSettingsWearOSActivity : BaseActivity() {
         binding.activityAppSettingsWearosSectionStart.setLayoutEnabled(listOfNodes.any())
         binding.activityAppSettingsWearosSectionSetup.setLayoutEnabled(listOfNodes.any())
         binding.activityAppSettingsWearosSectionReset.setLayoutEnabled(listOfNodes.any())
+        binding.activityAppSettingsWearosSectionShowLogs.setLayoutEnabled(listOfNodes.any())
 
         if (listOfNodes.any()) {
             val selectedNode = listOfNodes.find { it.id == settingsManager.getSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE) }
@@ -146,6 +148,14 @@ class AppSettingsWearOSActivity : BaseActivity() {
         binding.activityAppSettingsWearosSectionStart.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 startAppOnWearable()
+            }
+        })
+
+        binding.activityAppSettingsWearosSectionShowLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsWearOSActivity, LogViewerActivity::class.java)
+                intent.putExtra("logfile", LoggingHelper.LOGFILES.WEAROS_LOGS.filename)
+                startActivity(intent)
             }
         })
 

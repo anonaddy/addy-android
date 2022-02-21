@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
+import host.stjin.anonaddy.ui.alias.AliasActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 class SplashActivity : ComponentActivity() {

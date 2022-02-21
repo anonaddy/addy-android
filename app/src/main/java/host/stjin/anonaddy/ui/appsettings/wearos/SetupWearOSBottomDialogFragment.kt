@@ -110,7 +110,6 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
                     if (isAuthenticated) {
                         val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-
                         binding.bsSetupWearosErrorMessage.visibility = View.INVISIBLE
                         binding.bsSetupWearosConfirmButton.startAnimation()
 

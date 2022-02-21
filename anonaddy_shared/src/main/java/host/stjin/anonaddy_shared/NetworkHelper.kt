@@ -2653,6 +2653,40 @@ class NetworkHelper(private val context: Context) {
         )
     }
 
+    suspend fun cacheLastUpdatedAliasesDataForWidget(
+        callback: (Boolean) -> Unit,
+        amountOfAliasesToCache: Int? = 15
+    ) {
+        getAliases(
+            { list, _ ->
+                if (list == null) {
+                    // Result is null, callback false to let the BackgroundWorker know the task failed.
+                    callback(false)
+                    return@getAliases
+                } else {
+                    // Turn the list into a json object
+                    val data = Gson().toJson(list.data)
+
+                    // Store a copy of the just received data locally
+                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_LAST_UPDATED_ALIASES_DATA, data)
+
+                    // Stored data, let the BackgroundWorker know the task succeeded
+                    callback(true)
+                }
+            },
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = true,
+                onlyInactiveAliases = false,
+                includeDeleted = false,
+                onlyWatchedAliases = false,
+                sort = "updated_at",
+                sortDesc = true,
+                filter = null
+            ),
+            size = amountOfAliasesToCache,
+        )
+    }
+
 
     suspend fun cacheUserResourceForWidget(
         callback: (Boolean) -> Unit

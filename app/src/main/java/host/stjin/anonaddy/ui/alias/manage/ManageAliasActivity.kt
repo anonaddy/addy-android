@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.Wearable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -76,7 +78,8 @@ class ManageAliasActivity : BaseActivity(),
             R.string.edit_alias,
             binding.activityManageAliasNSV,
             binding.activityManageAliasToolbar,
-            R.drawable.ic_email_at
+            R.drawable.ic_email_at,
+            actionImage = R.drawable.ic_device_watch
         )
 
         networkHelper = NetworkHelper(this)
@@ -133,6 +136,23 @@ class ManageAliasActivity : BaseActivity(),
         // Get the alias
         lifecycleScope.launch {
             getAliasInfo(aliasId)
+            loadNodes()
+        }
+    }
+
+    private var nodeClient: NodeClient? = null
+    private fun loadNodes() {
+        nodeClient = Wearable.getNodeClient(this)
+        nodeClient!!.connectedNodes.addOnCompleteListener { nodes ->
+            // Send a message to all connected nodes
+            // Nodes with the app installed will receive this message and open the ManageAliasActivity
+            if (nodes.result.any()) {
+                toolbarSetAction(binding.activityManageAliasToolbar) {
+                    for (node in nodes.result) {
+                        Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", aliasId.toByteArray())
+                    }
+                }
+            }
         }
     }
 

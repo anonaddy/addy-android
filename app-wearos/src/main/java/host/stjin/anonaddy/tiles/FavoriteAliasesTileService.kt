@@ -20,7 +20,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.ui.AliasActivity
+import host.stjin.anonaddy.ui.alias.AliasActivity
 import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.utils.ColorUtils
@@ -302,7 +302,6 @@ class FavoriteAliasesTileService : TileService() {
                     .build()
             )
 
-        // Create an avatar based on the contact's initials
         setWidth(dp(CIRCLE_SIZE))
         setHeight(dp(CIRCLE_SIZE))
         setHorizontalAlignment(HORIZONTAL_ALIGN_CENTER)
