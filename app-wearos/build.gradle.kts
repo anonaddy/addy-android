@@ -83,7 +83,7 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha05")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha06")
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("com.google.android.gms:play-services-wearable:17.1.0")
@@ -93,8 +93,8 @@ dependencies {
     implementation("androidx.wear:wear:1.2.0")
     implementation(project(mapOf("path" to ":anonaddy_shared")))
 
-    compileOnly("com.google.android.wearable:wearable:2.8.1")
-    implementation("com.google.android.support:wearable:2.8.1")
+    compileOnly("com.google.android.wearable:wearable:2.9.0")
+    implementation("com.google.android.support:wearable:2.9.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
@@ -106,25 +106,25 @@ dependencies {
 dependencies {
     // General compose dependencies
     implementation("androidx.activity:activity-compose:1.4.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.1.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.1.1")
 
     // Animated graphics (for the icon on setup)
-    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha03")
+    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha04")
 
     // Compose for Wear OS Dependencies
-    implementation("androidx.wear.compose:compose-material:1.0.0-alpha16")
+    implementation("androidx.wear.compose:compose-material:1.0.0-alpha17")
 
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
-    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha16")
+    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha17")
 
     // If you are using Compose Navigation, use the Wear OS version (NOT THE MOBILE VERSION).
     // Uncomment the line below and update the version number.
     //implementation("androidx.wear.compose:compose-navigation:1.0.0-alpha15")
 
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"] as String}")
-    debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"] as String}")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.0-alpha04")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.2.0-alpha04")
 
-    implementation("androidx.compose.material:material:1.1.0")
+    implementation("androidx.compose.material:material:1.1.1")
 
 }
 

@@ -240,6 +240,8 @@ class AliasActivity : ComponentActivity() {
                                             )
                                         },
                                         onClick = {
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
                                             val intent = Intent(this@AliasActivity, ManageAliasActivity::class.java)
                                             intent.putExtra("alias", aliases!![index - 1].id)
                                             startActivity(intent)

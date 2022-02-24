@@ -385,7 +385,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private fun setOnClickListeners() {
-        toolbarSetAction(binding.activityRulesToolbar) {
+        toolbarSetAction(binding.activityRulesToolbar, R.drawable.ic_check) {
             // Update title
             binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
 

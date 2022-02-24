@@ -127,6 +127,7 @@ class CreateAliasActivity : ComponentActivity() {
 
     @Composable
     private fun AddFavoriteLayout() {
+        val haptic = LocalHapticFeedback.current
         Box(
             modifier = Modifier
                 .semantics {
@@ -136,6 +137,7 @@ class CreateAliasActivity : ComponentActivity() {
             Button(
                 colors = getAnonAddyButtonColors(),
                 onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     if (!favoriteAliasHelper.addAliasAsFavorite(this@CreateAliasActivity.alias!!.id)) {
                         Toast.makeText(
                             this@CreateAliasActivity,
@@ -162,6 +164,7 @@ class CreateAliasActivity : ComponentActivity() {
 
     @Composable
     private fun ShowOnPhoneLayout() {
+        val haptic = LocalHapticFeedback.current
         Box(
             modifier = Modifier
                 .semantics {
@@ -171,6 +174,8 @@ class CreateAliasActivity : ComponentActivity() {
             Button(
                 colors = getAnonAddyButtonColors(),
                 onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
                     val intent = Intent(this@CreateAliasActivity, ManageAliasActivity::class.java)
                     intent.putExtra("alias", alias!!.id)
                     intent.putExtra("showOnPairedDevice", true)

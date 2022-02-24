@@ -128,6 +128,8 @@ class ManageAliasActivity : ComponentActivity() {
     private var hasPairedDevices by mutableStateOf(false)
     private fun showAliasOnPhone(aliasId: String) {
         setContent {
+            val haptic = LocalHapticFeedback.current
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             ShowOnPhoneComposeContent(this, hasPairedDevices)
         }
 
@@ -171,6 +173,7 @@ class ManageAliasActivity : ComponentActivity() {
             // Creates a CoroutineScope bound to the lifecycle
             val scope = rememberCoroutineScope()
             val haptic = LocalHapticFeedback.current
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
             val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
             isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
@@ -297,6 +300,7 @@ class ManageAliasActivity : ComponentActivity() {
                                                 deactivateAlias()
                                             }
                                         }
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     }
                                 },
                                 enabled = true
@@ -311,6 +315,7 @@ class ManageAliasActivity : ComponentActivity() {
                                 },
                                 checked = isAliasFavorite,
                                 onCheckedChange = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     favoriteAlias(it)
                                 },
                                 colors = getAnonAddyToggleChipColors(),
@@ -333,7 +338,10 @@ class ManageAliasActivity : ComponentActivity() {
                             Chip(
                                 modifier = Modifier
                                     .padding(top = 2.dp, bottom = 2.dp),
-                                onClick = { /* Do something */ },
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    /* Do something */
+                                },
                                 colors = getAnonAddyChipColors(),
                                 enabled = true,
                                 label = { Text(text = resources.getString(R.string.set_watchface)) },
@@ -351,7 +359,11 @@ class ManageAliasActivity : ComponentActivity() {
                             Chip(
                                 modifier = Modifier
                                     .padding(top = 2.dp, bottom = 2.dp),
-                                onClick = { showAliasOnPhone(alias!!.id) },
+                                onClick = {
+                                    // Happens in method
+                                    //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    showAliasOnPhone(alias!!.id)
+                                },
                                 colors = getAnonAddyChipColors(),
                                 enabled = true,
                                 label = { Text(text = resources.getString(R.string.show_on_paired_device)) },

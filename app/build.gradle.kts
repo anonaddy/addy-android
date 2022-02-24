@@ -99,7 +99,7 @@ dependencies {
 
 // Animations
 dependencies {
-    implementation("com.airbnb.android:lottie:4.2.2")
+    implementation("com.airbnb.android:lottie:5.0.1")
 }
 
 // Apache for extracting strings ManageAliasActivity

@@ -79,7 +79,6 @@ class ManageAliasActivity : BaseActivity(),
             binding.activityManageAliasNSV,
             binding.activityManageAliasToolbar,
             R.drawable.ic_email_at,
-            actionImage = R.drawable.ic_device_watch
         )
 
         networkHelper = NetworkHelper(this)
@@ -147,10 +146,15 @@ class ManageAliasActivity : BaseActivity(),
             // Send a message to all connected nodes
             // Nodes with the app installed will receive this message and open the ManageAliasActivity
             if (nodes.result.any()) {
-                toolbarSetAction(binding.activityManageAliasToolbar) {
+                toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
                     for (node in nodes.result) {
                         Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", aliasId.toByteArray())
                     }
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.check_your_wearable),
+                        binding.activityManageAliasCL
+                    ).show()
                 }
             }
         }
