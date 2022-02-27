@@ -30,7 +30,7 @@ import androidx.wear.compose.material.*
 import com.google.android.gms.wearable.Wearable
 import com.google.gson.Gson
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.components.ShowOnPhoneComposeContent
+import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
@@ -183,11 +183,13 @@ class SettingsActivity : ComponentActivity() {
                             modifier = Modifier
                                 .padding(top = 12.dp),
                             onClick = {
-                                FavoriteAliasHelper(this@SettingsActivity).clearFavoriteAliases()
-                                Toast.makeText(this@SettingsActivity, resources.getString(R.string.favorite_aliases_cleared), Toast.LENGTH_SHORT)
-                                    .show()
-                                // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
-                                BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
+                                if (!lazyListState.isScrollInProgress) {
+                                    FavoriteAliasHelper(this@SettingsActivity).clearFavoriteAliases()
+                                    Toast.makeText(this@SettingsActivity, resources.getString(R.string.favorite_aliases_cleared), Toast.LENGTH_SHORT)
+                                        .show()
+                                    // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
+                                    BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
+                                }
                             },
                             colors = getAnonAddyChipColors(),
                             enabled = true,
@@ -217,8 +219,10 @@ class SettingsActivity : ComponentActivity() {
                                 ToggleChipDefaults.SwitchIcon(checked = storeLogs)
                             },
                             onCheckedChange = {
-                                storeLogs = it
-                                settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, it)
+                                if (!lazyListState.isScrollInProgress) {
+                                    storeLogs = it
+                                    settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, it)
+                                }
                             },
                             enabled = true
                         )
@@ -226,7 +230,9 @@ class SettingsActivity : ComponentActivity() {
                             modifier = Modifier
                                 .padding(top = 2.dp, bottom = 2.dp),
                             onClick = {
-                                sendLogsToPairedDevice()
+                                if (!lazyListState.isScrollInProgress) {
+                                    sendLogsToPairedDevice()
+                                }
                             },
                             colors = getAnonAddyChipColors(),
                             enabled = true,
@@ -246,7 +252,11 @@ class SettingsActivity : ComponentActivity() {
                         Chip(
                             modifier = Modifier
                                 .padding(top = 2.dp, bottom = 2.dp),
-                            onClick = { resetApp() },
+                            onClick = {
+                                if (!lazyListState.isScrollInProgress) {
+                                    resetApp()
+                                }
+                            },
                             colors = getAnonAddyDangerChipColors(),
                             enabled = true,
                             label = { Text(text = resources.getString(R.string.reset_app)) },
@@ -285,7 +295,7 @@ class SettingsActivity : ComponentActivity() {
 
     private fun sendLogsToPairedDevice() {
         setContent {
-            ShowOnPhoneComposeContent(this, hasPairedDevices)
+            ShowOnDeviceComposeContent(this, hasPairedDevices)
         }
 
         val nodeClient = Wearable.getNodeClient(this)

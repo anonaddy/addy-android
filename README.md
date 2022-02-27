@@ -2,7 +2,7 @@
 <h1 align="center">AnonAddy for Android</h1>
 
 <p align="center">
-Easily create and manage your AnonAddy aliases, recipients and more from your phone or tablet with this <b>sexy</b> AnonAddy app for Android.
+Easily create and manage your AnonAddy aliases, recipients and more from your phone or tablet or smartwatch with this <b>sexy</b> AnonAddy app for Android.
 </br><p align="center">
 <img src="static/banner.png"/>
 </p>

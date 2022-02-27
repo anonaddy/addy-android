@@ -2,7 +2,9 @@
 > :warning: **This feature is not available yet**: It will be added in future AnonAddy for Android versions
 
 # AnonAddy for Android setup QR    
- AnonAddy for Android has a QR scanner allowing users to quickly setup the app without having to copy the API key to their phone    
+
+AnonAddy for Android has a QR scanner allowing users to quickly setup the app without having to copy the API key to their device
+
     
 ## QR format    
  Any QR code generated in the following format would work, please make sure to generate the QR in a decent-high resolution (preferably SVG)    

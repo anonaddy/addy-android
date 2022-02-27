@@ -163,7 +163,7 @@ class CreateAliasActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ShowOnPhoneLayout() {
+    private fun ShowOnDeviceLayout() {
         val haptic = LocalHapticFeedback.current
         Box(
             modifier = Modifier
@@ -215,7 +215,7 @@ class CreateAliasActivity : ComponentActivity() {
                 Row {
                     AddFavoriteLayout()
                     Spacer(modifier = Modifier.width(SPACING_BUTTONS))
-                    ShowOnPhoneLayout()
+                    ShowOnDeviceLayout()
                 }
             }
         }

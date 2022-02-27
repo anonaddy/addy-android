@@ -39,7 +39,7 @@ import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.components.Loading
-import host.stjin.anonaddy.components.ShowOnPhoneComposeContent
+import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
@@ -76,7 +76,7 @@ class ManageAliasActivity : ComponentActivity() {
 
         // Show this alias on paired device(s)
         if (intent.getBooleanExtra("showOnPairedDevice", false)) {
-            showAliasOnPhone(aliasId)
+            showAliasOnDevice(aliasId)
         } else {
             // Check if the alias exists in the local storage
             this.alias = aliasList.firstOrNull { it.id == aliasId }
@@ -121,16 +121,16 @@ class ManageAliasActivity : ComponentActivity() {
         hasPairedDevices = false
         // No nodes found, let's check again in 5 seconds
         Handler(Looper.getMainLooper()).postDelayed({
-            showAliasOnPhone(aliasId)
+            showAliasOnDevice(aliasId)
         }, 5000)
     }
 
     private var hasPairedDevices by mutableStateOf(false)
-    private fun showAliasOnPhone(aliasId: String) {
+    private fun showAliasOnDevice(aliasId: String) {
         setContent {
             val haptic = LocalHapticFeedback.current
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-            ShowOnPhoneComposeContent(this, hasPairedDevices)
+            ShowOnDeviceComposeContent(this, hasPairedDevices)
         }
 
         val nodeClient = Wearable.getNodeClient(this)
@@ -287,21 +287,24 @@ class ManageAliasActivity : ComponentActivity() {
                                     )
                                 },
                                 onCheckedChange = {
-                                    isAliasActive = it
-                                    if (!isChangingActivationStatus) {
-                                        if (isAliasActive) {
-                                            lifecycleScope.launch {
-                                                isChangingActivationStatus = true
-                                                activateAlias()
+                                    if (!lazyListState.isScrollInProgress) {
+                                        isAliasActive = it
+                                        if (!isChangingActivationStatus) {
+                                            if (isAliasActive) {
+                                                lifecycleScope.launch {
+                                                    isChangingActivationStatus = true
+                                                    activateAlias()
+                                                }
+                                            } else {
+                                                lifecycleScope.launch {
+                                                    isChangingActivationStatus = true
+                                                    deactivateAlias()
+                                                }
                                             }
-                                        } else {
-                                            lifecycleScope.launch {
-                                                isChangingActivationStatus = true
-                                                deactivateAlias()
-                                            }
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                         }
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     }
+
                                 },
                                 enabled = true
                             )
@@ -315,8 +318,10 @@ class ManageAliasActivity : ComponentActivity() {
                                 },
                                 checked = isAliasFavorite,
                                 onCheckedChange = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    favoriteAlias(it)
+                                    if (!lazyListState.isScrollInProgress) {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        favoriteAlias(it)
+                                    }
                                 },
                                 colors = getAnonAddyToggleChipColors(),
                                 toggleIcon = {
@@ -339,8 +344,10 @@ class ManageAliasActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .padding(top = 2.dp, bottom = 2.dp),
                                 onClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    /* Do something */
+                                    if (!lazyListState.isScrollInProgress) {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        /* Do something */
+                                    }
                                 },
                                 colors = getAnonAddyChipColors(),
                                 enabled = true,
@@ -360,9 +367,11 @@ class ManageAliasActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .padding(top = 2.dp, bottom = 2.dp),
                                 onClick = {
-                                    // Happens in method
-                                    //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    showAliasOnPhone(alias!!.id)
+                                    if (!lazyListState.isScrollInProgress) {
+                                        // Happens in method
+                                        //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        showAliasOnDevice(alias!!.id)
+                                    }
                                 },
                                 colors = getAnonAddyChipColors(),
                                 enabled = true,

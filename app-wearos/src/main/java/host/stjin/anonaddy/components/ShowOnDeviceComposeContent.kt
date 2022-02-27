@@ -17,7 +17,7 @@ import host.stjin.anonaddy.R
 
 @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class)
 @Composable
-fun ShowOnPhoneComposeContent(context: Context, hasPairedDevices: Boolean) {
+fun ShowOnDeviceComposeContent(context: Context, hasPairedDevices: Boolean) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier

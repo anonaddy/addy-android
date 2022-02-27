@@ -27,7 +27,7 @@ class WearableListener : WearableListenerService() {
                 val notificationHelper = NotificationHelper(this)
 
                 if (SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
-                    // The phone-app has not been setup, let the user know the main app needs to be setup first
+                    // The paired-app has not been setup, let the user know the main app needs to be setup first
                     notificationHelper.createSetupAppFirstNotification()
                 } else {
                     //Figure out which node requested this setup and show notification
