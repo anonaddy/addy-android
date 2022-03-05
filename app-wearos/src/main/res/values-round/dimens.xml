@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="digital_x_offset" format="float" type="dimen">76f</dimen>
+</resources>

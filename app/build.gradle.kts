@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 32
     defaultConfig {
         applicationId = rootProject.extra["application_id"] as String
         minSdk = 23
-        targetSdk = 31
+        targetSdk = 32
         versionCode = 40
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
         versionName = "v4.0.0"

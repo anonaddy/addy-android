@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="host.stjin.anonaddy">
 
+    <!-- Required to act as a custom watch face. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Required for complications to receive complication data and open the provider chooser. -->
+    <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -15,37 +19,65 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/SplashTheme">
-        <uses-library
-            android:name="com.google.android.wearable"
-            android:required="true" />
-
-        <!--
-               Set to true if your app is Standalone, that is, it does not require the handheld
-               app to run.
-        -->
-
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
+
+        <service
+            android:name=".AnonAddyWatchFace"
+            android:directBootAware="true"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category android:name="com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+            <!--
+            By default, Watchfaces on rectangular devices will be run in a emulation mode where they
+            are provided a square surface to draw the watchface (allows watchfaces built for
+            circular and square devices to work well).
+
+            For this watchface, we explicitly enable rectangular devices, so we get the complete
+            surface.
+            -->
+            <meta-data
+                android:name="android.service.wallpaper.square_mode"
+                android:value="false" />
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_digital_api_watchface" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_digital_api_watchface_circular" />
+        </service>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <uses-library
+            android:name="com.google.android.wearable"
+            android:required="true" />
 
         <activity
             android:name=".ui.alias.ManageAliasActivity"
             android:exported="true"
             android:label="@string/edit_alias"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/settings"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".ui.alias.CreateAliasActivity"
             android:exported="true"
             android:label="@string/add_alias"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".ui.alias.AliasActivity"
             android:exported="true"
@@ -67,7 +99,6 @@
                 android:name="androidx.wear.tiles.PREVIEW"
                 android:resource="@drawable/favorite_aliases_tile" />
         </service>
-
         <service
             android:name=".service.WearableListenerService"
             android:enabled="true"

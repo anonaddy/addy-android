@@ -145,6 +145,9 @@ dependencies {
 
 // Tiles
 dependencies {
+    // For watchface
+    implementation("com.google.android.gms:play-services-base:18.0.1")
+
     // Use to implement support for wear tiles
     implementation("androidx.wear.tiles:tiles:1.1.0-alpha03")
 

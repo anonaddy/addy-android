@@ -345,29 +345,6 @@ class ManageAliasActivity : ComponentActivity() {
                                     .padding(top = 2.dp, bottom = 2.dp),
                                 onClick = {
                                     if (!lazyListState.isScrollInProgress) {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        /* Do something */
-                                    }
-                                },
-                                colors = getAnonAddyChipColors(),
-                                enabled = true,
-                                label = { Text(text = resources.getString(R.string.set_watchface)) },
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_clock),
-                                        contentDescription = resources.getString(R.string.set_watchface),
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                            .wrapContentSize(align = Alignment.Center),
-                                    )
-                                }
-                            )
-
-                            Chip(
-                                modifier = Modifier
-                                    .padding(top = 2.dp, bottom = 2.dp),
-                                onClick = {
-                                    if (!lazyListState.isScrollInProgress) {
                                         // Happens in method
                                         //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                         showAliasOnDevice(alias!!.id)

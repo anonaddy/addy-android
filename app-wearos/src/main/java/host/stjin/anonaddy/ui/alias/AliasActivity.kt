@@ -93,8 +93,8 @@ class AliasActivity : ComponentActivity() {
                     NetworkHelper(this@AliasActivity).cacheLastUpdatedAliasesDataForWidget({ result ->
                         if (result) {
                             setContent {
-                                AliasList()
                                 loadAliases()
+                                AliasList()
                             }
                         } else {
                             setContent {

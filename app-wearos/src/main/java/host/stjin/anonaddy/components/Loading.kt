@@ -21,8 +21,8 @@ fun Loading() {
             .padding(16.dp)
     ) {
         androidx.wear.compose.material.CircularProgressIndicator(
-            indicatorColor = colorResource(id = R.color.md_theme_onPrimaryContainer),
-            trackColor = colorResource(id = R.color.md_theme_primaryContainer)
+            indicatorColor = colorResource(id = R.color.md_theme_primaryContainer),
+            trackColor = colorResource(id = R.color.md_theme_onPrimaryContainer)
         )
     }
 }
