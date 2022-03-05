@@ -86,12 +86,20 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         settingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
+
+        initShimmerRecyclerView()
         loadFilter()
         setOnClickListeners()
         setOnNestedScrollViewListener(true)
         getDataFromWeb()
 
         return root
+    }
+
+    private fun initShimmerRecyclerView() {
+        // Set the item margindecoration before the shimmer is being shown, so that the shimmerviews have the exact margins
+        // as the list items
+        binding.aliasAllAliasesRecyclerview.addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
     }
 
     private fun loadFilter() {
@@ -381,8 +389,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 } else {
                     LinearLayoutManager(activity)
                 }
-
-                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)

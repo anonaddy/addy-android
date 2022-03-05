@@ -123,7 +123,6 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
     private lateinit var usernamesAdapter: UsernameAdapter
     private suspend fun getAllUsernamesAndSetView() {
-
         binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false

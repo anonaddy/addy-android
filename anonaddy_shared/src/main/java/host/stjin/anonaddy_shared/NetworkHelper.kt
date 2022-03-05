@@ -1447,7 +1447,7 @@ class NetworkHelper(private val context: Context) {
             }
             // 404 means that the setup is not completed
             404 -> {
-                callback(null, "404", String(response.data))
+                callback(null, "404", String(response.body().toByteArray()))
             }
             401 -> {
                 invalidApiKey()
