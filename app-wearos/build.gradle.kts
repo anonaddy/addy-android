@@ -106,7 +106,7 @@ dependencies {
 dependencies {
     // General compose dependencies
     implementation("androidx.activity:activity-compose:1.4.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.1.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0-alpha04")
 
     // Animated graphics (for the icon on setup)
     implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha04")
@@ -124,7 +124,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.0-alpha04")
     debugImplementation("androidx.compose.ui:ui-tooling:1.2.0-alpha04")
 
-    implementation("androidx.compose.material:material:1.1.1")
+    implementation("androidx.compose.material:material:1.2.0-alpha04")
 
 }
 
@@ -140,24 +140,24 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut-compose:2.2.0")
+    implementation("app.futured.donut:donut-compose:2.2.1")
 }
 
 // Tiles
 dependencies {
     // Use to implement support for wear tiles
-    implementation("androidx.wear.tiles:tiles:1.1.0-alpha02")
+    implementation("androidx.wear.tiles:tiles:1.1.0-alpha03")
 
     // Use to utilize components and layouts with Material design in your tiles
-    implementation("androidx.wear.tiles:tiles-material:1.1.0-alpha02")
+    implementation("androidx.wear.tiles:tiles-material:1.1.0-alpha03")
 
     // Use to preview wear tiles in your own app
-    debugImplementation("androidx.wear.tiles:tiles-renderer:1.1.0-alpha02")
+    debugImplementation("androidx.wear.tiles:tiles-renderer:1.1.0-alpha03")
 
     // Use to fetch tiles from a tile provider in your tests
-    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0-alpha02")
+    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0-alpha03")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.0")
-    implementation("androidx.wear.tiles:tiles-proto:1.1.0-alpha02")
+    implementation("androidx.wear.tiles:tiles-proto:1.1.0-alpha03")
 
 }

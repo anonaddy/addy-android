@@ -99,7 +99,7 @@ dependencies {
 
 // Animations
 dependencies {
-    implementation("com.airbnb.android:lottie:5.0.1")
+    implementation("com.airbnb.android:lottie:5.0.2")
 }
 
 // Apache for extracting strings ManageAliasActivity
@@ -120,7 +120,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut:2.2.0")
+    implementation("app.futured.donut:donut:2.2.1")
 }
 
 // Loading spinners when execution actions from eg. bottomsheets
