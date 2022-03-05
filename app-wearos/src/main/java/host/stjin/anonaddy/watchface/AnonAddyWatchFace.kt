@@ -1,4 +1,4 @@
-package host.stjin.anonaddy
+package host.stjin.anonaddy.watchface
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -12,11 +12,11 @@ import android.support.wearable.watchface.CanvasWatchFaceService
 import android.support.wearable.watchface.WatchFaceService
 import android.support.wearable.watchface.WatchFaceStyle
 import android.text.format.DateFormat
-import android.util.Log
 import android.util.TypedValue
 import android.view.SurfaceHolder
 import android.view.WindowInsets
 import androidx.core.content.ContextCompat
+import host.stjin.anonaddy.R
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.random.Random
@@ -55,8 +55,8 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
         return Engine()
     }
 
-    private class EngineHandler(reference: AnonAddyWatchFace.Engine) : Handler() {
-        private val mWeakReference: WeakReference<AnonAddyWatchFace.Engine> = WeakReference(reference)
+    private class EngineHandler(reference: Engine) : Handler() {
+        private val mWeakReference: WeakReference<Engine> = WeakReference(reference)
 
         override fun handleMessage(msg: Message) {
             val engine = mWeakReference.get()
@@ -159,11 +159,12 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
             // whether we"re in ambient mode), so we may need to start or stop the timer.
             updateTimer()
         }
-
+/*
+        */
         /**
          * Captures tap event (and tap type) and toggles the background color if the user finishes
          * a tap.
-         */
+         *//*
         override fun onTapCommand(tapType: Int, x: Int, y: Int, eventTime: Long) {
             when (tapType) {
                 WatchFaceService.TAP_TYPE_TOUCH -> {
@@ -174,11 +175,9 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
                 }
                 WatchFaceService.TAP_TYPE_TAP ->
                     // The user has completed the tap gesture.
-                    // TODO: Add code to handle the tap gesture.
-                    Log.e("TAPPPP", "TOPOPP")
             }
             invalidate()
-        }
+        }*/
 
         // 10 lines of characters should be enough for all kind of watches
         var dummyKeys = Array(10) { "" }
