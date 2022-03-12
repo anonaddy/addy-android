@@ -2,7 +2,7 @@
 <h1 align="center">AnonAddy for Android</h1>
 
 <p align="center">
-Easily create and manage your AnonAddy aliases, recipients and more from your phone or tablet or smartwatch with this <b>sexy</b> AnonAddy app for Android.
+Easily create and manage your AnonAddy aliases, recipients and more from your phone,tablet or wearable with this <b>sexy</b> AnonAddy app for Android.
 </br><p align="center">
 <img src="static/banner.png"/>
 </p>
@@ -22,6 +22,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 > Android
 
 - Android 6.0 or higher
+- Wear OS 2.0 or higher (AnonAddy for Android wearables)
 
 ## Characteristics
 
@@ -97,13 +98,22 @@ Third party libraries used.
 - [einmalfel/Earl](https://github.com/einmalfel/Earl) (For built-in updater)
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner) (To be enabled in future versions)
 - [ocpsoft/prettytime](https://github.com/ocpsoft/prettytime)
+- [com.google.android.gms:play-services-wearable](https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable/17.1.0) (for
+  communication with WearOS)
 
+Third party libraries used. (WearOS)
+
+- [androidx.wear.tiles](https://developer.android.com/jetpack/androidx/releases/wear-tiles)
+- [androidx.wear.compose](https://developer.android.com/jetpack/androidx/releases/wear-compose)
+- [com.google.android.gms:play-services-base](https://mvnrepository.com/artifact/com.google.android.gms/play-services-base?repo=google)
 
 ## Feedback and contribution
-I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me.
-Of course, you can also contact the developer directly via telegram or email and I'll get back to you shortly.
+
+I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me. Of course, you can
+also contact the developer directly via telegram or email and I'll get back to you shortly.
 
 ## Donation
+
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=26D39SEWQLBHW)
 [![BuyMeACoffee](static/bmc-button.png)](https://buymeacoffee.com/stjin)
 
