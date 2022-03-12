@@ -83,7 +83,7 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha06")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha07")
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("com.google.android.gms:play-services-wearable:17.1.0")
@@ -106,25 +106,25 @@ dependencies {
 dependencies {
     // General compose dependencies
     implementation("androidx.activity:activity-compose:1.4.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0-alpha04")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0-alpha05")
 
     // Animated graphics (for the icon on setup)
-    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha04")
+    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha05")
 
     // Compose for Wear OS Dependencies
-    implementation("androidx.wear.compose:compose-material:1.0.0-alpha17")
+    implementation("androidx.wear.compose:compose-material:1.0.0-alpha18")
 
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
-    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha17")
+    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha18")
 
     // If you are using Compose Navigation, use the Wear OS version (NOT THE MOBILE VERSION).
     // Uncomment the line below and update the version number.
     //implementation("androidx.wear.compose:compose-navigation:1.0.0-alpha15")
 
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.0-alpha04")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.2.0-alpha04")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.0-alpha05")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.2.0-alpha05")
 
-    implementation("androidx.compose.material:material:1.2.0-alpha04")
+    implementation("androidx.compose.material:material:1.2.0-alpha05")
 
 }
 

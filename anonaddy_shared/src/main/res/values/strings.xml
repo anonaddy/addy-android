@@ -22,4 +22,6 @@
     <string name="store_logs">Store logs</string>
     <string name="background_service_interval">Background service interval</string>
     <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
+    <string name="crafted_with_love_and_privacy">Crafted with love and privacy</string>
+
 </resources>

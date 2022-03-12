@@ -102,6 +102,6 @@ fun getAnonAddyButtonColors(): ButtonColors {
 fun getAnonAddyToggleChipColors(): ToggleChipColors {
     return toggleChipColors(
         checkedEndBackgroundColor = colorResource(id = R.color.md_theme_primaryInverse).copy(alpha = 0.30f),
-        checkedToggleIconTintColor = colorResource(id = R.color.md_theme_onPrimary)
+        checkedToggleControlTintColor = colorResource(id = R.color.md_theme_onPrimary)
     )
 }

@@ -23,12 +23,14 @@ import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.*
 import com.google.android.gms.wearable.Wearable
 import com.google.gson.Gson
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
@@ -215,7 +217,7 @@ class SettingsActivity : ComponentActivity() {
                             },
                             checked = storeLogs,
                             colors = getAnonAddyToggleChipColors(),
-                            toggleIcon = {
+                            toggleControl = {
                                 ToggleChipDefaults.SwitchIcon(checked = storeLogs)
                             },
                             onCheckedChange = {
@@ -271,6 +273,10 @@ class SettingsActivity : ComponentActivity() {
                                 )
                             }
                         )
+
+                        Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS * 2))
+                        Text(text = resources.getString(R.string.crafted_with_love_and_privacy), Modifier.alpha(0.5f), textAlign = TextAlign.Center)
+                        Text(text = BuildConfig.VERSION_NAME, Modifier.alpha(0.5f), textAlign = TextAlign.Center)
                     }
                 }
 
