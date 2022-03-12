@@ -285,14 +285,14 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout-sw600dp/main_profile_select_dialog.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout-sw600dp/main_top_bar_user.xml" value="0.15597587719298245" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_anonaddy_settings.xml" value="0.4607329842931937" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings.xml" value="0.33" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings.xml" value="0.33689610944848225" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_backup.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_mailto.xml" value="0.14444444444444443" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_notify_failed_deliveries.xml" value="0.14444444444444443" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_watch_alias.xml" value="0.14444444444444443" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_features_webintent_resolution.xml" value="0.14168937329700274" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_update.xml" value="0.14444444444444443" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_update.xml" value="0.36169303120991875" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_app_settings_wearos.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_domain_settings.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/activity_failed_deliveries.xml" value="0.25" />

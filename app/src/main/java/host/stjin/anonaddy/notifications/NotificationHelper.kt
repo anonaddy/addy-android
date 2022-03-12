@@ -10,8 +10,7 @@ import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.os.Build
 import androidx.core.app.NotificationCompat.*
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT
-import androidx.core.app.NotificationManagerCompat.IMPORTANCE_HIGH
+import androidx.core.app.NotificationManagerCompat.*
 import androidx.core.content.ContextCompat
 import com.google.android.gms.wearable.MessageEvent
 import host.stjin.anonaddy.BuildConfig
@@ -68,7 +67,7 @@ class NotificationHelper(private val context: Context) {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
             context.resources.getString(R.string.notification_channel_anonaddy_for_wearables),
-            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables_desc), IMPORTANCE_HIGH
+            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables_desc), IMPORTANCE_MAX
         )
 
         buildSetupWearableAppNotification(
