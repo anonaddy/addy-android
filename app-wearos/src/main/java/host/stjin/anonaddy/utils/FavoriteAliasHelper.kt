@@ -17,7 +17,7 @@ class FavoriteAliasHelper(private val context: Context) {
         aliasList?.remove(alias)
         aliasList?.let { settingsManager.putStringSet(SettingsManager.PREFS.WEAROS_FAVORITE_ALIASES, it) }
 
-        // Since an alias was removed from the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its still required
+        // Since an alias was removed from the favorites, call scheduleBackgroundWorker. This method will schedule the service if its still required
         BackgroundWorkerHelper(context).scheduleBackgroundWorker()
     }
 

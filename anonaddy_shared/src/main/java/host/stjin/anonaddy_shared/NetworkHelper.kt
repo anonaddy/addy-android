@@ -2653,7 +2653,7 @@ class NetworkHelper(private val context: Context) {
         )
     }
 
-    suspend fun cacheLastUpdatedAliasesDataForWidget(
+    suspend fun cacheLastUpdatedAliasesData(
         callback: (Boolean) -> Unit,
         amountOfAliasesToCache: Int? = 15
     ) {

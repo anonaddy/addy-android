@@ -69,7 +69,7 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
                 userResourceNetworkCallResult = result
             }
 
-            networkHelper.cacheLastUpdatedAliasesDataForWidget({ result ->
+            networkHelper.cacheLastUpdatedAliasesData({ result ->
                 // Store the result if the data succeeded to update in a boolean
                 aliasNetworkCallResult = result
             })

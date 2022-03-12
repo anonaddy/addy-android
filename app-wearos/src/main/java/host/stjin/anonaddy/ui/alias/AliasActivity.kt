@@ -83,17 +83,19 @@ class AliasActivity : ComponentActivity() {
     private fun setComposeContent() {
         val userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
         if (userResource != null) {
-            // Cache contains 15 most popular aliases
+            // Cache contains 15 last-used aliases
             if (aliases != null) {
                 setContent {
                     AliasList()
                 }
             } else {
                 lifecycleScope.launch {
-                    NetworkHelper(this@AliasActivity).cacheLastUpdatedAliasesDataForWidget({ result ->
+                    NetworkHelper(this@AliasActivity).cacheLastUpdatedAliasesData({ result ->
                         if (result) {
                             setContent {
+                                // Load the aliases that just got cached
                                 loadAliases()
+                                // The load aliaslist
                                 AliasList()
                             }
                         } else {
@@ -101,7 +103,7 @@ class AliasActivity : ComponentActivity() {
                                 ErrorScreen(
                                     this@AliasActivity,
                                     this@AliasActivity.resources.getString(R.string.could_not_refresh_data),
-                                    this@AliasActivity.resources.getString(R.string.edit_alias)
+                                    this@AliasActivity.resources.getString(R.string.aliases)
                                 )
                             }
                         }
