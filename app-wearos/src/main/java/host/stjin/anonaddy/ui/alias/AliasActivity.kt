@@ -292,7 +292,7 @@ class AliasActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .semantics {
-                    contentDescription = getString(R.string.show_on_paired_device)
+                    contentDescription = getString(R.string.add_alias)
                 }
         ) {
             Button(
@@ -319,7 +319,7 @@ class AliasActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .semantics {
-                    contentDescription = getString(R.string.show_on_paired_device)
+                    contentDescription = getString(R.string.settings)
                 }
         ) {
             Button(

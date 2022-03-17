@@ -234,11 +234,11 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
             // If the system is in 24h format, the AM/PM is not included. This means that an extra character can be
             // added before the time to align the text a bit more to the right
             val dummyApiKey1 = if (DateFormat.is24HourFormat(this@AnonAddyWatchFace)) {
-                dummyKeys[0].take(4)
+                dummyKeys[0].take(3)
             } else {
                 // If the system is in 12h format, the AM/PM is included. This means that we do not insert an extra character
                 // before the time to make sure the AM/PM marker fits on screen
-                dummyKeys[0].take(3)
+                dummyKeys[0].take(2)
             }
 
             generateDummyAPIKey()
@@ -247,7 +247,7 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
             val timeTextPost = mPaint.measureText(time)
 
 
-            var myMYOffset = 0f
+            var myMYOffset = -20f
             // For loop
             for (i in 2..9) {
 
