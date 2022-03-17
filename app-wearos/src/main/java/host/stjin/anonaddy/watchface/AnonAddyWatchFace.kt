@@ -207,10 +207,11 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
             canvas.drawColor(Color.BLACK)
             val now = System.currentTimeMillis()
             mCalendar.timeInMillis = now
+            val hour = if (DateFormat.is24HourFormat(this@AnonAddyWatchFace)) mCalendar.get(Calendar.HOUR_OF_DAY) else mCalendar.get(Calendar.HOUR)
 
             var hMarker = ""
             val time = String.format(
-                "%02d%02d", mCalendar.get(Calendar.HOUR_OF_DAY),
+                "%02d%02d", hour,
                 mCalendar.get(Calendar.MINUTE)
             )
 
