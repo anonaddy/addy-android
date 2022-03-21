@@ -44,19 +44,36 @@ class AppSettingsWearOSActivity : BaseActivity() {
             R.drawable.ic_device_watch
         )
 
-        loadNodes()
+        checkIfApiIsAvailable()
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
     }
 
+    private fun checkIfApiIsAvailable() {
+        nodeClient = Wearable.getNodeClient(this)
+        nodeClient!!.connectedNodes.addOnSuccessListener {
+            // nodes available, so reload the nodes
+            loadNodes()
+        }.addOnFailureListener {
+            MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+                .setTitle(resources.getString(R.string.wearable_api_not_available))
+                .setIcon(R.drawable.ic_brand_google_play)
+                .setCancelable(false)
+                .setMessage(resources.getString(R.string.wearable_api_not_available_desc))
+                .setPositiveButton(resources.getString(R.string.i_understand)) { _, _ ->
+                    finish()
+                }
+                .show()
+        }
+    }
+
     private val listOfNodes: ArrayList<Node> = arrayListOf()
     private var nodeClient: NodeClient? = null
     private fun loadNodes() {
-        nodeClient = Wearable.getNodeClient(this)
-        nodeClient!!.connectedNodes.addOnCompleteListener { nodes ->
+        nodeClient!!.connectedNodes.addOnSuccessListener { nodes ->
             listOfNodes.clear()
-            for (node in nodes.result) {
+            for (node in nodes) {
                 listOfNodes.add(node)
             }
 
@@ -180,13 +197,13 @@ class AppSettingsWearOSActivity : BaseActivity() {
     }
 
     private fun startAppOnWearable() {
-        nodeClient?.localNode?.addOnCompleteListener { localnode ->
+        nodeClient?.localNode?.addOnSuccessListener { localnode ->
             val node = settingsManager.getSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE)
             if (node != null) {
                 Wearable.getMessageClient(this).sendMessage(
                     node,
                     "/start",
-                    localnode.result.displayName.toByteArray()
+                    localnode.displayName.toByteArray()
                 ).addOnSuccessListener {
                     SnackbarHelper.createSnackbar(
                         this,
@@ -217,13 +234,13 @@ class AppSettingsWearOSActivity : BaseActivity() {
     }
 
     private fun resetAppOnWearable() {
-        nodeClient?.localNode?.addOnCompleteListener { localNode ->
+        nodeClient?.localNode?.addOnSuccessListener { localNode ->
             val node = settingsManager.getSettingsString(SettingsManager.PREFS.SELECTED_WEAROS_DEVICE)
             if (node != null) {
                 Wearable.getMessageClient(this).sendMessage(
                     node,
                     "/reset",
-                    localNode.result.displayName.toByteArray()
+                    localNode.displayName.toByteArray()
                 ).addOnSuccessListener {
                     SnackbarHelper.createSnackbar(
                         this,

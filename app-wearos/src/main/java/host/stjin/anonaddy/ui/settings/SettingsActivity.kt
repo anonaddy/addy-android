@@ -305,16 +305,16 @@ class SettingsActivity : ComponentActivity() {
         }
 
         val nodeClient = Wearable.getNodeClient(this)
-        nodeClient.connectedNodes.addOnCompleteListener { nodes ->
-            if (nodes.result.any()) {
-                nodeClient.localNode.addOnCompleteListener {
+        nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+            if (nodes.any()) {
+                nodeClient.localNode.addOnSuccessListener {
                     hasPairedDevices = true
 
                     val logs = Gson().toJson(LoggingHelper(this).getLogs())
 
                     // Send a message to all connected nodes basically broadcasting itself.
                     // Nodes with the app installed will receive this message and open the setup sheet
-                    for (node in nodes.result) {
+                    for (node in nodes) {
                         Wearable.getMessageClient(this).sendMessage(node.id, "/showLogs", logs.toByteArray())
                     }
 

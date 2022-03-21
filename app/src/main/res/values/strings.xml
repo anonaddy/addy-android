@@ -555,5 +555,10 @@
     <string name="setup_app_on_wearable_desc">Set up the app on your wearable with the same account that this app is set up with</string>
     <string name="reset_app_on_wearable_desc">Remotely reset the AnonAddy app on your wearable</string>
     <string name="start_wearable_app_desc">Remotely open the AnonAddy app on your wearable</string>
+    <string name="wearable_api_not_available_desc">Wearable API is not available on this device. In order to use AnonAddy for wearables make sure to have a recent version of Google Play Services installed</string>
+    <string name="wearable_api_not_available">API not available</string>
+    <string name="i_understand">I understand</string>
+    <string name="permissions_required">Permissions required</string>
+    <string name="notification_permissions_required_desc">Notification permissions are required to fully use the app. Tap here to allow AnonAddy to send notifications. You retain control over which notification the app can send.</string>
 
 </resources>

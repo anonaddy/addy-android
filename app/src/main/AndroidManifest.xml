@@ -8,8 +8,9 @@
          It only gets used on the WearOS module -->
     <uses-sdk tools:overrideLibrary="androidx.wear.compose.material, androidx.wear.compose.foundation" />
 
-
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- BLOCK -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- BLOCK -->
     <!--
     &lt;!&ndash; Used for scanning the API key &ndash;&gt;
         <uses-permission android:name="android.permission.CAMERA" />
@@ -25,6 +26,8 @@
             android:required="false" />
     -->
     <!-- END BLOCK -->
+
+
     <!--
     Starting from Android 11, we need to query to packages with mailto: mailscheme
     This is being used in the ManageAliasActivity for sending emails from an alias
@@ -260,7 +263,11 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data android:scheme="wear" android:host="*" android:pathPrefix="/requestsetup"/>
+
+                <data
+                    android:host="*"
+                    android:pathPrefix="/requestsetup"
+                    android:scheme="wear" />
                 <data
                     android:host="*"
                     android:pathPrefix="/showLogs"

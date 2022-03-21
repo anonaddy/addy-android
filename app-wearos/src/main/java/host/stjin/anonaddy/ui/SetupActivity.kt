@@ -91,14 +91,14 @@ class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
 
     private fun requestSetup() {
         val nodeClient = Wearable.getNodeClient(this)
-        nodeClient.connectedNodes.addOnCompleteListener { nodes ->
-            if (nodes.result.any()) {
-                nodeClient.localNode.addOnCompleteListener { localNode ->
+        nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+            if (nodes.any()) {
+                nodeClient.localNode.addOnSuccessListener { localNode ->
                     hasPairedDevices = true
                     // Send a message to all connected nodes basically broadcasting itself.
                     // Nodes with the app installed will receive this message and open the setup sheet
-                    for (node in nodes.result) {
-                        Wearable.getMessageClient(this).sendMessage(node.id, "/requestsetup", localNode.result.displayName.toByteArray())
+                    for (node in nodes) {
+                        Wearable.getMessageClient(this).sendMessage(node.id, "/requestsetup", localNode.displayName.toByteArray())
                     }
                 }
             } else {

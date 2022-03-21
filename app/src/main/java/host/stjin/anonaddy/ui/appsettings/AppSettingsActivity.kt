@@ -1,15 +1,23 @@
 package host.stjin.anonaddy.ui.appsettings
 
+import android.Manifest
 import android.app.ActivityManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.view.View
 import android.widget.CompoundButton
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -72,6 +80,18 @@ class AppSettingsActivity : BaseActivity(),
         setOnBiometricSwitchListeners()
 
         checkForUpdates()
+        checkPermissions()
+    }
+
+    private fun checkPermissions() {
+        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Notification permission check
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.areNotificationsEnabled()) {
+            binding.activityAppSettingsSectionNotificationPermission.visibility = View.VISIBLE
+        } else {
+            binding.activityAppSettingsSectionNotificationPermission.visibility = View.GONE
+        }
     }
 
     private fun checkForUpdates() {
@@ -344,6 +364,35 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
+        binding.activityAppSettingsSectionNotificationPermission.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            @RequiresApi(33)
+            override fun onClick() {
+                requestNotificationPermissions()
+            }
+
+        })
+
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private var notificationPermissionsResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+        when (result) {
+            true -> checkPermissions()
+            false -> {
+                val intent: Intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, this.packageName)
+                startActivity(intent)
+            }
+        }
+    }
+
+    @RequiresApi(33)
+    private fun requestNotificationPermissions() {
+        // Check if camera permissions are granted
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
+            notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     private fun resetApp() {
@@ -355,8 +404,8 @@ class AppSettingsActivity : BaseActivity(),
                 dialog.dismiss()
             }
             .setPositiveButton(resources.getString(R.string.reset_app)) { _, _ ->
-                Wearable.getNodeClient(this).connectedNodes.addOnCompleteListener { nodes ->
-                    if (nodes.result.any()) {
+                Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+                    if (nodes.any()) {
                         MaterialAlertDialogBuilder(
                             this@AppSettingsActivity,
                             R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons
@@ -399,14 +448,14 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun resetAppOnAllWearables(callback: (Boolean) -> Unit) {
         val nodeClient = Wearable.getNodeClient(this)
-        nodeClient.connectedNodes.addOnCompleteListener { nodes ->
-            if (nodes.result.any()) {
-                nodeClient.localNode.addOnCompleteListener { localNode ->
-                    for (node in nodes.result) {
+        nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+            if (nodes.any()) {
+                nodeClient.localNode.addOnSuccessListener { localNode ->
+                    for (node in nodes) {
                         Wearable.getMessageClient(this).sendMessage(
                             node.id,
                             "/reset",
-                            localNode.result.displayName.toByteArray()
+                            localNode.displayName.toByteArray()
                         )
                     }
                     callback(true)

@@ -142,12 +142,12 @@ class ManageAliasActivity : BaseActivity(),
     private var nodeClient: NodeClient? = null
     private fun loadNodes() {
         nodeClient = Wearable.getNodeClient(this)
-        nodeClient!!.connectedNodes.addOnCompleteListener { nodes ->
+        nodeClient!!.connectedNodes.addOnSuccessListener { nodes ->
             // Send a message to all connected nodes
             // Nodes with the app installed will receive this message and open the ManageAliasActivity
-            if (nodes.result.any()) {
+            if (nodes.any()) {
                 toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
-                    for (node in nodes.result) {
+                    for (node in nodes) {
                         Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", aliasId.toByteArray())
                     }
                     SnackbarHelper.createSnackbar(

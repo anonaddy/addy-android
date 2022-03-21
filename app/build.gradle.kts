@@ -4,11 +4,13 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    //compileSdk = 32
+    compileSdkPreview = "Tiramisu"
     defaultConfig {
         applicationId = rootProject.extra["application_id"] as String
         minSdk = 23
-        targetSdk = 32
+        //targetSdk = 32
+        targetSdkPreview = "Tiramisu"
         versionCode = 40
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
         versionName = "v4.0.0"

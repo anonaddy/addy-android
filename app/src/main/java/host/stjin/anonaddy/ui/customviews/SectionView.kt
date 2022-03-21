@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.customviews
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -75,8 +76,12 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             // Else flip the switch
             if (onLongClicklistener != null) {
                 onLongClicklistener?.onLongClick()
+            } else {
+                // Allow users to show all text by long pressing the section
+                description?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                description?.maxLines = 10
             }
-            false
+            true
         }
 
     fun setSwitchChecked(boolean: Boolean) {

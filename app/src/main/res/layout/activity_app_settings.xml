@@ -37,6 +37,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
+
                 <LinearLayout
                     style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
@@ -50,6 +51,17 @@
                         android:text="@string/general" />
 
                 </LinearLayout>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_notification_permission"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionAlert="true"
+                    app:sectionDescription="@string/notification_permissions_required_desc"
+                    app:sectionStartIcon="@drawable/ic_notification"
+                    app:sectionTitle="@string/permissions_required">
+
+                </host.stjin.anonaddy.ui.customviews.SectionView>
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_app_theme"

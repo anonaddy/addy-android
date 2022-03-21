@@ -253,7 +253,6 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             } else {
                 codeScanner?.startPreview()
             }
-
         }
     }
 
