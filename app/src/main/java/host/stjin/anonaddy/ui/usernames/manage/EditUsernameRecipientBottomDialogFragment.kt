@@ -132,15 +132,15 @@ class EditUsernameRecipientBottomDialogFragment(
         recipient: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDefaultRecipientForSpecificUsername({ result ->
-            if (result == "200") {
+        networkHelper.updateDefaultRecipientForSpecificUsername({ username, error ->
+            if (username != null) {
                 listener.recipientEdited()
             } else {
                 // Revert the button to normal
                 binding.bsEditrecipientSaveButton.revertAnimation()
 
                 binding.bsEditrecipientTil.error =
-                    context.resources.getString(R.string.error_edit_recipient) + "\n" + result
+                    context.resources.getString(R.string.error_edit_recipient) + "\n" + error
             }
         }, aliasId, recipient)
     }

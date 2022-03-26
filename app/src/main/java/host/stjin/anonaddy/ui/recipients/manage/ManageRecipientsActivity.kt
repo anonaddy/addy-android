@@ -73,7 +73,6 @@ class ManageRecipientsActivity : BaseActivity(),
     }
 
     private fun setOnSwitchChangeListeners(fingerprint: String?) {
-
         binding.activityManageRecipientActive.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
@@ -104,6 +103,62 @@ class ManageRecipientsActivity : BaseActivity(),
                 }
             }
         })
+
+
+        binding.activityManageRecipientCanReplySend.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageRecipientCanReplySend.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            allowRecipient()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disallowRecipient()
+                        }
+                    }
+                }
+            }
+        })
+
+
+    }
+
+    private suspend fun disallowRecipient() {
+        networkHelper.disallowRecipientToReplySend({ result ->
+            binding.activityManageRecipientCanReplySend.showProgressBar(false)
+            if (result == "204") {
+                binding.activityManageRecipientCanReplySend.setTitle(resources.getString(R.string.cannot_reply_send))
+            } else {
+                binding.activityManageRecipientCanReplySend.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, recipientId)
+    }
+
+    private suspend fun allowRecipient() {
+        networkHelper.allowRecipientToReplySend({ recipient, error ->
+            binding.activityManageRecipientCanReplySend.showProgressBar(false)
+            if (recipient != null) {
+                binding.activityManageRecipientCanReplySend.setTitle(resources.getString(R.string.can_reply_send))
+            } else {
+                binding.activityManageRecipientCanReplySend.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, recipientId)
     }
 
 
@@ -126,15 +181,15 @@ class ManageRecipientsActivity : BaseActivity(),
 
 
     private suspend fun enableEncryption() {
-        networkHelper.enableEncryptionRecipient({ result ->
+        networkHelper.enableEncryptionRecipient({ recipient, error ->
             binding.activityManageRecipientActive.showProgressBar(false)
-            if (result == "200") {
+            if (recipient != null) {
                 binding.activityManageRecipientActive.setTitle(resources.getString(R.string.encryption_enabled))
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
-                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
                     binding.activityManageRecipientCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
@@ -171,6 +226,13 @@ class ManageRecipientsActivity : BaseActivity(),
             override fun onClick() {
                 forceSwitch = true
                 binding.activityManageRecipientActive.setSwitchChecked(!binding.activityManageRecipientActive.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientCanReplySend.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientCanReplySend.setSwitchChecked(!binding.activityManageRecipientCanReplySend.getSwitchChecked())
             }
         })
 
@@ -272,6 +334,13 @@ class ManageRecipientsActivity : BaseActivity(),
                 /**
                  *  SWITCH STATUS
                  */
+
+                binding.activityManageRecipientCanReplySend.setSwitchChecked(list.can_reply_send)
+                binding.activityManageRecipientCanReplySend.setTitle(
+                    if (list.can_reply_send) resources.getString(R.string.can_reply_send) else resources.getString(
+                        R.string.cannot_reply_send
+                    )
+                )
 
                 binding.activityManageRecipientActive.setSwitchChecked(list.should_encrypt)
                 binding.activityManageRecipientActive.setTitle(

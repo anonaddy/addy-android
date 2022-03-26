@@ -91,15 +91,15 @@ class EditAliasDescriptionBottomDialogFragment(
 
     private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificAlias({ result ->
-            if (result == "200") {
+        networkHelper.updateDescriptionSpecificAlias({ alias, error ->
+            if (alias != null) {
                 listener.descriptionEdited(description)
             } else {
                 // Animate the button to progress
                 binding.bsEditaliasAliasSaveButton.revertAnimation()
 
                 binding.bsEditaliasAliasDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + result
+                    context.resources.getString(R.string.error_edit_description) + "\n" + error
             }
             // aliasId is never null at this point, hence the !!
         }, aliasId!!, description)

@@ -91,15 +91,15 @@ class EditUsernameDescriptionBottomDialogFragment(
 
     private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificUsername({ result ->
-            if (result == "200") {
+        networkHelper.updateDescriptionSpecificUsername({ username, error ->
+            if (username != null) {
                 listener.descriptionEdited(description)
             } else {
                 // Revert the button to normal
                 binding.bsEditusernameUsernameSaveButton.revertAnimation()
 
                 binding.bsEditusernameUsernameDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + result
+                    context.resources.getString(R.string.error_edit_description) + "\n" + error
             }
             // usernameId is never null at this point, hence the !!
         }, usernameId!!, description)

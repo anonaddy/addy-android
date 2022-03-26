@@ -169,6 +169,15 @@
 
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_can_reply_send"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/can_reply_send_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_arrow_back_up"
+                        app:sectionTitle="@string/can_reply_send" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_active"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

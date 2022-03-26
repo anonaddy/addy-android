@@ -146,6 +146,7 @@ class AliasActivity : ComponentActivity() {
                     showLeadingText = true,
                     leadingText = resources.getString(R.string.aliases)
                 )
+                // TODO remove all Logs
                 Log.e("ANONDEBUG12", "timeText")
 
             },

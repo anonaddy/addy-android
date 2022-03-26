@@ -412,20 +412,17 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             } else {
                 // Post the rule
                 lifecycleScope.launch {
-                    networkHelper.createRule({ result ->
-                        when (result) {
-                            "201" -> {
-                                finish()
-                            }
-                            else -> {
-                                binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE
-                                SnackbarHelper.createSnackbar(
-                                    this@CreateRuleActivity,
-                                    resources.getString(R.string.error_creating_rule) + "\n" + result,
-                                    binding.activityRulesCreateCL,
-                                    LoggingHelper.LOGFILES.DEFAULT
-                                ).show()
-                            }
+                    networkHelper.createRule({ rule, error ->
+                        if (rule != null) {
+                            finish()
+                        } else {
+                            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE
+                            SnackbarHelper.createSnackbar(
+                                this@CreateRuleActivity,
+                                resources.getString(R.string.error_creating_rule) + "\n" + error,
+                                binding.activityRulesCreateCL,
+                                LoggingHelper.LOGFILES.DEFAULT
+                            ).show()
                         }
                     }, rules)
                 }

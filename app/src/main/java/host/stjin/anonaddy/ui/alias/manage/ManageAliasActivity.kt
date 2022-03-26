@@ -483,8 +483,8 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private suspend fun restoreAliasHttpRequest(id: String, context: Context) {
-        networkHelper.restoreAlias({ result ->
-            if (result == "200") {
+        networkHelper.restoreAlias({ alias, error ->
+            if (alias != null) {
                 restoreAliasSnackbar.dismiss()
                 shouldUpdate = true
                 setPage()
@@ -493,7 +493,7 @@ class ManageAliasActivity : BaseActivity(),
                     this,
                     context.resources.getString(
                         R.string.s_s,
-                        context.resources.getString(R.string.error_restoring_alias), result
+                        context.resources.getString(R.string.error_restoring_alias), error
                     ),
                     binding.activityManageAliasCL,
                     LoggingHelper.LOGFILES.DEFAULT

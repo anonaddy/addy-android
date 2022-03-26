@@ -560,5 +560,8 @@
     <string name="i_understand">I understand</string>
     <string name="permissions_required">Permissions required</string>
     <string name="notification_permissions_required_desc">Notification permissions are required to fully use the app. Tap here to allow AnonAddy to send notifications. You retain control over which notification the app can send.</string>
+    <string name="can_reply_send">Reply/send allowed</string>
+    <string name="cannot_reply_send">Reply/send not allowed</string>
+    <string name="can_reply_send_desc">Reply and send from your aliases</string>
 
 </resources>

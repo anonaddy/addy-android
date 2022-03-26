@@ -98,8 +98,8 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
 
     private suspend fun addGpgKeyHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addEncryptionKeyRecipient({ result ->
-            if (result == "200") {
+        networkHelper.addEncryptionKeyRecipient({ recipient, error ->
+            if (recipient != null) {
                 listener.onKeyAdded()
             } else {
 
@@ -107,7 +107,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
                 binding.bsEditRecipientGpgKeySaveButton.revertAnimation()
 
                 binding.bsEditRecipientGpgKeyTil.error =
-                    context.resources.getString(R.string.error_add_gpg_key) + "\n" + result
+                    context.resources.getString(R.string.error_add_gpg_key) + "\n" + error
             }
             // aliasId is never null at this point, hence the !!
         }, aliasId!!, description)

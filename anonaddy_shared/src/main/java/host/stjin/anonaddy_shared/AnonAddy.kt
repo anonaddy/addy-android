@@ -9,10 +9,10 @@ object AnonAddy {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 0.8.10 = (0)810
+    // 0.11.0
     var MINIMUMVERSIONCODEMAJOR = 0
-    var MINIMUMVERSIONCODEMINOR = 8
-    var MINIMUMVERSIONCODEPATCH = 10
+    var MINIMUMVERSIONCODEMINOR = 11
+    var MINIMUMVERSIONCODEPATCH = 0
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -23,6 +23,10 @@ object AnonAddy {
     //resettableLazy(lazyMgr) properties: the value gets computed only upon first access
     val lazyMgr = resettableManager()
     val API_URL_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/recipients" }
+
+    //0.10.1
+    val API_URL_ALLOWED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/allowed-recipients" }
+
     val API_URL_ALIAS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/aliases" }
     val API_URL_ACTIVE_ALIAS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-aliases" }
     val API_URL_ALIAS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/alias-recipients" }

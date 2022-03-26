@@ -17,6 +17,7 @@ import host.stjin.anonaddy_shared.AnonAddy.API_URL_ACTIVE_RULES
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ACTIVE_USERNAMES
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALIAS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALIAS_RECIPIENTS
+import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALLOWED_RECIPIENTS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_APP_VERSION
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_DOMAINS
@@ -341,7 +342,6 @@ class NetworkHelper(private val context: Context) {
      * ALIASES
      */
 
-
     suspend fun addAlias(
         callback: (Aliases?, String?) -> Unit,
         domain: String,
@@ -560,7 +560,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun updateDescriptionSpecificAlias(
-        callback: (String?) -> Unit,
+        callback: (Aliases?, String?) -> Unit,
         aliasId: String,
         description: String
     ) {
@@ -579,7 +579,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -587,7 +590,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -601,6 +604,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -610,7 +614,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun updateRecipientsSpecificAlias(
-        callback: (String?) -> Unit,
+        callback: (Aliases?, String?) -> Unit,
         aliasId: String,
         recipients: ArrayList<String>
     ) {
@@ -637,7 +641,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -645,7 +652,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -659,6 +666,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -847,7 +855,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun restoreAlias(
-        callback: (String?) -> Unit,
+        callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
         val (_, response, result) = Fuel.patch("${API_URL_ALIAS}/$aliasId/restore")
@@ -858,7 +866,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -866,7 +877,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -880,6 +891,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1048,6 +1060,99 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun allowRecipientToReplySend(
+        callback: (Recipients?, String?) -> Unit,
+        recipientId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("id", recipientId)
+
+        val (_, response, result) = Fuel.post(API_URL_ALLOWED_RECIPIENTS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(anonAddyData.data, null)
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enableEncryptionRecipient",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun disallowRecipientToReplySend(
+        callback: (String?) -> Unit,
+        recipientId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_ALLOWED_RECIPIENTS}/$recipientId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disallowRecipientToReplySend",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
+
 
     suspend fun disableEncryptionRecipient(
         callback: (String?) -> Unit?,
@@ -1093,7 +1198,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun enableEncryptionRecipient(
-        callback: (String?) -> Unit,
+        callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
 
@@ -1109,7 +1214,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1117,7 +1225,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -1131,6 +1239,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1183,7 +1292,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun addEncryptionKeyRecipient(
-        callback: (String?) -> Unit,
+        callback: (Recipients?, String?) -> Unit,
         recipientId: String,
         keyData: String
     ) {
@@ -1200,7 +1309,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1208,7 +1320,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -1222,6 +1334,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1533,7 +1646,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun updateDefaultRecipientForSpecificDomain(
-        callback: (String?) -> Unit,
+        callback: (Domains?, String?) -> Unit,
         domainId: String,
         recipientId: String
     ) {
@@ -1552,7 +1665,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1560,7 +1676,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -1572,6 +1688,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1624,7 +1741,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun activateSpecificDomain(
-        callback: (String?) -> Unit,
+        callback: (Domains?, String?) -> Unit,
         domainId: String
     ) {
         val json = JSONObject()
@@ -1639,7 +1756,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1647,7 +1767,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -1661,6 +1781,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1713,7 +1834,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun enableCatchAllSpecificDomain(
-        callback: (String?) -> Unit,
+        callback: (Domains?, String?) -> Unit,
         domainId: String
     ) {
         val json = JSONObject()
@@ -1728,7 +1849,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1736,7 +1860,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -1750,6 +1874,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -1760,7 +1885,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun updateDescriptionSpecificDomain(
-        callback: (String?) -> Unit,
+        callback: (Domains?, String?) -> Unit,
         domainId: String,
         description: String
     ) {
@@ -1779,7 +1904,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1787,7 +1915,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -1799,6 +1927,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2012,7 +2141,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun updateDefaultRecipientForSpecificUsername(
-        callback: (String?) -> Unit,
+        callback: (Usernames?, String?) -> Unit,
         userNameId: String,
         recipientId: String
     ) {
@@ -2031,7 +2160,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2039,7 +2171,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -2051,6 +2183,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2103,7 +2236,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun activateSpecificUsername(
-        callback: (String?) -> Unit,
+        callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
         val json = JSONObject()
@@ -2118,7 +2251,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2126,7 +2262,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -2140,6 +2276,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2149,7 +2286,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun updateDescriptionSpecificUsername(
-        callback: (String?) -> Unit,
+        callback: (Usernames?, String?) -> Unit,
         usernameId: String,
         description: String
     ) {
@@ -2168,7 +2305,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2176,7 +2316,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -2188,6 +2328,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2200,10 +2341,6 @@ class NetworkHelper(private val context: Context) {
      * RULES
      */
 
-
-    /**
-     * DOMAINS
-     */
 
     suspend fun getAllRules(
         callback: (ArrayList<Rules>?, String?) -> Unit,
@@ -2367,7 +2504,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun createRule(
-        callback: (String?) -> Unit,
+        callback: (Rules?, String?) -> Unit,
         rule: Rules
     ) {
         val ruleJson = Gson().toJson(rule)
@@ -2380,7 +2517,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             201 -> {
-                callback("201")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRule::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2388,7 +2528,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -2402,6 +2542,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2556,7 +2697,7 @@ class NetworkHelper(private val context: Context) {
 
 
     suspend fun activateSpecificRule(
-        callback: (String?) -> Unit,
+        callback: (Rules?, String?) -> Unit,
         ruleId: String
     ) {
         val json = JSONObject()
@@ -2571,7 +2712,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRule::class.java)
+                callback(anonAddyData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2579,7 +2723,7 @@ class NetworkHelper(private val context: Context) {
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 5000)
-                callback(null)
+                callback(null, null)
             }
             else -> {
                 val ex = result.component2()?.message
@@ -2593,6 +2737,7 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )
@@ -2789,6 +2934,59 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "getAllFailedDeliveries",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun getSpecificFailedDelivery(
+        callback: (FailedDeliveries?, String?) -> Unit,
+        id: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) =
+            Fuel.get("${API_URL_FAILED_DELIVERIES}/$id")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleFailedDelivery::class.java)
+                callback(anonAddyData.data, null)
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getSpecificFailedDelivery",
                     ErrorHelper.getErrorMessage(
                         if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
                     )

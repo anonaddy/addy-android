@@ -133,15 +133,15 @@ class EditDomainRecipientBottomDialogFragment(
         recipient: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDefaultRecipientForSpecificDomain({ result ->
-            if (result == "200") {
+        networkHelper.updateDefaultRecipientForSpecificDomain({ domain, error ->
+            if (domain != null) {
                 listener.recipientEdited()
             } else {
                 // Revert the button to normal
                 binding.bsEditrecipientSaveButton.revertAnimation()
 
                 binding.bsEditrecipientTil.error =
-                    context.resources.getString(R.string.error_edit_recipient) + "\n" + result
+                    context.resources.getString(R.string.error_edit_recipient) + "\n" + error
             }
         }, aliasId, recipient)
     }

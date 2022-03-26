@@ -212,8 +212,8 @@ class RulesSettingsActivity : BaseActivity() {
     }
 
     private suspend fun activateRule(ruleId: String) {
-        networkHelper?.activateSpecificRule({ result ->
-            if (result == "200") {
+        networkHelper?.activateSpecificRule({ rule, error ->
+            if (rule != null) {
                 getDataFromWeb()
                 SnackbarHelper.createSnackbar(
                     this,
@@ -223,7 +223,7 @@ class RulesSettingsActivity : BaseActivity() {
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
-                    this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
+                    this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + error,
                     binding.activityManageRulesCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()

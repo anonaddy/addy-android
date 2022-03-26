@@ -132,15 +132,15 @@ class ManageDomainsActivity : BaseActivity(),
     }
 
     private suspend fun enableCatchAll() {
-        networkHelper.enableCatchAllSpecificDomain({ result ->
+        networkHelper.enableCatchAllSpecificDomain({ domain, error ->
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
-            if (result == "200") {
+            if (domain != null) {
                 binding.activityManageDomainCatchAllSwitchLayout.setTitle(resources.getString(R.string.catch_all_enabled))
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
-                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + error,
                     binding.activityManageDomainCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
@@ -166,15 +166,15 @@ class ManageDomainsActivity : BaseActivity(),
     }
 
     private suspend fun activateDomain() {
-        networkHelper.activateSpecificDomain({ result ->
+        networkHelper.activateSpecificDomain({ domain, error ->
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
-            if (result == "200") {
+            if (domain != null) {
                 binding.activityManageDomainActiveSwitchLayout.setTitle(resources.getString(R.string.domain_activated))
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
-                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
                     binding.activityManageDomainCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()

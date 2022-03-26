@@ -90,8 +90,8 @@ class EditDomainDescriptionBottomDialogFragment(
 
     private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificDomain({ result ->
-            if (result == "200") {
+        networkHelper.updateDescriptionSpecificDomain({ domain, error ->
+            if (domain != null) {
                 listener.descriptionEdited(description)
             } else {
 
@@ -99,7 +99,7 @@ class EditDomainDescriptionBottomDialogFragment(
                 binding.bsEditdomainDomainSaveButton.revertAnimation()
 
                 binding.bsEditdomainDomainDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + result
+                    context.resources.getString(R.string.error_edit_description) + "\n" + error
             }
             // domainId is never null at this point, hence the !!
         }, domainId!!, description)

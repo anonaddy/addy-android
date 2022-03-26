@@ -113,15 +113,15 @@ class ManageUsernamesActivity : BaseActivity(),
 
 
     private suspend fun activateUsername() {
-        networkHelper.activateSpecificUsername({ result ->
+        networkHelper.activateSpecificUsername({ username, error ->
             binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
-            if (result == "200") {
+            if (username != null) {
                 binding.activityManageUsernameActiveSwitchLayout.setTitle(resources.getString(R.string.username_activated))
             } else {
                 binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
-                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
                     binding.activityManageUsernameCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()

@@ -144,15 +144,15 @@ class EditAliasRecipientsBottomDialogFragment(
         recipients: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateRecipientsSpecificAlias({ result ->
-            if (result == "200") {
+        networkHelper.updateRecipientsSpecificAlias({ alias, error ->
+            if (alias != null) {
                 listener.recipientsEdited()
             } else {
                 // Revert the button to normal
                 binding.bsEditrecipientsSaveButton.revertAnimation()
 
                 binding.bsEditrecipientsTil.error =
-                    context.resources.getString(R.string.error_edit_recipients) + "\n" + result
+                    context.resources.getString(R.string.error_edit_recipients) + "\n" + error
             }
         }, aliasId, recipients)
     }

@@ -5,10 +5,12 @@
       <map>
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/circle.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_add.xml" value="0.1" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_arrow_back_up.xml" value="0.19" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_email_at.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_forbid.xml" value="0.2555" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_anim.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_foreground.xml" value="0.147" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_mail_forward.xml" value="0.19" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_search.xml" value="0.1195" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_settings.xml" value="0.2865" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.147" />
