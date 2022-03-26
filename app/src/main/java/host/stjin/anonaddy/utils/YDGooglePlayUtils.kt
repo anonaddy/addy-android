@@ -36,6 +36,7 @@ object YDGooglePlayUtils {
                 val info = pm.getInstallSourceInfo(packageName)
                 return info.installingPackageName
             }
+            @Suppress("DEPRECATION")
             return pm.getInstallerPackageName(packageName)
         } catch (e: PackageManager.NameNotFoundException) {
         }

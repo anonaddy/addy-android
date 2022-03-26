@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.settings
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
@@ -49,53 +51,70 @@ class SettingsActivity : ComponentActivity() {
     private val SPACING_ALIAS_BUTTONS = Dp(8f)
 
 
-    private var storeLogs by mutableStateOf(false)
-    private var backgroundServiceInterval by mutableStateOf(30)
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         favoriteAliasHelper = FavoriteAliasHelper(this)
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
+        setComposeContent()
+    }
 
-        storeLogs = settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)
+    private fun getStoreLogsFromSettings(): Boolean {
+        return settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS)
+    }
 
-        when (settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)) {
+    private fun getBackgroundServiceIntervalFromSetting(): Int {
+        return when (getBackgroundServiceIntervalValueFromSettings()) {
             15 -> {
-                backgroundServiceInterval = 1
+                1
             }
             30 -> {
-                backgroundServiceInterval = 2
+                2
             }
             60 -> {
-                backgroundServiceInterval = 3
+                3
             }
             120 -> {
-                backgroundServiceInterval = 4
+                4
+            }
+            else -> {
+                2
             }
         }
+    }
 
+    private fun getBackgroundServiceIntervalValueFromSettings(): Int {
+        return settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)
+    }
+
+    private fun setComposeContent() {
         setContent {
             ComposeContent()
         }
     }
 
+    private var backgroundServiceInterval by mutableStateOf(2)
+    private var backgroundServiceIntervalValue by mutableStateOf(30)
+    private var storeLogs by mutableStateOf(false)
 
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
     @Composable
     private fun ComposeContent() {
-        // Creates a CoroutineScope bound to the lifecycle
-        val scope = rememberCoroutineScope()
-        val haptic = LocalHapticFeedback.current
-
+        Log.e("ANONDEBUG12", "ComposeContent")
         AppTheme {
+            val scope = rememberCoroutineScope()
+            val haptic = LocalHapticFeedback.current
+            var currentScrollPosition = 0
+            backgroundServiceInterval = getBackgroundServiceIntervalFromSetting()
+            backgroundServiceIntervalValue = getBackgroundServiceIntervalValueFromSettings()
+            storeLogs = getStoreLogsFromSettings()
+            val focusRequester = remember { FocusRequester() }
             val lazyListState: LazyListState = rememberLazyListState()
             Scaffold(
                 modifier = Modifier,
                 timeText = {
                     CustomTimeText(
-                        visible = lazyListState.firstVisibleItemScrollOffset == 0,
+                        visible = !lazyListState.isScrollInProgress && lazyListState.firstVisibleItemScrollOffset == 0,
                         showLeadingText = true,
                         leadingText = resources.getString(R.string.settings)
                     )
@@ -103,15 +122,14 @@ class SettingsActivity : ComponentActivity() {
                 vignette = {
                     Vignette(vignettePosition = VignettePosition.TopAndBottom)
                 },
-                positionIndicator = {
+                /*positionIndicator = {
+                    Log.e("ANONDEBUG12", "positionIndicator")
                     PositionIndicator(
                         lazyListState = lazyListState
                     )
-
-                }
+                },*/
             ) {
-                val focusRequester = remember { FocusRequester() }
-                var currentScrollPosition = 0
+                Log.e("ANONDEBUG12", "LazyColumn")
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -141,143 +159,34 @@ class SettingsActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     state = lazyListState,
                 ) {
+                    item { Text(text = resources.getString(R.string.background_service_interval)) }
                     item {
-
-                        Text(text = resources.getString(R.string.background_service_interval))
                         Text(
                             text = resources.getString(
                                 R.string.background_service_interval_value,
-                                settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)
+                                backgroundServiceIntervalValue
                             ), Modifier.alpha(0.4f)
                         )
-                        InlineSlider(
-                            colors = getAnonAddyInlineSliderColors(),
-                            modifier = Modifier.padding(top = 12.dp),
-                            value = backgroundServiceInterval.toFloat(),
-                            steps = 3,
-                            onValueChange = {
-                                when (it) {
-                                    1f -> {
-                                        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 15)
-                                        backgroundServiceInterval = 1
-                                    }
-                                    2f -> {
-                                        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)
-                                        backgroundServiceInterval = 2
-                                    }
-                                    3f -> {
-                                        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 60)
-                                        backgroundServiceInterval = 3
-                                    }
-                                    4f -> {
-                                        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 120)
-                                        backgroundServiceInterval = 4
-                                    }
-                                }
-
-                                // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
-                                BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
-                            })
-
-                        Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.tile_favorite_aliases_label))
-
-                        Chip(
-                            modifier = Modifier
-                                .padding(top = 12.dp),
-                            onClick = {
-                                if (!lazyListState.isScrollInProgress) {
-                                    FavoriteAliasHelper(this@SettingsActivity).clearFavoriteAliases()
-                                    Toast.makeText(this@SettingsActivity, resources.getString(R.string.favorite_aliases_cleared), Toast.LENGTH_SHORT)
-                                        .show()
-                                    // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
-                                    BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
-                                }
-                            },
-                            colors = getAnonAddyChipColors(),
-                            enabled = true,
-                            label = { Text(text = resources.getString(R.string.clear_favorites)) },
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_star),
-                                    contentDescription = resources.getString(R.string.clear_favorites),
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .wrapContentSize(align = Alignment.Center),
-                                )
-                            }
-                        )
-
-                        Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.logs))
-                        ToggleChip(
-                            modifier = Modifier.padding(top = 12.dp, bottom = 2.dp),
-                            label = {
-                                Text(
-                                    resources.getString(R.string.store_logs), maxLines = 1, overflow = TextOverflow.Ellipsis
-                                )
-                            },
-                            checked = storeLogs,
-                            colors = getAnonAddyToggleChipColors(),
-                            toggleControl = {
-                                ToggleChipDefaults.SwitchIcon(checked = storeLogs)
-                            },
-                            onCheckedChange = {
-                                if (!lazyListState.isScrollInProgress) {
-                                    storeLogs = it
-                                    settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, it)
-                                }
-                            },
-                            enabled = true
-                        )
-                        Chip(
-                            modifier = Modifier
-                                .padding(top = 2.dp, bottom = 2.dp),
-                            onClick = {
-                                if (!lazyListState.isScrollInProgress) {
-                                    sendLogsToPairedDevice()
-                                }
-                            },
-                            colors = getAnonAddyChipColors(),
-                            enabled = true,
-                            label = { Text(text = resources.getString(R.string.send_logs_to_device)) },
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_devices),
-                                    contentDescription = resources.getString(R.string.send_logs_to_device),
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .wrapContentSize(align = Alignment.Center),
-                                )
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS))
-                        Chip(
-                            modifier = Modifier
-                                .padding(top = 2.dp, bottom = 2.dp),
-                            onClick = {
-                                if (!lazyListState.isScrollInProgress) {
-                                    resetApp()
-                                }
-                            },
-                            colors = getAnonAddyDangerChipColors(),
-                            enabled = true,
-                            label = { Text(text = resources.getString(R.string.reset_app)) },
-                            secondaryLabel = { Text(text = resources.getString(R.string.reset_app_desc)) },
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_loader),
-                                    contentDescription = resources.getString(R.string.reset_app),
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .wrapContentSize(align = Alignment.Center),
-                                )
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS * 2))
-                        Text(text = resources.getString(R.string.crafted_with_love_and_privacy), Modifier.alpha(0.5f), textAlign = TextAlign.Center)
-                        Text(text = BuildConfig.VERSION_NAME, Modifier.alpha(0.5f), textAlign = TextAlign.Center)
                     }
+                    item { InslideSlider(backgroundServiceInterval, haptic) }
+                    item {
+                        Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.tile_favorite_aliases_label))
+                    }
+                    item { ClearFavoritesChip(lazyListState, haptic) }
+                    item { Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.logs)) }
+                    item { StoreLogsSwitch(lazyListState, haptic) }
+                    item { SendLogsToDeviceChip(lazyListState, haptic) }
+                    item { Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS)) }
+                    item { ClearAllDataChip(lazyListState, haptic) }
+                    item { Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS * 2)) }
+                    item {
+                        Text(
+                            text = resources.getString(R.string.crafted_with_love_and_privacy),
+                            Modifier.alpha(0.5f),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    item { Text(text = BuildConfig.VERSION_NAME, Modifier.alpha(0.5f), textAlign = TextAlign.Center) }
                 }
 
                 LaunchedEffect(Unit) {
@@ -287,6 +196,151 @@ class SettingsActivity : ComponentActivity() {
 
         }
 
+    }
+
+    @Composable
+    private fun ClearAllDataChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+        Chip(
+            modifier = Modifier
+                .padding(top = 2.dp, bottom = 2.dp),
+            onClick = {
+                if (!lazyListState.isScrollInProgress) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    resetApp()
+                }
+            },
+            colors = getAnonAddyDangerChipColors(),
+            enabled = true,
+            label = { Text(text = resources.getString(R.string.reset_app)) },
+            secondaryLabel = { Text(text = resources.getString(R.string.reset_app_desc)) },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_loader),
+                    contentDescription = resources.getString(R.string.reset_app),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .wrapContentSize(align = Alignment.Center),
+                )
+            }
+        )
+    }
+
+    @Composable
+    private fun SendLogsToDeviceChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+        Chip(
+            modifier = Modifier
+                .padding(top = 2.dp, bottom = 2.dp),
+            onClick = {
+                if (!lazyListState.isScrollInProgress) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    sendLogsToPairedDevice()
+                }
+            },
+            colors = getAnonAddyChipColors(),
+            enabled = true,
+            label = { Text(text = resources.getString(R.string.send_logs_to_device)) },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_devices),
+                    contentDescription = resources.getString(R.string.send_logs_to_device),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .wrapContentSize(align = Alignment.Center),
+                )
+            }
+        )
+    }
+
+    @Composable
+    private fun StoreLogsSwitch(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+        ToggleChip(
+            modifier = Modifier.padding(top = 12.dp, bottom = 2.dp),
+            label = {
+                Text(
+                    resources.getString(R.string.store_logs), maxLines = 1, overflow = TextOverflow.Ellipsis
+                )
+            },
+            checked = this.storeLogs,
+            colors = getAnonAddyToggleChipColors(),
+            toggleControl = {
+                ToggleChipDefaults.SwitchIcon(checked = this.storeLogs)
+            },
+            onCheckedChange = {
+                if (!lazyListState.isScrollInProgress) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    this.storeLogs = it
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, it)
+                }
+            },
+            enabled = true
+        )
+    }
+
+    @Composable
+    private fun ClearFavoritesChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+        Chip(
+            modifier = Modifier
+                .padding(top = 12.dp),
+            onClick = {
+                if (!lazyListState.isScrollInProgress) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    FavoriteAliasHelper(this@SettingsActivity).clearFavoriteAliases()
+                    Toast.makeText(this@SettingsActivity, resources.getString(R.string.favorite_aliases_cleared), Toast.LENGTH_SHORT)
+                        .show()
+                    // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
+                    BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
+                }
+            },
+            colors = getAnonAddyChipColors(),
+            enabled = true,
+            label = { Text(text = resources.getString(R.string.clear_favorites)) },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_star),
+                    contentDescription = resources.getString(R.string.clear_favorites),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .wrapContentSize(align = Alignment.Center),
+                )
+            }
+        )
+    }
+
+    @Composable
+    private fun InslideSlider(backgroundServiceInterval: Int, hapticFeedback: HapticFeedback) {
+        InlineSlider(
+            colors = getAnonAddyInlineSliderColors(),
+            modifier = Modifier.padding(top = 12.dp),
+            value = backgroundServiceInterval.toFloat(),
+            steps = 3,
+            onValueChange = {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                when (it) {
+                    1f -> {
+                        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 15)
+                        this.backgroundServiceInterval = 1
+                        this.backgroundServiceIntervalValue = 15
+                    }
+                    2f -> {
+                        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)
+                        this.backgroundServiceInterval = 2
+                        this.backgroundServiceIntervalValue = 30
+                    }
+                    3f -> {
+                        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 60)
+                        this.backgroundServiceInterval = 3
+                        this.backgroundServiceIntervalValue = 60
+                    }
+                    4f -> {
+                        settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 120)
+                        this.backgroundServiceInterval = 4
+                        this.backgroundServiceIntervalValue = 120
+                    }
+                }
+
+                // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
+            })
     }
 
 
@@ -320,9 +374,7 @@ class SettingsActivity : ComponentActivity() {
 
                     // Close the app after the command has been send
                     Handler(Looper.getMainLooper()).postDelayed({
-                        setContent {
-                            ComposeContent()
-                        }
+                        setComposeContent()
                     }, 5000)
                 }
             } else {

@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.alias
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -69,19 +70,19 @@ class CreateAliasActivity : ComponentActivity() {
 
         setComposeContent()
 
-        if (alias == null) {
-            userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
-            if (userResource != null) {
-                if (skipAliasCreateGuide) {
-                    createAlias(userResource!!)
-                } // If this value is false the guide will be shown in composeContent
-            } else {
-                // App not setup, open splash
-                val intent = Intent(this@CreateAliasActivity, SplashActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+
+        userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
+        if (userResource != null) {
+            if (skipAliasCreateGuide) {
+                createAlias(userResource!!)
+            } // If this value is false the guide will be shown in composeContent
+        } else {
+            // App not setup, open splash
+            val intent = Intent(this@CreateAliasActivity, SplashActivity::class.java)
+            startActivity(intent)
+            finish()
         }
+
     }
 
     private fun createAlias(userResource: UserResource) {
@@ -138,16 +139,22 @@ class CreateAliasActivity : ComponentActivity() {
                 colors = getAnonAddyButtonColors(),
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    if (!favoriteAliasHelper.addAliasAsFavorite(this@CreateAliasActivity.alias!!.id)) {
-                        Toast.makeText(
-                            this@CreateAliasActivity,
-                            resources.getString(R.string.max_favorites_reached),
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                    if (isAliasFavorite) {
+                        favoriteAliasHelper.removeAliasAsFavorite(this@CreateAliasActivity.alias!!.id)
+                        isAliasFavorite = false
                     } else {
-                        isAliasFavorite = true
+                        if (!favoriteAliasHelper.addAliasAsFavorite(this@CreateAliasActivity.alias!!.id)) {
+                            Toast.makeText(
+                                this@CreateAliasActivity,
+                                resources.getString(R.string.max_favorites_reached),
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        } else {
+                            isAliasFavorite = true
+                        }
                     }
+
                 },
                 enabled = true,
             ) {
@@ -221,7 +228,6 @@ class CreateAliasActivity : ComponentActivity() {
         }
     }
 
-
     @OptIn(ExperimentalComposeUiApi::class, ExperimentalWearMaterialApi::class)
     @Composable
     private fun ComposeContent() {
@@ -234,7 +240,7 @@ class CreateAliasActivity : ComponentActivity() {
             modifier = Modifier,
             timeText = {
                 CustomTimeText(
-                    visible = lazyListState.firstVisibleItemScrollOffset == 0,
+                    visible = !lazyListState.isScrollInProgress && lazyListState.firstVisibleItemScrollOffset == 0,
                     showLeadingText = true,
                     leadingText = resources.getString(R.string.add_alias)
                 )
@@ -242,12 +248,16 @@ class CreateAliasActivity : ComponentActivity() {
             vignette = {
                 Vignette(vignettePosition = VignettePosition.TopAndBottom)
             },
-            positionIndicator = {
-                PositionIndicator(
-                    lazyListState = lazyListState
-                )
-            }
+            /* positionIndicator = {
+                 Log.e("ANONDEBUG12", "positionIndicator")
+
+                 PositionIndicator(
+                     lazyListState = lazyListState
+                 )
+             }*/
         ) {
+            Log.e("ANONDEBUG12", "Scaffold")
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

@@ -61,6 +61,11 @@ android {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":anonaddy_shared")))
+    wearApp(project(":app-wearos"))
+}
+
+dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
     implementation("androidx.core:core-ktx:1.7.0")
@@ -75,8 +80,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
-
 
 }
 
@@ -137,8 +140,6 @@ dependencies {
 
 // Communication with Wear OS device
 dependencies {
-    implementation(project(mapOf("path" to ":anonaddy_shared")))
-    wearApp(project(":app-wearos"))
     implementation("com.google.android.gms:play-services-wearable:17.1.0")
 }
 

@@ -47,7 +47,7 @@ fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
             modifier = Modifier,
             timeText = {
                 CustomTimeText(
-                    visible = lazyListState.firstVisibleItemScrollOffset == 0,
+                    visible = true,
                     showLeadingText = true,
                     leadingText = leadingText ?: context.resources.getString(R.string.app_name)
                 )

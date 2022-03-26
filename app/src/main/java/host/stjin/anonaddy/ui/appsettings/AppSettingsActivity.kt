@@ -387,9 +387,10 @@ class AppSettingsActivity : BaseActivity(),
         }
     }
 
+    // TODO replace this with a version
     @RequiresApi(33)
     private fun requestNotificationPermissions() {
-        // Check if camera permissions are granted
+        // Check if notification permissions are granted
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
             notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }

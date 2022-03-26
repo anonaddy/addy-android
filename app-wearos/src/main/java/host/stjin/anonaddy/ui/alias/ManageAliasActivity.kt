@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui.alias
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,6 +21,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
@@ -83,10 +85,6 @@ class ManageAliasActivity : ComponentActivity() {
             if (this.alias != null) {
                 setContent {
                     ComposeContent()
-                }
-                // Favorite this alias by default
-                if (intent.getBooleanExtra("favorite", false)) {
-                    favoriteAlias(true)
                 }
             } else {
                 setContent {
@@ -169,21 +167,21 @@ class ManageAliasActivity : ComponentActivity() {
     private fun ComposeContent() {
         if (alias != null) {
             isAliasActive = alias!!.active
-
-            // Creates a CoroutineScope bound to the lifecycle
-            val scope = rememberCoroutineScope()
-            val haptic = LocalHapticFeedback.current
-
-            val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
-            isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
-
             AppTheme {
+                // Creates a CoroutineScope bound to the lifecycle
+                val scope = rememberCoroutineScope()
+                val haptic = LocalHapticFeedback.current
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
+                val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
+                isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
+
                 val lazyListState: LazyListState = rememberLazyListState()
                 Scaffold(
                     modifier = Modifier,
                     timeText = {
                         CustomTimeText(
-                            visible = lazyListState.firstVisibleItemScrollOffset == 0,
+                            visible = !lazyListState.isScrollInProgress && lazyListState.firstVisibleItemScrollOffset == 0,
                             showLeadingText = true,
                             leadingText = resources.getString(R.string.edit_alias)
                         )
@@ -191,13 +189,16 @@ class ManageAliasActivity : ComponentActivity() {
                     vignette = {
                         Vignette(vignettePosition = VignettePosition.TopAndBottom)
                     },
-                    positionIndicator = {
+                    /*positionIndicator = {
+                        Log.e("ANONDEBUG12", "positionIndicator")
+
                         PositionIndicator(
                             lazyListState = lazyListState
                         )
-
-                    }
+                    }*/
                 ) {
+                    Log.e("ANONDEBUG12", "Scaffold")
+
                     val focusRequester = remember { FocusRequester() }
                     var currentScrollPosition = 0
                     LazyColumn(
@@ -229,8 +230,9 @@ class ManageAliasActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         state = lazyListState,
                     ) {
+                        Log.e("ANONDEBUG12", "listscope")
+                        item { GetDonut() }
                         item {
-                            GetDonut()
                             StatTextView(
                                 string = this@ManageAliasActivity.resources.getString(R.string.d_forwarded, alias!!.emails_forwarded),
                                 icon = R.drawable.ic_inbox,
@@ -238,6 +240,8 @@ class ManageAliasActivity : ComponentActivity() {
                                     id = R.color.portalOrange
                                 )
                             )
+                        }
+                        item {
                             StatTextView(
                                 string = this@ManageAliasActivity.resources.getString(R.string.d_replied, alias!!.emails_replied),
                                 icon = R.drawable.ic_arrow_back_up,
@@ -245,6 +249,8 @@ class ManageAliasActivity : ComponentActivity() {
                                     id = R.color.portalBlue
                                 )
                             )
+                        }
+                        item {
                             StatTextView(
                                 string = this@ManageAliasActivity.resources.getString(R.string.d_sent, alias!!.emails_sent),
                                 icon = R.drawable.ic_mail_forward,
@@ -252,6 +258,8 @@ class ManageAliasActivity : ComponentActivity() {
                                     id = R.color.easternBlue
                                 )
                             )
+                        }
+                        item {
                             StatTextView(
                                 string = this@ManageAliasActivity.resources.getString(R.string.d_blocked, alias!!.emails_blocked),
                                 icon = R.drawable.ic_forbid,
@@ -259,110 +267,10 @@ class ManageAliasActivity : ComponentActivity() {
                                     id = R.color.softRed
                                 )
                             )
-
-                            ToggleChip(
-                                modifier = Modifier.padding(top = 16.dp, bottom = 2.dp),
-                                label = {
-                                    Text(
-                                        if (isAliasActive) resources.getString(R.string.activated) else resources.getString(
-                                            R.string.deactivated
-                                        ), maxLines = 1, overflow = TextOverflow.Ellipsis
-                                    )
-                                },
-                                checked = isAliasActive,
-                                colors = getAnonAddyToggleChipColors(),
-                                toggleControl = {
-                                    ToggleChipDefaults.SwitchIcon(checked = isAliasActive)
-                                },
-                                secondaryLabel = {
-                                    Text(
-                                        if (isChangingActivationStatus) {
-                                            resources.getString(
-                                                R.string.changing_status
-                                            )
-                                        } else resources.getString(
-                                            R.string.alias_status_desc
-                                        ), maxLines = 1, overflow = TextOverflow.Ellipsis
-                                    )
-                                },
-                                onCheckedChange = {
-                                    if (!lazyListState.isScrollInProgress) {
-                                        isAliasActive = it
-                                        if (!isChangingActivationStatus) {
-                                            if (isAliasActive) {
-                                                lifecycleScope.launch {
-                                                    isChangingActivationStatus = true
-                                                    activateAlias()
-                                                }
-                                            } else {
-                                                lifecycleScope.launch {
-                                                    isChangingActivationStatus = true
-                                                    deactivateAlias()
-                                                }
-                                            }
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        }
-                                    }
-
-                                },
-                                enabled = true
-                            )
-
-                            ToggleChip(
-                                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
-                                label = {
-                                    Text(
-                                        resources.getString(R.string.favorite), maxLines = 1, overflow = TextOverflow.Ellipsis
-                                    )
-                                },
-                                checked = isAliasFavorite,
-                                onCheckedChange = {
-                                    if (!lazyListState.isScrollInProgress) {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        favoriteAlias(it)
-                                    }
-                                },
-                                colors = getAnonAddyToggleChipColors(),
-                                toggleControl = {
-                                },
-                                appIcon = {
-                                    Icon(
-                                        painter = if (isAliasFavorite) painterResource(id = R.drawable.ic_starred) else painterResource(
-                                            id = R.drawable.ic_star
-                                        ),
-                                        contentDescription = resources.getString(R.string.alias_status_desc),
-                                        modifier = Modifier
-                                            .size(20.dp)
-                                            .wrapContentSize(align = Alignment.Center),
-                                    )
-                                },
-                                enabled = true
-                            )
-
-                            Chip(
-                                modifier = Modifier
-                                    .padding(top = 2.dp, bottom = 2.dp),
-                                onClick = {
-                                    if (!lazyListState.isScrollInProgress) {
-                                        // Happens in method
-                                        //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        showAliasOnDevice(alias!!.id)
-                                    }
-                                },
-                                colors = getAnonAddyChipColors(),
-                                enabled = true,
-                                label = { Text(text = resources.getString(R.string.show_on_paired_device)) },
-                                icon = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_devices),
-                                        contentDescription = resources.getString(R.string.show_on_paired_device),
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                            .wrapContentSize(align = Alignment.Center),
-                                    )
-                                }
-                            )
                         }
+                        item { AliasActiveToggle(lazyListState, haptic) }
+                        item { AliasFavoriteToggle(lazyListState, haptic) }
+                        item { ShowOnDeviceChip(lazyListState) }
                     }
 
                     LaunchedEffect(Unit) {
@@ -372,6 +280,118 @@ class ManageAliasActivity : ComponentActivity() {
 
             }
         }
+    }
+
+    @Composable
+    private fun ShowOnDeviceChip(lazyListState: LazyListState) {
+        Chip(
+            modifier = Modifier
+                .padding(top = 2.dp, bottom = 2.dp),
+            onClick = {
+                if (!lazyListState.isScrollInProgress) {
+                    // Happens in method
+                    //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    showAliasOnDevice(alias!!.id)
+                }
+            },
+            colors = getAnonAddyChipColors(),
+            enabled = true,
+            label = { Text(text = resources.getString(R.string.show_on_paired_device)) },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_devices),
+                    contentDescription = resources.getString(R.string.show_on_paired_device),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .wrapContentSize(align = Alignment.Center),
+                )
+            }
+        )
+    }
+
+    @Composable
+    private fun AliasFavoriteToggle(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+        ToggleChip(
+            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+            label = {
+                Text(
+                    resources.getString(R.string.favorite), maxLines = 1, overflow = TextOverflow.Ellipsis
+                )
+            },
+            checked = isAliasFavorite,
+            onCheckedChange = {
+                if (!lazyListState.isScrollInProgress) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    favoriteAlias(it)
+                }
+            },
+            colors = getAnonAddyToggleChipColors(),
+            toggleControl = {
+            },
+            appIcon = {
+                Icon(
+                    painter = if (isAliasFavorite) painterResource(id = R.drawable.ic_starred) else painterResource(
+                        id = R.drawable.ic_star
+                    ),
+                    contentDescription = resources.getString(R.string.alias_status_desc),
+                    modifier = Modifier
+                        .size(20.dp)
+                        .wrapContentSize(align = Alignment.Center),
+                )
+            },
+            enabled = true
+        )
+    }
+
+    @Composable
+    private fun AliasActiveToggle(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+        ToggleChip(
+            modifier = Modifier.padding(top = 16.dp, bottom = 2.dp),
+            label = {
+                Text(
+                    if (isAliasActive) resources.getString(R.string.activated) else resources.getString(
+                        R.string.deactivated
+                    ), maxLines = 1, overflow = TextOverflow.Ellipsis
+                )
+            },
+            checked = isAliasActive,
+            colors = getAnonAddyToggleChipColors(),
+            toggleControl = {
+                ToggleChipDefaults.SwitchIcon(checked = isAliasActive)
+            },
+            secondaryLabel = {
+                Text(
+                    if (isChangingActivationStatus) {
+                        resources.getString(
+                            R.string.changing_status
+                        )
+                    } else resources.getString(
+                        R.string.alias_status_desc
+                    ), maxLines = 1, overflow = TextOverflow.Ellipsis
+                )
+            },
+            onCheckedChange = {
+                if (!lazyListState.isScrollInProgress) {
+                    isAliasActive = it
+                    if (!isChangingActivationStatus) {
+                        if (isAliasActive) {
+                            lifecycleScope.launch {
+                                isChangingActivationStatus = true
+                                activateAlias()
+                            }
+                        } else {
+                            lifecycleScope.launch {
+                                isChangingActivationStatus = true
+                                deactivateAlias()
+                            }
+                        }
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
+                }
+
+            },
+            enabled = true
+        )
     }
 
     private fun favoriteAlias(boolean: Boolean) {
