@@ -14,6 +14,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionAliasBinding
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +28,7 @@ class EditAliasDescriptionBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditAliasDescriptionBottomDialogListener {
-        fun descriptionEdited(description: String)
+        fun descriptionEdited(alias: Aliases)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -93,7 +94,7 @@ class EditAliasDescriptionBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
         networkHelper.updateDescriptionSpecificAlias({ alias, error ->
             if (alias != null) {
-                listener.descriptionEdited(description)
+                listener.descriptionEdited(alias)
             } else {
                 // Animate the button to progress
                 binding.bsEditaliasAliasSaveButton.revertAnimation()

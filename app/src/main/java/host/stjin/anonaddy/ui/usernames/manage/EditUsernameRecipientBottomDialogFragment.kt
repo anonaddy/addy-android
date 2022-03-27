@@ -15,6 +15,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientUsernameBinding
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Usernames
 import kotlinx.coroutines.launch
 
 
@@ -30,7 +31,7 @@ class EditUsernameRecipientBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditUsernameRecipientBottomDialogListener {
-        fun recipientEdited()
+        fun recipientEdited(username: Usernames)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -134,7 +135,7 @@ class EditUsernameRecipientBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
         networkHelper.updateDefaultRecipientForSpecificUsername({ username, error ->
             if (username != null) {
-                listener.recipientEdited()
+                listener.recipientEdited(username)
             } else {
                 // Revert the button to normal
                 binding.bsEditrecipientSaveButton.revertAnimation()

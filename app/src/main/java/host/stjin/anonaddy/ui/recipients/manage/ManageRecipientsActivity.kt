@@ -13,6 +13,7 @@ import host.stjin.anonaddy.databinding.ActivityManageRecipientsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -22,13 +23,15 @@ class ManageRecipientsActivity : BaseActivity(),
     AddRecipientPublicGpgKeyBottomDialogFragment.AddEditGpgKeyBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
-
     private lateinit var addRecipientPublicGpgKeyBottomDialogFragment: AddRecipientPublicGpgKeyBottomDialogFragment
 
-    private lateinit var recipientId: String
+    private var recipient: Recipients? = null
+        set(value) {
+            field = value
+            value?.let { updateUi(it) }
+        }
+
     private var forceSwitch = false
-
-
     private lateinit var binding: ActivityManageRecipientsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,13 +60,11 @@ class ManageRecipientsActivity : BaseActivity(),
             finish()
             return
         }
-        this.recipientId = recipientId
-
-        setPage()
+        setPage(recipientId)
     }
 
 
-    private fun setPage() {
+    private fun setPage(recipientId: String) {
         binding.activityManageRecipientRLLottieview.visibility = View.GONE
 
         // Get the recipient
@@ -141,7 +142,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, recipientId)
+        }, this.recipient!!.id)
     }
 
     private suspend fun allowRecipient() {
@@ -158,7 +159,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, recipientId)
+        }, this.recipient!!.id)
     }
 
 
@@ -176,7 +177,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, recipientId)
+        }, this.recipient!!.id)
     }
 
 
@@ -194,7 +195,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, recipientId)
+        }, this.recipient!!.id)
     }
 
 
@@ -212,13 +213,13 @@ class ManageRecipientsActivity : BaseActivity(),
 
         binding.activityManageRecipientRemoveGpgKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                removeGpgKey(recipientId)
+                removeGpgKey(this@ManageRecipientsActivity.recipient!!.id)
             }
         })
 
         binding.activityManageRecipientDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                deleteRecipient(recipientId)
+                deleteRecipient(this@ManageRecipientsActivity.recipient!!.id)
             }
         })
 
@@ -310,7 +311,11 @@ class ManageRecipientsActivity : BaseActivity(),
         networkHelper.removeEncryptionKeyRecipient({ result ->
             if (result == "204") {
                 removeGpgKeySnackbar.dismiss()
-                setPage()
+
+                // Since this call does not have a response, re-retrieve the recipient object
+
+                //IMPROVE edit should_encrypt and fingerprint?
+                setPage(this.recipient!!.id)
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -327,92 +332,11 @@ class ManageRecipientsActivity : BaseActivity(),
 
 
     private suspend fun getRecipientInfo(id: String) {
-        networkHelper.getSpecificRecipient({ list, error ->
+        networkHelper.getSpecificRecipient({ recipient, error ->
 
-            if (list != null) {
-
-                /**
-                 *  SWITCH STATUS
-                 */
-
-                binding.activityManageRecipientCanReplySend.setSwitchChecked(list.can_reply_send)
-                binding.activityManageRecipientCanReplySend.setTitle(
-                    if (list.can_reply_send) resources.getString(R.string.can_reply_send) else resources.getString(
-                        R.string.cannot_reply_send
-                    )
-                )
-
-                binding.activityManageRecipientActive.setSwitchChecked(list.should_encrypt)
-                binding.activityManageRecipientActive.setTitle(
-                    if (list.should_encrypt) resources.getString(R.string.encryption_enabled) else resources.getString(
-                        R.string.encryption_disabled
-                    )
-                )
-
-
-                // Set switchlistener after loading
-                setOnSwitchChangeListeners(list.fingerprint)
-
-                // Set the fingerprint BottomDialogFragment
-                addRecipientPublicGpgKeyBottomDialogFragment =
-                    AddRecipientPublicGpgKeyBottomDialogFragment.newInstance(recipientId)
-
-                /**
-                 * Fingerprint LAYOUT
-                 */
-
-                // If there is a fingerprint, enable the remove button.
-                // If there is no fingerptint, do not enable the remove button
-                if (list.fingerprint != null) {
-                    binding.activityManageRecipientRemoveGpgKey.setLayoutEnabled(true)
-                    binding.activityManageRecipientChangeGpgKey.setTitle(resources.getString(R.string.change_public_gpg_key))
-                    binding.activityManageRecipientEncryptionTextview.text = resources.getString(R.string.fingerprint_s, list.fingerprint)
-                } else {
-                    binding.activityManageRecipientRemoveGpgKey.setLayoutEnabled(false)
-                    binding.activityManageRecipientChangeGpgKey.setTitle(resources.getString(R.string.add_public_gpg_key))
-                    binding.activityManageRecipientEncryptionTextview.text = resources.getString(R.string.encryption_disabled)
-                }
-
-
-                var totalForwarded = 0
-                var totalBlocked = 0
-                var totalReplies = 0
-                var totalSent = 0
-                val totalAliases = list.aliases?.size
-                var aliases = ""
-
-                val buf = StringBuilder()
-
-                if (list.aliases != null) {
-                    for (alias in list.aliases!!) {
-                        totalForwarded += alias.emails_forwarded
-                        totalBlocked += alias.emails_blocked
-                        totalReplies += alias.emails_replied
-                        totalSent += alias.emails_sent
-
-                        if (buf.isNotEmpty()) {
-                            buf.append("\n")
-                        }
-                        buf.append(alias.email)
-                    }
-                    aliases = buf.toString()
-                }
-
-                binding.activityManageRecipientAliasesTitleTextview.text = resources.getString(R.string.recipient_aliases_d, totalAliases)
-                binding.activityManageRecipientBasicTextview.text = resources.getString(
-                    R.string.manage_recipient_basic_info,
-                    list.email,
-                    DateTimeUtils.turnStringIntoLocalString(list.created_at),
-                    DateTimeUtils.turnStringIntoLocalString(list.updated_at),
-                    totalForwarded, totalBlocked, totalReplies, totalSent
-                )
-
-                binding.activityManageRecipientAliasesTextview.text = aliases
-
-                binding.activityManageRecipientRLProgressbar.visibility = View.GONE
-                binding.activityManageRecipientLL1.visibility = View.VISIBLE
-
-                setOnClickListeners()
+            if (recipient != null) {
+                // Triggers updateUi
+                this.recipient = recipient
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -429,9 +353,97 @@ class ManageRecipientsActivity : BaseActivity(),
         }, id)
     }
 
+    private fun updateUi(recipient: Recipients) {
 
-    override fun onKeyAdded() {
-        setPage()
+        /**
+         *  SWITCH STATUS
+         */
+
+        binding.activityManageRecipientCanReplySend.setSwitchChecked(recipient.can_reply_send)
+        binding.activityManageRecipientCanReplySend.setTitle(
+            if (recipient.can_reply_send) resources.getString(R.string.can_reply_send) else resources.getString(
+                R.string.cannot_reply_send
+            )
+        )
+
+        binding.activityManageRecipientActive.setSwitchChecked(recipient.should_encrypt)
+        binding.activityManageRecipientActive.setTitle(
+            if (recipient.should_encrypt) resources.getString(R.string.encryption_enabled) else resources.getString(
+                R.string.encryption_disabled
+            )
+        )
+
+
+        // Set switchlistener after loading
+        setOnSwitchChangeListeners(recipient.fingerprint)
+
+        // Set the fingerprint BottomDialogFragment
+        addRecipientPublicGpgKeyBottomDialogFragment =
+            AddRecipientPublicGpgKeyBottomDialogFragment.newInstance(this@ManageRecipientsActivity.recipient!!.id)
+
+        /**
+         * Fingerprint LAYOUT
+         */
+
+        // If there is a fingerprint, enable the remove button.
+        // If there is no fingerptint, do not enable the remove button
+        if (recipient.fingerprint != null) {
+            binding.activityManageRecipientRemoveGpgKey.setLayoutEnabled(true)
+            binding.activityManageRecipientChangeGpgKey.setTitle(resources.getString(R.string.change_public_gpg_key))
+            binding.activityManageRecipientEncryptionTextview.text = resources.getString(R.string.fingerprint_s, recipient.fingerprint)
+        } else {
+            binding.activityManageRecipientRemoveGpgKey.setLayoutEnabled(false)
+            binding.activityManageRecipientChangeGpgKey.setTitle(resources.getString(R.string.add_public_gpg_key))
+            binding.activityManageRecipientEncryptionTextview.text = resources.getString(R.string.encryption_disabled)
+        }
+
+
+        var totalForwarded = 0
+        var totalBlocked = 0
+        var totalReplies = 0
+        var totalSent = 0
+        val totalAliases = recipient.aliases?.size
+        var aliases = ""
+
+        val buf = StringBuilder()
+
+        if (recipient.aliases != null) {
+            for (alias in recipient.aliases!!) {
+                totalForwarded += alias.emails_forwarded
+                totalBlocked += alias.emails_blocked
+                totalReplies += alias.emails_replied
+                totalSent += alias.emails_sent
+
+                if (buf.isNotEmpty()) {
+                    buf.append("\n")
+                }
+                buf.append(alias.email)
+            }
+            aliases = buf.toString()
+        }
+
+        binding.activityManageRecipientAliasesTitleTextview.text = resources.getString(R.string.recipient_aliases_d, totalAliases)
+        binding.activityManageRecipientBasicTextview.text = resources.getString(
+            R.string.manage_recipient_basic_info,
+            recipient.email,
+            DateTimeUtils.turnStringIntoLocalString(recipient.created_at),
+            DateTimeUtils.turnStringIntoLocalString(recipient.updated_at),
+            totalForwarded, totalBlocked, totalReplies, totalSent
+        )
+
+        binding.activityManageRecipientAliasesTextview.text = aliases
+
+        binding.activityManageRecipientRLProgressbar.visibility = View.GONE
+        binding.activityManageRecipientLL1.visibility = View.VISIBLE
+
+        setOnClickListeners()
+    }
+
+
+    override fun onKeyAdded(recipient: Recipients) {
         addRecipientPublicGpgKeyBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init addRecipientPublicGpgKeyBottomDialogFragment
+        this.recipient = recipient
     }
 }

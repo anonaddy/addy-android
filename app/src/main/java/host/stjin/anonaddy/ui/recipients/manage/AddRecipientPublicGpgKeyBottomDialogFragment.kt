@@ -15,6 +15,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditGpgKeyRecipientBinding
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Recipients
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +28,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditGpgKeyBottomDialogListener {
-        fun onKeyAdded()
+        fun onKeyAdded(recipient: Recipients)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -100,7 +101,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
         networkHelper.addEncryptionKeyRecipient({ recipient, error ->
             if (recipient != null) {
-                listener.onKeyAdded()
+                listener.onKeyAdded(recipient)
             } else {
 
                 // Revert the button to normal

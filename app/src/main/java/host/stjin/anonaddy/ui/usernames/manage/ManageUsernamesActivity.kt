@@ -14,6 +14,7 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AnonAddyForAndroid
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -28,7 +29,12 @@ class ManageUsernamesActivity : BaseActivity(),
     private lateinit var editUsernameDescriptionBottomDialogFragment: EditUsernameDescriptionBottomDialogFragment
     private lateinit var editUsernameRecipientBottomDialogFragment: EditUsernameRecipientBottomDialogFragment
 
-    private lateinit var usernameId: String
+
+    private var username: Usernames? = null
+        set(value) {
+            field = value
+            value?.let { updateUi(it) }
+        }
     private var forceSwitch = false
 
 
@@ -60,12 +66,11 @@ class ManageUsernamesActivity : BaseActivity(),
             finish()
             return
         }
-        this.usernameId = usernameId
-        setPage()
+        setPage(usernameId)
     }
 
 
-    private fun setPage() {
+    private fun setPage(usernameId: String) {
         binding.activityManageUsernameRLLottieview.visibility = View.GONE
         // Get the username
         lifecycleScope.launch {
@@ -108,7 +113,7 @@ class ManageUsernamesActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, usernameId)
+        }, this.username!!.id)
     }
 
 
@@ -126,7 +131,7 @@ class ManageUsernamesActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, usernameId)
+        }, this.username!!.id)
     }
 
 
@@ -165,7 +170,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
         binding.activityManageUsernameDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                deleteUsername(usernameId)
+                deleteUsername(this@ManageUsernamesActivity.username!!.id)
             }
         })
     }
@@ -217,104 +222,12 @@ class ManageUsernamesActivity : BaseActivity(),
 
 
     private suspend fun getUsernameInfo(id: String) {
-        networkHelper.getSpecificUsername({ list, error ->
+        networkHelper.getSpecificUsername({ username, error ->
 
-            if (list != null) {
-                /**
-                 *  SWITCH STATUS
-                 */
-
-                binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(list.active)
-                binding.activityManageUsernameActiveSwitchLayout.setTitle(
-                    if (list.active) resources.getString(R.string.username_activated) else resources.getString(R.string.username_deactivated)
-                )
-
-
-                /**
-                 * TEXT
-                 */
-
-                var totalForwarded = 0
-                var totalBlocked = 0
-                var totalReplies = 0
-                var totalSent = 0
-                val totalAliases = list.aliases?.size
-                var aliases = ""
-
-                val buf = StringBuilder()
-
-                if (list.aliases != null) {
-                    for (alias in list.aliases!!) {
-                        totalForwarded += alias.emails_forwarded
-                        totalBlocked += alias.emails_blocked
-                        totalReplies += alias.emails_replied
-                        totalSent += alias.emails_sent
-
-                        if (buf.isNotEmpty()) {
-                            buf.append("\n")
-                        }
-                        buf.append(alias.email)
-                    }
-                    aliases = buf.toString()
-                }
-
-                binding.activityManageUsernameAliasesTitleTextview.text = resources.getString(R.string.username_aliases_d, totalAliases)
-                binding.activityManageUsernameBasicTextview.text = resources.getString(
-                    R.string.manage_username_basic_info,
-                    list.username,
-                    DateTimeUtils.turnStringIntoLocalString(list.created_at),
-                    DateTimeUtils.turnStringIntoLocalString(list.updated_at),
-                    totalForwarded, totalBlocked, totalReplies, totalSent
-                )
-
-                binding.activityManageUsernameAliasesTextview.text = aliases
-
-                /**
-                 * RECIPIENTS
-                 */
-
-                // Set recipient
-                val recipients: String = list.default_recipient?.email ?: this.resources.getString(
-                    R.string.default_recipient_s, (this.application as AnonAddyForAndroid).userResourceExtended.default_recipient_email
-                )
-
-                binding.activityManageUsernameRecipientsEdit.setDescription(recipients)
-
-
-                // Set this value as it now includes the default email
-                editUsernameRecipientBottomDialogFragment =
-                    EditUsernameRecipientBottomDialogFragment.newInstance(usernameId, list.default_recipient?.email)
-
-
-                /**
-                 * DESCRIPTION
-                 */
-
-                // Set description and initialise the bottomDialogFragment
-                if (list.description != null) {
-                    binding.activityManageUsernameDescEdit.setDescription(list.description)
-                } else {
-                    binding.activityManageUsernameDescEdit.setDescription(
-                        this.resources.getString(
-                            R.string.username_no_description
-                        )
-                    )
-                }
-
-                // Set this value as it now includes the description
-                editUsernameDescriptionBottomDialogFragment = EditUsernameDescriptionBottomDialogFragment.newInstance(
-                    id,
-                    list.description
-                )
-
-
-                binding.activityManageUsernameRLProgressbar.visibility = View.GONE
-                binding.activityManageUsernameLL1.visibility = View.VISIBLE
-
-                setOnSwitchChangeListeners()
-                setOnClickListeners()
+            if (username != null) {
+                // Triggers updateUi
+                this.username = username
             } else {
-
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_obtaining_username) + "\n" + error,
@@ -330,14 +243,114 @@ class ManageUsernamesActivity : BaseActivity(),
         }, id)
     }
 
+    private fun updateUi(username: Usernames) {
+        /**
+         *  SWITCH STATUS
+         */
 
-    override fun descriptionEdited(description: String) {
-        setPage()
-        editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(username.active)
+        binding.activityManageUsernameActiveSwitchLayout.setTitle(
+            if (username.active) resources.getString(R.string.username_activated) else resources.getString(R.string.username_deactivated)
+        )
+
+
+        /**
+         * TEXT
+         */
+
+        var totalForwarded = 0
+        var totalBlocked = 0
+        var totalReplies = 0
+        var totalSent = 0
+        val totalAliases = username.aliases?.size
+        var aliases = ""
+
+        val buf = StringBuilder()
+
+        if (username.aliases != null) {
+            for (alias in username.aliases!!) {
+                totalForwarded += alias.emails_forwarded
+                totalBlocked += alias.emails_blocked
+                totalReplies += alias.emails_replied
+                totalSent += alias.emails_sent
+
+                if (buf.isNotEmpty()) {
+                    buf.append("\n")
+                }
+                buf.append(alias.email)
+            }
+            aliases = buf.toString()
+        }
+
+        binding.activityManageUsernameAliasesTitleTextview.text = resources.getString(R.string.username_aliases_d, totalAliases)
+        binding.activityManageUsernameBasicTextview.text = resources.getString(
+            R.string.manage_username_basic_info,
+            username.username,
+            DateTimeUtils.turnStringIntoLocalString(username.created_at),
+            DateTimeUtils.turnStringIntoLocalString(username.updated_at),
+            totalForwarded, totalBlocked, totalReplies, totalSent
+        )
+
+        binding.activityManageUsernameAliasesTextview.text = aliases
+
+        /**
+         * RECIPIENTS
+         */
+
+        // Set recipient
+        val recipients: String = username.default_recipient?.email ?: this.resources.getString(
+            R.string.default_recipient_s, (this.application as AnonAddyForAndroid).userResourceExtended.default_recipient_email
+        )
+
+        binding.activityManageUsernameRecipientsEdit.setDescription(recipients)
+
+
+        // Set this value as it now includes the default email
+        editUsernameRecipientBottomDialogFragment =
+            EditUsernameRecipientBottomDialogFragment.newInstance(this.username!!.id, username.default_recipient?.email)
+
+
+        /**
+         * DESCRIPTION
+         */
+
+        // Set description and initialise the bottomDialogFragment
+        if (username.description != null) {
+            binding.activityManageUsernameDescEdit.setDescription(username.description)
+        } else {
+            binding.activityManageUsernameDescEdit.setDescription(
+                this.resources.getString(
+                    R.string.username_no_description
+                )
+            )
+        }
+
+        // Set this value as it now includes the description
+        editUsernameDescriptionBottomDialogFragment = EditUsernameDescriptionBottomDialogFragment.newInstance(
+            this.username!!.id,
+            username.description
+        )
+
+
+        binding.activityManageUsernameRLProgressbar.visibility = View.GONE
+        binding.activityManageUsernameLL1.visibility = View.VISIBLE
+
+        setOnSwitchChangeListeners()
+        setOnClickListeners()
     }
 
-    override fun recipientEdited() {
-        setPage()
+
+    override fun descriptionEdited(username: Usernames) {
+        editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.username = username
+    }
+
+    override fun recipientEdited(username: Usernames) {
         editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.username = username
     }
 }

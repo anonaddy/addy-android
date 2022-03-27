@@ -16,6 +16,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientsAliasBinding
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.Recipients
 import kotlinx.coroutines.launch
 
@@ -32,7 +33,7 @@ class EditAliasRecipientsBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditAliasRecipientsBottomDialogListener {
-        fun recipientsEdited()
+        fun recipientsEdited(alias: Aliases)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -146,7 +147,7 @@ class EditAliasRecipientsBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
         networkHelper.updateRecipientsSpecificAlias({ alias, error ->
             if (alias != null) {
-                listener.recipientsEdited()
+                listener.recipientsEdited(alias)
             } else {
                 // Revert the button to normal
                 binding.bsEditrecipientsSaveButton.revertAnimation()

@@ -14,6 +14,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionDomainBinding
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Domains
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +28,7 @@ class EditDomainDescriptionBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditDomainDescriptionBottomDialogListener {
-        fun descriptionEdited(description: String)
+        fun descriptionEdited(domain: Domains)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -92,7 +93,7 @@ class EditDomainDescriptionBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
         networkHelper.updateDescriptionSpecificDomain({ domain, error ->
             if (domain != null) {
-                listener.descriptionEdited(description)
+                listener.descriptionEdited(domain)
             } else {
 
                 // Revert the button to normal
