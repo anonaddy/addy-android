@@ -209,10 +209,6 @@ class ManageAliasActivity : BaseActivity(),
         binding.activityManageAliasRepliesBlockedCount.text = this.resources.getString(R.string.d_blocked, blocked.toInt())
         binding.activityManageAliasSentCount.text = this.resources.getString(R.string.d_sent, sent.toInt())
         binding.activityManageAliasRepliedCount.text = this.resources.getString(R.string.d_replied, replied.toInt())
-
-
-        binding.activityManageAliasStatsLL.animate().alpha(1.0f)
-        binding.activityManageAliasActionsLL.animate().alpha(1.0f)
     }
 
     private fun setOnSwitchChangeListeners() {
@@ -515,12 +511,13 @@ class ManageAliasActivity : BaseActivity(),
                     binding.activityManageAliasCL
                 ).show()
 
-                binding.activityManageAliasSettingsRLProgressbar.visibility = View.GONE
+                binding.loadingFragment.visibility = View.GONE
                 progressBarVisibility = View.GONE
                 binding.activityManageAliasSettingsLL.visibility = View.GONE
 
+                // FIXME new animation/fragment?
                 // Show no internet animations
-                binding.activityManageAliasSettingsRLLottieview.visibility = View.VISIBLE
+                //binding.activityManageAliasSettingsRLLottieview.visibility = View.VISIBLE
             }
         }, id)
     }
@@ -529,7 +526,6 @@ class ManageAliasActivity : BaseActivity(),
 
         // Set email in textview
         binding.activityManageAliasEmail.text = alias.email
-        binding.activityManageAliasEmail.animate().alpha(1.0f)
 
         editAliasSendMailRecipientBottomDialogFragment = EditAliasSendMailRecipientBottomDialogFragment.newInstance(alias.email)
 
@@ -674,7 +670,8 @@ class ManageAliasActivity : BaseActivity(),
         )
 
 
-        binding.activityManageAliasSettingsRLProgressbar.visibility = View.GONE
+        binding.loadingFragment.visibility = View.GONE
+        binding.activityManageAliasNSV.animate().alpha(1.0f)
         progressBarVisibility = View.GONE
         binding.activityManageAliasSettingsLL.visibility = View.VISIBLE
 
