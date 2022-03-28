@@ -71,7 +71,6 @@ class ManageUsernamesActivity : BaseActivity(),
 
 
     private fun setPage(usernameId: String) {
-        binding.activityManageUsernameRLLottieview.visibility = View.GONE
         // Get the username
         lifecycleScope.launch {
             getUsernameInfo(usernameId)
@@ -234,11 +233,9 @@ class ManageUsernamesActivity : BaseActivity(),
                     binding.activityManageUsernameCL
                 ).show()
 
-                binding.activityManageUsernameRLProgressbar.visibility = View.GONE
+                // Show error animations
                 binding.activityManageUsernameLL1.visibility = View.GONE
-
-                // Show no internet animations
-                binding.activityManageUsernameRLLottieview.visibility = View.VISIBLE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
         }, id)
     }
@@ -332,9 +329,8 @@ class ManageUsernamesActivity : BaseActivity(),
         )
 
 
-        binding.activityManageUsernameRLProgressbar.visibility = View.GONE
-        binding.activityManageUsernameLL1.visibility = View.VISIBLE
-
+        binding.animationFragment.stopAnimation()
+        binding.activityManageUsernameNSV.animate().alpha(1.0f)
         setOnSwitchChangeListeners()
         setOnClickListeners()
     }

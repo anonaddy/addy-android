@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,51 +7,64 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <TextView
+    <host.stjin.anonaddy.ui.customviews.AnimationView
+        android:id="@+id/animation_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
-        android:text="@string/whoops"
-        android:textAlignment="center"
-        android:textColor="@color/BlackWhite"
-        android:textSize="36sp" />
+        android:layout_height="match_parent"
+        app:animationDrawable="@drawable/ic_loading_logo_error"
+        app:loopAnimation="false" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="@string/anonaddy_load_error"
-        android:textAlignment="center" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/activity_main_failed_error_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:textAlignment="center"
-        android:textColor="@color/softRed"
-        tools:text="@tools:sample/lorem" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/whoops"
+            android:textAlignment="center"
+            android:textColor="@color/BlackWhite"
+            android:textSize="36sp" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_margin="32dp"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/no_internet_connection" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/anonaddy_load_error"
+            android:textAlignment="center" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/activity_main_failed_retry_button"
-        style="@style/ActionButtonsTertiary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/try_again" />
+        <TextView
+            android:id="@+id/activity_main_failed_error_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textAlignment="center"
+            android:textColor="@color/softRed"
+            tools:text="@tools:sample/lorem" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/activity_main_failed_reset_button"
-        style="@style/ActionButtonsTertiary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/reset_app" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-</LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_main_failed_retry_button"
+            style="@style/ActionButtonsTertiary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/try_again" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_main_failed_reset_button"
+            style="@style/ActionButtonsTertiary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reset_app" />
+
+    </LinearLayout>
+</RelativeLayout>

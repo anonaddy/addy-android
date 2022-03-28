@@ -75,9 +75,6 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     private fun getDataFromWeb() {
-        binding.activityUsernameSettingsLL1.visibility = View.VISIBLE
-        binding.activityUsernameSettingsRLLottieview.visibility = View.GONE
-
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             getAllUsernamesAndSetView()
@@ -188,14 +185,19 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
                     })
                     adapter = usernamesAdapter
+
+                    binding.animationFragment.stopAnimation()
+                    //binding.activityUsernameSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
                 } else {
                     SnackbarHelper.createSnackbar(
                         this@UsernamesSettingsActivity,
                         this@UsernamesSettingsActivity.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
                         binding.activityUsernameSettingsCL
                     ).show()
+
+                    // Show error animations
                     binding.activityUsernameSettingsLL1.visibility = View.GONE
-                    binding.activityUsernameSettingsRLLottieview.visibility = View.VISIBLE
+                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                 }
                 hideShimmer()
             }

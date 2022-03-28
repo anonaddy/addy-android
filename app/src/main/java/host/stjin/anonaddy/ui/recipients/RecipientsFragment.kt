@@ -269,8 +269,6 @@ class RecipientsFragment : Fragment(),
 
             }
         }, id)
-
-        //verificationEmailSentSnackbar(context)
     }
 
 

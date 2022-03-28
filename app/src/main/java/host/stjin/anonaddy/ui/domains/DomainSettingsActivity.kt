@@ -75,9 +75,6 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     }
 
     private fun getDataFromWeb() {
-        binding.activityDomainSettingsLL1.visibility = View.VISIBLE
-        binding.activityDomainSettingsRLLottieview.visibility = View.GONE
-
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             getAllDomainsAndSetView()
@@ -183,6 +180,8 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     })
                     adapter = domainsAdapter
 
+                    binding.animationFragment.stopAnimation()
+                    //binding.activityDomainSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
                 } else {
 
                     SnackbarHelper.createSnackbar(
@@ -191,8 +190,9 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                         binding.activityDomainSettingsCL
                     ).show()
 
+                    // Show error animations
                     binding.activityDomainSettingsLL1.visibility = View.GONE
-                    binding.activityDomainSettingsRLLottieview.visibility = View.VISIBLE
+                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                 }
                 hideShimmer()
             }

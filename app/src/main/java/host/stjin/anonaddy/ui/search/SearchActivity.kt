@@ -94,9 +94,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     }
 
     private fun setSearchResults() {
-        binding.activitySearchRLLottieview.visibility = View.GONE
-
-
         if (filteredAliases?.size ?: 0 > 0) {
             binding.activitySearchAliasesLL.visibility = View.VISIBLE
             setAliases()
@@ -127,15 +124,15 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
             setFailedDeliveries()
         }
 
-        if (filteredAliases?.size ?: 0 == 0 &&
+        // No need to check if there are results, this is being done in the bottomsheet.
+/*        if (filteredAliases?.size ?: 0 == 0 &&
             filteredDomains?.size ?: 0 == 0 &&
             filteredRecipients?.size ?: 0 == 0 &&
             filteredUsernames?.size ?: 0 == 0 &&
             filteredRules?.size ?: 0 == 0 &&
             filteredFailedDeliveries?.size ?: 0 == 0
         ) {
-            binding.activitySearchRLLottieview.visibility = View.VISIBLE
-        }
+        }*/
     }
 
     /*

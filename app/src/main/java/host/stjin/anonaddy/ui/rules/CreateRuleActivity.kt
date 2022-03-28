@@ -138,8 +138,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private fun getRule() {
-        binding.activityRulesCreateRLLottieview.visibility = View.GONE
-
         // Get the rule
         lifecycleScope.launch {
             ruleId?.let { getRuleInfo(it) }
@@ -162,11 +160,9 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     binding.activityRulesCreateCL
                 ).show()
 
-                binding.activityRulesCreateRLProgressbar.visibility = View.GONE
+                // Show error animations
                 binding.activityRulesCreateLL1.visibility = View.GONE
-
-                // Show no internet animations
-                binding.activityRulesCreateRLLottieview.visibility = View.VISIBLE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
         }, id)
     }
@@ -371,9 +367,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         binding.activityRulesCreateLLActions.addView(inflatedAddActionLayout)
 
 
-        binding.activityRulesCreateRLProgressbar.visibility = View.GONE
-        binding.activityRulesCreateLL1.visibility = View.VISIBLE
-
+        binding.animationFragment.stopAnimation()
+        binding.activityRulesCreateRLNSV.animate().alpha(1.0f)
         setOnClickListeners()
         setOnChangeListeners()
     }

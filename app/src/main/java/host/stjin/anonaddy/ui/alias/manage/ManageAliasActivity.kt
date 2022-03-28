@@ -57,11 +57,6 @@ class ManageAliasActivity : BaseActivity(),
     // This value is here to keep track if the activity to which we return on finishWithUpdate should update its data.
     // Basically, whenever some information is changed we flip the boolean to true.
     private var shouldUpdate: Boolean = false
-
-    /*
-    https://stackoverflow.com/questions/50969390/view-visibility-state-loss-when-resuming-activity-with-previously-started-activi
-     */
-    private var progressBarVisibility = View.VISIBLE
     private lateinit var binding: ActivityManageAliasBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -511,13 +506,9 @@ class ManageAliasActivity : BaseActivity(),
                     binding.activityManageAliasCL
                 ).show()
 
-                binding.loadingFragment.visibility = View.GONE
-                progressBarVisibility = View.GONE
+                // Show error animations
                 binding.activityManageAliasSettingsLL.visibility = View.GONE
-
-                // FIXME new animation/fragment?
-                // Show no internet animations
-                //binding.activityManageAliasSettingsRLLottieview.visibility = View.VISIBLE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
         }, id)
     }
@@ -670,9 +661,8 @@ class ManageAliasActivity : BaseActivity(),
         )
 
 
-        binding.loadingFragment.visibility = View.GONE
+        binding.animationFragment.stopAnimation()
         binding.activityManageAliasNSV.animate().alpha(1.0f)
-        progressBarVisibility = View.GONE
         binding.activityManageAliasSettingsLL.visibility = View.VISIBLE
 
         setOnSwitchChangeListeners()

@@ -12,12 +12,17 @@
         android:id="@+id/activity_manage_rules_toolbar"
         layout="@layout/custom_toolbar_one_handed" />
 
+    <host.stjin.anonaddy.ui.customviews.AnimationView
+        android:id="@+id/animation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:loopAnimation="false" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_manage_rules_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
 
         <RelativeLayout
             android:id="@+id/activity_manage_rules_NSV_RL"
@@ -25,17 +30,6 @@
             android:layout_height="match_parent"
             android:clipChildren="false"
             android:clipToPadding="false">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/activity_manage_rules_RL_lottieview"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="32dp"
-                android:visibility="gone"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/no_internet_connection" />
 
             <LinearLayout
                 android:id="@+id/activity_manage_rules_LL1"

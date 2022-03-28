@@ -66,9 +66,6 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
     }
 
     private fun getDataFromWeb() {
-        binding.activityFailedDeliveriesLL1.visibility = View.VISIBLE
-        binding.activityFailedDeliveriesRLLottieview.visibility = View.GONE
-
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             getAllFailedDeliveriesAndSetRecyclerview()
@@ -146,7 +143,8 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
 
                     })
                     adapter = failedDeliveriesAdapter
-
+                    binding.animationFragment.stopAnimation()
+                    //binding.activityFailedDeliveriesNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
                 } else {
                     SnackbarHelper.createSnackbar(
                         this@FailedDeliveriesActivity,
@@ -154,8 +152,9 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
                         binding.activityFailedDeliveriesCL
                     ).show()
 
+                    // Show error animations
                     binding.activityFailedDeliveriesLL1.visibility = View.GONE
-                    binding.activityFailedDeliveriesRLLottieview.visibility = View.VISIBLE
+                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                 }
                 hideShimmer()
             }, show404Toast = true)

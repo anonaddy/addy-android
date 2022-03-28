@@ -13,11 +13,12 @@
         android:id="@+id/activity_manage_alias_toolbar"
         layout="@layout/custom_toolbar_one_handed" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/loading_fragment"
-        android:name="host.stjin.anonaddy.LoadingFragment"
+    <host.stjin.anonaddy.ui.customviews.AnimationView
+        android:id="@+id/animation_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:animationDrawable="@drawable/ic_loading_logo"
+        app:loopAnimation="true" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_manage_alias_NSV"

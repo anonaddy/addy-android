@@ -10,6 +10,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_forbid.xml" value="0.2555" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_anim.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_foreground.xml" value="0.147" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_loader.xml" value="0.224" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_mail_forward.xml" value="0.19" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_search.xml" value="0.1195" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_settings.xml" value="0.2865" />
@@ -164,6 +165,8 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_letters_case.xml" value="0.18289473684210528" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_loader.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_loading_logo.xml" value="0.363" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_loading_logo_error.xml" value="0.23" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_loading_logo_splash.xml" value="0.193" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_logo.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_logo_icon.xml" value="0.3223684210526316" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/drawable/ic_logo_small.xml" value="0.3223684210526316" />
@@ -358,6 +361,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_top_drag.xml" value="0.2824561403508772" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/chip_view.xml" value="0.9" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/custom_toolbar_one_handed.xml" value="0.33" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/custom_view_animation.xml" value="0.32407011543394615" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/custom_view_section.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/domains_recyclerview_list_item.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/domains_recyclerview_list_item_domains_shimmer.xml" value="0.5704419889502762" />

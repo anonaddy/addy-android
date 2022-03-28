@@ -66,9 +66,6 @@ class RulesSettingsActivity : BaseActivity() {
     }
 
     private fun getDataFromWeb() {
-        binding.activityManageRulesLL1.visibility = View.VISIBLE
-        binding.activityManageRulesRLLottieview.visibility = View.GONE
-
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             getAllRulesAndSetView()
@@ -172,8 +169,10 @@ class RulesSettingsActivity : BaseActivity() {
 
                     })
                     adapter = rulesAdapter
-
                     itemTouchHelper.attachToRecyclerView(binding.activityManageRulesAllRulesRecyclerview)
+
+                    binding.animationFragment.stopAnimation()
+                    //binding.activityManageRulesNSV.animate().alpha(1.0f)  -> Do not animate as there is a shimmerview
                 } else {
 
                     SnackbarHelper.createSnackbar(
@@ -182,11 +181,13 @@ class RulesSettingsActivity : BaseActivity() {
                         binding.activityManageRulesCL
                     ).show()
 
+                    // Show error animations
                     binding.activityManageRulesLL1.visibility = View.GONE
-                    binding.activityManageRulesRLLottieview.visibility = View.VISIBLE
+                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                 }
                 hideShimmer()
             }, show404Toast = true)
+
         }
 
     }

@@ -6,44 +6,50 @@
             android:width="108dp"
             android:height="108dp"
             android:viewportWidth="108"
-            android:alpha="0.5"
             android:viewportHeight="108">
             <path
                 android:name="path"
-                android:fillAlpha="0.6"
-                android:fillColor="?colorControlNormal"
+
+                android:fillAlpha="1"
+                android:fillColor="@color/ic_launcher_foreground"
                 android:pathData="M 36.597 52.627 C 36.12 52.7 35.612 52.523 35.291 52.109 C 34.824 51.507 34.928 50.647 35.529 50.17 L 39.364 47.174 C 39.966 46.708 40.826 46.812 41.303 47.413 C 41.769 48.014 41.666 48.874 41.064 49.351 L 37.229 52.347 C 37.042 52.503 36.825 52.596 36.597 52.627 Z" />
             <path
                 android:name="path_1"
-                android:fillAlpha="0.4"
-                android:fillColor="?colorControlNormal"
+
+                android:fillAlpha="0.8"
+                android:fillColor="@color/ic_launcher_foreground"
                 android:pathData="M 32.875 55.55 C 32.398 55.623 31.89 55.447 31.569 55.042 C 31.103 54.441 31.206 53.581 31.808 53.104 L 32.17 52.824 C 32.772 52.357 33.632 52.461 34.109 53.062 C 34.575 53.664 34.472 54.524 33.87 55.001 L 33.508 55.281 C 33.321 55.426 33.103 55.519 32.875 55.55 Z" />
             <path
                 android:name="path_2"
-                android:fillAlpha="0.6"
-                android:fillColor="?colorControlNormal"
+
+                android:fillAlpha="1"
+                android:fillColor="@color/ic_launcher_foreground"
                 android:pathData="M 32.378 63.418 C 31.901 63.491 31.393 63.314 31.072 62.9 C 30.605 62.299 30.709 61.438 31.31 60.961 L 39.727 54.389 C 40.328 53.923 41.199 54.026 41.666 54.628 C 42.132 55.229 42.028 56.089 41.427 56.566 L 33.01 63.149 C 32.813 63.294 32.595 63.387 32.378 63.418 Z" />
             <path
                 android:name="path_3"
-                android:fillAlpha="0.4"
-                android:fillColor="?colorControlNormal"
+
+                android:fillAlpha="0.8"
+                android:fillColor="@color/ic_launcher_foreground"
                 android:pathData="M 44.371 54.089 C 43.894 54.161 43.386 53.985 43.065 53.57 C 42.599 52.969 42.702 52.109 43.303 51.632 L 44.641 50.585 C 45.242 50.118 46.102 50.222 46.579 50.823 C 47.046 51.425 46.942 52.285 46.341 52.762 L 45.004 53.809 C 44.807 53.954 44.589 54.047 44.371 54.089 Z" />
             <path
                 android:name="path_4"
-                android:fillAlpha="0.6"
-                android:fillColor="?colorControlNormal"
+
+                android:fillAlpha="1"
+                android:fillColor="@color/ic_launcher_foreground"
                 android:pathData="M 43.635 62.122 C 43.158 62.195 42.65 62.019 42.329 61.604 C 41.863 61.003 41.966 60.142 42.567 59.666 L 49.471 54.275 C 50.073 53.809 50.943 53.912 51.41 54.514 C 51.876 55.115 51.773 55.975 51.171 56.452 L 44.268 61.842 C 44.081 61.998 43.863 62.091 43.635 62.122 Z" />
             <path
                 android:name="path_5"
+
+                android:fillAlpha="0.8"
+                android:fillColor="@color/ic_launcher_foreground"
                 android:pathData="M 39.862 65.117 C 39.385 65.19 38.877 65.013 38.556 64.599 C 38.089 63.998 38.193 63.127 38.794 62.66 L 39.281 62.277 C 39.883 61.81 40.753 61.914 41.22 62.515 C 41.686 63.116 41.583 63.987 40.981 64.454 L 40.494 64.837 C 40.297 64.993 40.079 65.086 39.862 65.117 Z"
-                android:fillAlpha="0.4"
-                android:fillColor="?colorControlNormal"
                 android:strokeWidth="1.583053476" />
             <path
                 android:name="path_6"
+
+                android:fillAlpha="1"
+                android:fillColor="@color/ic_launcher_foreground"
                 android:pathData="M 74.66 38.208 L 42.65 38.208 C 41.458 38.208 40.349 38.944 39.996 40.084 C 39.831 40.613 39.841 41.152 39.996 41.639 C 40.152 42.136 40.463 42.592 40.898 42.934 C 40.898 42.934 53.161 52.46 56.167 54.534 C 57.245 55.228 58.292 54.99 58.914 54.513 L 74.473 42.406 L 74.473 63.334 C 74.473 65.376 72.814 67.035 70.772 67.035 L 41.365 67.035 C 40.608 67.035 39.996 67.647 39.996 68.403 C 39.996 69.17 40.618 69.792 41.385 69.792 L 70.762 69.792 C 74.328 69.792 77.22 66.9 77.22 63.335 L 77.22 40.768 C 77.23 39.358 76.08 38.208 74.66 38.208 Z M 52.518 49.62 L 52.529 49.548 L 52.57 49.61 Z M 57.525 52.108 L 43.272 40.965 L 71.83 40.965 Z"
-                android:fillAlpha="0.6"
-                android:fillColor="?colorControlNormal"
                 android:strokeWidth="1.583053476" />
         </vector>
     </aapt:attr>
@@ -55,7 +61,7 @@
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="fillAlpha"
                     android:startOffset="75"
-                    android:valueFrom="0.4"
+                    android:valueFrom="0.8"
                     android:valueTo="0.8"
                     android:valueType="floatType" />
                 <objectAnimator
@@ -64,7 +70,7 @@
                     android:propertyName="fillAlpha"
                     android:startOffset="675"
                     android:valueFrom="0.8"
-                    android:valueTo="0.4"
+                    android:valueTo="0.8"
                     android:valueType="floatType" />
             </set>
         </aapt:attr>
@@ -77,7 +83,7 @@
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="fillAlpha"
                     android:startOffset="91"
-                    android:valueFrom="0.4"
+                    android:valueFrom="0.8"
                     android:valueTo="0.8"
                     android:valueType="floatType" />
                 <objectAnimator
@@ -86,7 +92,7 @@
                     android:propertyName="fillAlpha"
                     android:startOffset="675"
                     android:valueFrom="0.8"
-                    android:valueTo="0.4"
+                    android:valueTo="0.8"
                     android:valueType="floatType" />
             </set>
         </aapt:attr>
@@ -99,7 +105,7 @@
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="fillAlpha"
                     android:startOffset="312"
-                    android:valueFrom="0.6"
+                    android:valueFrom="1"
                     android:valueTo="1"
                     android:valueType="floatType" />
                 <objectAnimator
@@ -108,7 +114,7 @@
                     android:propertyName="fillAlpha"
                     android:startOffset="675"
                     android:valueFrom="1"
-                    android:valueTo="0.6"
+                    android:valueTo="1"
                     android:valueType="floatType" />
             </set>
         </aapt:attr>
@@ -121,7 +127,7 @@
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="fillAlpha"
                     android:startOffset="396"
-                    android:valueFrom="0.6"
+                    android:valueFrom="1"
                     android:valueTo="1"
                     android:valueType="floatType" />
                 <objectAnimator
@@ -130,7 +136,7 @@
                     android:propertyName="fillAlpha"
                     android:startOffset="675"
                     android:valueFrom="1"
-                    android:valueTo="0.6"
+                    android:valueTo="1"
                     android:valueType="floatType" />
             </set>
         </aapt:attr>
@@ -142,7 +148,7 @@
                     android:duration="190"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="fillAlpha"
-                    android:valueFrom="0.6"
+                    android:valueFrom="1"
                     android:valueTo="1"
                     android:valueType="floatType" />
                 <objectAnimator
@@ -151,7 +157,7 @@
                     android:propertyName="fillAlpha"
                     android:startOffset="675"
                     android:valueFrom="1"
-                    android:valueTo="0.6"
+                    android:valueTo="1"
                     android:valueType="floatType" />
             </set>
         </aapt:attr>
@@ -164,7 +170,7 @@
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="fillAlpha"
                     android:startOffset="206"
-                    android:valueFrom="0.6"
+                    android:valueFrom="1"
                     android:valueTo="1"
                     android:valueType="floatType" />
                 <objectAnimator
@@ -173,7 +179,7 @@
                     android:propertyName="fillAlpha"
                     android:startOffset="675"
                     android:valueFrom="1"
-                    android:valueTo="0.6"
+                    android:valueTo="1"
                     android:valueType="floatType" />
             </set>
         </aapt:attr>
@@ -186,7 +192,7 @@
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="fillAlpha"
                     android:startOffset="215"
-                    android:valueFrom="0.4"
+                    android:valueFrom="0.8"
                     android:valueTo="0.8"
                     android:valueType="floatType" />
                 <objectAnimator
@@ -195,7 +201,7 @@
                     android:propertyName="fillAlpha"
                     android:startOffset="675"
                     android:valueFrom="0.8"
-                    android:valueTo="0.4"
+                    android:valueTo="0.8"
                     android:valueType="floatType" />
             </set>
         </aapt:attr>

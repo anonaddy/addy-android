@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,8 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
@@ -52,7 +55,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         checkForDarkModeAndSetFlags()
         setContentView(view)
         drawBehindNavBar(binding.root, bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySplashProgressbar))
-
+        playAnimation(true, R.drawable.ic_loading_logo_splash)
 
         // This is prone to fail when users have restored the app data from any restore app as the
         // encryption key has changed. So we catch this once in the app and that's at launch
@@ -86,6 +89,20 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             }
         }
 
+    }
+
+    fun playAnimation(playOnLoop: Boolean, animationDrawable: Int) {
+        val animated = this.let { AnimatedVectorDrawableCompat.create(it, animationDrawable) }
+        if (playOnLoop) {
+            animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    binding.activitySplashAnimatedLogo.post { animated.start() }
+                }
+
+            })
+        }
+        binding.activitySplashAnimatedLogo.setImageDrawable(animated)
+        animated?.start()
     }
 
     @RequiresApi(Build.VERSION_CODES.S)

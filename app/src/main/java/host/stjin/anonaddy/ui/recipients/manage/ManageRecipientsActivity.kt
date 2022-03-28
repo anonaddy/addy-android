@@ -65,8 +65,6 @@ class ManageRecipientsActivity : BaseActivity(),
 
 
     private fun setPage(recipientId: String) {
-        binding.activityManageRecipientRLLottieview.visibility = View.GONE
-
         // Get the recipient
         lifecycleScope.launch {
             getRecipientInfo(recipientId)
@@ -344,11 +342,9 @@ class ManageRecipientsActivity : BaseActivity(),
                     binding.activityManageRecipientCL
                 ).show()
 
-                binding.activityManageRecipientRLProgressbar.visibility = View.GONE
+                // Show error animations
                 binding.activityManageRecipientLL1.visibility = View.GONE
-
-                // Show no internet animations
-                binding.activityManageRecipientRLLottieview.visibility = View.VISIBLE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
         }, id)
     }
@@ -433,9 +429,9 @@ class ManageRecipientsActivity : BaseActivity(),
 
         binding.activityManageRecipientAliasesTextview.text = aliases
 
-        binding.activityManageRecipientRLProgressbar.visibility = View.GONE
-        binding.activityManageRecipientLL1.visibility = View.VISIBLE
 
+        binding.animationFragment.stopAnimation()
+        binding.activityManageRecipientNSV.animate().alpha(1.0f)
         setOnClickListeners()
     }
 

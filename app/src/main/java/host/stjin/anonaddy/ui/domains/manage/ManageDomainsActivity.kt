@@ -72,7 +72,6 @@ class ManageDomainsActivity : BaseActivity(),
 
 
     private fun setPage(domainId: String) {
-        binding.activityManageDomainRLLottieview.visibility = View.GONE
         // Get the domain
         lifecycleScope.launch {
             getDomainInfo(domainId)
@@ -299,11 +298,9 @@ class ManageDomainsActivity : BaseActivity(),
                     binding.activityManageDomainCL
                 ).show()
 
-                binding.activityManageDomainRLProgressbar.visibility = View.GONE
+                // Show error animations
                 binding.activityManageDomainLL1.visibility = View.GONE
-
-                // Show no internet animations
-                binding.activityManageDomainRLLottieview.visibility = View.VISIBLE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
         }, id)
     }
@@ -413,10 +410,8 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainCheckDns.setSectionAlert(false)
         }
 
-
-        binding.activityManageDomainRLProgressbar.visibility = View.GONE
-        binding.activityManageDomainLL1.visibility = View.VISIBLE
-
+        binding.animationFragment.stopAnimation()
+        binding.activityManageDomainNSV.animate().alpha(1.0f)
 
         setOnSwitchChangeListeners()
         setOnClickListeners()

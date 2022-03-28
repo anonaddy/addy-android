@@ -27,17 +27,6 @@
             android:clipChildren="false"
             android:clipToPadding="false">
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/activity_search_RL_lottieview"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="32dp"
-                android:visibility="gone"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/not_found" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
