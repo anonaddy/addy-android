@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.alias
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -43,6 +44,7 @@ import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.components.Loading
 import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
+import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -61,6 +63,15 @@ class ManageAliasActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
+        if (userResource == null) {
+            // App not setup, open splash
+            val intent = Intent(this, SplashActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
 
         networkHelper = NetworkHelper(this)
         favoriteAliasHelper = FavoriteAliasHelper(this)
