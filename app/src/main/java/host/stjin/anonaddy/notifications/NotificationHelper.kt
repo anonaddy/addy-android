@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.os.Build
 import androidx.core.app.NotificationCompat.*
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.NotificationManagerCompat.*
 import androidx.core.content.ContextCompat
 import com.google.android.gms.wearable.MessageEvent
@@ -121,7 +120,7 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(false)
             .build()
 
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
         }
@@ -171,7 +170,7 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(true)
             .build()
 
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
         }
@@ -232,7 +231,7 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(true)
             .build()
 
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(UPDATER_NOTIFICATION_ID, notification)
         }
@@ -294,7 +293,7 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(true)
             .build()
 
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(FAILED_DELIVERIES_NOTIFICATION_ID, notification)
         }
@@ -360,7 +359,7 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(true)
             .build()
 
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(FAILED_BACKUP_NOTIFICATION_ID, notification)
         }
@@ -450,7 +449,7 @@ class NotificationHelper(private val context: Context) {
             .setContentIntent(editAliasPendingIntent)
             .setAutoCancel(true)
             .build()
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(notificationID, notification)
         }

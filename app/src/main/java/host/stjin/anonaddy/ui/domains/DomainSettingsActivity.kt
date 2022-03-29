@@ -42,7 +42,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityDomainSettingsNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityDomainSettingsLL1)
         )
 
         setupToolbar(

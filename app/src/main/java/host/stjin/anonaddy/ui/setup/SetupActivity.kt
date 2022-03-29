@@ -52,7 +52,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private var notificationPermissionsResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
+    private var notificationPermissionsResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
     }
 
     // TODO replace this with a version

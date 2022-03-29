@@ -62,7 +62,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(binding.root, arrayListOf(binding.root), arrayListOf(binding.navView, binding.activityMainViewpager))
+        drawBehindNavBar(
+            binding.root,
+            arrayListOf(binding.root),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.navView, binding.activityMainViewpager)
+        )
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {
@@ -221,8 +225,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
 
-    var mUpdateAvailable = false
-    var mPermissionsRequired = false
+    private var mUpdateAvailable = false
+    private var mPermissionsRequired = false
     private fun setAlertIconToProfile(updateAvailable: Boolean? = null, permissionsRequired: Boolean? = null) {
 
         // Store the bools for comparison next time this method gets called

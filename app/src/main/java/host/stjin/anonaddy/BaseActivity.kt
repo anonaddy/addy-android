@@ -203,6 +203,7 @@ abstract class BaseActivity : AppCompatActivity() {
     fun drawBehindNavBar(
         root: View? = null,
         topViewsToShiftDownUsingMargin: ArrayList<View>? = null,
+        topViewsToShiftDownUsingPadding: ArrayList<View>? = null,
         bottomViewsToShiftUpUsingPadding: ArrayList<View>? = null,
         bottomViewsToShiftUpUsingMargin: ArrayList<View>? = null
     ) {
@@ -235,6 +236,13 @@ abstract class BaseActivity : AppCompatActivity() {
                             for (view in bottomViewsToShiftUpUsingPadding) {
                                 view.paddingBottom.plus(insets.bottom)
                                     .let { view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, it) }
+                            }
+                        }
+
+                        if (topViewsToShiftDownUsingPadding != null) {
+                            for (view in topViewsToShiftDownUsingPadding) {
+                                view.paddingBottom.plus(insets.top)
+                                    .let { view.setPadding(view.paddingLeft, it, view.paddingRight, view.paddingBottom) }
                             }
                         }
 

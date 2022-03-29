@@ -9,11 +9,11 @@ android {
     defaultConfig {
         applicationId = rootProject.extra["application_id"] as String
         minSdk = 23
-        //targetSdk = 32
+        targetSdk = 32
         targetSdkPreview = "Tiramisu"
         versionCode = 40
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v4.0.0"
+        //versionName = "v4.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -100,11 +100,6 @@ dependencies {
 // Securing app
 dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
-}
-
-// Animations
-dependencies {
-    implementation("com.airbnb.android:lottie:5.0.3")
 }
 
 // Apache for extracting strings ManageAliasActivity

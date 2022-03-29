@@ -42,7 +42,7 @@ class ManageRecipientsActivity : BaseActivity(),
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRecipientNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRecipientLL1)
         )
 
         setupToolbar(

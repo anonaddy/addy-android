@@ -40,7 +40,7 @@ class RulesSettingsActivity : BaseActivity() {
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRulesNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRulesLL1)
         )
 
         setupToolbar(

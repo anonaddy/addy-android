@@ -11,7 +11,6 @@
     <string name="deactivated">Deactivated</string>
     <string name="changing_status">Changing status</string>
     <string name="favorite">Favorite</string>
-    <string name="set_watchface">Set watchface</string>
     <string name="tile_favorite_aliases_label">Favorite aliases</string>
     <string name="tile_favorite_aliases_title">Aliases</string>
     <string name="tile_favorite_aliases_subtitle">Favorites</string>

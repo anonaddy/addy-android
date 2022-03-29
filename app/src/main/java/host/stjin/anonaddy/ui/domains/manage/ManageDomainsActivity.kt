@@ -49,7 +49,7 @@ class ManageDomainsActivity : BaseActivity(),
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageDomainNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageDomainLL1)
         )
 
         setupToolbar(

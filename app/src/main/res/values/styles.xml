@@ -154,6 +154,15 @@
     <!-- END SECONDARY -->
 
     <!-- TERTIARY -->
+
+    <style name="ActionButtonsTertiary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">?colorTertiary</item>
+        <item name="android:textColor">?colorOnTertiary</item>
+        <item name="iconTint">?colorOnTertiary</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="cornerRadius">@dimen/corner_radius_button</item>
+    </style>
+
     <style name="CircularProgressButtonTertiary" parent="ActionButtonsTertiary">
         <item name="android:background">@drawable/circularprogressbutton_tertiary</item>
         <item name="spinning_bar_color">?colorOnTertiaryContainer</item>

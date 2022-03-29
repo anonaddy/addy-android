@@ -27,13 +27,6 @@
         android:alpha="0"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
-            android:id="@+id/activity_rules_create_RL_NSV_RL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false">
-
             <LinearLayout
                 android:id="@+id/activity_rules_create_LL1"
                 android:layout_width="match_parent"
@@ -247,7 +240,6 @@
                         android:text="@string/rules_create_info" />
                 </LinearLayout>
             </LinearLayout>
-        </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

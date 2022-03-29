@@ -197,7 +197,7 @@ class AliasActivity : ComponentActivity() {
                     state = scalingLazyListState,
                 ) {
                     Log.e("ANONDEBUG12", "scalinglazylistscope")
-                    item { aliasActionRow() }
+                    item { AliasActionRow() }
                     items(aliases) { alias ->
                         Chip(
                             colors = ChipDefaults.chipColors(
@@ -269,7 +269,7 @@ class AliasActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun aliasActionRow() {
+    private fun AliasActionRow() {
         Log.e("ANONDEBUG12", "aliasActionRow")
 
         Column(

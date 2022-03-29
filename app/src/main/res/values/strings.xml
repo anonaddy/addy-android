@@ -563,5 +563,11 @@
     <string name="can_reply_send">Reply/send allowed</string>
     <string name="cannot_reply_send">Reply/send not allowed</string>
     <string name="can_reply_send_desc">Reply and send from your aliases</string>
+    <string name="tap_here_to_see_the_error">Tap here to see the error</string>
+    <string name="error_details">Error details</string>
+    <string name="no_error_message">No error message</string>
+    <string name="close">Close</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="error_copied_to_clipboard">Error copied to clipboard</string>
 
 </resources>

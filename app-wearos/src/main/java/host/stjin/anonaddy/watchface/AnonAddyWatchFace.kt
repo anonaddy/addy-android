@@ -180,7 +180,7 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
         }*/
 
         // 10 lines of characters should be enough for all kind of watches
-        var dummyKeys = Array(10) { "" }
+        private var dummyKeys = Array(10) { "" }
         private fun generateDummyAPIKey(): Array<String> {
             if (lastUpdateMinute != mCalendar.get(Calendar.MINUTE)) {
                 // If the minute is different than last minute, change the values of the dummyKeysArray

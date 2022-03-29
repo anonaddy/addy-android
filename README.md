@@ -88,7 +88,6 @@ Third party libraries used.
 - [androidx.biometric](https://developer.android.com/jetpack/androidx/releases/biometric)
 - [androidx.security.crypto](https://developer.android.com/jetpack/androidx/releases/security)
 - [androidx.work](https://developer.android.com/jetpack/androidx/releases/work)
-- [airbnb/lottie-android](https://github.com/airbnb/lottie-android)
 - [kittinunf/fuel](https://github.com/kittinunf/fuel)
 - [omtodkar/ShimmerRecyclerView](https://github.com/omtodkar/ShimmerRecyclerView)
 - [facebook/shimmer-android](https://github.com/facebook/shimmer-android)

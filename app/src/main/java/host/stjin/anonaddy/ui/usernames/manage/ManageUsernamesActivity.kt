@@ -48,7 +48,7 @@ class ManageUsernamesActivity : BaseActivity(),
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageUsernameNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageUsernameLL1)
         )
 
         setupToolbar(

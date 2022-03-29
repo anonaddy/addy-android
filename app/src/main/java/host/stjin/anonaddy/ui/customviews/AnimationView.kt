@@ -16,12 +16,13 @@ class AnimationView @JvmOverloads constructor(context: Context?, attrs: Attribut
 
     private var animationView: ImageView? = null
 
-    fun playAnimation(playOnLoop: Boolean, animationDrawable: Int) {
+    fun playAnimation(playOnLoop: Boolean, animationDrawable: Int, callback: (() -> Unit)? = null) {
         val animated = context?.let { AnimatedVectorDrawableCompat.create(it, animationDrawable) }
-        if (playOnLoop) {
+        if (playOnLoop || callback != null) {
             animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
                 override fun onAnimationEnd(drawable: Drawable?) {
                     animationView?.post { animated.start() }
+                    callback?.let { it() }
                 }
 
             })

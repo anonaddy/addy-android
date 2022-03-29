@@ -77,7 +77,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySearchNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySearchLL1)
         )
 
         setupToolbar(

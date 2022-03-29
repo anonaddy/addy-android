@@ -25,95 +25,87 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-        <RelativeLayout
-            android:id="@+id/activity_username_settings_NSV_RL"
+        <LinearLayout
+            android:id="@+id/activity_username_settings_LL1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipChildren="false"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
 
             <LinearLayout
-                android:id="@+id/activity_username_settings_LL1"
+                style="@style/AnonAddyTitleAction"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:padding="@dimen/layout_padding_top"
-                android:paddingStart="@dimen/layout_padding"
-                android:paddingEnd="@dimen/layout_padding">
-
-                <LinearLayout
-                    style="@style/AnonAddyTitleAction"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/all_usernames" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/activity_username_settings_add_username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_username" />
-
-                </LinearLayout>
-
-                <com.todkars.shimmer.ShimmerRecyclerView
-                    android:id="@+id/activity_username_settings_all_usernames_recyclerview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:shimmer_recycler_auto_start="true"
-                    app:shimmer_recycler_layout="@layout/usernames_recyclerview_list_item_usernames_shimmer" />
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/activity_username_settings_no_usernames"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/no_result_textview_padding"
-                    android:text="@string/no_usernames"
-                    android:textAlignment="center"
-                    android:textColor="@color/BlackWhite"
-                    android:visibility="gone" />
-
-                <View
-                    style="@style/divider"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="16dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
-                    android:alpha="0.8"
-                    tools:ignore="UseCompoundDrawables">
+                    android:layout_weight="1"
+                    android:text="@string/all_usernames" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:contentDescription="@string/Info"
-                        android:paddingEnd="16dp"
-                        android:src="@drawable/ic_info"
-                        tools:ignore="RtlSymmetry" />
-
-                    <TextView
-                        android:id="@+id/activity_username_settings_RL_count_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:text="@string/you_ve_used_d_out_of_d_usernames" />
-                </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/activity_username_settings_add_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_username" />
 
             </LinearLayout>
 
-        </RelativeLayout>
+            <com.todkars.shimmer.ShimmerRecyclerView
+                android:id="@+id/activity_username_settings_all_usernames_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:shimmer_recycler_auto_start="true"
+                app:shimmer_recycler_layout="@layout/usernames_recyclerview_list_item_usernames_shimmer" />
+
+            <TextView
+                android:id="@+id/activity_username_settings_no_usernames"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/no_result_textview_padding"
+                android:text="@string/no_usernames"
+                android:textAlignment="center"
+                android:textColor="@color/BlackWhite"
+                android:visibility="gone" />
+
+            <View
+                style="@style/divider"
+                android:layout_width="match_parent"
+                android:layout_marginTop="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:alpha="0.8"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/Info"
+                    android:paddingEnd="16dp"
+                    android:src="@drawable/ic_info"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/activity_username_settings_RL_count_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/you_ve_used_d_out_of_d_usernames" />
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </androidx.core.widget.NestedScrollView>
 

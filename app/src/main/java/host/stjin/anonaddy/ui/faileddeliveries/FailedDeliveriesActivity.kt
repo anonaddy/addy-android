@@ -34,7 +34,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityFailedDeliveriesNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityFailedDeliveriesLL1)
         )
 
         setupToolbar(

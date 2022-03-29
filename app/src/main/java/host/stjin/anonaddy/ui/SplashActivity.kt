@@ -1,6 +1,9 @@
 package host.stjin.anonaddy.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -8,13 +11,14 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.ActivityMainFailedBinding
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import host.stjin.anonaddy_shared.AnonAddy
@@ -39,8 +43,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private var loadingDone = false
 
     private lateinit var binding: ActivitySplashBinding
-    private lateinit var bindingFailed: ActivityMainFailedBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +56,14 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
         setContentView(view)
-        drawBehindNavBar(binding.root, bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySplashProgressbar))
-        playAnimation(true, R.drawable.ic_loading_logo_splash)
+        drawBehindNavBar(
+            binding.root,
+            topViewsToShiftDownUsingPadding = arrayListOf(binding.activitySplashErrorLl1),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySplashErrorLl2)
+        )
+
+        playAnimation(true, R.drawable.ic_loading_logo_reverse_splash)
+
 
         // This is prone to fail when users have restored the app data from any restore app as the
         // encryption key has changed. So we catch this once in the app and that's at launch
@@ -91,12 +99,13 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     }
 
-    fun playAnimation(playOnLoop: Boolean, animationDrawable: Int) {
+    fun playAnimation(playOnLoop: Boolean, animationDrawable: Int, callback: (() -> Unit)? = null) {
         val animated = this.let { AnimatedVectorDrawableCompat.create(it, animationDrawable) }
-        if (playOnLoop) {
+        if (playOnLoop || callback != null) {
             animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
                 override fun onAnimationEnd(drawable: Drawable?) {
-                    binding.activitySplashAnimatedLogo.post { animated.start() }
+                    if (playOnLoop) binding.activitySplashAnimatedLogo.post { animated.start() }
+                    callback?.let { it() }
                 }
 
             })
@@ -201,20 +210,42 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private fun showErrorScreen(error: String?) {
         loadingDone = true
 
-        bindingFailed = ActivityMainFailedBinding.inflate(layoutInflater)
-        val view = bindingFailed.root
-        setContentView(view)
+        playAnimation(false, R.drawable.ic_loading_logo_error_splash) {
+            binding.activitySplashErrorLl1.animate().alpha(1.0f)
+            binding.activitySplashErrorLl2.animate().alpha(1.0f)
+        }
 
-        bindingFailed.activityMainFailedErrorMessage.text = error
-        bindingFailed.activityMainFailedRetryButton.setOnClickListener {
+        binding.activitySplashErrorTryAgain.setOnClickListener {
             val intent = Intent(this, SplashActivity::class.java)
             startActivity(intent)
             finish()
         }
-
-        bindingFailed.activityMainFailedResetButton.setOnClickListener {
+        binding.activitySplashErrorResetApp.setOnClickListener {
             SettingsManager(true, this).clearSettingsAndCloseApp()
         }
+
+        binding.activitySplashErrorMessage.setOnClickListener {
+            showErrorMessage(error)
+        }
+    }
+
+    private fun showErrorMessage(error: String?) {
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
+            .setTitle(resources.getString(R.string.error_details))
+            .setMessage(error ?: resources.getString(R.string.no_error_message))
+            .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(resources.getString(R.string.copy_to_clipboard)) { dialog, _ ->
+                val clipboard: ClipboardManager =
+                    this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("error", error)
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this, resources.getString(R.string.error_copied_to_clipboard), Toast.LENGTH_LONG).show()
+
+                dialog.dismiss()
+            }
+            .show()
     }
 
     override fun onClickHowToUpdate() {

@@ -29,7 +29,7 @@ fun CustomTimeText(
         TimeText(
             leadingCurvedContent = if (showLeadingText) {
                 {
-                    CurvedText(
+                    curvedText(
                         text = leadingText,
                         style = CurvedTextStyle()
                     )

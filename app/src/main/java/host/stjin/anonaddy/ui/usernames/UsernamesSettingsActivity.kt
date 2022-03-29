@@ -42,7 +42,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityUsernameSettingsNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityUsernameSettingsLL1)
         )
 
         setupToolbar(

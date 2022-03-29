@@ -54,7 +54,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityRulesCreateRLNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityRulesCreateLL1)
         )
 
         setupToolbar(

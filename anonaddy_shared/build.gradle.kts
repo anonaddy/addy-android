@@ -55,11 +55,11 @@ dependencies {
 
 // Compose
 dependencies {
-    implementation("androidx.compose.ui:ui-text:1.2.0-alpha05")
-    implementation("androidx.compose.ui:ui-graphics:1.2.0-alpha05")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha07")
+    implementation("androidx.compose.ui:ui-text:1.2.0-alpha06")
+    implementation("androidx.compose.ui:ui-graphics:1.2.0-alpha06")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha08")
     // Compose for Wear OS Dependencies
-    implementation("androidx.wear.compose:compose-material:1.0.0-alpha18")
+    implementation("androidx.wear.compose:compose-material:1.0.0-alpha19")
 }
 
 // Fuel, network requests
