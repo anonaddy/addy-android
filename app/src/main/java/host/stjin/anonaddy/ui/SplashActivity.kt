@@ -62,7 +62,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySplashErrorLl2)
         )
 
-        playAnimation(true, R.drawable.ic_loading_logo_reverse_splash)
+        playAnimation(true, R.drawable.ic_loading_logo_splash)
 
 
         // This is prone to fail when users have restored the app data from any restore app as the

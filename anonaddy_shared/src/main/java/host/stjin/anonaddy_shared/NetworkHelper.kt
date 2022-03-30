@@ -3056,7 +3056,7 @@ class NetworkHelper(private val context: Context) {
         }
 
         val (_, response, result) =
-            Fuel.get(GITLAB_TAGS_RSS_FEED).timeout(90000)
+            Fuel.get(GITLAB_TAGS_RSS_FEED)
                 .awaitStringResponseResult()
 
 

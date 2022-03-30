@@ -49,7 +49,7 @@
         android:layout_width="288dp"
         android:layout_height="288dp"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_loading_logo_reverse_splash" />
+        android:src="@drawable/ic_loading_logo_splash" />
 
     <LinearLayout
         android:id="@+id/activity_splash_error_ll2"
