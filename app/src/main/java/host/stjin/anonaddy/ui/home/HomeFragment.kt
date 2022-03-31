@@ -199,7 +199,7 @@ class HomeFragment : Fragment() {
                         }
 
                         aliasAdapter = AliasAdapter(list.data, context)
-                        aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+                        aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
                             override fun onClick(pos: Int) {
                                 val intent = Intent(context, ManageAliasActivity::class.java)
                                 // Pass data object in the bundle and populate details activity.

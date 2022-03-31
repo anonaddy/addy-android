@@ -21,9 +21,11 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/aliases_recyclerview_list_LL0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:background="@color/selected_background_color"
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:padding="@dimen/cardview_padding"
@@ -112,31 +114,39 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/aliases_recyclerview_list_LL4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_rounded_corners_top_recyclerview_cards"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:background="@drawable/shape_rounded_corners_top_recyclerview_cards">
 
-            <TextView
-                android:id="@+id/aliases_recyclerview_list_watched_textview"
-                style="@style/DescTextStyle"
-                android:layout_width="wrap_content"
+            <!-- This extra LL5 is there for the aliasAdapter (holder.mLL0.setBackgroundColor(0))-->
+            <LinearLayout
+                android:id="@+id/aliases_recyclerview_list_LL5"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:alpha="1"
-                android:drawablePadding="4dp"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif"
-                android:gravity="center_vertical"
-                android:lines="1"
-                android:maxLines="1"
-                android:singleLine="false"
-                android:text="@string/you_ll_be_notified_if_this_alias_has_activity"
-                android:textColor="?colorPrimary"
-                android:textSize="12sp"
-                app:drawableStartCompat="@drawable/ic_watch_alias"
-                app:drawableTint="?colorPrimary" />
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/aliases_recyclerview_list_watched_textview"
+                    style="@style/DescTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:alpha="1"
+                    android:drawablePadding="4dp"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_vertical"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:singleLine="false"
+                    android:text="@string/you_ll_be_notified_if_this_alias_has_activity"
+                    android:textColor="?colorPrimary"
+                    android:textSize="12sp"
+                    app:drawableStartCompat="@drawable/ic_watch_alias"
+                    app:drawableTint="?colorPrimary" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

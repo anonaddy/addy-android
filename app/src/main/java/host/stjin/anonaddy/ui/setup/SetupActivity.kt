@@ -1,6 +1,5 @@
 package host.stjin.anonaddy.ui.setup
 
-import android.Manifest
 import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
@@ -13,7 +12,6 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import host.stjin.anonaddy.BaseActivity
@@ -59,9 +57,10 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     private fun requestNotificationPermissions() {
         // Check if notification permissions are granted
         if (Build.VERSION.SDK_INT >= 33) {
-            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
+            //TODO Uncomment in Tiramisu
+            /*if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
                 notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
+            }*/
         }
     }
 

@@ -58,25 +58,34 @@ class AliasWatcher(private val context: Context) {
         }
     }
 
-    fun getAliasesToWatch(): MutableSet<String>? {
-        return settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
+    fun getAliasesToWatch(): MutableSet<String> {
+        return settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST) ?: HashSet()
     }
 
     fun removeAliasToWatch(alias: String) {
         val aliasList = getAliasesToWatch()
-        aliasList?.remove(alias)
-        aliasList?.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
 
-        // Since an alias was removed from the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its still required
-        BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+        // Only remove alias if it is already in the list
+        if (aliasList.contains(alias)) {
+            aliasList.remove(alias)
+            aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
+
+            // Since an alias was removed from the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its still required
+            BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+        }
     }
 
     fun addAliasToWatch(alias: String) {
         val aliasList = getAliasesToWatch()
-        aliasList?.add(alias)
-        aliasList?.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
 
-        // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
-        BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+        // Only add alias if it is not already in the list
+        if (!aliasList.contains(alias)) {
+            aliasList.add(alias)
+            aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
+
+            // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
+            BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+        }
+
     }
 }

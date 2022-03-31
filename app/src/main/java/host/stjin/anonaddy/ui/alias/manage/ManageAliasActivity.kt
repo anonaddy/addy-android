@@ -207,11 +207,12 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun setOnSwitchChangeListeners() {
-        binding.activityManageAliasActiveSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
-                    binding.activityManageAliasActiveSwitchLayout.showProgressBar(true)
+                    binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
                     shouldUpdate = true
                     if (checked) {
@@ -227,7 +228,8 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageAliasWatchSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
@@ -246,11 +248,11 @@ class ManageAliasActivity : BaseActivity(),
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
-            binding.activityManageAliasActiveSwitchLayout.showProgressBar(false)
+            binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_deactivated))
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_deactivated))
             } else {
-                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -264,11 +266,11 @@ class ManageAliasActivity : BaseActivity(),
 
     private suspend fun activateAlias() {
         networkHelper.activateSpecificAlias({ alias, result ->
-            binding.activityManageAliasActiveSwitchLayout.showProgressBar(false)
+            binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (alias != null) {
-                binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_activated))
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_activated))
             } else {
-                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -281,22 +283,25 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setOnClickListeners() {
-        binding.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
-                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.activityManageAliasActiveSwitchLayout.getSwitchChecked())
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.getSwitchChecked())
             }
         })
 
 
-        binding.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
-                binding.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.activityManageAliasWatchSwitchLayout.getSwitchChecked())
+                binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.getSwitchChecked())
             }
         })
 
-        binding.activityManageAliasDescEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!editAliasDescriptionBottomDialogFragment.isAdded) {
                     editAliasDescriptionBottomDialogFragment.show(
@@ -307,7 +312,8 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageAliasRecipientsEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasRecipientsEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!editAliasRecipientsBottomDialogFragment.isAdded) {
                     editAliasRecipientsBottomDialogFragment.show(
@@ -318,19 +324,19 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageAliasDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 deleteAlias()
             }
         })
 
-        binding.activityManageAliasForget.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasForget.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forgetAlias()
             }
         })
 
-        binding.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 restoreAlias()
             }
@@ -537,16 +543,16 @@ class ManageAliasActivity : BaseActivity(),
          */
 
         // Set switch status
-        binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(alias.active)
-        binding.activityManageAliasActiveSwitchLayout.setTitle(
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(alias.active)
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setTitle(
             if (alias.active) resources.getString(R.string.alias_activated) else resources.getString(
                 R.string.alias_deactivated
             )
         )
 
         // Set watch switch status
-        binding.activityManageAliasWatchSwitchLayout.setSwitchChecked(
-            aliasWatcher.getAliasesToWatch()?.contains(this@ManageAliasActivity.alias!!.id) ?: false
+        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(
+            aliasWatcher.getAliasesToWatch().contains(this@ManageAliasActivity.alias!!.id)
         )
 
 
@@ -556,14 +562,14 @@ class ManageAliasActivity : BaseActivity(),
 
         // This layout only contains SectionViews
         val layout =
-            findViewById<View>(R.id.activity_manage_alias_settings_LL1) as LinearLayout
+            findViewById<View>(R.id.activity_manage_alias_general_actions) as LinearLayout
         if (alias.deleted_at != null) {
             // Aliasdeleted is not null, thus deleted. disable all the layouts and alpha them
 
             // Show restore and hide delete
-            binding.activityManageAliasRestore.visibility = View.VISIBLE
-            binding.activityManageAliasForget.visibility = View.VISIBLE
-            binding.activityManageAliasDelete.visibility = View.GONE
+            binding.activityManageAliasGeneralActions.activityManageAliasRestore.visibility = View.VISIBLE
+            binding.activityManageAliasGeneralActions.activityManageAliasForget.visibility = View.VISIBLE
+            binding.activityManageAliasGeneralActions.activityManageAliasDelete.visibility = View.GONE
             for (i in 0 until layout.childCount) {
                 val child = layout.getChildAt(i)
 
@@ -575,9 +581,9 @@ class ManageAliasActivity : BaseActivity(),
             }
         } else {
             // Show delete and hide restore
-            binding.activityManageAliasRestore.visibility = View.GONE
-            binding.activityManageAliasDelete.visibility = View.VISIBLE
-            binding.activityManageAliasForget.visibility = View.VISIBLE
+            binding.activityManageAliasGeneralActions.activityManageAliasRestore.visibility = View.GONE
+            binding.activityManageAliasGeneralActions.activityManageAliasDelete.visibility = View.VISIBLE
+            binding.activityManageAliasGeneralActions.activityManageAliasForget.visibility = View.VISIBLE
 
             // As the childs are only sections, cast and set enabled state
             // Aliasdeleted is null, thus not deleted. enable all the layouts
@@ -626,7 +632,7 @@ class ManageAliasActivity : BaseActivity(),
             )
         }
 
-        binding.activityManageAliasRecipientsEdit.setDescription(recipients)
+        binding.activityManageAliasGeneralActions.activityManageAliasRecipientsEdit.setDescription(recipients)
 
 
         // Initialise the bottomdialog
@@ -635,8 +641,10 @@ class ManageAliasActivity : BaseActivity(),
 
 
         // Set created at and updated at
-        DateTimeUtils.turnStringIntoLocalString(alias.created_at)?.let { binding.activityManageAliasCreatedAt.setDescription(it) }
-        DateTimeUtils.turnStringIntoLocalString(alias.updated_at)?.let { binding.activityManageAliasUpdatedAt.setDescription(it) }
+        DateTimeUtils.turnStringIntoLocalString(alias.created_at)
+            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasCreatedAt.setDescription(it) }
+        DateTimeUtils.turnStringIntoLocalString(alias.updated_at)
+            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasUpdatedAt.setDescription(it) }
 
 
         /**
@@ -645,9 +653,9 @@ class ManageAliasActivity : BaseActivity(),
 
         // Set description and initialise the bottomDialogFragment
         if (alias.description != null) {
-            binding.activityManageAliasDescEdit.setDescription(alias.description)
+            binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setDescription(alias.description)
         } else {
-            binding.activityManageAliasDescEdit.setDescription(
+            binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setDescription(
                 this.resources.getString(
                     R.string.alias_no_description
                 )
@@ -672,7 +680,7 @@ class ManageAliasActivity : BaseActivity(),
         if (shouldDeactivateThisAlias) {
             // Deactive switch
             forceSwitch = true
-            binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
+            binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
         }
     }
 

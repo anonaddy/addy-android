@@ -2,11 +2,12 @@ package host.stjin.anonaddy.adapter
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.util.TypedValue
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -19,10 +20,10 @@ import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 
-class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context) :
+class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context, private val supportMultipleSelection: Boolean = false) :
     RecyclerView.Adapter<AliasAdapter.ViewHolder>() {
 
-    lateinit var onAliasClickListener: ClickListener
+    lateinit var onAliasAliasInterface: AliasInterface
     private val aliasesToWatch = AliasWatcher(context).getAliasesToWatch()
     private var selectedAliases: ArrayList<Aliases> = arrayListOf()
 
@@ -31,11 +32,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.aliases_recyclerview_list_item, parent, false)
         )
-    }
-
-    private fun View.addForegroundRipple() = with(TypedValue()) {
-        context.theme.resolveAttribute(android.R.attr.selectableItemBackground, this, true)
-        foreground = ContextCompat.getDrawable(context, resourceId)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -128,26 +124,21 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         holder.mChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT
 
-
         holder.mWatchedTextView.visibility =
-            if (aliasesToWatch?.contains(listWithAliases[position].id) == true) View.VISIBLE else View.GONE
+            if (aliasesToWatch.contains(listWithAliases[position].id)) View.VISIBLE else View.GONE
     }
 
     private fun applySelectedOverlay(holder: ViewHolder, position: Int) {
         // Check if the item is selected
         if (selectedAliases.contains(listWithAliases[position])) {
             holder.mCV.cardElevation = 0f
-
-            //FIXME Fix card background color
-            holder.mCV.setCardBackgroundColor(ContextCompat.getColorStateList(holder.mCV.context, R.color.md_theme_surfaceVariant))
-            holder.mCV.foreground = null
+            holder.mLL0.setBackgroundColor(ContextCompat.getColor(holder.mLL0.context, R.color.selected_background_color))
+            holder.mWatchAliasLL.setBackgroundColor(ContextCompat.getColor(holder.mWatchAliasLL.context, R.color.selected_background_color_darker))
             holder.mAction.setImageDrawable(ContextCompat.getDrawable(holder.mAction.context, R.drawable.ic_check))
         } else {
             holder.mCV.cardElevation = holder.mCV.context.resources.getDimension(R.dimen.cardview_default_elevation)
-            holder.mCV.addForegroundRipple()
-
-            //FIXME Fix card background color
-            holder.mCV.setCardBackgroundColor(originalCardviewColor)
+            holder.mLL0.setBackgroundColor(0)
+            holder.mWatchAliasLL.setBackgroundColor(0)
             holder.mAction.setImageDrawable(ContextCompat.getDrawable(holder.mAction.context, R.drawable.ic_copy))
         }
     }
@@ -158,13 +149,15 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         return listWithAliases
     }
 
-    fun setClickOnAliasClickListener(aClickListener: ClickListener) {
-        onAliasClickListener = aClickListener
+    fun setClickOnAliasClickListener(aAliasInterface: AliasInterface) {
+        onAliasAliasInterface = aAliasInterface
     }
 
-    interface ClickListener {
+    interface AliasInterface {
         fun onClick(pos: Int)
         fun onClickCopy(pos: Int, aView: View)
+        fun onSelectionMode(selectionMode: Boolean, selectedAliases: ArrayList<Aliases>) { /* By default, don't implement */
+        }
     }
 
 
@@ -180,11 +173,16 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
         var mAction: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
         var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
+        var mLL0: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL0)
+        var mWatchAliasLL: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL5)
 
         init {
             mAction.setOnClickListener(this)
             mCV.setOnClickListener(this)
-            mCV.setOnLongClickListener(this)
+
+            if (supportMultipleSelection) {
+                mCV.setOnLongClickListener(this)
+            }
 
             if (adapterPosition == 0 && originalCardviewColor != null) {
                 originalCardviewColor = mCV.cardBackgroundColor
@@ -196,10 +194,10 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
                 if (selectedAliases.any()) {
                     selectItem(adapterPosition)
                 } else {
-                    onAliasClickListener.onClick(adapterPosition)
+                    onAliasAliasInterface.onClick(adapterPosition)
                 }
             } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
-                onAliasClickListener.onClickCopy(adapterPosition, p0)
+                onAliasAliasInterface.onClickCopy(adapterPosition, p0)
             }
         }
 
@@ -211,12 +209,18 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         }
 
         private fun selectItem(adapterPosition: Int) {
-            // TODO Add vibration when selecting
+            mCV.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             if (selectedAliases.contains(listWithAliases[adapterPosition])) {
                 selectedAliases.remove(listWithAliases[adapterPosition])
             } else {
                 selectedAliases.add(listWithAliases[adapterPosition])
             }
+
+            onAliasAliasInterface.onSelectionMode(
+                selectionMode = selectedAliases.any(),
+                selectedAliases = selectedAliases
+            )
+
             notifyItemChanged(adapterPosition)
         }
 

@@ -30,12 +30,15 @@
     <color name="colorControlNormal">#89000000</color> <!-- I decided to keep this one -->
 
     <!--grey-->
+    <color name="md_grey_100">#F5F5F5</color>
+    <color name="md_grey_200">#EEEEEE</color>
     <color name="md_grey_500">#9E9E9E</color>
     <color name="md_grey_600">#757575</color>
     <color name="md_grey_700">#616161</color>
     <color name="md_grey_800">#424242</color>
-    <color name="hardRed">#FF0000</color>
+    <color name="md_grey_900">#212121</color>
 
+    <color name="hardRed">#FF0000</color>
 
     <!-- Icon -->
     <color name="ic_launcher_background">@color/primaryColorStatic</color>

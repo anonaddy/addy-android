@@ -40,7 +40,8 @@ import kotlinx.coroutines.launch
 
 
 class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDialogListener,
-    FilterOptionsAliasBottomDialogFragment.AddFilterOptionsAliasBottomDialogListener {
+    FilterOptionsAliasBottomDialogFragment.AddFilterOptionsAliasBottomDialogListener,
+    AliasMultipleSelectionBottomDialogFragment.AddAliasMultipleSelectionBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
@@ -68,6 +69,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         AddAliasBottomDialogFragment.newInstance()
 
     private lateinit var filterOptionsAliasBottomDialogFragment: FilterOptionsAliasBottomDialogFragment
+
+    private lateinit var aliasMultipleSelectionBottomDialogFragment: AliasMultipleSelectionBottomDialogFragment
 
     private var _binding: FragmentAliasBinding? = null
 
@@ -370,6 +373,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private var aliasAdapter: AliasAdapter? = null
     private var aliasList: AliasesArray? = null
+    var aliasSelectionSnackbar: Snackbar? = null
 
     private fun initRecyclerview(forceReload: Boolean) {
         binding.aliasAllAliasesRecyclerview.apply {
@@ -396,8 +400,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
 
             if (forceReload) {
-                aliasAdapter = AliasAdapter(aliasList!!.data, context)
-                aliasAdapter!!.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+                hideSnackBar()
+                aliasAdapter = AliasAdapter(aliasList!!.data, context, supportMultipleSelection = true)
+                aliasAdapter!!.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
                     override fun onClick(pos: Int) {
                         val intent = Intent(context, ManageAliasActivity::class.java)
                         // Pass data object in the bundle and populate details activity.
@@ -423,11 +428,50 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         }
                     }
 
+                    override fun onSelectionMode(selectionMode: Boolean, selectedAliases: ArrayList<Aliases>) {
+                        // If multipleSelection is supported, long pressing an alias will trigger this method
+
+                        if (selectionMode) {
+                            binding.aliasAddAliasFab.hide()
+                            val bottomNavView: BottomNavigationView? =
+                                activity?.findViewById(R.id.nav_view)
+                            bottomNavView?.let {
+                                aliasSelectionSnackbar = SnackbarHelper.createSnackbar(
+                                    context,
+                                    "${selectedAliases.count()} aliases selected",
+                                    it,
+                                    length = Snackbar.LENGTH_INDEFINITE,
+                                    allowSwipeDismiss = false
+                                ).apply {
+                                    anchorView = bottomNavView
+                                }.setAction(R.string.action) {
+                                    aliasMultipleSelectionBottomDialogFragment =
+                                        AliasMultipleSelectionBottomDialogFragment.newInstance(selectedAliases)
+                                    if (!aliasMultipleSelectionBottomDialogFragment.isAdded) {
+                                        aliasMultipleSelectionBottomDialogFragment.show(
+                                            childFragmentManager,
+                                            "aliasMultipleSelectionBottomDialogFragment"
+                                        )
+                                    }
+                                }
+                                aliasSelectionSnackbar?.show()
+                            }
+                        } else {
+                            hideSnackBar()
+                        }
+
+                    }
+
                 })
                 adapter = aliasAdapter
             }
         }
 
+    }
+
+    private fun hideSnackBar() {
+        binding.aliasAddAliasFab.show()
+        aliasSelectionSnackbar?.dismiss()
     }
 
     private fun getFilteredAliasList(aliasesList: ArrayList<Aliases>): ArrayList<Aliases> {
@@ -509,6 +553,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     override fun onDismiss() {
         loadFilter()
+    }
+
+    override fun onCloseMultipleSelectionBottomDialogFragment() {
+        aliasMultipleSelectionBottomDialogFragment.dismissAllowingStateLoss()
+        getDataFromWeb()
     }
 
 }
