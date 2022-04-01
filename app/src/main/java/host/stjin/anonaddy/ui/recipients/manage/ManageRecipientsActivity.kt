@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageRecipientsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Recipients
@@ -240,14 +240,14 @@ class ManageRecipientsActivity : BaseActivity(),
 
     private lateinit var removeGpgKeySnackbar: Snackbar
     private fun removeGpgKey(id: String) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.remove_public_key))
-            .setIcon(R.drawable.ic_forbid)
-            .setMessage(resources.getString(R.string.remove_public_key_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.remove)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.remove_public_key),
+            message = resources.getString(R.string.remove_public_key_desc),
+            icon = R.drawable.ic_forbid,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.remove),
+            positiveButtonAction = {
                 removeGpgKeySnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.removing_public_key),
@@ -259,19 +259,19 @@ class ManageRecipientsActivity : BaseActivity(),
                     removeGpgKeyHttpRequest(id, this@ManageRecipientsActivity)
                 }
             }
-            .show()
+        ).show()
     }
 
     private lateinit var deleteRecipientSnackbar: Snackbar
     private fun deleteRecipient(id: String) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.delete_recipient))
-            .setIcon(R.drawable.ic_trash)
-            .setMessage(resources.getString(R.string.delete_recipient_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.delete_recipient),
+            message = resources.getString(R.string.delete_recipient_desc),
+            icon = R.drawable.ic_trash,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.delete),
+            positiveButtonAction = {
                 deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_recipient),
@@ -283,7 +283,7 @@ class ManageRecipientsActivity : BaseActivity(),
                     deleteRecipientHttpRequest(id, this@ManageRecipientsActivity)
                 }
             }
-            .show()
+        ).show()
     }
 
     private suspend fun deleteRecipientHttpRequest(id: String, context: Context) {

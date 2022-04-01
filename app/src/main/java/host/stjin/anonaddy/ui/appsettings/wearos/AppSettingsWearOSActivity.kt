@@ -6,13 +6,13 @@ import android.widget.CompoundButton
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsWearosBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -56,15 +56,16 @@ class AppSettingsWearOSActivity : BaseActivity() {
             // nodes available, so reload the nodes
             loadNodes()
         }.addOnFailureListener {
-            MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-                .setTitle(resources.getString(R.string.wearable_api_not_available))
-                .setIcon(R.drawable.ic_brand_google_play)
-                .setCancelable(false)
-                .setMessage(resources.getString(R.string.wearable_api_not_available_desc))
-                .setPositiveButton(resources.getString(R.string.i_understand)) { _, _ ->
+            MaterialDialogHelper.showMaterialDialog(
+                context = this,
+                title = resources.getString(R.string.wearable_api_not_available),
+                message = resources.getString(R.string.wearable_api_not_available_desc),
+                icon = R.drawable.ic_brand_google_play,
+                positiveButtonText = resources.getString(R.string.i_understand),
+                positiveButtonAction = {
                     finish()
                 }
-                .show()
+            ).show()
         }
     }
 
@@ -136,15 +137,13 @@ class AppSettingsWearOSActivity : BaseActivity() {
                 listOfNodes.forEach { nodeListItems.add(it.displayName) }
                 val nodeListItemsCS: Array<CharSequence> = nodeListItems.toArray(arrayOfNulls<CharSequence>(nodeListItems.size))
 
-                val materialDialog = MaterialAlertDialogBuilder(
-                    this@AppSettingsWearOSActivity,
-                    R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons
+
+                val materialDialog = MaterialDialogHelper.showMaterialDialog(
+                    context = this@AppSettingsWearOSActivity,
+                    title = resources.getString(R.string.select_wearable_device),
+                    icon = R.drawable.ic_device_watch,
+                    neutralButtonText = resources.getString(R.string.cancel),
                 )
-                    .setTitle(resources.getString(R.string.select_wearable_device))
-                    .setIcon(R.drawable.ic_device_watch)
-                    .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                        dialog.dismiss()
-                    }
 
                 if (listOfNodes.any()) {
                     materialDialog.setSingleChoiceItems(

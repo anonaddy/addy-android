@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
@@ -24,6 +23,7 @@ import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
@@ -363,74 +363,56 @@ class ManageAliasActivity : BaseActivity(),
 
     private lateinit var restoreAliasSnackbar: Snackbar
     private fun restoreAlias() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.restore_alias))
-            .setIcon(R.drawable.ic_trash_off)
-            .setMessage(resources.getString(R.string.restore_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
+        MaterialDialogHelper.aliasRestoreDialog(
+            context = this
+        ) {
+            restoreAliasSnackbar = SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.restoring_alias),
+                binding.activityManageAliasCL,
+                length = Snackbar.LENGTH_INDEFINITE
+            )
+            restoreAliasSnackbar.show()
+            lifecycleScope.launch {
+                restoreAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
             }
-            .setPositiveButton(resources.getString(R.string.restore)) { _, _ ->
-                restoreAliasSnackbar = SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.restoring_alias),
-                    binding.activityManageAliasCL,
-                    length = Snackbar.LENGTH_INDEFINITE
-                )
-                restoreAliasSnackbar.show()
-                lifecycleScope.launch {
-                    restoreAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
-                }
-            }
-            .show()
+        }
     }
 
     private lateinit var deleteAliasSnackbar: Snackbar
     private fun deleteAlias() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.delete_alias))
-            .setIcon(R.drawable.ic_trash)
-            .setMessage(resources.getString(R.string.delete_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
+        MaterialDialogHelper.aliasDeleteDialog(
+            context = this
+        ) {
+            deleteAliasSnackbar = SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.deleting_alias),
+                binding.activityManageAliasCL,
+                length = Snackbar.LENGTH_INDEFINITE
+            )
+            deleteAliasSnackbar.show()
+            lifecycleScope.launch {
+                deleteAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
             }
-            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
-                deleteAliasSnackbar = SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.deleting_alias),
-                    binding.activityManageAliasCL,
-                    length = Snackbar.LENGTH_INDEFINITE
-                )
-                deleteAliasSnackbar.show()
-                lifecycleScope.launch {
-                    deleteAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
-                }
-            }
-            .show()
+        }
     }
 
     private lateinit var forgetAliasSnackbar: Snackbar
     private fun forgetAlias() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.forget_alias))
-            .setIcon(R.drawable.ic_eraser)
-            .setMessage(resources.getString(R.string.forget_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
+        MaterialDialogHelper.aliasForgetDialog(
+            context = this
+        ) {
+            forgetAliasSnackbar = SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.forgetting_alias),
+                binding.activityManageAliasCL,
+                length = Snackbar.LENGTH_INDEFINITE
+            )
+            forgetAliasSnackbar.show()
+            lifecycleScope.launch {
+                forgetAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
             }
-            .setPositiveButton(resources.getString(R.string.forget)) { _, _ ->
-                forgetAliasSnackbar = SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.forgetting_alias),
-                    binding.activityManageAliasCL,
-                    length = Snackbar.LENGTH_INDEFINITE
-                )
-                forgetAliasSnackbar.show()
-                lifecycleScope.launch {
-                    forgetAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
-                }
-            }
-            .show()
+        }
     }
 
     private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
@@ -473,13 +455,6 @@ class ManageAliasActivity : BaseActivity(),
         }, id)
     }
 
-    private fun finishWithUpdate() {
-        val intent = Intent()
-        intent.putExtra("should_update", shouldUpdate)
-        setResult(RESULT_OK, intent)
-        finish()
-    }
-
     private suspend fun restoreAliasHttpRequest(id: String, context: Context) {
         networkHelper.restoreAlias({ alias, error ->
             if (alias != null) {
@@ -498,6 +473,13 @@ class ManageAliasActivity : BaseActivity(),
                 ).show()
             }
         }, id)
+    }
+
+    private fun finishWithUpdate() {
+        val intent = Intent()
+        intent.putExtra("should_update", shouldUpdate)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 
     private suspend fun getAliasInfo(id: String) {

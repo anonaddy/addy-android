@@ -16,11 +16,11 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.ui.setup.SetupActivity
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.AnonAddyForAndroid
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -230,22 +230,20 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private fun showErrorMessage(error: String?) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.error_details))
-            .setMessage(error ?: resources.getString(R.string.no_error_message))
-            .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.copy_to_clipboard)) { dialog, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.error_details),
+            message = error ?: resources.getString(R.string.no_error_message),
+            neutralButtonText = resources.getString(R.string.close),
+            positiveButtonText = resources.getString(R.string.copy_to_clipboard),
+            positiveButtonAction = {
                 val clipboard: ClipboardManager =
                     this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("error", error)
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(this, resources.getString(R.string.error_copied_to_clipboard), Toast.LENGTH_LONG).show()
-
-                dialog.dismiss()
             }
-            .show()
+        ).show()
     }
 
     override fun onClickHowToUpdate() {

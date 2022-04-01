@@ -18,7 +18,6 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.Wearable
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
@@ -31,6 +30,7 @@ import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.AppSettingsWearOSActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -396,54 +396,57 @@ class AppSettingsActivity : BaseActivity(),
     }
 
     private fun resetApp() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.reset_app))
-            .setIcon(R.drawable.ic_loader)
-            .setMessage(resources.getString(R.string.reset_app_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.reset_app)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.reset_app),
+            message = resources.getString(R.string.reset_app_confirmation_desc),
+            icon = R.drawable.ic_loader,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.reset_app),
+            positiveButtonAction = {
                 Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
                     if (nodes.any()) {
-                        MaterialAlertDialogBuilder(
-                            this@AppSettingsActivity,
-                            R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons
-                        )
-                            .setTitle(resources.getString(R.string.reset_app))
-                            .setIcon(R.drawable.ic_device_watch)
-                            .setMessage(resources.getString(R.string.reset_app_confirmation_wearable))
-                            .setPositiveButton(resources.getString(R.string.reset_app_all_apps)) { _, _ ->
+                        MaterialDialogHelper.showMaterialDialog(
+                            context = this,
+                            title = resources.getString(R.string.reset_app),
+                            message = resources.getString(R.string.reset_app_confirmation_wearable),
+                            icon = R.drawable.ic_device_watch,
+                            neutralButtonText = resources.getString(R.string.cancel),
+                            positiveButtonText = resources.getString(R.string.reset_app_all_apps),
+                            positiveButtonAction = {
                                 lifecycleScope.launch {
                                     resetAppOnAllWearables { result ->
                                         if (result) {
                                             (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                                         } else {
-                                            MaterialAlertDialogBuilder(
-                                                this@AppSettingsActivity,
-                                                R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons
-                                            )
-                                                .setTitle(resources.getString(R.string.reset_app_error_wearable))
-                                                .setIcon(R.drawable.ic_loader)
-                                                .setMessage(resources.getString(R.string.reset_app_error_wearable_desc))
-                                                .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                                                    dialog.dismiss()
-                                                }.setNegativeButton(resources.getString(R.string.reset_app_just_this_app)) { _, _ ->
+                                            MaterialDialogHelper.showMaterialDialog(
+                                                context = this@AppSettingsActivity,
+                                                title = resources.getString(R.string.reset_app_error_wearable),
+                                                message = resources.getString(R.string.reset_app_error_wearable_desc),
+                                                icon = R.drawable.ic_loader,
+                                                neutralButtonText = resources.getString(R.string.cancel),
+                                                positiveButtonText = resources.getString(R.string.reset_app_just_this_app),
+                                                positiveButtonAction = {
                                                     (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                                                }.show()
+                                                }
+                                            ).show()
                                         }
                                     }
                                 }
-                            }.setNegativeButton(resources.getString(R.string.reset_app_just_this_app)) { _, _ ->
+                            },
+                            negativeButtonText = resources.getString(R.string.reset_app_just_this_app),
+                            negativeButtonAction = {
                                 (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                            }.show()
+                            }
+                        ).show()
                     } else {
                         (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                     }
                 }.addOnFailureListener {
                     (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                 }
-            }.show()
+            }
+        ).show()
     }
 
     private fun resetAppOnAllWearables(callback: (Boolean) -> Unit) {

@@ -13,11 +13,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -85,21 +85,21 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         val hostname = StringUtils.substringBefore(data, "/setup/")
         val apiKey = StringUtils.substringAfter(data, "/setup/")
 
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.setup_app))
-            .setIcon(R.drawable.ic_letters_case)
-            .setMessage(resources.getString(R.string.setup_intent_message, hostname, apiKey.takeLast(5)))
-            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ ->
-                finish()
-            }
-            .setPositiveButton(resources.getString(R.string.setup_app)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.setup_app),
+            message = resources.getString(R.string.setup_intent_message, hostname, apiKey.takeLast(5)),
+            icon = R.drawable.ic_letters_case,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.setup_app),
+            positiveButtonAction = {
                 // Reset app data in case app is already setup
                 //clearAllData() will automatically elevate to encrypt=true
                 SettingsManager(false, this).clearAllData()
                 verifyKeyAndAdd(this, apiKey, hostname)
                 Toast.makeText(this, resources.getString(R.string.API_key_received_from_intent), Toast.LENGTH_LONG).show()
             }
-            .show()
+        ).show()
     }
 
     private fun getDummyAPIKey(): StringBuilder {

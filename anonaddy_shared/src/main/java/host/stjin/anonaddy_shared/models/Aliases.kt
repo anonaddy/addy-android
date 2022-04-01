@@ -15,7 +15,7 @@ data class Aliases(
     val aliasable_id: String,
     val aliasable_type: String,
     val created_at: String,
-    val deleted_at: String?,
+    var deleted_at: String?,
     val description: String?,
     val domain: String,
     val email: String,

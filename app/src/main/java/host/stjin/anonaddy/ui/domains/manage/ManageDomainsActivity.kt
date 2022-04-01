@@ -7,12 +7,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -244,14 +244,14 @@ class ManageDomainsActivity : BaseActivity(),
 
     private lateinit var deleteDomainSnackbar: Snackbar
     private fun deleteDomain(id: String) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.delete_domain))
-            .setIcon(R.drawable.ic_trash)
-            .setMessage(resources.getString(R.string.delete_domain_desc_confirm))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.delete_domain),
+            message = resources.getString(R.string.delete_domain_desc_confirm),
+            icon = R.drawable.ic_trash,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.delete),
+            positiveButtonAction = {
                 deleteDomainSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_domain),
@@ -260,10 +260,11 @@ class ManageDomainsActivity : BaseActivity(),
                 )
                 deleteDomainSnackbar.show()
                 lifecycleScope.launch {
+                    //TODO Do these kind of method exist multiple times?
                     deleteDomainHttpRequest(id, this@ManageDomainsActivity)
                 }
             }
-            .show()
+        ).show()
     }
 
 

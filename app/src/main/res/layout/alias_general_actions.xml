@@ -10,7 +10,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_active_switch_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionDescription="@string/alias_status_desc"
         app:sectionShowSwitch="true"
         app:sectionStartIcon="@drawable/ic_circle_check"
@@ -19,7 +19,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_watch_switch_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionDescription="@string/watch_alias_desc"
         app:sectionShowSwitch="true"
         app:sectionStartIcon="@drawable/ic_watch_alias"
@@ -28,7 +28,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_desc_edit"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionDescription="@tools:sample/lorem/random"
         app:sectionEndIcon="@drawable/ic_edit"
         app:sectionStartIcon="@drawable/ic_align_justified"
@@ -37,7 +37,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_recipients_edit"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionDescription="@tools:sample/full_names"
         app:sectionEndIcon="@drawable/ic_edit"
         app:sectionStartIcon="@drawable/ic_user"
@@ -46,7 +46,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_created_at"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionDescription="@tools:sample/date/ddmmyy"
         app:sectionRippleEffect="false"
         app:sectionStartIcon="@drawable/ic_clock"
@@ -55,7 +55,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_updated_at"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionDescription="@tools:sample/date/ddmmyy"
         app:sectionRippleEffect="false"
         app:sectionStartIcon="@drawable/ic_clock_history"
@@ -64,7 +64,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_delete"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionColorAccent="@color/softRed"
         app:sectionDescription="@string/delete_alias_desc"
         app:sectionStartIcon="@drawable/ic_trash"
@@ -73,7 +73,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_restore"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionColorAccent="?colorPrimary"
         app:sectionDescription="@string/restore_alias_desc"
         app:sectionStartIcon="@drawable/ic_trash_off"
@@ -82,7 +82,7 @@
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_forget"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:sectionColorAccent="@color/hardRed"
         app:sectionDescription="@string/forget_alias_desc"
         app:sectionStartIcon="@drawable/ic_eraser"

@@ -555,9 +555,12 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         loadFilter()
     }
 
-    override fun onCloseMultipleSelectionBottomDialogFragment() {
+    override fun onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean) {
         aliasMultipleSelectionBottomDialogFragment.dismissAllowingStateLoss()
-        getDataFromWeb()
+
+        if (shouldRefreshData) {
+            getDataFromWeb()
+        }
     }
 
 }
