@@ -236,7 +236,13 @@ class ManageAliasActivity : BaseActivity(),
                     forceSwitch = false
                     shouldUpdate = true
                     if (checked) {
-                        aliasWatcher.addAliasToWatch(this@ManageAliasActivity.alias!!.id)
+                        // In case the alias could not be added to watchlist, the switch will be reverted
+                        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(
+                            aliasWatcher.addAliasToWatch(
+                                this@ManageAliasActivity.alias!!.id
+                            )
+                        )
+
                     } else {
                         aliasWatcher.removeAliasToWatch(this@ManageAliasActivity.alias!!.id)
                     }

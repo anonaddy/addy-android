@@ -196,28 +196,26 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
 
         val aliasWatcher = AliasWatcher(appContext)
-        val aliasesToWatch = aliasWatcher.getAliasesToWatch()?.toList()
+        val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
 
-        if (aliasesToWatch != null) {
-            val newList: ArrayList<Aliases> = arrayListOf()
-            // Loop through the aliases on the watchlist
-            for (alias in aliasesToWatch) {
-                // Get alias data
-                networkHelper.getSpecificAlias({ result, _ ->
-                    // Store the result if the data succeeded to update in a boolean
-                    if (result != null) {
-                        newList.add(result)
-                    }
-                }, alias)
-            }
-
-
-            // Turn the list into a json object
-            val data = Gson().toJson(newList)
-
-            // Store a copy of the just received data locally
-            settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
+        val newList: ArrayList<Aliases> = arrayListOf()
+        // Loop through the aliases on the watchlist
+        for (alias in aliasesToWatch) {
+            // Get alias data
+            networkHelper.getSpecificAlias({ result, _ ->
+                // Store the result if the data succeeded to update in a boolean
+                if (result != null) {
+                    newList.add(result)
+                }
+            }, alias)
         }
+
+
+        // Turn the list into a json object
+        val data = Gson().toJson(newList)
+
+        // Store a copy of the just received data locally
+        settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
 
         return true
     }

@@ -86,7 +86,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         _binding = FragmentAliasBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        settingsManager = SettingsManager(true, requireContext())
+        settingsManager = SettingsManager(false, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
 
@@ -106,8 +106,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun loadFilter() {
-        val settingsManager = SettingsManager(false, requireContext())
-        val aliasSortFilterJson = settingsManager.getSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER)
+        val aliasSortFilterJson = settingsManager?.getSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER)
         val aliasSortFilterObject = aliasSortFilterJson?.let { GsonTools.jsonToAliasSortFilterObject(requireContext(), it) }
 
         if (aliasSortFilterObject != null) {
@@ -401,7 +400,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
             if (forceReload) {
                 hideSnackBar()
-                aliasAdapter = AliasAdapter(aliasList!!.data, context, supportMultipleSelection = true)
+                aliasAdapter = AliasAdapter(
+                    aliasList!!.data,
+                    context,
+                    supportMultipleSelection = settingsManager?.getSettingsBool(SettingsManager.PREFS.MANAGE_MULTIPLE_ALIASES, default = true) ?: true
+                )
                 aliasAdapter!!.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
                     override fun onClick(pos: Int) {
                         val intent = Intent(context, ManageAliasActivity::class.java)
@@ -444,7 +447,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                                     allowSwipeDismiss = false
                                 ).apply {
                                     anchorView = bottomNavView
-                                }.setAction(R.string.action) {
+                                }.setAction(R.string.actions) {
                                     aliasMultipleSelectionBottomDialogFragment =
                                         AliasMultipleSelectionBottomDialogFragment.newInstance(selectedAliases)
                                     if (!aliasMultipleSelectionBottomDialogFragment.isAdded) {
@@ -530,7 +533,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         // Nothing
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -538,13 +540,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     override fun setFilterAndSortingSettings(aliasSortFilter: AliasSortFilter) {
         this.aliasSortFilter = aliasSortFilter
-
-        val settingsManager = SettingsManager(false, requireContext())
-
         // Turn the list into a json object
         val data = Gson().toJson(aliasSortFilter)
         // Store a copy of the just received data locally
-        settingsManager.putSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER, data)
+        settingsManager?.putSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER, data)
 
 
         filterOptionsAliasBottomDialogFragment.dismissAllowingStateLoss()
@@ -559,8 +558,18 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         aliasMultipleSelectionBottomDialogFragment.dismissAllowingStateLoss()
 
         if (shouldRefreshData) {
+            // Automatically unselects data
             getDataFromWeb()
+        } else {
+            // Show snackbar again
+            aliasSelectionSnackbar?.show()
         }
+    }
+
+    override fun onCancelMultipleSelectionBottomDialogFragment() {
+        aliasMultipleSelectionBottomDialogFragment.dismissAllowingStateLoss()
+        aliasAdapter?.unselectAliases()
+        hideSnackBar()
     }
 
 }

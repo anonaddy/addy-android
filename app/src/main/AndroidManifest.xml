@@ -203,6 +203,9 @@
             android:name=".ui.appsettings.features.AppSettingsFeaturesMailToActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesManageMultipleAliasesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyFailedDeliveriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

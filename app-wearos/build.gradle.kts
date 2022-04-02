@@ -7,7 +7,7 @@ android {
     compileSdk = 32
 
     defaultConfig {
-        applicationId = rootProject.extra["application_id"] as String
+        applicationId = "host.stjin.anonaddy"
         minSdk = 28
         targetSdk = 32
         versionCode = 1
@@ -35,7 +35,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = rootProject.extra["jvm_target"] as String
+        jvmTarget = "1.8"
     }
 
 
@@ -43,7 +43,7 @@ android {
      * COMPOSE
      */
     composeOptions {
-        kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
+        kotlinCompilerExtensionVersion = "1.2.0-alpha06"
     }
 
     packagingOptions {

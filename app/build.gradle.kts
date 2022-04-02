@@ -7,7 +7,7 @@ android {
     compileSdk = 32
     //compileSdkPreview = "Tiramisu"
     defaultConfig {
-        applicationId = rootProject.extra["application_id"] as String
+        applicationId = "host.stjin.anonaddy"
         minSdk = 23
         targetSdk = 32
         //targetSdkPreview = "Tiramisu"
@@ -55,7 +55,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = rootProject.extra["jvm_target"] as String
+        jvmTarget = "1.8"
     }
 
 }

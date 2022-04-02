@@ -34,6 +34,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         PERIODIC_BACKUPS(false, PREFTYPES.BOOLEAN, "periodic_backups"),
         BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
+        MANAGE_MULTIPLE_ALIASES(false, PREFTYPES.BOOLEAN, "manage_multiple_aliases"),
 
         // Sorting and Filtering for aliasFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
@@ -122,7 +123,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun getSettingsBool(key: PREFS, default: Boolean = false): Boolean {
-        return prefs.getBoolean(key.key, false)
+        return prefs.getBoolean(key.key, default)
     }
 
     fun putSettingsString(key: PREFS, string: String) {

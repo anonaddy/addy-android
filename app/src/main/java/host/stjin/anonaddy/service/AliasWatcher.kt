@@ -1,6 +1,8 @@
 package host.stjin.anonaddy.service
 
 import android.content.Context
+import android.widget.Toast
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.GsonTools
@@ -75,17 +77,22 @@ class AliasWatcher(private val context: Context) {
         }
     }
 
-    fun addAliasToWatch(alias: String) {
+    fun addAliasToWatch(alias: String): Boolean {
         val aliasList = getAliasesToWatch()
+        // The aliasWatcherlist has a maximum of 15 aliases, the reason for this is to prevent API limitations
+        return if (aliasList.count() > 14) {
+            Toast.makeText(context, context.resources.getString(R.string.aliaswatcher_max_reached), Toast.LENGTH_LONG).show()
+            false
+        } else {
+            // Only add alias if it is not already in the list
+            if (!aliasList.contains(alias)) {
+                aliasList.add(alias)
+                aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
 
-        // Only add alias if it is not already in the list
-        if (!aliasList.contains(alias)) {
-            aliasList.add(alias)
-            aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
-
-            // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
-            BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+                // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+            }
+            true
         }
-
     }
 }

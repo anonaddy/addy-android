@@ -1,15 +1,26 @@
 package host.stjin.anonaddy.utils
 
 import android.content.Context
+import android.view.LayoutInflater
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import host.stjin.anonaddy.R
 
+
 object MaterialDialogHelper {
+
+    /*
+    My custom MaterialAlertDialog implementation with easy support for things like inputfields and actions
+     */
     fun showMaterialDialog(
         context: Context,
-        title: String,
+        title: String? = null,
         message: String? = null,
         icon: Int? = null,
+        textInputHint: String? = null,
+        getTextInput: ((text: String) -> Unit)? = null,
         neutralButtonText: String? = null,
         neutralButtonAction: (() -> Unit)? = null,
         positiveButtonText: String? = null,
@@ -18,10 +29,20 @@ object MaterialDialogHelper {
         negativeButtonAction: (() -> Unit)? = null
     ): MaterialAlertDialogBuilder {
         val materialDialog = MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(title)
-
+        title?.let { materialDialog.setTitle(it) }
         icon?.let { materialDialog.setIcon(it) }
         message?.let { materialDialog.setMessage(it) }
+
+        if (getTextInput != null) {
+            val materialAlertDialogInput = LayoutInflater.from(context).inflate(R.layout.material_alert_dialog_input, null)
+            textInputHint?.let { materialAlertDialogInput.findViewById<TextInputLayout>(R.id.material_alert_dialog_input_til).hint = it }
+
+            materialDialog.setView(materialAlertDialogInput)
+
+            materialAlertDialogInput.findViewById<TextInputEditText>(R.id.material_alert_dialog_input_tiet).addTextChangedListener {
+                getTextInput(it.toString())
+            }
+        }
 
         if (!neutralButtonText.isNullOrEmpty()) {
             materialDialog.setNeutralButton(neutralButtonText) { dialog, _ ->

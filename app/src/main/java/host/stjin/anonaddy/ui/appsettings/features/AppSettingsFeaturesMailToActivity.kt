@@ -17,7 +17,6 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 class AppSettingsFeaturesMailToActivity : BaseActivity() {
 
     private lateinit var settingsManager: SettingsManager
-    private lateinit var encryptedSettingsManager: SettingsManager
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesMailtoBinding
@@ -33,7 +32,6 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
         )
 
         settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             R.string.integration_mailto_alias,
             binding.activityAppSettingsFeaturesMailtoNSV,

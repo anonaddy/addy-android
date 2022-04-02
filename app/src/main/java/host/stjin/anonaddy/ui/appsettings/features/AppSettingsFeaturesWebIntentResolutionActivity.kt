@@ -13,7 +13,6 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
 
     private lateinit var settingsManager: SettingsManager
-    private lateinit var encryptedSettingsManager: SettingsManager
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesWebintentResolutionBinding
@@ -29,7 +28,6 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
         )
 
         settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             R.string.integration_webintent_resolution,
             binding.appsettingsFeaturesWebintentResolutionNSV,

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import app.futured.donut.DonutProgressView
@@ -153,6 +154,11 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
         onAliasAliasInterface = aAliasInterface
     }
 
+    fun unselectAliases() {
+        selectedAliases.clear()
+        notifyDataSetChanged()
+    }
+
     interface AliasInterface {
         fun onClick(pos: Int)
         fun onClickCopy(pos: Int, aView: View)
@@ -213,7 +219,12 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
             if (selectedAliases.contains(listWithAliases[adapterPosition])) {
                 selectedAliases.remove(listWithAliases[adapterPosition])
             } else {
-                selectedAliases.add(listWithAliases[adapterPosition])
+                if (selectedAliases.count() < 15) {
+                    selectedAliases.add(listWithAliases[adapterPosition])
+                } else {
+                    Toast.makeText(mCV.context, mCV.context.resources.getString(R.string.alias_multiple_selection_max_reached), Toast.LENGTH_LONG)
+                        .show()
+                }
             }
 
             onAliasAliasInterface.onSelectionMode(

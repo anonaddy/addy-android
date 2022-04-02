@@ -347,13 +347,13 @@
     <string name="features_and_integrations_desc">Check out app-exclusive features and integrations</string>
     <string name="integrations">Integrations</string>
     <string name="integration_mailto_alias">Email action integration</string>
-    <string name="integration_mailto_alias_desc">Create aliases on the go and send emails from an alias by highlighting an email address or tapping a mailto hyperlink.\n\nHighlight an email address that doesn\'t exist with your domain name and tap the AnonAddy for Android icon to create this alias.\n\nHighlight an email address and tap the AnonAddy for Android icon to send an email to this email address from an alias. You can also tap email addresses that contain a mailto hyperlink, such as those found on websites.</string>
+    <string name="integration_mailto_alias_desc">Create aliases on the go and send emails from an alias by highlighting an email address or tapping a mailto hyperlink.\n\nHighlight an email address that doesn\'t exist with your domain name and tap the AnonAddy for Android icon to create this alias.</string>
     <string name="enable_integration">Enable integration</string>
     <string name="enable_disable_feature_desc">It may take a few minutes for the change to take effect</string>
     <string name="Info">Info</string>
     <string name="enable_feature">Enable feature</string>
     <string name="enable_feature_always">This feature is always enabled</string>
-    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.</string>
+    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.\n\nTo avoid reaching the API limit, you can watch a maximum of 15 aliases.</string>
     <string name="features">Features</string>
     <string name="exceeded_bandwidth_limit">You\'ve exceeded your bandwidth limit for this month</string>
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
@@ -451,7 +451,7 @@
     <string name="use_dynamic_colors">Use dynamic colors</string>
     <string name="use_dynamic_colors_desc">Apply dynamic colors provided by the system. (requires a restart of the app)</string>
     <string name="appearance_desc">Change the looks of the app</string>
-    <string name="restart_app_required">Restart the app to apply the dynamic color changes</string>
+    <string name="restart_app_required">Restart the app to apply changes</string>
     <string name="active_aliases">Active aliases</string>
     <string name="inactive_aliases">Inactive aliases</string>
     <string name="greetings_time_traveller">Greetings, time traveller</string>
@@ -528,7 +528,7 @@
     <string name="wearable_quick_setup">Quick setup</string>
     <string name="wearable_quick_setup_desc">When AnonAddy is opened for the first time on a wearable. Show a message on this device to quickly set up the app</string>
     <string name="anonaddy_for_wearables">AnonAddy for wearables</string>
-    <string name="anonaddy_for_wearables_desc">With AnonAddy on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to beautiful watch faces</string>
+    <string name="anonaddy_for_wearables_desc">With AnonAddy on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to a beautiful watchface</string>
     <string name="start_wearable_app">Start app</string>
     <string name="setup_app_on_wearable">Setup app</string>
     <string name="reset_app_on_wearable">Reset app</string>
@@ -571,7 +571,11 @@
     <string name="error_copied_to_clipboard">Error copied to clipboard</string>
     <string name="multiple_alias_selected">%d alias(es) selected</string>
     <string name="multiple_alias_selected_desc">The actions below will be performed on all selected aliases. Pressing cancel will unselect all aliases</string>
-    <string name="multiple_alias_recipient_desc">Recipients may be different for selected aliases, changing the recipient affects all aliases</string>
-    <string name="multiple_alias_description_desc">Description may differ for selected aliases, changing the description will affect all aliases</string>
+    <string name="aliaswatcher_max_reached">You cannot have more than 15 aliases watched</string>
+    <string name="alias_multiple_selection_max_reached">You cannot select more than 15 aliases</string>
+    <string name="actions">Actions</string>
+    <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nTo avoid reaching the API limit, you can manage a maximum of 15 aliases at the same time.</string>
+    <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode. (requires a restart of the app)</string>
+    <string name="feature_longpress">Manage multiple aliases</string>
 
 </resources>

@@ -42,10 +42,12 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
     // 1. Defines the listener interface with a method passing back data result.
     interface AddAliasMultipleSelectionBottomDialogListener {
         fun onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean)
+        fun onCancelMultipleSelectionBottomDialogFragment()
     }
 
+    private var shouldRefreshData = false
     override fun onCancel(dialog: DialogInterface) {
-        listener.onCloseMultipleSelectionBottomDialogFragment(false)
+        listener.onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData)
         super.onCancel(dialog)
     }
 
@@ -82,11 +84,13 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
     }
 
     private fun updateUi() {
-        binding.bsMultipleSelectionAliasTextview.text = resources.getString(R.string.multiple_alias_selected, selectedAliases.count())
+        binding.bsMultipleSelectionAliasTitle.text = resources.getString(R.string.multiple_alias_selected, selectedAliases.count())
 
         // No need for the created and updated views
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasCreatedAt.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasUpdatedAt.visibility = View.GONE
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRecipientsEdit.visibility = View.GONE
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasDescEdit.visibility = View.GONE
 
         // Check if there are any aliases that are NOT deleted
         // if there is any alias that is not deleted, show the delete section. Else all aliases are deleted so hide the section
@@ -103,9 +107,14 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRestore.visibility = View.GONE
         }
 
+        // if all aliases are deleted, disable the active section
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setLayoutEnabled(!selectedAliases.all { it.deleted_at != null })
+
 
         // If all aliases are active, check the switch by default
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(selectedAliases.all { it.active })
+        // For the active switch it's important to only count non-deleted aliases
+        val selectedAliasesWithoutDeletedAliases = selectedAliases.filter { it.deleted_at == null }
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(selectedAliasesWithoutDeletedAliases.all { it.active })
 
 
         // Progressbars (only show if a action is being performed obviously
@@ -142,6 +151,8 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                     listener.onCloseMultipleSelectionBottomDialogFragment(true)
                 }
             }
+            else -> { /* Do nothing */
+            }
         }
 
 
@@ -154,9 +165,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             )
         })
 
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRecipientsEdit.setDescription(resources.getString(R.string.multiple_alias_recipient_desc))
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasDescEdit.setDescription(resources.getString(R.string.multiple_alias_description_desc))
-
     }
 
 
@@ -164,6 +172,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
     private suspend fun deactivateAlias(aliasId: String) {
         networkHelper.deactivateSpecificAlias({ result ->
             amountOfNetworkCallsDone++
+            shouldRefreshData = true
             if (result == "204") {
                 selectedAliases.first { it.id == aliasId }.active = false
 
@@ -185,6 +194,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
     private suspend fun activateAlias(aliasId: String) {
         networkHelper.activateSpecificAlias({ alias, result ->
             amountOfNetworkCallsDone++
+            shouldRefreshData = true
             if (alias != null) {
                 selectedAliases.first { it.id == aliasId }.active = true
 
@@ -214,9 +224,11 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                     forceSwitch = false
                     if (checked) {
                         for (alias in selectedAliases) {
-                            // If the alias is already active, don't make an unnecessary call and increment amountOfNetworkCallsDone
-                            if (alias.active) {
+                            // If the alias is already active or deleted, don't make an unnecessary call and increment amountOfNetworkCallsDone
+                            // Deleted aliases cannot be activated
+                            if (alias.active || alias.deleted_at != null) {
                                 amountOfNetworkCallsDone++
+                                updateUi()
                                 continue
                             }
                             lifecycleScope.launch {
@@ -226,8 +238,10 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                     } else {
                         for (alias in selectedAliases) {
                             // If the alias is already inactive, don't make an unnecessary call and increment amountOfNetworkCallsDone
+                            // Deleted aliases cannot be deactivated, they are always deactivated
                             if (!alias.active) {
                                 amountOfNetworkCallsDone++
+                                updateUi()
                                 continue
                             }
 
@@ -246,9 +260,15 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
                     forceSwitch = false
+                    shouldRefreshData = true
                     if (checked) {
                         for (alias in selectedAliases) {
-                            aliasWatcher.addAliasToWatch(alias.id)
+                            // In case the alias could not be added to watchlist, the switch will be reverted
+                            binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(
+                                aliasWatcher.addAliasToWatch(
+                                    alias.id
+                                )
+                            )
                         }
                     } else {
                         for (alias in selectedAliases) {
@@ -262,6 +282,11 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
     }
 
     private fun setOnClickListeners() {
+
+        binding.bsMultipleSelectionAliasCancel.setOnClickListener {
+            listener.onCancelMultipleSelectionBottomDialogFragment()
+        }
+
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -276,30 +301,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             override fun onClick() {
                 forceSwitch = true
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.getSwitchChecked())
-            }
-        })
-
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasDescEdit.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                /*if (!editAliasDescriptionBottomDialogFragment.isAdded) {
-                    editAliasDescriptionBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editAliasDescriptionBottomDialogFragment"
-                    )
-                }*/
-            }
-        })
-
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRecipientsEdit.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                /*if (!editAliasRecipientsBottomDialogFragment.isAdded) {
-                    editAliasRecipientsBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editAliasRecipientsBottomDialogFragment"
-                    )
-                }*/
             }
         })
 
@@ -325,7 +326,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         })
     }
 
-
     private fun restoreAlias() {
         MaterialDialogHelper.aliasRestoreDialog(
             context = requireContext()
@@ -338,6 +338,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // If the alias is already restored, don't make an unnecessary call and increment amountOfNetworkCallsDone
                 if (alias.deleted_at == null) {
                     amountOfNetworkCallsDone++
+                    updateUi()
                     continue
                 }
 
@@ -361,6 +362,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // If the alias is already deleted, don't make an unnecessary call and increment amountOfNetworkCallsDone
                 if (alias.deleted_at != null) {
                     amountOfNetworkCallsDone++
+                    updateUi()
                     continue
                 }
 
@@ -392,6 +394,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
 
     private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
         networkHelper.deleteAlias({ result ->
+            shouldRefreshData = true
             amountOfNetworkCallsDone++
 
             if (result == "204") {
@@ -414,6 +417,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
 
     private suspend fun forgetAliasHttpRequest(id: String, context: Context) {
         networkHelper.forgetAlias({ result ->
+            shouldRefreshData = true
             amountOfNetworkCallsDone++
 
             if (result == "204") {
@@ -435,10 +439,14 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
 
     private suspend fun restoreAliasHttpRequest(id: String, context: Context) {
         networkHelper.restoreAlias({ alias, error ->
+            shouldRefreshData = true
             amountOfNetworkCallsDone++
 
             if (alias != null) {
                 selectedAliases.first { it.id == id }.deleted_at = null
+
+                // Restoring an alias automatically makes it active
+                selectedAliases.first { it.id == id }.active = true
 
                 // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
                 updateUi()

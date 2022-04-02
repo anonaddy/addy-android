@@ -9,7 +9,7 @@ import host.stjin.anonaddy_shared.models.UserResourceExtended
 
 class AnonAddyForAndroid : Application() {
 
-    lateinit var encryptedSettingsManager: SettingsManager
+    private lateinit var encryptedSettingsManager: SettingsManager
 
     // Not nullable, the app should crash if these values are not set. That means something is definitely wrong.
     var userResource: UserResource

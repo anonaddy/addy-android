@@ -22,11 +22,12 @@
             android:src="@drawable/drag_pill" />
 
         <TextView
+            android:id="@+id/bs_multiple_selection_alias_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/action"
+            android:text="@string/multiple_alias_selected"
             android:textAlignment="center"
             android:textColor="@color/BlackWhite"
             android:textSize="18sp" />
@@ -40,59 +41,52 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="@dimen/layout_padding">
 
-            <LinearLayout
+            <TextView
+                style="@style/DescTextStyle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:alpha="0.5"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/multiple_alias_selected_desc"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+
+            <LinearLayout
+                style="@style/AnonAddyTitleNoAction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/bs_multiple_selection_alias_textview"
-                    style="@style/DescTextStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/multiple_alias_selected"
-                    android:textAlignment="center" />
-
-                <TextView
-                    style="@style/DescTextStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:alpha="0.5"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/multiple_alias_selected_desc"
-                    android:textAlignment="center"
-                    android:textSize="12sp" />
-
-
-                <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/general" />
-                </LinearLayout>
-
-                <include
-                    android:id="@+id/bs_multiple_selection_alias_general_actions"
-                    layout="@layout/alias_general_actions" />
-
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/general" />
             </LinearLayout>
 
+            <include
+                android:id="@+id/bs_multiple_selection_alias_general_actions"
+                layout="@layout/alias_general_actions" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bs_multiple_selection_alias_cancel"
+                style="?borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:text="@string/cancel" />
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

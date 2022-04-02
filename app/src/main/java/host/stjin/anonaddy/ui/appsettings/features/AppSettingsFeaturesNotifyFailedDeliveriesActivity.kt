@@ -15,7 +15,6 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
 
     private lateinit var settingsManager: SettingsManager
-    private lateinit var encryptedSettingsManager: SettingsManager
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesNotifyFailedDeliveriesBinding
@@ -31,7 +30,6 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
         )
 
         settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             R.string.feature_notify_failed_deliveries,
             binding.activityAppSettingsFeaturesNotifyFailedDeliveriesNSV,
