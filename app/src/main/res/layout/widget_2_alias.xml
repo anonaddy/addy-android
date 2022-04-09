@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:gravity="center"
     android:foreground="?android:attr/selectableItemBackground"
+    android:gravity="center"
     android:orientation="vertical"
     android:theme="@style/AppTheme">
 
@@ -194,12 +194,12 @@
         android:layout_marginTop="@dimen/widget_2_margin_layout_2"
         android:layout_marginBottom="@dimen/widget_2_margin_layout_2"
         android:background="@drawable/widget_2_background"
-        android:orientation="horizontal"
         android:baselineAligned="false"
-        android:paddingStart="@dimen/widget_2_padding_layout_2_start_end"
+        android:orientation="horizontal"
         android:padding="@dimen/widget_2_padding_layout_2"
-        android:visibility="gone"
+        android:paddingStart="@dimen/widget_2_padding_layout_2_start_end"
         android:paddingEnd="@dimen/widget_2_padding_layout_2_start_end"
+        android:visibility="gone"
         android:weightSum="8">
 
         <LinearLayout
@@ -215,11 +215,11 @@
                 android:layout_height="0dp"
                 android:layout_weight="2"
                 android:autoSizeTextType="uniform"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
                 android:lines="1"
                 android:maxLines="1"
-                android:fontFamily="sans-serif-medium"
                 android:text="0"
-                android:gravity="center"
                 android:textColor="@android:color/white"
                 android:textSize="48sp"
                 tools:ignore="HardcodedText" />
@@ -228,9 +228,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
                 android:autoSizeMaxTextSize="14sp"
                 android:autoSizeTextType="uniform"
+                android:fontFamily="sans-serif-medium"
                 android:gravity="top|center_horizontal"
                 android:lines="1"
                 android:maxLines="1"
@@ -245,10 +245,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:baselineAligned="false"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:baselineAligned="false"
             android:weightSum="3">
 
             <LinearLayout
@@ -259,9 +259,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_marginEnd="8dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -271,10 +271,10 @@
                     android:layout_weight="2"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:gravity="center"
                     android:textColor="@android:color/white"
                     android:textSize="48sp"
                     tools:ignore="HardcodedText" />
@@ -284,14 +284,14 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:fontFamily="sans-serif-medium"
                     android:autoSizeMaxTextSize="14sp"
-                    android:text="@string/widget_2_blocked"
                     android:autoSizeTextType="uniform"
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="top|center_horizontal"
-
                     android:lines="1"
+
                     android:maxLines="1"
+                    android:text="@string/widget_2_blocked"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -299,9 +299,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_marginEnd="8dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -311,10 +311,10 @@
                     android:layout_weight="2"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:gravity="center"
                     android:textColor="@android:color/white"
                     android:textSize="48sp"
                     tools:ignore="HardcodedText" />
@@ -324,14 +324,14 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:fontFamily="sans-serif-medium"
                     android:autoSizeMaxTextSize="14sp"
-                    android:text="@string/widget_2_replied"
                     android:autoSizeTextType="uniform"
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="top|center_horizontal"
-
                     android:lines="1"
+
                     android:maxLines="1"
+                    android:text="@string/widget_2_replied"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -350,10 +350,10 @@
                     android:layout_weight="2"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:gravity="center"
                     android:textColor="@android:color/white"
                     android:textSize="48sp"
                     tools:ignore="HardcodedText" />
@@ -363,14 +363,14 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:alpha="0.6"
-                    android:fontFamily="sans-serif-medium"
                     android:autoSizeMaxTextSize="14sp"
-                    android:text="@string/widget_2_sent"
                     android:autoSizeTextType="uniform"
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="top|center_horizontal"
-
                     android:lines="1"
+
                     android:maxLines="1"
+                    android:text="@string/widget_2_sent"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
             </LinearLayout>

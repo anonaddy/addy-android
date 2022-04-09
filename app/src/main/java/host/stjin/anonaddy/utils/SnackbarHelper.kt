@@ -25,7 +25,6 @@ object SnackbarHelper {
             text,
             length
         )
-
         if (!allowSwipeDismiss) {
             snackbar.behavior = NoSwipeBehavior()
         }

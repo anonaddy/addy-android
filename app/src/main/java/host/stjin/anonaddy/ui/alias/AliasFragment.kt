@@ -357,10 +357,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         val bottomNavView: BottomNavigationView? =
             activity?.findViewById(R.id.nav_view)
         bottomNavView?.let {
-            val snackbar = Snackbar.make(
-                it,
+            val snackbar = SnackbarHelper.createSnackbar(
+                requireContext(),
                 requireContext().resources.getString(R.string.alias_global_search_hint),
-                Snackbar.LENGTH_SHORT
+                it,
+                LoggingHelper.LOGFILES.DEFAULT
             )
             snackbar.setAction(R.string.search) {
                 (activity as MainActivity).openSearch()
@@ -566,10 +567,16 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
     }
 
-    override fun onCancelMultipleSelectionBottomDialogFragment() {
+    override fun onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean) {
         aliasMultipleSelectionBottomDialogFragment.dismissAllowingStateLoss()
-        aliasAdapter?.unselectAliases()
-        hideSnackBar()
+        if (shouldRefreshData) {
+            // Automatically unselects data
+            getDataFromWeb()
+        } else {
+            aliasAdapter?.unselectAliases()
+            hideSnackBar()
+        }
+
     }
 
 }

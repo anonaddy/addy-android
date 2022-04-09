@@ -15,8 +15,8 @@ data class Domains(
     val description: String?,
     val aliases: List<Aliases>?,
     val default_recipient: Recipients?,
-    val active: Boolean,
-    val catch_all: Boolean, // Introduced in v0.5.0
+    var active: Boolean,
+    var catch_all: Boolean, // Introduced in v0.5.0
     val test: Boolean, // Introduced in v0.5.0
     val domain_verified_at: String?,
     val domain_sending_verified_at: String?,

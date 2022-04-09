@@ -130,7 +130,8 @@ class ManageRecipientsActivity : BaseActivity(),
         networkHelper.disallowRecipientToReplySend({ result ->
             binding.activityManageRecipientCanReplySend.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageRecipientCanReplySend.setTitle(resources.getString(R.string.cannot_reply_send))
+                this.recipient!!.can_reply_send = false
+                updateUi(this.recipient!!)
             } else {
                 binding.activityManageRecipientCanReplySend.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -147,7 +148,7 @@ class ManageRecipientsActivity : BaseActivity(),
         networkHelper.allowRecipientToReplySend({ recipient, error ->
             binding.activityManageRecipientCanReplySend.showProgressBar(false)
             if (recipient != null) {
-                binding.activityManageRecipientCanReplySend.setTitle(resources.getString(R.string.can_reply_send))
+                this.recipient = recipient
             } else {
                 binding.activityManageRecipientCanReplySend.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -165,7 +166,8 @@ class ManageRecipientsActivity : BaseActivity(),
         networkHelper.disableEncryptionRecipient({ result ->
             binding.activityManageRecipientActive.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageRecipientActive.setTitle(resources.getString(R.string.encryption_disabled))
+                this.recipient!!.should_encrypt = false
+                updateUi(this.recipient!!)
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -183,7 +185,7 @@ class ManageRecipientsActivity : BaseActivity(),
         networkHelper.enableEncryptionRecipient({ recipient, error ->
             binding.activityManageRecipientActive.showProgressBar(false)
             if (recipient != null) {
-                binding.activityManageRecipientActive.setTitle(resources.getString(R.string.encryption_enabled))
+                this.recipient = recipient
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -309,11 +311,10 @@ class ManageRecipientsActivity : BaseActivity(),
         networkHelper.removeEncryptionKeyRecipient({ result ->
             if (result == "204") {
                 removeGpgKeySnackbar.dismiss()
-
-                // Since this call does not have a response, re-retrieve the recipient object
-
-                //IMPROVE edit should_encrypt and fingerprint?
-                setPage(this.recipient!!.id)
+                this.recipient!!.should_encrypt = false
+                this.recipient!!.fingerprint = null
+                // Recheck the UI
+                updateUi(this.recipient!!)
             } else {
                 SnackbarHelper.createSnackbar(
                     this,

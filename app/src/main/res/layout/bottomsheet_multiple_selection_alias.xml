@@ -59,6 +59,15 @@
                 android:textAlignment="center"
                 android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/bs_multiple_selection_alias_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/something_went_wrong_tap_here_to_see_the_error"
+                android:textAlignment="center"
+                android:textColor="@color/softRed"
+                android:visibility="gone" />
 
             <LinearLayout
                 style="@style/AnonAddyTitleNoAction"

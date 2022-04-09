@@ -122,7 +122,8 @@ class ManageDomainsActivity : BaseActivity(),
         networkHelper.disableCatchAllSpecificDomain({ result ->
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageDomainCatchAllSwitchLayout.setTitle(resources.getString(R.string.catch_all_disabled))
+                this.domain!!.catch_all = false
+                updateUi(this.domain!!)
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -139,7 +140,7 @@ class ManageDomainsActivity : BaseActivity(),
         networkHelper.enableCatchAllSpecificDomain({ domain, error ->
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
             if (domain != null) {
-                binding.activityManageDomainCatchAllSwitchLayout.setTitle(resources.getString(R.string.catch_all_enabled))
+                this.domain = domain
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -156,7 +157,8 @@ class ManageDomainsActivity : BaseActivity(),
         networkHelper.deactivateSpecificDomain({ result ->
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageDomainActiveSwitchLayout.setTitle(resources.getString(R.string.domain_deactivated))
+                this.domain!!.active = false
+                updateUi(this.domain!!)
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -173,7 +175,7 @@ class ManageDomainsActivity : BaseActivity(),
         networkHelper.activateSpecificDomain({ domain, error ->
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
             if (domain != null) {
-                binding.activityManageDomainActiveSwitchLayout.setTitle(resources.getString(R.string.domain_activated))
+                this.domain = domain
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -287,12 +289,10 @@ class ManageDomainsActivity : BaseActivity(),
 
     private suspend fun getDomainInfo(id: String) {
         networkHelper.getSpecificDomain({ domain, error ->
-
             if (domain != null) {
                 // Triggers updateUi
                 this.domain = domain
             } else {
-
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_obtaining_domains) + "\n" + error,
@@ -317,6 +317,9 @@ class ManageDomainsActivity : BaseActivity(),
         )
 
         binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(domain.catch_all)
+        binding.activityManageDomainCatchAllSwitchLayout.setTitle(
+            if (domain.catch_all) resources.getString(R.string.catch_all_enabled) else resources.getString(R.string.catch_all_disabled)
+        )
 
         /**
          * TEXT

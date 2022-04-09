@@ -13,10 +13,10 @@ data class Recipients(
     val created_at: String,
     val email: String,
     val email_verified_at: String?,
-    val fingerprint: String?,
+    var fingerprint: String?,
     val id: String,
-    val should_encrypt: Boolean,
-    val can_reply_send: Boolean,
+    var should_encrypt: Boolean,
+    var can_reply_send: Boolean,
     val updated_at: String,
     val user_id: String
 )

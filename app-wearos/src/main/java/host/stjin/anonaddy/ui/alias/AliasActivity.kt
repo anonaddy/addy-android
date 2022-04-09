@@ -80,7 +80,6 @@ class AliasActivity : ComponentActivity() {
 
     private fun getAliases(): List<Aliases>? {
         val aliases = CacheHelper.getBackgroundServiceCacheLastUpdatedAliasesData(this)
-        // If there are no aliases, download aliases and re-run this TODO test this
         if (aliases.isNullOrEmpty()) {
             downloadAliases()
         } else {
@@ -348,15 +347,13 @@ class AliasActivity : ComponentActivity() {
         }
     }
 
-    var starredIcon = R.drawable.ic_starred
-    var starIcon = R.drawable.ic_star
     private fun getStarIcon(aliases: Aliases, favoriteAliases: MutableSet<String>?): Int {
         Log.e("ANONDEBUG12", "getStarIcon")
 
         return if (favoriteAliases?.contains(aliases.id) == true) {
-            starredIcon
+            R.drawable.ic_starred
         } else {
-            starIcon
+            R.drawable.ic_star
         }
     }
 

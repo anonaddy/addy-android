@@ -155,8 +155,14 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
     }
 
     fun unselectAliases() {
+        for (alias in selectedAliases) {
+            val findAliasPosition = listWithAliases.indexOfFirst { it == alias }
+            if (findAliasPosition > -1) {
+                notifyItemChanged(findAliasPosition)
+            }
+
+        }
         selectedAliases.clear()
-        notifyDataSetChanged()
     }
 
     interface AliasInterface {

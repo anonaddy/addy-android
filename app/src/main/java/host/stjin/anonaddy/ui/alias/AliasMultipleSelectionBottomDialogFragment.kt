@@ -17,10 +17,8 @@ import host.stjin.anonaddy.databinding.BottomsheetMultipleSelectionAliasBinding
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
-import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
-import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
@@ -42,7 +40,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
     // 1. Defines the listener interface with a method passing back data result.
     interface AddAliasMultipleSelectionBottomDialogListener {
         fun onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean)
-        fun onCancelMultipleSelectionBottomDialogFragment()
+        fun onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean)
     }
 
     private var shouldRefreshData = false
@@ -180,12 +178,12 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 updateUi()
             } else {
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
-                SnackbarHelper.createSnackbar(
-                    requireContext(),
-                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    binding.root,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
+                showError(
+                    requireContext().resources.getString(
+                        R.string.s_s,
+                        this.resources.getString(R.string.error_edit_active), result,
+                    )
+                )
             }
         }, aliasId)
     }
@@ -202,12 +200,12 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 updateUi()
             } else {
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
-                SnackbarHelper.createSnackbar(
-                    requireContext(),
-                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    binding.bsMultipleSelectionAliasRoot,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
+                showError(
+                    requireContext().resources.getString(
+                        R.string.s_s,
+                        requireContext().resources.getString(R.string.error_edit_active), result
+                    )
+                )
             }
         }, aliasId)
     }
@@ -284,7 +282,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
     private fun setOnClickListeners() {
 
         binding.bsMultipleSelectionAliasCancel.setOnClickListener {
-            listener.onCancelMultipleSelectionBottomDialogFragment()
+            listener.onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData)
         }
 
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
@@ -402,17 +400,30 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
                 updateUi()
             } else {
-                SnackbarHelper.createSnackbar(
-                    requireContext(),
+                showError(
                     context.resources.getString(
                         R.string.s_s,
                         context.resources.getString(R.string.error_deleting_alias), result
-                    ),
-                    binding.bsMultipleSelectionAliasRoot,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
+                    )
+                )
             }
         }, id)
+    }
+
+    private fun showError(string: String) {
+        binding.bsMultipleSelectionAliasError.visibility = View.VISIBLE
+        binding.bsMultipleSelectionAliasError.setOnClickListener {
+            showErrorMessage(string)
+        }
+    }
+
+    private fun showErrorMessage(error: String?) {
+        MaterialDialogHelper.showMaterialDialog(
+            context = requireContext(),
+            title = resources.getString(R.string.error_details),
+            message = error ?: resources.getString(R.string.no_error_message),
+            neutralButtonText = resources.getString(R.string.close),
+        ).show()
     }
 
     private suspend fun forgetAliasHttpRequest(id: String, context: Context) {
@@ -424,15 +435,12 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
                 updateUi()
             } else {
-                SnackbarHelper.createSnackbar(
-                    requireContext(),
+                showError(
                     context.resources.getString(
                         R.string.s_s,
                         context.resources.getString(R.string.error_forgetting_alias), result
-                    ),
-                    binding.bsMultipleSelectionAliasRoot,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
+                    )
+                )
             }
         }, id)
     }
@@ -451,15 +459,12 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
                 updateUi()
             } else {
-                SnackbarHelper.createSnackbar(
-                    requireContext(),
+                showError(
                     context.resources.getString(
                         R.string.s_s,
                         context.resources.getString(R.string.error_restoring_alias), error
-                    ),
-                    binding.bsMultipleSelectionAliasRoot,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
+                    )
+                )
             }
         }, id)
     }

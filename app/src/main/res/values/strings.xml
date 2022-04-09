@@ -87,8 +87,6 @@
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
     <string name="no_aliases">No aliases with these filter settings.\n\nLooking for a specific alias? Use the global search function by clicking the magnifying glass in the app bar.</string>
     <string name="alias_status_active">Alias active</string>
-    <string name="delete_alias">Delete alias</string>
-    <string name="delete_alias_desc">Once deleted, this alias will reject any emails sent to it</string>
     <string name="created_at">Created at</string>
     <string name="updated_at">Updated at</string>
     <string name="_more" tools:ignore="PluralsCandidate">%d more</string>
@@ -104,19 +102,25 @@
     <string name="error_edit_recipient">Something went wrong while editing the recipient</string>
     <string name="error_rules_active">An error occurred while changing the rule state</string>
     <string name="error_edit_catch_all">An error occurred while changing the catch-all state</string>
+
     <string name="alias_deactivated">Alias deactivated</string>
     <string name="alias_activated">Alias activated</string>
     <string name="delete_alias_confirmation_desc">Are you sure you want to delete this alias? You can restore this alias if you later change your mind. Once deleted, this alias will reject any emails sent to it.</string>
     <string name="error_deleting_alias">Something went wrong while deleting this alias</string>
     <string name="error_forgetting_alias">Something went wrong while forgetting this alias</string>
+    <string name="delete_alias">Delete alias</string>
+    <string name="delete_alias_desc">Once deleted, this alias will reject any emails sent to it</string>
     <string name="restore_alias">Restore alias</string>
     <string name="restore_alias_desc">Once restored, this alias will be able to receive emails again</string>
     <string name="restore_alias_confirmation_desc">Are you sure you want to restore this alias? Once restored, this alias will be able to receive emails again.</string>
     <string name="error_restoring_alias">Something went wrong while restoring this alias</string>
+    <string name="forget_alias_desc">Forgetting an alias will disassociate it from your account</string>
+    <string name="forget_alias">Forget alias</string>
+    <string name="forget_alias_confirmation_desc">Are you sure you want to forget this alias? Forgetting an alias will disassociate it from your account.\n\nNote: If this alias uses a shared domain then it can never be restored or used again so make sure you are certain. If it is a standard alias then it can be created again since it will be as if it never existed.</string>
+
     <string name="default_recipient_s">Default recipient (%s)</string>
     <string name="security">Security</string>
     <string name="security_desc">Use your biometric or pin/pattern to open AnonAddy</string>
-
     <string name="store_logs_desc">Tap here to see or clear the stored logs</string>
     <string name="biometric_error_no_hardware">No biometric features available on this device</string>
     <string name="biometric_error_hw_unavailable">Biometric features are currently unavailable</string>
@@ -324,9 +328,6 @@
     <string name="copied_recipients">Copied recipients</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
-    <string name="forget_alias_desc">Forgetting an alias will disassociate it from your account</string>
-    <string name="forget_alias">Forget alias</string>
-    <string name="forget_alias_confirmation_desc">Are you sure you want to forget this alias? Forgetting an alias will disassociate it from your account.\n\nNote: If this alias uses a shared domain then it can never be restored or used again so make sure you are certain. If it is a standard alias then it can be created again since it will be as if it never existed.</string>
     <string name="rules_create_info">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
     <string name="_sMB_remaining_this_month">%sMB remaining this month</string>
     <string name="manage_your_anonaddy_account">Manage your AnonAddy account</string>
@@ -577,5 +578,6 @@
     <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nTo avoid reaching the API limit, you can manage a maximum of 15 aliases at the same time.</string>
     <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode. (requires a restart of the app)</string>
     <string name="feature_longpress">Manage multiple aliases</string>
+    <string name="something_went_wrong_tap_here_to_see_the_error">Something went wrong, tap here to see the error</string>
 
 </resources>
