@@ -173,8 +173,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             shouldRefreshData = true
             if (result == "204") {
                 selectedAliases.first { it.id == aliasId }.active = false
-
-                // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
+                // Recheck the UI (this will finished the activity in updateUI)
                 updateUi()
             } else {
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
@@ -396,8 +395,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             amountOfNetworkCallsDone++
 
             if (result == "204") {
-
-                // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
+                // Recheck the UI (this will finished the activity in updateUI)
                 updateUi()
             } else {
                 showError(
@@ -432,7 +430,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             amountOfNetworkCallsDone++
 
             if (result == "204") {
-                // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
+                // Recheck the UI (this will finished the activity in updateUI)
                 updateUi()
             } else {
                 showError(

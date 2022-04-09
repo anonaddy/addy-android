@@ -256,7 +256,8 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.deactivateSpecificAlias({ result ->
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_deactivated))
+                this.alias!!.active = false
+                updateUi(this.alias!!)
             } else {
                 binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -274,7 +275,7 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.activateSpecificAlias({ alias, result ->
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (alias != null) {
-                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_activated))
+                this.alias = alias
             } else {
                 binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(

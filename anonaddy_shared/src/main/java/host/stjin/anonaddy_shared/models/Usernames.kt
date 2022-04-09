@@ -9,7 +9,7 @@ data class SingleUsername(
 )
 
 data class Usernames(
-    val active: Boolean,
+    var active: Boolean,
     val aliases: List<Aliases>?,
     val created_at: String,
     val default_recipient: Recipients?,

@@ -102,7 +102,8 @@ class ManageUsernamesActivity : BaseActivity(),
         networkHelper.deactivateSpecificUsername({ result ->
             binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageUsernameActiveSwitchLayout.setTitle(resources.getString(R.string.username_deactivated))
+                this.username!!.active = false
+                updateUi(this.username!!)
             } else {
                 binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -120,7 +121,7 @@ class ManageUsernamesActivity : BaseActivity(),
         networkHelper.activateSpecificUsername({ username, error ->
             binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
             if (username != null) {
-                binding.activityManageUsernameActiveSwitchLayout.setTitle(resources.getString(R.string.username_activated))
+                this.username = username
             } else {
                 binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
