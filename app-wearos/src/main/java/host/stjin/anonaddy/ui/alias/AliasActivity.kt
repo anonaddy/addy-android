@@ -153,12 +153,12 @@ class AliasActivity : ComponentActivity() {
             vignette = {
                 Vignette(vignettePosition = VignettePosition.TopAndBottom)
             },
-            /*positionIndicator = {
+            positionIndicator = {
                 Log.e("ANONDEBUG12", "positionIndicator")
                 PositionIndicator(
                     scalingLazyListState = scalingLazyListState
                 )
-            },*/
+            },
         ) {
             if (aliases.isNullOrEmpty()) {
                 Log.e("ANONDEBUG12", "isNullOrEmpty")
@@ -348,13 +348,15 @@ class AliasActivity : ComponentActivity() {
         }
     }
 
+    var starredIcon = R.drawable.ic_starred
+    var starIcon = R.drawable.ic_star
     private fun getStarIcon(aliases: Aliases, favoriteAliases: MutableSet<String>?): Int {
         Log.e("ANONDEBUG12", "getStarIcon")
 
         return if (favoriteAliases?.contains(aliases.id) == true) {
-            R.drawable.ic_starred
+            starredIcon
         } else {
-            R.drawable.ic_star
+            starIcon
         }
     }
 

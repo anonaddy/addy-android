@@ -248,13 +248,13 @@ class CreateAliasActivity : ComponentActivity() {
             vignette = {
                 Vignette(vignettePosition = VignettePosition.TopAndBottom)
             },
-            /* positionIndicator = {
-                 Log.e("ANONDEBUG12", "positionIndicator")
+            positionIndicator = {
+                Log.e("ANONDEBUG12", "positionIndicator")
 
-                 PositionIndicator(
-                     lazyListState = lazyListState
-                 )
-             }*/
+                PositionIndicator(
+                    lazyListState = lazyListState
+                )
+            }
         ) {
             Log.e("ANONDEBUG12", "Scaffold")
 

@@ -43,7 +43,7 @@ android {
      * COMPOSE
      */
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0-alpha06"
+        kotlinCompilerExtensionVersion = "1.2.0-alpha07"
     }
 
     packagingOptions {
@@ -83,7 +83,7 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha08")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha09")
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("com.google.android.gms:play-services-wearable:17.1.0")
@@ -106,15 +106,15 @@ dependencies {
 dependencies {
     // General compose dependencies
     implementation("androidx.activity:activity-compose:1.4.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0-alpha06")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0-alpha07")
 
     // Animated graphics (for the icon on setup)
-    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha06")
+    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha07")
 
-    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha19")
+    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha20")
 
     // For Wear Material Design UX guidelines and specifications
-    implementation("androidx.wear.compose:compose-material:1.0.0-alpha19")
+    implementation("androidx.wear.compose:compose-material:1.0.0-alpha20")
 
     // NOTE: DO NOT INCLUDE a dependency on androidx.compose.material:material.
     // androidx.wear.compose:compose-material is designed as a replacement
@@ -122,8 +122,8 @@ dependencies {
     // If there are features from that you feel are missing from
     // androidx.wear.compose:compose-material please raise a bug to let us know.
 
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.0-alpha06")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.2.0-alpha06")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.0-alpha07")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.2.0-alpha07")
 }
 
 // For updating widgets and caching data
@@ -147,18 +147,18 @@ dependencies {
     implementation("com.google.android.gms:play-services-base:18.0.1")
 
     // Use to implement support for wear tiles
-    implementation("androidx.wear.tiles:tiles:1.1.0-alpha04")
+    implementation("androidx.wear.tiles:tiles:1.1.0-alpha05")
 
     // Use to utilize components and layouts with Material design in your tiles
-    implementation("androidx.wear.tiles:tiles-material:1.1.0-alpha04")
+    implementation("androidx.wear.tiles:tiles-material:1.1.0-alpha05")
 
     // Use to preview wear tiles in your own app
-    debugImplementation("androidx.wear.tiles:tiles-renderer:1.1.0-alpha04")
+    debugImplementation("androidx.wear.tiles:tiles-renderer:1.1.0-alpha05")
 
     // Use to fetch tiles from a tile provider in your tests
-    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0-alpha04")
+    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0-alpha05")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.0")
-    implementation("androidx.wear.tiles:tiles-proto:1.1.0-alpha04")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.1-native-mt")
+    implementation("androidx.wear.tiles:tiles-proto:1.1.0-alpha05")
 
 }

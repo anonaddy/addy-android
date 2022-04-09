@@ -32,7 +32,7 @@ android {
         jvmTarget = "1.8"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0-alpha06"
+        kotlinCompilerExtensionVersion = "1.2.0-alpha07"
     }
 }
 
@@ -55,11 +55,11 @@ dependencies {
 
 // Compose
 dependencies {
-    implementation("androidx.compose.ui:ui-text:1.2.0-alpha06")
-    implementation("androidx.compose.ui:ui-graphics:1.2.0-alpha06")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha08")
+    implementation("androidx.compose.ui:ui-text:1.2.0-alpha07")
+    implementation("androidx.compose.ui:ui-graphics:1.2.0-alpha07")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha09")
     // Compose for Wear OS Dependencies
-    implementation("androidx.wear.compose:compose-material:1.0.0-alpha19")
+    implementation("androidx.wear.compose:compose-material:1.0.0-alpha20")
 }
 
 // Fuel, network requests
@@ -67,7 +67,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.google.code.gson:gson:2.9.0")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1-native-mt")
 }
 
 

@@ -27,7 +27,7 @@ fun CustomTimeText(
         exit = fadeOut(),
     ) {
         TimeText(
-            leadingCurvedContent = if (showLeadingText) {
+            startCurvedContent = if (showLeadingText) {
                 {
                     curvedText(
                         text = leadingText,
@@ -35,7 +35,7 @@ fun CustomTimeText(
                     )
                 }
             } else null,
-            leadingLinearContent = if (showLeadingText) {
+            startLinearContent = if (showLeadingText) {
                 {
                     Text(
                         text = leadingText,

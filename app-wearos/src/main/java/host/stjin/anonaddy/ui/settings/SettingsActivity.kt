@@ -122,12 +122,12 @@ class SettingsActivity : ComponentActivity() {
                 vignette = {
                     Vignette(vignettePosition = VignettePosition.TopAndBottom)
                 },
-                /*positionIndicator = {
+                positionIndicator = {
                     Log.e("ANONDEBUG12", "positionIndicator")
                     PositionIndicator(
                         lazyListState = lazyListState
                     )
-                },*/
+                },
             ) {
                 Log.e("ANONDEBUG12", "LazyColumn")
                 LazyColumn(
@@ -340,7 +340,10 @@ class SettingsActivity : ComponentActivity() {
 
                 // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
                 BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
-            })
+            },
+            increaseIcon = { Icon(InlineSliderDefaults.Increase, this.resources.getString(R.string.increase)) },
+            decreaseIcon = { Icon(InlineSliderDefaults.Decrease, this.resources.getString(R.string.decrease)) },
+        )
     }
 
 

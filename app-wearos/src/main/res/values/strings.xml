@@ -28,4 +28,6 @@
     <string name="clear_favorites">Clear favorites</string>
     <string name="favorite_aliases_cleared">Favorite aliases cleared</string>
     <string name="reset_app_desc">Clear all data</string>
+    <string name="increase">Increase</string>
+    <string name="decrease">Decrease</string>
 </resources>

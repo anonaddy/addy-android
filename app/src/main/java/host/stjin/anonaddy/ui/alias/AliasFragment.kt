@@ -441,7 +441,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             bottomNavView?.let {
                                 aliasSelectionSnackbar = SnackbarHelper.createSnackbar(
                                     context,
-                                    "${selectedAliases.count()} aliases selected",
+                                    context.resources.getString(R.string.multiple_alias_selected, selectedAliases.count()),
                                     it,
                                     length = Snackbar.LENGTH_INDEFINITE,
                                     allowSwipeDismiss = false

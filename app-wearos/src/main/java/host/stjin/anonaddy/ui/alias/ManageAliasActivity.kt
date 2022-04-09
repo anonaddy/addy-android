@@ -182,7 +182,6 @@ class ManageAliasActivity : ComponentActivity() {
                 // Creates a CoroutineScope bound to the lifecycle
                 val scope = rememberCoroutineScope()
                 val haptic = LocalHapticFeedback.current
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
                 val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
                 isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
@@ -200,13 +199,13 @@ class ManageAliasActivity : ComponentActivity() {
                     vignette = {
                         Vignette(vignettePosition = VignettePosition.TopAndBottom)
                     },
-                    /*positionIndicator = {
+                    positionIndicator = {
                         Log.e("ANONDEBUG12", "positionIndicator")
 
                         PositionIndicator(
                             lazyListState = lazyListState
                         )
-                    }*/
+                    }
                 ) {
                     Log.e("ANONDEBUG12", "Scaffold")
 
