@@ -236,7 +236,6 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
             if (result == "204") {
                 deleteUsernameSnackbar.dismiss()
                 getDataFromWeb()
-                usernamesAdapter.notifyItemRemoved()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
