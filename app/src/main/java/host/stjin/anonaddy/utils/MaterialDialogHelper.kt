@@ -64,7 +64,7 @@ object MaterialDialogHelper {
         }
 
         if (!negativeButtonText.isNullOrEmpty()) {
-            materialDialog.setNegativeButton(positiveButtonText) { dialog, _ ->
+            materialDialog.setNegativeButton(negativeButtonText) { dialog, _ ->
                 if (negativeButtonAction != null) {
                     negativeButtonAction()
                 } else {

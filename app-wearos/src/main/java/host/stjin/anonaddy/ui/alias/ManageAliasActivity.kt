@@ -511,8 +511,7 @@ class ManageAliasActivity : ComponentActivity() {
                     strokeWidth = 16f,
                     backgroundLineColor = Color.Transparent,
                     // Sort the list by amount so that the biggest number will fill the whole ring
-                    //TODO For some reason I need to sort by desc on this section while the main app's sections work properly
-                    sections = listOfDonutSection.sortedByDescending { it.amount },
+                    sections = listOfDonutSection.sortedBy { it.amount },
                 ), modifier = Modifier
                     .height(56.dp)
                     .width(56.dp)

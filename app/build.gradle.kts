@@ -120,7 +120,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut:2.2.1")
+    implementation("app.futured.donut:donut:2.2.2")
 }
 
 // Loading spinners when execution actions from eg. bottomsheets
