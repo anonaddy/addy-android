@@ -168,7 +168,7 @@ class SettingsActivity : ComponentActivity() {
                             ), Modifier.alpha(0.4f)
                         )
                     }
-                    item { InslideSlider(backgroundServiceInterval, haptic) }
+                    item { InlineSlider(backgroundServiceInterval, haptic) }
                     item {
                         Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.tile_favorite_aliases_label))
                     }
@@ -263,7 +263,7 @@ class SettingsActivity : ComponentActivity() {
             checked = this.storeLogs,
             colors = getAnonAddyToggleChipColors(),
             toggleControl = {
-                ToggleChipDefaults.SwitchIcon(checked = this.storeLogs)
+                ToggleChipDefaults.switchIcon(checked = this.storeLogs)
             },
             onCheckedChange = {
                 if (!lazyListState.isScrollInProgress) {
@@ -307,7 +307,7 @@ class SettingsActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun InslideSlider(backgroundServiceInterval: Int, hapticFeedback: HapticFeedback) {
+    private fun InlineSlider(backgroundServiceInterval: Int, hapticFeedback: HapticFeedback) {
         InlineSlider(
             colors = getAnonAddyInlineSliderColors(),
             modifier = Modifier.padding(top = 12.dp),
@@ -319,30 +319,30 @@ class SettingsActivity : ComponentActivity() {
                     1f -> {
                         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 15)
                         this.backgroundServiceInterval = 1
-                        this.backgroundServiceIntervalValue = 15
+                        backgroundServiceIntervalValue = 15
                     }
                     2f -> {
                         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)
                         this.backgroundServiceInterval = 2
-                        this.backgroundServiceIntervalValue = 30
+                        backgroundServiceIntervalValue = 30
                     }
                     3f -> {
                         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 60)
                         this.backgroundServiceInterval = 3
-                        this.backgroundServiceIntervalValue = 60
+                        backgroundServiceIntervalValue = 60
                     }
                     4f -> {
                         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 120)
                         this.backgroundServiceInterval = 4
-                        this.backgroundServiceIntervalValue = 120
+                        backgroundServiceIntervalValue = 120
                     }
                 }
 
                 // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
-                BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
+                BackgroundWorkerHelper(this).scheduleBackgroundWorker()
             },
-            increaseIcon = { Icon(InlineSliderDefaults.Increase, this.resources.getString(R.string.increase)) },
-            decreaseIcon = { Icon(InlineSliderDefaults.Decrease, this.resources.getString(R.string.decrease)) },
+            increaseIcon = { Icon(InlineSliderDefaults.Increase, resources.getString(R.string.increase)) },
+            decreaseIcon = { Icon(InlineSliderDefaults.Decrease, resources.getString(R.string.decrease)) },
         )
     }
 

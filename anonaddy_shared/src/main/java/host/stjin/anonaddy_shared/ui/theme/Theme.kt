@@ -69,7 +69,7 @@ fun getAnonAddyChipColors(): ChipColors {
         backgroundColor = colorResource(id = R.color.md_theme_secondaryContainer),
         contentColor = colorResource(id = R.color.md_theme_onSecondaryContainer),
         secondaryContentColor = colorResource(id = R.color.md_theme_onSecondaryContainer),
-        iconTintColor = colorResource(id = R.color.md_theme_onSecondaryContainer)
+        iconColor = colorResource(id = R.color.md_theme_onSecondaryContainer)
     )
 }
 
@@ -79,7 +79,7 @@ fun getAnonAddyDangerChipColors(): ChipColors {
         backgroundColor = colorResource(id = R.color.md_theme_errorContainer),
         contentColor = colorResource(id = R.color.md_theme_onErrorContainer),
         secondaryContentColor = colorResource(id = R.color.md_theme_onErrorContainer),
-        iconTintColor = colorResource(id = R.color.md_theme_onErrorContainer)
+        iconColor = colorResource(id = R.color.md_theme_onErrorContainer)
     )
 }
 
@@ -102,6 +102,6 @@ fun getAnonAddyButtonColors(): ButtonColors {
 fun getAnonAddyToggleChipColors(): ToggleChipColors {
     return toggleChipColors(
         checkedEndBackgroundColor = colorResource(id = R.color.md_theme_primaryInverse).copy(alpha = 0.30f),
-        checkedToggleControlTintColor = colorResource(id = R.color.md_theme_onPrimary)
+        checkedToggleControlColor = colorResource(id = R.color.md_theme_onPrimary)
     )
 }

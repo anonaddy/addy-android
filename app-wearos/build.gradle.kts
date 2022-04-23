@@ -1,3 +1,8 @@
+val compose_version = rootProject.extra["compose_version"]
+val compose_material_version = rootProject.extra["compose_material_version"]
+val wear_compose_version = rootProject.extra["wear_compose_version"]
+val compose_activity_version = rootProject.extra["compose_activity_version"]
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -43,7 +48,7 @@ android {
      * COMPOSE
      */
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0-alpha07"
+        kotlinCompilerExtensionVersion = "$compose_version"
     }
 
     packagingOptions {
@@ -83,7 +88,7 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha09")
+    implementation("androidx.compose.material3:material3:$compose_material_version")
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("com.google.android.gms:play-services-wearable:17.1.0")
@@ -105,16 +110,17 @@ dependencies {
 // Compose
 dependencies {
     // General compose dependencies
-    implementation("androidx.activity:activity-compose:1.4.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0-alpha07")
+    implementation("androidx.activity:activity-compose:$compose_activity_version")
+    implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
 
-    // Animated graphics (for the icon on setup)
-    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha07")
+    // Animated graphics (for the icon on setup) //FIXME alpha07 broke it
+    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha06")
+    //implementation("androidx.compose.animation:animation-graphics:$compose_version")
 
-    implementation("androidx.wear.compose:compose-foundation:1.0.0-alpha20")
+    implementation("androidx.wear.compose:compose-foundation:$wear_compose_version")
 
     // For Wear Material Design UX guidelines and specifications
-    implementation("androidx.wear.compose:compose-material:1.0.0-alpha20")
+    implementation("androidx.wear.compose:compose-material:$wear_compose_version")
 
     // NOTE: DO NOT INCLUDE a dependency on androidx.compose.material:material.
     // androidx.wear.compose:compose-material is designed as a replacement
@@ -122,8 +128,8 @@ dependencies {
     // If there are features from that you feel are missing from
     // androidx.wear.compose:compose-material please raise a bug to let us know.
 
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.0-alpha07")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.2.0-alpha07")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+    debugImplementation("androidx.compose.ui:ui-tooling:$compose_version")
 }
 
 // For updating widgets and caching data

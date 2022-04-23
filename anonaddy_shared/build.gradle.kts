@@ -1,3 +1,8 @@
+val compose_version = rootProject.extra["compose_version"]
+val compose_material_version = rootProject.extra["compose_material_version"]
+val wear_compose_version = rootProject.extra["wear_compose_version"]
+
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -32,7 +37,7 @@ android {
         jvmTarget = "1.8"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0-alpha07"
+        kotlinCompilerExtensionVersion = "$compose_version"
     }
 }
 
@@ -55,11 +60,11 @@ dependencies {
 
 // Compose
 dependencies {
-    implementation("androidx.compose.ui:ui-text:1.2.0-alpha07")
-    implementation("androidx.compose.ui:ui-graphics:1.2.0-alpha07")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha09")
+    implementation("androidx.compose.ui:ui-text:$compose_version")
+    implementation("androidx.compose.ui:ui-graphics:$compose_version")
+    implementation("androidx.compose.material3:material3:$compose_material_version")
     // Compose for Wear OS Dependencies
-    implementation("androidx.wear.compose:compose-material:1.0.0-alpha20")
+    implementation("androidx.wear.compose:compose-material:$wear_compose_version")
 }
 
 // Fuel, network requests
@@ -69,7 +74,6 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1-native-mt")
 }
-
 
 
 // Built-in updater

@@ -367,7 +367,7 @@ class ManageAliasActivity : ComponentActivity() {
             checked = isAliasActive,
             colors = getAnonAddyToggleChipColors(),
             toggleControl = {
-                ToggleChipDefaults.SwitchIcon(checked = isAliasActive)
+                ToggleChipDefaults.switchIcon(checked = isAliasActive)
             },
             secondaryLabel = {
                 Text(
