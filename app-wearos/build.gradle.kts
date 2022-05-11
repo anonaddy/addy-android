@@ -2,6 +2,7 @@ val compose_version = rootProject.extra["compose_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
 val wear_compose_version = rootProject.extra["wear_compose_version"]
 val compose_activity_version = rootProject.extra["compose_activity_version"]
+val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 
 plugins {
     id("com.android.application")
@@ -10,9 +11,10 @@ plugins {
 
 android {
     compileSdk = 32
+    namespace = "host.stjin.anonaddy"
 
     defaultConfig {
-        applicationId = "host.stjin.anonaddy"
+        applicationId = namespace
         minSdk = 28
         targetSdk = 32
         versionCode = 1
@@ -61,14 +63,6 @@ android {
      * END COMPOSE
      */
 
-    /**
-     * FLAVORS
-     */
-    flavorDimensions.add("flavor")
-    productFlavors {
-        create("main") {
-        }
-    }
 
     buildTypes {
         getByName("release") {
@@ -87,7 +81,7 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.material:material:1.6.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
     implementation("androidx.core:core-ktx:1.7.0")
@@ -153,18 +147,18 @@ dependencies {
     implementation("com.google.android.gms:play-services-base:18.0.1")
 
     // Use to implement support for wear tiles
-    implementation("androidx.wear.tiles:tiles:1.1.0-alpha05")
+    implementation("androidx.wear.tiles:tiles:$wear_tiles_version")
 
     // Use to utilize components and layouts with Material design in your tiles
-    implementation("androidx.wear.tiles:tiles-material:1.1.0-alpha05")
+    implementation("androidx.wear.tiles:tiles-material:$wear_tiles_version")
 
     // Use to preview wear tiles in your own app
-    debugImplementation("androidx.wear.tiles:tiles-renderer:1.1.0-alpha05")
+    debugImplementation("androidx.wear.tiles:tiles-renderer:$wear_tiles_version")
 
     // Use to fetch tiles from a tile provider in your tests
-    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0-alpha05")
+    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0-alpha06")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.1-native-mt")
-    implementation("androidx.wear.tiles:tiles-proto:1.1.0-alpha05")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.1")
+    implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }

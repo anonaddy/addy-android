@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="host.stjin.anonaddy">
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <!-- This library gets override because the shared_anonaddy library implements this library but in practice
