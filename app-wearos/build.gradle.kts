@@ -107,8 +107,8 @@ dependencies {
     implementation("androidx.activity:activity-compose:$compose_activity_version")
     implementation("androidx.compose.ui:ui-tooling-preview:$compose_version")
 
-    // Animated graphics (for the icon on setup) //FIXME alpha07 broke it
-    implementation("androidx.compose.animation:animation-graphics:1.2.0-alpha06")
+    // Animated graphics (for the icon on setup)
+    implementation("androidx.compose.animation:animation-graphics:$compose_version")
     //implementation("androidx.compose.animation:animation-graphics:$compose_version")
 
     implementation("androidx.wear.compose:compose-foundation:$wear_compose_version")
@@ -156,7 +156,7 @@ dependencies {
     debugImplementation("androidx.wear.tiles:tiles-renderer:$wear_tiles_version")
 
     // Use to fetch tiles from a tile provider in your tests
-    testImplementation("androidx.wear.tiles:tiles-testing:1.1.0-alpha06")
+    testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.1")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")

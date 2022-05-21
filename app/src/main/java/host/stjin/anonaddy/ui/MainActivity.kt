@@ -297,7 +297,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         networkHelper.getAllFailedDeliveries({ result, _ ->
             val currentFailedDeliveries =
                 encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-            if (result?.size ?: 0 > currentFailedDeliveries) {
+            if ((result?.size ?: 0) > currentFailedDeliveries) {
                 if (binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
                     // loading the animation of
                     // zoom_in.xml file into a variable

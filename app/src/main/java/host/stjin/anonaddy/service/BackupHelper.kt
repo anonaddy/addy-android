@@ -40,7 +40,7 @@ class BackupHelper(private val context: Context) {
         val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
         try {
             val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))?.listFiles()
-                ?.filter { it.name?.substringAfterLast(".") ?: "" == "anon" }
+                ?.filter { (it.name?.substringAfterLast(".") ?: "") == "anon" }
             val sortedList = f?.sortedWith(compareBy { it.lastModified() })
             return sortedList?.last()?.lastModified()
         } catch (e: Exception) {
@@ -53,7 +53,7 @@ class BackupHelper(private val context: Context) {
         val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
         try {
             val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))?.listFiles()
-                ?.filter { it.name?.substringAfterLast(".") ?: "" == "anon" }
+                ?.filter { (it.name?.substringAfterLast(".") ?: "") == "anon" }
             var filesDeleted = 0
             for (file in f!!) {
                 val date: LocalDate = Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDate()

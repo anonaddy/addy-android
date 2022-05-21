@@ -242,7 +242,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         // If alias == null
         // OR
         // If the page we're currently on is LOWER than the last page
-        if (aliasList == null || aliasList?.meta?.current_page ?: 0 < aliasList?.meta?.last_page ?: 0) {
+        if (aliasList == null || (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
             binding.aliasProgress.visibility = View.VISIBLE
 
             // When loading data disable the scrollviewlistener to prevent double loading
@@ -272,7 +272,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
                             // If there are 0 new items in this page but there are more pages, continue searching to the next page
-                            if (filteredAliases.size == 0 && aliasList?.meta?.current_page ?: 0 < aliasList?.meta?.last_page ?: 0) {
+                            if (filteredAliases.size == 0 && (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
                                 viewLifecycleOwner.lifecycleScope.launch {
                                     getAliasesAndAddThemToList()
                                 }
@@ -299,7 +299,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                                   Keep loading results as long as there are more pages
                      */
 
-                        if (aliasList?.data?.size ?: 0 < 100 && aliasList?.meta?.current_page ?: 0 < aliasList?.meta?.last_page ?: 0) {
+                        if ((aliasList?.data?.size ?: 0) < 100 && (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
                             viewLifecycleOwner.lifecycleScope.launch {
                                 getAliasesAndAddThemToList()
                             }

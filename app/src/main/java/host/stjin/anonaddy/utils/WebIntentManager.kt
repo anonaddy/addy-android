@@ -83,13 +83,4 @@ class WebIntentManager(private val context: Context) {
             isOurAppDefault(context)
         }
     }
-
-    // Check if the current baseURL can be associated with the app (This class is A12 only, so we just check if the baseURL is the app.anonaddy.com domain)
-    fun canBaseURLBeAssociated(): Boolean {
-        var baseUrl = AnonAddy.API_BASE_URL
-        // Remove http,https prefix
-        baseUrl = baseUrl.replace("https://", "").replace("http://", "")
-
-        return baseUrl == "app.anonaddy.com"
-    }
 }

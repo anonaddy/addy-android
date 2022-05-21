@@ -94,32 +94,32 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     }
 
     private fun setSearchResults() {
-        if (filteredAliases?.size ?: 0 > 0) {
+        if ((filteredAliases?.size ?: 0) > 0) {
             binding.activitySearchAliasesLL.visibility = View.VISIBLE
             setAliases()
         }
 
-        if (filteredDomains?.size ?: 0 > 0) {
+        if ((filteredDomains?.size ?: 0) > 0) {
             binding.activitySearchDomainsLL.visibility = View.VISIBLE
             setDomains()
         }
 
-        if (filteredRecipients?.size ?: 0 > 0) {
+        if ((filteredRecipients?.size ?: 0) > 0) {
             binding.activitySearchRecipientsLL.visibility = View.VISIBLE
             setRecipients()
         }
 
-        if (filteredUsernames?.size ?: 0 > 0) {
+        if ((filteredUsernames?.size ?: 0) > 0) {
             binding.activitySearchUsernamesLL.visibility = View.VISIBLE
             setUsernames()
         }
 
-        if (filteredRules?.size ?: 0 > 0) {
+        if ((filteredRules?.size ?: 0) > 0) {
             binding.activitySearchRulesLL.visibility = View.VISIBLE
             setRules()
         }
 
-        if (filteredFailedDeliveries?.size ?: 0 > 0) {
+        if ((filteredFailedDeliveries?.size ?: 0) > 0) {
             binding.activitySearchFailedDeliveriesLL.visibility = View.VISIBLE
             setFailedDeliveries()
         }

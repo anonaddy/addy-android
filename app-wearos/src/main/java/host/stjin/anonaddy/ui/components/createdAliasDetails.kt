@@ -32,6 +32,7 @@ import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.models.Aliases
@@ -44,7 +45,7 @@ private val SPACING_BUTTONS = Dp(8f)
 @OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalWearMaterialApi
 @Composable
-fun createdAliasDetails(lazyListState: LazyListState, alias: Aliases, context: Context) {
+fun createdAliasDetails(lazyListState: LazyListState, alias: Aliases, context: Context, activity: CreateAliasActivity) {
 
 
     // Creates a CoroutineScope bound to the lifecycle
@@ -101,7 +102,7 @@ fun createdAliasDetails(lazyListState: LazyListState, alias: Aliases, context: C
                     Row {
                         AddFavoriteLayout(alias = alias, context = context)
                         Spacer(modifier = Modifier.width(SPACING_BUTTONS))
-                        ShowOnDeviceLayout(alias = alias, context = context)
+                        ShowOnDeviceLayout(alias = alias, context = context, activity = activity)
                     }
                 }
             }
@@ -163,7 +164,7 @@ private fun AddFavoriteLayout(alias: Aliases, context: Context) {
 }
 
 @Composable
-private fun ShowOnDeviceLayout(alias: Aliases, context: Context) {
+private fun ShowOnDeviceLayout(alias: Aliases, context: Context, activity: CreateAliasActivity) {
     Log.e("ANONDEBUG12", "ShowOnDeviceLayout()")
 
     val haptic = LocalHapticFeedback.current
@@ -182,7 +183,7 @@ private fun ShowOnDeviceLayout(alias: Aliases, context: Context) {
                 intent.putExtra("alias", alias.id)
                 intent.putExtra("showOnPairedDevice", true)
                 context.startActivity(intent)
-                //FIXME finish()
+                activity.finish()
             },
             enabled = true,
         ) {

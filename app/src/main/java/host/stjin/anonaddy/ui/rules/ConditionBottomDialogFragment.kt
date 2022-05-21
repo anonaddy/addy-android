@@ -67,7 +67,7 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
 
     private fun checkForArguments() {
         // Check if there arguments (to be filled from the Create Rule Activity)
-        if (arguments?.size() ?: 0 > 0) {
+        if ((arguments?.size() ?: 0) > 0) {
             arguments?.getInt(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT_INDEX.argument)?.let {
                 conditionEditIndex = it
             }

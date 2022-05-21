@@ -202,7 +202,8 @@ class SettingsActivity : ComponentActivity() {
     private fun ClearAllDataChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
         Chip(
             modifier = Modifier
-                .padding(top = 2.dp, bottom = 2.dp),
+                .padding(top = 2.dp, bottom = 2.dp)
+                .fillMaxWidth(),
             onClick = {
                 if (!lazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -229,7 +230,8 @@ class SettingsActivity : ComponentActivity() {
     private fun SendLogsToDeviceChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
         Chip(
             modifier = Modifier
-                .padding(top = 2.dp, bottom = 2.dp),
+                .padding(top = 2.dp, bottom = 2.dp)
+                .fillMaxWidth(),
             onClick = {
                 if (!lazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -254,7 +256,9 @@ class SettingsActivity : ComponentActivity() {
     @Composable
     private fun StoreLogsSwitch(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
         ToggleChip(
-            modifier = Modifier.padding(top = 12.dp, bottom = 2.dp),
+            modifier = Modifier
+                .padding(top = 12.dp, bottom = 2.dp)
+                .fillMaxWidth(),
             label = {
                 Text(
                     resources.getString(R.string.store_logs), maxLines = 1, overflow = TextOverflow.Ellipsis
@@ -263,7 +267,10 @@ class SettingsActivity : ComponentActivity() {
             checked = this.storeLogs,
             colors = getAnonAddyToggleChipColors(),
             toggleControl = {
-                ToggleChipDefaults.switchIcon(checked = this.storeLogs)
+                Icon(
+                    imageVector = ToggleChipDefaults.switchIcon(checked = this.storeLogs),
+                    contentDescription = if (this.storeLogs) resources.getString(R.string.on) else resources.getString(R.string.off),
+                )
             },
             onCheckedChange = {
                 if (!lazyListState.isScrollInProgress) {
@@ -280,7 +287,8 @@ class SettingsActivity : ComponentActivity() {
     private fun ClearFavoritesChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
         Chip(
             modifier = Modifier
-                .padding(top = 12.dp),
+                .padding(top = 12.dp)
+                .fillMaxWidth(),
             onClick = {
                 if (!lazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -310,7 +318,9 @@ class SettingsActivity : ComponentActivity() {
     private fun InlineSlider(backgroundServiceInterval: Int, hapticFeedback: HapticFeedback) {
         InlineSlider(
             colors = getAnonAddyInlineSliderColors(),
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .fillMaxWidth(),
             value = backgroundServiceInterval.toFloat(),
             steps = 3,
             onValueChange = {

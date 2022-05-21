@@ -11,12 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
 
-@OptIn(ExperimentalWearMaterialApi::class, androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class)
+@OptIn(androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class)
 @Composable
 fun ShowOnDeviceComposeContent(context: Context, hasPairedDevices: Boolean) {
     Box(

@@ -8,10 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import host.stjin.anonaddy.R
 
-@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun Loading() {
     Box(

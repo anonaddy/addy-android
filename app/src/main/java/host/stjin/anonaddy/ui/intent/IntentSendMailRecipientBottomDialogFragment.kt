@@ -177,7 +177,7 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     private fun setAliasesAdapter() {
         // Set domains
-        if (!aliases.isNullOrEmpty()) {
+        if (!aliases.isEmpty()) {
             binding.bsSendMailFromIntentAliasesMact.setAdapter(
                 ArrayAdapter(
                     requireContext(), android.R.layout.simple_list_item_1, aliases.stream().map { it.email }.collect(

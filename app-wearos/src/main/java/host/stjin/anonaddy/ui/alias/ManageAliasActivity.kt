@@ -203,7 +203,8 @@ class ManageAliasActivity : ComponentActivity() {
                         Log.e("ANONDEBUG12", "positionIndicator")
 
                         PositionIndicator(
-                            lazyListState = lazyListState
+                            lazyListState = lazyListState,
+                            modifier = Modifier
                         )
                     }
                 ) {
@@ -296,7 +297,8 @@ class ManageAliasActivity : ComponentActivity() {
     private fun ShowOnDeviceChip(lazyListState: LazyListState) {
         Chip(
             modifier = Modifier
-                .padding(top = 2.dp, bottom = 2.dp),
+                .padding(top = 2.dp, bottom = 2.dp)
+                .fillMaxWidth(),
             onClick = {
                 if (!lazyListState.isScrollInProgress) {
                     // Happens in method
@@ -322,7 +324,9 @@ class ManageAliasActivity : ComponentActivity() {
     @Composable
     private fun AliasFavoriteToggle(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
         ToggleChip(
-            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+            modifier = Modifier
+                .padding(top = 2.dp, bottom = 2.dp)
+                .fillMaxWidth(),
             label = {
                 Text(
                     resources.getString(R.string.favorite), maxLines = 1, overflow = TextOverflow.Ellipsis
@@ -356,7 +360,9 @@ class ManageAliasActivity : ComponentActivity() {
     @Composable
     private fun AliasActiveToggle(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
         ToggleChip(
-            modifier = Modifier.padding(top = 16.dp, bottom = 2.dp),
+            modifier = Modifier
+                .padding(top = 16.dp, bottom = 2.dp)
+                .fillMaxWidth(),
             label = {
                 Text(
                     if (isAliasActive) resources.getString(R.string.activated) else resources.getString(
@@ -367,7 +373,10 @@ class ManageAliasActivity : ComponentActivity() {
             checked = isAliasActive,
             colors = getAnonAddyToggleChipColors(),
             toggleControl = {
-                ToggleChipDefaults.switchIcon(checked = isAliasActive)
+                Icon(
+                    imageVector = ToggleChipDefaults.switchIcon(checked = isAliasActive),
+                    contentDescription = if (isAliasActive) resources.getString(R.string.activated) else resources.getString(R.string.deactivated),
+                )
             },
             secondaryLabel = {
                 Text(

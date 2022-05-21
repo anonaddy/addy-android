@@ -80,7 +80,7 @@ class AliasActivity : ComponentActivity() {
                 )
             },
         ) {
-            if (aliasesList.isNullOrEmpty()) {
+            if (aliasesList.isEmpty()) {
                 Log.e("ANONDEBUG12", "isNullOrEmpty")
                 Loading()
             } else {

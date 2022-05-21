@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.*
@@ -32,7 +31,6 @@ class CreateAliasActivity : ComponentActivity() {
 
     private var alias by mutableStateOf<Aliases?>(null)
 
-    @OptIn(ExperimentalWearMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val userResource = CacheHelper.getBackgroundServiceCacheUserResource(this)
@@ -57,7 +55,7 @@ class CreateAliasActivity : ComponentActivity() {
     }
 
 
-    @OptIn(ExperimentalComposeUiApi::class, ExperimentalWearMaterialApi::class)
+    @OptIn(ExperimentalWearMaterialApi::class)
     @Composable
     private fun AnonAddyScaffold(settingsManager: SettingsManager) {
         Log.e("ANONDEBUG12", "AnonAddyScaffold()")
@@ -88,10 +86,9 @@ class CreateAliasActivity : ComponentActivity() {
             var skipAliasCreateGuide by remember { mutableStateOf(settingsManager.getSettingsBool(SettingsManager.PREFS.WEAROS_SKIP_ALIAS_CREATE_GUIDE)) }
 
             if (alias != null) {
-                createdAliasDetails(lazyListState, alias!!, this)
+                createdAliasDetails(lazyListState, alias!!, this, this)
             } else {
                 if (skipAliasCreateGuide) {
-                    // TODO Create alias
                     Loading()
                     createAlias()
                 } else {
