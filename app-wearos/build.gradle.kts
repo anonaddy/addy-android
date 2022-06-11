@@ -17,8 +17,16 @@ android {
         applicationId = namespace
         minSdk = 28
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        /*
+        Set the first two digits of the version code to the targetSdkVersion, such as 28.
+        Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
+        Set the next two digits to build or release number, such as 01.
+        Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
+         */
+
+        // SDK 33 + v1.0.0 + release 01 + 01 (for wearos)
+        versionCode = 331000101
+        versionName = "1.0.0"
         vectorDrawables {
             useSupportLibrary = true
         }

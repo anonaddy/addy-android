@@ -1,9 +1,9 @@
-<p>Manage your AnonAddy aliases, recipients, domains and more with the AnonAddy for Android app.</p>
-<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.8.8 or higher</p>
+<p>Easily create and manage your AnonAddy aliases, recipients and more from your phone, tablet or wearable with the AnonAddy app for Android.</p>
+<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.11.1 or higher</p>
 <p><strong>Characteristics</strong></p>
 <ul>
 <li>Connect to the AnonAddy instance or your own hosted instance</li>
-<li>A unique, sexy and sleek design, based on the Material You Design guidelines</li>
+<li>A unique, gorgeous and sleek design, based on the Material You Design guidelines</li>
 <li>Support for Deep Link to easily deactivate aliases from the email banner</li>
 <li>Lock the app using Biometrics</li>
 <li>App exclusive features
@@ -12,6 +12,7 @@
 <li>Get notified when a new update is available</li>
 <li>Send emails from aliases by selecting an email address or clicking a mailto link</li>
 <li>Get notified on failed deliveries</li>
+<li>Update multiple aliases at once</li>
 </ul>
 </li>
 <li>Enable error logging to *locally* store exceptions for easy troubleshooting</li>

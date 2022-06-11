@@ -2,7 +2,7 @@
 <h1 align="center">AnonAddy for Android</h1>
 
 <p align="center">
-Easily create and manage your AnonAddy aliases, recipients and more from your phone,tablet or wearable with this <b>sexy</b> AnonAddy app for Android.
+Easily create and manage your AnonAddy aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> AnonAddy app for Android.
 <br><p align="center">
 <img src="static/banner.png"/>
 </p>
@@ -17,19 +17,19 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > AnonAddy
 
-- AnonAddy v0.8.10 or higher (current version of AnonAddy for Android has been tested with v0.8.10)
+- AnonAddy v0.11.1 or higher (current version of AnonAddy for Android has been tested with v0.11.1)
 
 > Android
 
 - Android 6.0 or higher
-- Wear OS 2.0 or higher (AnonAddy for Android wearables)
+- Wear OS 2.0 or higher (AnonAddy for Android Wearables)
 
 ## Characteristics
 
 > Exciting ✨
 
-- Connect to the [AnonAddy](https://anonaddy.com/) instance or your own hosted instance
-- A unique, sexy and sleek design, based on the [Material You Design](https://m3.material.io/) guidelines
+- Connect to the hosted [AnonAddy](https://anonaddy.com/) instance or your own self-hosted instance
+- A unique, gorgeous and sleek design, based on the [Material You Design](https://m3.material.io/) guidelines
 - Support for Deep Link to easily deactivate aliases from the email banner
 - Lock the app using Biometrics
 - App exclusive features
@@ -37,6 +37,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
   - Get notified when a new update is available
   - Send emails from aliases by selecting an email address or clicking a mailto link
   - Get notified on failed deliveries
+  - Update multiple aliases at once
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Export and import *encrypted* backups of the app configuration
 - Widgets!

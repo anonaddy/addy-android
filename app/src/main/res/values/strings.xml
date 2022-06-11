@@ -71,9 +71,21 @@
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.3.6</h3>
+    <string name="app_changelog"><![CDATA[
+<h3>Introducing AnonAddy for Android Wearables</h3>
+<p>⌚ What time is it? Time for another alias! Introducing AnonAddy for Android Wearables!</p>
+<h4>Features</h4>
+<p>- View your last 15 aliases with activity<br />- In addition, favorite 3 aliases that will always appear<br />- Activate/deactivate aliases<br />- Create new aliases from your wrist<br />- Enjoy a unique watch face<br />- to learn more visit <a href="https://stjin.host/?p=14530">this blogpost I made</a></p>
+<p><strong>Changelogs for future AnonAddy for Android Wearable updates will be shown within the main app</strong></p>
+<p>&nbsp;</p>
+<h3>What\'s new in AnonAddy for Android 4.0.0</h3>
+<h4>Added</h4>
+<p>📲 AnonAddy for Android Wearables integration<br />- Send aliases from your device to your wearable<br />- Open aliases from your wearable on your phone</p>
+<p>👆🏼 Manage multiple aliases at once<br />- To learn more, go to Settings-&gt;Features and integrations</p>
+<p>🤖 Android 13 support, <em>beep boop<br /></em> - New monochrome icons<br />- Predictive back-gesture support<br />- Boring API updates</p>
+<p>👤 Added catch-all for usernames<br />🌐 Added domain MX verified status<br />👆🏼 Long press sections to show all of the description text<br />📳 Added subtle haptic on some elements<br />✨ Brand new animations and indicators throughout the app</p>
 <h4>Fixed/Improved</h4>
-<p>- Fixed a bug where self-hosted instances with version 0.10.0 or higher would be marked as incompatible</p>]]></string>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>

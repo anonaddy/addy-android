@@ -11,7 +11,15 @@ android {
         applicationId = namespace
         minSdk = 23
         targetSdk = 33
-        versionCode = 40
+        /*
+        Set the first two digits of the version code to the targetSdkVersion, such as 28.
+        Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
+        Set the next two digits to build or release number, such as 01.
+        Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
+         */
+
+        // SDK 33 + v4.0.0 + release 01 + 00 (for app)
+        versionCode = 334000100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
         versionName = "v4.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
