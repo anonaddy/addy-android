@@ -130,11 +130,10 @@
                     android:id="@+id/activity_manage_domain_catch_all_switch_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/catch_all_desc"
+                    app:sectionDescription="@string/catch_all_domain_desc"
                     app:sectionShowSwitch="true"
                     app:sectionStartIcon="@drawable/ic_pokeball"
                     app:sectionTitle="@string/catch_all_enabled" />
-
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_manage_domain_desc_edit"

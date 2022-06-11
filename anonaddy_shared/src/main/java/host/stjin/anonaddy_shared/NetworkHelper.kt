@@ -20,6 +20,7 @@ import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALLOWED_RECIPIENTS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_APP_VERSION
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_CATCH_ALL_DOMAINS
+import host.stjin.anonaddy_shared.AnonAddy.API_URL_CATCH_ALL_USERNAMES
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_DOMAINS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
@@ -2336,6 +2337,101 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
+
+    suspend fun disableCatchAllSpecificUsername(
+        callback: (String?) -> Unit?,
+        usernameId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_USERNAMES}/$usernameId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disableCatchAllSpecificUsername",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
+
+
+    suspend fun enableCatchAllSpecificUsername(
+        callback: (Usernames?, String?) -> Unit,
+        usernameId: String
+    ) {
+        val json = JSONObject()
+        json.put("id", usernameId)
+
+        val (_, response, result) = Fuel.post(API_URL_CATCH_ALL_USERNAMES)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
+                callback(anonAddyData.data, null)
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enableCatchAllSpecificUsername",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
+
 
     /**
      * RULES

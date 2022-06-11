@@ -131,6 +131,15 @@
                         app:sectionTitle="@string/username_status_active" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_username_catch_all_switch_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/catch_all_username_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_pokeball"
+                        app:sectionTitle="@string/catch_all_enabled" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_username_desc_edit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

@@ -96,6 +96,61 @@ class ManageUsernamesActivity : BaseActivity(),
                 }
             }
         })
+
+        binding.activityManageUsernameCatchAllSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableCatchAll()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableCatchAll()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private suspend fun disableCatchAll() {
+        networkHelper.disableCatchAllSpecificUsername({ result ->
+            binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
+            if (result == "204") {
+                this.username!!.catch_all = false
+                updateUi(this.username!!)
+            } else {
+                binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
+    }
+
+
+    private suspend fun enableCatchAll() {
+        networkHelper.enableCatchAllSpecificUsername({ username, error ->
+            binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
+            if (username != null) {
+                this.username = username
+            } else {
+                binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + error,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
     }
 
     private suspend fun deactivateUsername() {
@@ -143,6 +198,12 @@ class ManageUsernamesActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageUsernameCatchAllSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(!binding.activityManageUsernameCatchAllSwitchLayout.getSwitchChecked())
+            }
+        })
 
         binding.activityManageUsernameDescEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -251,6 +312,10 @@ class ManageUsernamesActivity : BaseActivity(),
             if (username.active) resources.getString(R.string.username_activated) else resources.getString(R.string.username_deactivated)
         )
 
+        binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(username.catch_all)
+        binding.activityManageUsernameCatchAllSwitchLayout.setTitle(
+            if (username.catch_all) resources.getString(R.string.catch_all_enabled) else resources.getString(R.string.catch_all_disabled)
+        )
 
         /**
          * TEXT

@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
@@ -37,16 +36,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun AliasList(aliases: List<Aliases>, favoriteAliases: List<String>?, scalingLazyListState: ScalingLazyListState, context: Context) {
     fun getStarIcon(aliases: Aliases, favoriteAliases: List<String>?): Int {
-        Log.e("ANONDEBUG12", "getStarIcon")
-
         return if (favoriteAliases?.contains(aliases.id) == true) {
             R.drawable.ic_starred
         } else {
             R.drawable.ic_star
         }
     }
-
-    Log.e("ANONDEBUG12", "AliasList")
 
     // Creates a CoroutineScope bound to the lifecycle
     val scope = rememberCoroutineScope()
@@ -86,7 +81,6 @@ fun AliasList(aliases: List<Aliases>, favoriteAliases: List<String>?, scalingLaz
         verticalArrangement = Arrangement.Center,
         state = scalingLazyListState,
     ) {
-        Log.e("ANONDEBUG12", "scalinglazylistscope")
         item { AliasActionRow(context = context) }
         items(aliases) { alias ->
             Chip(

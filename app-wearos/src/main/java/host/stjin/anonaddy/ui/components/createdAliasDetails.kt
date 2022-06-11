@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -116,8 +115,6 @@ fun createdAliasDetails(lazyListState: LazyListState, alias: Aliases, context: C
 
 @Composable
 private fun AddFavoriteLayout(alias: Aliases, context: Context) {
-    Log.e("ANONDEBUG12", "AddFavoriteLayout()")
-
     val haptic = LocalHapticFeedback.current
     var isAliasFavorite by remember { mutableStateOf(false) }
 
@@ -165,8 +162,6 @@ private fun AddFavoriteLayout(alias: Aliases, context: Context) {
 
 @Composable
 private fun ShowOnDeviceLayout(alias: Aliases, context: Context, activity: CreateAliasActivity) {
-    Log.e("ANONDEBUG12", "ShowOnDeviceLayout()")
-
     val haptic = LocalHapticFeedback.current
     Box(
         modifier = Modifier

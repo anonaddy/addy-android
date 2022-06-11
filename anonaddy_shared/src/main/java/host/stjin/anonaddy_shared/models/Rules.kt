@@ -8,8 +8,8 @@ data class Action(
 ) : Serializable
 
 data class Condition(
-    val match: String,
     val type: String,
+    val match: String,
     val values: List<String>
 ) : Serializable
 
@@ -22,19 +22,19 @@ data class RulesArray(
 )
 
 data class Rules(
-    val actions: ArrayList<Action>,
-    val active: Boolean,
-    val conditions: ArrayList<Condition>,
-    val created_at: String,
-    var forwards: Boolean,
     val id: String,
+    val user_id: String,
     var name: String,
-    var `operator`: String,
     val order: Int,
+    val conditions: ArrayList<Condition>,
+    val actions: ArrayList<Action>,
+    var `operator`: String,
+    var forwards: Boolean,
     var replies: Boolean,
     var sends: Boolean,
-    val updated_at: String,
-    val user_id: String
+    val active: Boolean,
+    val created_at: String,
+    val updated_at: String
 )
 
 

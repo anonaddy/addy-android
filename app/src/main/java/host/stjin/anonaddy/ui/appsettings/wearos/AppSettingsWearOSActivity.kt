@@ -65,7 +65,7 @@ class AppSettingsWearOSActivity : BaseActivity() {
                 positiveButtonAction = {
                     finish()
                 }
-            ).show()
+            ).setCancelable(false).show()
         }
     }
 

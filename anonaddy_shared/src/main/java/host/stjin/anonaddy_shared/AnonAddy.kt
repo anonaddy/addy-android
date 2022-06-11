@@ -12,7 +12,7 @@ object AnonAddy {
     // 0.11.0
     var MINIMUMVERSIONCODEMAJOR = 0
     var MINIMUMVERSIONCODEMINOR = 11
-    var MINIMUMVERSIONCODEPATCH = 0
+    var MINIMUMVERSIONCODEPATCH = 1
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -40,6 +40,7 @@ object AnonAddy {
     val API_URL_CATCH_ALL_DOMAINS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/catch-all-domains" }
     val API_URL_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/usernames" }
     val API_URL_ACTIVE_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-usernames" }
+    val API_URL_CATCH_ALL_USERNAMES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/catch-all-usernames" }
     val API_URL_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/rules" }
     val API_URL_ACTIVE_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-rules" }
     val API_URL_REORDER_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/reorder-rules" }

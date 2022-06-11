@@ -11,24 +11,24 @@ data class SingleAlias(
 )
 
 data class Aliases(
-    var active: Boolean,
+    val id: String,
+    val user_id: String,
     val aliasable_id: String,
     val aliasable_type: String,
-    val created_at: String,
-    var deleted_at: String?,
-    val description: String?,
+    val local_part: String,
+    val extension: String,
     val domain: String,
     val email: String,
-    val emails_blocked: Int,
+    var active: Boolean,
+    val description: String?,
     val emails_forwarded: Int,
+    val emails_blocked: Int,
     val emails_replied: Int,
     val emails_sent: Int,
-    val extension: String,
-    val id: String,
-    val local_part: String,
     val recipients: List<Recipients>?,
+    val created_at: String,
     val updated_at: String,
-    val user_id: String
+    var deleted_at: String?
 )
 
 data class Meta(
@@ -43,14 +43,14 @@ data class Meta(
 )
 
 data class Link(
-    val active: Boolean,
+    val url: Any,
     val label: String,
-    val url: Any
+    val active: Boolean
 )
 
 data class Links(
     val first: String,
     val last: String,
-    val next: Any,
-    val prev: Any
+    val prev: Any,
+    val next: Any
 )

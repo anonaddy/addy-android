@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings
 
+import android.Manifest
 import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.Context
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.BaseActivity
@@ -385,14 +387,12 @@ class AppSettingsActivity : BaseActivity(),
         }
     }
 
-    // TODO replace this with a version
-    @RequiresApi(33)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun requestNotificationPermissions() {
         // Check if notification permissions are granted
-        //TODO Uncomment in Tiramisu
-        /*if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
             notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }*/
+        }
     }
 
     private fun resetApp() {

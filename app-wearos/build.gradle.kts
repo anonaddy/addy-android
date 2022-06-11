@@ -10,13 +10,13 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
         applicationId = namespace
         minSdk = 28
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
         vectorDrawables {
@@ -81,10 +81,10 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.6.0")
+    implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
-    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.core:core-ktx:1.8.0")
     implementation("com.google.android.gms:play-services-wearable:17.1.0")
     implementation("androidx.percentlayout:percentlayout:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
@@ -158,7 +158,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.2")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }

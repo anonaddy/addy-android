@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -191,7 +190,7 @@ class ManageAliasActivity : ComponentActivity() {
                     modifier = Modifier,
                     timeText = {
                         CustomTimeText(
-                            visible = !lazyListState.isScrollInProgress && lazyListState.firstVisibleItemScrollOffset == 0,
+                            visible = !lazyListState.isScrollInProgress && (remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }).value == 0,
                             showLeadingText = true,
                             leadingText = resources.getString(R.string.edit_alias)
                         )
@@ -200,16 +199,12 @@ class ManageAliasActivity : ComponentActivity() {
                         Vignette(vignettePosition = VignettePosition.TopAndBottom)
                     },
                     positionIndicator = {
-                        Log.e("ANONDEBUG12", "positionIndicator")
-
                         PositionIndicator(
                             lazyListState = lazyListState,
                             modifier = Modifier
                         )
                     }
                 ) {
-                    Log.e("ANONDEBUG12", "Scaffold")
-
                     val focusRequester = remember { FocusRequester() }
                     var currentScrollPosition = 0
                     LazyColumn(
@@ -241,7 +236,6 @@ class ManageAliasActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         state = lazyListState,
                     ) {
-                        Log.e("ANONDEBUG12", "listscope")
                         item { GetDonut() }
                         item {
                             StatTextView(
@@ -477,14 +471,20 @@ class ManageAliasActivity : ComponentActivity() {
     fun GetDonut() {
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
 
-        if (alias!!.emails_forwarded > 0) {
-            val section1 = DonutSection(
-                color = colorResource(id = R.color.portalOrange),
-                amount = alias!!.emails_forwarded.toFloat()
-            )
-            // Always show section 1
-            listOfDonutSection.add(section1)
-        }
+        // If there are no statistics, sent the emptyDonut value to 1 so that a donut can be drawn
+        val emptyDonut = if (alias!!.emails_forwarded == 0 &&
+            alias!!.emails_replied == 0 &&
+            alias!!.emails_sent == 0 &&
+            alias!!.emails_blocked == 0
+        ) 1 else 0
+
+        val section1 = DonutSection(
+            color = colorResource(id = R.color.portalOrange),
+            amount = alias!!.emails_forwarded.toFloat() + emptyDonut
+        )
+        // Always show section 1
+        listOfDonutSection.add(section1)
+
 
         if (alias!!.emails_replied > 0) {
             val section2 = DonutSection(

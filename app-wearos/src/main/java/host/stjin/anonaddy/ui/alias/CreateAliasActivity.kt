@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.alias
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.lazy.LazyListState
@@ -46,9 +45,7 @@ class CreateAliasActivity : ComponentActivity() {
 
     private fun setComposeContent() {
         setContent {
-            Log.e("ANONDEBUG12", "setContent()")
             AppTheme {
-                Log.e("ANONDEBUG12", "AppTheme()")
                 AnonAddyScaffold(SettingsManager(false, this))
             }
         }
@@ -58,14 +55,12 @@ class CreateAliasActivity : ComponentActivity() {
     @OptIn(ExperimentalWearMaterialApi::class)
     @Composable
     private fun AnonAddyScaffold(settingsManager: SettingsManager) {
-        Log.e("ANONDEBUG12", "AnonAddyScaffold()")
-
         val lazyListState: LazyListState = rememberLazyListState()
         Scaffold(
             modifier = Modifier,
             timeText = {
                 CustomTimeText(
-                    visible = !lazyListState.isScrollInProgress && lazyListState.firstVisibleItemScrollOffset == 0,
+                    visible = !lazyListState.isScrollInProgress && (remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }).value == 0,
                     showLeadingText = true,
                     leadingText = resources.getString(R.string.add_alias)
                 )
@@ -74,15 +69,11 @@ class CreateAliasActivity : ComponentActivity() {
                 Vignette(vignettePosition = VignettePosition.TopAndBottom)
             },
             positionIndicator = {
-                Log.e("ANONDEBUG12", "positionIndicator")
-
                 PositionIndicator(
                     lazyListState = lazyListState
                 )
             }
         ) {
-            Log.e("ANONDEBUG12", "Scaffold")
-
             var skipAliasCreateGuide by remember { mutableStateOf(settingsManager.getSettingsBool(SettingsManager.PREFS.WEAROS_SKIP_ALIAS_CREATE_GUIDE)) }
 
             if (alias != null) {

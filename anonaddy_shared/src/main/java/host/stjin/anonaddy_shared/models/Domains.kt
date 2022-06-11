@@ -16,12 +16,12 @@ data class Domains(
     val aliases: List<Aliases>?,
     val default_recipient: Recipients?,
     var active: Boolean,
-    var catch_all: Boolean, // Introduced in v0.5.0
-    val test: Boolean, // Introduced in v0.5.0
+    var catch_all: Boolean,
     val domain_verified_at: String?,
+    val domain_mx_verified_at: String?,
     val domain_sending_verified_at: String?,
     val created_at: String,
-    val updated_at: String,
+    val updated_at: String
 )
 
 data class DomainOptions(

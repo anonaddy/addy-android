@@ -71,8 +71,14 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
             arguments?.getInt(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT_INDEX.argument)?.let {
                 conditionEditIndex = it
             }
-            arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT.argument)?.let {
-                conditionEditObject = it as? Condition
+            if (Build.VERSION.SDK_INT >= 33) {
+                arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT.argument, Condition::class.java)?.let {
+                    conditionEditObject = it
+                }
+            } else {
+                arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT.argument)?.let {
+                    conditionEditObject = it as? Condition
+                }
             }
 
 

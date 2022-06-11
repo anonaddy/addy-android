@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.setup
 
+import android.Manifest
 import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
@@ -12,6 +13,7 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
@@ -53,14 +55,11 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     private var notificationPermissionsResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
     }
 
-    // TODO replace this with a version
     private fun requestNotificationPermissions() {
-        // Check if notification permissions are granted
-        if (Build.VERSION.SDK_INT >= 33) {
-            //TODO Uncomment in Tiramisu
-            /*if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
                 notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }*/
+            }
         }
     }
 

@@ -183,7 +183,7 @@
     <string name="check_dns_desc">Verify DNS configuration</string>
     <string name="domain_activated">Domain activated</string>
     <string name="domain_deactivated">Domain deactivated</string>
-    <string name="manage_domain_basic_info">Domain: %1$s\nCreated: %2$s\nUpdated at: %3$s\nDomain verified at: %4$s\nDomain sending verified at: %5$s\nEmail forwarded: %6$d\nEmail blocked: %7$d\nEmail replies: %8$d\nEmail sent: %9$d</string>
+    <string name="manage_domain_basic_info">Domain: %1$s\nCreated: %2$s\nUpdated at: %3$s\nDomain verified at: %4$s\nDomain MX verified at: %5$s\nDomain sending verified at: %6$s\nEmail forwarded: %7$d\nEmail blocked: %8$d\nEmail replies: %9$d\nEmail sent: %10$d</string>
     <string name="manage_username_basic_info">Username: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
     <string name="domain_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this domain</string>
     <string name="username_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this username</string>
@@ -224,7 +224,8 @@
     <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$s active domains</string>
     <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$s recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
-    <string name="catch_all_desc">Enable catch-all on this domain</string>
+    <string name="catch_all_domain_desc">Enable catch-all for this domain</string>
+    <string name="catch_all_username_desc">Enable catch-all for this username</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
     <string name="catch_all_disabled">Catch-All disabled</string>
     <string name="alias_local_part">Alias local part</string>
@@ -528,7 +529,7 @@
     <string name="wearable_setup_skip_setup">To setup AnonAddy on a wearable device, open the AnonAddy settings</string>
     <string name="wearable_quick_setup">Quick setup</string>
     <string name="wearable_quick_setup_desc">When AnonAddy is opened for the first time on a wearable. Show a message on this device to quickly set up the app</string>
-    <string name="anonaddy_for_wearables">AnonAddy for wearables</string>
+    <string name="anonaddy_for_wearables">AnonAddy for Wearables</string>
     <string name="anonaddy_for_wearables_desc">With AnonAddy on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to a beautiful watchface</string>
     <string name="start_wearable_app">Start app</string>
     <string name="setup_app_on_wearable">Setup app</string>

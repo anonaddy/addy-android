@@ -9,13 +9,14 @@ data class SingleUsername(
 )
 
 data class Usernames(
-    var active: Boolean,
-    val aliases: List<Aliases>?,
-    val created_at: String,
-    val default_recipient: Recipients?,
-    val description: String?,
     val id: String,
-    val updated_at: String,
     val user_id: String,
-    val username: String
+    val username: String,
+    val description: String?,
+    val aliases: List<Aliases>?,
+    val default_recipient: Recipients?,
+    var active: Boolean,
+    var catch_all: Boolean,
+    val created_at: String,
+    val updated_at: String
 )

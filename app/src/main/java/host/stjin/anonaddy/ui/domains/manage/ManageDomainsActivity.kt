@@ -262,7 +262,6 @@ class ManageDomainsActivity : BaseActivity(),
                 )
                 deleteDomainSnackbar.show()
                 lifecycleScope.launch {
-                    //TODO Do these kind of method exist multiple times?
                     deleteDomainHttpRequest(id, this@ManageDomainsActivity)
                 }
             }
@@ -356,6 +355,7 @@ class ManageDomainsActivity : BaseActivity(),
             DateTimeUtils.turnStringIntoLocalString(domain.created_at),
             DateTimeUtils.turnStringIntoLocalString(domain.updated_at),
             DateTimeUtils.turnStringIntoLocalString(domain.domain_verified_at),
+            DateTimeUtils.turnStringIntoLocalString(domain.domain_mx_verified_at),
             DateTimeUtils.turnStringIntoLocalString(domain.domain_sending_verified_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )

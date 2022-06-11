@@ -12,6 +12,7 @@ import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 class WearableListener : WearableListenerService() {
+
     override fun onMessageReceived(p0: MessageEvent) {
         super.onMessageReceived(p0)
         if (p0.path.equals("/requestsetup")) {

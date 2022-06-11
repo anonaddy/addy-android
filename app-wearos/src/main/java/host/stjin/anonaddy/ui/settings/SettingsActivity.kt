@@ -3,7 +3,6 @@ package host.stjin.anonaddy.ui.settings
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -100,7 +99,6 @@ class SettingsActivity : ComponentActivity() {
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
     @Composable
     private fun ComposeContent() {
-        Log.e("ANONDEBUG12", "ComposeContent")
         AppTheme {
             val scope = rememberCoroutineScope()
             val haptic = LocalHapticFeedback.current
@@ -114,7 +112,7 @@ class SettingsActivity : ComponentActivity() {
                 modifier = Modifier,
                 timeText = {
                     CustomTimeText(
-                        visible = !lazyListState.isScrollInProgress && lazyListState.firstVisibleItemScrollOffset == 0,
+                        visible = !lazyListState.isScrollInProgress && (remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }).value == 0,
                         showLeadingText = true,
                         leadingText = resources.getString(R.string.settings)
                     )
@@ -123,13 +121,11 @@ class SettingsActivity : ComponentActivity() {
                     Vignette(vignettePosition = VignettePosition.TopAndBottom)
                 },
                 positionIndicator = {
-                    Log.e("ANONDEBUG12", "positionIndicator")
                     PositionIndicator(
                         lazyListState = lazyListState
                     )
                 },
             ) {
-                Log.e("ANONDEBUG12", "LazyColumn")
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -159,13 +155,13 @@ class SettingsActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     state = lazyListState,
                 ) {
-                    item { Text(text = resources.getString(R.string.background_service_interval)) }
+                    item { Text(text = resources.getString(R.string.background_service_interval), textAlign = TextAlign.Center) }
                     item {
                         Text(
                             text = resources.getString(
                                 R.string.background_service_interval_value,
                                 backgroundServiceIntervalValue
-                            ), Modifier.alpha(0.4f)
+                            ), Modifier.alpha(0.4f), textAlign = TextAlign.Center
                         )
                     }
                     item { InlineSlider(backgroundServiceInterval, haptic) }
@@ -173,7 +169,7 @@ class SettingsActivity : ComponentActivity() {
                         Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.tile_favorite_aliases_label))
                     }
                     item { ClearFavoritesChip(lazyListState, haptic) }
-                    item { Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.logs)) }
+                    item { Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.logs), textAlign = TextAlign.Center) }
                     item { StoreLogsSwitch(lazyListState, haptic) }
                     item { SendLogsToDeviceChip(lazyListState, haptic) }
                     item { Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS)) }

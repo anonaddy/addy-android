@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.alias
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
@@ -43,9 +42,7 @@ class AliasActivity : ComponentActivity() {
     private fun setComposeContent() {
         getAliases()?.let { aliasesList = it }
         setContent {
-            Log.e("ANONDEBUG12", "setContent()")
             AppTheme {
-                Log.e("ANONDEBUG12", "AppTheme()")
                 AnonAddyScaffold()
             }
         }
@@ -55,8 +52,6 @@ class AliasActivity : ComponentActivity() {
     @OptIn(ExperimentalWearMaterialApi::class)
     @Composable
     private fun AnonAddyScaffold() {
-        Log.e("ANONDEBUG12", "AnonAddyScaffold()")
-
         val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
         Scaffold(
             modifier = Modifier,
@@ -66,25 +61,20 @@ class AliasActivity : ComponentActivity() {
                     showLeadingText = true,
                     leadingText = resources.getString(R.string.aliases)
                 )
-                // TODO remove all Logs
-                Log.e("ANONDEBUG12", "timeText")
 
             },
             vignette = {
                 Vignette(vignettePosition = VignettePosition.TopAndBottom)
             },
             positionIndicator = {
-                Log.e("ANONDEBUG12", "positionIndicator")
                 PositionIndicator(
                     scalingLazyListState = scalingLazyListState
                 )
             },
         ) {
             if (aliasesList.isEmpty()) {
-                Log.e("ANONDEBUG12", "isNullOrEmpty")
                 Loading()
             } else {
-                Log.e("ANONDEBUG12", "ScalingLazyColumn")
                 val favoriteAliases by remember { mutableStateOf(getFavoriteAliases()) }
                 AliasList(aliases = aliasesList, favoriteAliases = favoriteAliases, scalingLazyListState = scalingLazyListState, context = this)
             }

@@ -9,14 +9,14 @@ data class SingleRecipient(
 )
 
 data class Recipients(
+    val id: String,
+    val user_id: String,
+    val email: String,
+    var can_reply_send: Boolean,
+    var should_encrypt: Boolean,
+    var fingerprint: String?,
+    val email_verified_at: String?,
     val aliases: List<Aliases>?,
     val created_at: String,
-    val email: String,
-    val email_verified_at: String?,
-    var fingerprint: String?,
-    val id: String,
-    var should_encrypt: Boolean,
-    var can_reply_send: Boolean,
-    val updated_at: String,
-    val user_id: String
+    val updated_at: String
 )

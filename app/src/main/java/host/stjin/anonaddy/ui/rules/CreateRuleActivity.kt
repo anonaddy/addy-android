@@ -109,7 +109,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 Condition(
                     match = "is exactly",
                     type = "sender",
-                    listOf(
+                    values = listOf(
                         "will@anonaddy.com",
                         "no-reply@anonaddy.com"
                     )
@@ -117,7 +117,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 Condition(
                     match = "contains",
                     type = "subject",
-                    listOf(
+                    values = listOf(
                         "newsletter",
                         "subscription"
                     )

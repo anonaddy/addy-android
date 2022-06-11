@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.components
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
@@ -24,8 +23,6 @@ fun ShowOnDeviceComposeContent(context: Context, hasPairedDevices: Boolean) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Log.e("ANONDEBUG12", "Box")
-
         Column {
             val image = AnimatedImageVector.animatedVectorResource(id = R.drawable.ic_watch_setup_notification_anim)
             var atEnd by remember { mutableStateOf(false) }

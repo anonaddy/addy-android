@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,8 +23,6 @@ private val SPACING_ALIAS_BUTTONS = Dp(8f)
 
 @Composable
 fun AliasActionRow(context: Context) {
-    Log.e("ANONDEBUG12", "aliasActionRow")
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,8 +43,6 @@ fun AliasActionRow(context: Context) {
 
 @Composable
 private fun ShowOnNewAliasLayout(context: Context) {
-    Log.e("ANONDEBUG12", "ShowOnNewAliasLayout")
-
     Box(
         modifier = Modifier
             .semantics {
@@ -75,8 +70,6 @@ private fun ShowOnNewAliasLayout(context: Context) {
 
 @Composable
 private fun ShowOnSettingsLayout(context: Context) {
-    Log.e("ANONDEBUG12", "ShowOnSettingsLayout")
-
     Box(
         modifier = Modifier
             .semantics {
