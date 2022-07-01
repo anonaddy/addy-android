@@ -166,7 +166,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.3")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }
