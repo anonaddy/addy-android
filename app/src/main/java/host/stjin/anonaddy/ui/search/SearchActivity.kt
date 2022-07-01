@@ -10,12 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.*
 import host.stjin.anonaddy.databinding.ActivitySearchBinding
-import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveryDetailsBottomDialogFragment
@@ -30,6 +27,9 @@ import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUserna
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.*
 
 class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
 
@@ -77,7 +77,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySearchNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySearchLL1)
         )
 
         setupToolbar(
@@ -94,48 +94,45 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     }
 
     private fun setSearchResults() {
-        binding.activitySearchRLLottieview.visibility = View.GONE
-
-
-        if (filteredAliases?.size ?: 0 > 0) {
+        if ((filteredAliases?.size ?: 0) > 0) {
             binding.activitySearchAliasesLL.visibility = View.VISIBLE
             setAliases()
         }
 
-        if (filteredDomains?.size ?: 0 > 0) {
+        if ((filteredDomains?.size ?: 0) > 0) {
             binding.activitySearchDomainsLL.visibility = View.VISIBLE
             setDomains()
         }
 
-        if (filteredRecipients?.size ?: 0 > 0) {
+        if ((filteredRecipients?.size ?: 0) > 0) {
             binding.activitySearchRecipientsLL.visibility = View.VISIBLE
             setRecipients()
         }
 
-        if (filteredUsernames?.size ?: 0 > 0) {
+        if ((filteredUsernames?.size ?: 0) > 0) {
             binding.activitySearchUsernamesLL.visibility = View.VISIBLE
             setUsernames()
         }
 
-        if (filteredRules?.size ?: 0 > 0) {
+        if ((filteredRules?.size ?: 0) > 0) {
             binding.activitySearchRulesLL.visibility = View.VISIBLE
             setRules()
         }
 
-        if (filteredFailedDeliveries?.size ?: 0 > 0) {
+        if ((filteredFailedDeliveries?.size ?: 0) > 0) {
             binding.activitySearchFailedDeliveriesLL.visibility = View.VISIBLE
             setFailedDeliveries()
         }
 
-        if (filteredAliases?.size ?: 0 == 0 &&
+        // No need to check if there are results, this is being done in the bottomsheet.
+/*        if (filteredAliases?.size ?: 0 == 0 &&
             filteredDomains?.size ?: 0 == 0 &&
             filteredRecipients?.size ?: 0 == 0 &&
             filteredUsernames?.size ?: 0 == 0 &&
             filteredRules?.size ?: 0 == 0 &&
             filteredFailedDeliveries?.size ?: 0 == 0
         ) {
-            binding.activitySearchRLLottieview.visibility = View.VISIBLE
-        }
+        }*/
     }
 
     /*
@@ -290,7 +287,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
 
             val finalList = (nonDeletedList + onlyDeletedList)
             val aliasAdapter = AliasAdapter(finalList, context)
-            aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.ClickListener {
+            aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
                 override fun onClick(pos: Int) {
                     val intent = Intent(context, ManageAliasActivity::class.java)
                     // Pass data object in the bundle and populate details activity.

@@ -2,4 +2,6 @@
 <resources>
     <color name="BlackWhite">#FFFFFF</color>
     <color name="DropDownSurfaceLightDarkMode">#2E2E2E</color>
+    <color name="selected_background_color">@color/md_grey_900</color>
+    <color name="selected_background_color_darker">@color/md_grey_800</color>
 </resources>

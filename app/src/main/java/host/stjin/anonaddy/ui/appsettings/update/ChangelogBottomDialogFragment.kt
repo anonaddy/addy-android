@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,10 @@ class ChangelogBottomDialogFragment : BaseBottomSheetDialogFragment() {
             binding.bsChangelogTextview.text =
                 Html.fromHtml(context?.resources?.getString(R.string.app_changelog))
         }
+
+        // Allow hyperlinks to be clicked
+        binding.bsChangelogTextview.movementMethod = LinkMovementMethod.getInstance()
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

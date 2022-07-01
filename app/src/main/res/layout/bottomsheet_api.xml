@@ -90,7 +90,7 @@
                     app:frameCornersSize="@dimen/corner_radius"
                     app:frameSize="1"
                     app:frameThickness="0dp"
-                    app:maskColor="?android:colorBackground">
+                    app:maskColor="?colorSurface">
 
                 </com.budiyev.android.codescanner.CodeScannerView>
 
@@ -177,27 +177,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/bs_setup_apikey_get_button"
-                        style="?borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="16dp"
-                        android:text="@string/get_my_key" />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                    android:orientation="vertical">
 
                     <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                         android:id="@+id/bs_setup_apikey_sign_in_button"
                         style="@style/CircularProgressButtonSecondary"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/sign_in" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bs_setup_apikey_get_button"
+                        style="?borderlessButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/get_my_key" />
                 </LinearLayout>
             </LinearLayout>
 

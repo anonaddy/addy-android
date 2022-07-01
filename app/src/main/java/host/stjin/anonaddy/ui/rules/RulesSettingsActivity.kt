@@ -10,17 +10,17 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.databinding.ActivityRuleSettingsBinding
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
@@ -40,7 +40,7 @@ class RulesSettingsActivity : BaseActivity() {
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRulesNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRulesLL1)
         )
 
         setupToolbar(
@@ -66,9 +66,6 @@ class RulesSettingsActivity : BaseActivity() {
     }
 
     private fun getDataFromWeb() {
-        binding.activityManageRulesLL1.visibility = View.VISIBLE
-        binding.activityManageRulesRLLottieview.visibility = View.GONE
-
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             getAllRulesAndSetView()
@@ -172,8 +169,10 @@ class RulesSettingsActivity : BaseActivity() {
 
                     })
                     adapter = rulesAdapter
-
                     itemTouchHelper.attachToRecyclerView(binding.activityManageRulesAllRulesRecyclerview)
+
+                    binding.animationFragment.stopAnimation()
+                    //binding.activityManageRulesNSV.animate().alpha(1.0f)  -> Do not animate as there is a shimmerview
                 } else {
 
                     SnackbarHelper.createSnackbar(
@@ -182,11 +181,13 @@ class RulesSettingsActivity : BaseActivity() {
                         binding.activityManageRulesCL
                     ).show()
 
+                    // Show error animations
                     binding.activityManageRulesLL1.visibility = View.GONE
-                    binding.activityManageRulesRLLottieview.visibility = View.VISIBLE
+                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                 }
                 hideShimmer()
             }, show404Toast = true)
+
         }
 
     }
@@ -212,8 +213,8 @@ class RulesSettingsActivity : BaseActivity() {
     }
 
     private suspend fun activateRule(ruleId: String) {
-        networkHelper?.activateSpecificRule({ result ->
-            if (result == "200") {
+        networkHelper?.activateSpecificRule({ rule, error ->
+            if (rule != null) {
                 getDataFromWeb()
                 SnackbarHelper.createSnackbar(
                     this,
@@ -223,7 +224,7 @@ class RulesSettingsActivity : BaseActivity() {
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
-                    this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + result,
+                    this@RulesSettingsActivity.resources.getString(R.string.error_rules_active) + "\n" + error,
                     binding.activityManageRulesCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
@@ -234,14 +235,14 @@ class RulesSettingsActivity : BaseActivity() {
 
     private lateinit var deleteRuleSnackbar: Snackbar
     private fun deleteRule(id: String, context: Context) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.delete_rule))
-            .setIcon(R.drawable.ic_trash)
-            .setMessage(resources.getString(R.string.delete_rule_desc_confirm))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.delete_rule),
+            message = resources.getString(R.string.delete_rule_desc_confirm),
+            icon = R.drawable.ic_trash,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.delete),
+            positiveButtonAction = {
                 deleteRuleSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_rule),
@@ -253,7 +254,7 @@ class RulesSettingsActivity : BaseActivity() {
                     deleteRuleHttpRequest(id, context)
                 }
             }
-            .show()
+        ).show()
     }
 
     private suspend fun deleteRuleHttpRequest(id: String, context: Context) {

@@ -15,19 +15,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.AnonAddyForAndroid
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.adapter.RecipientAdapter
 import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
-import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
@@ -269,8 +269,6 @@ class RecipientsFragment : Fragment(),
 
             }
         }, id)
-
-        //verificationEmailSentSnackbar(context)
     }
 
 
@@ -286,14 +284,14 @@ class RecipientsFragment : Fragment(),
 
     private lateinit var deleteRecipientSnackbar: Snackbar
     private fun deleteRecipient(id: String, context: Context) {
-        MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.delete_recipient))
-            .setIcon(R.drawable.ic_trash)
-            .setMessage(resources.getString(R.string.delete_recipient_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = context,
+            title = resources.getString(R.string.delete_recipient),
+            message = resources.getString(R.string.delete_recipient_desc),
+            icon = R.drawable.ic_trash,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.delete),
+            positiveButtonAction = {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
                 bottomNavView?.let {
@@ -312,7 +310,7 @@ class RecipientsFragment : Fragment(),
                     deleteRecipientHttpRequest(id, context)
                 }
             }
-            .show()
+        ).show()
     }
 
     private suspend fun deleteRecipientHttpRequest(id: String, context: Context) {

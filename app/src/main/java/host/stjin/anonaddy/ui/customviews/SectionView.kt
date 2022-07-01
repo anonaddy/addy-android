@@ -1,9 +1,12 @@
 package host.stjin.anonaddy.ui.customviews
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
@@ -14,6 +17,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.utils.AttributeHelper
+
 
 class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle) {
@@ -75,8 +79,12 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
             // Else flip the switch
             if (onLongClicklistener != null) {
                 onLongClicklistener?.onLongClick()
+            } else {
+                // Allow users to show all text by long pressing the section
+                linearLayout?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                description?.maxLines = 10
             }
-            false
+            true
         }
 
     fun setSwitchChecked(boolean: Boolean) {
@@ -99,6 +107,18 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         } else {
             linearLayout?.setOnClickListener(null)
             linearLayout?.setOnLongClickListener(null)
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setSwitchVibrationEffects() {
+        switchMaterial?.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                switchMaterial!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            } else if (event.action == MotionEvent.ACTION_UP) {
+                switchMaterial!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            }
+            false
         }
     }
 
@@ -242,6 +262,8 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
             // Set layout enabled
             setLayoutEnabled(a.getBoolean(R.styleable.SectionView_sectionEnabled, true))
+
+            setSwitchVibrationEffects()
 
             a.recycle()
         }

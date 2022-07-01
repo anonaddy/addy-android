@@ -7,14 +7,18 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.DateTimeUtils
-import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +31,12 @@ class ManageDomainsActivity : BaseActivity(),
     private lateinit var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment
     private lateinit var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment
 
-    private lateinit var domainId: String
+    private var domain: Domains? = null
+        set(value) {
+            field = value
+            value?.let { updateUi(it) }
+        }
+
     private var forceSwitch = false
 
     private lateinit var binding: ActivityManageDomainsBinding
@@ -40,7 +49,7 @@ class ManageDomainsActivity : BaseActivity(),
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageDomainNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageDomainLL1)
         )
 
         setupToolbar(
@@ -58,13 +67,11 @@ class ManageDomainsActivity : BaseActivity(),
             finish()
             return
         }
-        this.domainId = domainId
-        setPage()
+        setPage(domainId)
     }
 
 
-    private fun setPage() {
-        binding.activityManageDomainRLLottieview.visibility = View.GONE
+    private fun setPage(domainId: String) {
         // Get the domain
         lifecycleScope.launch {
             getDomainInfo(domainId)
@@ -115,7 +122,8 @@ class ManageDomainsActivity : BaseActivity(),
         networkHelper.disableCatchAllSpecificDomain({ result ->
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageDomainCatchAllSwitchLayout.setTitle(resources.getString(R.string.catch_all_disabled))
+                this.domain!!.catch_all = false
+                updateUi(this.domain!!)
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -125,31 +133,32 @@ class ManageDomainsActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, domainId)
+        }, this.domain!!.id)
     }
 
     private suspend fun enableCatchAll() {
-        networkHelper.enableCatchAllSpecificDomain({ result ->
+        networkHelper.enableCatchAllSpecificDomain({ domain, error ->
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
-            if (result == "200") {
-                binding.activityManageDomainCatchAllSwitchLayout.setTitle(resources.getString(R.string.catch_all_enabled))
+            if (domain != null) {
+                this.domain = domain
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
-                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + error,
                     binding.activityManageDomainCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, domainId)
+        }, this.domain!!.id)
     }
 
     private suspend fun deactivateDomain() {
         networkHelper.deactivateSpecificDomain({ result ->
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageDomainActiveSwitchLayout.setTitle(resources.getString(R.string.domain_deactivated))
+                this.domain!!.active = false
+                updateUi(this.domain!!)
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -159,24 +168,24 @@ class ManageDomainsActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, domainId)
+        }, this.domain!!.id)
     }
 
     private suspend fun activateDomain() {
-        networkHelper.activateSpecificDomain({ result ->
+        networkHelper.activateSpecificDomain({ domain, error ->
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
-            if (result == "200") {
-                binding.activityManageDomainActiveSwitchLayout.setTitle(resources.getString(R.string.domain_activated))
+            if (domain != null) {
+                this.domain = domain
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
-                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
                     binding.activityManageDomainCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, domainId)
+        }, this.domain!!.id)
     }
 
     private fun setOnClickListeners() {
@@ -220,7 +229,7 @@ class ManageDomainsActivity : BaseActivity(),
 
         binding.activityManageDomainDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                deleteDomain(domainId)
+                deleteDomain(this@ManageDomainsActivity.domain!!.id)
             }
         })
 
@@ -237,14 +246,14 @@ class ManageDomainsActivity : BaseActivity(),
 
     private lateinit var deleteDomainSnackbar: Snackbar
     private fun deleteDomain(id: String) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.delete_domain))
-            .setIcon(R.drawable.ic_trash)
-            .setMessage(resources.getString(R.string.delete_domain_desc_confirm))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.delete_domain),
+            message = resources.getString(R.string.delete_domain_desc_confirm),
+            icon = R.drawable.ic_trash,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.delete),
+            positiveButtonAction = {
                 deleteDomainSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_domain),
@@ -256,7 +265,7 @@ class ManageDomainsActivity : BaseActivity(),
                     deleteDomainHttpRequest(id, this@ManageDomainsActivity)
                 }
             }
-            .show()
+        ).show()
     }
 
 
@@ -278,144 +287,149 @@ class ManageDomainsActivity : BaseActivity(),
 
 
     private suspend fun getDomainInfo(id: String) {
-        networkHelper.getSpecificDomain({ list, error ->
-
-            if (list != null) {
-                /**
-                 *  SWITCH STATUS
-                 */
-
-                binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(list.active)
-                binding.activityManageDomainActiveSwitchLayout.setTitle(
-                    if (list.active) resources.getString(R.string.domain_activated) else resources.getString(R.string.domain_deactivated)
-                )
-
-                binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(list.catch_all)
-
-                /**
-                 * TEXT
-                 */
-
-                var totalForwarded = 0
-                var totalBlocked = 0
-                var totalReplies = 0
-                var totalSent = 0
-                val totalAliases = list.aliases?.size
-                var aliases = ""
-
-                val buf = StringBuilder()
-
-                if (list.aliases != null) {
-                    for (alias in list.aliases) {
-                        totalForwarded += alias.emails_forwarded
-                        totalBlocked += alias.emails_blocked
-                        totalReplies += alias.emails_replied
-                        totalSent += alias.emails_sent
-
-                        if (buf.isNotEmpty()) {
-                            buf.append("\n")
-                        }
-                        buf.append(alias.email)
-                    }
-                    aliases = buf.toString()
-                }
-
-                binding.activityManageDomainAliasesTitleTextview.text = resources.getString(R.string.domain_aliases_d, totalAliases)
-                binding.activityManageDomainBasicTextview.text = resources.getString(
-                    R.string.manage_domain_basic_info,
-                    list.domain,
-                    DateTimeUtils.turnStringIntoLocalString(list.created_at),
-                    DateTimeUtils.turnStringIntoLocalString(list.updated_at),
-                    DateTimeUtils.turnStringIntoLocalString(list.domain_verified_at),
-                    DateTimeUtils.turnStringIntoLocalString(list.domain_sending_verified_at),
-                    totalForwarded, totalBlocked, totalReplies, totalSent
-                )
-
-                binding.activityManageDomainAliasesTextview.text = aliases
-
-                /**
-                 * RECIPIENTS
-                 */
-
-                // Set recipient
-                val recipients: String = list.default_recipient?.email ?: this.resources.getString(
-                    R.string.default_recipient
-                )
-
-
-                binding.activityManageDomainRecipientsEdit.setDescription(recipients)
-
-                // Initialise the bottomdialog
-                editDomainRecipientBottomDialogFragment =
-                    EditDomainRecipientBottomDialogFragment.newInstance(domainId, list.default_recipient?.email)
-
-
-                /**
-                 * DESCRIPTION
-                 */
-
-                // Set description and initialise the bottomDialogFragment
-                if (list.description != null) {
-                    binding.activityManageDomainDescEdit.setDescription(list.description)
-                } else {
-                    binding.activityManageDomainDescEdit.setDescription(
-                        this.resources.getString(
-                            R.string.domain_no_description
-                        )
-                    )
-                }
-
-                // reset this value as it now includes the description
-                editDomainDescriptionBottomDialogFragment = EditDomainDescriptionBottomDialogFragment.newInstance(
-                    id,
-                    list.description
-                )
-
-                /**
-                 * Check DNS
-                 */
-
-                if (list.domain_sending_verified_at == null) {
-                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_alert, null)
-                    binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
-                    binding.activityManageDomainCheckDns.setSectionAlert(true)
-                } else {
-                    binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns, null)
-                    binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc))
-                    binding.activityManageDomainCheckDns.setSectionAlert(false)
-                }
-
-
-                binding.activityManageDomainRLProgressbar.visibility = View.GONE
-                binding.activityManageDomainLL1.visibility = View.VISIBLE
-
-
-                setOnSwitchChangeListeners()
-                setOnClickListeners()
+        networkHelper.getSpecificDomain({ domain, error ->
+            if (domain != null) {
+                // Triggers updateUi
+                this.domain = domain
             } else {
-
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_obtaining_domains) + "\n" + error,
                     binding.activityManageDomainCL
                 ).show()
 
-                binding.activityManageDomainRLProgressbar.visibility = View.GONE
+                // Show error animations
                 binding.activityManageDomainLL1.visibility = View.GONE
-
-                // Show no internet animations
-                binding.activityManageDomainRLLottieview.visibility = View.VISIBLE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
         }, id)
     }
 
-    override fun descriptionEdited(description: String) {
-        setPage()
-        editDomainDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+    private fun updateUi(domain: Domains) {
+        /**
+         *  SWITCH STATUS
+         */
+
+        binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(domain.active)
+        binding.activityManageDomainActiveSwitchLayout.setTitle(
+            if (domain.active) resources.getString(R.string.domain_activated) else resources.getString(R.string.domain_deactivated)
+        )
+
+        binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(domain.catch_all)
+        binding.activityManageDomainCatchAllSwitchLayout.setTitle(
+            if (domain.catch_all) resources.getString(R.string.catch_all_enabled) else resources.getString(R.string.catch_all_disabled)
+        )
+
+        /**
+         * TEXT
+         */
+
+        var totalForwarded = 0
+        var totalBlocked = 0
+        var totalReplies = 0
+        var totalSent = 0
+        val totalAliases = domain.aliases?.size
+        var aliases = ""
+
+        val buf = StringBuilder()
+
+        if (domain.aliases != null) {
+            for (alias in domain.aliases!!) {
+                totalForwarded += alias.emails_forwarded
+                totalBlocked += alias.emails_blocked
+                totalReplies += alias.emails_replied
+                totalSent += alias.emails_sent
+
+                if (buf.isNotEmpty()) {
+                    buf.append("\n")
+                }
+                buf.append(alias.email)
+            }
+            aliases = buf.toString()
+        }
+
+        binding.activityManageDomainAliasesTitleTextview.text = resources.getString(R.string.domain_aliases_d, totalAliases)
+        binding.activityManageDomainBasicTextview.text = resources.getString(
+            R.string.manage_domain_basic_info,
+            domain.domain,
+            DateTimeUtils.turnStringIntoLocalString(domain.created_at),
+            DateTimeUtils.turnStringIntoLocalString(domain.updated_at),
+            DateTimeUtils.turnStringIntoLocalString(domain.domain_verified_at),
+            DateTimeUtils.turnStringIntoLocalString(domain.domain_mx_verified_at),
+            DateTimeUtils.turnStringIntoLocalString(domain.domain_sending_verified_at),
+            totalForwarded, totalBlocked, totalReplies, totalSent
+        )
+
+        binding.activityManageDomainAliasesTextview.text = aliases
+
+        /**
+         * RECIPIENTS
+         */
+
+        // Set recipient
+        val recipients: String = domain.default_recipient?.email ?: this.resources.getString(
+            R.string.default_recipient
+        )
+
+
+        binding.activityManageDomainRecipientsEdit.setDescription(recipients)
+
+        // Initialise the bottomdialog
+        editDomainRecipientBottomDialogFragment =
+            EditDomainRecipientBottomDialogFragment.newInstance(this.domain!!.id, domain.default_recipient?.email)
+
+
+        /**
+         * DESCRIPTION
+         */
+
+        // Set description and initialise the bottomDialogFragment
+        if (domain.description != null) {
+            binding.activityManageDomainDescEdit.setDescription(domain.description)
+        } else {
+            binding.activityManageDomainDescEdit.setDescription(
+                this.resources.getString(
+                    R.string.domain_no_description
+                )
+            )
+        }
+
+        // reset this value as it now includes the description
+        editDomainDescriptionBottomDialogFragment = EditDomainDescriptionBottomDialogFragment.newInstance(
+            this.domain!!.id,
+            domain.description
+        )
+
+        /**
+         * Check DNS
+         */
+
+        if (domain.domain_sending_verified_at == null) {
+            binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns_alert, null)
+            binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc_incorrect))
+            binding.activityManageDomainCheckDns.setSectionAlert(true)
+        } else {
+            binding.activityManageDomainCheckDns.setImageResourceIcons(R.drawable.ic_dns, null)
+            binding.activityManageDomainCheckDns.setDescription(resources.getString(R.string.check_dns_desc))
+            binding.activityManageDomainCheckDns.setSectionAlert(false)
+        }
+
+        binding.animationFragment.stopAnimation()
+        binding.activityManageDomainNSV.animate().alpha(1.0f)
+
+        setOnSwitchChangeListeners()
+        setOnClickListeners()
     }
 
-    override fun recipientEdited() {
-        setPage()
+    override fun descriptionEdited(domain: Domains) {
+        editDomainDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainDescriptionBottomDialogFragment
+        this.domain = domain
+    }
+
+    override fun recipientEdited(domain: Domains) {
         editDomainRecipientBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
+        this.domain = domain
     }
 }

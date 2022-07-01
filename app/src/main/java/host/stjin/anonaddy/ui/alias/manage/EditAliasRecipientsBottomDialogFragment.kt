@@ -13,10 +13,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientsAliasBinding
-import host.stjin.anonaddy.models.Recipients
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.Recipients
 import kotlinx.coroutines.launch
 
 
@@ -32,7 +33,7 @@ class EditAliasRecipientsBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditAliasRecipientsBottomDialogListener {
-        fun recipientsEdited()
+        fun recipientsEdited(alias: Aliases)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -144,15 +145,15 @@ class EditAliasRecipientsBottomDialogFragment(
         recipients: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateRecipientsSpecificAlias({ result ->
-            if (result == "200") {
-                listener.recipientsEdited()
+        networkHelper.updateRecipientsSpecificAlias({ alias, error ->
+            if (alias != null) {
+                listener.recipientsEdited(alias)
             } else {
                 // Revert the button to normal
                 binding.bsEditrecipientsSaveButton.revertAnimation()
 
                 binding.bsEditrecipientsTil.error =
-                    context.resources.getString(R.string.error_edit_recipients) + "\n" + result
+                    context.resources.getString(R.string.error_edit_recipients) + "\n" + error
             }
         }, aliasId, recipients)
     }

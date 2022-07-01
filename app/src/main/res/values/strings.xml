@@ -1,5 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">AnonAddy</string>
     <string name="title_home">Home</string>
     <string name="title_aliases">Aliases</string>
     <string name="app_settings">App settings</string>
@@ -40,7 +39,6 @@
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
     <string name="all_aliases">All aliases</string>
-    <string name="add_alias">Add alias</string>
     <string name="replied_forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
     <string name="replied_replied_sent_stat" tools:ignore="PluralsCandidate">%1$d replied; %2$d sent</string>
     <string name="settings">Settings</string>
@@ -56,7 +54,6 @@
     <string name="sign_up">Sign up</string>
     <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email</string>
     <string name="description">Description</string>
-    <string name="error_adding_alias">Something went wrong while adding the alias</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
     <string name="not_a_valid_alias_format">Not a valid alias format</string>
     <string name="domain">Domain</string>
@@ -69,15 +66,26 @@
     <string name="contributors">Contributors</string>
     <string name="visit_anonaddy_helps_section">Visit AnonAddy helps section</string>
     <string name="anonaddy_help">AnonAddy help</string>
-    <string name="crafted_with_love_and_privacy">Crafted with love and privacy</string>
     <string name="appearance">Appearance</string>
     <string name="dark_mode">Dark mode</string>
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
-    <string name="app_changelog"><![CDATA[<h3>What\'s new in version 3.3.6</h3>
+    <string name="app_changelog"><![CDATA[
+<h3>Introducing AnonAddy for Android Wearables</h3>
+<p>⌚ What time is it? Time for another alias! Introducing AnonAddy for Android Wearables!</p>
+<h4>Features</h4>
+<p>- View your last 15 aliases with activity<br />- In addition, favorite 3 aliases that will always appear<br />- Activate/deactivate aliases<br />- Create new aliases from your wrist<br />- Enjoy a unique watch face<br />- to learn more visit <a href="https://stjin.host/?p=14530">this blogpost I made</a></p>
+<p><strong>Changelogs for future AnonAddy for Android Wearable updates will be shown within the main app</strong></p>
+<p>&nbsp;</p>
+<h3>What\'s new in AnonAddy for Android 4.0.0</h3>
+<h4>Added</h4>
+<p>📲 AnonAddy for Android Wearables integration<br />- Send aliases from your device to your wearable<br />- Open aliases from your wearable on your phone</p>
+<p>👆🏼 Manage multiple aliases at once<br />- To learn more, go to Settings-&gt;Features and integrations</p>
+<p>🤖 Android 13 support, <em>beep boop<br /></em> - New monochrome icons<br />- Predictive back-gesture support<br />- Boring API updates</p>
+<p>👤 Added catch-all for usernames<br />🌐 Added domain MX verified status<br />👆🏼 Long press sections to show all of the description text<br />📳 Added subtle haptic on some elements<br />✨ Brand new animations and indicators throughout the app</p>
 <h4>Fixed/Improved</h4>
-<p>- Fixed a bug where self-hosted instances with version 0.10.0 or higher would be marked as incompatible</p>]]></string>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -91,9 +99,6 @@
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
     <string name="no_aliases">No aliases with these filter settings.\n\nLooking for a specific alias? Use the global search function by clicking the magnifying glass in the app bar.</string>
     <string name="alias_status_active">Alias active</string>
-    <string name="alias_status_desc">Use this alias for mail forwarding</string>
-    <string name="delete_alias">Delete alias</string>
-    <string name="delete_alias_desc">Once deleted, this alias will reject any emails sent to it</string>
     <string name="created_at">Created at</string>
     <string name="updated_at">Updated at</string>
     <string name="_more" tools:ignore="PluralsCandidate">%d more</string>
@@ -103,27 +108,31 @@
     <string name="username_no_description">This username has no description set. Tap here to add one</string>
     <string name="domain_no_description">This domain has no description set. Tap here to add one</string>
     <string name="edit_desc_alias_desc">Change the description for this alias, describe what this alias is used for</string>
-    <string name="edit_alias">Edit alias</string>
     <string name="alias_edit_recipients_desc">The list below shows all verified recipients. Select which recipients you want to set as recipient for this alias</string>
     <string name="edit_recipients">Edit recipients</string>
     <string name="error_edit_recipients">Something went wrong while editing the recipients</string>
     <string name="error_edit_recipient">Something went wrong while editing the recipient</string>
-    <string name="error_edit_active">An error occurred while changing the active state</string>
     <string name="error_rules_active">An error occurred while changing the rule state</string>
     <string name="error_edit_catch_all">An error occurred while changing the catch-all state</string>
+
     <string name="alias_deactivated">Alias deactivated</string>
     <string name="alias_activated">Alias activated</string>
     <string name="delete_alias_confirmation_desc">Are you sure you want to delete this alias? You can restore this alias if you later change your mind. Once deleted, this alias will reject any emails sent to it.</string>
     <string name="error_deleting_alias">Something went wrong while deleting this alias</string>
     <string name="error_forgetting_alias">Something went wrong while forgetting this alias</string>
+    <string name="delete_alias">Delete alias</string>
+    <string name="delete_alias_desc">Once deleted, this alias will reject any emails sent to it</string>
     <string name="restore_alias">Restore alias</string>
     <string name="restore_alias_desc">Once restored, this alias will be able to receive emails again</string>
     <string name="restore_alias_confirmation_desc">Are you sure you want to restore this alias? Once restored, this alias will be able to receive emails again.</string>
     <string name="error_restoring_alias">Something went wrong while restoring this alias</string>
+    <string name="forget_alias_desc">Forgetting an alias will disassociate it from your account</string>
+    <string name="forget_alias">Forget alias</string>
+    <string name="forget_alias_confirmation_desc">Are you sure you want to forget this alias? Forgetting an alias will disassociate it from your account.\n\nNote: If this alias uses a shared domain then it can never be restored or used again so make sure you are certain. If it is a standard alias then it can be created again since it will be as if it never existed.</string>
+
     <string name="default_recipient_s">Default recipient (%s)</string>
     <string name="security">Security</string>
     <string name="security_desc">Use your biometric or pin/pattern to open AnonAddy</string>
-    <string name="store_logs">Store logs</string>
     <string name="store_logs_desc">Tap here to see or clear the stored logs</string>
     <string name="biometric_error_no_hardware">No biometric features available on this device</string>
     <string name="biometric_error_hw_unavailable">Biometric features are currently unavailable</string>
@@ -134,13 +143,10 @@
     <string name="disable_biometric_authentication">Disable biometric authentication</string>
     <string name="logs">Logs</string>
     <string name="clear_logs">Clear logs</string>
-    <string name="logs_cleared">Logs cleared</string>
     <string name="anonaddy_locked">AnonAddy locked</string>
     <string name="authentication_error_11">Biometric unlocking disabled, no screen lock was found</string>
-    <string name="reset_app">Reset app</string>
-    <string name="reset_app_desc">Clear all data and start over</string>
+    <string name="reset_app_error_wearable">Could not reset app</string>
     <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your AnonAddy account or anything related)</string>
-    <string name="api_key_invalid">API key invalid, app will reset and close in 5 seconds</string>
     <string name="edit_recipient">Edit recipient</string>
     <string name="basic">Basic</string>
     <string name="encryption">Encryption</string>
@@ -161,7 +167,6 @@
     <string name="no_active_aliases">You have no active aliases</string>
     <string name="shared_domain_aliases">Shared domain aliases</string>
     <string name="anonaddy_load_error">Something went wrong while loading AnonAddy, you might want to check your internet connection.\nMore information about the error:</string>
-    <string name="whoops">Whoops!</string>
     <string name="try_again">Try again</string>
     <string name="subscription_user">%s user</string>
     <string name="subscription_user_until">%1$s user until %2$s</string>
@@ -190,7 +195,7 @@
     <string name="check_dns_desc">Verify DNS configuration</string>
     <string name="domain_activated">Domain activated</string>
     <string name="domain_deactivated">Domain deactivated</string>
-    <string name="manage_domain_basic_info">Domain: %1$s\nCreated: %2$s\nUpdated at: %3$s\nDomain verified at: %4$s\nDomain sending verified at: %5$s\nEmail forwarded: %6$d\nEmail blocked: %7$d\nEmail replies: %8$d\nEmail sent: %9$d</string>
+    <string name="manage_domain_basic_info">Domain: %1$s\nCreated: %2$s\nUpdated at: %3$s\nDomain verified at: %4$s\nDomain MX verified at: %5$s\nDomain sending verified at: %6$s\nEmail forwarded: %7$d\nEmail blocked: %8$d\nEmail replies: %9$d\nEmail sent: %10$d</string>
     <string name="manage_username_basic_info">Username: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
     <string name="domain_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this domain</string>
     <string name="username_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this username</string>
@@ -219,7 +224,6 @@
     <string name="username_status_active">Username active</string>
     <string name="delete_username_desc">This will still count towards your additional username limit</string>
     <string name="search_result">Search result</string>
-    <string name="aliases">Aliases</string>
     <string name="nothing_found">Nothing found</string>
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
@@ -232,7 +236,8 @@
     <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$s active domains</string>
     <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$s recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>
-    <string name="catch_all_desc">Enable catch-all on this domain</string>
+    <string name="catch_all_domain_desc">Enable catch-all for this domain</string>
+    <string name="catch_all_username_desc">Enable catch-all for this username</string>
     <string name="catch_all_enabled">Catch-All enabled</string>
     <string name="catch_all_disabled">Catch-All disabled</string>
     <string name="alias_local_part">Alias local part</string>
@@ -287,8 +292,6 @@
     <string name="deactivate">Deactivate</string>
     <string name="rule_activated">Rule activated</string>
     <string name="rule_deactivated">Rule deactivated</string>
-    <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
-    <string name="failed_deliveries_unavailable_404">The failed deliveries feature is not available. Please make sure that the failed deliveries API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="rules">Rules</string>
     <string name="this_field_cannot_be_empty">This field cannot be empty</string>
     <string name="gitlab_project">Gitlab project</string>
@@ -306,8 +309,7 @@
     <string name="api_obtain_camera_available">Or manually enter your API key</string>
     <string name="api_obtain">Manually enter your API key</string>
     <string name="api_setup_qr_code_scan_wrong">This is not a valid QR code</string>
-    <string name="background_service_interval">Background service interval</string>
-    <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
+
     <string name="backgroundserviceinterval_15m">15m</string>
     <string name="backgroundserviceinterval_30m">30m</string>
     <string name="backgroundserviceinterval_1h">1h</string>
@@ -321,15 +323,15 @@
     <string name="notification_new_update_available_desc">Version %s of AnonAddy for Android is available. Tap here to download it</string>
     <string name="notification_new_failed_delivery">Email delivery failed</string>
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
+    <string name="notification_channel_update">@string/anonaddy_updater</string>
     <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
+    <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
     <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
-    <string name="d_blocked">%1$d blocked</string>
-    <string name="d_forwarded">%1$d forwarded</string>
-    <string name="d_replied">%1$d replied</string>
-    <string name="d_sent">%1$d sent</string>
+    <string name="reset_app_desc">Clear all data and start over</string>
+
     <string name="send_mail">Send mail</string>
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
     <string name="addresses">Addresses</string>
@@ -339,9 +341,6 @@
     <string name="copied_recipients">Copied recipients</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
-    <string name="forget_alias_desc">Forgetting an alias will disassociate it from your account</string>
-    <string name="forget_alias">Forget alias</string>
-    <string name="forget_alias_confirmation_desc">Are you sure you want to forget this alias? Forgetting an alias will disassociate it from your account.\n\nNote: If this alias uses a shared domain then it can never be restored or used again so make sure you are certain. If it is a standard alias then it can be created again since it will be as if it never existed.</string>
     <string name="rules_create_info">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
     <string name="_sMB_remaining_this_month">%sMB remaining this month</string>
     <string name="manage_your_anonaddy_account">Manage your AnonAddy account</string>
@@ -362,13 +361,13 @@
     <string name="features_and_integrations_desc">Check out app-exclusive features and integrations</string>
     <string name="integrations">Integrations</string>
     <string name="integration_mailto_alias">Email action integration</string>
-    <string name="integration_mailto_alias_desc">Create aliases on the go and send emails from an alias by highlighting an email address or tapping a mailto hyperlink.\n\nHighlight an email address that doesn\'t exist with your domain name and tap the AnonAddy for Android icon to create this alias.\n\nHighlight an email address and tap the AnonAddy for Android icon to send an email to this email address from an alias. You can also tap email addresses that contain a mailto hyperlink, such as those found on websites.</string>
+    <string name="integration_mailto_alias_desc">Create aliases on the go and send emails from an alias by highlighting an email address or tapping a mailto hyperlink.\n\nHighlight an email address that doesn\'t exist with your domain name and tap the AnonAddy for Android icon to create this alias.</string>
     <string name="enable_integration">Enable integration</string>
     <string name="enable_disable_feature_desc">It may take a few minutes for the change to take effect</string>
     <string name="Info">Info</string>
     <string name="enable_feature">Enable feature</string>
     <string name="enable_feature_always">This feature is always enabled</string>
-    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.</string>
+    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.\n\nTo avoid reaching the API limit, you can watch a maximum of 15 aliases.</string>
     <string name="features">Features</string>
     <string name="exceeded_bandwidth_limit">You\'ve exceeded your bandwidth limit for this month</string>
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
@@ -452,22 +451,21 @@
     <string name="enter_backup_password_desc">Enter the backup password with which backups are encrypted.\nBackups contain sensitive information so a deleting the backup file after restoring the backup is recommended.\n\nThe backup cannot be recovered without this password</string>
     <string name="never">never</string>
     <string name="backup_location_not_accessible">Backup location not accessible, tap here to set a new location</string>
-    <string name="notification_channel_failed_backups">Failed backups</string>
-    <string name="notification_channel_failed_backups_desc">Receive a notification when periodic AnonAddy backups fail</string>
+    <string name="notification_channel_backup">@string/anonaddy_backup</string>
+    <string name="notification_channel_backup_desc">Receive a notification when periodic AnonAddy backups fail</string>
     <string name="notification_new_backup_delivery">Periodic backup failed</string>
     <string name="notification_new_backup_delivery_desc">Unable to make periodic backup of app configuration. Tap here to view the backup log</string>
     <string name="disable_periodic_backups">Disable periodic backups</string>
     <string name="no_logfile_selected">No logfile selected</string>
     <string name="no_logs">No logs, make sure to enable storing logs in the app settings</string>
-    <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>
     <string name="log_backup_location_changed">Backup location changed</string>
     <string name="log_backup_password_changed">Backup password changed</string>
     <string name="log_backup_retention_deleted">%1$d file(s) deleted because they were older than %2$d days</string>
     <string name="app_data_corrupted">The app data can no longer be read. You may have recovered the app data from another device which is not supported because AnonAddy for Android encrypts all the app data with a device specific key. Please use the built-in AnonAddy backup feature in the app settings next time. The app will be reset in 15 seconds…</string>
     <string name="use_dynamic_colors">Use dynamic colors</string>
-    <string name="use_dynamic_colors_desc">Apply dynamic colors provided by de system. (requires a restart of the app)</string>
+    <string name="use_dynamic_colors_desc">Apply dynamic colors provided by the system. (requires a restart of the app)</string>
     <string name="appearance_desc">Change the looks of the app</string>
-    <string name="restart_app_required">Restart the app to apply the dynamic color changes</string>
+    <string name="restart_app_required">Restart the app to apply changes</string>
     <string name="active_aliases">Active aliases</string>
     <string name="inactive_aliases">Inactive aliases</string>
     <string name="greetings_time_traveller">Greetings, time traveller</string>
@@ -501,7 +499,6 @@
     <string name="error_obtaining_rules">@string/could_not_refresh_data</string>
     <string name="error_obtaining_username">@string/could_not_refresh_data</string>
     <string name="error_obtaining_usernames">@string/could_not_refresh_data</string>
-    <string name="could_not_refresh_data">Could not refresh data</string>
     <string name="filtering_and_sorting">Filtering and sorting</string>
     <string name="filtering_and_sorting_desc">Decide which aliases to display and in which order to display them. Filters are saved and retained on app restart</string>
     <string name="setup_app">Setup app</string>
@@ -526,4 +523,74 @@
     <string name="sort_by">Sort by</string>
     <string name="filter_active">Filter active</string>
     <string name="filter">Filter</string>
+    <string name="setup_wearable_app">Setup wearable app</string>
+    <string name="setup_wearable_app_desc">Would you like to setup AnonAddy on %1$s with the account %2$s? The settings will remain on the wearable even after resetting the app on this device.</string>
+    <string name="confirm_and_setup">Confirm and setup</string>
+    <string name="do_not_ask_again">Do not ask again</string>
+    <string name="wearable_device_invalid">Wearable device not recognised, please try again</string>
+    <string name="check_your_wearable">Check your wearable</string>
+    <string name="wearable_setup_success">@string/check_your_wearable</string>
+    <string name="wearable_setup_canceled">Setup on wearable canceled</string>
+    <string name="wearable_setup_failed">Something went wrong while setting up AnonAddy on the wearable device, please try again</string>
+    <string name="wearable_start_success">@string/check_your_wearable</string>
+    <string name="wearable_start_canceled">Start on wearable canceled</string>
+    <string name="wearable_start_failed">Something went wrong while starting AnonAddy on the wearable device, please try again</string>
+    <string name="wearable_reset_success">Reset on wearable complete</string>
+    <string name="wearable_reset_canceled">Reset on wearable canceled</string>
+    <string name="wearable_reset_failed">Something went wrong while resetting AnonAddy on the wearable device, please try again</string>
+    <string name="wearable_setup_skip_setup">To setup AnonAddy on a wearable device, open the AnonAddy settings</string>
+    <string name="wearable_quick_setup">Quick setup</string>
+    <string name="wearable_quick_setup_desc">When AnonAddy is opened for the first time on a wearable. Show a message on this device to quickly set up the app</string>
+    <string name="anonaddy_for_wearables">AnonAddy for Wearables</string>
+    <string name="anonaddy_for_wearables_desc">With AnonAddy on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to a beautiful watchface</string>
+    <string name="start_wearable_app">Start app</string>
+    <string name="setup_app_on_wearable">Setup app</string>
+    <string name="reset_app_on_wearable">Reset app</string>
+    <string name="select_wearable_device">Select wearable device</string>
+    <string name="no_wearable_devices_available">No wearable devices available</string>
+    <string name="this_device">This device</string>
+    <string name="wearable">Wearable</string>
+    <string name="log_wearable_requested">A new wearable setup request was received from %1$s</string>
+    <string name="notification_setup_wearable_app">@string/setup_wearable_app</string>
+    <string name="notification_setup_wearable_app_desc">Tap here to setup AnonAddy on %1$s</string>
+    <string name="notification_channel_anonaddy_for_wearables">@string/anonaddy_for_wearables</string>
+    <string name="notification_channel_anonaddy_for_wearables_desc">Receive a notification when a new wearable is requesting setup</string>
+    <string name="disable_quick_setup">Disable quick setup</string>
+    <string name="notification_setup_app_first">Cannot setup wearable app</string>
+    <string name="notification_setup_app_first_desc">AnonAddy for Android has not been set up on this device yet. Tap here to setup the app</string>
+    <string name="reset_app_confirmation_wearable">Connected wearables found, do you want to reset the app on these wearables as well?</string>
+    <string name="reset_app_error_wearable_desc">Could not reset app on connected wearables, reset just this app?</string>
+    <string name="reset_app_just_this_app">Just this app</string>
+    <string name="reset_app_all_apps">Reset all</string>
+    <string name="disable_alias">Disable alias</string>
+    <string name="logs_wearable">Logs (wearable)</string>
+    <string name="wearos_show_logs">Show logs</string>
+    <string name="wearos_show_logs_desc">On your wearable device, tap \"Send logs to device\" in the settings</string>
+    <string name="setup_app_on_wearable_desc">Set up the app on your wearable with the same account that this app is set up with</string>
+    <string name="reset_app_on_wearable_desc">Remotely reset the AnonAddy app on your wearable</string>
+    <string name="start_wearable_app_desc">Remotely open the AnonAddy app on your wearable</string>
+    <string name="wearable_api_not_available_desc">Wearable API is not available on this device. In order to use AnonAddy for wearables make sure to have a recent version of Google Play Services installed</string>
+    <string name="wearable_api_not_available">API not available</string>
+    <string name="i_understand">I understand</string>
+    <string name="permissions_required">Permissions required</string>
+    <string name="notification_permissions_required_desc">Notification permissions are required to fully use the app. Tap here to allow AnonAddy to send notifications. You retain control over which notification the app can send.</string>
+    <string name="can_reply_send">Reply/send allowed</string>
+    <string name="cannot_reply_send">Reply/send not allowed</string>
+    <string name="can_reply_send_desc">Reply and send from your aliases</string>
+    <string name="tap_here_to_see_the_error">Tap here to see the error</string>
+    <string name="error_details">Error details</string>
+    <string name="no_error_message">No error message</string>
+    <string name="close">Close</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="error_copied_to_clipboard">Error copied to clipboard</string>
+    <string name="multiple_alias_selected">%d alias(es) selected</string>
+    <string name="multiple_alias_selected_desc">The actions below will be performed on all selected aliases. Pressing cancel will unselect all aliases</string>
+    <string name="aliaswatcher_max_reached">You cannot have more than 15 aliases watched</string>
+    <string name="alias_multiple_selection_max_reached">You cannot select more than 15 aliases</string>
+    <string name="actions">Actions</string>
+    <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nTo avoid reaching the API limit, you can manage a maximum of 15 aliases at the same time.</string>
+    <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode. (requires a restart of the app)</string>
+    <string name="feature_longpress">Manage multiple aliases</string>
+    <string name="something_went_wrong_tap_here_to_see_the_error">Something went wrong, tap here to see the error</string>
+
 </resources>

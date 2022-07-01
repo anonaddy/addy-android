@@ -2,8 +2,8 @@
 <h1 align="center">AnonAddy for Android</h1>
 
 <p align="center">
-Easily create and manage your AnonAddy aliases, recipients and more from your phone or tablet with this <b>sexy</b> AnonAddy app for Android.
-</br><p align="center">
+Easily create and manage your AnonAddy aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> AnonAddy app for Android.
+<br><p align="center">
 <img src="static/banner.png"/>
 </p>
 
@@ -17,18 +17,19 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > AnonAddy
 
-- AnonAddy v0.8.10 or higher (current version of AnonAddy for Android has been tested with v0.8.10)
+- AnonAddy v0.11.1 or higher (current version of AnonAddy for Android has been tested with v0.11.1)
 
 > Android
 
 - Android 6.0 or higher
+- Wear OS 2.0 or higher (AnonAddy for Android Wearables)
 
 ## Characteristics
 
 > Exciting ✨
 
-- Connect to the [AnonAddy](https://anonaddy.com/) instance or your own hosted instance
-- A unique, sexy and sleek design, based on the [Material You Design](https://m3.material.io/) guidelines
+- Connect to the hosted [AnonAddy](https://anonaddy.com/) instance or your own self-hosted instance
+- A unique, gorgeous and sleek design, based on the [Material You Design](https://m3.material.io/) guidelines
 - Support for Deep Link to easily deactivate aliases from the email banner
 - Lock the app using Biometrics
 - App exclusive features
@@ -36,6 +37,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
   - Get notified when a new update is available
   - Send emails from aliases by selecting an email address or clicking a mailto link
   - Get notified on failed deliveries
+  - Update multiple aliases at once
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Export and import *encrypted* backups of the app configuration
 - Widgets!
@@ -87,7 +89,6 @@ Third party libraries used.
 - [androidx.biometric](https://developer.android.com/jetpack/androidx/releases/biometric)
 - [androidx.security.crypto](https://developer.android.com/jetpack/androidx/releases/security)
 - [androidx.work](https://developer.android.com/jetpack/androidx/releases/work)
-- [airbnb/lottie-android](https://github.com/airbnb/lottie-android)
 - [kittinunf/fuel](https://github.com/kittinunf/fuel)
 - [omtodkar/ShimmerRecyclerView](https://github.com/omtodkar/ShimmerRecyclerView)
 - [facebook/shimmer-android](https://github.com/facebook/shimmer-android)
@@ -97,14 +98,24 @@ Third party libraries used.
 - [einmalfel/Earl](https://github.com/einmalfel/Earl) (For built-in updater)
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner) (To be enabled in future versions)
 - [ocpsoft/prettytime](https://github.com/ocpsoft/prettytime)
+- [com.google.android.gms:play-services-wearable](https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable/17.1.0) (for
+  communication with WearOS)
 
+Third party libraries used. (WearOS)
+
+- [androidx.wear.tiles](https://developer.android.com/jetpack/androidx/releases/wear-tiles)
+- [androidx.wear.compose](https://developer.android.com/jetpack/androidx/releases/wear-compose)
+- [com.google.android.gms:play-services-base](https://mvnrepository.com/artifact/com.google.android.gms/play-services-base?repo=google)
 
 ## Feedback and contribution
-I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me.
-Of course, you can also contact the developer directly via telegram or email and I'll get back to you shortly.
+
+I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me. Of course, you can
+also contact the developer directly via telegram or email and I'll get back to you shortly.
 
 ## Donation
+
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=26D39SEWQLBHW)
+[![BuyMeACoffee](static/bmc-button.png)](https://buymeacoffee.com/stjin)
 
 ## Privacy policy
 [Privacy policy](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/PrivacyPolicy.md)

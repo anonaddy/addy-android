@@ -9,9 +9,9 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.LogsAdapter
 import host.stjin.anonaddy.databinding.ActivityLogViewerBinding
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 class LogViewerActivity : BaseActivity() {
 
@@ -29,14 +29,15 @@ class LogViewerActivity : BaseActivity() {
             bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsLogviewerRecyclerview),
             bottomViewsToShiftUpUsingMargin = arrayListOf(binding.appsettingsLogviewerEfab)
         )
+
+        val filename = intent.getStringExtra("logfile")
         setupToolbar(
-            R.string.logs,
+            if (filename == LoggingHelper.LOGFILES.WEAROS_LOGS.filename) R.string.logs_wearable else R.string.logs,
             binding.appsettingsLogviewerNSV,
             binding.appsettingsLogviewerToolbar,
             R.drawable.ic_file_alert
         )
 
-        val filename = intent.getStringExtra("logfile")
         if (filename.isNullOrEmpty()) {
             Toast.makeText(this, this.resources.getString(R.string.no_logfile_selected), Toast.LENGTH_SHORT).show()
             finish()

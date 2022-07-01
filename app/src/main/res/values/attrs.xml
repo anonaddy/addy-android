@@ -15,4 +15,9 @@
         <attr name="sectionElevation" format="float" />
         <attr name="sectionBackgroundColor" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="AnimationView">
+        <attr name="animationDrawable" format="integer" />
+        <attr name="loopAnimation" format="boolean" />
+    </declare-styleable>
 </resources>

@@ -23,11 +23,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSendMailFromIntentAliasBinding
-import host.stjin.anonaddy.models.AliasSortFilter
-import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
@@ -177,7 +177,7 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     private fun setAliasesAdapter() {
         // Set domains
-        if (!aliases.isNullOrEmpty()) {
+        if (aliases.isNotEmpty()) {
             binding.bsSendMailFromIntentAliasesMact.setAdapter(
                 ArrayAdapter(
                     requireContext(), android.R.layout.simple_list_item_1, aliases.stream().map { it.email }.collect(

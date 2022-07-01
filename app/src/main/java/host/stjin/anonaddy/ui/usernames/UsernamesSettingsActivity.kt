@@ -8,16 +8,20 @@ import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.UsernameAdapter
 import host.stjin.anonaddy.databinding.ActivityUsernameSettingsBinding
-import host.stjin.anonaddy.models.UserResource
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragment.AddUsernameBottomDialogListener {
@@ -38,7 +42,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityUsernameSettingsNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityUsernameSettingsLL1)
         )
 
         setupToolbar(
@@ -71,9 +75,6 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     }
 
     private fun getDataFromWeb() {
-        binding.activityUsernameSettingsLL1.visibility = View.VISIBLE
-        binding.activityUsernameSettingsRLLottieview.visibility = View.GONE
-
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             getAllUsernamesAndSetView()
@@ -119,7 +120,6 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
     private lateinit var usernamesAdapter: UsernameAdapter
     private suspend fun getAllUsernamesAndSetView() {
-
         binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
@@ -185,14 +185,19 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
                     })
                     adapter = usernamesAdapter
+
+                    binding.animationFragment.stopAnimation()
+                    //binding.activityUsernameSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
                 } else {
                     SnackbarHelper.createSnackbar(
                         this@UsernamesSettingsActivity,
                         this@UsernamesSettingsActivity.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
                         binding.activityUsernameSettingsCL
                     ).show()
+
+                    // Show error animations
                     binding.activityUsernameSettingsLL1.visibility = View.GONE
-                    binding.activityUsernameSettingsRLLottieview.visibility = View.VISIBLE
+                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                 }
                 hideShimmer()
             }
@@ -204,14 +209,14 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
     private lateinit var deleteUsernameSnackbar: Snackbar
     private fun deleteUsername(id: String, context: Context) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.delete_username))
-            .setIcon(R.drawable.ic_trash)
-            .setMessage(resources.getString(R.string.delete_username_desc_confirm))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.delete_username),
+            message = resources.getString(R.string.delete_username_desc_confirm),
+            icon = R.drawable.ic_trash,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.delete),
+            positiveButtonAction = {
                 deleteUsernameSnackbar = SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.deleting_username),
@@ -223,7 +228,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                     deleteUsernameHttpRequest(id, context)
                 }
             }
-            .show()
+        ).show()
     }
 
     private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {

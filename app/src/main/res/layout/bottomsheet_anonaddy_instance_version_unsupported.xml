@@ -57,27 +57,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_anonaddy_instance_version_unsupported_ignore_button"
-                    style="?borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/ignore_and_continue" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                android:orientation="vertical">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_anonaddy_instance_version_unsupported_how_to_update_button"
                     style="@style/CircularProgressButtonSecondary"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/how_to_update" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bs_anonaddy_instance_version_unsupported_ignore_button"
+                    style="?borderlessButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/ignore_and_continue" />
+
             </LinearLayout>
 
         </LinearLayout>

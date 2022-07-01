@@ -11,9 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionDomainBinding
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Domains
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +28,7 @@ class EditDomainDescriptionBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditDomainDescriptionBottomDialogListener {
-        fun descriptionEdited(description: String)
+        fun descriptionEdited(domain: Domains)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -90,16 +91,16 @@ class EditDomainDescriptionBottomDialogFragment(
 
     private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificDomain({ result ->
-            if (result == "200") {
-                listener.descriptionEdited(description)
+        networkHelper.updateDescriptionSpecificDomain({ domain, error ->
+            if (domain != null) {
+                listener.descriptionEdited(domain)
             } else {
 
                 // Revert the button to normal
                 binding.bsEditdomainDomainSaveButton.revertAnimation()
 
                 binding.bsEditdomainDomainDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + result
+                    context.resources.getString(R.string.error_edit_description) + "\n" + error
             }
             // domainId is never null at this point, hence the !!
         }, domainId!!, description)

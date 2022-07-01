@@ -11,9 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionAliasBinding
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +28,7 @@ class EditAliasDescriptionBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditAliasDescriptionBottomDialogListener {
-        fun descriptionEdited(description: String)
+        fun descriptionEdited(alias: Aliases)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -91,15 +92,15 @@ class EditAliasDescriptionBottomDialogFragment(
 
     private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificAlias({ result ->
-            if (result == "200") {
-                listener.descriptionEdited(description)
+        networkHelper.updateDescriptionSpecificAlias({ alias, error ->
+            if (alias != null) {
+                listener.descriptionEdited(alias)
             } else {
                 // Animate the button to progress
                 binding.bsEditaliasAliasSaveButton.revertAnimation()
 
                 binding.bsEditaliasAliasDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + result
+                    context.resources.getString(R.string.error_edit_description) + "\n" + error
             }
             // aliasId is never null at this point, hence the !!
         }, aliasId!!, description)

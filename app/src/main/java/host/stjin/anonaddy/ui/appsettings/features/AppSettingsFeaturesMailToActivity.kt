@@ -7,17 +7,16 @@ import android.widget.Toast
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesMailtoBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.ComponentUtils.getComponentState
 import host.stjin.anonaddy.utils.ComponentUtils.setComponentState
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesMailToActivity : BaseActivity() {
 
     private lateinit var settingsManager: SettingsManager
-    private lateinit var encryptedSettingsManager: SettingsManager
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesMailtoBinding
@@ -33,7 +32,6 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
         )
 
         settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             R.string.integration_mailto_alias,
             binding.activityAppSettingsFeaturesMailtoNSV,

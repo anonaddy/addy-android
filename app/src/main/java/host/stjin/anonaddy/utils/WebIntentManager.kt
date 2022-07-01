@@ -10,9 +10,9 @@ import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
-import host.stjin.anonaddy.AnonAddy
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy_shared.AnonAddy
 
 
 class WebIntentManager(private val context: Context) {
@@ -82,14 +82,5 @@ class WebIntentManager(private val context: Context) {
         } else {
             isOurAppDefault(context)
         }
-    }
-
-    // Check if the current baseURL can be associated with the app (This class is A12 only, so we just check if the baseURL is the app.anonaddy.com domain)
-    fun canBaseURLBeAssociated(): Boolean {
-        var baseUrl = AnonAddy.API_BASE_URL
-        // Remove http,https prefix
-        baseUrl = baseUrl.replace("https://", "").replace("http://", "")
-
-        return baseUrl == "app.anonaddy.com"
     }
 }

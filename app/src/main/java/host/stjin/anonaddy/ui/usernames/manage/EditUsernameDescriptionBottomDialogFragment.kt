@@ -11,9 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionUsernameBinding
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Usernames
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +28,7 @@ class EditUsernameDescriptionBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditUsernameDescriptionBottomDialogListener {
-        fun descriptionEdited(description: String)
+        fun descriptionEdited(username: Usernames)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -91,15 +92,15 @@ class EditUsernameDescriptionBottomDialogFragment(
 
     private suspend fun editDescriptionHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificUsername({ result ->
-            if (result == "200") {
-                listener.descriptionEdited(description)
+        networkHelper.updateDescriptionSpecificUsername({ username, error ->
+            if (username != null) {
+                listener.descriptionEdited(username)
             } else {
                 // Revert the button to normal
                 binding.bsEditusernameUsernameSaveButton.revertAnimation()
 
                 binding.bsEditusernameUsernameDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + result
+                    context.resources.getString(R.string.error_edit_description) + "\n" + error
             }
             // usernameId is never null at this point, hence the !!
         }, usernameId!!, description)

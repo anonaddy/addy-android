@@ -1,5 +1,36 @@
 # Changelog
 
+## [v4.0.0] - 2022-07-01
+
+### Added
+
+- ⌚ What time is it? Time for another alias! Introducing AnonAddy for Android Wearables!
+  - View your last 15 aliases with activity
+  - In addition to the 15 aliases, favorite 3 aliases that will always appear on top of the list
+  - Activate/deactivate aliases
+  - Create new aliases from your wrist
+  - Enjoy a unique watch face
+  - To learn more visit [this blogpost I made](https://stjin.host/?p=14530)
+  - **Changelogs for future AnonAddy for Android Wearable updates will be shown within the main app**
+- 📲 AnonAddy for Android Wearables integration
+  - Send aliases from your device to your wearable
+  - Open aliases from your wearable on your phone
+- 👆🏼 Manage multiple aliases at once
+  - To learn more, go to Settings->Features and integrations
+- 👆🏼 Long press sections/cards to show all of the description text
+- 📳 Added subtle haptic on some elements
+- 🤖 Android 13 support, *beep boop*
+  - New monochrome icons
+  - Predictive back-gesture support
+  - Boring API updates
+- ✨ Brand new, gorgeous animations and loading indicators throughout the app
+- 👤 Added catch-all for usernames
+- 🌐 Added domain MX verified status
+
+### Fixed/Improved
+
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v3.3.6] - 2022-02-18
 
 ### Fixed/Improved

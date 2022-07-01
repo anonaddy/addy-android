@@ -2,19 +2,23 @@ package host.stjin.anonaddy.ui
 
 
 import android.app.Activity
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.databinding.ActivityMainBinding
 import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
-import host.stjin.anonaddy.models.*
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
@@ -26,6 +30,10 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
+import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.*
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.abs
@@ -54,7 +62,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(binding.root, arrayListOf(binding.root), arrayListOf(binding.navView, binding.activityMainViewpager))
+        drawBehindNavBar(
+            binding.root,
+            arrayListOf(binding.root),
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.navView, binding.activityMainViewpager)
+        )
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {
@@ -69,9 +81,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
+
     override fun onResume() {
         super.onResume()
         initialiseMainAppBar()
+        checkForPermissions()
     }
 
 
@@ -184,40 +198,86 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
+
+    private fun checkForPermissions() {
+        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Notification permission check
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.areNotificationsEnabled()) {
+            profileBottomDialogFragment.permissionsRequired = true
+            setAlertIconToProfile(permissionsRequired = true)
+        } else {
+            profileBottomDialogFragment.permissionsRequired = false
+            setAlertIconToProfile(permissionsRequired = false)
+        }
+    }
+
+
     private suspend fun checkForUpdates() {
         Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
 
             // Set the update status in profileBottomDialogFragment
             profileBottomDialogFragment.updateAvailable = updateAvailable
 
-            if (updateAvailable) {
-                // An update is available, set the update  profile bottomdialog fragment
-                if (binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility != View.VISIBLE) {
-                    // loading the animation of
-                    // zoom_in.xml file into a variable
-                    val animZoomIn = AnimationUtils.loadAnimation(
-                        this,
-                        R.anim.zoom_in
-                    )
-                    animZoomIn.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(p0: Animation?) {
-                            binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility = View.VISIBLE
-                        }
-
-                        override fun onAnimationEnd(p0: Animation?) {
-                            //
-                        }
-
-                        override fun onAnimationRepeat(p0: Animation?) {
-                            //
-                        }
-                    }
-                    )
-                    binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.startAnimation(animZoomIn)
-                }
-            }
-            // No else because an update does not "just" disappear...
+            // An update is available, set the update  profile bottomdialog fragment
+            setAlertIconToProfile(updateAvailable = updateAvailable)
         }, this)
+    }
+
+
+    private var mUpdateAvailable = false
+    private var mPermissionsRequired = false
+    private fun setAlertIconToProfile(updateAvailable: Boolean? = null, permissionsRequired: Boolean? = null) {
+
+        // Store the bools for comparison next time this method gets called
+        if (updateAvailable != null) {
+            mUpdateAvailable = updateAvailable
+        }
+        if (permissionsRequired != null) {
+            mPermissionsRequired = permissionsRequired
+        }
+
+        val shouldShowDot = mUpdateAvailable || mPermissionsRequired
+
+        // If there is an update available or there are permissions required, show the dot
+        val animZoom = if (shouldShowDot && binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility != View.VISIBLE) {
+            // loading the animation of
+            // zoom_in.xml file into a variable
+            AnimationUtils.loadAnimation(
+                this,
+                R.anim.zoom_in
+            )
+        } else if (
+        // If there is not update AND there are no permissions required, hide the dot
+            !shouldShowDot &&
+            binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility != View.INVISIBLE
+        ) {
+            // loading the animation of
+            // zoom_in.xml file into a variable
+            AnimationUtils.loadAnimation(
+                this,
+                R.anim.zoom_out
+            )
+        } else {
+            null
+        }
+
+        animZoom?.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(p0: Animation?) {
+                binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility = if (shouldShowDot) View.INVISIBLE else View.VISIBLE
+            }
+
+            override fun onAnimationEnd(p0: Animation?) {
+                binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility = if (shouldShowDot) View.VISIBLE else View.INVISIBLE
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) {
+                //
+            }
+        }
+        )
+        animZoom?.let { binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.startAnimation(it) }
+
     }
 
     /*
@@ -237,7 +297,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         networkHelper.getAllFailedDeliveries({ result, _ ->
             val currentFailedDeliveries =
                 encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-            if (result?.size ?: 0 > currentFailedDeliveries) {
+            if ((result?.size ?: 0) > currentFailedDeliveries) {
                 if (binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
                     // loading the animation of
                     // zoom_in.xml file into a variable
@@ -265,7 +325,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 if (binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.INVISIBLE) {
 
                     // loading the animation of
-                    // zoom_in.xml file into a variable
+                    // zoom_out.xml file into a variable
                     val animZoomOut = AnimationUtils.loadAnimation(
                         this,
                         R.anim.zoom_out

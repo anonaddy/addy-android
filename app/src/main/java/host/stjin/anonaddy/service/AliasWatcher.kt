@@ -1,9 +1,11 @@
 package host.stjin.anonaddy.service
 
 import android.content.Context
-import host.stjin.anonaddy.SettingsManager
+import android.widget.Toast
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.notifications.NotificationHelper
-import host.stjin.anonaddy.utils.GsonTools
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.GsonTools
 
 class AliasWatcher(private val context: Context) {
     val settingsManager = SettingsManager(true, context)
@@ -58,25 +60,39 @@ class AliasWatcher(private val context: Context) {
         }
     }
 
-    fun getAliasesToWatch(): MutableSet<String>? {
-        return settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
+    fun getAliasesToWatch(): MutableSet<String> {
+        return settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST) ?: HashSet()
     }
 
     fun removeAliasToWatch(alias: String) {
         val aliasList = getAliasesToWatch()
-        aliasList?.remove(alias)
-        aliasList?.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
 
-        // Since an alias was removed from the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its still required
-        BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+        // Only remove alias if it is already in the list
+        if (aliasList.contains(alias)) {
+            aliasList.remove(alias)
+            aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
+
+            // Since an alias was removed from the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its still required
+            BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+        }
     }
 
-    fun addAliasToWatch(alias: String) {
+    fun addAliasToWatch(alias: String): Boolean {
         val aliasList = getAliasesToWatch()
-        aliasList?.add(alias)
-        aliasList?.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
+        // The aliasWatcherlist has a maximum of 15 aliases, the reason for this is to prevent API limitations
+        return if (aliasList.count() > 14) {
+            Toast.makeText(context, context.resources.getString(R.string.aliaswatcher_max_reached), Toast.LENGTH_LONG).show()
+            false
+        } else {
+            // Only add alias if it is not already in the list
+            if (!aliasList.contains(alias)) {
+                aliasList.add(alias)
+                aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
 
-        // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
-        BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+                // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(context).scheduleBackgroundWorker()
+            }
+            true
+        }
     }
 }

@@ -1,6 +1,9 @@
 package host.stjin.anonaddy.ui.intent
 
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -8,13 +11,13 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.models.AliasSortFilter
-import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.startShareSheetActivityExcludingOwnApp
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
 
 

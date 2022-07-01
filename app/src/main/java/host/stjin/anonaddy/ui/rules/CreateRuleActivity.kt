@@ -13,14 +13,14 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityRulesCreateBinding
-import host.stjin.anonaddy.models.Action
-import host.stjin.anonaddy.models.Condition
-import host.stjin.anonaddy.models.Rules
-import host.stjin.anonaddy.utils.LoggingHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Action
+import host.stjin.anonaddy_shared.models.Condition
+import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
@@ -54,14 +54,13 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         drawBehindNavBar(
             view,
             topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityRulesCreateRLNSVRL)
+            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityRulesCreateLL1)
         )
 
         setupToolbar(
             R.string.creating_a_rule,
             binding.activityRulesCreateRLNSV,
-            binding.activityRulesToolbar,
-            showAction = true
+            binding.activityRulesToolbar
         )
 
 
@@ -110,7 +109,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 Condition(
                     match = "is exactly",
                     type = "sender",
-                    listOf(
+                    values = listOf(
                         "will@anonaddy.com",
                         "no-reply@anonaddy.com"
                     )
@@ -118,7 +117,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 Condition(
                     match = "contains",
                     type = "subject",
-                    listOf(
+                    values = listOf(
                         "newsletter",
                         "subscription"
                     )
@@ -139,8 +138,6 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private fun getRule() {
-        binding.activityRulesCreateRLLottieview.visibility = View.GONE
-
         // Get the rule
         lifecycleScope.launch {
             ruleId?.let { getRuleInfo(it) }
@@ -163,11 +160,9 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     binding.activityRulesCreateCL
                 ).show()
 
-                binding.activityRulesCreateRLProgressbar.visibility = View.GONE
+                // Show error animations
                 binding.activityRulesCreateLL1.visibility = View.GONE
-
-                // Show no internet animations
-                binding.activityRulesCreateRLLottieview.visibility = View.VISIBLE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
         }, id)
     }
@@ -372,9 +367,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         binding.activityRulesCreateLLActions.addView(inflatedAddActionLayout)
 
 
-        binding.activityRulesCreateRLProgressbar.visibility = View.GONE
-        binding.activityRulesCreateLL1.visibility = View.VISIBLE
-
+        binding.animationFragment.stopAnimation()
+        binding.activityRulesCreateRLNSV.animate().alpha(1.0f)
         setOnClickListeners()
         setOnChangeListeners()
     }
@@ -386,7 +380,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     private fun setOnClickListeners() {
-        binding.activityRulesToolbar.customToolbarOneHandedActionButton.setOnClickListener {
+        toolbarSetAction(binding.activityRulesToolbar, R.drawable.ic_check) {
             // Update title
             binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
 
@@ -413,25 +407,23 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             } else {
                 // Post the rule
                 lifecycleScope.launch {
-                    networkHelper.createRule({ result ->
-                        when (result) {
-                            "201" -> {
-                                finish()
-                            }
-                            else -> {
-                                binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE
-                                SnackbarHelper.createSnackbar(
-                                    this@CreateRuleActivity,
-                                    resources.getString(R.string.error_creating_rule) + "\n" + result,
-                                    binding.activityRulesCreateCL,
-                                    LoggingHelper.LOGFILES.DEFAULT
-                                ).show()
-                            }
+                    networkHelper.createRule({ rule, error ->
+                        if (rule != null) {
+                            finish()
+                        } else {
+                            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE
+                            SnackbarHelper.createSnackbar(
+                                this@CreateRuleActivity,
+                                resources.getString(R.string.error_creating_rule) + "\n" + error,
+                                binding.activityRulesCreateCL,
+                                LoggingHelper.LOGFILES.DEFAULT
+                            ).show()
                         }
                     }, rules)
                 }
             }
         }
+
 
         binding.rulesViewAndOrANDButton.setOnClickListener {
             rules.operator = "AND"

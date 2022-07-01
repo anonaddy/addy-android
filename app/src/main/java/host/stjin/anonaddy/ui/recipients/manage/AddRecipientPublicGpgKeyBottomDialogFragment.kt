@@ -12,9 +12,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditGpgKeyRecipientBinding
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Recipients
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +28,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditGpgKeyBottomDialogListener {
-        fun onKeyAdded()
+        fun onKeyAdded(recipient: Recipients)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -98,16 +99,16 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
 
     private suspend fun addGpgKeyHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addEncryptionKeyRecipient({ result ->
-            if (result == "200") {
-                listener.onKeyAdded()
+        networkHelper.addEncryptionKeyRecipient({ recipient, error ->
+            if (recipient != null) {
+                listener.onKeyAdded(recipient)
             } else {
 
                 // Revert the button to normal
                 binding.bsEditRecipientGpgKeySaveButton.revertAnimation()
 
                 binding.bsEditRecipientGpgKeyTil.error =
-                    context.resources.getString(R.string.error_add_gpg_key) + "\n" + result
+                    context.resources.getString(R.string.error_add_gpg_key) + "\n" + error
             }
             // aliasId is never null at this point, hence the !!
         }, aliasId!!, description)

@@ -5,19 +5,24 @@
     android:id="@+id/activity_manage_alias_CL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical">
-
 
     <include
         android:id="@+id/activity_manage_alias_toolbar"
         layout="@layout/custom_toolbar_one_handed" />
 
+    <host.stjin.anonaddy.ui.customviews.AnimationView
+        android:id="@+id/animation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:animationDrawable="@drawable/ic_loading_logo"
+        app:loopAnimation="true" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_manage_alias_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -40,7 +45,6 @@
                     android:id="@+id/activity_manage_alias_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:alpha="0"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
@@ -85,7 +89,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:alpha="0"
                         android:gravity="center_vertical"
                         android:orientation="vertical">
 
@@ -154,7 +157,6 @@
                     android:id="@+id/activity_manage_alias_actions_LL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:alpha="0"
                     android:orientation="horizontal"
                     android:weightSum="9.5">
 
@@ -207,147 +209,35 @@
                 style="@style/divider"
                 android:layout_width="match_parent" />
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/activity_manage_alias_settings_LL"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipChildren="false"
-                android:clipToPadding="false">
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/activity_manage_alias_settings_RL_lottieview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="300dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="32dp"
-                    android:visibility="gone"
-                    app:lottie_autoPlay="true"
-                    app:lottie_loop="true"
-                    app:lottie_rawRes="@raw/no_internet_connection" />
-
-                <ProgressBar
-                    android:id="@+id/activity_manage_alias_settings_RL_progressbar"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="@dimen/layout_padding">
 
                 <LinearLayout
-                    android:id="@+id/activity_manage_alias_settings_LL"
+                    style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:padding="@dimen/layout_padding"
-                    android:visibility="invisible">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        style="@style/AnonAddyTitleNoAction"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            style="@style/titleTextView"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="@string/general" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/activity_manage_alias_settings_LL1"
-                        android:layout_width="match_parent"
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
-                        android:orientation="vertical">
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_active_switch_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionDescription="@string/alias_status_desc"
-                            app:sectionShowSwitch="true"
-                            app:sectionStartIcon="@drawable/ic_circle_check"
-                            app:sectionTitle="@string/alias_status_active" />
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_watch_switch_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionDescription="@string/watch_alias_desc"
-                            app:sectionShowSwitch="true"
-                            app:sectionStartIcon="@drawable/ic_watch_alias"
-                            app:sectionTitle="@string/watch_alias" />
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_desc_edit"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionDescription="@tools:sample/lorem/random"
-                            app:sectionEndIcon="@drawable/ic_edit"
-                            app:sectionStartIcon="@drawable/ic_align_justified"
-                            app:sectionTitle="@string/description" />
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_recipients_edit"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionDescription="@tools:sample/full_names"
-                            app:sectionEndIcon="@drawable/ic_edit"
-                            app:sectionStartIcon="@drawable/ic_user"
-                            app:sectionTitle="@string/recipients" />
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_created_at"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionDescription="@tools:sample/date/ddmmyy"
-                            app:sectionRippleEffect="false"
-                            app:sectionStartIcon="@drawable/ic_clock"
-                            app:sectionTitle="@string/created_at" />
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_updated_at"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionDescription="@tools:sample/date/ddmmyy"
-                            app:sectionRippleEffect="false"
-                            app:sectionStartIcon="@drawable/ic_clock_history"
-                            app:sectionTitle="@string/updated_at" />
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_delete"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionColorAccent="@color/softRed"
-                            app:sectionDescription="@string/delete_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_trash"
-                            app:sectionTitle="@string/delete_alias" />
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_restore"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionColorAccent="?colorPrimary"
-                            app:sectionDescription="@string/restore_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_trash_off"
-                            app:sectionTitle="@string/restore_alias" />
-
-                        <host.stjin.anonaddy.ui.customviews.SectionView
-                            android:id="@+id/activity_manage_alias_forget"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:sectionColorAccent="@color/hardRed"
-                            app:sectionDescription="@string/forget_alias_desc"
-                            app:sectionStartIcon="@drawable/ic_eraser"
-                            app:sectionTitle="@string/forget_alias" />
-
-                    </LinearLayout>
+                        android:layout_weight="1"
+                        android:text="@string/general" />
                 </LinearLayout>
-            </RelativeLayout>
+
+                <include
+                    android:id="@+id/activity_manage_alias_general_actions"
+                    layout="@layout/alias_general_actions" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

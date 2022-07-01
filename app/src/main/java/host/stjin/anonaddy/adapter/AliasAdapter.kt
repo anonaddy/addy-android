@@ -1,27 +1,32 @@
 package host.stjin.anonaddy.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import app.futured.donut.DonutProgressView
 import app.futured.donut.DonutSection
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
-import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 
-class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context) :
+class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context, private val supportMultipleSelection: Boolean = false) :
     RecyclerView.Adapter<AliasAdapter.ViewHolder>() {
 
-    lateinit var onAliasClickListener: ClickListener
+    lateinit var onAliasAliasInterface: AliasInterface
     private val aliasesToWatch = AliasWatcher(context).getAliasesToWatch()
+    private var selectedAliases: ArrayList<Aliases> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -31,6 +36,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        applySelectedOverlay(holder, position)
 
         holder.mTitle.text = listWithAliases[position].email
 
@@ -78,7 +84,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
 
 
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
-        var donutCap = 0f
         // DONUT
         val section1 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
@@ -87,7 +92,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         )
         // Always show section 1
         listOfDonutSection.add(section1)
-        donutCap += forwarded
 
         if (replied > 0) {
             val section2 = DonutSection(
@@ -96,7 +100,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
                 amount = replied
             )
             listOfDonutSection.add(section2)
-            donutCap += replied
         }
 
         if (sent > 0) {
@@ -106,7 +109,6 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
                 amount = sent
             )
             listOfDonutSection.add(section3)
-            donutCap += sent
         }
 
         if (blocked > 0) {
@@ -116,17 +118,30 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
                 amount = blocked
             )
             listOfDonutSection.add(section4)
-            donutCap += blocked
         }
 
-        holder.mChart.cap = donutCap
+        holder.mChart.cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat()
         // Sort the list by amount so that the biggest number will fill the whole ring
         holder.mChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT
 
-
         holder.mWatchedTextView.visibility =
-            if (aliasesToWatch?.contains(listWithAliases[position].id) == true) View.VISIBLE else View.GONE
+            if (aliasesToWatch.contains(listWithAliases[position].id)) View.VISIBLE else View.GONE
+    }
+
+    private fun applySelectedOverlay(holder: ViewHolder, position: Int) {
+        // Check if the item is selected
+        if (selectedAliases.contains(listWithAliases[position])) {
+            holder.mCV.cardElevation = 0f
+            holder.mLL0.setBackgroundColor(ContextCompat.getColor(holder.mLL0.context, R.color.selected_background_color))
+            holder.mWatchAliasLL.setBackgroundColor(ContextCompat.getColor(holder.mWatchAliasLL.context, R.color.selected_background_color_darker))
+            holder.mAction.setImageDrawable(ContextCompat.getDrawable(holder.mAction.context, R.drawable.ic_check))
+        } else {
+            holder.mCV.cardElevation = holder.mCV.context.resources.getDimension(R.dimen.cardview_default_elevation)
+            holder.mLL0.setBackgroundColor(0)
+            holder.mWatchAliasLL.setBackgroundColor(0)
+            holder.mAction.setImageDrawable(ContextCompat.getDrawable(holder.mAction.context, R.drawable.ic_copy))
+        }
     }
 
     override fun getItemCount(): Int = listWithAliases.size
@@ -135,38 +150,95 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context)
         return listWithAliases
     }
 
-    fun setClickOnAliasClickListener(aClickListener: ClickListener) {
-        onAliasClickListener = aClickListener
+    fun setClickOnAliasClickListener(aAliasInterface: AliasInterface) {
+        onAliasAliasInterface = aAliasInterface
     }
 
-    interface ClickListener {
+    fun unselectAliases() {
+        for (alias in selectedAliases) {
+            val findAliasPosition = listWithAliases.indexOfFirst { it == alias }
+            if (findAliasPosition > -1) {
+                notifyItemChanged(findAliasPosition)
+            }
+
+        }
+        selectedAliases.clear()
+    }
+
+    interface AliasInterface {
         fun onClick(pos: Int)
         fun onClickCopy(pos: Int, aView: View)
+        fun onSelectionMode(selectionMode: Boolean, selectedAliases: ArrayList<Aliases>) { /* By default, don't implement */
+        }
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
-        View.OnClickListener {
 
-        private var mCV: MaterialCardView = view.findViewById(R.id.recyclerview_list_CV)
+    var originalCardviewColor: ColorStateList? = null
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener, View.OnLongClickListener {
+
+        var mCV: MaterialCardView = view.findViewById(R.id.recyclerview_list_CV)
         var mTitle: TextView = view.findViewById(R.id.aliases_recyclerview_list_title)
         var mDescription: TextView =
             view.findViewById(R.id.aliases_recyclerview_list_description)
         var mWatchedTextView: TextView = view.findViewById(R.id.aliases_recyclerview_list_watched_textview)
-        private var mCopy: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
+        var mAction: ImageView = view.findViewById(R.id.aliases_recyclerview_list_copy)
         var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
-
+        var mLL0: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL0)
+        var mWatchAliasLL: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL5)
 
         init {
-            mCopy.setOnClickListener(this)
+            mAction.setOnClickListener(this)
             mCV.setOnClickListener(this)
+
+            if (supportMultipleSelection) {
+                mCV.setOnLongClickListener(this)
+            }
+
+            if (adapterPosition == 0 && originalCardviewColor != null) {
+                originalCardviewColor = mCV.cardBackgroundColor
+            }
         }
 
         override fun onClick(p0: View) {
             if (p0.id == R.id.recyclerview_list_CV) {
-                onAliasClickListener.onClick(adapterPosition)
+                if (selectedAliases.any()) {
+                    selectItem(adapterPosition)
+                } else {
+                    onAliasAliasInterface.onClick(adapterPosition)
+                }
             } else if (p0.id == R.id.aliases_recyclerview_list_copy) {
-                onAliasClickListener.onClickCopy(adapterPosition, p0)
+                onAliasAliasInterface.onClickCopy(adapterPosition, p0)
             }
+        }
+
+        override fun onLongClick(p0: View): Boolean {
+            if (p0.id == R.id.recyclerview_list_CV) {
+                selectItem(adapterPosition)
+            }
+            return true
+        }
+
+        private fun selectItem(adapterPosition: Int) {
+            mCV.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            if (selectedAliases.contains(listWithAliases[adapterPosition])) {
+                selectedAliases.remove(listWithAliases[adapterPosition])
+            } else {
+                if (selectedAliases.count() < 15) {
+                    selectedAliases.add(listWithAliases[adapterPosition])
+                } else {
+                    Toast.makeText(mCV.context, mCV.context.resources.getString(R.string.alias_multiple_selection_max_reached), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+
+            onAliasAliasInterface.onSelectionMode(
+                selectionMode = selectedAliases.any(),
+                selectedAliases = selectedAliases
+            )
+
+            notifyItemChanged(adapterPosition)
         }
 
     }

@@ -1,6 +1,9 @@
 package host.stjin.anonaddy.ui.alias.manage
 
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -10,17 +13,22 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.Wearable
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
-import host.stjin.anonaddy.models.Aliases
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.*
+import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
+import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 
@@ -37,8 +45,11 @@ class ManageAliasActivity : BaseActivity(),
     private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
     private lateinit var editAliasSendMailRecipientBottomDialogFragment: EditAliasSendMailRecipientBottomDialogFragment
 
-    private lateinit var aliasId: String
     private var alias: Aliases? = null
+        set(value) {
+            field = value
+            value?.let { updateUi(it) }
+        }
     private var forceSwitch = false
     private var shouldDeactivateThisAlias = false
 
@@ -46,11 +57,6 @@ class ManageAliasActivity : BaseActivity(),
     // This value is here to keep track if the activity to which we return on finishWithUpdate should update its data.
     // Basically, whenever some information is changed we flip the boolean to true.
     private var shouldUpdate: Boolean = false
-
-    /*
-    https://stackoverflow.com/questions/50969390/view-visibility-state-loss-when-resuming-activity-with-previously-started-activi
-     */
-    private var progressBarVisibility = View.VISIBLE
     private lateinit var binding: ActivityManageAliasBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +76,7 @@ class ManageAliasActivity : BaseActivity(),
             R.string.edit_alias,
             binding.activityManageAliasNSV,
             binding.activityManageAliasToolbar,
-            R.drawable.ic_email_at
+            R.drawable.ic_email_at,
         )
 
         networkHelper = NetworkHelper(this)
@@ -81,21 +87,22 @@ class ManageAliasActivity : BaseActivity(),
         if (b?.getString("alias_id") != null) {
             // Intents
             val aliasId = b.getString("alias_id")
+
+            // Used in ActionReceiver
+            shouldDeactivateThisAlias = b.getBoolean("shouldDeactivateThisAlias", false)
+
             if (aliasId == null) {
                 finish()
                 return
             }
-            this.aliasId = aliasId
-            setPage()
-
+            setPage(aliasId)
         } else if (intent.action != null) {
             // /deactivate URI's
             val data: Uri? = intent?.data
             if (data.toString().contains("/deactivate")) {
                 val aliasId = StringUtils.substringBetween(data.toString(), "deactivate/", "?")
-                this.aliasId = aliasId
                 shouldDeactivateThisAlias = true
-                setPage()
+                setPage(aliasId)
             }
         }
     }
@@ -105,7 +112,7 @@ class ManageAliasActivity : BaseActivity(),
         finishWithUpdate()
     }
 
-    private fun setPage() {
+    private fun setPage(aliasId: String) {
         /**
          * This activity can be called by an URI or Widget/Notification Intent.
          * Protect this part
@@ -113,23 +120,44 @@ class ManageAliasActivity : BaseActivity(),
         lifecycleScope.launch {
             isAuthenticated { isAuthenticated ->
                 if (isAuthenticated) {
-                    setPageInfo()
+                    setPageInfo(aliasId)
                 }
             }
         }
 
     }
 
-    private fun setPageInfo() {
+    private fun setPageInfo(aliasId: String) {
         // Get the alias
         lifecycleScope.launch {
             getAliasInfo(aliasId)
+            loadNodes()
+        }
+    }
+
+    private var nodeClient: NodeClient? = null
+    private fun loadNodes() {
+        nodeClient = Wearable.getNodeClient(this)
+        nodeClient!!.connectedNodes.addOnSuccessListener { nodes ->
+            // Send a message to all connected nodes
+            // Nodes with the app installed will receive this message and open the ManageAliasActivity
+            if (nodes.any()) {
+                toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
+                    for (node in nodes) {
+                        Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+                    }
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.check_your_wearable),
+                        binding.activityManageAliasCL
+                    ).show()
+                }
+            }
         }
     }
 
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
-        var donutCap = 0f
         // DONUT
         val section1 = DonutSection(
             name = binding.activityManageAliasChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
@@ -138,7 +166,6 @@ class ManageAliasActivity : BaseActivity(),
         )
         // Always show section 1
         listOfDonutSection.add(section1)
-        donutCap += forwarded
 
         if (replied > 0) {
             val section2 = DonutSection(
@@ -147,7 +174,6 @@ class ManageAliasActivity : BaseActivity(),
                 amount = replied
             )
             listOfDonutSection.add(section2)
-            donutCap += replied
         }
 
         if (sent > 0) {
@@ -157,7 +183,6 @@ class ManageAliasActivity : BaseActivity(),
                 amount = sent
             )
             listOfDonutSection.add(section3)
-            donutCap += sent
         }
 
         if (blocked > 0) {
@@ -167,9 +192,8 @@ class ManageAliasActivity : BaseActivity(),
                 amount = blocked
             )
             listOfDonutSection.add(section4)
-            donutCap += blocked
         }
-        binding.activityManageAliasChart.cap = donutCap
+        binding.activityManageAliasChart.cap = listOfDonutSection.sumOf { it.amount.toInt() }.toFloat()
 
         // Sort the list by amount so that the biggest number will fill the whole ring
         binding.activityManageAliasChart.submitData(listOfDonutSection.sortedBy { it.amount })
@@ -180,18 +204,15 @@ class ManageAliasActivity : BaseActivity(),
         binding.activityManageAliasRepliesBlockedCount.text = this.resources.getString(R.string.d_blocked, blocked.toInt())
         binding.activityManageAliasSentCount.text = this.resources.getString(R.string.d_sent, sent.toInt())
         binding.activityManageAliasRepliedCount.text = this.resources.getString(R.string.d_replied, replied.toInt())
-
-
-        binding.activityManageAliasStatsLL.animate().alpha(1.0f)
-        binding.activityManageAliasActionsLL.animate().alpha(1.0f)
     }
 
     private fun setOnSwitchChangeListeners() {
-        binding.activityManageAliasActiveSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
-                    binding.activityManageAliasActiveSwitchLayout.showProgressBar(true)
+                    binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
                     shouldUpdate = true
                     if (checked) {
@@ -207,16 +228,23 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageAliasWatchSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
                     forceSwitch = false
                     shouldUpdate = true
                     if (checked) {
-                        aliasWatcher.addAliasToWatch(aliasId)
+                        // In case the alias could not be added to watchlist, the switch will be reverted
+                        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(
+                            aliasWatcher.addAliasToWatch(
+                                this@ManageAliasActivity.alias!!.id
+                            )
+                        )
+
                     } else {
-                        aliasWatcher.removeAliasToWatch(aliasId)
+                        aliasWatcher.removeAliasToWatch(this@ManageAliasActivity.alias!!.id)
                     }
                 }
             }
@@ -226,11 +254,12 @@ class ManageAliasActivity : BaseActivity(),
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
-            binding.activityManageAliasActiveSwitchLayout.showProgressBar(false)
+            binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
-                binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_deactivated))
+                this.alias!!.active = false
+                updateUi(this.alias!!)
             } else {
-                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -238,17 +267,17 @@ class ManageAliasActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, aliasId)
+        }, this@ManageAliasActivity.alias!!.id)
     }
 
 
     private suspend fun activateAlias() {
-        networkHelper.activateSpecificAlias({ result ->
-            binding.activityManageAliasActiveSwitchLayout.showProgressBar(false)
-            if (result == "200") {
-                binding.activityManageAliasActiveSwitchLayout.setTitle(resources.getString(R.string.alias_activated))
+        networkHelper.activateSpecificAlias({ alias, result ->
+            binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
+            if (alias != null) {
+                this.alias = alias
             } else {
-                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
@@ -256,27 +285,30 @@ class ManageAliasActivity : BaseActivity(),
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
             }
-        }, aliasId)
+        }, this@ManageAliasActivity.alias!!.id)
     }
 
 
     private fun setOnClickListeners() {
-        binding.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
-                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.activityManageAliasActiveSwitchLayout.getSwitchChecked())
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.getSwitchChecked())
             }
         })
 
 
-        binding.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
-                binding.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.activityManageAliasWatchSwitchLayout.getSwitchChecked())
+                binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.getSwitchChecked())
             }
         })
 
-        binding.activityManageAliasDescEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!editAliasDescriptionBottomDialogFragment.isAdded) {
                     editAliasDescriptionBottomDialogFragment.show(
@@ -287,7 +319,8 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageAliasRecipientsEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasRecipientsEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!editAliasRecipientsBottomDialogFragment.isAdded) {
                     editAliasRecipientsBottomDialogFragment.show(
@@ -298,19 +331,19 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageAliasDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 deleteAlias()
             }
         })
 
-        binding.activityManageAliasForget.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasForget.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forgetAlias()
             }
         })
 
-        binding.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageAliasGeneralActions.activityManageAliasRestore.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 restoreAlias()
             }
@@ -337,74 +370,56 @@ class ManageAliasActivity : BaseActivity(),
 
     private lateinit var restoreAliasSnackbar: Snackbar
     private fun restoreAlias() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.restore_alias))
-            .setIcon(R.drawable.ic_trash_off)
-            .setMessage(resources.getString(R.string.restore_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
+        MaterialDialogHelper.aliasRestoreDialog(
+            context = this
+        ) {
+            restoreAliasSnackbar = SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.restoring_alias),
+                binding.activityManageAliasCL,
+                length = Snackbar.LENGTH_INDEFINITE
+            )
+            restoreAliasSnackbar.show()
+            lifecycleScope.launch {
+                restoreAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
             }
-            .setPositiveButton(resources.getString(R.string.restore)) { _, _ ->
-                restoreAliasSnackbar = SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.restoring_alias),
-                    binding.activityManageAliasCL,
-                    length = Snackbar.LENGTH_INDEFINITE
-                )
-                restoreAliasSnackbar.show()
-                lifecycleScope.launch {
-                    restoreAliasHttpRequest(aliasId, this@ManageAliasActivity)
-                }
-            }
-            .show()
+        }
     }
 
     private lateinit var deleteAliasSnackbar: Snackbar
     private fun deleteAlias() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.delete_alias))
-            .setIcon(R.drawable.ic_trash)
-            .setMessage(resources.getString(R.string.delete_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
+        MaterialDialogHelper.aliasDeleteDialog(
+            context = this
+        ) {
+            deleteAliasSnackbar = SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.deleting_alias),
+                binding.activityManageAliasCL,
+                length = Snackbar.LENGTH_INDEFINITE
+            )
+            deleteAliasSnackbar.show()
+            lifecycleScope.launch {
+                deleteAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
             }
-            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
-                deleteAliasSnackbar = SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.deleting_alias),
-                    binding.activityManageAliasCL,
-                    length = Snackbar.LENGTH_INDEFINITE
-                )
-                deleteAliasSnackbar.show()
-                lifecycleScope.launch {
-                    deleteAliasHttpRequest(aliasId, this@ManageAliasActivity)
-                }
-            }
-            .show()
+        }
     }
 
     private lateinit var forgetAliasSnackbar: Snackbar
     private fun forgetAlias() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.forget_alias))
-            .setIcon(R.drawable.ic_eraser)
-            .setMessage(resources.getString(R.string.forget_alias_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
+        MaterialDialogHelper.aliasForgetDialog(
+            context = this
+        ) {
+            forgetAliasSnackbar = SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.forgetting_alias),
+                binding.activityManageAliasCL,
+                length = Snackbar.LENGTH_INDEFINITE
+            )
+            forgetAliasSnackbar.show()
+            lifecycleScope.launch {
+                forgetAliasHttpRequest(this@ManageAliasActivity.alias!!.id, this@ManageAliasActivity)
             }
-            .setPositiveButton(resources.getString(R.string.forget)) { _, _ ->
-                forgetAliasSnackbar = SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.forgetting_alias),
-                    binding.activityManageAliasCL,
-                    length = Snackbar.LENGTH_INDEFINITE
-                )
-                forgetAliasSnackbar.show()
-                lifecycleScope.launch {
-                    forgetAliasHttpRequest(aliasId, this@ManageAliasActivity)
-                }
-            }
-            .show()
+        }
     }
 
     private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
@@ -447,25 +462,18 @@ class ManageAliasActivity : BaseActivity(),
         }, id)
     }
 
-    private fun finishWithUpdate() {
-        val intent = Intent()
-        intent.putExtra("should_update", shouldUpdate)
-        setResult(RESULT_OK, intent)
-        finish()
-    }
-
     private suspend fun restoreAliasHttpRequest(id: String, context: Context) {
-        networkHelper.restoreAlias({ result ->
-            if (result == "200") {
+        networkHelper.restoreAlias({ alias, error ->
+            if (alias != null) {
                 restoreAliasSnackbar.dismiss()
                 shouldUpdate = true
-                setPage()
+                this.alias = alias
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
                     context.resources.getString(
                         R.string.s_s,
-                        context.resources.getString(R.string.error_restoring_alias), result
+                        context.resources.getString(R.string.error_restoring_alias), error
                     ),
                     binding.activityManageAliasCL,
                     LoggingHelper.LOGFILES.DEFAULT
@@ -474,206 +482,215 @@ class ManageAliasActivity : BaseActivity(),
         }, id)
     }
 
+    private fun finishWithUpdate() {
+        val intent = Intent()
+        intent.putExtra("should_update", shouldUpdate)
+        setResult(RESULT_OK, intent)
+        finish()
+    }
+
     private suspend fun getAliasInfo(id: String) {
         networkHelper.getSpecificAlias({ alias, error ->
-
             if (alias != null) {
+                // Triggers updateUi
                 this.alias = alias
-
-                // Set email in textview
-                binding.activityManageAliasEmail.text = alias.email
-                binding.activityManageAliasEmail.animate().alpha(1.0f)
-
-                editAliasSendMailRecipientBottomDialogFragment = EditAliasSendMailRecipientBottomDialogFragment.newInstance(alias.email)
-
-                /**
-                 * CHART
-                 */
-
-                // Update chart
-                setChart(
-                    alias.emails_forwarded.toFloat(),
-                    alias.emails_replied.toFloat(),
-                    alias.emails_blocked.toFloat(),
-                    alias.emails_sent.toFloat()
-                )
-
-                /**
-                 *  SWITCH STATUS
-                 */
-
-                // Set switch status
-                binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(alias.active)
-                binding.activityManageAliasActiveSwitchLayout.setTitle(
-                    if (alias.active) resources.getString(R.string.alias_activated) else resources.getString(
-                        R.string.alias_deactivated
-                    )
-                )
-
-                // Set watch switch status
-                binding.activityManageAliasWatchSwitchLayout.setSwitchChecked(aliasWatcher.getAliasesToWatch()?.contains(aliasId) ?: false)
-
-
-                /**
-                 * LAYOUT
-                 */
-
-                // This layout only contains SectionViews
-                val layout =
-                    findViewById<View>(R.id.activity_manage_alias_settings_LL1) as LinearLayout
-                if (alias.deleted_at != null) {
-                    // Aliasdeleted is not null, thus deleted. disable all the layouts and alpha them
-
-                    // Show restore and hide delete
-                    binding.activityManageAliasRestore.visibility = View.VISIBLE
-                    binding.activityManageAliasForget.visibility = View.VISIBLE
-                    binding.activityManageAliasDelete.visibility = View.GONE
-                    for (i in 0 until layout.childCount) {
-                        val child = layout.getChildAt(i)
-
-                        // As the childs are only sections, cast and set enabled state
-                        // Do not disable the restore button. So disabled everything except the activity_manage_alias_restore
-                        if (child.id != R.id.activity_manage_alias_restore && child.id != R.id.activity_manage_alias_forget) {
-                            (child as SectionView).setLayoutEnabled(false)
-                        }
-                    }
-                } else {
-                    // Show delete and hide restore
-                    binding.activityManageAliasRestore.visibility = View.GONE
-                    binding.activityManageAliasDelete.visibility = View.VISIBLE
-                    binding.activityManageAliasForget.visibility = View.VISIBLE
-
-                    // As the childs are only sections, cast and set enabled state
-                    // Aliasdeleted is null, thus not deleted. enable all the layouts
-                    for (i in 0 until layout.childCount) {
-                        val child = layout.getChildAt(i)
-
-                        (child as SectionView).setLayoutEnabled(true)
-                    }
-                }
-
-                /**
-                 * RECIPIENTS
-                 */
-
-                // Set recipients
-                var recipients: String
-                var count = 0
-                if (alias.recipients != null && alias.recipients.isNotEmpty()) {
-                    // get the first 2 recipients and list them
-
-                    val buf = StringBuilder()
-                    for (recipient in alias.recipients) {
-                        if (count < 2) {
-                            if (buf.isNotEmpty()) {
-                                buf.append("\n")
-                            }
-                            buf.append(recipient.email)
-                            count++
-                        }
-                    }
-                    recipients = buf.toString()
-
-                    // Check if there are more than 2 recipients in the list
-                    if (alias.recipients.size > 2) {
-                        // If this is the case add a "x more" on the third rule
-                        // X is the total amount minus the 2 listed above
-                        recipients += "\n"
-                        recipients += this.resources.getString(
-                            R.string._more,
-                            alias.recipients.size - 2
-                        )
-                    }
-                } else {
-                    recipients = this.resources.getString(
-                        R.string.default_recipient
-                    )
-                }
-
-                binding.activityManageAliasRecipientsEdit.setDescription(recipients)
-
-
-                // Initialise the bottomdialog
-                editAliasRecipientsBottomDialogFragment =
-                    EditAliasRecipientsBottomDialogFragment.newInstance(aliasId, alias.recipients)
-
-
-                // Set created at and updated at
-                DateTimeUtils.turnStringIntoLocalString(alias.created_at)?.let { binding.activityManageAliasCreatedAt.setDescription(it) }
-                DateTimeUtils.turnStringIntoLocalString(alias.updated_at)?.let { binding.activityManageAliasUpdatedAt.setDescription(it) }
-
-
-                /**
-                 * DESCRIPTION
-                 */
-
-                // Set description and initialise the bottomDialogFragment
-                if (alias.description != null) {
-                    binding.activityManageAliasDescEdit.setDescription(alias.description)
-                } else {
-                    binding.activityManageAliasDescEdit.setDescription(
-                        this.resources.getString(
-                            R.string.alias_no_description
-                        )
-                    )
-                }
-
-                // reset this value as it now includes the description
-                editAliasDescriptionBottomDialogFragment = EditAliasDescriptionBottomDialogFragment.newInstance(
-                    id,
-                    alias.description
-                )
-
-
-                binding.activityManageAliasSettingsRLProgressbar.visibility = View.GONE
-                progressBarVisibility = View.GONE
-                binding.activityManageAliasSettingsLL.visibility = View.VISIBLE
-
-                setOnSwitchChangeListeners()
-                setOnClickListeners()
-
-                // Is set true by the intent action, do this after the switchchangelistener is set.
-                if (shouldDeactivateThisAlias) {
-                    // Deactive switch
-                    forceSwitch = true
-                    binding.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
-                }
             } else {
-
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_obtaining_alias) + "\n" + error,
                     binding.activityManageAliasCL
                 ).show()
 
-                binding.activityManageAliasSettingsRLProgressbar.visibility = View.GONE
-                progressBarVisibility = View.GONE
+                // Show error animations
                 binding.activityManageAliasSettingsLL.visibility = View.GONE
-
-                // Show no internet animations
-                binding.activityManageAliasSettingsRLLottieview.visibility = View.VISIBLE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
-
-
         }, id)
     }
 
+    private fun updateUi(alias: Aliases) {
 
-    override fun descriptionEdited(description: String) {
-        setPage()
-        shouldUpdate = true
-        editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+        // Set email in textview
+        binding.activityManageAliasEmail.text = alias.email
+
+        editAliasSendMailRecipientBottomDialogFragment = EditAliasSendMailRecipientBottomDialogFragment.newInstance(alias.email)
+
+        /**
+         * CHART
+         */
+
+        // Update chart
+        setChart(
+            alias.emails_forwarded.toFloat(),
+            alias.emails_replied.toFloat(),
+            alias.emails_blocked.toFloat(),
+            alias.emails_sent.toFloat()
+        )
+
+        /**
+         *  SWITCH STATUS
+         */
+
+        // Set switch status
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(alias.active)
+        binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setTitle(
+            if (alias.active) resources.getString(R.string.alias_activated) else resources.getString(
+                R.string.alias_deactivated
+            )
+        )
+
+        // Set watch switch status
+        binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(
+            aliasWatcher.getAliasesToWatch().contains(this@ManageAliasActivity.alias!!.id)
+        )
+
+
+        /**
+         * LAYOUT
+         */
+
+        // This layout only contains SectionViews
+        val layout =
+            findViewById<View>(R.id.activity_manage_alias_general_actions) as LinearLayout
+        if (alias.deleted_at != null) {
+            // Aliasdeleted is not null, thus deleted. disable all the layouts and alpha them
+
+            // Show restore and hide delete
+            binding.activityManageAliasGeneralActions.activityManageAliasRestore.visibility = View.VISIBLE
+            binding.activityManageAliasGeneralActions.activityManageAliasForget.visibility = View.VISIBLE
+            binding.activityManageAliasGeneralActions.activityManageAliasDelete.visibility = View.GONE
+            for (i in 0 until layout.childCount) {
+                val child = layout.getChildAt(i)
+
+                // As the childs are only sections, cast and set enabled state
+                // Do not disable the restore button. So disabled everything except the activity_manage_alias_restore
+                if (child.id != R.id.activity_manage_alias_restore && child.id != R.id.activity_manage_alias_forget) {
+                    (child as SectionView).setLayoutEnabled(false)
+                }
+            }
+        } else {
+            // Show delete and hide restore
+            binding.activityManageAliasGeneralActions.activityManageAliasRestore.visibility = View.GONE
+            binding.activityManageAliasGeneralActions.activityManageAliasDelete.visibility = View.VISIBLE
+            binding.activityManageAliasGeneralActions.activityManageAliasForget.visibility = View.VISIBLE
+
+            // As the childs are only sections, cast and set enabled state
+            // Aliasdeleted is null, thus not deleted. enable all the layouts
+            for (i in 0 until layout.childCount) {
+                val child = layout.getChildAt(i)
+
+                (child as SectionView).setLayoutEnabled(true)
+            }
+        }
+
+        /**
+         * RECIPIENTS
+         */
+
+        // Set recipients
+        var recipients: String
+        var count = 0
+        if (alias.recipients != null && alias.recipients!!.isNotEmpty()) {
+            // get the first 2 recipients and list them
+
+            val buf = StringBuilder()
+            for (recipient in alias.recipients!!) {
+                if (count < 2) {
+                    if (buf.isNotEmpty()) {
+                        buf.append("\n")
+                    }
+                    buf.append(recipient.email)
+                    count++
+                }
+            }
+            recipients = buf.toString()
+
+            // Check if there are more than 2 recipients in the list
+            if (alias.recipients!!.size > 2) {
+                // If this is the case add a "x more" on the third rule
+                // X is the total amount minus the 2 listed above
+                recipients += "\n"
+                recipients += this.resources.getString(
+                    R.string._more,
+                    alias.recipients!!.size - 2
+                )
+            }
+        } else {
+            recipients = this.resources.getString(
+                R.string.default_recipient
+            )
+        }
+
+        binding.activityManageAliasGeneralActions.activityManageAliasRecipientsEdit.setDescription(recipients)
+
+
+        // Initialise the bottomdialog
+        editAliasRecipientsBottomDialogFragment =
+            EditAliasRecipientsBottomDialogFragment.newInstance(this@ManageAliasActivity.alias!!.id, alias.recipients)
+
+
+        // Set created at and updated at
+        DateTimeUtils.turnStringIntoLocalString(alias.created_at)
+            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasCreatedAt.setDescription(it) }
+        DateTimeUtils.turnStringIntoLocalString(alias.updated_at)
+            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasUpdatedAt.setDescription(it) }
+
+
+        /**
+         * DESCRIPTION
+         */
+
+        // Set description and initialise the bottomDialogFragment
+        if (alias.description != null) {
+            binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setDescription(alias.description)
+        } else {
+            binding.activityManageAliasGeneralActions.activityManageAliasDescEdit.setDescription(
+                this.resources.getString(
+                    R.string.alias_no_description
+                )
+            )
+        }
+
+        // reset this value as it now includes the description
+        editAliasDescriptionBottomDialogFragment = EditAliasDescriptionBottomDialogFragment.newInstance(
+            alias.id,
+            alias.description
+        )
+
+
+        binding.animationFragment.stopAnimation()
+        binding.activityManageAliasNSV.animate().alpha(1.0f)
+        binding.activityManageAliasSettingsLL.visibility = View.VISIBLE
+
+        setOnSwitchChangeListeners()
+        setOnClickListeners()
+
+        // Is set true by the intent action, do this after the switchchangelistener is set.
+        if (shouldDeactivateThisAlias) {
+            // Deactive switch
+            forceSwitch = true
+            binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
+        }
     }
 
 
-    override fun recipientsEdited() {
-        // Reload all info
-        setPage()
+    override fun descriptionEdited(alias: Aliases) {
+        shouldUpdate = true
+        editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
 
+        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.alias = alias
+    }
+
+
+    override fun recipientsEdited(alias: Aliases) {
         // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasFragment.
         // So we update the list when coming back
         shouldUpdate = true
         editAliasRecipientsBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.alias = alias
     }
 
 

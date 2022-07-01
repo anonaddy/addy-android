@@ -1,27 +1,41 @@
 package host.stjin.anonaddy.ui.appsettings
 
+import android.Manifest
 import android.app.ActivityManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.view.View
 import android.widget.CompoundButton
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import host.stjin.anonaddy.*
+import com.google.android.gms.wearable.Wearable
+import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.R
+import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.databinding.ActivityAppSettingsBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.appsettings.backup.AppSettingsBackupActivity
 import host.stjin.anonaddy.ui.appsettings.features.AppSettingsFeaturesActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
+import host.stjin.anonaddy.ui.appsettings.wearos.AppSettingsWearOSActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class AppSettingsActivity : BaseActivity(),
@@ -66,6 +80,18 @@ class AppSettingsActivity : BaseActivity(),
         setOnBiometricSwitchListeners()
 
         checkForUpdates()
+        checkPermissions()
+    }
+
+    private fun checkPermissions() {
+        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Notification permission check
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.areNotificationsEnabled()) {
+            binding.activityAppSettingsSectionNotificationPermission.visibility = View.VISIBLE
+        } else {
+            binding.activityAppSettingsSectionNotificationPermission.visibility = View.GONE
+        }
     }
 
     private fun checkForUpdates() {
@@ -252,6 +278,13 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
+        binding.activityAppSettingsSectionWearos.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsActivity, AppSettingsWearOSActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
         binding.activityAppSettingsSectionBackgroundService.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!addBackgroundServiceIntervalBottomDialogFragment.isAdded) {
@@ -331,20 +364,117 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
+        binding.activityAppSettingsSectionNotificationPermission.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            @RequiresApi(33)
+            override fun onClick() {
+                requestNotificationPermissions()
+            }
+
+        })
+
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private var notificationPermissionsResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+        when (result) {
+            true -> checkPermissions()
+            false -> {
+                val intent: Intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, this.packageName)
+                startActivity(intent)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestNotificationPermissions() {
+        // Check if notification permissions are granted
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
+            notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     private fun resetApp() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
-            .setTitle(resources.getString(R.string.reset_app))
-            .setIcon(R.drawable.ic_loader)
-            .setMessage(resources.getString(R.string.reset_app_confirmation_desc))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.reset_app),
+            message = resources.getString(R.string.reset_app_confirmation_desc),
+            icon = R.drawable.ic_loader,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.reset_app),
+            positiveButtonAction = {
+                Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+                    if (nodes.any()) {
+                        MaterialDialogHelper.showMaterialDialog(
+                            context = this,
+                            title = resources.getString(R.string.reset_app),
+                            message = resources.getString(R.string.reset_app_confirmation_wearable),
+                            icon = R.drawable.ic_device_watch,
+                            neutralButtonText = resources.getString(R.string.cancel),
+                            positiveButtonText = resources.getString(R.string.reset_app_all_apps),
+                            positiveButtonAction = {
+                                lifecycleScope.launch {
+                                    resetAppOnAllWearables { result ->
+                                        if (result) {
+                                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                                        } else {
+                                            MaterialDialogHelper.showMaterialDialog(
+                                                context = this@AppSettingsActivity,
+                                                title = resources.getString(R.string.reset_app_error_wearable),
+                                                message = resources.getString(R.string.reset_app_error_wearable_desc),
+                                                icon = R.drawable.ic_loader,
+                                                neutralButtonText = resources.getString(R.string.cancel),
+                                                positiveButtonText = resources.getString(R.string.reset_app_just_this_app),
+                                                positiveButtonAction = {
+                                                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                                                }
+                                            ).show()
+                                        }
+                                    }
+                                }
+                            },
+                            negativeButtonText = resources.getString(R.string.reset_app_just_this_app),
+                            negativeButtonAction = {
+                                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                            }
+                        ).show()
+                    } else {
+                        (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                    }
+                }.addOnFailureListener {
+                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                }
             }
-            .setPositiveButton(resources.getString(R.string.reset_app)) { _, _ ->
-                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+        ).show()
+    }
+
+    private fun resetAppOnAllWearables(callback: (Boolean) -> Unit) {
+        val nodeClient = Wearable.getNodeClient(this)
+        nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+            if (nodes.any()) {
+                nodeClient.localNode.addOnSuccessListener { localNode ->
+                    for (node in nodes) {
+                        Wearable.getMessageClient(this).sendMessage(
+                            node.id,
+                            "/reset",
+                            localNode.displayName.toByteArray()
+                        )
+                    }
+                    callback(true)
+                }.addOnFailureListener {
+                    callback(false)
+                }.addOnCanceledListener {
+                    callback(false)
+                }
+            } else {
+                callback(false)
             }
-            .show()
+        }.addOnFailureListener {
+            callback(false)
+        }.addOnCanceledListener {
+            callback(false)
+        }
     }
 
 

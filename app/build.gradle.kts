@@ -4,14 +4,24 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 33
+    namespace = "host.stjin.anonaddy"
+    //compileSdkPreview = "Tiramisu"
     defaultConfig {
-        applicationId = "host.stjin.anonaddy"
+        applicationId = namespace
         minSdk = 23
-        targetSdk = 31
-        versionCode = 36
+        targetSdk = 33
+        /*
+        Set the first two digits of the version code to the targetSdkVersion, such as 28.
+        Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
+        Set the next two digits to build or release number, such as 01.
+        Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
+         */
+
+        // SDK 33 + v4.0.0 + release 01 + 00 (for app)
+        versionCode = 334000100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v3.3.6"
+        versionName = "v4.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -20,14 +30,6 @@ android {
         viewBinding = true
     }
 
-    /**
-     * FLAVORS
-     */
-    flavorDimensions.add("flavor")
-    productFlavors {
-        create("main") {
-        }
-    }
 
     buildTypes {
         getByName("release") {
@@ -59,24 +61,25 @@ android {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":anonaddy_shared")))
+    wearApp(project(":app-wearos"))
+}
+
+dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.0")
+    implementation("androidx.core:core-ktx:1.8.0")
+    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("com.google.android.material:material:1.6.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
-    // Preferences for storing settings (and crypto settings)
-    implementation("androidx.preference:preference-ktx:1.1.1")
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
 
 }
 
@@ -86,13 +89,7 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
 
-// Fuel, network requests
-dependencies {
-    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
-    implementation("com.google.code.gson:gson:2.8.9")
-    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
-}
+
 
 // Shimmer
 dependencies {
@@ -103,11 +100,6 @@ dependencies {
 // Securing app
 dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
-}
-
-// Animations
-dependencies {
-    implementation("com.airbnb.android:lottie:4.2.2")
 }
 
 // Apache for extracting strings ManageAliasActivity
@@ -128,7 +120,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut:2.2.0")
+    implementation("app.futured.donut:donut:2.2.2")
 }
 
 // Loading spinners when execution actions from eg. bottomsheets
@@ -136,12 +128,22 @@ dependencies {
     implementation("com.github.Stjin:LoadingButtonAndroid:2.2.0")
 }
 
+// Backup manager
+dependencies {
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.3.Final")
+}
+
+// Communication with Wear OS device
+dependencies {
+    implementation("com.google.android.gms:play-services-wearable:17.1.0")
+}
+
+// Backgroundworker
+dependencies {
+    implementation("com.google.code.gson:gson:2.9.0")
+}
+
 // Built-in updater
 dependencies {
     implementation("com.github.einmalfel:Earl:1.2.0")
-}
-
-// Backup manager
-dependencies {
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
 }

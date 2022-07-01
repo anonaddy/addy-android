@@ -6,13 +6,12 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
-import host.stjin.anonaddy.models.Aliases
-import host.stjin.anonaddy.utils.DateTimeUtils
-import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.COPY_ACTION
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_ACTION
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.utils.CacheHelper
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 
 
 class AliasWidget2RemoteViewsFactory(private val mContext: Context) : RemoteViewsFactory {
@@ -95,11 +94,7 @@ class AliasWidget2RemoteViewsFactory(private val mContext: Context) : RemoteView
     }
 
     override fun onDataSetChanged() {
-        val settingsManager = SettingsManager(true, mContext)
-        // Cache contains 15 most popular aliases
-        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_15_MOST_ACTIVE_ALIASES_DATA)
-
-        val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(mContext, it) }
+        val aliasesList = CacheHelper.getBackgroundServiceCacheMostActiveAliasesData(mContext)
 
         // List needs more than 2 else it becomes a singleton and will result in an ClassCastException
         if (aliasesList != null) {

@@ -37,6 +37,7 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
+
                 <LinearLayout
                     style="@style/AnonAddyTitleNoAction"
                     android:layout_width="match_parent"
@@ -50,6 +51,17 @@
                         android:text="@string/general" />
 
                 </LinearLayout>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_notification_permission"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionAlert="true"
+                    app:sectionDescription="@string/notification_permissions_required_desc"
+                    app:sectionStartIcon="@drawable/ic_notification"
+                    app:sectionTitle="@string/permissions_required">
+
+                </host.stjin.anonaddy.ui.customviews.SectionView>
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_app_theme"
@@ -76,6 +88,14 @@
                     app:sectionDescription="@string/features_and_integrations_desc"
                     app:sectionStartIcon="@drawable/ic_confetti"
                     app:sectionTitle="@string/features_and_integrations" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_wearos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionTitle="@string/anonaddy_for_wearables"
+                    app:sectionDescription="@string/anonaddy_for_wearables_desc"
+                    app:sectionStartIcon="@drawable/ic_device_watch" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_backup"
@@ -116,7 +136,7 @@
                     android:id="@+id/activity_app_settings_section_reset"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="8dp"
                     app:sectionDescription="@string/reset_app_desc"
                     app:sectionStartIcon="@drawable/ic_loader"
                     app:sectionTitle="@string/reset_app" />
@@ -149,7 +169,7 @@
                     android:id="@+id/activity_app_settings_section_faq"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="8dp"
                     app:sectionDescription="@string/faq_desc"
                     app:sectionStartIcon="@drawable/ic_messages"
                     app:sectionTitle="@string/faq" />

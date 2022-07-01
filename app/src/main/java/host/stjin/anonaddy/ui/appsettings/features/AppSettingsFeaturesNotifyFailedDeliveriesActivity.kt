@@ -5,17 +5,16 @@ import android.os.Bundle
 import android.widget.CompoundButton
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyFailedDeliveriesBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
 
     private lateinit var settingsManager: SettingsManager
-    private lateinit var encryptedSettingsManager: SettingsManager
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesNotifyFailedDeliveriesBinding
@@ -31,7 +30,6 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
         )
 
         settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             R.string.feature_notify_failed_deliveries,
             binding.activityAppSettingsFeaturesNotifyFailedDeliveriesNSV,

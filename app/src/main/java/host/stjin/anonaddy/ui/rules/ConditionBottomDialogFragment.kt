@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesConditionBinding
-import host.stjin.anonaddy.models.Condition
+import host.stjin.anonaddy_shared.models.Condition
 
 
 class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
@@ -67,12 +67,18 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
 
     private fun checkForArguments() {
         // Check if there arguments (to be filled from the Create Rule Activity)
-        if (arguments?.size() ?: 0 > 0) {
+        if ((arguments?.size() ?: 0) > 0) {
             arguments?.getInt(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT_INDEX.argument)?.let {
                 conditionEditIndex = it
             }
-            arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT.argument)?.let {
-                conditionEditObject = it as? Condition
+            if (Build.VERSION.SDK_INT >= 33) {
+                arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT.argument, Condition::class.java)?.let {
+                    conditionEditObject = it
+                }
+            } else {
+                arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT.argument)?.let {
+                    conditionEditObject = it as? Condition
+                }
             }
 
 

@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.widget.CompoundButton
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWebintentResolutionBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.WebIntentManager
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
 
     private lateinit var settingsManager: SettingsManager
-    private lateinit var encryptedSettingsManager: SettingsManager
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesWebintentResolutionBinding
@@ -29,7 +28,6 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
         )
 
         settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             R.string.integration_webintent_resolution,
             binding.appsettingsFeaturesWebintentResolutionNSV,

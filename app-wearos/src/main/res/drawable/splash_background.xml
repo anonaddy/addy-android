@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/black" />
+        </shape>
+    </item>
+    <item>
+        <inset
+            android:drawable="@mipmap/ic_launcher_round"
+            android:insetLeft="60dp"
+            android:insetTop="60dp"
+            android:insetRight="60dp"
+            android:insetBottom="60dp" />
+    </item>
+</layer-list>

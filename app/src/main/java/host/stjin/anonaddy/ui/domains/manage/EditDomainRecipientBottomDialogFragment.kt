@@ -12,9 +12,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientDomainBinding
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Domains
 import kotlinx.coroutines.launch
 
 
@@ -30,7 +31,7 @@ class EditDomainRecipientBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditDomainRecipientBottomDialogListener {
-        fun recipientEdited()
+        fun recipientEdited(domain: Domains)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -133,15 +134,15 @@ class EditDomainRecipientBottomDialogFragment(
         recipient: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDefaultRecipientForSpecificDomain({ result ->
-            if (result == "200") {
-                listener.recipientEdited()
+        networkHelper.updateDefaultRecipientForSpecificDomain({ domain, error ->
+            if (domain != null) {
+                listener.recipientEdited(domain)
             } else {
                 // Revert the button to normal
                 binding.bsEditrecipientSaveButton.revertAnimation()
 
                 binding.bsEditrecipientTil.error =
-                    context.resources.getString(R.string.error_edit_recipient) + "\n" + result
+                    context.resources.getString(R.string.error_edit_recipient) + "\n" + error
             }
         }, aliasId, recipient)
     }

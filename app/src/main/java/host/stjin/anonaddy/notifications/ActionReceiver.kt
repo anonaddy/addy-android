@@ -4,23 +4,28 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import host.stjin.anonaddy.SettingsManager
+import androidx.core.content.ContextCompat
 import host.stjin.anonaddy.service.AliasWatcher
+import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class ActionReceiver : BroadcastReceiver() {
 
     object NOTIFICATIONACTIONS {
         const val STOP_WATCHING = "stop_watching"
+        const val DISABLE_ALIAS = "disable_alias"
         const val STOP_UPDATE_CHECK = "stop_update_check"
         const val STOP_FAILED_DELIVERY_CHECK = "stop_failed_delivery_check"
         const val STOP_PERIODIC_BACKUPS = "stop_periodic_backups"
+        const val DISABLE_WEAROS_QUICK_SETUP = "disable_wearos_quick_setup"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         //Toast.makeText(context,"received",Toast.LENGTH_SHORT).show();
         val action = intent.action
         val extra = intent.getStringExtra("extra")
+        val notificationID = intent.getIntExtra("notificationID", 0)
         val notificationManager = context
             .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         when (action) {
@@ -28,8 +33,18 @@ class ActionReceiver : BroadcastReceiver() {
                 extra?.let {
                     AliasWatcher(context).removeAliasToWatch(it)
                     // Dismiss notification
-                    notificationManager.cancel(NotificationHelper.ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID)
-
+                    notificationManager.cancel(notificationID)
+                }
+            }
+            NOTIFICATIONACTIONS.DISABLE_ALIAS -> {
+                extra?.let {
+                    val manageAliasIntent = Intent(context, ManageAliasActivity::class.java)
+                    manageAliasIntent.putExtra("alias_id", it)
+                    manageAliasIntent.putExtra("shouldDeactivateThisAlias", true)
+                    manageAliasIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    ContextCompat.startActivity(context, manageAliasIntent, null)
+                    // Dismiss notification
+                    notificationManager.cancel(notificationID)
                 }
             }
             NOTIFICATIONACTIONS.STOP_UPDATE_CHECK -> {
@@ -46,6 +61,11 @@ class ActionReceiver : BroadcastReceiver() {
                 SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.FAILED_BACKUP_NOTIFICATION_ID)
+            }
+            NOTIFICATIONACTIONS.DISABLE_WEAROS_QUICK_SETUP -> {
+                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.DISABLE_WEAROS_QUICK_SETUP_DIALOG, true)
+                // Dismiss notification
+                notificationManager.cancel(NotificationHelper.NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID)
             }
         }
     }

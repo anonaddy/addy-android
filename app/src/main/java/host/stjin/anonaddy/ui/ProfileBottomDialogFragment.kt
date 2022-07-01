@@ -3,6 +3,7 @@ package host.stjin.anonaddy.ui
 import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,14 +13,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import host.stjin.anonaddy.*
+import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetProfileBinding
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
-import host.stjin.anonaddy.utils.DateTimeUtils
+import host.stjin.anonaddy.utils.AttributeHelper
 import host.stjin.anonaddy.utils.NumberUtils
+import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -34,6 +40,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     var updateAvailable: Boolean = false
+    var permissionsRequired: Boolean = false
     private var _binding: BottomsheetProfileBinding? = null
 
     // This property is only valid between onCreateView and
@@ -60,7 +67,20 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         super.onResume()
 
         // When this view comes into the screen, set the update text
+        // The lower the check-method
         checkForUpdates()
+        checkForPermissions()
+    }
+
+    private fun checkForPermissions() {
+        if (permissionsRequired) {
+            binding.mainProfileSelectDialogAppSettingsDesc.text =
+                resources.getString(R.string.permissions_required)
+            tintSettingsIcon(true)
+        } else {
+            binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
+            tintSettingsIcon(false)
+        }
     }
 
     private fun checkForUpdates() {
@@ -68,12 +88,25 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         if (updateAvailable) {
             binding.mainProfileSelectDialogAppSettingsDesc.text =
                 resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
+            tintSettingsIcon(true)
+        } else {
+            binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
+            tintSettingsIcon(false)
+        }
 
+    }
+
+    private fun tintSettingsIcon(alert: Boolean) {
+        if (alert) {
             ImageViewCompat.setImageTintList(
                 binding.mainProfileSelectDialogAppSettingsIcon,
                 context?.let { ContextCompat.getColorStateList(it, R.color.softRed) }
             )
-
+        } else {
+            ImageViewCompat.setImageTintList(
+                binding.mainProfileSelectDialogAppSettingsIcon,
+                context?.let { ColorStateList.valueOf(AttributeHelper.getValueByAttr(it, R.attr.colorControlNormal)) }
+            )
         }
 
     }

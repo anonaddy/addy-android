@@ -2,6 +2,7 @@ package host.stjin.anonaddy
 
 import android.content.Context
 import host.stjin.anonaddy.utils.YDGooglePlayUtils
+import host.stjin.anonaddy_shared.NetworkHelper
 
 object Updater {
     // This bit is getting called by default, it checks the Gitlab RSS feed for the latest version

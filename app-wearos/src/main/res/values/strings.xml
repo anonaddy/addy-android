@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_reset_requested_by">AnonAddy reset requested by %1$s</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="app_configuration_not_valid">AnonAddy configuration not valid</string>
+    <string name="app_data_corrupted">The app data can no longer be read. The app will be reset in 15 seconds…</string>
+    <string name="setup_wearos_check_paired_device">Check your paired device to setup the app</string>
+    <string name="setup_wearos_no_paired_device">Connect your paired device and make sure AnonAddy for Android is installed</string>
+    <string name="aliases_recyclerview_list_item_date_time">%s - %s</string>
+    <string name="max_favorites_reached">You can only have 3 favorites</string>
+    <string name="activated">Activated</string>
+    <string name="deactivated">Deactivated</string>
+    <string name="changing_status">Changing status</string>
+    <string name="favorite">Favorite</string>
+    <string name="tile_favorite_aliases_label">Favorite aliases</string>
+    <string name="tile_favorite_aliases_title">Aliases</string>
+    <string name="tile_favorite_aliases_subtitle">Favorites</string>
+    <string name="tile_favorite_aliases_all">All aliases</string>
+    <string name="tile_favorite_aliases_create">Create alias</string>
+    <string name="tile_favorite_aliases_favorite">Favorite alias</string>
+    <string name="wearos_check_paired_device">Check your paired device</string>
+    <string name="show_on_paired_device">Show on device</string>
+    <string name="i_understand">I understand</string>
+    <string name="wearos_create_alias_guide">When creating a new alias on your wearable, the default settings of your AnonAddy account are used. In the case of a custom default alias format, random characters will be used. To change these settings, open the app on your paired device and choose "Manage AnonAddy account". It can take up to %d minutes for default settings to be applied to this device</string>
+    <string name="settings">Settings</string>
+    <string name="send_logs_to_device">Send logs to device</string>
+    <string name="logs">Logs</string>
+    <string name="background_service_interval_value">%d minutes</string>
+    <string name="clear_favorites">Clear favorites</string>
+    <string name="favorite_aliases_cleared">Favorite aliases cleared</string>
+    <string name="reset_app_desc">Clear all data</string>
+    <string name="increase">Increase</string>
+    <string name="decrease">Decrease</string>
+</resources>

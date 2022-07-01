@@ -13,37 +13,19 @@
         android:id="@+id/activity_manage_recipient_toolbar"
         layout="@layout/custom_toolbar_one_handed" />
 
+    <host.stjin.anonaddy.ui.customviews.AnimationView
+        android:id="@+id/animation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:animationDrawable="@drawable/ic_loading_logo"
+        app:loopAnimation="true" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_manage_recipient_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <RelativeLayout
-            android:id="@+id/activity_manage_recipient_NSV_RL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/activity_manage_recipient_RL_lottieview"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="32dp"
-                android:visibility="gone"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/no_internet_connection" />
-
-            <ProgressBar
-                android:id="@+id/activity_manage_recipient_RL_progressbar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
 
             <LinearLayout
                 android:id="@+id/activity_manage_recipient_LL1"
@@ -55,8 +37,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/layout_padding_top"
                 android:paddingStart="@dimen/layout_padding"
-                android:paddingEnd="@dimen/layout_padding"
-                android:visibility="invisible">
+                android:paddingEnd="@dimen/layout_padding">
 
                 <LinearLayout
                     style="@style/AnonAddyTitleNoAction"
@@ -169,6 +150,15 @@
 
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_can_reply_send"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/can_reply_send_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_arrow_back_up"
+                        app:sectionTitle="@string/can_reply_send" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_active"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -202,7 +192,6 @@
 
 
             </LinearLayout>
-        </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

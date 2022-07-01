@@ -54,16 +54,24 @@
 
             </host.stjin.anonaddy.ui.customviews.SectionView>
 
-
             <host.stjin.anonaddy.ui.customviews.SectionView
                 android:id="@+id/activity_app_settings_features_section_notify_failed_deliveries_sheet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
                 app:sectionDescription="@string/notify_failed_deliveries_feature_section_desc"
                 app:sectionShowSwitch="true"
                 app:sectionStartIcon="@drawable/ic_mail_error"
                 app:sectionTitle="@string/feature_notify_failed_deliveries" />
+
+            <host.stjin.anonaddy.ui.customviews.SectionView
+                android:id="@+id/activity_app_settings_features_section_manage_multiple_aliases_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                app:sectionDescription="@string/feature_longpress_desc"
+                app:sectionShowSwitch="true"
+                app:sectionStartIcon="@drawable/ic_hand_click"
+                app:sectionTitle="@string/feature_longpress" />
 
             <LinearLayout
                 style="@style/AnonAddyTitleNoAction"
@@ -93,7 +101,6 @@
                 android:id="@+id/activity_app_settings_features_section_webintent_sheet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
                 app:sectionDescription="@string/integration_webintent_resolution_desc"
                 app:sectionShowSwitch="true"
                 app:sectionStartIcon="@drawable/ic_external_link"

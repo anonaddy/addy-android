@@ -3,14 +3,13 @@ package host.stjin.anonaddy.ui.appsettings.features
 import android.os.Bundle
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWatchAliasBinding
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
 
     private lateinit var settingsManager: SettingsManager
-    private lateinit var encryptedSettingsManager: SettingsManager
 
     private lateinit var binding: ActivityAppSettingsFeaturesWatchAliasBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +24,6 @@ class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
         )
 
         settingsManager = SettingsManager(false, this)
-        encryptedSettingsManager = SettingsManager(true, this)
         setupToolbar(
             R.string.watch_alias,
             binding.appsettingsFeaturesWatchAliasNSV,

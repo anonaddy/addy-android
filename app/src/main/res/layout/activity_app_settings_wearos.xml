@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appsettings_wearos_CL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appsettings_wearos_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/appsettings_wearos_NSV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/appsettings_wearos_NSV_LL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/wearable" />
+
+                </LinearLayout>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_wearos_section_select_device"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionStartIcon="@drawable/ic_device_watch"
+                    app:sectionTitle="@string/select_wearable_device"
+                    app:sectionEndIcon="@drawable/ic_chevron_down"/>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_wearos_section_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionStartIcon="@drawable/ic_player_play"
+                    app:sectionDescription="@string/start_wearable_app_desc"
+                    app:sectionTitle="@string/start_wearable_app" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_wearos_section_setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionStartIcon="@drawable/ic_letters_case"
+                    app:sectionTitle="@string/setup_app_on_wearable"
+                    app:sectionDescription="@string/setup_app_on_wearable_desc" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_wearos_section_reset"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionStartIcon="@drawable/ic_loader"
+                    app:sectionTitle="@string/reset_app_on_wearable"
+                    app:sectionDescription="@string/reset_app_on_wearable_desc" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_wearos_section_show_logs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/wearos_show_logs_desc"
+                    app:sectionStartIcon="@drawable/ic_file_alert"
+                    app:sectionTitle="@string/wearos_show_logs"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    style="@style/AnonAddyTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/this_device" />
+
+                </LinearLayout>
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_wearos_section_quick_setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/wearable_quick_setup_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_bell"
+                    app:sectionTitle="@string/wearable_quick_setup" />
+
+            </LinearLayout>
+
+            <View
+                style="@style/divider"
+                android:layout_width="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:alpha="0.8"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/Info"
+                    android:paddingEnd="16dp"
+                    android:src="@drawable/ic_info"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/activity_app_settings_wearos_version_channel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/anonaddy_for_wearables_desc" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

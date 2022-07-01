@@ -18,9 +18,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAdddomainBinding
+import host.stjin.anonaddy_shared.NetworkHelper
 import kotlinx.coroutines.launch
 
 
@@ -115,8 +115,8 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         address: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.addDomain({ _, body, error ->
-            when (body) {
+        networkHelper.addDomain({ _, error, body ->
+            when (error) {
                 "404" -> {
                     openSetup(body)
                 }
@@ -133,7 +133,7 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
                     binding.bsAdddomainDomainAddDomainButton.revertAnimation()
 
                     binding.bsAdddomainDomainTil.error =
-                        context.resources.getString(R.string.error_adding_domain) + "\n" + error
+                        context.resources.getString(R.string.error_adding_domain) + "\n" + body
                 }
             }
         }, address)
@@ -169,7 +169,7 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         // Update body text
         updateSetupStatus(body)
 
-        //Re-get the status in 10 seconds
+        //Re-get the status in 30 seconds
         handler.postDelayed(runnableCode, 30000)
     }
 

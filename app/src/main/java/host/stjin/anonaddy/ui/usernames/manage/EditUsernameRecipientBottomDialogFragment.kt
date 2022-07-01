@@ -12,9 +12,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.NetworkHelper
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetEditRecipientUsernameBinding
+import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.Usernames
 import kotlinx.coroutines.launch
 
 
@@ -30,7 +31,7 @@ class EditUsernameRecipientBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditUsernameRecipientBottomDialogListener {
-        fun recipientEdited()
+        fun recipientEdited(username: Usernames)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -132,15 +133,15 @@ class EditUsernameRecipientBottomDialogFragment(
         recipient: String
     ) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDefaultRecipientForSpecificUsername({ result ->
-            if (result == "200") {
-                listener.recipientEdited()
+        networkHelper.updateDefaultRecipientForSpecificUsername({ username, error ->
+            if (username != null) {
+                listener.recipientEdited(username)
             } else {
                 // Revert the button to normal
                 binding.bsEditrecipientSaveButton.revertAnimation()
 
                 binding.bsEditrecipientTil.error =
-                    context.resources.getString(R.string.error_edit_recipient) + "\n" + result
+                    context.resources.getString(R.string.error_edit_recipient) + "\n" + error
             }
         }, aliasId, recipient)
     }

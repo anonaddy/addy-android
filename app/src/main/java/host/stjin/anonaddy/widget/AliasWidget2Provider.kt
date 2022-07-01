@@ -16,16 +16,16 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
-import host.stjin.anonaddy.utils.GsonTools
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_ADD_ALIAS_SHEET
 import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_APP_TARGET
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlin.random.Random
 
 
@@ -93,6 +93,7 @@ class AliasWidget2Provider : AppWidgetProvider() {
                 OPEN_APP_ADD_ALIAS_SHEET -> {
                     val mainIntent = Intent(context, AliasWidget2BottomSheetAddActivity::class.java)
                     mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                    mainIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
                     startActivity(context, mainIntent, null)
                 }
                 OPEN_APP_TARGET -> {
@@ -132,10 +133,7 @@ class AliasWidget2Provider : AppWidgetProvider() {
 
 private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle? = null) {
 
-    val settingsManager = SettingsManager(true, context)
-    val userResourceJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USER_RESOURCE)
-    val userResource = userResourceJson?.let { GsonTools.jsonToUserResourceObject(context, it) }
-
+    val userResource = CacheHelper.getBackgroundServiceCacheUserResource(context)
 
     // Count the stats from the cache
 

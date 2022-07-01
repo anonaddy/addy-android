@@ -14,10 +14,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.view.*
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
 import com.google.android.material.appbar.AppBarLayout
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
+import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -53,8 +56,7 @@ abstract class BaseActivity : AppCompatActivity() {
         title: Int,
         nestedScrollView: NestedScrollView?,
         customToolbarOneHandedBinding: CustomToolbarOneHandedBinding? = null,
-        image: Int? = null,
-        showAction: Boolean = false
+        image: Int? = null
     ) {
         customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
         customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationOnClickListener {
@@ -71,12 +73,22 @@ abstract class BaseActivity : AppCompatActivity() {
             sendBroadcast(intent)
         }
 
-        if (showAction) {
-            customToolbarOneHandedBinding?.customToolbarOneHandedActions?.visibility = View.VISIBLE
-        }
+
 
         this.nestedScrollView = nestedScrollView
         this.appBarLayout = customToolbarOneHandedBinding?.customToolbarAppbar
+    }
+
+    fun toolbarSetAction(customToolbarOneHandedBinding: CustomToolbarOneHandedBinding, icon: Int, onClickListener: View.OnClickListener?) {
+        customToolbarOneHandedBinding.customToolbarOneHandedActionButton.setImageDrawable(ContextCompat.getDrawable(this, icon))
+
+        if (onClickListener != null) {
+            customToolbarOneHandedBinding.customToolbarOneHandedActionButton.animate()?.alpha(1.0f)
+        } else {
+            customToolbarOneHandedBinding.customToolbarOneHandedActionButton.animate()?.alpha(0.0f)
+        }
+
+        customToolbarOneHandedBinding.customToolbarOneHandedActionButton.setOnClickListener(onClickListener)
     }
 
     private var nestedScrollView: NestedScrollView? = null
@@ -102,7 +114,7 @@ abstract class BaseActivity : AppCompatActivity() {
     This method is getting called in multiple places to check if the user is Authenticated to use the app.
     It only gived a callback when the user is authenticated
      */
-    fun isAuthenticated(callback: (Boolean) -> Unit) {
+    fun isAuthenticated(shouldFinishOnError: Boolean = true, callback: (Boolean) -> Unit) {
         val settingsManager = SettingsManager(true, this)
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
             if (!isSessionAuthenticated) {
@@ -130,10 +142,14 @@ abstract class BaseActivity : AppCompatActivity() {
                                     callback(true)
                                 }
                                 BiometricPrompt.ERROR_USER_CANCELED -> {
-                                    finish()
+                                    if (shouldFinishOnError) {
+                                        finish()
+                                    }
                                 }
                                 BiometricPrompt.ERROR_CANCELED -> {
-                                    finish()
+                                    if (shouldFinishOnError) {
+                                        finish()
+                                    }
                                 }
                                 else -> {
                                     Toast.makeText(
@@ -142,7 +158,9 @@ abstract class BaseActivity : AppCompatActivity() {
                                             errString
                                         ), Toast.LENGTH_LONG
                                     ).show()
-                                    finish()
+                                    if (shouldFinishOnError) {
+                                        finish()
+                                    }
                                 }
                             }
                         }
@@ -185,6 +203,7 @@ abstract class BaseActivity : AppCompatActivity() {
     fun drawBehindNavBar(
         root: View? = null,
         topViewsToShiftDownUsingMargin: ArrayList<View>? = null,
+        topViewsToShiftDownUsingPadding: ArrayList<View>? = null,
         bottomViewsToShiftUpUsingPadding: ArrayList<View>? = null,
         bottomViewsToShiftUpUsingMargin: ArrayList<View>? = null
     ) {
@@ -217,6 +236,13 @@ abstract class BaseActivity : AppCompatActivity() {
                             for (view in bottomViewsToShiftUpUsingPadding) {
                                 view.paddingBottom.plus(insets.bottom)
                                     .let { view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, it) }
+                            }
+                        }
+
+                        if (topViewsToShiftDownUsingPadding != null) {
+                            for (view in topViewsToShiftDownUsingPadding) {
+                                view.paddingBottom.plus(insets.top)
+                                    .let { view.setPadding(view.paddingLeft, it, view.paddingRight, view.paddingBottom) }
                             }
                         }
 

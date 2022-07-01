@@ -1,0 +1,91 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_manage_alias_settings_LL1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_active_switch_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@string/alias_status_desc"
+        app:sectionShowSwitch="true"
+        app:sectionStartIcon="@drawable/ic_circle_check"
+        app:sectionTitle="@string/alias_status_active" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_watch_switch_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@string/watch_alias_desc"
+        app:sectionShowSwitch="true"
+        app:sectionStartIcon="@drawable/ic_watch_alias"
+        app:sectionTitle="@string/watch_alias" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_desc_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@tools:sample/lorem/random"
+        app:sectionEndIcon="@drawable/ic_edit"
+        app:sectionStartIcon="@drawable/ic_align_justified"
+        app:sectionTitle="@string/description" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_recipients_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@tools:sample/full_names"
+        app:sectionEndIcon="@drawable/ic_edit"
+        app:sectionStartIcon="@drawable/ic_user"
+        app:sectionTitle="@string/recipients" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_created_at"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionRippleEffect="false"
+        app:sectionStartIcon="@drawable/ic_clock"
+        app:sectionTitle="@string/created_at" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_updated_at"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionRippleEffect="false"
+        app:sectionStartIcon="@drawable/ic_clock_history"
+        app:sectionTitle="@string/updated_at" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionColorAccent="@color/softRed"
+        app:sectionDescription="@string/delete_alias_desc"
+        app:sectionStartIcon="@drawable/ic_trash"
+        app:sectionTitle="@string/delete_alias" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_restore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionColorAccent="?colorPrimary"
+        app:sectionDescription="@string/restore_alias_desc"
+        app:sectionStartIcon="@drawable/ic_trash_off"
+        app:sectionTitle="@string/restore_alias" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_forget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionColorAccent="@color/hardRed"
+        app:sectionDescription="@string/forget_alias_desc"
+        app:sectionStartIcon="@drawable/ic_eraser"
+        app:sectionTitle="@string/forget_alias" />
+
+</LinearLayout>

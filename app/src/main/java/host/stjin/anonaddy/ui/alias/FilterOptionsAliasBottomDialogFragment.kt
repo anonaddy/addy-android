@@ -13,8 +13,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFilterOptionsAliasBinding
-import host.stjin.anonaddy.models.AliasSortFilter
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy_shared.models.AliasSortFilter
 
 
 class FilterOptionsAliasBottomDialogFragment(

@@ -4,7 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.Nullable
-import host.stjin.anonaddy.models.Aliases
+import host.stjin.anonaddy_shared.models.Aliases
 
 object AnonAddyUtils {
     fun getSendAddress(recipientEmails: String, alias: Aliases): Array<String?> {

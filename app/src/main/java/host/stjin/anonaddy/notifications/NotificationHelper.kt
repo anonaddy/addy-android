@@ -6,36 +6,175 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.os.Build
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.VISIBILITY_PRIVATE
-import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
-import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.NotificationCompat.*
+import androidx.core.app.NotificationManagerCompat.*
 import androidx.core.content.ContextCompat
+import com.google.android.gms.wearable.MessageEvent
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.SettingsManager
+import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
+import host.stjin.anonaddy.ui.appsettings.wearos.SetupWearOSBottomSheetActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
-import host.stjin.anonaddy.utils.LoggingHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlin.random.Random
 
 class NotificationHelper(private val context: Context) {
     private val ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
+    private val NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val UPDATER_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_BACKUP_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     companion object {
+        /*
+        ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID is in the method combined (concat) with a Random() because its possible that multiple of these notifications can appear
+        E.g. when 2 aliases have new emails.
+        That means that these notification ID's have a prefix of 1 (so 1000 up to 1999)
+         */
         const val ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID = 1
         const val UPDATER_NOTIFICATION_ID = 2
         const val FAILED_DELIVERIES_NOTIFICATION_ID = 3
-        const val FAILED_BACKUP_NOTIFICATION_ID = 3
+        const val FAILED_BACKUP_NOTIFICATION_ID = 4
+        const val NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID = 5
     }
 
+    /*
+    Wearable notifications
+    */
+
+    fun createSetupAppFirstNotification() {
+        createChannel(
+            NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
+            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables),
+            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables_desc), IMPORTANCE_HIGH
+        )
+
+        buildSetupAppFirstNotification(
+            context.resources.getString(R.string.notification_setup_app_first),
+            context.resources.getString(R.string.notification_setup_app_first_desc)
+        )
+    }
+
+    fun createSetupWearableAppNotification(p0: MessageEvent) {
+        createChannel(
+            NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
+            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables),
+            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables_desc), IMPORTANCE_MAX
+        )
+
+        buildSetupWearableAppNotification(
+            p0,
+            context.resources.getString(R.string.notification_setup_wearable_app),
+            context.resources.getString(R.string.notification_setup_wearable_app_desc, String(p0.data))
+        )
+    }
+
+    private fun buildSetupWearableAppNotification(p0: MessageEvent, title: String, text: String) {
+        val disableWearOSQuickSetupIntent = Intent(context, ActionReceiver::class.java).apply {
+            action = ActionReceiver.NOTIFICATIONACTIONS.DISABLE_WEAROS_QUICK_SETUP
+        }
+        val disableWearOSQuickSetupPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                disableWearOSQuickSetupIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+
+        val mainIntent = Intent(context, SetupWearOSBottomSheetActivity::class.java)
+        mainIntent.putExtra("nodeId", p0.sourceNodeId)
+        mainIntent.putExtra("nodeDisplayName", String(p0.data))
+        mainIntent.flags = FLAG_ACTIVITY_NO_ANIMATION
+
+        val openSetupWearableBottomSheetActivity: PendingIntent =
+            PendingIntent.getActivity(context, Random.nextInt(0, 999), mainIntent, PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val notification = Builder(context, NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(
+                BigTextStyle()
+                    .bigText(text)
+            )
+            .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
+            .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
+            .setSmallIcon(R.drawable.ic_device_watch)
+            .addAction(
+                R.drawable.ic_device_watch,
+                context.resources.getString(R.string.disable_quick_setup),
+                disableWearOSQuickSetupPendingIntent
+            )
+            // Notifications should always have a static color to identify the app
+            .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
+            .setContentIntent(openSetupWearableBottomSheetActivity)
+            // Only cancel this when the setup either failed or is completed
+            .setAutoCancel(false)
+            .build()
+
+        with(from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
+        }
+    }
+
+
+    private fun buildSetupAppFirstNotification(title: String, text: String) {
+        val disableWearOSQuickSetupIntent = Intent(context, ActionReceiver::class.java).apply {
+            action = ActionReceiver.NOTIFICATIONACTIONS.DISABLE_WEAROS_QUICK_SETUP
+        }
+        val disableWearOSQuickSetupPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                disableWearOSQuickSetupIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+
+        val mainIntent = Intent(context, SplashActivity::class.java)
+        val openSetupWearableBottomSheetActivity: PendingIntent = TaskStackBuilder.create(context).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(mainIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        val notification = Builder(context, NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(
+                BigTextStyle()
+                    .bigText(text)
+            )
+            .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
+            .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
+            .setSmallIcon(R.drawable.ic_device_watch)
+            .addAction(
+                R.drawable.ic_device_watch,
+                context.resources.getString(R.string.disable_quick_setup),
+                disableWearOSQuickSetupPendingIntent
+            )
+            // Notifications should always have a static color to identify the app
+            .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
+            .setContentIntent(openSetupWearableBottomSheetActivity)
+            .setAutoCancel(true)
+            .build()
+
+        with(from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
+        }
+    }
 
     /*
     Updates
@@ -43,8 +182,8 @@ class NotificationHelper(private val context: Context) {
     fun createUpdateNotification(version: String) {
         createChannel(
             UPDATER_NOTIFICATION_CHANNEL_ID,
-            context.resources.getString(R.string.anonaddy_updater),
-            context.resources.getString(R.string.notification_channel_update_desc)
+            context.resources.getString(R.string.notification_channel_update),
+            context.resources.getString(R.string.notification_channel_update_desc), IMPORTANCE_DEFAULT
         )
 
         buildUpdateNotification(
@@ -73,14 +212,14 @@ class NotificationHelper(private val context: Context) {
             getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        val notification = NotificationCompat.Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
+        val notification = Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(
-                NotificationCompat.BigTextStyle()
+                BigTextStyle()
                     .bigText(text)
             )
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setPriority(PRIORITY_LOW)
             .setVisibility(VISIBILITY_PUBLIC)
             // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
@@ -92,7 +231,7 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(true)
             .build()
 
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(UPDATER_NOTIFICATION_ID, notification)
         }
@@ -105,8 +244,8 @@ class NotificationHelper(private val context: Context) {
     fun createFailedDeliveryNotification(difference: Int) {
         createChannel(
             FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID,
-            context.resources.getString(R.string.failed_deliveries),
-            context.resources.getString(R.string.notification_channel_failed_deliveries_desc)
+            context.resources.getString(R.string.notification_channel_failed_deliveries),
+            context.resources.getString(R.string.notification_channel_failed_deliveries_desc), IMPORTANCE_DEFAULT
         )
 
         buildFailedDeliveryNotification(
@@ -135,14 +274,14 @@ class NotificationHelper(private val context: Context) {
             getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        val notification = NotificationCompat.Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
+        val notification = Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(
-                NotificationCompat.BigTextStyle()
+                BigTextStyle()
                     .bigText(text)
             )
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(PRIORITY_DEFAULT)
             .setVisibility(VISIBILITY_PUBLIC)
             // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
@@ -154,7 +293,7 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(true)
             .build()
 
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(FAILED_DELIVERIES_NOTIFICATION_ID, notification)
         }
@@ -166,8 +305,8 @@ class NotificationHelper(private val context: Context) {
     fun createFailedBackupNotification() {
         createChannel(
             FAILED_BACKUP_NOTIFICATION_CHANNEL_ID,
-            context.resources.getString(R.string.notification_channel_failed_backups),
-            context.resources.getString(R.string.notification_channel_failed_backups_desc)
+            context.resources.getString(R.string.notification_channel_backup),
+            context.resources.getString(R.string.notification_channel_backup_desc), IMPORTANCE_DEFAULT
         )
 
         buildFailedBackupNotification(
@@ -197,14 +336,14 @@ class NotificationHelper(private val context: Context) {
             getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        val notification = NotificationCompat.Builder(context, FAILED_BACKUP_NOTIFICATION_CHANNEL_ID)
+        val notification = Builder(context, FAILED_BACKUP_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(
-                NotificationCompat.BigTextStyle()
+                BigTextStyle()
                     .bigText(text)
             )
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(PRIORITY_DEFAULT)
             .setVisibility(VISIBILITY_PUBLIC)
             // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
@@ -220,7 +359,7 @@ class NotificationHelper(private val context: Context) {
             .setAutoCancel(true)
             .build()
 
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(FAILED_BACKUP_NOTIFICATION_ID, notification)
         }
@@ -234,7 +373,7 @@ class NotificationHelper(private val context: Context) {
         createChannel(
             ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID,
             context.resources.getString(R.string.watch_alias),
-            context.resources.getString(R.string.notification_channel_watch_alias_desc)
+            context.resources.getString(R.string.notification_channel_watch_alias_desc), IMPORTANCE_DEFAULT
         )
 
         buildAliasWatcherNotification(
@@ -250,9 +389,15 @@ class NotificationHelper(private val context: Context) {
         val visibility =
             if (SettingsManager(true, context).getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PUBLIC
 
+        // Decide notificationID here, and send it to the actionReceiver so the correct notification can be cancelled
+        // notificationID gets concat here with prefix of ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID
+        // So 1 + 443 = 1443
+        val notificationID = Integer.valueOf(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID.toString() + Random.nextInt(0, 999).toString())
+
         val stopWatchingIntent = Intent(context, ActionReceiver::class.java).apply {
             action = ActionReceiver.NOTIFICATIONACTIONS.STOP_WATCHING
             putExtra("extra", aliasId)
+            putExtra("notificationID", notificationID)
         }
         val stopWatchingPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
@@ -261,6 +406,20 @@ class NotificationHelper(private val context: Context) {
                 stopWatchingIntent,
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
+
+        val disableAliasIntent = Intent(context, ActionReceiver::class.java).apply {
+            action = ActionReceiver.NOTIFICATIONACTIONS.DISABLE_ALIAS
+            putExtra("extra", aliasId)
+            putExtra("notificationID", notificationID)
+        }
+        val disableAliasPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                disableAliasIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
         val editAliasIntent = Intent(context, ManageAliasActivity::class.java).apply {
             putExtra("alias_id", aliasId)
         }
@@ -271,32 +430,33 @@ class NotificationHelper(private val context: Context) {
             getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        val notification = NotificationCompat.Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
+        val notification = Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(
-                NotificationCompat.BigTextStyle()
+                BigTextStyle()
                     .bigText(text)
             )
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(PRIORITY_HIGH)
             .setVisibility(visibility)
             // Notifications should always have a static color to identify the app
             .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
             .setSmallIcon(R.drawable.ic_watch_alias)
             .addAction(R.drawable.ic_watch_alias, context.resources.getString(R.string.stop_watching), stopWatchingPendingIntent)
+            .addAction(R.drawable.ic_watch_alias, context.resources.getString(R.string.disable_alias), disableAliasPendingIntent)
             // Notifications should always have a static color to identify the app
             .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
             .setContentIntent(editAliasPendingIntent)
             .setAutoCancel(true)
             .build()
-        with(NotificationManagerCompat.from(context)) {
+        with(from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID, notification)
+            notify(notificationID, notification)
         }
     }
 
 
-    private fun createChannel(channelId: String, title: String, description: String) {
+    private fun createChannel(channelId: String, title: String, description: String, importance: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
@@ -304,6 +464,7 @@ class NotificationHelper(private val context: Context) {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             channel.description = description
+            channel.importance = importance
             channel.enableLights(true)
             // Notifications should always have a static color to identify the app
             channel.lightColor = ContextCompat.getColor(context, R.color.md_theme_primary)
