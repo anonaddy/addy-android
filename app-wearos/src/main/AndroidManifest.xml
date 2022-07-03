@@ -17,7 +17,7 @@
         android:theme="@style/SplashTheme">
         <meta-data
             android:name="com.google.android.wearable.standalone"
-            android:value="true" />
+            android:value="false" />
 
         <service
             android:name=".watchface.AnonAddyWatchFace"
