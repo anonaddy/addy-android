@@ -1,5 +1,11 @@
 # Changelog
 
+## [v4.0.1] - 2022-07-04
+
+### Fixed/Improved
+
+- Changed wearOS standalone to false as it requires the app to setup
+
 ## [v4.0.0] - 2022-07-01
 
 ### Added
