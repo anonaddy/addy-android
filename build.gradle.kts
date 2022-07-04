@@ -3,9 +3,9 @@ buildscript {
     // Define versions in a single place
     extra.apply {
         // https://developer.android.com/jetpack/androidx/releases/wear-compose
-        set("wear_compose_version", "1.0.0-beta03")
+        set("wear_compose_version", "1.0.0-rc02")
         // https://developer.android.com/jetpack/androidx/releases/compose
-        set("compose_version", "1.2.0-beta03")
+        set("compose_version", "1.2.0-rc02")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.4.0")
         // https://developer.android.com/jetpack/androidx/releases/compose-material3
