@@ -38,6 +38,7 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
+
 class AppSettingsActivity : BaseActivity(),
     AppearanceBottomDialogFragment.AddAppearanceBottomDialogListener,
     BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
@@ -404,6 +405,8 @@ class AppSettingsActivity : BaseActivity(),
             neutralButtonText = resources.getString(R.string.cancel),
             positiveButtonText = resources.getString(R.string.reset_app),
             positiveButtonAction = {
+
+                // TODO NPE
                 Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
                     if (nodes.any()) {
                         MaterialDialogHelper.showMaterialDialog(

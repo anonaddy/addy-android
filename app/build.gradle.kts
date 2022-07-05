@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v4.0.0 + release 01 + 00 (for app)
-        versionCode = 334010100 // https://developer.android.com/training/wearables/packaging
+        // SDK 33 + v4.0.2 + release 01 + 00 (for app)
+        versionCode = 334020100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v4.0.1"
+        versionName = "v4.0.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -42,6 +42,16 @@ android {
             isDebuggable = true
         }
     }
+
+    flavorDimensions.add("type")
+    productFlavors {
+        create("gplay") {
+            dimension = "type"
+        }
+        create("gplayless") {
+            dimension = "type"
+        }
+    }
     /**
      * END FLAVORS
      */
@@ -60,6 +70,7 @@ android {
 
 }
 
+
 dependencies {
     implementation(project(mapOf("path" to ":anonaddy_shared")))
     wearApp(project(":app-wearos"))
@@ -72,11 +83,11 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.0")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
@@ -134,8 +145,12 @@ dependencies {
 }
 
 // Communication with Wear OS device
+// Only implement GPlay in the gplay version
+
+// Because the app has a gplayless flavor define a gplayImplementation
+val gplayImplementation by configurations
 dependencies {
-    implementation("com.google.android.gms:play-services-wearable:17.1.0")
+    gplayImplementation("com.google.android.gms:play-services-wearable:17.1.0")
 }
 
 // Backgroundworker
