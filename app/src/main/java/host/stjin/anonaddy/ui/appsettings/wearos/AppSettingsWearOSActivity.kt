@@ -51,22 +51,31 @@ class AppSettingsWearOSActivity : BaseActivity() {
     }
 
     private fun checkIfApiIsAvailable() {
-        nodeClient = Wearable.getNodeClient(this)
-        nodeClient!!.connectedNodes.addOnSuccessListener {
-            // nodes available, so reload the nodes
-            loadNodes()
-        }.addOnFailureListener {
-            MaterialDialogHelper.showMaterialDialog(
-                context = this,
-                title = resources.getString(R.string.wearable_api_not_available),
-                message = resources.getString(R.string.wearable_api_not_available_desc),
-                icon = R.drawable.ic_brand_google_play,
-                positiveButtonText = resources.getString(R.string.i_understand),
-                positiveButtonAction = {
-                    finish()
-                }
-            ).setCancelable(false).show()
+        try {
+            nodeClient = Wearable.getNodeClient(this)
+            nodeClient!!.connectedNodes.addOnSuccessListener {
+                // nodes available, so reload the nodes
+                loadNodes()
+            }.addOnFailureListener {
+                wearApiNotAvailableDialog()
+            }
+        } catch (e: NullPointerException) {
+            // Expected crash, the gplayless version will return null as connectedNodes
+            wearApiNotAvailableDialog()
         }
+    }
+
+    private fun wearApiNotAvailableDialog() {
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.wearable_api_not_available),
+            message = resources.getString(R.string.wearable_api_not_available_desc),
+            icon = R.drawable.ic_brand_google_play,
+            positiveButtonText = resources.getString(R.string.i_understand),
+            positiveButtonAction = {
+                finish()
+            }
+        ).setCancelable(false).show()
     }
 
     private val listOfNodes: ArrayList<Node> = arrayListOf()
@@ -127,7 +136,10 @@ class AppSettingsWearOSActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         loadSettings()
-        loadNodes()
+
+        if (nodeClient != null) {
+            loadNodes()
+        }
     }
 
     private fun setOnClickListeners() {

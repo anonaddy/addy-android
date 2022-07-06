@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package host.stjin.anonaddy_shared
 
 import android.content.Context
