@@ -68,10 +68,10 @@ Developer-led download channels:
 > Recommended (access to beta's, automatic updates and support me :) )
 
 - [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
-- ⚠️Note: this version charges but the code is identical, so if you'd like to buy the author a cup of tea (or if you're more headstrong) then go here
+- ⚠️Note: this version charges and contains the Google Play Services so it can be used with AnonAddy for Android Wearables. The rest of the code is identical, so if you'd like to buy me a cup of tea (or if you're more headstrong) then go here
   and download it, otherwise choose another source :)
 
-> Other sources
+> Other sources (Without Google Play Services)
 
 - [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
 - [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy)
@@ -99,7 +99,7 @@ Third party libraries used.
 - [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner) (To be enabled in future versions)
 - [ocpsoft/prettytime](https://github.com/ocpsoft/prettytime)
 - [com.google.android.gms:play-services-wearable](https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable/17.1.0) (for
-  communication with WearOS)
+  communication with WearOS, available in the Google Play version of the app only)
 
 Third party libraries used. (WearOS)
 
