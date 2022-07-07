@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.0.2] - 2022-07-07
+
+### Fixed/Improved
+
+- As of this version, the version with and version without Google Play services are separated to ensure user privacy. The version with Google Play
+  Services will only be offered via Google Play and has the necessary APIs to use "AnonAddy for Android Wearables". The variant without Google Play
+  Services will be served to F-Droid and Gitlab (APK) users.
+
 ## [v4.0.1] - 2022-07-04
 
 ### Fixed/Improved
