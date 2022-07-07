@@ -8,6 +8,7 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsWearosBinding
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
@@ -16,6 +17,7 @@ import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
@@ -24,6 +26,7 @@ class AppSettingsWearOSActivity : BaseActivity() {
     private var forceSwitch = false
     private lateinit var settingsManager: SettingsManager
     private lateinit var binding: ActivityAppSettingsWearosBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsWearosBinding.inflate(layoutInflater)
@@ -51,22 +54,49 @@ class AppSettingsWearOSActivity : BaseActivity() {
     }
 
     private fun checkIfApiIsAvailable() {
-        nodeClient = Wearable.getNodeClient(this)
-        nodeClient!!.connectedNodes.addOnSuccessListener {
-            // nodes available, so reload the nodes
-            loadNodes()
-        }.addOnFailureListener {
-            MaterialDialogHelper.showMaterialDialog(
-                context = this,
-                title = resources.getString(R.string.wearable_api_not_available),
-                message = resources.getString(R.string.wearable_api_not_available_desc),
-                icon = R.drawable.ic_brand_google_play,
-                positiveButtonText = resources.getString(R.string.i_understand),
-                positiveButtonAction = {
-                    finish()
+        if (BuildConfig.FLAVOR == "gplay") {
+            try {
+                nodeClient = Wearable.getNodeClient(this)
+                nodeClient!!.connectedNodes.addOnSuccessListener {
+                    // nodes available, so reload the nodes
+                    loadNodes()
+                }.addOnFailureListener {
+                    wearApiNotAvailableDialog()
                 }
-            ).setCancelable(false).show()
+            } catch (ex: Exception) {
+                LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "checkIfApiIsAvailable", null)
+                wearApiNotAvailableDialog()
+            }
+        } else {
+            gplayLessVersionDialog()
         }
+    }
+
+    private fun wearApiNotAvailableDialog() {
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.wearable_api_not_available),
+            message = resources.getString(R.string.wearable_api_not_available_desc),
+            icon = R.drawable.ic_brand_google_play,
+            positiveButtonText = resources.getString(R.string.i_understand),
+            positiveButtonAction = {
+                finish()
+            }
+        ).setCancelable(false).show()
+    }
+
+
+    private fun gplayLessVersionDialog() {
+        MaterialDialogHelper.showMaterialDialog(
+            context = this,
+            title = resources.getString(R.string.wearable_api_not_available),
+            message = resources.getString(R.string.gplayless_wearable_api_not_available_desc),
+            icon = R.drawable.ic_brand_google_play,
+            positiveButtonText = resources.getString(R.string.i_understand),
+            positiveButtonAction = {
+                finish()
+            }
+        ).setCancelable(false).show()
     }
 
     private val listOfNodes: ArrayList<Node> = arrayListOf()
@@ -127,7 +157,10 @@ class AppSettingsWearOSActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         loadSettings()
-        loadNodes()
+
+        if (nodeClient != null) {
+            loadNodes()
+        }
     }
 
     private fun setOnClickListeners() {

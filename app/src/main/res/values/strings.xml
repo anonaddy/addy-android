@@ -569,7 +569,8 @@
     <string name="setup_app_on_wearable_desc">Set up the app on your wearable with the same account that this app is set up with</string>
     <string name="reset_app_on_wearable_desc">Remotely reset the AnonAddy app on your wearable</string>
     <string name="start_wearable_app_desc">Remotely open the AnonAddy app on your wearable</string>
-    <string name="wearable_api_not_available_desc">Wearable API is not available on this device. In order to use AnonAddy for wearables make sure to have a recent version of Google Play Services installed</string>
+    <string name="wearable_api_not_available_desc">Wearable API is not available. In order to use AnonAddy for Wearables make sure to have a recent version of Google Play Services installed</string>
+    <string name="gplayless_wearable_api_not_available_desc">Wearable API is not available because you are using a gplayless flavor of the app. In order to use AnonAddy for Wearables make sure to install the app through the Google Play Store</string>
     <string name="wearable_api_not_available">API not available</string>
     <string name="i_understand">I understand</string>
     <string name="permissions_required">Permissions required</string>

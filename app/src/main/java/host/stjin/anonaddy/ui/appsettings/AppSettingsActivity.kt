@@ -38,6 +38,7 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
+
 class AppSettingsActivity : BaseActivity(),
     AppearanceBottomDialogFragment.AddAppearanceBottomDialogListener,
     BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
@@ -404,45 +405,51 @@ class AppSettingsActivity : BaseActivity(),
             neutralButtonText = resources.getString(R.string.cancel),
             positiveButtonText = resources.getString(R.string.reset_app),
             positiveButtonAction = {
-                Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
-                    if (nodes.any()) {
-                        MaterialDialogHelper.showMaterialDialog(
-                            context = this,
-                            title = resources.getString(R.string.reset_app),
-                            message = resources.getString(R.string.reset_app_confirmation_wearable),
-                            icon = R.drawable.ic_device_watch,
-                            neutralButtonText = resources.getString(R.string.cancel),
-                            positiveButtonText = resources.getString(R.string.reset_app_all_apps),
-                            positiveButtonAction = {
-                                lifecycleScope.launch {
-                                    resetAppOnAllWearables { result ->
-                                        if (result) {
-                                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                                        } else {
-                                            MaterialDialogHelper.showMaterialDialog(
-                                                context = this@AppSettingsActivity,
-                                                title = resources.getString(R.string.reset_app_error_wearable),
-                                                message = resources.getString(R.string.reset_app_error_wearable_desc),
-                                                icon = R.drawable.ic_loader,
-                                                neutralButtonText = resources.getString(R.string.cancel),
-                                                positiveButtonText = resources.getString(R.string.reset_app_just_this_app),
-                                                positiveButtonAction = {
-                                                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                                                }
-                                            ).show()
+
+                try {
+                    Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+                        if (nodes.any()) {
+                            MaterialDialogHelper.showMaterialDialog(
+                                context = this,
+                                title = resources.getString(R.string.reset_app),
+                                message = resources.getString(R.string.reset_app_confirmation_wearable),
+                                icon = R.drawable.ic_device_watch,
+                                neutralButtonText = resources.getString(R.string.cancel),
+                                positiveButtonText = resources.getString(R.string.reset_app_all_apps),
+                                positiveButtonAction = {
+                                    lifecycleScope.launch {
+                                        resetAppOnAllWearables { result ->
+                                            if (result) {
+                                                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                                            } else {
+                                                MaterialDialogHelper.showMaterialDialog(
+                                                    context = this@AppSettingsActivity,
+                                                    title = resources.getString(R.string.reset_app_error_wearable),
+                                                    message = resources.getString(R.string.reset_app_error_wearable_desc),
+                                                    icon = R.drawable.ic_loader,
+                                                    neutralButtonText = resources.getString(R.string.cancel),
+                                                    positiveButtonText = resources.getString(R.string.reset_app_just_this_app),
+                                                    positiveButtonAction = {
+                                                        (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                                                    }
+                                                ).show()
+                                            }
                                         }
                                     }
+                                },
+                                negativeButtonText = resources.getString(R.string.reset_app_just_this_app),
+                                negativeButtonAction = {
+                                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                                 }
-                            },
-                            negativeButtonText = resources.getString(R.string.reset_app_just_this_app),
-                            negativeButtonAction = {
-                                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                            }
-                        ).show()
-                    } else {
+                            ).show()
+                        } else {
+                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                        }
+                    }.addOnFailureListener {
                         (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                     }
-                }.addOnFailureListener {
+                } catch (e: NullPointerException) {
+                    // Expected crash, the gplayless version will return null as connectedNodes
                     (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                 }
             }

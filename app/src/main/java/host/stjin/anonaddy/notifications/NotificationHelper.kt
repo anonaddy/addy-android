@@ -1,3 +1,4 @@
+
 package host.stjin.anonaddy.notifications
 
 import android.app.NotificationChannel
@@ -49,6 +50,7 @@ class NotificationHelper(private val context: Context) {
     Wearable notifications
     */
 
+    @Suppress("unused") // Is used in gplay version
     fun createSetupAppFirstNotification() {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
@@ -62,6 +64,7 @@ class NotificationHelper(private val context: Context) {
         )
     }
 
+    @Suppress("unused") // Is used in gplay version
     fun createSetupWearableAppNotification(p0: MessageEvent) {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,

@@ -13,10 +13,10 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
-import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageAliasBinding
 import host.stjin.anonaddy.service.AliasWatcher
@@ -27,6 +27,7 @@ import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -135,23 +136,28 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-    private var nodeClient: NodeClient? = null
     private fun loadNodes() {
-        nodeClient = Wearable.getNodeClient(this)
-        nodeClient!!.connectedNodes.addOnSuccessListener { nodes ->
-            // Send a message to all connected nodes
-            // Nodes with the app installed will receive this message and open the ManageAliasActivity
-            if (nodes.any()) {
-                toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
-                    for (node in nodes) {
-                        Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+        if (BuildConfig.FLAVOR == "gplay") {
+            try {
+                val nodeClient = Wearable.getNodeClient(this)
+                nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+                    // Send a message to all connected nodes
+                    // Nodes with the app installed will receive this message and open the ManageAliasActivity
+                    if (nodes.any()) {
+                        toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
+                            for (node in nodes) {
+                                Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+                            }
+                            SnackbarHelper.createSnackbar(
+                                this,
+                                this.resources.getString(R.string.check_your_wearable),
+                                binding.activityManageAliasCL
+                            ).show()
+                        }
                     }
-                    SnackbarHelper.createSnackbar(
-                        this,
-                        this.resources.getString(R.string.check_your_wearable),
-                        binding.activityManageAliasCL
-                    ).show()
                 }
+            } catch (ex: Exception) {
+                LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "loadNodes", null)
             }
         }
     }
