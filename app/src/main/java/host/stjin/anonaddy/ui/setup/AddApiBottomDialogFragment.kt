@@ -17,7 +17,6 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -59,14 +58,10 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         networkHelper = NetworkHelper(requireContext())
 
 
-        // TODO ENABLE FEATURE WHEN ANONADDY IMPLEMENTED THIS
-        // Make sure to also uncomment the <!-- BLOCK --> in manifest
-        if (BuildConfig.DEBUG) {
-            // Check that the device will let you use the camera
-            val pm = context?.packageManager
-            if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) == true) {
-                initQrScanner()
-            }
+        // Check that the device will let you use the camera
+        val pm = context?.packageManager
+        if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) == true) {
+            initQrScanner()
         }
 
 

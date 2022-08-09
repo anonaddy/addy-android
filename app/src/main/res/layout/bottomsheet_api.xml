@@ -164,9 +164,9 @@
                         android:gravity="top"
                         android:imeOptions="actionDone"
                         android:inputType="textMultiLine"
-                        android:lines="5"
-                        android:maxLines="5"
-                        android:minLines="5"
+                        android:lines="3"
+                        android:maxLines="3"
+                        android:minLines="3"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical" />

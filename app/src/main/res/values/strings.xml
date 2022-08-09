@@ -593,5 +593,11 @@
     <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode. (requires a restart of the app)</string>
     <string name="feature_longpress">Manage multiple aliases</string>
     <string name="something_went_wrong_tap_here_to_see_the_error">Something went wrong, tap here to see the error</string>
-
+    <string name="pgp_inline">PGP/Inline</string>
+    <string name="pgp_inline_desc">Use inline (PGP/Inline) instead of PGP/MIME encryption for forwarded messages. Please Note: This will ONLY encrypt and forward the plain text content!</string>
+    <string name="protected_headers">Hide subject</string>
+    <string name="protected_headers_subject_desc">Enabling this setting will hide and encrypt the email subject using protected headers. Many mail clients are able to automatically decrypt and display the subject once the email arrives.</string>
+    <string name="you_must_be_subscribed">You must be subscribed to unlock this feature</string>
+    <string name="prerequisite_disable_pgp_inline">You need to disable inline encryption before you can enable protected headers (hide subject)</string>
+    <string name="prerequisite_disable_protected_headers">You need to disable protected headers (hide subject) before you can enable inline encryption</string>
 </resources>

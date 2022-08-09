@@ -27,6 +27,8 @@ import host.stjin.anonaddy_shared.AnonAddy.API_URL_DOMAINS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_FAILED_DELIVERIES
+import host.stjin.anonaddy_shared.AnonAddy.API_URL_INLINE_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy_shared.AnonAddy.API_URL_PROTECTED_HEADERS_RECIPIENTS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_RECIPIENTS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_RECIPIENT_RESEND
@@ -1251,6 +1253,194 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
+    suspend fun disablePgpInlineRecipient(
+        callback: (String?) -> Unit?,
+        recipientId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_INLINE_ENCRYPTED_RECIPIENTS}/$recipientId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disablePgpInlineRecipient",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
+
+
+    suspend fun enablePgpInlineRecipient(
+        callback: (Recipients?, String?) -> Unit,
+        recipientId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("id", recipientId)
+
+        val (_, response, result) = Fuel.post(API_URL_INLINE_ENCRYPTED_RECIPIENTS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(anonAddyData.data, null)
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enablePgpInlineRecipient",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun disableProtectedHeadersRecipient(
+        callback: (String?) -> Unit?,
+        recipientId: String
+    ) {
+        val (_, response, result) = Fuel.delete("${API_URL_PROTECTED_HEADERS_RECIPIENTS}/$recipientId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disableProtectedHeadersRecipient",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
+
+
+    suspend fun enableProtectedHeadersRecipient(
+        callback: (Recipients?, String?) -> Unit,
+        recipientId: String
+    ) {
+
+        val json = JSONObject()
+        json.put("id", recipientId)
+
+        val (_, response, result) = Fuel.post(API_URL_PROTECTED_HEADERS_RECIPIENTS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(anonAddyData.data, null)
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enableProtectedHeadersRecipient",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
+    }
 
     suspend fun removeEncryptionKeyRecipient(
         callback: (String?) -> Unit,
