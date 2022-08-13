@@ -182,6 +182,24 @@
                         app:sectionTitle="@string/remove_public_key" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_pgp_inline"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/pgp_inline_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_key"
+                        app:sectionTitle="@string/pgp_inline" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_protected_headers"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/protected_headers_subject_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_eye_off"
+                        app:sectionTitle="@string/protected_headers" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_delete"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

@@ -12,8 +12,10 @@ import host.stjin.anonaddy.databinding.ActivityManageRecipientsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AnonAddyForAndroid
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -123,6 +125,44 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageRecipientPgpInline.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageRecipientPgpInline.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enablePGPInline()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disablePGPInline()
+                        }
+                    }
+                }
+            }
+        })
+
+        binding.activityManageRecipientProtectedHeaders.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageRecipientProtectedHeaders.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableProtectedHeaders()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableProtectedHeaders()
+                        }
+                    }
+                }
+            }
+        })
+
 
     }
 
@@ -199,6 +239,80 @@ class ManageRecipientsActivity : BaseActivity(),
     }
 
 
+    private suspend fun disablePGPInline() {
+        networkHelper.disablePgpInlineRecipient({ result ->
+            binding.activityManageRecipientPgpInline.showProgressBar(false)
+            if (result == "204") {
+                this.recipient!!.inline_encryption = false
+                updateUi(this.recipient!!)
+            } else {
+                binding.activityManageRecipientPgpInline.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+
+    private suspend fun enablePGPInline() {
+        networkHelper.enablePgpInlineRecipient({ recipient, error ->
+            binding.activityManageRecipientPgpInline.showProgressBar(false)
+            if (recipient != null) {
+                this.recipient = recipient
+            } else {
+                binding.activityManageRecipientPgpInline.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+
+    private suspend fun disableProtectedHeaders() {
+        networkHelper.disableProtectedHeadersRecipient({ result ->
+            binding.activityManageRecipientProtectedHeaders.showProgressBar(false)
+            if (result == "204") {
+                this.recipient!!.protected_headers = false
+                updateUi(this.recipient!!)
+            } else {
+                binding.activityManageRecipientProtectedHeaders.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+
+    private suspend fun enableProtectedHeaders() {
+        networkHelper.enableProtectedHeadersRecipient({ recipient, error ->
+            binding.activityManageRecipientProtectedHeaders.showProgressBar(false)
+            if (recipient != null) {
+                this.recipient = recipient
+            } else {
+                binding.activityManageRecipientProtectedHeaders.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+
     private fun setOnClickListeners() {
         binding.activityManageRecipientChangeGpgKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -237,6 +351,19 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageRecipientPgpInline.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientPgpInline.setSwitchChecked(!binding.activityManageRecipientPgpInline.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientProtectedHeaders.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientProtectedHeaders.setSwitchChecked(!binding.activityManageRecipientProtectedHeaders.getSwitchChecked())
+            }
+        })
     }
 
 
@@ -369,6 +496,35 @@ class ManageRecipientsActivity : BaseActivity(),
                 R.string.encryption_disabled
             )
         )
+
+        binding.activityManageRecipientPgpInline.setSwitchChecked(recipient.inline_encryption)
+        binding.activityManageRecipientProtectedHeaders.setSwitchChecked(recipient.protected_headers)
+
+        if (recipient.fingerprint == null) {
+            binding.activityManageRecipientPgpInline.setLayoutEnabled(false)
+            binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)
+        } else if (recipient.inline_encryption) {
+            binding.activityManageRecipientPgpInline.setLayoutEnabled(true)
+            binding.activityManageRecipientPgpInline.setDescription(this.resources.getString(R.string.pgp_inline_desc))
+            binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)
+            binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.prerequisite_disable_pgp_inline))
+        } else if (recipient.protected_headers) {
+            binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(true)
+            binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.protected_headers_subject_desc))
+            binding.activityManageRecipientPgpInline.setLayoutEnabled(false)
+            binding.activityManageRecipientPgpInline.setDescription(this.resources.getString(R.string.prerequisite_disable_protected_headers))
+        } else {
+            binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(true)
+            binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.protected_headers_subject_desc))
+
+            binding.activityManageRecipientPgpInline.setLayoutEnabled(true)
+            binding.activityManageRecipientPgpInline.setDescription(this.resources.getString(R.string.pgp_inline_desc))
+        }
+
+        if ((this.application as AnonAddyForAndroid).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)
+            binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.you_must_be_subscribed))
+        }
 
 
         // Set switchlistener after loading

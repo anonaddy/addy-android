@@ -11,8 +11,8 @@ object AnonAddy {
 
     // 0.11.0
     var MINIMUMVERSIONCODEMAJOR = 0
-    var MINIMUMVERSIONCODEMINOR = 11
-    var MINIMUMVERSIONCODEPATCH = 1
+    var MINIMUMVERSIONCODEMINOR = 13
+    var MINIMUMVERSIONCODEPATCH = 5
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -32,6 +32,8 @@ object AnonAddy {
     val API_URL_ALIAS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/alias-recipients" }
     val API_URL_DOMAIN_OPTIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/domain-options" }
     val API_URL_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/encrypted-recipients" }
+    val API_URL_INLINE_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/inline-encrypted-recipients" }
+    val API_URL_PROTECTED_HEADERS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/protected-headers-recipients" }
     val API_URL_RECIPIENT_RESEND: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/recipients/email/resend" }
     val API_URL_RECIPIENT_KEYS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/recipient-keys" }
     val API_URL_ACCOUNT_DETAILS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/account-details" }

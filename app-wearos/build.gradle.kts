@@ -141,7 +141,7 @@ dependencies {
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.9.1")
 }
 
 // For the donut in the aliasview
@@ -166,7 +166,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.4")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }

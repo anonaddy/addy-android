@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
+        android:gravity="center_vertical"
         android:clickable="false"
         android:focusable="true"
         android:orientation="horizontal">
@@ -32,7 +33,6 @@
                 android:id="@+id/custom_view_section_start_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/security"
                 android:padding="2dp"
                 android:src="@drawable/ic_fingerprint" />
 
@@ -84,7 +84,6 @@
                 android:id="@+id/custom_view_section_end_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/security"
                 android:src="@null" />
 
         </LinearLayout>

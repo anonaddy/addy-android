@@ -122,7 +122,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         binding.fragmentSetupInitButtonApi.setOnClickListener {
 
             /**
-             * Check if there is a 999 length string in the clipboard (that's most likely the API key)
+             * Check if there is a 40 length string in the clipboard (that's most likely the API key)
              */
 
             val clipboard: ClipboardManager =
@@ -131,9 +131,9 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             val item = clipboardData?.getItemAt(0)
             val text = item?.text.toString()
 
-            // Most passport keys are 999 or 1024, as there are plans to move to Sanctum (which has 40char tokens) 40 will also trigger the clipboard readout.
-            if (text.length == 999 || text.length == 1024 || text.length == 40) {
-                // a 999 length string found. This is most likely the API key
+            // Sanctum keys (which has 40char tokens) will trigger the clipboard readout.
+            if (text.length == 40) {
+                // a 40 length string found. This is most likely the API key
                 verifyKeyAndAdd(this, text)
                 Toast.makeText(this, resources.getString(R.string.API_key_copied_from_clipboard), Toast.LENGTH_LONG).show()
             } else {
