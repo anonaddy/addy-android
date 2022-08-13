@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "host.stjin.anonaddy",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 331010101,
+      "versionName": "1.0.1",
+      "outputFile": "app-wearos-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

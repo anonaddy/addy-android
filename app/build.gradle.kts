@@ -19,7 +19,7 @@ android {
          */
 
         // SDK 33 + v4.1.0 + release 01 + 00 (for app)
-        versionCode = 334100100 // https://developer.android.com/training/wearables/packaging
+        versionCode = 334100200 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
         versionName = "v4.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

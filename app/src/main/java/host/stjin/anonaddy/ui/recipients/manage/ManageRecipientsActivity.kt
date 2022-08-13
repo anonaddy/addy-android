@@ -500,7 +500,10 @@ class ManageRecipientsActivity : BaseActivity(),
         binding.activityManageRecipientPgpInline.setSwitchChecked(recipient.inline_encryption)
         binding.activityManageRecipientProtectedHeaders.setSwitchChecked(recipient.protected_headers)
 
-        if (recipient.inline_encryption) {
+        if (recipient.fingerprint == null) {
+            binding.activityManageRecipientPgpInline.setLayoutEnabled(false)
+            binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)
+        } else if (recipient.inline_encryption) {
             binding.activityManageRecipientPgpInline.setLayoutEnabled(true)
             binding.activityManageRecipientPgpInline.setDescription(this.resources.getString(R.string.pgp_inline_desc))
             binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)

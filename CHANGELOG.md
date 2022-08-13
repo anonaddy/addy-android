@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.1.0] - 2022-08-13
+
+- 🔑 Added the option for enabling/disabling inline encryption
+- 👁 Added the option for enabling/disabling protected headers
+
+### Fixed/Improved
+
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v4.0.2] - 2022-07-07
 
 ### Fixed/Improved

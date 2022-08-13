@@ -1,0 +1,5 @@
+<h3>What's new in AnonAddy for Android 4.1.0</h3>
+<h4>Added</h4>
+<p>🔑 Added the option for enabling/disabling inline encryption<br />👁 Added the option for enabling/disabling protected headers</p>
+<h4>Fixed/Improved</h4>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
