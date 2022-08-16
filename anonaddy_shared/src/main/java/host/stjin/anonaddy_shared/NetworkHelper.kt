@@ -20,6 +20,7 @@ import host.stjin.anonaddy_shared.AnonAddy.API_URL_ACTIVE_USERNAMES
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALIAS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALLOWED_RECIPIENTS
+import host.stjin.anonaddy_shared.AnonAddy.API_URL_API_TOKEN_DETAILS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_APP_VERSION
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AnonAddy.API_URL_CATCH_ALL_USERNAMES
@@ -60,14 +61,18 @@ class NetworkHelper(private val context: Context) {
 
     private var API_KEY: String? = null
     private val loggingHelper = LoggingHelper(context)
-    val settingsManager = SettingsManager(true, context)
+    val encryptedSettingsManager = SettingsManager(true, context)
 
     init {
         // Obtain API key from the encrypted preferences
-        API_KEY = settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
-        API_BASE_URL = settingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL) ?: API_BASE_URL
+        API_KEY = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
+        API_BASE_URL = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL) ?: API_BASE_URL
     }
 
+    // After updating the API key, load a new API token into memory
+    fun updateApiKey() {
+        API_KEY = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
+    }
 
     private fun getHeaders(apiKey: String? = null): Array<Pair<String, Any>> {
         val apiKeyToSend = apiKey ?: API_KEY
@@ -3067,7 +3072,7 @@ class NetworkHelper(private val context: Context) {
                     val data = Gson().toJson(list.data)
 
                     // Store a copy of the just received data locally
-                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_MOST_ACTIVE_ALIASES_DATA, data)
+                    encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_MOST_ACTIVE_ALIASES_DATA, data)
 
                     // Stored data, let the BackgroundWorker know the task succeeded
                     callback(true)
@@ -3101,7 +3106,7 @@ class NetworkHelper(private val context: Context) {
                     val data = Gson().toJson(list.data)
 
                     // Store a copy of the just received data locally
-                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_LAST_UPDATED_ALIASES_DATA, data)
+                    encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_LAST_UPDATED_ALIASES_DATA, data)
 
                     // Stored data, let the BackgroundWorker know the task succeeded
                     callback(true)
@@ -3134,7 +3139,7 @@ class NetworkHelper(private val context: Context) {
                 val data = Gson().toJson(userResource)
 
                 // Store a copy of the just received data locally
-                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USER_RESOURCE, data)
+                encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USER_RESOURCE, data)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
@@ -3152,12 +3157,12 @@ class NetworkHelper(private val context: Context) {
                 return@getAllFailedDeliveries
             } else {
                 // First move the current count to the previous count (for comparison)
-                settingsManager.putSettingsInt(
+                encryptedSettingsManager.putSettingsInt(
                     SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS,
-                    settingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
                 )
                 // Now store the current count
-                settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, result.size)
+                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, result.size)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
@@ -3373,7 +3378,61 @@ class NetworkHelper(private val context: Context) {
                 )
             }
         }
+    }
 
 
+    /**
+     * API TOKEN DETAILS
+     */
+    suspend fun getApiTokenDetails(
+        callback: (ApiTokenDetails?, String?) -> Unit
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) =
+            Fuel.get(API_URL_API_TOKEN_DETAILS)
+                .appendHeader(
+                    *getHeaders()
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val anonAddyData = gson.fromJson(data, ApiTokenDetails::class.java)
+                callback(anonAddyData, null)
+            }
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                println(ex)
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getApiTokenDetails",
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        if (response.data.isNotEmpty()) response.data else ex.toString().toByteArray()
+                    )
+                )
+            }
+        }
     }
 }

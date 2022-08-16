@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
-    private var settingsManager: SettingsManager? = null
+    private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
 
     private var failedDeliveryDetailsBottomDialogFragment: FailedDeliveryDetailsBottomDialogFragment? = null
@@ -44,7 +44,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
             R.drawable.ic_mail_error
         )
 
-        settingsManager = SettingsManager(true, this)
+        encryptedSettingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
         setPage()
@@ -78,7 +78,8 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
         binding.activityFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
-                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, 2) ?: 2
+                shimmerItemCount =
+                    encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, 2) ?: 2
                 shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
                     // set a GridLayoutManager for tablets
                     GridLayoutManager(this@FailedDeliveriesActivity, 2)
@@ -119,7 +120,7 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
                     }
 
                     // Set the count of failed deliveries so that the shimmerview looks better next time AND so that we can use it for the backgroundservice
-                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, list.size)
+                    encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, list.size)
 
                     failedDeliveriesAdapter = FailedDeliveryAdapter(list)
                     failedDeliveriesAdapter.setClickListener(object : FailedDeliveryAdapter.ClickListener {

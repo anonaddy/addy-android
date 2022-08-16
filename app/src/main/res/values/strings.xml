@@ -14,10 +14,10 @@
     <string name="updated_at_s">Updated %s</string>
     <string name="copy_alias">Copy alias</string>
     <string name="setup_api_key" translatable="false" tools:ignore="Typos">"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 "</string>
-    <string name="APIKey">API Key</string>
+    <string name="APIKey">API key</string>
     <string name="get_my_key">Get my key</string>
     <string name="sign_in">Sign in</string>
-    <string name="APIKey_desc">Paste your API Key here…</string>
+    <string name="APIKey_desc">Paste your API key here…</string>
     <string name="hi_there">Hi there!</string>
     <string name="drag_down_to_close">Drag down to close</string>
     <string name="welcome_to">Welcome to</string>
@@ -314,10 +314,14 @@
     <string name="notification_new_update_available_desc">Version %s of AnonAddy for Android is available. Tap here to download it</string>
     <string name="notification_new_failed_delivery">Email delivery failed</string>
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
+    <string name="notification_api_token_about_to_expire">Your API key is about to expire</string>
+    <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to change the API key</string>
     <string name="notification_channel_update">@string/anonaddy_updater</string>
     <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
     <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
     <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
+    <string name="notification_channel_api_token_expiry">API key</string>
+    <string name="notification_channel_api_token_expiry_desc">Receive a notification when your API key is about to expire</string>
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
@@ -327,8 +331,8 @@
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
     <string name="addresses">Addresses</string>
     <string name="more">More</string>
-    <string name="API_key_received_from_intent">API Key received from intent</string>
-    <string name="API_key_invalid">API Key invalid</string>
+    <string name="API_key_received_from_intent">API key received from intent</string>
+    <string name="API_key_invalid">API key invalid</string>
     <string name="copied_recipients">Copied recipients</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
@@ -591,4 +595,16 @@
     <string name="you_must_be_subscribed">You must be subscribed to unlock this feature</string>
     <string name="prerequisite_disable_pgp_inline">You need to disable inline encryption before you can enable protected headers (hide subject)</string>
     <string name="prerequisite_disable_protected_headers">You need to disable protected headers (hide subject) before you can enable inline encryption</string>
+    <string name="api_token_about_to_expire">API key about to expire</string>
+    <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent the app from resetting. Do you want to change the API token now?</string>
+    <string name="api_token_about_to_expire_option_1">Enter new key</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="api_key_updated">Update API key successful!</string>
+    <string name="feature_api_token_expiry_notification">API key expiry notification</string>
+    <string name="feature_api_token_expiry_notification_desc">Receive a notification 5 days before your API key expires to prevent the app from being reset.\n\nThese notifications will reappear at the indicated interval until a new API key is entered</string>
+    <string name="notify_api_token_expiry_feature_section_desc">Receive a notification 5 days before your API key expires to prevent the app from being reset</string>
+    <string name="update_api_token_now">Update API key now</string>
+    <string name="disable_notifications">Disable notifications</string>
+    <string name="update_api_token_now_desc">Change the API token that AnonAddy for Android authenticates with. The instance cannot be changed</string>
+
 </resources>

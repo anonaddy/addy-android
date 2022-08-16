@@ -8,13 +8,13 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.GsonTools
 
 class AliasWatcher(private val context: Context) {
-    val settingsManager = SettingsManager(true, context)
+    val encryptedSettingsManager = SettingsManager(true, context)
 
 
     fun watchAliasesForDifferences() {
-        val aliasesToWatch = settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
-        val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
-        val previousAliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS)
+        val aliasesToWatch = encryptedSettingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
+        val aliasesJson = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
+        val previousAliasesJson = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS)
 
         // Turn the 2 alias en previousAlias jsons into objects.
         val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(context, it) }
@@ -61,7 +61,7 @@ class AliasWatcher(private val context: Context) {
     }
 
     fun getAliasesToWatch(): MutableSet<String> {
-        return settingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST) ?: HashSet()
+        return encryptedSettingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST) ?: HashSet()
     }
 
     fun removeAliasToWatch(alias: String) {
@@ -70,7 +70,7 @@ class AliasWatcher(private val context: Context) {
         // Only remove alias if it is already in the list
         if (aliasList.contains(alias)) {
             aliasList.remove(alias)
-            aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
+            aliasList.let { encryptedSettingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
 
             // Since an alias was removed from the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its still required
             BackgroundWorkerHelper(context).scheduleBackgroundWorker()
@@ -87,7 +87,7 @@ class AliasWatcher(private val context: Context) {
             // Only add alias if it is not already in the list
             if (!aliasList.contains(alias)) {
                 aliasList.add(alias)
-                aliasList.let { settingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
+                aliasList.let { encryptedSettingsManager.putStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST, it) }
 
                 // Since an alias was added to the watchlist, call scheduleBackgroundWorker. This method will schedule the service if its required
                 BackgroundWorkerHelper(context).scheduleBackgroundWorker()

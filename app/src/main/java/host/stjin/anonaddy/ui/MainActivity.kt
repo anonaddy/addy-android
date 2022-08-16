@@ -13,6 +13,8 @@ import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.wearable.Wearable
+import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
@@ -29,17 +31,26 @@ import host.stjin.anonaddy.ui.recipients.RecipientsFragment
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
+import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
+import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy.utils.WearOSHelper
+import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.AnonAddyForAndroid
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.*
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
+import org.ocpsoft.prettytime.PrettyTime
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.math.abs
 
 
-class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener {
+class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener, AddApiBottomDialogFragment.AddApiBottomDialogListener {
 
 
     private val searchBottomDialogFragment: SearchBottomDialogFragment =
@@ -49,11 +60,16 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         ProfileBottomDialogFragment.newInstance()
 
 
+    private var addApiBottomDialogFragment: AddApiBottomDialogFragment =
+        AddApiBottomDialogFragment.newInstance()
+
     private val fragmentList = arrayListOf(
         HomeFragment.newInstance(),
         AliasFragment.newInstance(),
         RecipientsFragment.newInstance()
     )
+
+    private lateinit var networkHelper: NetworkHelper
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +87,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {
                 lifecycleScope.launch {
+                    networkHelper = NetworkHelper(this@MainActivity)
                     loadMainActivity()
                     checkForUpdates()
+                    checkForApiExpiration()
                     // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
                     BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
                 }
@@ -80,7 +98,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -134,7 +151,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         checkForTargetExtras()
-
     }
 
     private fun checkForTargetExtras() {
@@ -225,6 +241,52 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
 
+    private suspend fun checkForApiExpiration() {
+        networkHelper.getApiTokenDetails { apiTokenDetails, error ->
+            if (apiTokenDetails?.expires_at != null) {
+
+                val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(apiTokenDetails.expires_at) // Get the expiry date
+                val currentDateTime = LocalDateTime.now() // Get the current date
+                val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
+                if (currentDateTime.isAfter(deadLineDate)) {
+                    // The current date is suddenly after the deadline date. It will expire within 5 days
+                    // Show the api is about to expire card
+                    val text = PrettyTime().format(expiryDate)
+                    MaterialDialogHelper.showMaterialDialog(
+                        context = this@MainActivity,
+                        title = this@MainActivity.resources.getString(R.string.api_token_about_to_expire),
+                        message = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_desc, text),
+                        icon = R.drawable.ic_letters_case,
+                        neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
+                        positiveButtonText = this@MainActivity.resources.getString(R.string.api_token_about_to_expire_option_1),
+                        positiveButtonAction = {
+                            verifyNewApiToken()
+                        },
+
+                        ).show()
+
+                } else {
+                    // The current date is not yet before the deadline date. It will expire within 5 days
+                }
+            }
+            // If expires_at is null it will never expire
+
+        }
+
+    }
+
+
+    private fun verifyNewApiToken() {
+        addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AnonAddy.API_BASE_URL)
+        if (!addApiBottomDialogFragment.isAdded) {
+            addApiBottomDialogFragment.show(
+                supportFragmentManager,
+                "addApiBottomDialogFragment"
+            )
+        }
+    }
+
+
     private var mUpdateAvailable = false
     private var mPermissionsRequired = false
     private fun setAlertIconToProfile(updateAvailable: Boolean? = null, permissionsRequired: Boolean? = null) {
@@ -292,7 +354,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     - There are more failed deliveries than the server cached last time (in which case the user should have got a notification)
      */
     private suspend fun checkForNewFailedDeliveries() {
-        val networkHelper = NetworkHelper(this)
         val encryptedSettingsManager = SettingsManager(true, this)
         networkHelper.getAllFailedDeliveries({ result, _ ->
             val currentFailedDeliveries =
@@ -426,4 +487,72 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
+    private fun updateKey(apiKey: String) {
+        val encryptedSettingsManager = SettingsManager(true, this)
+        encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
+        networkHelper.updateApiKey()
+        binding.navView.let {
+            SnackbarHelper.createSnackbar(
+                this,
+                this.resources.getString(R.string.api_key_updated),
+                it
+            )
+                .apply {
+                    anchorView = binding.navView
+                }.show()
+        }
+    }
+
+    private fun resetAppOnAllWearables(callback: (Boolean) -> Unit) {
+        val nodeClient = Wearable.getNodeClient(this)
+        nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+            if (nodes.any()) {
+                nodeClient.localNode.addOnSuccessListener { localNode ->
+                    for (node in nodes) {
+                        Wearable.getMessageClient(this).sendMessage(
+                            node.id,
+                            "/reset",
+                            localNode.displayName.toByteArray()
+                        )
+                    }
+                    callback(true)
+                }.addOnFailureListener {
+                    callback(false)
+                }.addOnCanceledListener {
+                    callback(false)
+                }
+            } else {
+                callback(false)
+            }
+        }.addOnFailureListener {
+            callback(false)
+        }.addOnCanceledListener {
+            callback(false)
+        }
+    }
+
+
+    override fun onClickSave(baseUrl: String, apiKey: String) {
+        addApiBottomDialogFragment.dismissAllowingStateLoss()
+        updateKey(apiKey)
+
+        // TODO TEST
+        // Send the new configuration to all the connected Wear devices
+        try {
+            Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+                for (node in nodes) {
+                    val configuration = Gson().toJson(WearOSHelper(this).createWearOSConfiguration())
+                    Wearable.getMessageClient(this).sendMessage(
+                        node.id,
+                        "/setup",
+                        configuration.toByteArray()
+                    )
+                }
+
+            }
+        } catch (ex: Exception) {
+            // WearAPI not available, not sending anything to nodes
+            LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "MainActivity;onClickSave", null)
+        }
+    }
 }

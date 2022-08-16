@@ -9,22 +9,20 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- BLOCK -->
+
+
+    <!--    Used for scanning the API key-->
+    <uses-permission android:name="android.permission.CAMERA" />
     <!--
-    &lt;!&ndash; Used for scanning the API key &ndash;&gt;
-        <uses-permission android:name="android.permission.CAMERA" />
-        &lt;!&ndash;
-          Include all the "features" under the camera permission,
-          and mark them all as optional.
-        &ndash;&gt;
-        <uses-feature
-            android:name="android.hardware.camera"
-            android:required="false" />
-        <uses-feature
-            android:name="android.hardware.camera.autofocus"
-            android:required="false" />
-    -->
-    <!-- END BLOCK -->
+         Include all the "features" under the camera permission,
+         and mark them all as optional.
+   -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
 
     <!--
@@ -42,13 +40,13 @@
     <application
         android:name="host.stjin.anonaddy_shared.AnonAddyForAndroid"
         android:allowBackup="false"
+        android:enableOnBackInvokedCallback="true"
         android:exported="true"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:enableOnBackInvokedCallback="true"
         android:theme="@style/AppTheme.NoActionBar">
         <!-- Widget 1 -->
         <receiver
@@ -209,6 +207,9 @@
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyFailedDeliveriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyApiTokenExpiryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesWebIntentResolutionActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -222,35 +223,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.setup.SetupActivity"
-            android:exported="true"
             android:theme="@style/AppTheme.Setup">
-            <intent-filter android:label="@string/app_name">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Accepts URIs that begin with "https://*/setup” -->
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-
-                <!-- If new URLS are added here, also add them to the webintentmanager -->
-
-
-                <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
-                <data
-                    android:host="*"
-                    android:pathPrefix="/setup" />
-                <!-- END -->
-
-
-                <!-- Hosted hosted instances (Works on > SDK31 devices) -->
-                <data
-                    android:host="app.anonaddy.com"
-                    android:pathPrefix="/setup" />
-
-                <!-- note that the leading "/" is required for pathPrefix -->
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.setup.SetupNewActivity"
@@ -266,6 +239,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+
                 <data
                     android:host="*"
                     android:pathPrefix="/requestsetup"

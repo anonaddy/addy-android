@@ -33,13 +33,13 @@ class SplashActivity : ComponentActivity() {
 
         // This is prone to fail when users have restored the app data from any restore app as the
         // encryption key has changed. So we catch this once in the app and that's at launch
-        val settingsManager = try {
+        val encryptedSettingsManager = try {
             SettingsManager(true, this)
         } catch (e: Exception) {
             null
         }
 
-        if (settingsManager == null) {
+        if (encryptedSettingsManager == null) {
             setTheme(R.style.AppTheme)
             setContent {
                 ErrorScreen(this, this.resources.getString(R.string.app_data_corrupted))
@@ -52,7 +52,7 @@ class SplashActivity : ComponentActivity() {
         }
 
 
-        if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+        if (encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
             val intent = Intent(this, SetupActivity::class.java)
             startActivity(intent)
             finish()

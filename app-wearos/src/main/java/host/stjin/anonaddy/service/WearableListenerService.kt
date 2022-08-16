@@ -56,9 +56,9 @@ class WearableListenerService : WearableListenerService() {
 
         if (configuration != null) {
             // If the configuration is valid, set the API_KEY and BASE_URL to encrypted sharedpref
-            val settingsManager = SettingsManager(true, this)
-            settingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, configuration.api_key)
-            settingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, configuration.base_url)
+            val encryptedSettingsManager = SettingsManager(true, this)
+            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, configuration.api_key)
+            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, configuration.base_url)
             val intent = Intent(this, SplashActivity::class.java)
             intent.flags = FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)

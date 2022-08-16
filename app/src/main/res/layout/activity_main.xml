@@ -9,6 +9,7 @@
         android:id="@+id/mainAppBarInclude"
         layout="@layout/main_app_bar" />
 
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/activity_main_viewpager"
         android:layout_width="match_parent"
@@ -16,6 +17,7 @@
         android:nestedScrollingEnabled="true"
         android:paddingBottom="80dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

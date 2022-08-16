@@ -39,7 +39,7 @@ class RecipientsFragment : Fragment(),
     }
 
     private var networkHelper: NetworkHelper? = null
-    private var settingsManager: SettingsManager? = null
+    private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addRecipientsFragment: AddRecipientBottomDialogFragment =
@@ -57,7 +57,7 @@ class RecipientsFragment : Fragment(),
     ): View {
         _binding = FragmentRecipientsBinding.inflate(inflater, container, false)
         val root = binding.root
-        settingsManager = SettingsManager(true, requireContext())
+        encryptedSettingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
 
@@ -160,7 +160,7 @@ class RecipientsFragment : Fragment(),
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
 
-                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
+                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
                 shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
                     // set a GridLayoutManager for tablets
                     GridLayoutManager(activity, 2)
@@ -200,7 +200,7 @@ class RecipientsFragment : Fragment(),
                     }*/
 
                     // Set the count of aliases so that the shimmerview looks better next time
-                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, list.size)
+                    encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, list.size)
 
                     recipientAdapter = RecipientAdapter(list)
                     recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {

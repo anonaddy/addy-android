@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -44,7 +43,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         drawBehindNavBar(view, bottomViewsToShiftUpUsingPadding = arrayListOf(binding.fragmentSetupInitButtonLl))
 
         setButtonClickListeners()
-        checkForIntents()
 
         requestNotificationPermissions()
 
@@ -106,16 +104,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         val dummyApi = StringBuilder(binding.activitySetupApiTextview.text)
         dummyApi.setCharAt(Random.nextInt(binding.activitySetupApiTextview.length()), chars.random())
         return dummyApi
-    }
-
-    private fun checkForIntents() {
-        if (intent.action != null) {
-            // /deactivate URI's
-            val data: Uri? = intent?.data
-            if (data.toString().contains("/setup")) {
-                addIntentApiKeyConfirmation(data.toString())
-            }
-        }
     }
 
     private fun setButtonClickListeners() {
@@ -217,9 +205,9 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
     private fun addKey(baseUrl: String, apiKey: String) {
-        val settingsManager = SettingsManager(true, this)
-        settingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
-        settingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
+        val encryptedSettingsManager = SettingsManager(true, this)
+        encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
+        encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
         val intent = Intent(this, SplashActivity::class.java)
         startActivity(intent)
         finish()
@@ -229,13 +217,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     override fun onClickSave(baseUrl: String, apiKey: String) {
         addApiBottomDialogFragment.dismissAllowingStateLoss()
         addKey(baseUrl, apiKey)
-    }
-
-    override fun onClickGetMyKey(baseUrl: String) {
-        val url = "$baseUrl/settings"
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
-        startActivity(i)
     }
 
     override fun onBackupRestoreCompleted() {

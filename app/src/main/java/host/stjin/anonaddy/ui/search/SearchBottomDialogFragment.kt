@@ -30,7 +30,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
     private lateinit var listener: AddSearchBottomDialogListener
     private lateinit var networkHelper: NetworkHelper
-    private lateinit var settingsManager: SettingsManager
+    private lateinit var encryptedSettingsManager: SettingsManager
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddSearchBottomDialogListener {
@@ -65,7 +65,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         _binding = BottomsheetSearchBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        settingsManager = SettingsManager(true, requireContext())
+        encryptedSettingsManager = SettingsManager(true, requireContext())
         listener = activity as AddSearchBottomDialogListener
         networkHelper = NetworkHelper(requireContext())
 
@@ -90,7 +90,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
     private var hasSetItemDecoration = false
     private fun getRecentSearchResults() {
-        val recentSearchesSet = settingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
+        val recentSearchesSet = encryptedSettingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
 
         val recentSearches: ArrayList<String> = ArrayList()
         recentSearchesSet?.let { recentSearches.addAll(it) }
@@ -136,14 +136,14 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             binding.bsSearchTitle.text = context.resources.getString(R.string.searching)
 
             // Add search to recent searches
-            val recentSearchesSet = settingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
+            val recentSearchesSet = encryptedSettingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
 
             val recentSearches: ArrayList<String> = ArrayList()
             recentSearchesSet?.let { recentSearches.addAll(it) }
             // Add search to list
             recentSearches.add(binding.bsSearchTermTiet.text.toString())
             // Grab last 5 and put them back
-            settingsManager.putStringSet(SettingsManager.PREFS.RECENT_SEARCHES, recentSearches.takeLast(5).toMutableSet())
+            encryptedSettingsManager.putStringSet(SettingsManager.PREFS.RECENT_SEARCHES, recentSearches.takeLast(5).toMutableSet())
 
             getAndReturnList(context)
         } else {
@@ -346,7 +346,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_search_clear_recent) {
-                settingsManager.removeSetting(SettingsManager.PREFS.RECENT_SEARCHES)
+                encryptedSettingsManager.removeSetting(SettingsManager.PREFS.RECENT_SEARCHES)
                 getRecentSearchResults()
             }
         }
