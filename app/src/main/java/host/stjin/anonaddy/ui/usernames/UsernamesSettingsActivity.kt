@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragment.AddUsernameBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
-    private var settingsManager: SettingsManager? = null
+    private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance()
@@ -52,7 +52,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
             R.drawable.ic_user_menu
         )
 
-        settingsManager = SettingsManager(true, this)
+        encryptedSettingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
         // Set stats right away, update later
@@ -124,7 +124,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
 
-                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, 2) ?: 2
+                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, 2) ?: 2
                 shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
                     // set a GridLayoutManager for tablets
                     GridLayoutManager(this@UsernamesSettingsActivity, 2)
@@ -166,7 +166,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                     }
 
                     // Set the count of aliases so that the shimmerview looks better next time
-                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, list.size)
+                    encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, list.size)
 
 
                     usernamesAdapter = UsernameAdapter(list)

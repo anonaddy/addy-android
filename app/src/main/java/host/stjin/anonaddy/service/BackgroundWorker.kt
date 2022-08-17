@@ -16,10 +16,13 @@ import host.stjin.anonaddy.widget.AliasWidget2Provider
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.ocpsoft.prettytime.PrettyTime
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
@@ -99,6 +102,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     failedDeliveriesNetworkCallResult = result
                 }
 
+
                 /*
                 UPDATES
                  */
@@ -114,6 +118,32 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                         }
                     }, appContext)
                 }
+
+                /*
+                API TOKEN
+                 */
+
+                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)) {
+                    networkHelper.getApiTokenDetails { apiTokenDetails, error ->
+                        if (apiTokenDetails?.expires_at != null) {
+                            val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(apiTokenDetails.expires_at) // Get the expiry date
+                            val currentDateTime = LocalDateTime.now() // Get the current date
+                            val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
+                            if (currentDateTime.isAfter(deadLineDate)) {
+                                // The current date is suddenly after the deadline date. It will expire within 5 days
+                                // Show the api is about to expire card
+                                val text = PrettyTime().format(expiryDate)
+                                NotificationHelper(appContext).createApiTokenExpiryNotification(text)
+
+                            } else {
+                                // The current date is not yet before the deadline date. It will expire within 5 days
+                            }
+                        }
+                        // If expires_at is null it will never expire
+
+                    }
+                }
+
 
                 /*
                 BACKUPS
@@ -264,6 +294,7 @@ class BackgroundWorkerHelper(private val context: Context) {
 
         val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
         val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
+        val shouldCheckApiTokenExpiry = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
         val shouldMakePeriodicBackups = settingsManager.getSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS)
 
         if (BuildConfig.DEBUG) {
@@ -276,7 +307,7 @@ class BackgroundWorkerHelper(private val context: Context) {
         // -app updates to be checked for in the background
         // -failed deliveries to be checked
         // --return true
-        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldMakePeriodicBackups)
+        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckApiTokenExpiry || shouldMakePeriodicBackups)
     }
 
     fun cancelScheduledBackgroundWorker() {

@@ -6,14 +6,15 @@ import host.stjin.anonaddy_shared.models.WearOSSettings
 
 class WearOSHelper(private val activity: Activity) {
     fun createWearOSConfiguration(): WearOSSettings? {
-        val settingsManager = SettingsManager(true, activity)
-        val baseUrl = settingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
-        val apiKey = settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
+        val encryptedSettingsManager = SettingsManager(true, activity)
+        val baseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
+        val apiKey = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
 
         return if (baseUrl != null && apiKey != null) {
             WearOSSettings(
                 base_url = baseUrl,
-                api_key = apiKey)
+                api_key = apiKey
+            )
         } else {
             null
         }

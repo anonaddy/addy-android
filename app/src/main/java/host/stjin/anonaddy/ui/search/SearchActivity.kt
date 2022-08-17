@@ -34,7 +34,7 @@ import host.stjin.anonaddy_shared.models.*
 class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
-    private var settingsManager: SettingsManager? = null
+    private var encryptedSettingsManager: SettingsManager? = null
 
 
     enum class SearchTargets(val activity: String) {
@@ -87,7 +87,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
             R.drawable.ic_search
         )
 
-        settingsManager = SettingsManager(true, this)
+        encryptedSettingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
         setSearchResults()

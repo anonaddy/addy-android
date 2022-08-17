@@ -115,8 +115,8 @@ abstract class BaseActivity : AppCompatActivity() {
     It only gived a callback when the user is authenticated
      */
     fun isAuthenticated(shouldFinishOnError: Boolean = true, callback: (Boolean) -> Unit) {
-        val settingsManager = SettingsManager(true, this)
-        if (settingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
+        val encryptedSettingsManager = SettingsManager(true, this)
+        if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) {
             if (!isSessionAuthenticated) {
                 val executor = ContextCompat.getMainExecutor(this)
                 val biometricPrompt = BiometricPrompt(

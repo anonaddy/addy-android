@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -19,12 +18,10 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
-import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
-import org.apache.commons.lang3.StringUtils
 import kotlin.random.Random
 
 class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener,
@@ -44,7 +41,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         drawBehindNavBar(view, bottomViewsToShiftUpUsingPadding = arrayListOf(binding.fragmentSetupInitButtonLl))
 
         setButtonClickListeners()
-        checkForIntents()
 
         requestNotificationPermissions()
 
@@ -80,42 +76,11 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         }
     }
 
-    private fun addIntentApiKeyConfirmation(data: String) {
-        val hostname = StringUtils.substringBefore(data, "/setup/")
-        val apiKey = StringUtils.substringAfter(data, "/setup/")
-
-        MaterialDialogHelper.showMaterialDialog(
-            context = this,
-            title = resources.getString(R.string.setup_app),
-            message = resources.getString(R.string.setup_intent_message, hostname, apiKey.takeLast(5)),
-            icon = R.drawable.ic_letters_case,
-            neutralButtonText = resources.getString(R.string.cancel),
-            positiveButtonText = resources.getString(R.string.setup_app),
-            positiveButtonAction = {
-                // Reset app data in case app is already setup
-                //clearAllData() will automatically elevate to encrypt=true
-                SettingsManager(false, this).clearAllData()
-                verifyKeyAndAdd(this, apiKey, hostname)
-                Toast.makeText(this, resources.getString(R.string.API_key_received_from_intent), Toast.LENGTH_LONG).show()
-            }
-        ).show()
-    }
-
     private fun getDummyAPIKey(): StringBuilder {
         val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
         val dummyApi = StringBuilder(binding.activitySetupApiTextview.text)
         dummyApi.setCharAt(Random.nextInt(binding.activitySetupApiTextview.length()), chars.random())
         return dummyApi
-    }
-
-    private fun checkForIntents() {
-        if (intent.action != null) {
-            // /deactivate URI's
-            val data: Uri? = intent?.data
-            if (data.toString().contains("/setup")) {
-                addIntentApiKeyConfirmation(data.toString())
-            }
-        }
     }
 
     private fun setButtonClickListeners() {
@@ -199,8 +164,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             if (result == "200") {
                 addKey(baseUrl, apiKey)
             } else {
-                Toast.makeText(this, resources.getString(R.string.API_key_invalid), Toast.LENGTH_LONG).show()
-
                 binding.fragmentSetupInitButtonNew.isEnabled = true
 
                 // Revert the button to normal
@@ -217,9 +180,9 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
     private fun addKey(baseUrl: String, apiKey: String) {
-        val settingsManager = SettingsManager(true, this)
-        settingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
-        settingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
+        val encryptedSettingsManager = SettingsManager(true, this)
+        encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
+        encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
         val intent = Intent(this, SplashActivity::class.java)
         startActivity(intent)
         finish()
@@ -229,13 +192,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     override fun onClickSave(baseUrl: String, apiKey: String) {
         addApiBottomDialogFragment.dismissAllowingStateLoss()
         addKey(baseUrl, apiKey)
-    }
-
-    override fun onClickGetMyKey(baseUrl: String) {
-        val url = "$baseUrl/settings"
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
-        startActivity(i)
     }
 
     override fun onBackupRestoreCompleted() {

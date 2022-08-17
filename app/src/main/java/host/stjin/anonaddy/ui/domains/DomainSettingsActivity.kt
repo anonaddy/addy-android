@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {
 
     private var networkHelper: NetworkHelper? = null
-    private var settingsManager: SettingsManager? = null
+    private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
 
     private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
@@ -52,7 +52,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             R.drawable.ic_dns
         )
 
-        settingsManager = SettingsManager(true, this)
+        encryptedSettingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
         // Set stats right away, update later
@@ -121,7 +121,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         binding.activityDomainSettingsAllDomainsRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
-                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
+                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
                 shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
                     // set a GridLayoutManager for tablets
                     GridLayoutManager(this@DomainSettingsActivity, 2)
@@ -161,7 +161,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                     }
 
                     // Set the count of aliases so that the shimmerview looks better next time
-                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, list.size)
+                    encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, list.size)
 
                     domainsAdapter = DomainAdapter(list)
                     domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {

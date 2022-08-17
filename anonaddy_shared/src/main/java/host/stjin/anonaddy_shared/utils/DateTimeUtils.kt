@@ -23,11 +23,10 @@ object DateTimeUtils {
             return ""
         } else {
             return try {
-                val ldt =
-                    LocalDateTime.parse(string, DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"))
+                val ldt = turnStringIntoLocalDateTime(string)
                 val date: Date
                 val serverZoneId = ZoneId.of("GMT")
-                val zonedDateTime: ZonedDateTime = ldt.atZone(serverZoneId)
+                val zonedDateTime: ZonedDateTime = ldt!!.atZone(serverZoneId)
                 val defaultZoneId = ZoneId.systemDefault()
 
                 val nyDateTime: ZonedDateTime = zonedDateTime.withZoneSameInstant(defaultZoneId)
@@ -44,6 +43,11 @@ object DateTimeUtils {
                 "$string (GMT)"
             }
         }
+    }
+
+    // This method takes the string as its stored in Anonaddy's database, and turns it into a datetime object
+    fun turnStringIntoLocalDateTime(string: String?): LocalDateTime? {
+        return LocalDateTime.parse(string, DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"))
     }
 
 }

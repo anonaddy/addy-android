@@ -64,6 +64,11 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             settingsManager.getSettingsBool(SettingsManager.PREFS.MANAGE_MULTIPLE_ALIASES, true)
         )
 
+        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setSwitchChecked(
+            settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
+        )
+
+
         binding.activityAppSettingsFeaturesSectionWebintentSheet.setSwitchChecked(
             WebIntentManager(this).isCurrentDomainAssociated()
         )
@@ -103,6 +108,18 @@ class AppSettingsFeaturesActivity : BaseActivity() {
                     )
 
                     settingsManager.putSettingsBool(SettingsManager.PREFS.MANAGE_MULTIPLE_ALIASES, checked)
+                }
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed) {
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, checked)
+
+                    // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
                 }
             }
         })
@@ -153,6 +170,15 @@ class AppSettingsFeaturesActivity : BaseActivity() {
                 startActivity(intent)
             }
         })
+
+        binding.activityAppSettingsFeaturesSectionApiTokenExpiryNotification.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyApiTokenExpiryActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
 
         binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {

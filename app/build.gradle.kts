@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v4.1.0 + release 01 + 00 (for app)
-        versionCode = 334100200 // https://developer.android.com/training/wearables/packaging
+        // SDK 33 + v4.2.0 + release 01 + 00 (for app)
+        versionCode = 334200100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v4.1.0"
+        versionName = "v4.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -68,6 +68,11 @@ android {
         jvmTarget = "1.8"
     }
 
+    lintOptions {
+        // TODO: remove below once google fixed their sh*t https://issuetracker.google.com/issues/235538840
+        disable("WearableBindListener")
+    }
+
 }
 
 
@@ -80,7 +85,7 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("androidx.appcompat:appcompat:1.5.0")
     implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.1")

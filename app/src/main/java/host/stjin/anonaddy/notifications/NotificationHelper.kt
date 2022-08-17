@@ -1,4 +1,3 @@
-
 package host.stjin.anonaddy.notifications
 
 import android.app.NotificationChannel
@@ -15,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.wearable.MessageEvent
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
@@ -30,6 +30,7 @@ class NotificationHelper(private val context: Context) {
     private val NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val UPDATER_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
+    private val API_TOKEN_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_BACKUP_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -44,12 +45,10 @@ class NotificationHelper(private val context: Context) {
         const val FAILED_DELIVERIES_NOTIFICATION_ID = 3
         const val FAILED_BACKUP_NOTIFICATION_ID = 4
         const val NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID = 5
+        const val API_KEY_EXPIRE_NOTIFICATION_ID = 6
     }
 
-    /*
-    Wearable notifications
-    */
-
+    //region Wearable notifications
     @Suppress("unused") // Is used in gplay version
     fun createSetupAppFirstNotification() {
         createChannel(
@@ -129,7 +128,6 @@ class NotificationHelper(private val context: Context) {
         }
     }
 
-
     private fun buildSetupAppFirstNotification(title: String, text: String) {
         val disableWearOSQuickSetupIntent = Intent(context, ActionReceiver::class.java).apply {
             action = ActionReceiver.NOTIFICATIONACTIONS.DISABLE_WEAROS_QUICK_SETUP
@@ -178,6 +176,7 @@ class NotificationHelper(private val context: Context) {
             notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
         }
     }
+    //endregion
 
     /*
     Updates
@@ -215,7 +214,7 @@ class NotificationHelper(private val context: Context) {
             getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        val notification = Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
+        val notification = Builder(context, UPDATER_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(
@@ -240,6 +239,68 @@ class NotificationHelper(private val context: Context) {
         }
     }
 
+
+    /*
+    API token expiry
+     */
+    fun createApiTokenExpiryNotification(daysLeft: String) {
+        createChannel(
+            API_TOKEN_EXPIRY_NOTIFICATION_CHANNEL_ID,
+            context.resources.getString(R.string.notification_channel_api_token_expiry),
+            context.resources.getString(R.string.notification_channel_api_token_expiry_desc), IMPORTANCE_DEFAULT
+        )
+
+        buildApiTokenExpiryNotification(
+            context.resources.getString(R.string.notification_api_token_about_to_expire),
+            context.resources.getString(R.string.notification_api_token_about_to_expire_desc, daysLeft)
+        )
+    }
+
+    private fun buildApiTokenExpiryNotification(title: String, text: String) {
+        val stopCheckingApiExpiryIntent = Intent(context, ActionReceiver::class.java).apply {
+            action = ActionReceiver.NOTIFICATIONACTIONS.STOP_API_EXPIRY_CHECK
+        }
+        val stopCheckingApiExpiryPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                stopCheckingApiExpiryIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+        // Mainactivity will check and auto remind user on launch
+        val openApiExpiryIntent = Intent(context, MainActivity::class.java)
+        val openApiExpiryPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(openApiExpiryIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        val notification = Builder(context, API_TOKEN_EXPIRY_NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(
+                BigTextStyle()
+                    .bigText(text)
+            )
+            .setPriority(PRIORITY_DEFAULT)
+            .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
+            .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
+            .setSmallIcon(R.drawable.ic_letters_case)
+            .addAction(R.drawable.ic_letters_case, context.resources.getString(R.string.disable_notifications), stopCheckingApiExpiryPendingIntent)
+            // Notifications should always have a static color to identify the app
+            .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
+            .setContentIntent(openApiExpiryPendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        with(from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(API_KEY_EXPIRE_NOTIFICATION_ID, notification)
+        }
+    }
 
     /*
     Failed deliveries
@@ -277,7 +338,7 @@ class NotificationHelper(private val context: Context) {
             getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        val notification = Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
+        val notification = Builder(context, FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(

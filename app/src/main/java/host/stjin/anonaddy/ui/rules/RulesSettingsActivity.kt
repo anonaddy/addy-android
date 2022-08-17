@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class RulesSettingsActivity : BaseActivity() {
 
     private var networkHelper: NetworkHelper? = null
-    private var settingsManager: SettingsManager? = null
+    private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
 
     private lateinit var binding: ActivityRuleSettingsBinding
@@ -50,7 +50,7 @@ class RulesSettingsActivity : BaseActivity() {
             R.drawable.ic_clipboard_list
         )
 
-        settingsManager = SettingsManager(true, this)
+        encryptedSettingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
         setOnClickListener()
@@ -78,7 +78,7 @@ class RulesSettingsActivity : BaseActivity() {
         binding.activityManageRulesAllRulesRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
-                shimmerItemCount = settingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, 10) ?: 10
+                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, 10) ?: 10
 
                 // set a LinearLayoutManager to handle Android
                 // RecyclerView behavior
@@ -109,7 +109,7 @@ class RulesSettingsActivity : BaseActivity() {
                     }
 
                     // Set the count of aliases so that the shimmerview looks better next time
-                    settingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, list.size)
+                    encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, list.size)
 
 
                     rulesAdapter = RulesAdapter(list, true)

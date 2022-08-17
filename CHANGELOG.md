@@ -1,5 +1,24 @@
 # Changelog
 
+## [v4.2.0] - 2022-08-18
+
+### AnonAddy for Android
+
+- 🔠 Added API expiry check, receive a notification and get insight on when your API key will expire
+- 📷 Set up AnonAddy for Android using the QR code displayed on the AnonAddy instance when creating an API key
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+- ⌚ Fixed issues with sending aliases from your wearable to your device on Android 13 devices
+
+### AnonAddy for Android Wearables
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+- ⌚ Fixed issues with sending aliases from your wearable to your device on Android 13 devices
+
 ## [v4.1.0] - 2022-08-13
 
 - 🔑 Added the option for enabling/disabling inline encryption

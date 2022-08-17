@@ -12,7 +12,7 @@ object AnonAddy {
     // 0.11.0
     var MINIMUMVERSIONCODEMAJOR = 0
     var MINIMUMVERSIONCODEMINOR = 13
-    var MINIMUMVERSIONCODEPATCH = 5
+    var MINIMUMVERSIONCODEPATCH = 6
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -46,6 +46,7 @@ object AnonAddy {
     val API_URL_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/rules" }
     val API_URL_ACTIVE_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-rules" }
     val API_URL_REORDER_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/reorder-rules" }
+    val API_URL_API_TOKEN_DETAILS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/api-token-details" }
 
 
     // 0.8.1

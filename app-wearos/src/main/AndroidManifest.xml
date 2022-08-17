@@ -101,22 +101,27 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/setup"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/start"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/reset"
-                    android:scheme="wear" />
-                <data
-                    android:host="*"
-                    android:pathPrefix="/showAlias"
-                    android:scheme="wear" />
+
+                <!-- TODO REMOVE THIS IF GOOGLE FIXED THEIR ISSUE (https://issuetracker.google.com/issues/235538840)-->
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+
+                <!-- TODO UNCOMMENT THIS IF GOOGLE FIXED THEIR ISSUE -->
+                <!--                <data
+                                    android:host="*"
+                                    android:pathPrefix="/setup"
+                                    android:scheme="wear" />
+                                <data
+                                    android:host="*"
+                                    android:pathPrefix="/start"
+                                    android:scheme="wear" />
+                                <data
+                                    android:host="*"
+                                    android:pathPrefix="/reset"
+                                    android:scheme="wear" />
+                                <data
+                                    android:host="*"
+                                    android:pathPrefix="/showAlias"
+                                    android:scheme="wear" />-->
             </intent-filter>
         </service>
 

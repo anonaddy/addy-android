@@ -67,11 +67,20 @@
                 android:id="@+id/activity_app_settings_features_section_manage_multiple_aliases_sheet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
                 app:sectionDescription="@string/feature_longpress_desc"
                 app:sectionShowSwitch="true"
                 app:sectionStartIcon="@drawable/ic_hand_click"
                 app:sectionTitle="@string/feature_longpress" />
+
+            <host.stjin.anonaddy.ui.customviews.SectionView
+                android:id="@+id/activity_app_settings_features_section_api_token_expiry_notification"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                app:sectionDescription="@string/feature_api_token_expiry_notification_desc"
+                app:sectionShowSwitch="true"
+                app:sectionStartIcon="@drawable/ic_letters_case"
+                app:sectionTitle="@string/feature_api_token_expiry_notification" />
 
             <LinearLayout
                 style="@style/AnonAddyTitleNoAction"

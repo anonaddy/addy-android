@@ -3,7 +3,9 @@ package host.stjin.anonaddy.ui.setup
 import android.Manifest
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -17,13 +19,12 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
-import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
 import host.stjin.anonaddy_shared.NetworkHelper
 import kotlinx.coroutines.launch
 
-class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
     private var codeScanner: CodeScanner? = null
     private lateinit var listener: AddApiBottomDialogListener
@@ -33,7 +34,6 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     // 1. Defines the listener interface with a method passing back data result.
     interface AddApiBottomDialogListener {
         fun onClickSave(baseUrl: String, apiKey: String)
-        fun onClickGetMyKey(baseUrl: String)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -59,16 +59,19 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         networkHelper = NetworkHelper(requireContext())
 
 
-        // TODO ENABLE FEATURE WHEN ANONADDY IMPLEMENTED THIS
-        // Make sure to also uncomment the <!-- BLOCK --> in manifest
-        if (BuildConfig.DEBUG) {
-            // Check that the device will let you use the camera
-            val pm = context?.packageManager
-            if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) == true) {
-                initQrScanner()
-            }
+        // Check that the device will let you use the camera
+        val pm = context?.packageManager
+        if (pm?.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) == true) {
+            initQrScanner()
         }
 
+
+        // if apiBaseUrl set, lock it in
+        if (apiBaseUrl != null) {
+            binding.bsSetupInstanceTiet.setText(apiBaseUrl)
+            binding.bsSetupInstanceTiet.isEnabled = false
+            binding.bsSetupInstanceTil.isEnabled = false
+        }
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         binding.bsSetupApikeySignInButton.setOnClickListener(this)
@@ -111,10 +114,14 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             requireActivity().runOnUiThread {
                 // Verify if the scanned QR code has all the properties
                 if (isQrCodeFormattedCorrect(it.text)) {
-                    // Get the string part before the ; delimiter
-                    binding.bsSetupInstanceTiet.setText(it.text.substringBeforeLast(";", ""))
-                    // Get the string part after the ; delimiter
-                    binding.bsSetupApikeyTiet.setText(it.text.substringAfterLast(";", ""))
+
+                    // if apiBaseUrl set, do not set the baseURL using QR
+                    if (apiBaseUrl != null) {
+                        // Get the string part before the | delimiter
+                        binding.bsSetupInstanceTiet.setText(it.text.substringBeforeLast("|", ""))
+                    }
+                    // Get the string part after the | delimiter
+                    binding.bsSetupApikeyTiet.setText(it.text.substringAfterLast("|", ""))
                     verifyKey(requireContext())
                 } else {
                     binding.bsSetupScannerViewDesc.text = context?.resources?.getString(R.string.api_setup_qr_code_scan_wrong)
@@ -127,8 +134,8 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
 
     companion object {
-        fun newInstance(): AddApiBottomDialogFragment {
-            return AddApiBottomDialogFragment()
+        fun newInstance(apiBaseUrl: String? = null): AddApiBottomDialogFragment {
+            return AddApiBottomDialogFragment(apiBaseUrl)
         }
     }
 
@@ -212,7 +219,11 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 )
             } else if (p0.id == R.id.bs_setup_apikey_get_button) {
                 val baseUrl = binding.bsSetupInstanceTiet.text.toString()
-                listener.onClickGetMyKey(baseUrl)
+
+                val url = "$baseUrl/settings"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
             }
         }
     }
@@ -257,7 +268,7 @@ class AddApiBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     }
 
     private fun isQrCodeFormattedCorrect(text: String): Boolean {
-        return text.contains(";") && text.contains("http")
+        return text.contains("|") && text.contains("http")
     }
 
     override fun onDestroyView() {

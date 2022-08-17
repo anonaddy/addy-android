@@ -35,6 +35,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
         MANAGE_MULTIPLE_ALIASES(false, PREFTYPES.BOOLEAN, "manage_multiple_aliases"),
+        NOTIFY_API_TOKEN_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_api_token_expiry"),
 
         // Sorting and Filtering for aliasFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),

@@ -5,11 +5,12 @@ buildscript {
         // https://developer.android.com/jetpack/androidx/releases/wear-compose
         set("wear_compose_version", "1.0.0")
         // https://developer.android.com/jetpack/androidx/releases/compose
-        set("compose_version", "1.2.0")
+        set("compose_version", "1.2.1")
+        set("compose_compiler_version", "1.3.0")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.5.1")
         // https://developer.android.com/jetpack/androidx/releases/compose-material3
-        set("compose_material_version", "1.0.0-alpha15")
+        set("compose_material_version", "1.0.0-alpha16")
         // https://developer.android.com/jetpack/androidx/releases/wear-tiles
         set("wear_tiles_version", "1.1.0-beta01")
     }
@@ -20,7 +21,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.2.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
