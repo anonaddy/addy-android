@@ -68,6 +68,11 @@ android {
         jvmTarget = "1.8"
     }
 
+    lintOptions {
+        // TODO: remove below once google fixed their sh*t https://issuetracker.google.com/issues/235538840
+        disable("WearableBindListener")
+    }
+
 }
 
 
@@ -80,7 +85,7 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("androidx.appcompat:appcompat:1.5.0")
     implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.1")

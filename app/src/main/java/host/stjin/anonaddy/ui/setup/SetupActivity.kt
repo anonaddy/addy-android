@@ -18,12 +18,10 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
-import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
-import org.apache.commons.lang3.StringUtils
 import kotlin.random.Random
 
 class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener,
@@ -76,27 +74,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             binding.activitySetupApiTextview.text = getDummyAPIKey()
             mainHandler.postDelayed(this, Random.nextLong(300, 1500))
         }
-    }
-
-    private fun addIntentApiKeyConfirmation(data: String) {
-        val hostname = StringUtils.substringBefore(data, "/setup/")
-        val apiKey = StringUtils.substringAfter(data, "/setup/")
-
-        MaterialDialogHelper.showMaterialDialog(
-            context = this,
-            title = resources.getString(R.string.setup_app),
-            message = resources.getString(R.string.setup_intent_message, hostname, apiKey.takeLast(5)),
-            icon = R.drawable.ic_letters_case,
-            neutralButtonText = resources.getString(R.string.cancel),
-            positiveButtonText = resources.getString(R.string.setup_app),
-            positiveButtonAction = {
-                // Reset app data in case app is already setup
-                //clearAllData() will automatically elevate to encrypt=true
-                SettingsManager(false, this).clearAllData()
-                verifyKeyAndAdd(this, apiKey, hostname)
-                Toast.makeText(this, resources.getString(R.string.API_key_received_from_intent), Toast.LENGTH_LONG).show()
-            }
-        ).show()
     }
 
     private fun getDummyAPIKey(): StringBuilder {
@@ -187,8 +164,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             if (result == "200") {
                 addKey(baseUrl, apiKey)
             } else {
-                Toast.makeText(this, resources.getString(R.string.API_key_invalid), Toast.LENGTH_LONG).show()
-
                 binding.fragmentSetupInitButtonNew.isEnabled = true
 
                 // Revert the button to normal

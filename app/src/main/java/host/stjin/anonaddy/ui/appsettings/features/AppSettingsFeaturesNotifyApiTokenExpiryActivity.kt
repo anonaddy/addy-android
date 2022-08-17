@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.appsettings.features
 
 import android.os.Bundle
 import android.widget.CompoundButton
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.Wearable
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
@@ -16,7 +17,10 @@ import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
+import kotlinx.coroutines.launch
+import org.ocpsoft.prettytime.PrettyTime
 
 
 class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener {
@@ -50,9 +54,37 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
             R.drawable.ic_letters_case
         )
 
+        checkTokenExpiry()
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
+    }
+
+    private fun checkTokenExpiry() {
+        lifecycleScope.launch {
+            networkHelper.getApiTokenDetails { apiTokenDetails, error ->
+                if (apiTokenDetails != null) {
+                    if (apiTokenDetails.expires_at != null) {
+                        val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(apiTokenDetails.expires_at) // Get the expiry date
+                        val text = PrettyTime().format(expiryDate)
+                        binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
+                            this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
+                                R.string.current_api_token_expiry_date,
+                                apiTokenDetails.name,
+                                text
+                            )
+                    } else {
+                        binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
+                            this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
+                                R.string.current_api_token_expiry_date_never,
+                                apiTokenDetails.name,
+                                AnonAddy.API_BASE_URL
+                            )
+                    }
+                }
+
+            }
+        }
     }
 
     private fun loadSettings() {
@@ -79,6 +111,7 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
     override fun onResume() {
         super.onResume()
         loadSettings()
+        checkTokenExpiry()
     }
 
 
@@ -105,7 +138,6 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
     private fun updateKey(apiKey: String) {
         val encryptedSettingsManager = SettingsManager(true, this)
         encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
-        networkHelper.updateApiKey()
         SnackbarHelper.createSnackbar(
             this,
             this.resources.getString(R.string.api_key_updated),
@@ -118,9 +150,9 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
     override fun onClickSave(baseUrl: String, apiKey: String) {
         addApiBottomDialogFragment.dismissAllowingStateLoss()
         updateKey(apiKey)
+        checkTokenExpiry()
 
         // Send the new configuration to all the connected Wear devices
-        // TODO check if this works.
         try {
             Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
                 for (node in nodes) {

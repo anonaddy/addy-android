@@ -487,10 +487,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
+
     private fun updateKey(apiKey: String) {
         val encryptedSettingsManager = SettingsManager(true, this)
         encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
-        networkHelper.updateApiKey()
         binding.navView.let {
             SnackbarHelper.createSnackbar(
                 this,
@@ -503,40 +503,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-    private fun resetAppOnAllWearables(callback: (Boolean) -> Unit) {
-        val nodeClient = Wearable.getNodeClient(this)
-        nodeClient.connectedNodes.addOnSuccessListener { nodes ->
-            if (nodes.any()) {
-                nodeClient.localNode.addOnSuccessListener { localNode ->
-                    for (node in nodes) {
-                        Wearable.getMessageClient(this).sendMessage(
-                            node.id,
-                            "/reset",
-                            localNode.displayName.toByteArray()
-                        )
-                    }
-                    callback(true)
-                }.addOnFailureListener {
-                    callback(false)
-                }.addOnCanceledListener {
-                    callback(false)
-                }
-            } else {
-                callback(false)
-            }
-        }.addOnFailureListener {
-            callback(false)
-        }.addOnCanceledListener {
-            callback(false)
-        }
-    }
-
-
     override fun onClickSave(baseUrl: String, apiKey: String) {
         addApiBottomDialogFragment.dismissAllowingStateLoss()
         updateKey(apiKey)
 
-        // TODO TEST
         // Send the new configuration to all the connected Wear devices
         try {
             Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->

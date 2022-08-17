@@ -126,7 +126,6 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)) {
                     networkHelper.getApiTokenDetails { apiTokenDetails, error ->
                         if (apiTokenDetails?.expires_at != null) {
-
                             val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(apiTokenDetails.expires_at) // Get the expiry date
                             val currentDateTime = LocalDateTime.now() // Get the current date
                             val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date

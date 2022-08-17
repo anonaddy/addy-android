@@ -59,23 +59,16 @@ class NetworkHelper(private val context: Context) {
     500	Internal Server Error -- We had a problem with our server. Try again later
     503	Service Unavailable -- We're temporarily offline for maintenance. Please try again later*/
 
-    private var API_KEY: String? = null
     private val loggingHelper = LoggingHelper(context)
     val encryptedSettingsManager = SettingsManager(true, context)
 
     init {
         // Obtain API key from the encrypted preferences
-        API_KEY = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
         API_BASE_URL = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL) ?: API_BASE_URL
     }
 
-    // After updating the API key, load a new API token into memory
-    fun updateApiKey() {
-        API_KEY = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
-    }
-
     private fun getHeaders(apiKey: String? = null): Array<Pair<String, Any>> {
-        val apiKeyToSend = apiKey ?: API_KEY
+        val apiKeyToSend = apiKey ?: encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
         return arrayOf(
             "Authorization" to "Bearer $apiKeyToSend",
             "Content-Type" to "application/json",

@@ -72,11 +72,16 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.1.0</h3>
+<h3>What\'s new in AnonAddy for Android 4.2.0</h3>
 <h4>Added</h4>
-<p>🔑 Added the option for enabling/disabling inline encryption<br />👁 Added the option for enabling/disabling protected headers</p>
+<p>🔠 Added API expiry check, receive a notification and get insight on when your API key will expire<br />📷 Set up AnonAddy for Android using the QR code displayed on the AnonAddy instance when creating an API key</p>
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother<br />⌚ Fixed issues with sending aliases from your wearable to your device on Android 13 devices</p>
+<p>&nbsp;</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.0.2</h3>
+<h4>Fixed/Improved</h4>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother<br />⌚ Fixed issues with sending aliases from your wearable to your device on Android 13 devices</p>
+<p>&nbsp;</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -331,8 +336,6 @@
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
     <string name="addresses">Addresses</string>
     <string name="more">More</string>
-    <string name="API_key_received_from_intent">API key received from intent</string>
-    <string name="API_key_invalid">API key invalid</string>
     <string name="copied_recipients">Copied recipients</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
@@ -606,5 +609,7 @@
     <string name="update_api_token_now">Update API key now</string>
     <string name="disable_notifications">Disable notifications</string>
     <string name="update_api_token_now_desc">Change the API token that AnonAddy for Android authenticates with. The instance cannot be changed</string>
+    <string name="current_api_token_expiry_date">Your current API key (%1$s) will expire in %2$s</string>
+    <string name="current_api_token_expiry_date_never">Your current API key (%1$s) has no expiration, visit %2$s/settings to revoke this key</string>
 
 </resources>

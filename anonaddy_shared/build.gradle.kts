@@ -1,4 +1,5 @@
 val compose_version = rootProject.extra["compose_version"]
+val compose_compiler_version = rootProject.extra["compose_compiler_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
 val wear_compose_version = rootProject.extra["wear_compose_version"]
 
@@ -37,13 +38,13 @@ android {
         jvmTarget = "1.8"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "$compose_version"
+        kotlinCompilerExtensionVersion = "$compose_compiler_version"
     }
 }
 
 dependencies {
     implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("androidx.appcompat:appcompat:1.5.0")
     implementation("com.google.android.material:material:1.6.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

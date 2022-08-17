@@ -1,5 +1,6 @@
 val compose_version = rootProject.extra["compose_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
+val compose_compiler_version = rootProject.extra["compose_compiler_version"]
 val wear_compose_version = rootProject.extra["wear_compose_version"]
 val compose_activity_version = rootProject.extra["compose_activity_version"]
 val wear_tiles_version = rootProject.extra["wear_tiles_version"]
@@ -24,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.0.1 + release 01 + 01 (for wearos)
-        versionCode = 331010101
-        versionName = "1.0.1"
+        // SDK 33 + v1.0.2 + release 01 + 01 (for wearos)
+        versionCode = 331020101
+        versionName = "1.0.2"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -58,7 +59,7 @@ android {
      * COMPOSE
      */
     composeOptions {
-        kotlinCompilerExtensionVersion = "$compose_version"
+        kotlinCompilerExtensionVersion = "$compose_compiler_version"
     }
 
     packagingOptions {

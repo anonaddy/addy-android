@@ -17,7 +17,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 > AnonAddy
 
-- AnonAddy v0.11.1 or higher (current version of AnonAddy for Android has been tested with v0.11.1)
+- AnonAddy v0.13.6 or higher (current version of AnonAddy for Android has been tested with v0.13.6)
 
 > Android
 
@@ -96,7 +96,7 @@ Third party libraries used.
 - [futuredapp/donut](https://github.com/futuredapp/donut)
 - [leandroBorgesFerreira/LoadingButtonAndroid](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid)
 - [einmalfel/Earl](https://github.com/einmalfel/Earl) (For built-in updater)
-- [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner) (To be enabled in future versions)
+- [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner)
 - [ocpsoft/prettytime](https://github.com/ocpsoft/prettytime)
 - [com.google.android.gms:play-services-wearable](https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable/17.1.0) (for
   communication with WearOS, available in the Google Play version of the app only)
