@@ -21,6 +21,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.databinding.ActivityMainBinding
 import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
+import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
@@ -496,10 +497,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 this,
                 this.resources.getString(R.string.api_key_updated),
                 it
-            )
-                .apply {
-                    anchorView = binding.navView
-                }.show()
+            ).apply {
+                anchorView = binding.navView
+            }.show()
+
+            val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
         }
     }
 

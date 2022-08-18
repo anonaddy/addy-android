@@ -1,5 +1,7 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
@@ -8,6 +10,7 @@ import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyApiTokenExpiryBinding
+import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
@@ -144,6 +147,8 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
             binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCL
         ).show()
 
+        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
     }
 
 
