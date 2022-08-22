@@ -1,5 +1,5 @@
 <p>Easily create and manage your AnonAddy aliases, recipients and more from your phone, tablet or wearable with the AnonAddy app for Android.</p>
-<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.11.1 or higher</p>
+<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.13.6 or higher</p>
 <p><strong>Characteristics</strong></p>
 <ul>
 <li>Connect to the AnonAddy instance or your own hosted instance</li>
