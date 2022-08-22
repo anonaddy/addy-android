@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.2.1] - 2022-08-22
+
+### AnonAddy for Android
+
+##### Fixed/Improved
+
+- ✨ Fixed a crash when using app security
+
 ## [v4.2.0] - 2022-08-18
 
 ### AnonAddy for Android

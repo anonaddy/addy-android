@@ -84,11 +84,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             arrayListOf(binding.root),
             bottomViewsToShiftUpUsingPadding = arrayListOf(binding.navView, binding.activityMainViewpager)
         )
+        networkHelper = NetworkHelper(this@MainActivity)
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {
                 lifecycleScope.launch {
-                    networkHelper = NetworkHelper(this@MainActivity)
                     loadMainActivity()
                     checkForUpdates()
                     checkForApiExpiration()
