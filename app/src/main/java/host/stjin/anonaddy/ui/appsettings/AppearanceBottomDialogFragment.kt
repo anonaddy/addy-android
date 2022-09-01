@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
@@ -7,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.adapter.LauncherIconsAdapter
 import host.stjin.anonaddy.databinding.BottomsheetAppearanceBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -91,6 +94,7 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
 
     }
 
+
     override fun onResume() {
         super.onResume()
         loadSettings()
@@ -99,6 +103,23 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
 
     private fun loadSettings() {
         binding.bsAppearanceSectionDynamicColors.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS))
+
+        loadIcons()
+    }
+
+    private fun loadIcons() {
+        val linearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.bsAppearanceIconRv.layoutManager = linearLayoutManager
+        // call the constructor of CustomAdapter to send the reference and data to Adapter
+        // call the constructor of CustomAdapter to send the reference and data to Adapter
+        val customAdapter = LauncherIconsAdapter(requireContext())
+        customAdapter.setClickListener(object : LauncherIconsAdapter.ClickListener {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onClick(pos: Int, aView: View) {
+                customAdapter.notifyDataSetChanged()
+            }
+        })
+        binding.bsAppearanceIconRv.adapter = customAdapter
     }
 
     private fun setOnClickListeners() {

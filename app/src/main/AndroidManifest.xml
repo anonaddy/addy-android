@@ -93,16 +93,65 @@
         <!-- Notification -->
         <receiver android:name=".notifications.ActionReceiver" /> <!-- Notification -->
         <!-- END widget -->
+
+
+        <activity-alias
+            android:name="host.stjin.anonaddy.DefaultIcon"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:targetActivity=".ui.SplashActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="host.stjin.anonaddy.ClassicIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_classic"
+            android:roundIcon="@mipmap/ic_launcher_classic_round"
+            android:targetActivity=".ui.SplashActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="host.stjin.anonaddy.GradientIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_gradient"
+            android:roundIcon="@mipmap/ic_launcher_gradient_round"
+            android:targetActivity=".ui.SplashActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
             android:theme="@style/AppTheme.Setup">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.alias.manage.ManageAliasActivity"
             android:exported="true"

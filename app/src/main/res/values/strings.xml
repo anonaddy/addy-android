@@ -611,5 +611,6 @@
     <string name="update_api_token_now_desc">Change the API token that AnonAddy for Android authenticates with. The instance cannot be changed</string>
     <string name="current_api_token_expiry_date">Your current API key (%1$s) will expire in %2$s</string>
     <string name="current_api_token_expiry_date_never">Your current API key (%1$s) has no expiration, visit %2$s/settings to revoke this key</string>
+    <string name="app_icon">App icon</string>
 
 </resources>

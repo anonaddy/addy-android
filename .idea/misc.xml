@@ -9,6 +9,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_email_at.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_forbid.xml" value="0.2555" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_anim.xml" value="0.147" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_classic_foreground.xml" value="0.322" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_foreground.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_loader.xml" value="0.224" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_mail_forward.xml" value="0.19" />
@@ -334,13 +335,14 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/aliases_recyclerview_list_item_shimmer_new.xml" value="0.5684340320591862" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/anonaddy_custom_dialog.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/anonaddy_dropdown_menu_popup_item.xml" value="0.18289473684210528" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/appearance_icons_list_item.xml" value="0.6792453074633511" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_addalias.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_adddomain.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_addrecipient.xml" value="0.3087719298245614" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_addusername.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_anonaddy_instance_version_unsupported.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_api.xml" value="0.33" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_appearance.xml" value="0.5" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_appearance.xml" value="0.2988679352838745" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_backgroundserviceinterval.xml" value="0.3087719298245614" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_backup_key.xml" value="0.3047619047619048" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_backup_password.xml" value="0.3047619047619048" />

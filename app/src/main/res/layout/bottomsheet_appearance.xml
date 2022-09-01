@@ -53,9 +53,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                app:sectionDescription="@string/use_dynamic_colors_desc"
                 app:sectionElevation="0"
                 app:sectionOutlineWidth="5"
-                app:sectionDescription="@string/use_dynamic_colors_desc"
                 app:sectionShowSwitch="true"
                 app:sectionStartIcon="@drawable/ic_palette"
                 app:sectionTitle="@string/use_dynamic_colors" />
@@ -70,43 +70,66 @@
                 android:paddingBottom="@dimen/layout_padding"
                 android:text="@string/dark_mode" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/bs_appearance_chipgroup"
+            <com.google.android.material.button.MaterialButtonToggleGroup
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/bs_appearance_materialbuttontogglegroup"
                 android:paddingStart="@dimen/layout_padding"
                 android:paddingEnd="@dimen/layout_padding"
-                android:paddingBottom="@dimen/layout_padding"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:weightSum="3"
+                app:checkedButton="@+id/bs_appearance_automatic"
                 app:selectionRequired="true"
                 app:singleSelection="true">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/bs_appearance_automatic"
-                    style="@style/AnonAddyChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="@string/system_default" />
-
-                <com.google.android.material.chip.Chip
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bs_appearance_on"
-                    style="@style/AnonAddyChip"
+                    style="@style/AnonAddyMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checkable="true"
+                    android:layout_weight="1"
                     android:text="@string/on" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/bs_appearance_off"
-                    style="@style/AnonAddyChip"
+
+                <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bs_appearance_automatic"
+                    style="@style/AnonAddyMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:checked="true"
+                    android:layout_weight="1"
+                    android:text="@string/system_default" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bs_appearance_off"
+                    style="@style/AnonAddyMaterialToggleButtonAlternative"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="@string/off" />
 
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                style="@style/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingTop="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding"
+                android:paddingBottom="@dimen/layout_padding"
+                android:text="@string/app_icon" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bs_appearance_icon_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/layout_padding"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/appearance_icons_list_item" />
 
 
         </LinearLayout>

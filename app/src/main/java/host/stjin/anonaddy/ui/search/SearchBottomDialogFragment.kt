@@ -2,13 +2,18 @@ package host.stjin.anonaddy.ui.search
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -85,7 +90,21 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         }
 
         return root
+    }
 
+    private fun View.showKeyboard() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Clear settings
+            if (this.requestFocus()) {
+                (activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+                    .showSoftInput(this, SHOW_IMPLICIT)
+            }
+        }, 200)
+    }
+
+    private fun View.hideKeyboard() {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 
     private var hasSetItemDecoration = false
@@ -151,6 +170,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             binding.bsSearchTermTil.isEnabled = true
             binding.bsSearchTermTil.error =
                 context.resources.getString(R.string.search_min_3_char_required)
+            binding.bsSearchTermTiet.showKeyboard()
         }
     }
 
@@ -350,6 +370,11 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 getRecentSearchResults()
             }
         }
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        binding.bsSearchTermTiet.hideKeyboard()
     }
 
     override fun onDestroyView() {
