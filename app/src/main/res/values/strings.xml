@@ -72,15 +72,17 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.2.0/4.2.1</h3>
+<h3>What\'s new in AnonAddy for Android 4.3.0</h3>
 <h4>Added</h4>
-<p>🔠 Added API expiry check, receive a notification and get insight on when your API key will expire<br />📷 Set up AnonAddy for Android using the QR code displayed on the AnonAddy instance when creating an API key</p>
+<p>🎨 Added the option to change the app icon, adding 2 extra icons to choose from in addition to the Material You icon</p>
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things I might have forgot to make the app even smoother<br />⌚ Fixed issues with sending aliases from your wearable to your device on Android 13 devices<br />✨ Fixed a crash when using app security (4.2.1)</p>
+<p>✨ The app will now focus on the search bar after entering an invalid search result<br />✨ Fixed a crash when Gitlab is having maintenance<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
 <p>&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.0.2</h3>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.0.3</h3>
+<h4>Added</h4>
+<p>🎨 The ability to choose the app icon extends to your wrist. If you choose a new icon in the main app while your wearable is connected, the icon will change there too.</p>
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things I might have forgot to make the app even smoother<br />⌚ Fixed issues with sending aliases from your wearable to your device on Android 13 devices</p>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
 <p>&nbsp;</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>

@@ -16,18 +16,18 @@ open class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
     @RequiresApi(Build.VERSION_CODES.R)
     fun setIMEAnimation(linearLayout: LinearLayout) {
         val inputLayoutMarginBottom = linearLayout.marginBottom
-        val callback = @RequiresApi(Build.VERSION_CODES.R)
-        object : WindowInsetsAnimation.Callback(DISPATCH_MODE_STOP) {
-            override fun onProgress(insets: WindowInsets, animations: MutableList<WindowInsetsAnimation>): WindowInsets {
-                linearLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    updateMargins(
-                        bottom = inputLayoutMarginBottom +
-                                insets.getInsets(WindowInsets.Type.ime()).bottom
-                    )
+        val callback =
+            object : WindowInsetsAnimation.Callback(DISPATCH_MODE_STOP) {
+                override fun onProgress(insets: WindowInsets, animations: MutableList<WindowInsetsAnimation>): WindowInsets {
+                    linearLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                        updateMargins(
+                            bottom = inputLayoutMarginBottom +
+                                    insets.getInsets(WindowInsets.Type.ime()).bottom
+                        )
+                    }
+                    return insets
                 }
-                return insets
             }
-        }
         linearLayout.setWindowInsetsAnimationCallback(callback)
     }
 

@@ -74,7 +74,7 @@ class LauncherIconsAdapter(context: Context) : RecyclerView.Adapter<LauncherIcon
         // init the item view's
         var icon: ImageFilterView
         var name: TextView
-        var iconMotionLayout: MotionLayout
+        private var iconMotionLayout: MotionLayout
 
         init {
             // get the reference of item view's

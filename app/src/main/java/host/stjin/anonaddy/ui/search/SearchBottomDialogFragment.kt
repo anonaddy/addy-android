@@ -103,7 +103,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     }
 
     private fun View.hideKeyboard() {
-        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 
@@ -357,6 +357,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 binding.bsSearchTermTil.isEnabled = true
                 binding.bsSearchTermTil.error =
                     context.resources.getString(R.string.nothing_found)
+                binding.bsSearchTermTiet.showKeyboard()
             } else {
                 listener.onSearch(filteredAliases, filteredRecipients, filteredDomains, filteredUsernames, filteredRules, filteredFailedDeliveries)
             }

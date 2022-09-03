@@ -4,7 +4,7 @@
         motion:constraintSetEnd="@+id/end"
         motion:constraintSetStart="@+id/start"
         motion:duration="200"
-        motion:motionInterpolator="easeOut"></Transition>
+        motion:motionInterpolator="easeOut" />
     <ConstraintSet android:id="@+id/start">
         <Constraint android:id="@id/appearance_icon_list_item_icon">
             <CustomAttribute

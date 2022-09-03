@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.0.2 + release 01 + 01 (for wearos)
-        versionCode = 331020101
-        versionName = "1.0.2"
+        versionCode = 331030101
+        versionName = "1.0.3"
         vectorDrawables {
             useSupportLibrary = true
         }
