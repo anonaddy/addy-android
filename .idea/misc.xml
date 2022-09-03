@@ -3,18 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable-v24/ic_launcher_gradient_background.xml" value="0.3415" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/circle.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_add.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_arrow_back_up.xml" value="0.19" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_email_at.xml" value="0.1" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_forbid.xml" value="0.2555" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_anim.xml" value="0.147" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_classic_foreground.xml" value="0.322" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_launcher_foreground.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_loader.xml" value="0.224" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_mail_forward.xml" value="0.19" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_search.xml" value="0.1195" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/drawable/ic_settings.xml" value="0.2865" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.147" />
+        <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/mipmap-anydpi-v26/ic_launcher_gradient.xml" value="0.3415" />
         <entry key="..\:/Projects/AnonAddy/Android/anonaddy_shared/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.147" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/aliases_recylcerview_list_item_background.xml" value="0.1675" />
         <entry key="..\:/Projects/AnonAddy/Android/app-wearos/src/main/res/drawable/favorite_aliases_tile.xml" value="0.131" />
@@ -334,13 +337,14 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/aliases_recyclerview_list_item_shimmer_new.xml" value="0.5684340320591862" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/anonaddy_custom_dialog.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/anonaddy_dropdown_menu_popup_item.xml" value="0.18289473684210528" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/appearance_icons_list_item.xml" value="0.512" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_addalias.xml" value="0.33" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_adddomain.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_addrecipient.xml" value="0.3087719298245614" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_addusername.xml" value="0.5" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_anonaddy_instance_version_unsupported.xml" value="0.25" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_api.xml" value="0.33" />
-        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_appearance.xml" value="0.5" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_appearance.xml" value="0.2988679352838745" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_backgroundserviceinterval.xml" value="0.3087719298245614" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_backup_key.xml" value="0.3047619047619048" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/layout/bottomsheet_backup_password.xml" value="0.3047619047619048" />
@@ -419,6 +423,7 @@
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3310810810810811" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/xml/alias_widget_2_info.xml" value="0.3087719298245614" />
         <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/xml/alias_widget_3_info.xml" value="0.25043859649122807" />
+        <entry key="..\:/Projects/AnonAddy/Android/app/src/main/res/xml/motion_scene.xml" value="0.39846088071825564" />
       </map>
     </option>
   </component>

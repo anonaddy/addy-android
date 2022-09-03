@@ -39,7 +39,7 @@ class SetupHow1Fragment : Fragment() {
         }
 
         binding.setupHow1Iv.setOnClickListener {
-            (activity as SetupNewActivity).onBackPressed()
+            (activity as SetupNewActivity).onBackPressedDispatcher.onBackPressed()
         }
 
         return root

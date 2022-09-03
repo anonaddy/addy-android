@@ -24,6 +24,7 @@ import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.AnonAddyForAndroid
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.UserResourceExtended
@@ -53,8 +54,12 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
         binding = ActivitySplashBinding.inflate(layoutInflater)
         val view = binding.root
+
+        LauncherIconController(this).tryFixLauncherIconIfNeeded()
+
         // Set dark mode on the splashactivity to prevent Main- and later activities from restarting and repeating calls
         checkForDarkModeAndSetFlags()
+
         setContentView(view)
         drawBehindNavBar(
             binding.root,

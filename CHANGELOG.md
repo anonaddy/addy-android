@@ -1,5 +1,30 @@
 # Changelog
 
+## [v4.3.0] - 2022-09-03
+
+### AnonAddy for Android
+
+##### Added
+
+- 🎨 Added the option to change the app icon, adding 2 extra icons to choose from in addition to the Material You icon
+
+##### Fixed/Improved
+
+- ✨ The app will now focus on the search bar after entering an invalid search result
+- ✨ Fixed a crash when Gitlab is having maintenance
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables
+
+##### Added
+
+- 🎨 The ability to choose the app icon extends to your wrist. If you choose a new icon in the main app while your wearable is connected, the icon
+  will change there too.
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v4.2.1] - 2022-08-22
 
 ### AnonAddy for Android
@@ -11,6 +36,8 @@
 ## [v4.2.0] - 2022-08-18
 
 ### AnonAddy for Android
+
+##### Added
 
 - 🔠 Added API expiry check, receive a notification and get insight on when your API key will expire
 - 📷 Set up AnonAddy for Android using the QR code displayed on the AnonAddy instance when creating an API key
@@ -28,6 +55,8 @@
 - ⌚ Fixed issues with sending aliases from your wearable to your device on Android 13 devices
 
 ## [v4.1.0] - 2022-08-13
+
+### Added
 
 - 🔑 Added the option for enabling/disabling inline encryption
 - 👁 Added the option for enabling/disabling protected headers

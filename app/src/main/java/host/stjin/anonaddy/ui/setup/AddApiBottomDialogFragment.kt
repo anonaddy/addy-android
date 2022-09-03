@@ -116,7 +116,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                 if (isQrCodeFormattedCorrect(it.text)) {
 
                     // if apiBaseUrl set, do not set the baseURL using QR
-                    if (apiBaseUrl != null) {
+                    if (apiBaseUrl == null) {
                         // Get the string part before the | delimiter
                         binding.bsSetupInstanceTiet.setText(it.text.substringBeforeLast("|", ""))
                     }

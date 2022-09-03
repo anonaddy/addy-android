@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>🎨 Added the option to change the app icon, adding 2 extra icons to choose from in addition to the Material You icon</p>
+<h4>Fixed/Improved</h4>
+<p>✨ The app will now focus on the search bar after entering an invalid search result<br />✨ Fixed a crash when Gitlab is having maintenance<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>

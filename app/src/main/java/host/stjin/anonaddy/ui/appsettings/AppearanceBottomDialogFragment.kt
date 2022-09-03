@@ -7,13 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.wearable.Wearable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.adapter.LauncherIconsAdapter
 import host.stjin.anonaddy.databinding.BottomsheetAppearanceBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
 class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
@@ -91,6 +98,7 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
 
     }
 
+
     override fun onResume() {
         super.onResume()
         loadSettings()
@@ -99,6 +107,48 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
 
     private fun loadSettings() {
         binding.bsAppearanceSectionDynamicColors.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS))
+
+        loadIcons()
+    }
+
+    private fun loadIcons() {
+        val linearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.bsAppearanceIconRv.layoutManager = linearLayoutManager
+
+        val customAdapter = LauncherIconsAdapter(requireContext())
+        customAdapter.setClickListener(object : LauncherIconsAdapter.ClickListener {
+            override fun onClick(pos: Int, aView: View) {
+                // Set status of all images accordingly
+                for (i in 0 until customAdapter.itemCount) {
+                    val viewholder = binding.bsAppearanceIconRv.findViewHolderForAdapterPosition(i) as LauncherIconsAdapter.ViewHolder
+                    viewholder.animateImage(i == pos)
+                }
+
+                // Set icon for Wearable app
+                setWearableIcon(customAdapter.getItem(pos))
+            }
+        })
+        binding.bsAppearanceIconRv.adapter = customAdapter
+    }
+
+    private fun setWearableIcon(item: LauncherIconController.LauncherIcon) {
+        if (BuildConfig.FLAVOR == "gplay") {
+            try {
+                val activity = activity as AppSettingsActivity
+                val nodeClient = Wearable.getNodeClient(activity)
+                nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+                    // Send a message to all connected nodes
+                    // Nodes with the app installed will receive this message and open the ManageAliasActivity
+                    if (nodes.any()) {
+                        for (node in nodes) {
+                            Wearable.getMessageClient(activity).sendMessage(node.id, "/setIcon", item.key.toByteArray())
+                        }
+                    }
+                }
+            } catch (ex: Exception) {
+                context?.let { LoggingHelper(it).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "setWearableIcon", null) }
+            }
+        }
     }
 
     private fun setOnClickListeners() {

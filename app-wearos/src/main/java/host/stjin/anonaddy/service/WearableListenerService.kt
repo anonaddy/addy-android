@@ -12,6 +12,7 @@ import com.google.android.gms.wearable.WearableListenerService
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
+import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.GsonTools
 
@@ -46,6 +47,12 @@ class WearableListenerService : WearableListenerService() {
                 intent.putExtra("alias", String(p0.data))
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
+            }
+            p0.path.equals("/setIcon") -> {
+                val iconToSet = LauncherIconController.LauncherIcon.values().firstOrNull { it.key == String(p0.data) }
+                if (iconToSet != null) {
+                    LauncherIconController(this).setIcon(iconToSet)
+                }
             }
         }
     }
