@@ -3,23 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
     android:orientation="vertical">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/appearance_icon_list_item_icon"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_margin="10dp"
-        android:background="@color/ic_launcher_background"
-        app:contentPadding="-10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:shapeAppearanceOverlay="@style/shape_rounded_corner"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/appearance_icon_list_item_icon_ML"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layoutDescription="@xml/motion_scene">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/appearance_icon_list_item_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@mipmap/ic_launcher"
+            app:imageZoom="1.4" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
     <TextView
         android:id="@+id/appearance_icon_list_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:layout_marginTop="8dp"
         android:text="@string/AppIconDefault" />
 </LinearLayout>

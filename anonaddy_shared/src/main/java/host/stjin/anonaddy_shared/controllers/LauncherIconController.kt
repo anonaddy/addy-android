@@ -30,6 +30,8 @@ class LauncherIconController(private val context: Context) {
                 PackageManager.DONT_KILL_APP
             )
         }
+
+
     }
 
     enum class LauncherIcon @JvmOverloads constructor(
@@ -52,7 +54,7 @@ class LauncherIconController(private val context: Context) {
         ),
         GRADIENT(
             "GradientIcon",
-            R.color.ic_launcher_gradient_background,
+            R.drawable.ic_launcher_gradient_background,
             R.drawable.ic_launcher_gradient_foreground,
             R.string.AppIconGradient
         );
