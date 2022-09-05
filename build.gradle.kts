@@ -16,15 +16,10 @@ buildscript {
     }
     repositories {
         google()
+        mavenCentral()
         maven {
             setUrl("https://jitpack.io")
-            content {
-                // this repository contains everything BUT artifacts with group starting with "com.github.gundy*" (https://github.com/jitpack/jitpack.io/issues/5217)
-                // Jitpack removed com.github.gundy:semver4j so we exclude it from Jitpack
-                excludeGroupByRegex("com\\.github.gundy*")
-            }
         }
-        mavenCentral()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.2.2")
@@ -38,8 +33,8 @@ buildscript {
 allprojects {
     repositories {
         google()
-        maven { setUrl("https://jitpack.io") }
         mavenCentral()
+        maven { setUrl("https://jitpack.io") }
     }
 }
 
