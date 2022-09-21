@@ -272,8 +272,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.setup.SetupActivity"
-            android:theme="@style/AppTheme.Setup">
-        </activity>
+            android:theme="@style/AppTheme.Setup" />
         <activity
             android:name=".ui.setup.SetupNewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -289,22 +288,18 @@
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
 
-                <!-- TODO REMOVE THIS IF GOOGLE FIXED THEIR ISSUE (https://issuetracker.google.com/issues/235538840)-->
-                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
-
-                <!-- TODO UNCOMMENT THIS IF GOOGLE FIXED THEIR ISSUE -->
-                <!--                <data
-                                    android:host="*"
-                                    android:pathPrefix="/requestsetup"
-                                    android:scheme="wear" />
-                                <data
-                                    android:host="*"
-                                    android:pathPrefix="/showLogs"
-                                    android:scheme="wear" />
-                                <data
-                                    android:host="*"
-                                    android:pathPrefix="/showAlias"
-                                    android:scheme="wear" />-->
+                <data
+                    android:host="*"
+                    android:pathPrefix="/requestsetup"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/showLogs"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/showAlias"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 

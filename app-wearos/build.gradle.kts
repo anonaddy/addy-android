@@ -93,8 +93,8 @@ dependencies {
     implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("com.google.android.gms:play-services-wearable:17.1.0")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("com.google.android.gms:play-services-wearable:18.0.0")
     implementation("androidx.percentlayout:percentlayout:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
