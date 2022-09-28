@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.utils.widget.ImageFilterView
@@ -13,6 +14,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
 class LauncherIconsAdapter(context: Context) : RecyclerView.Adapter<LauncherIconsAdapter.ViewHolder>() {
@@ -54,12 +57,20 @@ class LauncherIconsAdapter(context: Context) : RecyclerView.Adapter<LauncherIcon
 
         val launcherIconController = LauncherIconController(context)
 
-        if (isColorResource(launcherIcons[position].background)) {
-            holder.icon.setBackgroundColor(ContextCompat.getColor(context, launcherIcons[position].background))
-        } else {
-            holder.icon.setBackgroundResource(launcherIcons[position].background)
-        }
 
+        /*
+        I noticed some MIUI devices crash when loading the resources for Launchericons. Hence the try-catch and hiding the icon
+         */
+        try {
+            if (isColorResource(launcherIcons[position].background)) {
+                holder.icon.setBackgroundColor(ContextCompat.getColor(context, launcherIcons[position].background))
+            } else {
+                holder.icon.setBackgroundResource(launcherIcons[position].background)
+            }
+        } catch (e: Exception) {
+            holder.iconLl.visibility = View.GONE
+            LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "LauncherIconsAdapter;onBindViewHolder", null)
+        }
 
         holder.icon.setImageResource(launcherIcons[position].foreground)
 
@@ -72,12 +83,14 @@ class LauncherIconsAdapter(context: Context) : RecyclerView.Adapter<LauncherIcon
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         // init the item view's
+        var iconLl: LinearLayout
         var icon: ImageFilterView
         var name: TextView
         private var iconMotionLayout: MotionLayout
 
         init {
             // get the reference of item view's
+            iconLl = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon_LL) as LinearLayout
             icon = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon) as ImageFilterView
             iconMotionLayout = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon_ML) as MotionLayout
             name = itemView.findViewById<View>(R.id.appearance_icon_list_item_name) as TextView
