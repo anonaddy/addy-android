@@ -18,7 +18,7 @@ data class Domains(
     var active: Boolean,
     var catch_all: Boolean,
     val domain_verified_at: String?,
-    val domain_mx_verified_at: String?,
+    val domain_mx_validated_at: String?,
     val domain_sending_verified_at: String?,
     val created_at: String,
     val updated_at: String

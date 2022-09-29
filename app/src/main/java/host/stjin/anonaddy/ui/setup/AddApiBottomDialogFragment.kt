@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
@@ -237,7 +238,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         super.onPause()
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+    private var resultLauncher: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
         when (result) {
             true -> toggleQrCodeScanning()
             false -> {

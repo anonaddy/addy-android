@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>✨ The progressbars on the home page will now shimmer when there is no limit<br />✨ Fixed the domain_mx_validated_at value not showing the actual datetime<br />✨ Fixed a crash on certain devices running MIUI<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>

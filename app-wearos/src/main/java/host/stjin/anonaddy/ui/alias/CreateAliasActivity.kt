@@ -16,8 +16,8 @@ import host.stjin.anonaddy.components.Loading
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.AliasCreateGuide
+import host.stjin.anonaddy.ui.components.CreatedAliasDetails
 import host.stjin.anonaddy.ui.components.CustomTimeText
-import host.stjin.anonaddy.ui.components.createdAliasDetails
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
@@ -77,7 +77,7 @@ class CreateAliasActivity : ComponentActivity() {
             var skipAliasCreateGuide by remember { mutableStateOf(settingsManager.getSettingsBool(SettingsManager.PREFS.WEAROS_SKIP_ALIAS_CREATE_GUIDE)) }
 
             if (alias != null) {
-                createdAliasDetails(lazyListState, alias!!, this, this)
+                CreatedAliasDetails(lazyListState, alias!!, this, this)
             } else {
                 if (skipAliasCreateGuide) {
                     Loading()

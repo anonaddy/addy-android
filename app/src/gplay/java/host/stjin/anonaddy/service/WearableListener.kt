@@ -15,7 +15,7 @@ class WearableListener : WearableListenerService() {
 
     override fun onMessageReceived(p0: MessageEvent) {
         super.onMessageReceived(p0)
-        if (p0.path.equals("/requestsetup")) {
+        if (p0.path == "/requestsetup") {
             LoggingHelper(this).addLog(
                 LOGIMPORTANCE.INFO.int,
                 this.resources.getString(R.string.log_wearable_requested, String(p0.data)),
@@ -39,12 +39,12 @@ class WearableListener : WearableListenerService() {
             }
 
 
-        } else if (p0.path.equals("/showAlias")) {
+        } else if (p0.path == "/showAlias") {
             val intent = Intent(this, ManageAliasActivity::class.java)
             intent.putExtra("alias_id", String(p0.data))
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
-        } else if (p0.path.equals("/showLogs")) {
+        } else if (p0.path == "/showLogs") {
 
             // Store the logs sent to the wearOS logfile
             // Please not that on the wearOS device, logs are still being stored in the default logfile

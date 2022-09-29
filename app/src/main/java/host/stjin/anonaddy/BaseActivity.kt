@@ -56,11 +56,16 @@ abstract class BaseActivity : AppCompatActivity() {
         title: Int,
         nestedScrollView: NestedScrollView?,
         customToolbarOneHandedBinding: CustomToolbarOneHandedBinding? = null,
-        image: Int? = null
+        image: Int? = null,
+        customBackPressedMethod: (() -> Unit)? = null
     ) {
         customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationIcon(R.drawable.ic_arrow_back) // need to set the icon here to have a navigation icon. You can simple create an vector image by "Vector Asset" and using here
         customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.setNavigationOnClickListener {
-           onBackPressedDispatcher.onBackPressed()
+            if (customBackPressedMethod != null) {
+                customBackPressedMethod.invoke()
+            } else {
+                onBackPressedDispatcher.onBackPressed()
+            }
         }
         customToolbarOneHandedBinding?.customToolbarOneHandedMaterialtoolbar?.title = this.resources.getString(title)
 

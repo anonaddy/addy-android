@@ -72,18 +72,13 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.3.0</h3>
-<h4>Added</h4>
-<p>🎨 Added the option to change the app icon, adding 2 extra icons to choose from in addition to the Material You icon</p>
+<h3>What\'s new in AnonAddy for Android 4.3.1</h3>
 <h4>Fixed/Improved</h4>
-<p>✨ The app will now focus on the search bar after entering an invalid search result<br />✨ Fixed a crash when Gitlab is having maintenance<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
+<p>✨ The progressbars on the home page will now shimmer when there is no limit<br />✨ Fixed the domain_mx_validated_at value not showing the actual datetime<br />✨ Fixed a crash on certain devices running MIUI<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
 <p>&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.0.3</h3>
-<h4>Added</h4>
-<p>🎨 The ability to choose the app icon extends to your wrist. If you choose a new icon in the main app while your wearable is connected, the icon will change there too.</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.0.4</h3>
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
-<p>&nbsp;</p>]]></string>
+<p>✨ Optimized the process of sending aliases from your wearable to your device on Android 13 devices</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -193,7 +188,7 @@
     <string name="check_dns_desc">Verify DNS configuration</string>
     <string name="domain_activated">Domain activated</string>
     <string name="domain_deactivated">Domain deactivated</string>
-    <string name="manage_domain_basic_info">Domain: %1$s\nCreated: %2$s\nUpdated at: %3$s\nDomain verified at: %4$s\nDomain MX verified at: %5$s\nDomain sending verified at: %6$s\nEmail forwarded: %7$d\nEmail blocked: %8$d\nEmail replies: %9$d\nEmail sent: %10$d</string>
+    <string name="manage_domain_basic_info">Domain: %1$s\nCreated: %2$s\nUpdated at: %3$s\nDomain verified at: %4$s\nDomain MX validated at: %5$s\nDomain sending verified at: %6$s\nEmail forwarded: %7$d\nEmail blocked: %8$d\nEmail replies: %9$d\nEmail sent: %10$d</string>
     <string name="manage_username_basic_info">Username: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
     <string name="domain_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this domain</string>
     <string name="username_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this username</string>
@@ -501,8 +496,6 @@
     <string name="error_obtaining_usernames">@string/could_not_refresh_data</string>
     <string name="filtering_and_sorting">Filtering and sorting</string>
     <string name="filtering_and_sorting_desc">Decide which aliases to display and in which order to display them. Filters are saved and retained on app restart</string>
-    <string name="setup_app">Setup app</string>
-    <string name="setup_intent_message">Do you want to set up AnonAddy for Android for use with %1$s?\nThe API token that will be used ends with %2$s.\n\n Existing setting will be cleared if present.</string>
     <string name="include_deleted_aliases">Include deleted aliases</string>
     <string name="include_deleted_aliases_desc">Show deleted aliases in the overview. Deleted aliases are always inactive</string>
     <string name="filter_watched_only">Watched only</string>
