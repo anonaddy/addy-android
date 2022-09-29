@@ -5,11 +5,13 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
@@ -78,7 +80,11 @@ class ManageAliasActivity : BaseActivity(),
             binding.activityManageAliasNSV,
             binding.activityManageAliasToolbar,
             R.drawable.ic_email_at,
+            customBackPressedMethod = { finishWithUpdate() }
         )
+
+
+        customOnBackPressed()
 
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
@@ -108,7 +114,17 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-    // Override onbackpressed, this is the only way to close the activity (besides deleting the alias)
+    private fun customOnBackPressed() {
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) {
+                finishWithUpdate()
+            }
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         finishWithUpdate()
     }

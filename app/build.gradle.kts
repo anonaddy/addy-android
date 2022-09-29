@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v4.3.0 + release 01 + 00 (for app)
-        versionCode = 334300100 // https://developer.android.com/training/wearables/packaging
+        // SDK 33 + v4.3.1 + release 01 + 00 (for app)
+        versionCode = 334310100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v4.3.0"
+        versionName = "v4.3.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -67,10 +67,8 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    lintOptions {
-        // TODO: remove below once google fixed their sh*t https://issuetracker.google.com/issues/235538840
-        disable("WearableBindListener")
+    lint {
+        disable += setOf("WearableBindListener")
     }
 
 }
@@ -84,15 +82,15 @@ dependencies {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.5.0")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.1")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.1")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.2")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.1")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.1")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
@@ -146,7 +144,7 @@ dependencies {
 
 // Backup manager
 dependencies {
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.3.Final")
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
 }
 
 // Communication with Wear OS device
@@ -155,7 +153,7 @@ dependencies {
 // Because the app has a gplayless flavor define a gplayImplementation
 val gplayImplementation by configurations
 dependencies {
-    gplayImplementation("com.google.android.gms:play-services-wearable:17.1.0")
+    gplayImplementation("com.google.android.gms:play-services-wearable:18.0.0")
 }
 
 // Backgroundworker

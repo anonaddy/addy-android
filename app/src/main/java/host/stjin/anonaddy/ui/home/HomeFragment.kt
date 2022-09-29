@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -136,7 +137,7 @@ class HomeFragment : Fragment() {
     // This value is there to force updating the alias recyclerview in case "Watch alias" has been enabled.
     private var forceUpdate = false
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
             val data: Intent? = result.data
@@ -277,7 +278,14 @@ class HomeFragment : Fragment() {
     private val STATISTICS_ANIMATION_DURATION = 500L
     private fun setAliasesStatistics(count: Int, maxAliases: Int) {
         binding.homeStatisticsAliasesProgress.max = maxAliases * 100
+
         binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
+
+        if (maxAliases == 0) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.homeStatisticsAliasesProgressShimmer.startShimmer()
+            }, 500)
+        }
 
         try {
             startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/")
@@ -332,6 +340,11 @@ class HomeFragment : Fragment() {
                 maxMonthlyBandwidth.toString()
             )
 
+        if (maxMonthlyBandwidth == 0) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.homeStatisticsMonthlyBandwidthProgressShimmer.startShimmer()
+            }, 500)
+        }
 
         try {
             startBandwidthCountAnimation(binding.homeStatisticsMonthlyBandwidthCurrent, roundOffDecimal(currMonthlyBandwidth), "/")
@@ -357,6 +370,13 @@ class HomeFragment : Fragment() {
 
         binding.homeStatisticsRecipientsMax.text =
             if (maxRecipient == 0) "∞" else maxRecipient.toString()
+
+
+        if (maxRecipient == 0) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.homeStatisticsRecipientsProgressShimmer.startShimmer()
+            }, 500)
+        }
 
         try {
             startNumberCountAnimation(binding.homeStatisticsRecipientsCurrent, currRecipients, "/")

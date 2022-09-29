@@ -38,7 +38,7 @@ object YDGooglePlayUtils {
             }
             @Suppress("DEPRECATION")
             return pm.getInstallerPackageName(packageName)
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
         }
         return ""
     }

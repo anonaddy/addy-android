@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.CompoundButton
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
@@ -119,17 +120,18 @@ class AppSettingsBackupActivity : BaseActivity(),
         loadSettings()
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+    private var resultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
 
-            // Very important. Take persistable Uri permissions to make sure we can access this place later
-            val sourceTreeUri: Uri = result.data?.data!!
-            applicationContext.contentResolver
-                .takePersistableUriPermission(sourceTreeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                // Very important. Take persistable Uri permissions to make sure we can access this place later
+                val sourceTreeUri: Uri = result.data?.data!!
+                applicationContext.contentResolver
+                    .takePersistableUriPermission(sourceTreeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-            result?.data?.also { uri ->
-                uri.data?.toString()?.let {
-                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION, it)
+                result?.data?.also { uri ->
+                    uri.data?.toString()?.let {
+                        settingsManager.putSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION, it)
                     SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.backup_location_set), binding.appsettingsBackupCL)
                         .show()
                     LoggingHelper(this, LoggingHelper.LOGFILES.BACKUP_LOGS).addLog(

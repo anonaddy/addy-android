@@ -285,7 +285,7 @@ class RulesSettingsActivity : BaseActivity() {
     }
 
     private val itemTouchHelper by lazy {
-        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(UP or DOWN or START or END, 0) {
+        val simpleItemTouchCallback = object : SimpleCallback(UP or DOWN or START or END, 0) {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             }

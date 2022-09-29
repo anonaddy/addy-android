@@ -1,5 +1,22 @@
 # Changelog
 
+## [v4.3.1] - 2022-09-29
+
+### AnonAddy for Android
+
+##### Fixed/Improved
+
+- ✨ The progressbars on the home page will now shimmer when there is no limit
+- ✨ Fixed the domain_mx_validated_at value not showing the actual datetime
+- ✨ Fixed a crash on certain devices running MIUI
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables
+
+##### Fixed/Improved
+
+- ✨ Optimized the process of sending aliases from your wearable to your device on Android 13 devices
+
 ## [v4.3.0] - 2022-09-03
 
 ### AnonAddy for Android

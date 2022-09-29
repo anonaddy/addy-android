@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.0.2 + release 01 + 01 (for wearos)
-        versionCode = 331030101
-        versionName = "1.0.3"
+        // SDK 33 + v1.0.4 + release 01 + 01 (for wearos)
+        versionCode = 331040101
+        versionName = "1.0.4"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -93,8 +93,8 @@ dependencies {
     implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("com.google.android.gms:play-services-wearable:17.1.0")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("com.google.android.gms:play-services-wearable:18.0.0")
     implementation("androidx.percentlayout:percentlayout:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")

@@ -355,7 +355,7 @@ class ManageDomainsActivity : BaseActivity(),
             DateTimeUtils.turnStringIntoLocalString(domain.created_at),
             DateTimeUtils.turnStringIntoLocalString(domain.updated_at),
             DateTimeUtils.turnStringIntoLocalString(domain.domain_verified_at),
-            DateTimeUtils.turnStringIntoLocalString(domain.domain_mx_verified_at),
+            DateTimeUtils.turnStringIntoLocalString(domain.domain_mx_validated_at),
             DateTimeUtils.turnStringIntoLocalString(domain.domain_sending_verified_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )

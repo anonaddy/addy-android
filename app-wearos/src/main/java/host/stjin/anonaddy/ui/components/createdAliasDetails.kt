@@ -44,7 +44,7 @@ private val SPACING_BUTTONS = Dp(8f)
 @OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalWearMaterialApi
 @Composable
-fun createdAliasDetails(lazyListState: LazyListState, alias: Aliases, context: Context, activity: CreateAliasActivity) {
+fun CreatedAliasDetails(lazyListState: LazyListState, alias: Aliases, context: Context, activity: CreateAliasActivity) {
 
 
     // Creates a CoroutineScope bound to the lifecycle

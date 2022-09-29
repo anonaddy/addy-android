@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.PermissionChecker
@@ -127,17 +128,18 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
     }
 
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            data?.data?.let {
-                val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
-                    BackupPasswordBottomDialogFragment.newInstance(it)
+    private var resultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // There are no request codes
+                val data: Intent? = result.data
+                data?.data?.let {
+                    val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
+                        BackupPasswordBottomDialogFragment.newInstance(it)
 
-                if (!backupPasswordBottomDialogFragment.isAdded) {
-                    backupPasswordBottomDialogFragment.show(
-                        supportFragmentManager,
+                    if (!backupPasswordBottomDialogFragment.isAdded) {
+                        backupPasswordBottomDialogFragment.show(
+                            supportFragmentManager,
                         "backupPasswordBottomDialogFragment"
                     )
                 }
