@@ -17,6 +17,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import host.stjin.anonaddy_shared.utils.GsonTools
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.ocpsoft.prettytime.PrettyTime
@@ -224,6 +225,8 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
         // List could be null if this would be the first time the service is running
         currentList?.let { settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS, it) }
 
+        // Turn the currentList into an object
+        val aliasesList = currentList?.let { GsonTools.jsonToAliasObject(appContext, it) }
 
         val aliasWatcher = AliasWatcher(appContext)
         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
@@ -235,7 +238,17 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             networkHelper.getSpecificAlias({ result, _ ->
                 // Store the result if the data succeeded to update in a boolean
                 if (result != null) {
+                    // If the call was successful, store the new alias info in the newlist
                     newList.add(result)
+                } else {
+                    // If the call failed (eg. API call limit, no internet or anything).
+                    // Check if aliasesList is not null (it might be null if this is the first time the check has been done)
+                    // If the aliasList is not null, check if the aliasId already exists in the currentList.
+                    // If the alias is in the current list. Add that one to the newList instead.
+                    // This prevents double notifications if the call fails and the alias is removed from newlist.
+                    if (aliasesList != null) {
+                        aliasesList.firstOrNull { it.id == alias }?.let { newList.add(it) }
+                    }
                 }
             }, alias)
         }

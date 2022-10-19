@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>✨ Fixed an issue where an unstable or loss of internet connection could reset the "Alias Watcher"-cache resulting in the notifications to re-appear.<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
