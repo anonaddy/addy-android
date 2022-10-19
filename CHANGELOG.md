@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.3.2] - 2022-10-19
+
+### AnonAddy for Android
+
+##### Fixed/Improved
+
+- ✨ Fixed an issue where an unstable or loss of internet connection could reset the "Alias Watcher"-cache resulting in the notifications to re-appear.
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.3.1] - 2022-09-29
 
 ### AnonAddy for Android
