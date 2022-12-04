@@ -4,9 +4,13 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
@@ -118,6 +122,17 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
+
+    private fun getBitmapFromView(view: View): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            view.width, view.height, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+        return bitmap
+    }
+
+
     private fun addAliasAsShortcut() {
         val encryptedSettingsManager = SettingsManager(true, this)
         if (!encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
@@ -127,10 +142,12 @@ class ManageAliasActivity : BaseActivity(),
             // Pass data object in the bundle and populate details activity.
             intent.putExtra("alias_id", alias!!.id)
 
+            val bitmap = getBitmapFromView(binding.activityManageAliasChart)
+
             val shortcut = ShortcutInfoCompat.Builder(this, alias!!.id)
                 .setShortLabel(alias!!.email)
                 .setLongLabel(alias!!.email)
-                .setIcon(IconCompat.createWithResource(this, R.drawable.ic_email_at))
+                .setIcon(IconCompat.createWithBitmap(bitmap))
                 .setIntent(
                     intent
                 ).build()
@@ -175,14 +192,20 @@ class ManageAliasActivity : BaseActivity(),
         lifecycleScope.launch {
             getAliasInfo(aliasId)
             loadNodes()
-            addAliasAsShortcut()
+
+            // Set the AliasShortcut here, to make sure the donut is rendered
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Unauthenticated, clear settings
+                addAliasAsShortcut()
+            }, binding.activityManageAliasChart.animationDurationMs)
+
         }
     }
 
     private fun loadNodes() {
         if (BuildConfig.FLAVOR == "gplay") {
             try {
-                // TODO Add option menu when multiple wearables are connected
+                // TODO Maybe add option menu when multiple wearables are connected
                 val nodeClient = Wearable.getNodeClient(this)
                 nodeClient.connectedNodes.addOnSuccessListener { nodes ->
                     // Send a message to all connected nodes
@@ -248,7 +271,6 @@ class ManageAliasActivity : BaseActivity(),
         // Sort the list by amount so that the biggest number will fill the whole ring
         binding.activityManageAliasChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT
-
 
         binding.activityManageAliasForwardedCount.text = this.resources.getString(R.string.d_forwarded, forwarded.toInt())
         binding.activityManageAliasRepliesBlockedCount.text = this.resources.getString(R.string.d_blocked, blocked.toInt())

@@ -40,7 +40,8 @@
                     android:contentDescription="@string/app_name"
                     android:paddingEnd="40dp"
                     android:scaleType="fitStart"
-                    android:src="@drawable/ic_logo_widget_icon" />
+                    android:src="@drawable/ic_logo_widget_icon"
+                    app:tint="@color/widget_foreground" />
 
             </LinearLayout>
 
@@ -415,6 +416,7 @@
                 android:divider="@android:color/transparent"
                 android:dividerHeight="6.0sp"
                 android:gravity="center"
+                android:listSelector="@android:color/transparent"
                 android:loopViews="true"
                 android:scrollbars="none" />
         </LinearLayout>
