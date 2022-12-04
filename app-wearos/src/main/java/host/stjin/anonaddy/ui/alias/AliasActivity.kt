@@ -53,6 +53,7 @@ class AliasActivity : ComponentActivity() {
     @Composable
     private fun AnonAddyScaffold() {
         val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
+
         Scaffold(
             modifier = Modifier,
             timeText = {

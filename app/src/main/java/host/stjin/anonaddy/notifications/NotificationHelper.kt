@@ -440,11 +440,26 @@ class NotificationHelper(private val context: Context) {
             context.resources.getString(R.string.notification_channel_watch_alias_desc), IMPORTANCE_DEFAULT
         )
 
-        buildAliasWatcherNotification(
-            context.resources.getString(R.string.notification_new_emails),
-            context.resources.getString(R.string.notification_new_emails_desc, emailDifference, email),
-            id
-        )
+        val encryptedSettingsManager = SettingsManager(true, context)
+        if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
+            // If privacy mode, hide email address
+            buildAliasWatcherNotification(
+                context.resources.getString(R.string.notification_new_emails),
+                context.resources.getString(
+                    R.string.notification_new_emails_desc,
+                    emailDifference,
+                    context.resources.getString(R.string.one_of_your_aliases)
+                ),
+                id
+            )
+        } else {
+            buildAliasWatcherNotification(
+                context.resources.getString(R.string.notification_new_emails),
+                context.resources.getString(R.string.notification_new_emails_desc, emailDifference, email),
+                id
+            )
+        }
+
     }
 
     // Every alias gets its own notification (See AliasWatcher)

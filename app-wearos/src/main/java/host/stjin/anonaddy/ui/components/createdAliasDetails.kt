@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -51,22 +50,13 @@ fun CreatedAliasDetails(lazyListState: LazyListState, alias: Aliases, context: C
     val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
     val focusRequester = remember { FocusRequester() }
-    var currentScrollPosition = 0
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .onPreRotaryScrollEvent {
-                if (currentScrollPosition != lazyListState.firstVisibleItemScrollOffset) {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                }
-                currentScrollPosition = lazyListState.firstVisibleItemScrollOffset
-                // return false to ignore this event and continue propagation to the child.
-                false
-            }
             .onRotaryScrollEvent {
                 scope.launch {
-                    lazyListState.animateScrollBy(it.verticalScrollPixels)
+                    lazyListState.scrollBy(it.verticalScrollPixels)
                 }
                 true
             }

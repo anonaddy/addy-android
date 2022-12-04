@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -20,7 +20,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -102,7 +101,6 @@ class SettingsActivity : ComponentActivity() {
         AppTheme {
             val scope = rememberCoroutineScope()
             val haptic = LocalHapticFeedback.current
-            var currentScrollPosition = 0
             backgroundServiceInterval = getBackgroundServiceIntervalFromSetting()
             backgroundServiceIntervalValue = getBackgroundServiceIntervalValueFromSettings()
             storeLogs = getStoreLogsFromSettings()
@@ -129,18 +127,9 @@ class SettingsActivity : ComponentActivity() {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .onPreRotaryScrollEvent {
-                            if (currentScrollPosition != lazyListState.firstVisibleItemScrollOffset) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            }
-
-                            currentScrollPosition = lazyListState.firstVisibleItemScrollOffset
-                            // return false to ignore this event and continue propagation to the child.
-                            false
-                        }
                         .onRotaryScrollEvent {
                             scope.launch {
-                                lazyListState.animateScrollBy(it.verticalScrollPixels)
+                                lazyListState.scrollBy(it.verticalScrollPixels)
                             }
                             true
                         }

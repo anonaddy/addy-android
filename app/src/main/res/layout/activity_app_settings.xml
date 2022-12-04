@@ -123,6 +123,15 @@
                     app:sectionTitle="@string/security" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_privacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/privacy_mode_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_eye_off"
+                    app:sectionTitle="@string/privacy_mode" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_logs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

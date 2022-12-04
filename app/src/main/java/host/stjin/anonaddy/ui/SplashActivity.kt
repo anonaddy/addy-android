@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
@@ -61,6 +63,46 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         checkForDarkModeAndSetFlags()
 
         setContentView(view)
+
+        var closeSplashScreen = false
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Unauthenticated, clear settings
+            closeSplashScreen = true
+        }, 700) // 700 is the length of splash
+
+        // Set up an OnPreDrawListener to the root view.
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    // Check if the initial data is ready.
+                    return if (closeSplashScreen) {
+                        // The content is ready; start drawing.
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        // The content is not ready; suspend.
+                        false
+                    }
+                }
+            }
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         drawBehindNavBar(
             binding.root,
             topViewsToShiftDownUsingPadding = arrayListOf(binding.activitySplashErrorLl1),
@@ -121,7 +163,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun skipAndroid12SplashScreenAnimation() {
-        // Add a callback that's called when the splash screen is animating to
+        // Add a callback that called when the splash screen is animating to
         // the app content.
         splashScreen.setOnExitAnimationListener { splashScreenView ->
             splashScreenView.remove()

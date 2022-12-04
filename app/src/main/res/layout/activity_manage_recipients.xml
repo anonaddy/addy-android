@@ -196,7 +196,7 @@
                         android:layout_height="match_parent"
                         app:sectionDescription="@string/protected_headers_subject_desc"
                         app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_eye_off"
+                        app:sectionStartIcon="@drawable/ic_heading"
                         app:sectionTitle="@string/protected_headers" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView

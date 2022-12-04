@@ -13,6 +13,9 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.core.content.ContextCompat
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
 import com.google.android.gms.wearable.Wearable
@@ -28,6 +31,7 @@ import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -114,6 +118,28 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
+    private fun addAliasAsShortcut() {
+        val encryptedSettingsManager = SettingsManager(true, this)
+        if (!encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
+
+            // Only add shortcuts when PRIVACY_MODE is disabled to hide aliases
+            val intent = Intent(Intent.ACTION_MAIN, Uri.EMPTY, this, ManageAliasActivity::class.java)
+            // Pass data object in the bundle and populate details activity.
+            intent.putExtra("alias_id", alias!!.id)
+
+            val shortcut = ShortcutInfoCompat.Builder(this, alias!!.id)
+                .setShortLabel(alias!!.email)
+                .setLongLabel(alias!!.email)
+                .setIcon(IconCompat.createWithResource(this, R.drawable.ic_email_at))
+                .setIntent(
+                    intent
+                ).build()
+
+            ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
+        }
+    }
+
+
     private fun customOnBackPressed() {
         if (Build.VERSION.SDK_INT >= 33) {
             onBackInvokedDispatcher.registerOnBackInvokedCallback(
@@ -149,6 +175,7 @@ class ManageAliasActivity : BaseActivity(),
         lifecycleScope.launch {
             getAliasInfo(aliasId)
             loadNodes()
+            addAliasAsShortcut()
         }
     }
 

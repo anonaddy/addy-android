@@ -2,7 +2,7 @@ package host.stjin.anonaddy.components
 
 import android.content.Context
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
@@ -62,7 +61,6 @@ fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
             }
         ) {
             val focusRequester = remember { FocusRequester() }
-            var currentScrollPosition = 0
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -72,17 +70,9 @@ fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .onPreRotaryScrollEvent {
-                            if (currentScrollPosition != lazyListState.firstVisibleItemScrollOffset) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            }
-                            currentScrollPosition = lazyListState.firstVisibleItemScrollOffset
-                            // return false to ignore this event and continue propagation to the child.
-                            false
-                        }
                         .onRotaryScrollEvent {
                             scope.launch {
-                                lazyListState.animateScrollBy(it.verticalScrollPixels)
+                                lazyListState.scrollBy(it.verticalScrollPixels)
                             }
                             true
                         }

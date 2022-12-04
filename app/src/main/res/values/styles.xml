@@ -212,12 +212,6 @@
 
     <!-- These switch styles come from my other Android project Cometin. You should check it out ;D -->
     <style name="overrideExpandableCardViewSwitch">
-        <item name="android:background">@null</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="useMaterialThemeColors">false</item>
-        <item name="android:thumbTint">?colorSecondary</item>
-        <item name="android:thumb">@drawable/v3cometinswitchthumb</item>
-        <item name="track">@drawable/v3cometinswitchtrackselector</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 

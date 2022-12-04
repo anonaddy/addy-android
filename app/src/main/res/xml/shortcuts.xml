@@ -1,0 +1,14 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_add"
+        android:shortcutId="shortcut_add_alias"
+        android:shortcutLongLabel="@string/add_alias"
+        android:shortcutShortLabel="@string/add_alias">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="host.stjin.anonaddy.widget.AliasWidget2BottomSheetAddActivity"
+            android:targetPackage="host.stjin.anonaddy" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>
