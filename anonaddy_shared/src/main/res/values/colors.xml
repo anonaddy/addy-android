@@ -2,9 +2,6 @@
 <resources>
     <color name="primaryColorStatic">#19216b</color>
 
-    <color name="widget_inner_background">#2D38A1</color>
-    <color name="widget_background">@color/ic_launcher_background</color>
-
     <color name="softRed">#FD5842</color>
     <color name="softRedSuperSuperLight">#32FD5842</color>
 

@@ -93,7 +93,7 @@ class AliasWidget2Provider : AppWidgetProvider() {
                 OPEN_APP_ADD_ALIAS_SHEET -> {
                     val mainIntent = Intent(context, AliasWidget2BottomSheetAddActivity::class.java)
                     mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                    mainIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(context, mainIntent, null)
                 }
                 OPEN_APP_TARGET -> {
@@ -115,6 +115,10 @@ class AliasWidget2Provider : AppWidgetProvider() {
                         manageAliasIntent.putExtra("alias_id", intent.getStringExtra(AliasWidget2Values.OPEN_ACTION))
                         manageAliasIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                         startActivity(context, manageAliasIntent, null)
+                    } else if (intent.hasExtra(OPEN_APP)) {
+                        val mainIntent = Intent(context, SplashActivity::class.java)
+                        mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(context, mainIntent, null)
                     }
                 }
             }

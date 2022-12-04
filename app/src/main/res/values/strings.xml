@@ -611,5 +611,6 @@
     <string name="privacy_mode_desc">Hide personal information such as email addresses in shortcuts, widgets and notifications</string>
     <string name="one_of_your_aliases">one of your aliases</string>
     <string name="alias_hidden">Alias hidden</string>
+    <string name="view_more_aliases">View more aliases</string>
 
 </resources>

@@ -182,6 +182,7 @@ class ManageAliasActivity : BaseActivity(),
     private fun loadNodes() {
         if (BuildConfig.FLAVOR == "gplay") {
             try {
+                // TODO Add option menu when multiple wearables are connected
                 val nodeClient = Wearable.getNodeClient(this)
                 nodeClient.connectedNodes.addOnSuccessListener { nodes ->
                     // Send a message to all connected nodes
