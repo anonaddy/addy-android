@@ -18,6 +18,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.BaseActivity
@@ -109,6 +110,7 @@ class AppSettingsActivity : BaseActivity(),
     private fun loadSettings() {
         binding.activityAppSettingsSectionSecurity.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED))
         binding.activityAppSettingsSectionLogs.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.STORE_LOGS))
+        binding.activityAppSettingsSectionPrivacy.setSwitchChecked(encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE))
     }
 
     private fun setOnSwitchListeners() {
@@ -116,6 +118,22 @@ class AppSettingsActivity : BaseActivity(),
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 if (compoundButton.isPressed) {
                     settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, checked)
+                }
+            }
+        })
+        binding.activityAppSettingsSectionPrivacy.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed || forceSwitch) {
+                    encryptedSettingsManager.putSettingsBool(SettingsManager.PREFS.PRIVACY_MODE, checked)
+
+                    if (checked) {
+                        // If privacy mode enabled, remove all shortcuts
+                        ShortcutManagerCompat.removeAllDynamicShortcuts(this@AppSettingsActivity)
+                    }
+
+                    // Schedule the background worker to update widgets (this will cancel if already scheduled)
+                    BackgroundWorkerHelper(this@AppSettingsActivity).scheduleBackgroundWorker()
+
                 }
             }
         })
@@ -279,6 +297,13 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
+        binding.activityAppSettingsSectionPrivacy.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsSectionPrivacy.setSwitchChecked(!binding.activityAppSettingsSectionPrivacy.getSwitchChecked())
+            }
+        })
+
         binding.activityAppSettingsSectionWearos.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsActivity, AppSettingsWearOSActivity::class.java)
@@ -350,6 +375,7 @@ class AppSettingsActivity : BaseActivity(),
                 resetApp()
             }
         })
+
 
         binding.activityAppSettingsSectionUpdater.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {

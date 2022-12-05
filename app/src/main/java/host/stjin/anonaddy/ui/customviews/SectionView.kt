@@ -14,7 +14,7 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.materialswitch.MaterialSwitch
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.utils.AttributeHelper
 
@@ -24,7 +24,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     private var listener: OnSwitchCheckedChangedListener? = null
     private var onClicklistener: OnLayoutClickedListener? = null
     private var onLongClicklistener: OnLayoutLongClickedListener? = null
-    private var switchMaterial: SwitchMaterial? = null
+    private var materialSwitch: MaterialSwitch? = null
     var description: TextView? = null
     private var progressBar: ProgressBar? = null
     private var title: TextView? = null
@@ -88,16 +88,16 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         }
 
     fun setSwitchChecked(boolean: Boolean) {
-        switchMaterial?.isChecked = boolean
+        materialSwitch?.isChecked = boolean
     }
 
     fun getSwitchChecked(): Boolean {
-        return switchMaterial?.isChecked == true
+        return materialSwitch?.isChecked == true
     }
 
     fun setLayoutEnabled(boolean: Boolean) {
-        switchMaterial?.isEnabled = boolean
-        switchMaterial?.isClickable = boolean
+        materialSwitch?.isEnabled = boolean
+        materialSwitch?.isClickable = boolean
 
         linearLayout?.alpha = if (boolean) 1f else 0.5f
 
@@ -112,11 +112,11 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setSwitchVibrationEffects() {
-        switchMaterial?.setOnTouchListener { _, event ->
+        materialSwitch?.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                switchMaterial!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                materialSwitch!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             } else if (event.action == MotionEvent.ACTION_UP) {
-                switchMaterial!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                materialSwitch!!.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             }
             false
         }
@@ -184,7 +184,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         iconEnd = findViewById(R.id.custom_view_section_end_icon)
         title = findViewById(R.id.custom_view_section_title)
         description = findViewById(R.id.custom_view_section_desc)
-        switchMaterial = findViewById(R.id.custom_view_section_switch)
+        materialSwitch = findViewById(R.id.custom_view_section_switch)
         progressBar = findViewById(R.id.custom_view_section_progressbar)
 
 
@@ -252,12 +252,12 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
             // Set switch this is ony done at init, default is invisible
             if (a.getBoolean(R.styleable.SectionView_sectionShowSwitch, false)) {
-                switchMaterial?.visibility = VISIBLE
-                switchMaterial?.setOnCheckedChangeListener(switchCheckedChangeListener)
+                materialSwitch?.visibility = VISIBLE
+                materialSwitch?.setOnCheckedChangeListener(switchCheckedChangeListener)
             }
 
             // Set if switch is checked or not
-            switchMaterial?.isChecked = a.getBoolean(R.styleable.SectionView_sectionSwitchChecked, false)
+            materialSwitch?.isChecked = a.getBoolean(R.styleable.SectionView_sectionSwitchChecked, false)
 
 
             // Set layout enabled

@@ -1,5 +1,7 @@
 package host.stjin.anonaddy.ui.home
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -21,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
@@ -281,14 +284,8 @@ class HomeFragment : Fragment() {
 
         binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
 
-        if (maxAliases == 0) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.homeStatisticsAliasesProgressShimmer.startShimmer()
-            }, 500)
-        }
-
         try {
-            startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/")
+            startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/", maxAliases == 0, binding.homeStatisticsAliasesProgressShimmer)
         } catch (e: Exception) {
             binding.homeStatisticsAliasesCurrent.text = "$count /"
         }
@@ -306,23 +303,49 @@ class HomeFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun startNumberCountAnimation(textView: TextView, count: Int, suffix: String? = null) {
+    private fun startNumberCountAnimation(
+        textView: TextView,
+        count: Int,
+        suffix: String? = null,
+        showShimmer: Boolean,
+        shimmerView: ShimmerFrameLayout
+    ) {
         if (textView.text != "$count$suffix") {
             val animator = ValueAnimator.ofInt(textView.text.toString().substringBefore(" ").toInt(), count)
             animator.duration = STATISTICS_ANIMATION_DURATION
             animator.addUpdateListener { animation -> textView.text = animation.animatedValue.toString() + " " + suffix }
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    if (showShimmer) {
+                        shimmerView.startShimmer()
+                    }
+                }
+            })
             animator.start()
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun startBandwidthCountAnimation(textView: TextView, count: Float, suffix: String? = null) {
+    private fun startBandwidthCountAnimation(
+        textView: TextView,
+        count: Float,
+        suffix: String? = null,
+        showShimmer: Boolean,
+        shimmerView: ShimmerFrameLayout
+    ) {
         if (textView.text != "$count$suffix") {
             val animator = ValueAnimator.ofFloat(textView.text.toString().substringBefore("MB ").toFloat(), count)
             animator.duration = STATISTICS_ANIMATION_DURATION
             animator.addUpdateListener { animation ->
                 textView.text = roundOffDecimal(animation.animatedValue.toString().toDouble()).toString() + "MB " + suffix
             }
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    if (showShimmer) {
+                        shimmerView.startShimmer()
+                    }
+                }
+            })
             animator.start()
         }
     }
@@ -340,14 +363,14 @@ class HomeFragment : Fragment() {
                 maxMonthlyBandwidth.toString()
             )
 
-        if (maxMonthlyBandwidth == 0) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.homeStatisticsMonthlyBandwidthProgressShimmer.startShimmer()
-            }, 500)
-        }
-
         try {
-            startBandwidthCountAnimation(binding.homeStatisticsMonthlyBandwidthCurrent, roundOffDecimal(currMonthlyBandwidth), "/")
+            startBandwidthCountAnimation(
+                binding.homeStatisticsMonthlyBandwidthCurrent,
+                roundOffDecimal(currMonthlyBandwidth),
+                "/",
+                maxMonthlyBandwidth == 0,
+                binding.homeStatisticsMonthlyBandwidthProgressShimmer
+            )
         } catch (e: Exception) {
             val currentCount = this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
             binding.homeStatisticsMonthlyBandwidthCurrent.text = "$currentCount /"
@@ -364,22 +387,21 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun setRecipientStatistics(currRecipients: Int, maxRecipient: Int) {
+    private fun setRecipientStatistics(currRecipients: Int, maxRecipients: Int) {
         binding.homeStatisticsRecipientsProgress.max =
-            maxRecipient * 100
+            maxRecipients * 100
 
         binding.homeStatisticsRecipientsMax.text =
-            if (maxRecipient == 0) "∞" else maxRecipient.toString()
-
-
-        if (maxRecipient == 0) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.homeStatisticsRecipientsProgressShimmer.startShimmer()
-            }, 500)
-        }
+            if (maxRecipients == 0) "∞" else maxRecipients.toString()
 
         try {
-            startNumberCountAnimation(binding.homeStatisticsRecipientsCurrent, currRecipients, "/")
+            startNumberCountAnimation(
+                binding.homeStatisticsRecipientsCurrent,
+                currRecipients,
+                "/",
+                maxRecipients == 0,
+                binding.homeStatisticsRecipientsProgressShimmer
+            )
         } catch (e: Exception) {
             binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
         }

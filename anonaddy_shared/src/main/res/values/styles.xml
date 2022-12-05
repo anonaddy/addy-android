@@ -4,7 +4,7 @@
     <!-- Base application theme. -->
     <!-- This theme contains all the basics that apply to all platforms (such as WearOS) -->
     <!-- Platform specific items should be declared in AppTheme (which parent's BaseTheme) -->
-    <style name="BaseTheme" parent="Theme.Material3.DayNight">
+    <style name="BaseTheme" parent="Theme.Material3.DynamicColors.DayNight">
         <!-- Overriding custom colorControlNormal color -->
         <item name="colorControlNormal">@color/colorControlNormal</item>
 

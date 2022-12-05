@@ -1,5 +1,26 @@
 # Changelog
 
+## [v4.4.0] - 2022-12-05
+
+### AnonAddy for Android
+
+##### Added
+
+- 📌 Shortcuts have been added, long press the app icon to quickly create a new alias or hop back to the latest alias you were managing
+- 🫣 A new privacy has been added and can be used to hide aliases in notifications, widgets and shortcuts
+
+##### Fixed/Improved
+
+- ✨ Some UI elements were updated to reflect the new M3 design, such as switches and widgets
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables
+
+##### Fixed/Improved
+
+- ✨ Improved support for devices with a digital crown like the Google Pixel Watch
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.3.2] - 2022-10-19
 
 ### AnonAddy for Android

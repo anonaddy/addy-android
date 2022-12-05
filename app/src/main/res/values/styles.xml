@@ -1,5 +1,12 @@
 <resources>
 
+    <style name="WidgetTheme" parent="Theme.Material3.DynamicColors.DayNight">
+        <!-- Override default colorBackground attribute with custom color -->
+        <item name="android:colorBackground">@color/widget_default_background</item>
+        <item name="android:colorAccent">@android:color/white</item>
+    </style>
+
+
     <!-- Application theme. -->
     <style name="AppTheme" parent="BaseTheme">
         <item name="android:windowLightNavigationBar">true</item>
@@ -26,7 +33,6 @@
         <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
-
     </style>
 
     <style name="AppTheme.Transparent" parent="AppTheme.NoActionBar">
@@ -210,14 +216,7 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <!-- These switch styles come from my other Android project Cometin. You should check it out ;D -->
     <style name="overrideExpandableCardViewSwitch">
-        <item name="android:background">@null</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="useMaterialThemeColors">false</item>
-        <item name="android:thumbTint">?colorSecondary</item>
-        <item name="android:thumb">@drawable/v3cometinswitchthumb</item>
-        <item name="track">@drawable/v3cometinswitchtrackselector</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 

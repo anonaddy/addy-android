@@ -25,30 +25,30 @@ class WearableListenerService : WearableListenerService() {
      */
     override fun onMessageReceived(p0: MessageEvent) {
         super.onMessageReceived(p0)
-        when {
-            p0.path == "/start" -> {
+        when (p0.path) {
+            "/start" -> {
                 val intent = Intent(this@WearableListenerService, SplashActivity::class.java)
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
-            p0.path == "/setup" -> {
+            "/setup" -> {
                 // a serialized wearOSConfiguration is being passed containing the API_KEY and the BASE_URL
                 storeSettings(String(p0.data))
             }
-            p0.path == "/reset" -> {
+            "/reset" -> {
                 Toast.makeText(this, this.resources.getString(R.string.app_reset_requested_by, String(p0.data)), Toast.LENGTH_LONG).show()
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     (this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                 }, 2500)
             }
-            p0.path == "/showAlias" -> {
+            "/showAlias" -> {
                 val intent = Intent(this@WearableListenerService, ManageAliasActivity::class.java)
                 intent.putExtra("alias", String(p0.data))
                 intent.flags = FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
-            p0.path == "/setIcon" -> {
+            "/setIcon" -> {
                 val iconToSet = LauncherIconController.LauncherIcon.values().firstOrNull { it.key == String(p0.data) }
                 if (iconToSet != null) {
                     LauncherIconController(this).setIcon(iconToSet)

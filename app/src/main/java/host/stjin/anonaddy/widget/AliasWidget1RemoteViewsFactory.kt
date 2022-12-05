@@ -9,6 +9,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.COPY_ACTION
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.NAVIGATE
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_ACTION
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.utils.CacheHelper
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -35,7 +36,14 @@ class AliasWidget1RemoteViewsFactory(private val mContext: Context) : RemoteView
         // construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
         val rv = RemoteViews(mContext.packageName, R.layout.widget_1_aliases_listview_list_item)
-        rv.setTextViewText(R.id.widget_aliases_listview_list_title, aliasList?.get(position)?.email)
+
+        val encryptedSettingsManager = SettingsManager(true, mContext)
+        if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
+            // If privacy mode, hide alias
+            rv.setTextViewText(R.id.widget_aliases_listview_list_title, mContext.resources.getString(R.string.alias_hidden))
+        } else {
+            rv.setTextViewText(R.id.widget_aliases_listview_list_title, aliasList?.get(position)?.email)
+        }
 
 
         val description: String = if (aliasList?.get(position)?.description.isNullOrEmpty()) {

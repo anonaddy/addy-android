@@ -43,6 +43,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
         // Encrypted
         BIOMETRIC_ENABLED(true, PREFTYPES.BOOLEAN, "biometric_enabled"),
+        PRIVACY_MODE(true, PREFTYPES.BOOLEAN, "privacy_mode"),
         API_KEY(true, PREFTYPES.STRING, "API_KEY"),
         BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
         RECENT_SEARCHES(true, PREFTYPES.STRINGSET, "recent_searches"),

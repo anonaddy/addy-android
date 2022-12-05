@@ -6,22 +6,13 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
-import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,11 +27,11 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.components.CustomTimeText
+import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.ui.theme.*
 import host.stjin.anonaddy_shared.utils.LoggingHelper
-import kotlinx.coroutines.launch
 
 class SettingsActivity : ComponentActivity() {
 
@@ -100,19 +91,17 @@ class SettingsActivity : ComponentActivity() {
     @Composable
     private fun ComposeContent() {
         AppTheme {
-            val scope = rememberCoroutineScope()
             val haptic = LocalHapticFeedback.current
-            var currentScrollPosition = 0
             backgroundServiceInterval = getBackgroundServiceIntervalFromSetting()
             backgroundServiceIntervalValue = getBackgroundServiceIntervalValueFromSettings()
             storeLogs = getStoreLogsFromSettings()
-            val focusRequester = remember { FocusRequester() }
-            val lazyListState: LazyListState = rememberLazyListState()
+            val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
+
             Scaffold(
                 modifier = Modifier,
                 timeText = {
                     CustomTimeText(
-                        visible = !lazyListState.isScrollInProgress && (remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }).value == 0,
+                        visible = (remember { derivedStateOf { scalingLazyListState.centerItemIndex } }).value < 2,
                         showLeadingText = true,
                         leadingText = resources.getString(R.string.settings)
                     )
@@ -122,38 +111,15 @@ class SettingsActivity : ComponentActivity() {
                 },
                 positionIndicator = {
                     PositionIndicator(
-                        lazyListState = lazyListState
+                        scalingLazyListState = scalingLazyListState
                     )
                 },
             ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .onPreRotaryScrollEvent {
-                            if (currentScrollPosition != lazyListState.firstVisibleItemScrollOffset) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            }
-
-                            currentScrollPosition = lazyListState.firstVisibleItemScrollOffset
-                            // return false to ignore this event and continue propagation to the child.
-                            false
-                        }
-                        .onRotaryScrollEvent {
-                            scope.launch {
-                                lazyListState.animateScrollBy(it.verticalScrollPixels)
-                            }
-                            true
-                        }
-                        .focusRequester(focusRequester)
-                        .focusable(),
-                    contentPadding = PaddingValues(
-                        top = 60.dp,
-                        start = 10.dp,
-                        end = 10.dp,
-                        bottom = 40.dp
-                    ),
+                ScalingLazyColumnWithRSB(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    state = lazyListState,
+                    modifier = Modifier.fillMaxWidth(),
+                    snap = false,
+                    state = scalingLazyListState
                 ) {
                     item { Text(text = resources.getString(R.string.background_service_interval), textAlign = TextAlign.Center) }
                     item {
@@ -168,12 +134,12 @@ class SettingsActivity : ComponentActivity() {
                     item {
                         Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.tile_favorite_aliases_label))
                     }
-                    item { ClearFavoritesChip(lazyListState, haptic) }
+                    item { ClearFavoritesChip(scalingLazyListState, haptic) }
                     item { Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.logs), textAlign = TextAlign.Center) }
-                    item { StoreLogsSwitch(lazyListState, haptic) }
-                    item { SendLogsToDeviceChip(lazyListState, haptic) }
+                    item { StoreLogsSwitch(scalingLazyListState, haptic) }
+                    item { SendLogsToDeviceChip(scalingLazyListState, haptic) }
                     item { Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS)) }
-                    item { ClearAllDataChip(lazyListState, haptic) }
+                    item { ClearAllDataChip(scalingLazyListState, haptic) }
                     item { Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS * 2)) }
                     item {
                         Text(
@@ -185,9 +151,6 @@ class SettingsActivity : ComponentActivity() {
                     item { Text(text = BuildConfig.VERSION_NAME, Modifier.alpha(0.5f), textAlign = TextAlign.Center) }
                 }
 
-                LaunchedEffect(Unit) {
-                    focusRequester.requestFocus()
-                }
             }
 
         }
@@ -195,13 +158,13 @@ class SettingsActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ClearAllDataChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+    private fun ClearAllDataChip(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
         Chip(
             modifier = Modifier
                 .padding(top = 2.dp, bottom = 2.dp)
                 .fillMaxWidth(),
             onClick = {
-                if (!lazyListState.isScrollInProgress) {
+                if (!scalingLazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     resetApp()
                 }
@@ -223,13 +186,13 @@ class SettingsActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun SendLogsToDeviceChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+    private fun SendLogsToDeviceChip(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
         Chip(
             modifier = Modifier
                 .padding(top = 2.dp, bottom = 2.dp)
                 .fillMaxWidth(),
             onClick = {
-                if (!lazyListState.isScrollInProgress) {
+                if (!scalingLazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     sendLogsToPairedDevice()
                 }
@@ -250,7 +213,7 @@ class SettingsActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun StoreLogsSwitch(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+    private fun StoreLogsSwitch(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
         ToggleChip(
             modifier = Modifier
                 .padding(top = 12.dp, bottom = 2.dp)
@@ -269,7 +232,7 @@ class SettingsActivity : ComponentActivity() {
                 )
             },
             onCheckedChange = {
-                if (!lazyListState.isScrollInProgress) {
+                if (!scalingLazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     this.storeLogs = it
                     settingsManager.putSettingsBool(SettingsManager.PREFS.STORE_LOGS, it)
@@ -280,13 +243,13 @@ class SettingsActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ClearFavoritesChip(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+    private fun ClearFavoritesChip(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
         Chip(
             modifier = Modifier
                 .padding(top = 12.dp)
                 .fillMaxWidth(),
             onClick = {
-                if (!lazyListState.isScrollInProgress) {
+                if (!scalingLazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     FavoriteAliasHelper(this@SettingsActivity).clearFavoriteAliases()
                     Toast.makeText(this@SettingsActivity, resources.getString(R.string.favorite_aliases_cleared), Toast.LENGTH_SHORT)

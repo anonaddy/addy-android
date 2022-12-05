@@ -4,15 +4,22 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.core.content.ContextCompat
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.lifecycleScope
 import app.futured.donut.DonutSection
 import com.google.android.gms.wearable.Wearable
@@ -28,6 +35,7 @@ import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -114,6 +122,41 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
+
+    private fun getBitmapFromView(view: View): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            view.width, view.height, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+        return bitmap
+    }
+
+
+    private fun addAliasAsShortcut() {
+        val encryptedSettingsManager = SettingsManager(true, this)
+        if (!encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
+
+            // Only add shortcuts when PRIVACY_MODE is disabled to hide aliases
+            val intent = Intent(Intent.ACTION_MAIN, Uri.EMPTY, this, ManageAliasActivity::class.java)
+            // Pass data object in the bundle and populate details activity.
+            intent.putExtra("alias_id", alias!!.id)
+
+            val bitmap = getBitmapFromView(binding.activityManageAliasChart)
+
+            val shortcut = ShortcutInfoCompat.Builder(this, alias!!.id)
+                .setShortLabel(alias!!.email)
+                .setLongLabel(alias!!.email)
+                .setIcon(IconCompat.createWithBitmap(bitmap))
+                .setIntent(
+                    intent
+                ).build()
+
+            ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
+        }
+    }
+
+
     private fun customOnBackPressed() {
         if (Build.VERSION.SDK_INT >= 33) {
             onBackInvokedDispatcher.registerOnBackInvokedCallback(
@@ -149,12 +192,20 @@ class ManageAliasActivity : BaseActivity(),
         lifecycleScope.launch {
             getAliasInfo(aliasId)
             loadNodes()
+
+            // Set the AliasShortcut here, to make sure the donut is rendered
+            Handler(Looper.getMainLooper()).postDelayed({
+                // Unauthenticated, clear settings
+                addAliasAsShortcut()
+            }, binding.activityManageAliasChart.animationDurationMs)
+
         }
     }
 
     private fun loadNodes() {
         if (BuildConfig.FLAVOR == "gplay") {
             try {
+                // TODO Maybe add option menu when multiple wearables are connected
                 val nodeClient = Wearable.getNodeClient(this)
                 nodeClient.connectedNodes.addOnSuccessListener { nodes ->
                     // Send a message to all connected nodes
@@ -220,7 +271,6 @@ class ManageAliasActivity : BaseActivity(),
         // Sort the list by amount so that the biggest number will fill the whole ring
         binding.activityManageAliasChart.submitData(listOfDonutSection.sortedBy { it.amount })
         // DONUT
-
 
         binding.activityManageAliasForwardedCount.text = this.resources.getString(R.string.d_forwarded, forwarded.toInt())
         binding.activityManageAliasRepliesBlockedCount.text = this.resources.getString(R.string.d_blocked, blocked.toInt())

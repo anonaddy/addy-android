@@ -9,8 +9,11 @@
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:background="@drawable/widget_2_inner_background"
-    android:backgroundTint="@color/widget_inner_background"
-    android:padding="16dp">
+    android:backgroundTint="?android:attr/colorControlHighlight"
+    android:paddingLeft="16dp"
+    android:paddingTop="12dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="12dp">
 
     <LinearLayout
         android:id="@+id/widget_aliases_listview_list"
@@ -27,11 +30,12 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"
+            android:textColor="@color/widget_textcolor"
             android:maxLines="1"
             android:singleLine="true"
             android:text="e4eba4f0-16e5-457a-9648-a6ba518ace43@dontusemy.email"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textStyle="bold"
             android:textSize="14sp"
             tools:ignore="HardcodedText" />
 
@@ -46,7 +50,7 @@
             android:maxLines="2"
             android:singleLine="false"
             android:text="Stupid Sony newsletters. I don’t want that new PlayStation! I stick to my PSP!"
-            android:textColor="@android:color/white"
+            android:textColor="@color/widget_textcolor"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -58,8 +62,8 @@
         android:layout_weight="0"
         android:contentDescription="@string/copy_alias"
         android:src="@drawable/ic_copy"
-        android:tint="@android:color/white"
-        app:tint="@android:color/white"
+        android:tint="?android:attr/colorAccent"
+        app:tint="?android:attr/colorAccent"
         tools:ignore="UseAppTint" />
 
 </LinearLayout>

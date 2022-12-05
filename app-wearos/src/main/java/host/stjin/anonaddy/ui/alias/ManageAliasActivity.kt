@@ -8,23 +8,14 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.rotary.onPreRotaryScrollEvent
-import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -45,6 +36,7 @@ import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.CustomTimeText
+import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
@@ -179,18 +171,17 @@ class ManageAliasActivity : ComponentActivity() {
             isAliasActive = alias!!.active
             AppTheme {
                 // Creates a CoroutineScope bound to the lifecycle
-                val scope = rememberCoroutineScope()
                 val haptic = LocalHapticFeedback.current
-
                 val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
                 isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
 
-                val lazyListState: LazyListState = rememberLazyListState()
+
+                val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
                 Scaffold(
                     modifier = Modifier,
                     timeText = {
                         CustomTimeText(
-                            visible = !lazyListState.isScrollInProgress && (remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }).value == 0,
+                            visible = (remember { derivedStateOf { scalingLazyListState.centerItemIndex } }).value < 2,
                             showLeadingText = true,
                             leadingText = resources.getString(R.string.edit_alias)
                         )
@@ -200,41 +191,16 @@ class ManageAliasActivity : ComponentActivity() {
                     },
                     positionIndicator = {
                         PositionIndicator(
-                            lazyListState = lazyListState,
+                            scalingLazyListState = scalingLazyListState,
                             modifier = Modifier
                         )
                     }
                 ) {
-                    val focusRequester = remember { FocusRequester() }
-                    var currentScrollPosition = 0
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .onPreRotaryScrollEvent {
-                                if (currentScrollPosition != lazyListState.firstVisibleItemScrollOffset) {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                }
-
-                                currentScrollPosition = lazyListState.firstVisibleItemScrollOffset
-                                // return false to ignore this event and continue propagation to the child.
-                                false
-                            }
-                            .onRotaryScrollEvent {
-                                scope.launch {
-                                    lazyListState.animateScrollBy(it.verticalScrollPixels)
-                                }
-                                true
-                            }
-                            .focusRequester(focusRequester)
-                            .focusable(),
-                        contentPadding = PaddingValues(
-                            top = 40.dp,
-                            start = 10.dp,
-                            end = 10.dp,
-                            bottom = 40.dp
-                        ),
+                    ScalingLazyColumnWithRSB(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        state = lazyListState,
+                        modifier = Modifier.fillMaxWidth(),
+                        snap = false,
+                        state = scalingLazyListState
                     ) {
                         item { GetDonut() }
                         item {
@@ -273,13 +239,9 @@ class ManageAliasActivity : ComponentActivity() {
                                 )
                             )
                         }
-                        item { AliasActiveToggle(lazyListState, haptic) }
-                        item { AliasFavoriteToggle(lazyListState, haptic) }
-                        item { ShowOnDeviceChip(lazyListState) }
-                    }
-
-                    LaunchedEffect(Unit) {
-                        focusRequester.requestFocus()
+                        item { AliasActiveToggle(scalingLazyListState, haptic) }
+                        item { AliasFavoriteToggle(scalingLazyListState, haptic) }
+                        item { ShowOnDeviceChip(scalingLazyListState) }
                     }
                 }
 
@@ -288,13 +250,13 @@ class ManageAliasActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ShowOnDeviceChip(lazyListState: LazyListState) {
+    private fun ShowOnDeviceChip(scalingLazyListState: ScalingLazyListState) {
         Chip(
             modifier = Modifier
                 .padding(top = 2.dp, bottom = 2.dp)
                 .fillMaxWidth(),
             onClick = {
-                if (!lazyListState.isScrollInProgress) {
+                if (!scalingLazyListState.isScrollInProgress) {
                     // Happens in method
                     //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     showAliasOnDevice(alias!!.id)
@@ -316,7 +278,7 @@ class ManageAliasActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun AliasFavoriteToggle(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+    private fun AliasFavoriteToggle(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
         ToggleChip(
             modifier = Modifier
                 .padding(top = 2.dp, bottom = 2.dp)
@@ -328,7 +290,7 @@ class ManageAliasActivity : ComponentActivity() {
             },
             checked = isAliasFavorite,
             onCheckedChange = {
-                if (!lazyListState.isScrollInProgress) {
+                if (!scalingLazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     favoriteAlias(it)
                 }
@@ -352,7 +314,7 @@ class ManageAliasActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun AliasActiveToggle(lazyListState: LazyListState, hapticFeedback: HapticFeedback) {
+    private fun AliasActiveToggle(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
         ToggleChip(
             modifier = Modifier
                 .padding(top = 16.dp, bottom = 2.dp)
@@ -384,7 +346,7 @@ class ManageAliasActivity : ComponentActivity() {
                 )
             },
             onCheckedChange = {
-                if (!lazyListState.isScrollInProgress) {
+                if (!scalingLazyListState.isScrollInProgress) {
                     isAliasActive = it
                     if (!isChangingActivationStatus) {
                         if (isAliasActive) {
