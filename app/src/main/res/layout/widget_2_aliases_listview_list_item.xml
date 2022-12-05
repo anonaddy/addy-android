@@ -9,7 +9,7 @@
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:background="@drawable/widget_2_inner_background"
-    android:backgroundTint="@color/widget_inner_background"
+    android:backgroundTint="?android:attr/colorControlHighlight"
     android:paddingLeft="16dp"
     android:paddingTop="12dp"
     android:paddingRight="16dp"
@@ -62,8 +62,8 @@
         android:layout_weight="0"
         android:contentDescription="@string/copy_alias"
         android:src="@drawable/ic_copy"
-        android:tint="@color/widget_foreground"
-        app:tint="@color/widget_foreground"
+        android:tint="?android:attr/colorAccent"
+        app:tint="?android:attr/colorAccent"
         tools:ignore="UseAppTint" />
 
 </LinearLayout>

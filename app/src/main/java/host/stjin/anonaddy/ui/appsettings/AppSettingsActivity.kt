@@ -123,7 +123,7 @@ class AppSettingsActivity : BaseActivity(),
         })
         binding.activityAppSettingsSectionPrivacy.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                if (compoundButton.isPressed) {
+                if (compoundButton.isPressed || forceSwitch) {
                     encryptedSettingsManager.putSettingsBool(SettingsManager.PREFS.PRIVACY_MODE, checked)
 
                     if (checked) {

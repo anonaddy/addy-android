@@ -72,13 +72,15 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.3.2</h3>
+<h3>What\'s new in AnonAddy for Android 4.4.0</h3>
+<h4>Added</h4>
+<p>📌 Shortcuts have been added, long press the app icon to quickly create a new alias or hop back to the latest alias you were managing<br />🫣 A new privacy has been added and can be used to hide aliases in notifications, widgets and shortcuts</p>
 <h4>Fixed/Improved</h4>
-<p>✨ Fixed an issue where an unstable or loss of internet connection could reset the "Alias Watcher"-cache resulting in the notifications to re-appear.<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
+<p>✨ Some UI elements were updated to reflect the new M3 design, such as switches and widgets<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
 <p>&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.0.5</h3>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.1.0</h3>
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things to make the app even smoother</p>]]></string>
+<p>✨ Improved support for devices with a digital crown like the Google Pixel Watch<br />✨ Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>

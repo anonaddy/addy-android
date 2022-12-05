@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="widget_background">@android:color/system_accent1_10</color>
-    <color name="widget_foreground">@android:color/system_accent1_600</color>
     <color name="widget_textcolor">@color/BlackWhite</color>
-    <color name="widget_inner_background">@android:color/system_accent2_100</color>
 </resources>

@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>📌 Shortcuts have been added, long press the app icon to quickly create a new alias or hop back to the latest alias you were managing<br />🫣 A new privacy has been added and can be used to hide aliases in notifications, widgets and shortcuts</p>
+<h4>Fixed/Improved</h4>
+<p>✨ Some UI elements were updated to reflect the new M3 design, such as switches and widgets<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>

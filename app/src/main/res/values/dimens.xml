@@ -23,7 +23,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_2_padding_layout_3">16dp</dimen>
 
 
-    <dimen name="widget_2_margin_layout_1">18dp</dimen>
+    <dimen name="widget_2_margin_layout_1">22dp</dimen>
     <dimen name="widget_2_margin_layout_2">0dp</dimen>
 
     <dimen name="collapsingtoolbar_title_left_margin">22dp</dimen>

@@ -4,12 +4,9 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
     android:gravity="center"
     android:orientation="vertical"
-    android:theme="@style/AppTheme">
+    android:theme="@style/WidgetTheme">
 
     <LinearLayout
         android:id="@+id/widget_2_layout_1"
@@ -17,6 +14,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/widget_2_margin_layout_1"
         android:layout_marginBottom="@dimen/widget_2_margin_layout_1"
+        android:backgroundTint="?android:attr/colorBackground"
         android:background="@drawable/widget_2_background"
         android:baselineAligned="false"
         android:padding="@dimen/widget_2_padding_layout_1"
@@ -36,12 +34,13 @@
 
                 <ImageView
                     android:layout_width="165dp"
-                    android:layout_height="wrap_content"
                     android:contentDescription="@string/app_name"
                     android:paddingEnd="40dp"
                     android:scaleType="fitStart"
+                    android:layout_height="20dp"
                     android:src="@drawable/ic_logo_widget_icon"
-                    app:tint="@color/widget_foreground" />
+                    android:tint="?android:attr/colorAccent"
+                    app:tint="?android:attr/colorAccent" />
 
             </LinearLayout>
 
@@ -61,7 +60,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="56sp"
                     tools:ignore="HardcodedText" />
 
@@ -72,7 +71,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:gravity="bottom"
                     android:text="@string/emails_forwarded"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
@@ -102,7 +101,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="34sp"
                     tools:ignore="HardcodedText" />
 
@@ -114,7 +113,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:gravity="end|center_vertical"
                     android:text="@string/widget_2_blocked"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -135,7 +134,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="34sp"
                     tools:ignore="HardcodedText" />
 
@@ -147,7 +146,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:gravity="end|center_vertical"
                     android:text="@string/widget_2_sent"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -168,7 +167,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="34sp"
                     tools:ignore="HardcodedText" />
 
@@ -180,7 +179,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:gravity="end|center_vertical"
                     android:text="@string/widget_2_replied"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -195,6 +194,7 @@
         android:layout_marginTop="@dimen/widget_2_margin_layout_2"
         android:layout_marginBottom="@dimen/widget_2_margin_layout_2"
         android:background="@drawable/widget_2_background"
+        android:backgroundTint="?android:attr/colorBackground"
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:padding="@dimen/widget_2_padding_layout_2"
@@ -221,7 +221,7 @@
                 android:lines="1"
                 android:maxLines="1"
                 android:text="0"
-                android:textColor="@color/widget_foreground"
+                android:textColor="?android:attr/colorAccent"
                 android:textSize="48sp"
                 tools:ignore="HardcodedText" />
 
@@ -236,7 +236,7 @@
                 android:lines="1"
                 android:maxLines="1"
                 android:text="@string/widget_2_forwarded"
-                android:textColor="@color/widget_foreground"
+                android:textColor="?android:attr/colorAccent"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -276,7 +276,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="48sp"
                     tools:ignore="HardcodedText" />
 
@@ -293,7 +293,7 @@
 
                     android:maxLines="1"
                     android:text="@string/widget_2_blocked"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -316,7 +316,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="48sp"
                     tools:ignore="HardcodedText" />
 
@@ -333,7 +333,7 @@
 
                     android:maxLines="1"
                     android:text="@string/widget_2_replied"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -355,7 +355,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:text="0"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="48sp"
                     tools:ignore="HardcodedText" />
 
@@ -372,7 +372,7 @@
 
                     android:maxLines="1"
                     android:text="@string/widget_2_sent"
-                    android:textColor="@color/widget_foreground"
+                    android:textColor="?android:attr/colorAccent"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
@@ -383,6 +383,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/widget_2_background"
+        android:backgroundTint="?android:attr/colorBackground"
         android:baselineAligned="false"
         android:clipToOutline="true"
         android:orientation="horizontal"
@@ -434,12 +435,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/widget_2_inner_foreground"
+                android:background="@drawable/widget_2_inner_background"
+                android:backgroundTint="?android:attr/colorAccent"
                 android:contentDescription="@string/add_alias"
                 android:padding="16dp"
                 android:src="@drawable/ic_add"
-                android:tint="@color/widget_background"
-                app:tint="@color/widget_background"
+                android:tint="?android:attr/colorBackground"
+                app:tint="?android:attr/colorBackground"
                 tools:ignore="UseAppTint" />
 
             <ImageView
@@ -450,8 +452,8 @@
                 android:contentDescription="@string/aliases"
                 android:padding="16dp"
                 android:src="@drawable/ic_email_at"
-                android:tint="@color/widget_inner_background"
-                app:tint="@color/widget_inner_background"
+                android:tint="?android:attr/colorAccent"
+                app:tint="?android:attr/colorAccent"
                 tools:ignore="UseAppTint" />
 
             <ImageView
@@ -462,8 +464,8 @@
                 android:contentDescription="@string/recipients"
                 android:padding="16dp"
                 android:src="@drawable/ic_user"
-                android:tint="@color/widget_inner_background"
-                app:tint="@color/widget_inner_background"
+                android:tint="?android:attr/colorAccent"
+                app:tint="?android:attr/colorAccent"
                 tools:ignore="UseAppTint" />
 
             <ImageView
@@ -474,8 +476,8 @@
                 android:contentDescription="@string/domains"
                 android:padding="16dp"
                 android:src="@drawable/ic_dns"
-                android:tint="@color/widget_inner_background"
-                app:tint="@color/widget_inner_background"
+                android:tint="?android:attr/colorAccent"
+                app:tint="?android:attr/colorAccent"
                 tools:ignore="UseAppTint" />
 
             <ImageView
@@ -486,8 +488,8 @@
                 android:contentDescription="@string/rules"
                 android:padding="16dp"
                 android:src="@drawable/ic_clipboard_list"
-                android:tint="@color/widget_inner_background"
-                app:tint="@color/widget_inner_background"
+                android:tint="?android:attr/colorAccent"
+                app:tint="?android:attr/colorAccent"
                 tools:ignore="UseAppTint" />
 
             <ImageView
@@ -497,8 +499,8 @@
                 android:contentDescription="@string/usernames"
                 android:padding="16dp"
                 android:src="@drawable/ic_user_menu"
-                android:tint="@color/widget_inner_background"
-                app:tint="@color/widget_inner_background"
+                android:tint="?android:attr/colorAccent"
+                app:tint="?android:attr/colorAccent"
                 tools:ignore="UseAppTint" />
         </LinearLayout>
 
