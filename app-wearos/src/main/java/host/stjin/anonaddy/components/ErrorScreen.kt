@@ -1,25 +1,16 @@
 package host.stjin.anonaddy.components
 
 import android.content.Context
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,26 +18,24 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.*
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.components.CustomTimeText
+import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
 fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
     val haptic = LocalHapticFeedback.current
-    val scope = rememberCoroutineScope()
-
     // 2 vibrations for error
     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
     AppTheme {
-        val lazyListState: LazyListState = rememberLazyListState()
+        val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
         Scaffold(
             modifier = Modifier,
             timeText = {
                 CustomTimeText(
-                    visible = true,
+                    visible = (remember { derivedStateOf { scalingLazyListState.centerItemIndex } }).value < 1,
                     showLeadingText = true,
                     leadingText = leadingText ?: context.resources.getString(R.string.app_name)
                 )
@@ -56,46 +45,27 @@ fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
             },
             positionIndicator = {
                 PositionIndicator(
-                    lazyListState = lazyListState
+                    scalingLazyListState = scalingLazyListState
                 )
             }
         ) {
-            val focusRequester = remember { FocusRequester() }
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(start = 16.dp, end = 16.dp)
             ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .onRotaryScrollEvent {
-                            scope.launch {
-                                lazyListState.scrollBy(it.verticalScrollPixels)
-                            }
-                            true
-                        }
-                        .focusRequester(focusRequester)
-                        .focusable(),
-                    contentPadding = PaddingValues(
-                        top = 40.dp,
-                        start = 10.dp,
-                        end = 10.dp,
-                        bottom = 40.dp
-                    ),
+                ScalingLazyColumnWithRSB(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    state = lazyListState,
+                    modifier = Modifier.fillMaxWidth(),
+                    snap = false,
+                    state = scalingLazyListState
                 ) {
                     item {
                         Text(context.resources.getString(R.string.whoops), fontSize = 30.sp, textAlign = TextAlign.Center)
                         Text(text, color = MaterialTheme.colors.error, textAlign = TextAlign.Center)
                     }
                 }
-            }
-
-            LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
             }
         }
 

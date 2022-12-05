@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
@@ -55,12 +53,12 @@ class CreateAliasActivity : ComponentActivity() {
     @OptIn(ExperimentalWearMaterialApi::class)
     @Composable
     private fun AnonAddyScaffold(settingsManager: SettingsManager) {
-        val lazyListState: LazyListState = rememberLazyListState()
+        val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
         Scaffold(
             modifier = Modifier,
             timeText = {
                 CustomTimeText(
-                    visible = !lazyListState.isScrollInProgress && (remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }).value == 0,
+                    visible = (remember { derivedStateOf { scalingLazyListState.centerItemScrollOffset } }).value == 0,
                     showLeadingText = true,
                     leadingText = resources.getString(R.string.add_alias)
                 )
@@ -70,14 +68,14 @@ class CreateAliasActivity : ComponentActivity() {
             },
             positionIndicator = {
                 PositionIndicator(
-                    lazyListState = lazyListState
+                    scalingLazyListState = scalingLazyListState
                 )
             }
         ) {
             var skipAliasCreateGuide by remember { mutableStateOf(settingsManager.getSettingsBool(SettingsManager.PREFS.WEAROS_SKIP_ALIAS_CREATE_GUIDE)) }
 
             if (alias != null) {
-                CreatedAliasDetails(lazyListState, alias!!, this, this)
+                CreatedAliasDetails(scalingLazyListState, alias!!, this, this)
             } else {
                 if (skipAliasCreateGuide) {
                     Loading()
@@ -87,7 +85,7 @@ class CreateAliasActivity : ComponentActivity() {
                         skipAliasCreateGuide = true
                     }
                     // show Guide
-                    AliasCreateGuide(lazyListState, settingsManager, this, onIUnderstandClick)
+                    AliasCreateGuide(scalingLazyListState, settingsManager, this, onIUnderstandClick)
                 }
             }
 

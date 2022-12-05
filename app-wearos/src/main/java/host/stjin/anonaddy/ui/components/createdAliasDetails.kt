@@ -3,20 +3,12 @@ package host.stjin.anonaddy.ui.components
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -25,51 +17,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Button
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.Icon
-import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.*
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.getAnonAddyButtonColors
-import kotlinx.coroutines.launch
 
 private val SPACING_ALIAS_BUTTONS = Dp(24f)
 private val SPACING_BUTTONS = Dp(8f)
 
-@OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalWearMaterialApi
 @Composable
-fun CreatedAliasDetails(lazyListState: LazyListState, alias: Aliases, context: Context, activity: CreateAliasActivity) {
+fun CreatedAliasDetails(scalingLazyListState: ScalingLazyListState, alias: Aliases, context: Context, activity: CreateAliasActivity) {
 
 
     // Creates a CoroutineScope bound to the lifecycle
-    val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
-    val focusRequester = remember { FocusRequester() }
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .onRotaryScrollEvent {
-                scope.launch {
-                    lazyListState.scrollBy(it.verticalScrollPixels)
-                }
-                true
-            }
-            .focusRequester(focusRequester)
-            .focusable(),
-        contentPadding = PaddingValues(
-            top = 40.dp,
-            start = 10.dp,
-            end = 10.dp,
-            bottom = 40.dp
-        ),
+    ScalingLazyColumnWithRSB(
         horizontalAlignment = CenterHorizontally,
-        state = lazyListState,
+        modifier = Modifier.fillMaxWidth(),
+        snap = false,
+        state = scalingLazyListState
     ) {
         item {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -96,9 +66,6 @@ fun CreatedAliasDetails(lazyListState: LazyListState, alias: Aliases, context: C
                 }
             }
         }
-    }
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
     }
 }
 

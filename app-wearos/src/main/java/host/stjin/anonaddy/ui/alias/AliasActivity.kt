@@ -58,7 +58,7 @@ class AliasActivity : ComponentActivity() {
             modifier = Modifier,
             timeText = {
                 CustomTimeText(
-                    visible = !scalingLazyListState.isScrollInProgress && scalingLazyListState.centerItemIndex == 0,
+                    visible = (remember { derivedStateOf { scalingLazyListState.centerItemIndex } }).value < 1,
                     showLeadingText = true,
                     leadingText = resources.getString(R.string.aliases)
                 )
