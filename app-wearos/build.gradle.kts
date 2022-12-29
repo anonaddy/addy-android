@@ -142,7 +142,7 @@ dependencies {
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.google.code.gson:gson:2.10")
 }
 
 // For the donut in the aliasview

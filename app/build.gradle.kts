@@ -73,6 +73,17 @@ android {
 
 }
 
+dependencies {
+    modules {
+        module("org.jetbrains.kotlin:kotlin-stdlib-jdk7") {
+            replacedBy("org.jetbrains.kotlin:kotlin-stdlib", "kotlin-stdlib-jdk7 is now part of kotlin-stdlib")
+        }
+        module("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
+            replacedBy("org.jetbrains.kotlin:kotlin-stdlib", "kotlin-stdlib-jdk8 is now part of kotlin-stdlib")
+        }
+    }
+}
+
 
 dependencies {
     implementation(project(mapOf("path" to ":anonaddy_shared")))
@@ -81,7 +92,7 @@ dependencies {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("com.google.android.material:material:1.7.0")
@@ -144,7 +155,7 @@ dependencies {
 
 // Backup manager
 dependencies {
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
 }
 
 // Communication with Wear OS device
@@ -158,7 +169,7 @@ dependencies {
 
 // Backgroundworker
 dependencies {
-    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.google.code.gson:gson:2.10")
 }
 
 // Built-in updater
