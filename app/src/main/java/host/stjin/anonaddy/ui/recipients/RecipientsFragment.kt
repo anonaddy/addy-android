@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ScrollView
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.RecipientAdapter
 import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
+import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
@@ -65,19 +67,25 @@ class RecipientsFragment : Fragment(),
         setStats()
 
         setOnClickListener()
+        setNsvListener()
 
-        // Called on OnResume() as well, call this in onCreateView so the viewpager can serve loaded fragments
+        // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
+        // API calls, user should swipe to refresh starting from v4.5.0
         getDataFromWeb()
         return root
     }
 
-    private fun getDataFromWeb() {
+    fun getDataFromWeb() {
 
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
             getUserResource(requireContext())
             getAllRecipients()
         }
+    }
+
+    private fun setHasReachedTopOfNsv() {
+        (activity as MainActivity).hasReachedTopOfNsv = !binding.recipientsNSV.canScrollVertically(-1)
     }
 
     private fun setStats() {
@@ -138,8 +146,8 @@ class RecipientsFragment : Fragment(),
     // Update the recipients list when coming back
     override fun onResume() {
         super.onResume()
+        setHasReachedTopOfNsv()
         activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
-        getDataFromWeb()
     }
 
     private fun setOnClickListener() {
@@ -153,6 +161,9 @@ class RecipientsFragment : Fragment(),
         }
     }
 
+    private fun setNsvListener() {
+        binding.recipientsNSV.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, _, _, _ -> setHasReachedTopOfNsv() })
+    }
 
     private lateinit var recipientAdapter: RecipientAdapter
     private suspend fun getAllRecipients() {

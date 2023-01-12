@@ -19,6 +19,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -69,9 +70,11 @@ class HomeFragment : Fragment() {
         // load values from local to make the app look quick and snappy!
         setOnClickListeners()
         getStatistics()
+        setNsvListener()
 
-        // Called on OnResume(), prevent double calls
-        //getDataFromWeb(root, requireContext())
+        // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
+        // API calls, user should swipe to refresh starting from v4.5.0
+        getDataFromWeb(requireContext())
 
         return root
     }
@@ -83,6 +86,14 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun setNsvListener() {
+        binding.homeStatisticsNSV.setOnScrollChangeListener(OnScrollChangeListener { _, _, _, _, _ -> setHasReachedTopOfNsv() })
+    }
+
+    private fun setHasReachedTopOfNsv() {
+        println("CAN SCROLL VERTICALLY: ${binding.homeStatisticsNSV.canScrollVertically(-1)}")
+        (activity as MainActivity).hasReachedTopOfNsv = !binding.homeStatisticsNSV.canScrollVertically(-1)
+    }
 
     override fun onPause() {
         super.onPause()
@@ -90,7 +101,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun getDataFromWeb(context: Context) {
+    fun getDataFromWeb(context: Context) {
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
             getMostActiveAliases()
@@ -103,9 +114,10 @@ class HomeFragment : Fragment() {
     // Update information when coming back, such as aliases and statistics
     override fun onResume() {
         super.onResume()
+        setHasReachedTopOfNsv()
         activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
-        getDataFromWeb(requireContext())
     }
+
 
     private fun setOnClickListeners() {
         binding.homeMostActiveAliasesViewMore.setOnClickListener {

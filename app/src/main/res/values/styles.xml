@@ -56,6 +56,11 @@
         <item name="fontFamily">sans-serif-medium</item>
     </style>
 
+    <style name="AppTheme.CollapsingToolbarTitle.Expanded.Small" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
 
     <style name="BottomSheet" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
@@ -359,13 +364,24 @@
         <item name="android:background">?colorPrimary</item>
         <item name="contentScrim">?colorPrimary</item>
         <item name="expandedTitleGravity">left|bottom</item>
-        <item name="expandedTitleMarginBottom">@dimen/collapsingtoolbar_title_bottom_margin</item>
-        <item name="expandedTitleMarginStart">@dimen/collapsingtoolbar_title_left_margin</item>
-        <item name="expandedTitleMarginTop">0dp</item>
+        <item name="expandedTitleMarginStart">@dimen/collapsingtoolbar_title_margin</item>
+        <item name="expandedTitleMarginBottom">@dimen/collapsingtoolbar_title_margin_alt</item>
         <item name="expandedTitleTextColor">?colorOnPrimary</item>
         <item name="collapsedTitleTextColor">?colorOnPrimary</item>
         <item name="expandedTitleTextAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
         <item name="layout_scrollFlags">scroll|exitUntilCollapsed|snap</item>
+    </style>
+
+    <style name="AnonAddyCollapsingToolbarLayout.Title" parent="Widget.Material3.CollapsingToolbar.Large">
+        <item name="android:layout_margin">@dimen/collapsingtoolbar_title_margin</item>
+        <item name="android:textColor">?colorOnPrimary</item>
+        <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
+    </style>
+
+    <style name="AnonAddyCollapsingToolbarLayout.SubTitle" parent="Widget.Material3.CollapsingToolbar.Large">
+        <item name="android:textColor">?colorOnPrimary</item>
+        <item name="android:alpha">0.7</item>
+        <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded.Small</item>
     </style>
 
 

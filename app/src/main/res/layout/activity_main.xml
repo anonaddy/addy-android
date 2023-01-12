@@ -9,15 +9,22 @@
         android:id="@+id/mainAppBarInclude"
         layout="@layout/main_app_bar" />
 
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/activity_main_viewpager"
+    <host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:nestedScrollingEnabled="true"
-        android:paddingBottom="80dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:AniBackColor="?colorPrimary"
+        app:AniForeColor="@android:color/transparent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/activity_main_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="true"
+            android:paddingBottom="80dp" />
+    </host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

@@ -4,7 +4,6 @@
     <string name="app_settings">App settings</string>
     <string name="title_recipients">Recipients</string>
     <string name="recipients">Recipients</string>
-    <string name="username_settings">Username settings</string>
     <string name="anonaddy_settings">AnonAddy settings</string>
     <string name="monthly_bandwidth">Monthly bandwidth</string>
     <string name="view_more">View more</string>
@@ -614,5 +613,7 @@
     <string name="one_of_your_aliases">one of your aliases</string>
     <string name="alias_hidden">Alias hidden</string>
     <string name="view_more_aliases">View more aliases</string>
-
+    <string name="pull_down_to_refresh">Pull down to refresh</string>
+    <string name="last_refreshed_d_minutes_ago">Last refreshed: %d minutes ago</string>
+    <string name="release_to_refresh">Release to refresh</string>
 </resources>

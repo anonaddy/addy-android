@@ -7,7 +7,8 @@
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar"
-        style="@style/AnonAddyCollapsingToolbarLayout">
+        style="@style/AnonAddyCollapsingToolbarLayout"
+        app:titleEnabled="false">
 
         <Space
             android:id="@+id/expanded_size"
@@ -19,6 +20,35 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin" />
+
+        <TextView
+            android:id="@+id/main_top_bar_title"
+            style="@style/AnonAddyCollapsingToolbarLayout.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="@string/title_home" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/main_top_bar_subtitle_shimmerframelayout"
+            style="@style/AnonAddyCollapsingToolbarLayout.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/collapsingtoolbar_subtitle_left_margin"
+            android:layout_marginBottom="@dimen/collapsingtoolbar_subtitle_bottom_margin"
+            app:shimmer_auto_start="false"
+            app:shimmer_base_alpha="1"
+            app:shimmer_highlight_alpha="0.5"
+            app:shimmer_repeat_count="0">
+
+            <TextView
+                android:id="@+id/main_top_bar_subtitle"
+                style="@style/AnonAddyCollapsingToolbarLayout.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
 
         <LinearLayout
@@ -122,7 +152,6 @@
             </RelativeLayout>
 
         </LinearLayout>
-
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 

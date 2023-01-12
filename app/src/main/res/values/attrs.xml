@@ -20,4 +20,9 @@
         <attr name="animationDrawable" format="integer" />
         <attr name="loopAnimation" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="RefreshLayout">
+        <attr name="AniBackColor" format="color" />
+        <attr name="AniForeColor" format="color" />
+    </declare-styleable>
 </resources>
