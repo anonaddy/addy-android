@@ -3,9 +3,9 @@ buildscript {
     // Define versions in a single place
     extra.apply {
         // https://developer.android.com/jetpack/androidx/releases/wear-compose
-        set("wear_compose_version", "1.1.0")
+        set("wear_compose_version", "1.1.1")
         // https://developer.android.com/jetpack/androidx/releases/compose
-        set("compose_version", "1.3.2")
+        set("compose_version", "1.3.3")
         set("compose_compiler_version", "1.3.2")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.6.1")
@@ -22,7 +22,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.3.1")
+        classpath("com.android.tools.build:gradle:7.4.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20")
 
         // NOTE: Do not place your application dependencies here; they belong

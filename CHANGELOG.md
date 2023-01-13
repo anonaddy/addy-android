@@ -1,5 +1,25 @@
 # Changelog
 
+## [v4.5.0] - 2023-01-14
+
+### AnonAddy for Android
+
+##### Added
+
+- 🔄 Manual refresh data and check for updates by swiping down on the home screen
+  - This prevents a lot of API calls from being made when switching between the pages
+  - Data in separate activities will still automatically refresh
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables _(v1.1.1)_
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.4.0] - 2022-12-05
 
 ### AnonAddy for Android

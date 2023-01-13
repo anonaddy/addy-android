@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -13,6 +14,7 @@ import host.stjin.anonaddy.ui.alias.AliasActivity
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity() {
 
 

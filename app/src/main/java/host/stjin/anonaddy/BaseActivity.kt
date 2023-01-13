@@ -73,7 +73,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
 
     // This value holds the status if the app bar is expanded or not, used for the refreshlayouts
-    var appBarIsExpanded: Boolean = true
+    private var appBarIsExpanded: Boolean = true
 
     private var refreshLayout: RefreshLayout? = null
     fun setupRefreshLayout(
@@ -96,7 +96,7 @@ abstract class BaseActivity : AppCompatActivity() {
         title.text = text
     }
 
-    fun changeTopBarSubTitle(subtitle: TextView, title: TextView, text: String?) {
+    fun changeTopBarSubTitle(subtitle: TextView, title: TextView, smallTitle: TextView, text: String?) {
 
         // Prevent lagging animation by not setting text multiple times
         if (subtitle.text == text || subtitle.text.isNullOrEmpty() && text == null) {
@@ -108,6 +108,10 @@ abstract class BaseActivity : AppCompatActivity() {
                 duration = 300
                 start()
             }
+            ObjectAnimator.ofFloat(smallTitle, "translationY", 0f).apply {
+                duration = 300
+                start()
+            }
 
             ObjectAnimator.ofFloat(subtitle, "alpha", 0f).apply {
                 duration = 300
@@ -115,6 +119,10 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         } else {
             ObjectAnimator.ofFloat(title, "translationY", -12f).apply {
+                duration = 300
+                start()
+            }
+            ObjectAnimator.ofFloat(smallTitle, "translationY", -8f).apply {
                 duration = 300
                 start()
             }

@@ -51,15 +51,21 @@
     </style>
 
     <style name="AppTheme.CollapsingToolbarTitle.Expanded" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">32sp</item>
+        <item name="android:textSize">@dimen/expanded_text_size</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="AppTheme.CollapsingToolbarTitle.Expanded.Subtitle" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="AppTheme.CollapsingToolbarTitle.Expanded.Small" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/collapsed_text_size</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif</item>
     </style>
 
     <style name="BottomSheet" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
@@ -378,10 +384,19 @@
         <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
     </style>
 
+    <style name="AnonAddyCollapsingToolbarLayout.Title.Small" parent="Widget.Material3.CollapsingToolbar.Large">
+        <item name="android:layout_marginStart">@dimen/collapsingtoolbar_title_margin</item>
+        <item name="android:layout_marginEnd">@dimen/collapsingtoolbar_title_small_margin</item>
+        <item name="android:layout_marginTop">@dimen/collapsingtoolbar_title_small_margin</item>
+        <item name="android:layout_marginBottom">@dimen/collapsingtoolbar_title_small_margin</item>
+        <item name="android:textColor">?colorOnPrimary</item>
+        <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded.Small</item>
+    </style>
+
     <style name="AnonAddyCollapsingToolbarLayout.SubTitle" parent="Widget.Material3.CollapsingToolbar.Large">
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="android:alpha">0.7</item>
-        <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded.Small</item>
+        <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded.Subtitle</item>
     </style>
 
 

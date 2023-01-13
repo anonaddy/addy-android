@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui
 
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
@@ -75,8 +76,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     )
 
     private lateinit var networkHelper: NetworkHelper
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -102,12 +101,61 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
+        var collapsingToolbarExpanded = false
+        binding.mainAppBarInclude.appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (verticalOffset == -binding.mainAppBarInclude.collapsingToolbar.height + binding.mainAppBarInclude.toolbar.height) {
+                if (!collapsingToolbarExpanded) {
+                    collapsingToolbarExpanded = true
+
+                    // FADE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "alpha", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitleSmall, "alpha", 1f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    // MOVE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "translationY", -32f).apply {
+                        duration = 300
+                        start()
+                    }
+                }
+            } else {
+                if (collapsingToolbarExpanded) {
+                    collapsingToolbarExpanded = false
+
+                    // FADE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "alpha", 1f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitleSmall, "alpha", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    // MOVE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "translationY", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                }
+            }
+        }
+
+
 
         binding.refreshLayout.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
             override fun refresh() {
                 changeTopBarSubTitle(
                     binding.mainAppBarInclude.mainTopBarSubtitle,
                     binding.mainAppBarInclude.mainTopBarTitle,
+                    binding.mainAppBarInclude.mainTopBarTitleSmall,
                     this@MainActivity.resources.getString(R.string.refreshing_data)
                 )
                 shimmerTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitleShimmerframelayout, true)
@@ -138,7 +186,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     // Unauthenticated, clear settings
                     binding.refreshLayout.finishRefreshing()
                     shimmerTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitleShimmerframelayout, true)
-                    changeTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitle, binding.mainAppBarInclude.mainTopBarTitle, null)
+                    changeTopBarSubTitle(
+                        binding.mainAppBarInclude.mainTopBarSubtitle,
+                        binding.mainAppBarInclude.mainTopBarTitle,
+                        binding.mainAppBarInclude.mainTopBarTitleSmall,
+                        null
+                    )
                 }, 2000)
 
             }
@@ -149,23 +202,35 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         changeTopBarSubTitle(
                             binding.mainAppBarInclude.mainTopBarSubtitle,
                             binding.mainAppBarInclude.mainTopBarTitle,
+                            binding.mainAppBarInclude.mainTopBarTitleSmall,
                             this@MainActivity.resources.getString(R.string.release_to_refresh)
                         )
                     } else {
                         changeTopBarSubTitle(
                             binding.mainAppBarInclude.mainTopBarSubtitle,
                             binding.mainAppBarInclude.mainTopBarTitle,
+                            binding.mainAppBarInclude.mainTopBarTitleSmall,
                             this@MainActivity.resources.getString(R.string.pull_down_to_refresh)
                         )
                     }
                 } else {
-                    changeTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitle, binding.mainAppBarInclude.mainTopBarTitle, null)
+                    changeTopBarSubTitle(
+                        binding.mainAppBarInclude.mainTopBarSubtitle,
+                        binding.mainAppBarInclude.mainTopBarTitle,
+                        binding.mainAppBarInclude.mainTopBarTitleSmall,
+                        null
+                    )
                 }
 
             }
 
             override fun cancel() {
-                changeTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitle, binding.mainAppBarInclude.mainTopBarTitle, null)
+                changeTopBarSubTitle(
+                    binding.mainAppBarInclude.mainTopBarSubtitle,
+                    binding.mainAppBarInclude.mainTopBarTitle,
+                    binding.mainAppBarInclude.mainTopBarTitleSmall,
+                    null
+                )
             }
         })
 
@@ -198,16 +263,25 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     0 -> {
                         binding.navView.menu.findItem(R.id.navigation_home).isChecked = true
                         changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_home))
+                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitleSmall, this@MainActivity.resources.getString(R.string.title_home))
 
                     }
                     1 -> {
                         binding.navView.menu.findItem(R.id.navigation_alias).isChecked = true
                         changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_aliases))
+                        changeTopBarTitle(
+                            binding.mainAppBarInclude.mainTopBarTitleSmall,
+                            this@MainActivity.resources.getString(R.string.title_aliases)
+                        )
 
                     }
                     2 -> {
                         binding.navView.menu.findItem(R.id.navigation_recipients).isChecked = true
                         changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_recipients))
+                        changeTopBarTitle(
+                            binding.mainAppBarInclude.mainTopBarTitleSmall,
+                            this@MainActivity.resources.getString(R.string.title_recipients)
+                        )
 
                     }
                 }

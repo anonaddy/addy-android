@@ -81,7 +81,7 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
     private fun initView(context: Context) {
 
         pullHeight = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 20f,
+            TypedValue.COMPLEX_UNIT_DIP, 10f,
             context.resources.displayMetrics
         )
             .toInt()
@@ -231,6 +231,6 @@ class RefreshLayoutAnimationView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val REL_DRAG_DUR: Long = 200
+        private const val REL_DRAG_DUR: Long = 100
     }
 }

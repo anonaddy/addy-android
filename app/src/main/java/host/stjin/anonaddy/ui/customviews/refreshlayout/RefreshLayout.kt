@@ -5,13 +5,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import host.stjin.anonaddy.R
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -30,7 +28,7 @@ open class RefreshLayout @JvmOverloads constructor(
     private var childView: View? = null
     private var header: RefreshLayoutAnimationView? = null
 
-    var isRefreshing: Boolean = false
+    private var isRefreshing: Boolean = false
 
     private var touchStartY: Float = 0.toFloat()
 
@@ -41,6 +39,9 @@ open class RefreshLayout @JvmOverloads constructor(
     private val decelerateInterpolator = DecelerateInterpolator(10f)
 
     private var onRefreshListener: OnRefreshListener? = null
+
+
+    private var mTouchSlop = 0
 
     init {
         init(context, attrs)
@@ -60,7 +61,7 @@ open class RefreshLayout @JvmOverloads constructor(
             context.resources.displayMetrics
         )
         headerHeight = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 20f,
+            TypedValue.COMPLEX_UNIT_DIP, 10f,
             context.resources.displayMetrics
         )
 
@@ -68,6 +69,9 @@ open class RefreshLayout @JvmOverloads constructor(
             childView = getChildAt(0)
             addHeaderView()
         }
+
+        mTouchSlop = ViewConfiguration.get(context).scaledTouchSlop
+
     }
 
     private fun setAttrs(attrs: AttributeSet?) {
@@ -142,9 +146,10 @@ open class RefreshLayout @JvmOverloads constructor(
                 touchCurY = touchStartY
             }
             MotionEvent.ACTION_MOVE -> {
+
                 val curY = ev.y
                 val dy = curY - touchStartY
-                if (dy > 0 && !canChildScrollUp()) {
+                if (dy > 0 && !canChildScrollUp() && abs(dy) > mTouchSlop) {
                     return true
                 }
             }
@@ -259,7 +264,7 @@ open class RefreshLayout @JvmOverloads constructor(
     }
 
     companion object {
-        private const val BACK_TOP_DUR: Long = 200
-        private const val REL_DRAG_DUR: Long = 200
+        private const val BACK_TOP_DUR: Long = 50
+        private const val REL_DRAG_DUR: Long = 100
     }
 }
