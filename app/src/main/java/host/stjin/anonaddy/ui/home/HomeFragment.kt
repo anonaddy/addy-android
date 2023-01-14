@@ -91,7 +91,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setHasReachedTopOfNsv() {
-        println("CAN SCROLL VERTICALLY: ${binding.homeStatisticsNSV.canScrollVertically(-1)}")
         (activity as MainActivity).hasReachedTopOfNsv = !binding.homeStatisticsNSV.canScrollVertically(-1)
     }
 

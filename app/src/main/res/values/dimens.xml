@@ -31,7 +31,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="collapsingtoolbar_action_margin">17dp</dimen>
     <dimen name="collapsingtoolbar_title_margin">15dp</dimen>
     <dimen name="collapsingtoolbar_title_small_margin">19.5dp</dimen>
-    <dimen name="collapsingtoolbar_title_bottom_margin">22dp</dimen>
     <dimen name="collapsingtoolbar_subtitle_bottom_margin">2dp</dimen>
     <dimen name="recyclerview_margin">6dp</dimen>
     <dimen name="touch_raise">12dp</dimen>
