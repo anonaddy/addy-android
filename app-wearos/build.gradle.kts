@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.1.0 + release 01 + 01 (for wearos)
-        versionCode = 331100101
-        versionName = "1.1.0"
+        // SDK 33 + v1.1.1 + release 01 + 01 (for wearos)
+        versionCode = 331110101
+        versionName = "1.1.1"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -95,7 +95,6 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("com.google.android.gms:play-services-wearable:18.0.0")
-    implementation("androidx.percentlayout:percentlayout:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.wear:wear:1.2.0")
@@ -105,8 +104,8 @@ dependencies {
     implementation("com.google.android.support:wearable:2.9.0")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.4")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
 
 
@@ -142,7 +141,7 @@ dependencies {
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.google.code.gson:gson:2.10")
 }
 
 // For the donut in the aliasview

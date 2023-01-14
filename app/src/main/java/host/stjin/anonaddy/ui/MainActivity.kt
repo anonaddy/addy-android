@@ -1,12 +1,15 @@
 package host.stjin.anonaddy.ui
 
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -26,6 +29,7 @@ import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
+import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy.ui.home.HomeFragment
@@ -72,8 +76,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     )
 
     private lateinit var networkHelper: NetworkHelper
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -99,6 +101,139 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
+        var collapsingToolbarExpanded = false
+        binding.mainAppBarInclude.appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (verticalOffset == -binding.mainAppBarInclude.collapsingToolbar.height + binding.mainAppBarInclude.toolbar.height) {
+                if (!collapsingToolbarExpanded) {
+                    collapsingToolbarExpanded = true
+
+                    // FADE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "alpha", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitleSmall, "alpha", 1f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    // MOVE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "translationY", -32f).apply {
+                        duration = 300
+                        start()
+                    }
+                }
+            } else {
+                if (collapsingToolbarExpanded) {
+                    collapsingToolbarExpanded = false
+
+                    // FADE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "alpha", 1f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitleSmall, "alpha", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    // MOVE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "translationY", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                }
+            }
+        }
+
+
+
+        binding.refreshLayout.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
+            override fun refresh() {
+                changeTopBarSubTitle(
+                    binding.mainAppBarInclude.mainTopBarSubtitle,
+                    binding.mainAppBarInclude.mainTopBarTitle,
+                    binding.mainAppBarInclude.mainTopBarTitleSmall,
+                    this@MainActivity.resources.getString(R.string.refreshing_data)
+                )
+                shimmerTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitleShimmerframelayout, true)
+
+                // Refresh failed deliveries
+                initialiseMainAppBar()
+
+                // Check for updates and check API expiration key
+                lifecycleScope.launch {
+                    checkForUpdates()
+                    checkForApiExpiration()
+                }
+
+
+                // Refresh all data in child fragments
+                val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
+                val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
+                val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
+                homeFragment.getDataFromWeb(this@MainActivity)
+                aliasFragment.getDataFromWeb()
+                recipientsFragment.getDataFromWeb()
+
+
+                // Since a bunch of different calls are being made, it is very hard to keep progress of everything.
+                // Just hide the refresh text after 2 seconds.
+                // TODO Any way to keep track of all this?
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    binding.refreshLayout.finishRefreshing()
+                    shimmerTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitleShimmerframelayout, true)
+                    changeTopBarSubTitle(
+                        binding.mainAppBarInclude.mainTopBarSubtitle,
+                        binding.mainAppBarInclude.mainTopBarTitle,
+                        binding.mainAppBarInclude.mainTopBarTitleSmall,
+                        null
+                    )
+                }, 2000)
+
+            }
+
+            override fun pullDown(pixelsMoved: Float, shouldRefreshOnRelease: Boolean) {
+                if (pixelsMoved > 50) {
+                    if (shouldRefreshOnRelease) {
+                        changeTopBarSubTitle(
+                            binding.mainAppBarInclude.mainTopBarSubtitle,
+                            binding.mainAppBarInclude.mainTopBarTitle,
+                            binding.mainAppBarInclude.mainTopBarTitleSmall,
+                            this@MainActivity.resources.getString(R.string.release_to_refresh)
+                        )
+                    } else {
+                        changeTopBarSubTitle(
+                            binding.mainAppBarInclude.mainTopBarSubtitle,
+                            binding.mainAppBarInclude.mainTopBarTitle,
+                            binding.mainAppBarInclude.mainTopBarTitleSmall,
+                            this@MainActivity.resources.getString(R.string.pull_down_to_refresh)
+                        )
+                    }
+                } else {
+                    changeTopBarSubTitle(
+                        binding.mainAppBarInclude.mainTopBarSubtitle,
+                        binding.mainAppBarInclude.mainTopBarTitle,
+                        binding.mainAppBarInclude.mainTopBarTitleSmall,
+                        null
+                    )
+                }
+
+            }
+
+            override fun cancel() {
+                changeTopBarSubTitle(
+                    binding.mainAppBarInclude.mainTopBarSubtitle,
+                    binding.mainAppBarInclude.mainTopBarTitle,
+                    binding.mainAppBarInclude.mainTopBarTitleSmall,
+                    null
+                )
+            }
+        })
+
     }
 
     override fun onResume() {
@@ -111,6 +246,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private lateinit var binding: ActivityMainBinding
     private fun loadMainActivity() {
         showChangeLog()
+        setupRefreshLayout(binding.mainAppBarInclude.appBar, binding.refreshLayout)
 
         binding.activityMainViewpager.adapter = MainViewpagerAdapter(this, fragmentList)
         binding.activityMainViewpager.offscreenPageLimit = 3
@@ -126,15 +262,27 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 when (position) {
                     0 -> {
                         binding.navView.menu.findItem(R.id.navigation_home).isChecked = true
-                        changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_home))
+                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_home))
+                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitleSmall, this@MainActivity.resources.getString(R.string.title_home))
+
                     }
                     1 -> {
                         binding.navView.menu.findItem(R.id.navigation_alias).isChecked = true
-                        changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_aliases))
+                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_aliases))
+                        changeTopBarTitle(
+                            binding.mainAppBarInclude.mainTopBarTitleSmall,
+                            this@MainActivity.resources.getString(R.string.title_aliases)
+                        )
+
                     }
                     2 -> {
                         binding.navView.menu.findItem(R.id.navigation_recipients).isChecked = true
-                        changeTopBarTitle(this@MainActivity.resources.getString(R.string.title_recipients))
+                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_recipients))
+                        changeTopBarTitle(
+                            binding.mainAppBarInclude.mainTopBarTitleSmall,
+                            this@MainActivity.resources.getString(R.string.title_recipients)
+                        )
+
                     }
                 }
                 super.onPageSelected(position)
@@ -178,6 +326,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         // Write the current version code to prevent double triggering
         settingsManager.putSettingsInt(SettingsManager.PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
     }
+
 
     private fun initialiseMainAppBar() {
         // Figure out the from name initials
@@ -413,10 +562,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }, show404Toast = false)
     }
 
-    private fun changeTopBarTitle(title: String) {
-        binding.mainAppBarInclude.collapsingToolbar.title = title
-    }
-
     fun switchFragments(fragment: Int) {
         when (fragment) {
             R.id.navigation_home -> binding.activityMainViewpager.currentItem = 0
@@ -460,8 +605,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     }
                 }
 
+            }
         }
-    }
 
     private fun goToTarget(string: String) {
         when (string) {

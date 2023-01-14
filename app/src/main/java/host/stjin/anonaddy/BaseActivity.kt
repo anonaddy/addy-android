@@ -1,5 +1,6 @@
 package host.stjin.anonaddy
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,6 +9,7 @@ import android.content.IntentFilter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -18,8 +20,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
+import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -49,6 +53,93 @@ abstract class BaseActivity : AppCompatActivity() {
             -1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
+        }
+    }
+
+
+    // This logic is for the refreshlayout, when the home, alias or recipient fragment is scrolled they will fire the setHasReachedTopOfNsv() method
+    // in their respective classes. That method will set this value, the setter then checks if the appbar is expanded and will set that result in the
+    // RefreshLayout. If the value is true it means that the top of the shown fragment is reached as well as the appbar expanded. Continuing to scroll
+    // up will then trigger a refresh action. Else it won't do anything
+    var hasReachedTopOfNsv: Boolean = true
+        set(value) {
+            field = value
+
+            if (this.refreshLayout != null) {
+                // hasReachedTopOfNsv, set shouldShowRefreshLayoutOnScroll
+                this.refreshLayout!!.shouldShowRefreshLayoutOnScroll = value && appBarIsExpanded
+            }
+        }
+
+
+    // This value holds the status if the app bar is expanded or not, used for the refreshlayouts
+    private var appBarIsExpanded: Boolean = true
+
+    private var refreshLayout: RefreshLayout? = null
+    fun setupRefreshLayout(
+        appBarLayout: AppBarLayout,
+        refreshLayout: RefreshLayout
+    ) {
+        this.refreshLayout = refreshLayout
+
+        appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
+            this.appBarIsExpanded = (verticalOffset == 0)
+
+            if (this.refreshLayout != null) {
+                // AppBar expanded or collapsed, set shouldShowRefreshLayoutOnScroll
+                this.refreshLayout!!.shouldShowRefreshLayoutOnScroll = hasReachedTopOfNsv && appBarIsExpanded
+            }
+        }
+    }
+
+    fun changeTopBarTitle(title: TextView, text: String) {
+        title.text = text
+    }
+
+    fun changeTopBarSubTitle(subtitle: TextView, title: TextView, smallTitle: TextView, text: String?) {
+
+        // Prevent lagging animation by not setting text multiple times
+        if (subtitle.text == text || subtitle.text.isNullOrEmpty() && text == null) {
+            return
+        }
+
+        if (text == null) {
+            ObjectAnimator.ofFloat(title, "translationY", 0f).apply {
+                duration = 300
+                start()
+            }
+            ObjectAnimator.ofFloat(smallTitle, "translationY", 0f).apply {
+                duration = 300
+                start()
+            }
+
+            ObjectAnimator.ofFloat(subtitle, "alpha", 0f).apply {
+                duration = 300
+                start()
+            }
+        } else {
+            ObjectAnimator.ofFloat(title, "translationY", -12f).apply {
+                duration = 300
+                start()
+            }
+            ObjectAnimator.ofFloat(smallTitle, "translationY", -8f).apply {
+                duration = 300
+                start()
+            }
+            ObjectAnimator.ofFloat(subtitle, "alpha", 0.7f).apply {
+                duration = 300
+                start()
+            }
+        }
+
+        subtitle.text = text
+    }
+
+    fun shimmerTopBarSubTitle(shimmerFrameLayout: ShimmerFrameLayout, shimmer: Boolean) {
+        if (shimmer) {
+            shimmerFrameLayout.startShimmer()
+        } else {
+            shimmerFrameLayout.stopShimmer()
         }
     }
 
@@ -114,6 +205,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onResume()
         registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
     }
+
 
     /*
     This method is getting called in multiple places to check if the user is Authenticated to use the app.

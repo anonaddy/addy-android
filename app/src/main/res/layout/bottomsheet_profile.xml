@@ -269,7 +269,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/username_settings"
+                            android:contentDescription="@string/manage_usernames"
                             android:src="@drawable/ic_user_menu" />
 
                     </LinearLayout>
@@ -284,7 +284,7 @@
                             style="@style/AnonAddyDialogTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/username_settings"
+                            android:text="@string/manage_usernames"
                             android:textAllCaps="false"
                             android:textColor="@color/BlackWhite" />
 

@@ -84,28 +84,15 @@ Developer-led download channels:
 
 ## Open Source License.
 
-Third party libraries used.
+Third party libraries used. (Main App)
 
-- [androidx.biometric](https://developer.android.com/jetpack/androidx/releases/biometric)
-- [androidx.security.crypto](https://developer.android.com/jetpack/androidx/releases/security)
-- [androidx.work](https://developer.android.com/jetpack/androidx/releases/work)
-- [kittinunf/fuel](https://github.com/kittinunf/fuel)
-- [omtodkar/ShimmerRecyclerView](https://github.com/omtodkar/ShimmerRecyclerView)
-- [facebook/shimmer-android](https://github.com/facebook/shimmer-android)
-- [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner)
-- [futuredapp/donut](https://github.com/futuredapp/donut)
-- [leandroBorgesFerreira/LoadingButtonAndroid](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid)
-- [einmalfel/Earl](https://github.com/einmalfel/Earl) (For built-in updater)
-- [yuriy-budiyev/code-scanner](https://github.com/yuriy-budiyev/code-scanner)
-- [ocpsoft/prettytime](https://github.com/ocpsoft/prettytime)
-- [com.google.android.gms:play-services-wearable](https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable/17.1.0) (for
-  communication with WearOS, available in the Google Play version of the app only)
+- [Please see build.gradle](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/app/build.gradle.kts)
+  - [com.google.android.gms:play-services-wearable](https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable) (is used for
+    communication with WearOS, **available in the Google Play version of the app only**)
 
 Third party libraries used. (WearOS)
 
-- [androidx.wear.tiles](https://developer.android.com/jetpack/androidx/releases/wear-tiles)
-- [androidx.wear.compose](https://developer.android.com/jetpack/androidx/releases/wear-compose)
-- [com.google.android.gms:play-services-base](https://mvnrepository.com/artifact/com.google.android.gms/play-services-base?repo=google)
+- [Please see build.gradle](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/app-wearos/build.gradle.kts)
 
 ## Feedback and contribution
 

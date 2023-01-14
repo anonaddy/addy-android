@@ -125,6 +125,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     }
 
+    private fun setHasReachedTopOfNsv() {
+        (activity as MainActivity).hasReachedTopOfNsv = !binding.fragmentAliasNsv.canScrollVertically(-1)
+    }
+
     private fun setOnNestedScrollViewListener(set: Boolean) {
         if (set) {
             binding.fragmentAliasNsv.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
@@ -134,6 +138,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         getAliasesAndAddThemToList()
                     }
                 }
+                setHasReachedTopOfNsv()
             })
         } else {
             binding.fragmentAliasNsv.setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
@@ -153,7 +158,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
 
-    private fun getDataFromWeb() {
+    fun getDataFromWeb() {
         binding.aliasNoAliases.visibility = View.GONE
 
         // Get the latest data in the background, and update the values when loaded
@@ -200,6 +205,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     // Decided to not load aliases when coming back to hold back on performance issues
     override fun onResume() {
         super.onResume()
+        setHasReachedTopOfNsv()
         activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
     }
 

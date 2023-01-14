@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>🔄 Manual refresh data and check for updates by swiping down on the home screen<br />- This prevents a lot of API calls from being made when switching between the pages<br />- Data in separate activities will still automatically refresh</p>
+<h4>Fixed/Improved</h4>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
