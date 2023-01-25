@@ -42,6 +42,7 @@ import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
+import java.util.*
 
 
 class ManageAliasActivity : BaseActivity(),
@@ -152,7 +153,24 @@ class ManageAliasActivity : BaseActivity(),
                     intent
                 ).build()
 
-            ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
+
+
+            try {
+                ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
+            } catch (_: IllegalArgumentException) {
+                // I saw OPPO devices throwing IAE's on the push command.
+                val shortcuts: MutableList<ShortcutInfoCompat> = ShortcutManagerCompat.getDynamicShortcuts(this)
+
+                if (shortcuts.size >= ShortcutManagerCompat.getMaxShortcutCountPerActivity(this) &&
+                    shortcuts.size > 0
+                ) {
+                    shortcuts.removeAt(shortcuts.size - 1)
+                    shortcuts.add(0, shortcut)
+                    ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
+                } else {
+                    ShortcutManagerCompat.addDynamicShortcuts(this, Collections.singletonList(shortcut))
+                }
+            }
         }
     }
 
