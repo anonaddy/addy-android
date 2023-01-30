@@ -102,7 +102,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         var collapsingToolbarExpanded = false
-        binding.mainAppBarInclude.appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+        binding.mainAppBarInclude.appBar.addOnOffsetChangedListener { _, verticalOffset ->
             if (verticalOffset == -binding.mainAppBarInclude.collapsingToolbar.height + binding.mainAppBarInclude.toolbar.height) {
                 if (!collapsingToolbarExpanded) {
                     collapsingToolbarExpanded = true

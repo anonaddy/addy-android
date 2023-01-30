@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -186,7 +187,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                         // The default alias format does not exist in the formats array, perhaps it was just added?
                         // To prevent a crash from the ArrayIndexOutOfBoundsException log the error and just continue without filling the spinner
                         val ex = e.message
-                        println(ex)
+                        Log.e("AFA", ex.toString())
                         LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "fillSpinners", null)
                     }
 

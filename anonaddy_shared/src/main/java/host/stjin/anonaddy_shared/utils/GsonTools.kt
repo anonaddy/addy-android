@@ -1,6 +1,7 @@
 package host.stjin.anonaddy_shared.utils
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy_shared.models.*
@@ -17,7 +18,7 @@ object GsonTools {
 
         } catch (e: Exception) {
             val ex = e.message
-            println(ex)
+            Log.e("AFA", ex.toString())
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToAliasObject", null)
             null
         }
@@ -34,7 +35,7 @@ object GsonTools {
 
         } catch (e: Exception) {
             val ex = e.message
-            println(ex)
+            Log.e("AFA", ex.toString())
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToUserResourceObject", null)
             null
         }
@@ -51,7 +52,7 @@ object GsonTools {
 
         } catch (e: Exception) {
             val ex = e.message
-            println(ex)
+            Log.e("AFA", ex.toString())
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToAliasSortFilterObject", null)
             null
         }
@@ -68,7 +69,7 @@ object GsonTools {
 
         } catch (e: Exception) {
             val ex = e.message
-            println(ex)
+            Log.e("AFA", ex.toString())
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "jsonToWearOSSettingsObject", null)
             null
         }

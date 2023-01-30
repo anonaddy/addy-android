@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
