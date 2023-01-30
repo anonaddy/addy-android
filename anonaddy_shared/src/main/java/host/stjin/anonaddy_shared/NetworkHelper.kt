@@ -5,6 +5,7 @@ package host.stjin.anonaddy_shared
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import com.einmalfel.earl.EarlParser
 import com.einmalfel.earl.Feed
@@ -95,7 +96,7 @@ class NetworkHelper(private val context: Context) {
             Toast.makeText(context, context.resources.getString(R.string.api_key_invalid), Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             val ex = e.message
-            println("AFA:$ex")
+            Log.e("AFA", ex.toString())
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidApiKey", null)
         }
     }
@@ -120,7 +121,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -164,7 +165,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -225,7 +226,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -283,7 +284,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -336,7 +337,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -409,7 +410,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -506,7 +507,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
 
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
@@ -561,7 +562,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -616,7 +617,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -679,7 +680,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -724,7 +725,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -775,7 +776,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -820,7 +821,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -863,7 +864,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -909,7 +910,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -965,7 +966,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1029,7 +1030,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1073,7 +1074,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1124,7 +1125,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1168,7 +1169,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1212,7 +1213,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1264,7 +1265,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1309,7 +1310,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1361,7 +1362,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1405,7 +1406,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1457,7 +1458,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1501,7 +1502,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1553,7 +1554,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1603,7 +1604,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1651,7 +1652,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1708,7 +1709,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1752,7 +1753,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1806,7 +1807,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1860,7 +1861,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -1916,7 +1917,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDefaultRecipientForSpecificDomain",
                     ErrorHelper.getErrorMessage(
@@ -1958,7 +1959,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2009,7 +2010,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2053,7 +2054,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2104,7 +2105,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2160,7 +2161,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificDomain",
                     ErrorHelper.getErrorMessage(
@@ -2217,7 +2218,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2261,7 +2262,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2311,7 +2312,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2365,7 +2366,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2421,7 +2422,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDefaultRecipientForSpecificUsername",
                     ErrorHelper.getErrorMessage(
@@ -2463,7 +2464,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2514,7 +2515,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2569,7 +2570,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificUsername",
                     ErrorHelper.getErrorMessage(
@@ -2612,7 +2613,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2663,7 +2664,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2735,7 +2736,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2789,7 +2790,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2834,7 +2835,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2882,7 +2883,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2941,7 +2942,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -2987,7 +2988,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -3030,7 +3031,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -3081,7 +3082,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -3284,7 +3285,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -3338,7 +3339,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -3382,7 +3383,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
@@ -3426,7 +3427,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
 
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
@@ -3483,7 +3484,7 @@ class NetworkHelper(private val context: Context) {
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                println("AFA:${response.statusCode} - $ex")
+                Log.e("AFA", "${response.statusCode} - $ex")
 
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,

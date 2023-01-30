@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 331110101,
-      "versionName": "1.1.1",
+      "versionCode": 331120101,
+      "versionName": "1.1.2",
       "outputFile": "app-wearos-release.apk"
     }
   ],

@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.1.1 + release 01 + 01 (for wearos)
-        versionCode = 331110101
-        versionName = "1.1.1"
+        versionCode = 331120101
+        versionName = "1.1.2"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -90,7 +90,7 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.7.0")
+    implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
     implementation("androidx.core:core-ktx:1.9.0")

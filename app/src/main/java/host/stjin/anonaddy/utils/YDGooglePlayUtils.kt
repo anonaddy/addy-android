@@ -2,9 +2,9 @@ package host.stjin.anonaddy.utils
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import android.text.TextUtils
 
 
 object YDGooglePlayUtils {
@@ -16,11 +16,6 @@ object YDGooglePlayUtils {
 
     fun isInstalledViaFDroid(ctx: Context): Boolean {
         return isInstalledVia(ctx, FDROID)
-    }
-
-    fun isSideloaded(ctx: Context): Boolean {
-        val installer = getInstallerPackageName(ctx)
-        return TextUtils.isEmpty(installer)
     }
 
     private fun isInstalledVia(ctx: Context, required: String): Boolean {
@@ -46,10 +41,18 @@ object YDGooglePlayUtils {
     fun getInstallerApplicationName(ctx: Context, packageName: String): String {
         val packageManager: PackageManager = ctx.packageManager
         val applicationInfo: ApplicationInfo? = try {
-            packageManager.getApplicationInfo(packageName, 0)
+            packageManager.getPackageInfoCompat(packageName, 0).applicationInfo
         } catch (e: PackageManager.NameNotFoundException) {
             null
         }
         return (if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo) else packageName) as String
     }
+
+
+    private fun PackageManager.getPackageInfoCompat(packageName: String, flags: Int = 0): PackageInfo =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(flags.toLong()))
+        } else {
+            @Suppress("DEPRECATION") getPackageInfo(packageName, flags)
+        }
 }
