@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>✨ Added support for parameters in mailto: links (subject, cc, bcc and body)<br />✨ Performance improvements and other things to make the app even smoother</p>

@@ -219,7 +219,6 @@ class RecipientsFragment : Fragment(),
                         override fun onClickSettings(pos: Int, aView: View) {
                             val intent = Intent(context, ManageRecipientsActivity::class.java)
                             intent.putExtra("recipient_id", list[pos].id)
-                            intent.putExtra("recipient_email", list[pos].email)
                             startActivity(intent)
                         }
 

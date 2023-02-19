@@ -32,7 +32,10 @@ import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
 class IntentSendMailRecipientBottomDialogFragment(
-    private val recipientEmail: String?, private val domainOptions: List<String>
+    private val recipientEmails: ArrayList<String>,
+    private val recipientCcEmails: ArrayList<String>,
+    private val recipientBccEmails: ArrayList<String>,
+    private val domainOptions: List<String>
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -44,7 +47,15 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddIntentSendMailRecipientBottomDialogListener {
-        suspend fun onPressSend(alias: String, aliasObject: Aliases?, toString: String, skipAndOpenDefaultMailApp: Boolean = false)
+        suspend fun onPressSend(
+            alias: String,
+            aliasObject: Aliases?,
+            recipients: String,
+            ccRecipients: String,
+            bccRecipients: String,
+            skipAndOpenDefaultMailApp: Boolean = false
+        )
+
         fun onClose(result: Boolean)
     }
 
@@ -120,8 +131,8 @@ class IntentSendMailRecipientBottomDialogFragment(
         }
 
         // Set recipient text
-        if (!recipientEmail.isNullOrEmpty()) {
-            binding.bsSendMailFromIntentAliasRecipientTiet.setText(recipientEmail)
+        if (recipientEmails.any()) {
+            binding.bsSendMailFromIntentAliasRecipientTiet.setText(recipientEmails.joinToString(","))
         }
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
@@ -189,14 +200,16 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     }
 
-    constructor() : this(null, listOf())
+    constructor() : this(arrayListOf(), arrayListOf(), arrayListOf(), listOf())
 
     companion object {
         fun newInstance(
-            recipientEmail: String?,
+            recipientEmail: ArrayList<String>,
+            recipientCcEmail: ArrayList<String>,
+            recipientBccEmail: ArrayList<String>,
             domainOptions: List<String>
         ): IntentSendMailRecipientBottomDialogFragment {
-            return IntentSendMailRecipientBottomDialogFragment(recipientEmail, domainOptions)
+            return IntentSendMailRecipientBottomDialogFragment(recipientEmail, recipientCcEmail, recipientBccEmail, domainOptions)
         }
     }
 
@@ -206,9 +219,7 @@ class IntentSendMailRecipientBottomDialogFragment(
 
         // Check if all the entered recipients are valid email addresses
         for (email in recipients) {
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email)
-                    .matches()
-            ) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 binding.bsSendMailFromIntentAliasRecipientTil.error =
                     context.resources.getString(R.string.not_a_valid_address)
                 return
@@ -222,14 +233,14 @@ class IntentSendMailRecipientBottomDialogFragment(
                     binding.bsSendMailFromIntentAliasesMact.text.toString(),
                     aliases.firstOrNull { it.email == binding.bsSendMailFromIntentAliasesMact.text.toString() },
                     binding.bsSendMailFromIntentAliasRecipientTiet.text.toString(),
+                    recipientCcEmails.joinToString(","),
+                    recipientBccEmails.joinToString(","),
                     true
                 )
             }
         } else {
             // Check if the alias is a valid email address
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(binding.bsSendMailFromIntentAliasesMact.text.toString())
-                    .matches()
-            ) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(binding.bsSendMailFromIntentAliasesMact.text.toString()).matches()) {
                 binding.bsSendMailFromIntentAliasesTil.error =
                     context.resources.getString(R.string.not_a_valid_address)
                 return
@@ -249,7 +260,9 @@ class IntentSendMailRecipientBottomDialogFragment(
                     listener.onPressSend(
                         binding.bsSendMailFromIntentAliasesMact.text.toString(),
                         aliases.firstOrNull { it.email == binding.bsSendMailFromIntentAliasesMact.text.toString() },
-                        binding.bsSendMailFromIntentAliasRecipientTiet.text.toString()
+                        binding.bsSendMailFromIntentAliasRecipientTiet.text.toString(),
+                        recipientCcEmails.joinToString(","),
+                        recipientBccEmails.joinToString(","),
                     )
                 }
             } else {

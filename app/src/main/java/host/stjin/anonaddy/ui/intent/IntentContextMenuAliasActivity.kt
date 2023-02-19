@@ -19,6 +19,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
+import java.net.URLDecoder
 
 
 class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBottomDialogFragment.AddIntentSendMailRecipientBottomDialogListener,
@@ -29,6 +30,9 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
     private lateinit var intentBottomDialogFragment: IntentBottomDialogFragment
     private var domainOptions: List<String> = listOf()
+
+    private var subject: String? = null
+    private var body: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,28 +60,60 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                     }
 
                     // Get the selected or clicked on email address
-                    val text = intent.dataString
-                    // process the text
-                    if (!text.isNullOrEmpty()) {
-                        if (android.util.Patterns.EMAIL_ADDRESS.matcher(text.substring(7))
-                                .matches()
-                        ) {
+
+                    // mailto: contains 7 chars
+                    val recipients = intent.dataString?.substringBefore("?")?.substring(7)?.replace(";", ",")?.split(",")
+                    subject = intent.dataString?.let { getParameter(it, "subject") }
+                    val ccRecipients = intent.dataString?.let { getParameter(it, "cc")?.replace(";", ",")?.split(",") }
+                    val bccRecipients = intent.dataString?.let { getParameter(it, "bcc")?.replace(";", ",")?.split(",") }
+                    body = intent.dataString?.let { getParameter(it, "body") }
+
+                    // Filter out invalid email addrsses
+                    val validEmails = arrayListOf<String>()
+                    val validCcRecipients = arrayListOf<String>()
+                    val validBccRecipients = arrayListOf<String>()
+
+                    if (recipients != null) {
+                        for (email in recipients) {
+                            if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                validEmails.add(email)
+                            }
+                        }
+
+                        if (ccRecipients != null) {
+                            for (email in ccRecipients) {
+                                if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validCcRecipients.add(email)
+                                }
+                            }
+                        }
+
+                        if (bccRecipients != null) {
+                            for (email in bccRecipients) {
+                                if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validBccRecipients.add(email)
+                                }
+                            }
+                        }
+
+                        if (validEmails.any()) {
                             lifecycleScope.launch {
                                 // Figure out what to do next (passes the email address)
-                                figureOutNextAction(text.substring(7))
+                                figureOutNextAction(validEmails, validCcRecipients, validBccRecipients)
                             }
                         } else {
                             Toast.makeText(
                                 this@IntentContextMenuAliasActivity,
-                                this@IntentContextMenuAliasActivity.resources.getString(R.string.not_a_valid_address),
+                                this@IntentContextMenuAliasActivity.resources.getString(R.string.no_valid_email_addresses_found),
                                 Toast.LENGTH_LONG
                             ).show()
                             finish()
                         }
+
                     } else {
                         Toast.makeText(
                             this@IntentContextMenuAliasActivity,
-                            this@IntentContextMenuAliasActivity.resources.getString(R.string.nothing_found),
+                            this@IntentContextMenuAliasActivity.resources.getString(R.string.no_valid_email_addresses_found),
                             Toast.LENGTH_LONG
                         ).show()
                         finish()
@@ -85,6 +121,13 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 }
             }
         }
+    }
+
+    private fun getParameter(data: String, parameter: String): String? {
+        if (data.contains("$parameter=")) {
+            return data.substringAfter("$parameter=").substringBefore("&")
+        }
+        return null
     }
 
     override fun finish() {
@@ -97,46 +140,62 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         super.finish()
     }
 
-    private suspend fun figureOutNextAction(text: CharSequence) {
-        // splittedEmailAddress[0] = custom part
-        // splittedEmailAddress[1] = domain name
-        val splittedEmailAddress = text.split("@")
+    private suspend fun figureOutNextAction(emails: ArrayList<String>, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
 
-        /*
-        Figure out if the selected email's domain name is part of the user's AnonAddy account or not
-         */
-
+        // Obtain domain options
         networkHelper.getDomainOptions { domainOptionsObject, _ ->
             if (domainOptionsObject != null) {
                 // Set variable
                 domainOptions = domainOptionsObject.data
 
-                if (domainOptionsObject.data.contains(splittedEmailAddress[1])) {
-                    // The domain of the email address is linked to this AnonAddy account. User most likely wants to either manage or create this Alias.
-                    intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, text))
-                    lifecycleScope.launch {
-                        checkIfAliasExists(text)
-                    }
+
+                if (emails.size > 1) {
+                    // There are multiple email addressed found. User most likely wants to send
+                    // an email from an alias to these email addresses
+                    sendEmailFromAlias(emails, validCcRecipients, validBccRecipients)
                 } else {
-                    // The domain of the email address is not linked to this AnonAddy account. User most likely wants to send
-                    // an email from an alias to this email address
-                    sendEmailFromAlias(text)
+
+                    // Only 1 email address found.
+
+                    // splittedEmailAddress[0] = custom part
+                    // splittedEmailAddress[1] = domain name
+                    val splittedEmailAddress = emails[0].split("@")
+
+                    /*
+                    Figure out if the selected email's domain name is part of the user's AnonAddy account or not
+                     */
+
+                    if (domainOptions.contains(splittedEmailAddress[1])) {
+                        // The domain of the email address is linked to this AnonAddy account. User most likely wants to either manage or create this Alias.
+                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, emails))
+                        lifecycleScope.launch {
+                            checkIfAliasExists(emails[0])
+                        }
+                    } else {
+                        // The domain of the email address is not linked to this AnonAddy account. User most likely wants to send
+                        // an email from an alias to this email address
+                        sendEmailFromAlias(emails, validCcRecipients, validBccRecipients)
+                    }
                 }
+
+
             } else {
                 Toast.makeText(this, this.resources.getString(R.string.something_went_wrong_retrieving_domains), Toast.LENGTH_LONG).show()
                 finish()
             }
         }
+
+
     }
 
 
     private lateinit var intentSendMailRecipientBottomDialogFragment: IntentSendMailRecipientBottomDialogFragment
-    private fun sendEmailFromAlias(text: CharSequence) {
+    private fun sendEmailFromAlias(emails: ArrayList<String>, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
         intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_send_mail_dialog))
 
         // Get aliases and pass it through to the send email bottomdialog
         intentSendMailRecipientBottomDialogFragment =
-            IntentSendMailRecipientBottomDialogFragment.newInstance(text.toString(), domainOptions)
+            IntentSendMailRecipientBottomDialogFragment.newInstance(emails, validCcRecipients, validBccRecipients, domainOptions)
 
         if (!intentSendMailRecipientBottomDialogFragment.isAdded) {
             intentSendMailRecipientBottomDialogFragment.show(
@@ -198,13 +257,15 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         format: String,
         local_part: String,
         alias: String,
-        toString: String
+        recipients: String,
+        ccRecipients: String,
+        bccRecipients: String
     ) {
         networkHelper.addAlias({ aliasObject, _ ->
             if (aliasObject != null) {
                 Toast.makeText(this, this.resources.getString(R.string.alias_created), Toast.LENGTH_LONG).show()
                 lifecycleScope.launch {
-                    onPressSend(alias, aliasObject, toString)
+                    onPressSend(alias, aliasObject, recipients, ccRecipients, bccRecipients)
                 }
             } else {
                 Toast.makeText(this, this.resources.getString(R.string.error_adding_alias), Toast.LENGTH_LONG).show()
@@ -230,11 +291,22 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         }, domain, description, format, local_part, null)
     }
 
-    override suspend fun onPressSend(alias: String, aliasObject: Aliases?, toString: String, skipAndOpenDefaultMailApp: Boolean) {
+    override suspend fun onPressSend(
+        alias: String,
+        aliasObject: Aliases?,
+        recipients: String,
+        ccRecipients: String,
+        bccRecipients: String,
+        skipAndOpenDefaultMailApp: Boolean
+    ) {
         intentSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
 
         if (skipAndOpenDefaultMailApp) {
-            openMailToShareSheet(toString.split(",").toTypedArray())
+            openMailToShareSheet(
+                recipients.split(",").toTypedArray(),
+                ccRecipients.split(",").toTypedArray(),
+                bccRecipients.split(",").toTypedArray()
+            )
             finish()
         } else {
             // Check if this alias exists
@@ -243,12 +315,15 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_sharesheet))
 
                 // Get recipients
-                val recipients = AnonAddyUtils.getSendAddress(toString, aliasObject)
+                val anonaddyRecipientAddresses = AnonAddyUtils.getSendAddress(recipients, aliasObject)
+                val anonaddyCcRecipientAddresses = AnonAddyUtils.getSendAddress(ccRecipients, aliasObject)
+                val anonaddyBccRecipientAddresses = AnonAddyUtils.getSendAddress(bccRecipients, aliasObject)
+
 
                 // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
                 val clipboard: ClipboardManager =
                     this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("recipients", recipients.joinToString(";"))
+                val clip = ClipData.newPlainText("recipients", anonaddyRecipientAddresses.joinToString(";"))
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
 
@@ -256,7 +331,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                  * SINCE Android 11, we can only query apps that support the mailto: intent :D
                  */
 
-                openMailToShareSheet(recipients)
+                openMailToShareSheet(anonaddyRecipientAddresses, anonaddyCcRecipientAddresses, anonaddyBccRecipientAddresses)
                 finish()
             } else {
                 intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, alias))
@@ -264,20 +339,41 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 // Alias does not exist, perhaps the user wants to create it?
                 val splittedEmailAddress = alias.split("@")
                 lifecycleScope.launch {
-                    addAliasToAccountAndShare(splittedEmailAddress[1], "", "custom", splittedEmailAddress[0], alias, toString)
+                    addAliasToAccountAndShare(
+                        splittedEmailAddress[1],
+                        "",
+                        "custom",
+                        splittedEmailAddress[0],
+                        alias,
+                        recipients,
+                        ccRecipients,
+                        bccRecipients
+                    )
                 }
             }
         }
     }
 
-    private fun openMailToShareSheet(recipients: Array<String?>) {
+    private fun openMailToShareSheet(
+        recipients: Array<String?>,
+        anonaddyCcRecipientAddresses: Array<String?>,
+        anonaddyBccRecipientAddresses: Array<String?>
+    ) {
         // Open the mailto app select sheet, but make sure to exclude ourselves!
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, recipients)
+        intent.putExtra(Intent.EXTRA_CC, anonaddyCcRecipientAddresses)
+        intent.putExtra(Intent.EXTRA_BCC, anonaddyBccRecipientAddresses)
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject?.let { fromHtml(it) })
+        intent.putExtra(Intent.EXTRA_TEXT, body?.let { fromHtml(it) })
         if (intent.resolveActivity(packageManager) != null) {
             startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
         }
+    }
+
+    private fun fromHtml(source: String): String {
+        return URLDecoder.decode(source, "UTF-8")
     }
 
     override fun onClose(result: Boolean) {

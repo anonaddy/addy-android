@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.5.2] - 2023-02-19
+
+### AnonAddy for Android
+
+##### Fixed/Improved
+
+- ✨ Added support for parameters in mailto: links (subject, cc, bcc and body)
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables _(v1.1.3)_
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.5.1] - 2023-01-30
 
 ### AnonAddy for Android
