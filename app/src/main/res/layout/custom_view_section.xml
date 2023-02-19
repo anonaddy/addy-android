@@ -34,8 +34,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
-                android:contentDescription="TODO"
-                android:src="@drawable/ic_fingerprint" />
+                android:src="@drawable/ic_fingerprint"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
@@ -85,8 +85,8 @@
                 android:id="@+id/custom_view_section_end_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="TODO"
-                android:src="@null" />
+                android:src="@null"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
