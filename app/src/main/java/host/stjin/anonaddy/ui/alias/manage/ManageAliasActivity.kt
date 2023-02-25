@@ -154,22 +154,19 @@ class ManageAliasActivity : BaseActivity(),
                 ).build()
 
 
-
             try {
-                ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
-            } catch (_: IllegalArgumentException) {
-                // I saw OPPO devices throwing IAE's on the push command.
-                val shortcuts: MutableList<ShortcutInfoCompat> = ShortcutManagerCompat.getDynamicShortcuts(this)
-
-                if (shortcuts.size >= ShortcutManagerCompat.getMaxShortcutCountPerActivity(this) &&
-                    shortcuts.size > 0
-                ) {
-                    shortcuts.removeAt(shortcuts.size - 1)
-                    shortcuts.add(0, shortcut)
-                    ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
-                } else {
-                    ShortcutManagerCompat.addDynamicShortcuts(this, Collections.singletonList(shortcut))
+                ShortcutManagerCompat.getDynamicShortcuts(this).also { shortcuts ->
+                    val maxShortcutsCount = ShortcutManagerCompat.getMaxShortcutCountPerActivity(this)
+                    if (shortcuts.count() == maxShortcutsCount) {
+                        shortcuts.removeLastOrNull()
+                        shortcuts.add(0, shortcut)
+                        ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
+                    } else {
+                        ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
+                    }
                 }
+            } catch (exception: Throwable) {
+                ShortcutManagerCompat.removeAllDynamicShortcuts(this)
             }
         }
     }
