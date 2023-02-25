@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.5.3] - 2023-02-25
+
+### AnonAddy for Android
+
+##### Fixed/Improved
+
+- 🐛 Fix crash when dynamic shortcuts exceed the rate limit
+
 ## [v4.5.2] - 2023-02-19
 
 ### AnonAddy for Android
