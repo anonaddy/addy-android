@@ -25,6 +25,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 
 
@@ -133,9 +134,57 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                             if (currentDateTime.isAfter(deadLineDate)) {
                                 // The current date is suddenly after the deadline date. It will expire within 5 days
                                 // Show the api is about to expire card
-                                val text = PrettyTime().format(expiryDate)
-                                NotificationHelper(appContext).createApiTokenExpiryNotification(text)
 
+                                // Check if the notification has already been fired for this day
+                                val previousNotificationLeftDays =
+                                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT)
+                                val currentLeftDays = ChronoUnit.DAYS.between(currentDateTime, deadLineDate).toInt()
+
+                                if (previousNotificationLeftDays != currentLeftDays) {
+                                    encryptedSettingsManager.putSettingsInt(
+                                        SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT,
+                                        currentLeftDays
+                                    )
+                                    val text = PrettyTime().format(expiryDate)
+                                    NotificationHelper(appContext).createApiTokenExpiryNotification(text)
+                                }
+
+                            } else {
+                                // The current date is not yet before the deadline date. It will expire within 5 days
+                            }
+                        }
+                        // If expires_at is null it will never expire
+
+                    }
+                }
+
+                /*
+                SUBSCRIPTION EXPIRY
+                 */
+
+                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)) {
+                    networkHelper.getUserResource { user, error ->
+                        if (user?.subscription_ends_at != null) {
+                            val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(user.subscription_ends_at) // Get the expiry date
+                            val currentDateTime = LocalDateTime.now() // Get the current date
+                            val deadLineDate = expiryDate?.minusDays(7) // Subtract 7 days from the expiry date
+                            if (currentDateTime.isAfter(deadLineDate)) {
+                                // The current date is suddenly after the deadline date. It will expire within 7 days
+                                // Show the subscription is about to expire card
+
+                                // Check if the notification has already been fired for this day
+                                val previousNotificationLeftDays =
+                                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT)
+                                val currentLeftDays = ChronoUnit.DAYS.between(currentDateTime, deadLineDate).toInt()
+
+                                if (previousNotificationLeftDays != currentLeftDays) {
+                                    encryptedSettingsManager.putSettingsInt(
+                                        SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT,
+                                        currentLeftDays
+                                    )
+                                    val text = PrettyTime().format(expiryDate)
+                                    NotificationHelper(appContext).createSubscriptionExpiryNotification(text)
+                                }
                             } else {
                                 // The current date is not yet before the deadline date. It will expire within 5 days
                             }
@@ -193,7 +242,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 AliasWatcher(appContext).watchAliasesForDifferences()
             }
 
-            // If both tasks are successful return a success()
+            // If all tasks are successful return a success()
             return if (userResourceNetworkCallResult &&
                 aliasNetworkCallResult &&
                 aliasWatcherNetworkCallResult &&

@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>💳 Get notified when your subscription is about to expire thanks to the new "Subscription expiry notification"-feature which can be enabled under <strong>App settings-&gt;Features and integrations</strong></p>
+<h4>Fixed/Improved</h4>
+<p>✨ Fixed profile sheet not showing an alert when an update is available<br />✨ Limit the amount of expiry notifications to 1 every day<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>

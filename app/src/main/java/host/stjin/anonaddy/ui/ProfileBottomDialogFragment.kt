@@ -28,6 +28,7 @@ import host.stjin.anonaddy.utils.NumberUtils
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.AnonAddyForAndroid
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -44,6 +45,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     var updateAvailable: Boolean = false
     var permissionsRequired: Boolean = false
     private var _binding: BottomsheetProfileBinding? = null
+    private var altSubscriptionTextShown = false
 
     // This property is only valid between onCreateView and
 // onDestroyView.
@@ -123,6 +125,15 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setOnClickListeners() {
+
+        binding.mainProfileSelectDialogCardSubscription.setOnClickListener {
+            if (altSubscriptionTextShown) {
+                setSubscriptionText()
+            } else {
+                setSubscriptionTextAlt()
+            }
+        }
+
         binding.mainProfileSelectDialogAppSettings.setOnClickListener {
             val intent = Intent(activity, AppSettingsActivity::class.java)
             startActivity(intent)
@@ -201,6 +212,14 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
         binding.mainProfileSelectDialogCardAccountname.text = (activity?.application as AnonAddyForAndroid).userResource.username
 
+        setSubscriptionText()
+
+        binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
+    }
+
+    private fun setSubscriptionText() {
+        altSubscriptionTextShown = false
+
         when {
             (activity?.application as AnonAddyForAndroid).userResource.subscription == null -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.GONE
@@ -222,8 +241,28 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                     resources.getString(R.string.subscription_user, (activity?.application as AnonAddyForAndroid).userResource.subscription)
             }
         }
+    }
 
-        binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
+    private fun setSubscriptionTextAlt() {
+        altSubscriptionTextShown = true
+
+        when {
+            (activity?.application as AnonAddyForAndroid).userResource.subscription == null -> {
+                binding.mainProfileSelectDialogCardSubscription.visibility = View.GONE
+            }
+            (activity?.application as AnonAddyForAndroid).userResource.subscription_ends_at != null -> {
+                binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
+                val expiryDate =
+                    DateTimeUtils.turnStringIntoLocalDateTime((activity?.application as AnonAddyForAndroid).userResource.subscription_ends_at)
+                val text = PrettyTime().format(expiryDate)
+                binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_expiry_date, text)
+            }
+            else -> {
+                binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
+                binding.mainProfileSelectDialogCardSubscription.text =
+                    resources.getString(R.string.subscription_user, (activity?.application as AnonAddyForAndroid).userResource.subscription)
+            }
+        }
     }
 
 

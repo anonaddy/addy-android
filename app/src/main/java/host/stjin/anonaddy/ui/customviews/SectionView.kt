@@ -163,6 +163,10 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
         }
     }
 
+    fun showSwitch(b: Boolean) {
+        materialSwitch?.visibility = if (b) View.VISIBLE else View.GONE
+    }
+
     interface OnSwitchCheckedChangedListener {
         fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean)
     }

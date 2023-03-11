@@ -12,6 +12,7 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.ComponentUtils.getComponentState
 import host.stjin.anonaddy.utils.ComponentUtils.setComponentState
 import host.stjin.anonaddy.utils.WebIntentManager
+import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -42,9 +43,17 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             binding.appsettingsFeaturesToolbar,
             R.drawable.ic_features_integrations_banner
         )
+
         loadSettings()
+        checkForSelfHostedInstance()
         setOnClickListeners()
         setOnSwitchListeners()
+    }
+
+    private fun checkForSelfHostedInstance() {
+        // Hide the switch on Subscription Expiry Notification Card when user is using self-hosted instance
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.showSwitch(AnonAddy.VERSIONMAJOR == 9999)
+
     }
 
     private fun loadSettings() {
@@ -68,6 +77,9 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
         )
 
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setSwitchChecked(
+            settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)
+        )
 
         binding.activityAppSettingsFeaturesSectionWebintentSheet.setSwitchChecked(
             WebIntentManager(this).isCurrentDomainAssociated()
@@ -117,6 +129,18 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 if (compoundButton.isPressed) {
                     settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, checked)
+
+                    // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
+                }
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed) {
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, checked)
 
                     // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
                     BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
@@ -175,6 +199,14 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyApiTokenExpiryActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifySubscriptionExpiryActivity::class.java)
                 startActivity(intent)
             }
         })

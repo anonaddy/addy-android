@@ -19,6 +19,7 @@ import host.stjin.anonaddy.utils.WearOSHelper
 import host.stjin.anonaddy_shared.AnonAddy
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.ApiTokenDetails
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -66,27 +67,36 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
     private fun checkTokenExpiry() {
         lifecycleScope.launch {
             networkHelper.getApiTokenDetails { apiTokenDetails, error ->
-                if (apiTokenDetails != null) {
-                    if (apiTokenDetails.expires_at != null) {
-                        val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(apiTokenDetails.expires_at) // Get the expiry date
-                        val text = PrettyTime().format(expiryDate)
-                        binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
-                            this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
-                                R.string.current_api_token_expiry_date,
-                                apiTokenDetails.name,
-                                text
-                            )
-                    } else {
-                        binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
-                            this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
-                                R.string.current_api_token_expiry_date_never,
-                                apiTokenDetails.name,
-                                AnonAddy.API_BASE_URL
-                            )
-                    }
-                }
-
+                setApiInfoText(apiTokenDetails)
             }
+        }
+    }
+
+    private fun setApiInfoText(apiTokenDetails: ApiTokenDetails?) {
+        if (apiTokenDetails != null) {
+            if (apiTokenDetails.expires_at != null) {
+                val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(apiTokenDetails.expires_at) // Get the expiry date
+                val text = PrettyTime().format(expiryDate)
+                binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
+                    this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
+                        R.string.current_api_token_expiry_date,
+                        apiTokenDetails.name,
+                        text
+                    )
+            } else {
+                binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
+                    this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
+                        R.string.current_api_token_expiry_date_never,
+                        apiTokenDetails.name,
+                        AnonAddy.API_BASE_URL
+                    )
+            }
+        } else {
+            binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
+                this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
+                    R.string.current_api_token_expiry_date_unknown,
+                    AnonAddy.API_BASE_URL
+                )
         }
     }
 

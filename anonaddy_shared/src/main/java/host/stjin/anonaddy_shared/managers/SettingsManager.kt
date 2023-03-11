@@ -36,6 +36,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
         MANAGE_MULTIPLE_ALIASES(false, PREFTYPES.BOOLEAN, "manage_multiple_aliases"),
         NOTIFY_API_TOKEN_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_api_token_expiry"),
+        NOTIFY_SUBSCRIPTION_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_subscription_expiry"),
 
         // Sorting and Filtering for aliasFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
@@ -75,6 +76,10 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
         // Also used for background service failed delivery notifications
         BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT(true, PREFTYPES.INT, "cache_failed_deliveries_count"),
+
+        // Used to limit the amount of expiry notifications to 1 a day
+        BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT(true, PREFTYPES.INT, "cache_api_key_expiry_left_count"),
+        BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT(true, PREFTYPES.INT, "cache_subscription_expiry_left_count"),
 
         // This value keeps track of the previous amount of failed deliveries so comparisons can be made in the BackgroundWorker
         BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_failed_deliveries_count_previous"),

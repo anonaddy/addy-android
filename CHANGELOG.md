@@ -1,5 +1,26 @@
 # Changelog
 
+## [v4.6.0] - 2023-03-12
+
+### AnonAddy for Android
+
+##### Added
+
+- 💳 Get notified when your subscription is about to expire thanks to the new "Subscription expiry notification"-feature which can be enabled under **
+  App settings->Features and integrations**
+
+##### Fixed/Improved
+
+- ✨ Fixed profile sheet not showing an alert when an update is available
+- ✨ Limit the amount of expiry notifications to 1 every day
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables _(v1.1.4)_
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.5.3] - 2023-02-25
 
 ### AnonAddy for Android
