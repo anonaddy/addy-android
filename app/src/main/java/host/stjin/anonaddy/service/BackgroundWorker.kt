@@ -163,7 +163,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                  */
 
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)) {
-                    networkHelper.getUserResource { user, error ->
+                    networkHelper.getUserResource { user, _ ->
                         if (user?.subscription_ends_at != null) {
                             val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(user.subscription_ends_at) // Get the expiry date
                             val currentDateTime = LocalDateTime.now() // Get the current date

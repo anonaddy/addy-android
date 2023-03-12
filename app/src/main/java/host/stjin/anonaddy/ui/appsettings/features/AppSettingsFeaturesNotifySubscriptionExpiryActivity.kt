@@ -1,11 +1,14 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
@@ -50,9 +53,20 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
 
         setSubscriptionInfoText((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AnonAddyForAndroid).userResource) // Set this data right away for visuals
         checkSubscriptionExpiry()
+        checkGooglePlayGuidelines()
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
+    }
+
+    private fun checkGooglePlayGuidelines() {
+        // Only show the renew button when not-google play version
+        // https://support.google.com/googleplay/android-developer/answer/13321562
+        if (BuildConfig.FLAVOR == "gplay") {
+            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.visibility = View.GONE
+        } else {
+            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.visibility = View.VISIBLE
+        }
     }
 
     private fun checkSubscriptionExpiry() {
@@ -71,6 +85,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("StringFormatInvalid") // Suppress StringFormatInvalid, the gplayless version accepts 2 parameters where the gplay version only accepts 1
     private fun setSubscriptionInfoText(user: UserResource?) {
         if (user != null) {
             when {
@@ -132,12 +147,11 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
                 binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.getSwitchChecked())
             }
         })
+
+        // This section is only visible in the gplayless version
         binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                //TODO This is technically NOT allowed. See https://support.google.com/googleplay/android-developer/answer/13321562
-                // TODO Maybe move this out of the gPlay version and into gPlayless? or tell the user to go to the site themselved without linking
-                #PREVENTCOMPILATION#
                 val url = "${AnonAddy.API_BASE_URL}/settings/subscription"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)

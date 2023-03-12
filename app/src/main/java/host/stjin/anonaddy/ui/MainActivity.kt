@@ -441,20 +441,26 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         if (currentDateTime.isAfter(deadLineDate)) {
                             // The current date is suddenly after the deadline date. It will expire within 7 days
                             val text = PrettyTime().format(expiryDate)
-                            MaterialDialogHelper.showMaterialDialog(
+                            val dialog = MaterialDialogHelper.showMaterialDialog(
                                 context = this@MainActivity,
                                 title = this@MainActivity.resources.getString(R.string.subscription_about_to_expire),
                                 message = this@MainActivity.resources.getString(R.string.subscription_about_to_expire_desc, text),
                                 icon = R.drawable.ic_credit_card,
                                 neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
-                                positiveButtonText = this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1),
-                                positiveButtonAction = {
+                            )
+                            // Only show the renew button when not-google play version
+                            // https://support.google.com/googleplay/android-developer/answer/13321562
+                            if (BuildConfig.FLAVOR != "gplay") {
+                                dialog.setPositiveButton(
+                                    this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
+                                ) { _, _ ->
                                     val url = "${AnonAddy.API_BASE_URL}/settings/subscription"
                                     val i = Intent(Intent.ACTION_VIEW)
                                     i.data = Uri.parse(url)
                                     startActivity(i)
-                                },
-                            ).show()
+                                }
+                            }
+                            dialog.show()
                         }
                     }
                 }

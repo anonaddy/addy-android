@@ -316,7 +316,7 @@
     <string name="notification_api_token_about_to_expire">Your API key is about to expire</string>
     <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to change the API key</string>
     <string name="notification_subscription_about_to_expire">Your subscription is about to expire</string>
-    <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features. Tap here to renew your subscription</string>
+    <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features</string>
     <string name="notification_channel_update">@string/anonaddy_updater</string>
     <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
     <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
@@ -598,7 +598,7 @@
     <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent the app from resetting. Do you want to change the API token now?</string>
     <string name="api_token_about_to_expire_option_1">Enter new key</string>
     <string name="subscription_about_to_expire">Subscription about to expire</string>
-    <string name="subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features. Do you want to renew the subscription now?</string>
+    <string name="subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features.</string>
     <string name="subscription_about_to_expire_option_1">Renew</string>
     <string name="dismiss">Dismiss</string>
     <string name="api_key_updated">Update API key successful!</string>
@@ -621,8 +621,8 @@
     <string name="release_to_refresh">Release to refresh</string>
     <string name="no_valid_email_addresses_found">No valid email addresses found</string>
     <string name="subscription_expiry_date">Your subscription will expire in %s</string>
-    <string name="subscription_expiry_date_never">Your current subscription has no expiration, visit %1$s/settings/subscription to change your subscription</string>
-    <string name="subscription_expiry_date_unknown">The expiry date of your subscription could not be determined, visit %1$s/settings/subscription to change your subscription</string>
+    <string name="subscription_expiry_date_never">Your current subscription has no expiration</string>
+    <string name="subscription_expiry_date_unknown">The expiry date of your subscription could not be determined</string>
     <string name="feature_subscription_expiry_notification">Subscription expiry notification</string>
     <string name="feature_subscription_expiry_notification_desc">Receive a notification 7 days before your subscription expires to remind you to renew your subscription.\n\nThese notifications will reappear every day until the subscription has been renewed</string>
     <string name="notify_subscription_expiry_feature_section_desc">Receive a notification 7 days before your subscription expires</string>
