@@ -1,0 +1,59 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="1000"
+    android:viewportHeight="1000">
+  <group
+      android:scaleX="0.67"
+      android:scaleY="0.67"
+      android:translateX="165"
+      android:translateY="165">
+    <group>
+      <clip-path android:pathData="M0,0h1000v1000h-1000z" />
+      <path
+          android:fillColor="#ffffff"
+          android:pathData="M0,0h1000v1000h-1000z" />
+      <path android:pathData="M0,0h1000v1000h-1000z">
+        <aapt:attr name="android:fillColor">
+          <gradient
+              android:endX="1000"
+              android:endY="1000"
+              android:startX="0"
+              android:startY="0"
+              android:type="linear">
+            <item
+                android:color="#AD192169"
+                android:offset="0" />
+            <item
+                android:color="#FF192169"
+                android:offset="1" />
+          </gradient>
+        </aapt:attr>
+      </path>
+      <path
+          android:fillAlpha="0.45"
+          android:pathData="M0,0h1000v1000h-1000z">
+        <aapt:attr name="android:fillColor">
+          <gradient
+              android:endX="500"
+              android:endY="1000"
+              android:startX="500"
+              android:startY="0"
+              android:type="linear">
+            <item
+                android:color="#FF3AE7E1"
+                android:offset="0" />
+            <item
+                android:color="#003AE7E1"
+                android:offset="1" />
+          </gradient>
+        </aapt:attr>
+      </path>
+      <path
+          android:fillColor="#ffffff"
+          android:fillType="evenOdd"
+          android:pathData="M1000,0H0V1000H1000V0ZM251.8,475.1C256.1,480.6 262.8,482.9 269.2,481.9C272.2,481.5 275.1,480.3 277.5,478.2L328.4,438.8C336.4,432.5 337.8,421.2 331.6,413.2C325.3,405.3 313.8,404 305.9,410.1L255,449.6C247,455.8 245.6,467.2 251.8,475.1ZM219.8,520.4C213.5,521.4 206.7,519.1 202.5,513.7C196.3,505.8 197.7,494.5 205.6,488.2L210.4,484.5C218.4,478.4 229.8,479.7 236.2,487.6C242.3,495.6 241,506.9 233,513.2L228.2,516.9C225.7,518.8 222.8,520 219.8,520.4ZM195.9,617.2C200.1,622.7 206.9,625 213.2,624C216.1,623.6 219,622.4 221.6,620.5L333.2,533.8C341.2,527.5 342.6,516.2 336.4,508.3C330.2,500.3 318.7,499 310.7,505.1L199,591.7C191.1,598 189.7,609.3 195.9,617.2ZM372.3,501.2C366,502.1 359.2,499.8 355,494.3C348.8,486.4 350.1,475.1 358.1,468.8L375.9,455C383.8,448.9 395.2,450.2 401.6,458.2C407.8,466.1 406.4,477.4 398.4,483.7L380.7,497.5C378.1,499.4 375.2,500.6 372.3,501.2ZM345.2,600.2C349.5,605.6 356.2,607.9 362.5,607C365.5,606.6 368.4,605.3 370.9,603.3L462.5,532.3C470.5,526 471.8,514.7 465.6,506.8C459.5,498.8 447.9,497.5 439.9,503.6L348.4,574.6C340.4,580.9 339,592.2 345.2,600.2ZM312.5,646.4C306.1,647.4 299.4,645.1 295.1,639.6C289,631.7 290.3,620.2 298.3,614.1L304.8,609C312.7,602.9 324.3,604.2 330.5,612.2C336.7,620.1 335.3,631.5 327.3,637.7L320.9,642.7C318.2,644.8 315.4,646 312.5,646.4ZM349.5,292H774L774,292C792.9,292 808.1,307.2 808,325.7V622.9C808,669.9 769.6,708 722.3,708H332.7C322.5,708 314.3,699.8 314.3,689.7C314.3,679.7 322.4,671.7 332.4,671.7H722.5C749.6,671.7 771.6,649.8 771.6,622.9V347.3L565.2,506.8C556.9,513 543,516.2 528.7,507C488.9,479.7 326.2,354.3 326.2,354.3C320.4,349.8 316.3,343.7 314.3,337.2C312.2,330.8 312.1,323.7 314.3,316.7C318.9,301.7 333.6,292 349.5,292ZM357.7,328.3L546.8,475.1L736.5,328.3H357.7Z" />
+    </group>
+  </group>
+</vector>

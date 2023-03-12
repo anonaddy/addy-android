@@ -26,5 +26,6 @@
     <string name="AppIconDefault">Default</string>
     <string name="AppIconClassic">Classic</string>
     <string name="AppIconGradient">Gradient</string>
+    <string name="AppIconInverseGradient">Inverse gradient</string>
 
 </resources>
