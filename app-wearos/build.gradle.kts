@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.1.3 + release 01 + 01 (for wearos)
-        versionCode = 331130101
-        versionName = "1.1.3"
+        versionCode = 331140101
+        versionName = "1.1.4"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -96,7 +96,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("com.google.android.gms:play-services-wearable:18.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
     implementation("androidx.wear:wear:1.2.0")
     implementation(project(mapOf("path" to ":anonaddy_shared")))
 

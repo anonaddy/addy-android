@@ -14,7 +14,6 @@ android {
     compileSdk = 33
     defaultConfig {
         minSdk = 23
-        targetSdk = 33
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -56,7 +55,7 @@ dependencies {
 
     // Preferences for storing settings (and crypto settings)
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha04")
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha05")
 }
 
 // Compose

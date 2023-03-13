@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/activity_app_settings_features_notify_subscription_expiry_CL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appsettings_features_notify_subscription_expiry_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/activity_app_settings_features_notify_subscription_expiry_NSV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/activity_app_settings_features_notify_subscription_expiry_NSV_LL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="132dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:contentDescription="@string/feature_subscription_expiry_notification"
+                    android:elevation="50dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/feature_notify_subscription_expiry" />
+
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_features_notify_subscription_expiry_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/notify_subscription_expiry_feature_section_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionSwitchChecked="false"
+                    app:sectionTitle="@string/enable_feature" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_features_notify_subscription_expiry_update_subscription"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/update_subscription_now_desc"
+                    app:sectionShowSwitch="false"
+                    app:sectionSwitchChecked="false"
+                    app:sectionTitle="@string/update_subscription_now" />
+
+
+            </LinearLayout>
+
+            <View
+                style="@style/divider"
+                android:layout_width="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:alpha="0.8"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/Info"
+                    android:paddingEnd="16dp"
+                    android:src="@drawable/ic_info"
+                    tools:ignore="RtlSymmetry" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="@string/feature_subscription_expiry_notification_desc" />
+
+                    <TextView
+                        android:id="@+id/activity_app_settings_features_notify_subscription_expiry_current_subscription_expiry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/subscription_expiry_date" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

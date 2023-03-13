@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -95,6 +96,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     loadMainActivity()
                     checkForUpdates()
                     checkForApiExpiration()
+                    checkForSubscriptionExpiration()
                     // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
                     BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
                 }
@@ -167,6 +169,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 lifecycleScope.launch {
                     checkForUpdates()
                     checkForApiExpiration()
+                    checkForSubscriptionExpiration()
                 }
 
 
@@ -422,6 +425,46 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
             // If expires_at is null it will never expire
 
+        }
+
+    }
+
+    private suspend fun checkForSubscriptionExpiration() {
+        // Only check on hosted instance
+        if (AnonAddy.VERSIONMAJOR == 9999) {
+            lifecycleScope.launch {
+                networkHelper.getUserResource { user: UserResource?, _: String? ->
+                    if (user?.subscription_ends_at != null) {
+                        val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(user.subscription_ends_at) // Get the expiry date
+                        val currentDateTime = LocalDateTime.now() // Get the current date
+                        val deadLineDate = expiryDate?.minusDays(7) // Subtract 7 days from the expiry date
+                        if (currentDateTime.isAfter(deadLineDate)) {
+                            // The current date is suddenly after the deadline date. It will expire within 7 days
+                            val text = PrettyTime().format(expiryDate)
+                            val dialog = MaterialDialogHelper.showMaterialDialog(
+                                context = this@MainActivity,
+                                title = this@MainActivity.resources.getString(R.string.subscription_about_to_expire),
+                                message = this@MainActivity.resources.getString(R.string.subscription_about_to_expire_desc, text),
+                                icon = R.drawable.ic_credit_card,
+                                neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
+                            )
+                            // Only show the renew button when not-google play version
+                            // https://support.google.com/googleplay/android-developer/answer/13321562
+                            if (BuildConfig.FLAVOR != "gplay") {
+                                dialog.setPositiveButton(
+                                    this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
+                                ) { _, _ ->
+                                    val url = "${AnonAddy.API_BASE_URL}/settings/subscription"
+                                    val i = Intent(Intent.ACTION_VIEW)
+                                    i.data = Uri.parse(url)
+                                    startActivity(i)
+                                }
+                            }
+                            dialog.show()
+                        }
+                    }
+                }
+            }
         }
 
     }

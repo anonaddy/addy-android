@@ -22,6 +22,7 @@ import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.SetupWearOSBottomSheetActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlin.random.Random
 
@@ -31,8 +32,10 @@ class NotificationHelper(private val context: Context) {
     private val UPDATER_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val API_TOKEN_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
+    private val SUBSCRIPTION_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_BACKUP_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val loggingHelper = LoggingHelper(context)
 
     companion object {
         /*
@@ -46,6 +49,7 @@ class NotificationHelper(private val context: Context) {
         const val FAILED_BACKUP_NOTIFICATION_ID = 4
         const val NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID = 5
         const val API_KEY_EXPIRE_NOTIFICATION_ID = 6
+        const val SUBSCRIPTION_EXPIRE_NOTIFICATION_ID = 7
     }
 
     //region Wearable notifications
@@ -124,7 +128,13 @@ class NotificationHelper(private val context: Context) {
 
         with(from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
+            try {
+                notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildSetupWearableAppNotification", null)
+            }
         }
     }
 
@@ -173,7 +183,13 @@ class NotificationHelper(private val context: Context) {
 
         with(from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
+            try {
+                notify(NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildSetupAppFirstNotification", null)
+            }
         }
     }
     //endregion
@@ -235,7 +251,13 @@ class NotificationHelper(private val context: Context) {
 
         with(from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(UPDATER_NOTIFICATION_ID, notification)
+            try {
+                notify(UPDATER_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildUpdateNotification", null)
+            }
         }
     }
 
@@ -298,9 +320,89 @@ class NotificationHelper(private val context: Context) {
 
         with(from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(API_KEY_EXPIRE_NOTIFICATION_ID, notification)
+            try {
+                notify(API_KEY_EXPIRE_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildApiTokenExpiryNotification", null)
+            }
         }
     }
+
+
+    /*
+    Subscription expiry
+    */
+    fun createSubscriptionExpiryNotification(daysLeft: String) {
+        createChannel(
+            SUBSCRIPTION_EXPIRY_NOTIFICATION_CHANNEL_ID,
+            context.resources.getString(R.string.notification_channel_subscription_expiry),
+            context.resources.getString(R.string.notification_channel_subscription_expiry_desc), IMPORTANCE_DEFAULT
+        )
+
+        buildSubscriptionExpiryNotification(
+            context.resources.getString(R.string.notification_subscription_about_to_expire),
+            context.resources.getString(R.string.notification_subscription_about_to_expire_desc, daysLeft)
+        )
+    }
+
+    private fun buildSubscriptionExpiryNotification(title: String, text: String) {
+        val stopCheckingApiExpiryIntent = Intent(context, ActionReceiver::class.java).apply {
+            action = ActionReceiver.NOTIFICATIONACTIONS.STOP_SUBSCRIPTION_EXPIRY_CHECK
+        }
+        val stopCheckingSubscriptionExpiryPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                stopCheckingApiExpiryIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+        // Mainactivity will check and auto remind user on launch
+        val openSubscriptionExpiryIntent = Intent(context, MainActivity::class.java)
+        val openSubscriptionExpiryPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(openSubscriptionExpiryIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        val notification = Builder(context, SUBSCRIPTION_EXPIRY_NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(
+                BigTextStyle()
+                    .bigText(text)
+            )
+            .setPriority(PRIORITY_DEFAULT)
+            .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
+            .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
+            .setSmallIcon(R.drawable.ic_credit_card)
+            .addAction(
+                R.drawable.ic_credit_card,
+                context.resources.getString(R.string.disable_notifications),
+                stopCheckingSubscriptionExpiryPendingIntent
+            )
+            // Notifications should always have a static color to identify the app
+            .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
+            .setContentIntent(openSubscriptionExpiryPendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        with(from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            try {
+                notify(SUBSCRIPTION_EXPIRE_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildSubscriptionExpiryNotification", null)
+            }
+        }
+    }
+
 
     /*
     Failed deliveries
@@ -359,7 +461,13 @@ class NotificationHelper(private val context: Context) {
 
         with(from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(FAILED_DELIVERIES_NOTIFICATION_ID, notification)
+            try {
+                notify(FAILED_DELIVERIES_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildFailedDeliveryNotification", null)
+            }
         }
     }
 
@@ -425,7 +533,13 @@ class NotificationHelper(private val context: Context) {
 
         with(from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(FAILED_BACKUP_NOTIFICATION_ID, notification)
+            try {
+                notify(FAILED_BACKUP_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildFailedBackupNotification", null)
+            }
         }
     }
 
@@ -530,7 +644,13 @@ class NotificationHelper(private val context: Context) {
             .build()
         with(from(context)) {
             // notificationId is a unique int for each notification that you must define
-            notify(notificationID, notification)
+            try {
+                notify(notificationID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildAliasWatcherNotification", null)
+            }
         }
     }
 

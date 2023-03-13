@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Google Play Guidelines state that I am not allowed to link to external pages where users can renew subscription, that is why these strings only apply to the Gplayless version -->
+    <string name="subscription_expiry_date_never">Your current subscription has no expiration, visit %1$s/settings/subscription to change your subscription</string>
+    <string name="subscription_expiry_date_unknown">The expiry date of your subscription could not be determined, visit %1$s/settings/subscription to change your subscription</string>
+    <string name="subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features. Do you want to renew the subscription now?</string>
+    <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features. Tap here to renew your subscription</string>
+</resources>

@@ -107,7 +107,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:gravity="center_vertical"
-                        android:text="@string/current_api_token_expiry_date" />
+                        android:text="@string/obtaining_information" />
 
                 </LinearLayout>
             </LinearLayout>

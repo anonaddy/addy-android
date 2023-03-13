@@ -71,9 +71,11 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.5.3</h3>
+<h3>What\'s new in AnonAddy for Android 4.6.0</h3>
+<h4>Added</h4>
+<p>💳 Get notified when your subscription is about to expire thanks to the new "Subscription expiry notification"-feature which can be enabled under <strong>App settings-&gt;Features and integrations</strong></p>
 <h4>Fixed/Improved</h4>
-<p>🐛 Fix crash when dynamic shortcuts exceed the rate limit</p>]]></string>
+<p>✨ Fixed profile sheet not showing an alert when an update is available<br />✨ Limit the amount of expiry notifications to 1 every day<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -313,12 +315,16 @@
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
     <string name="notification_api_token_about_to_expire">Your API key is about to expire</string>
     <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to change the API key</string>
+    <string name="notification_subscription_about_to_expire">Your subscription is about to expire</string>
+    <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features</string>
     <string name="notification_channel_update">@string/anonaddy_updater</string>
     <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
     <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
     <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
     <string name="notification_channel_api_token_expiry">API key</string>
     <string name="notification_channel_api_token_expiry_desc">Receive a notification when your API key is about to expire</string>
+    <string name="notification_channel_subscription_expiry">Subscription</string>
+    <string name="notification_channel_subscription_expiry_desc">Receive a notification when your subscription is about to expire</string>
     <string name="stop_watching">Stop watching</string>
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
@@ -578,7 +584,7 @@
     <string name="alias_multiple_selection_max_reached">You cannot select more than 15 aliases</string>
     <string name="actions">Actions</string>
     <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nTo avoid reaching the API limit, you can manage a maximum of 15 aliases at the same time.</string>
-    <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode. (requires a restart of the app)</string>
+    <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode (requires a restart of the app)</string>
     <string name="feature_longpress">Manage multiple aliases</string>
     <string name="something_went_wrong_tap_here_to_see_the_error">Something went wrong, tap here to see the error</string>
     <string name="pgp_inline">PGP/Inline</string>
@@ -591,16 +597,20 @@
     <string name="api_token_about_to_expire">API key about to expire</string>
     <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent the app from resetting. Do you want to change the API token now?</string>
     <string name="api_token_about_to_expire_option_1">Enter new key</string>
+    <string name="subscription_about_to_expire">Subscription about to expire</string>
+    <string name="subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features.</string>
+    <string name="subscription_about_to_expire_option_1">Renew</string>
     <string name="dismiss">Dismiss</string>
     <string name="api_key_updated">Update API key successful!</string>
     <string name="feature_api_token_expiry_notification">API key expiry notification</string>
-    <string name="feature_api_token_expiry_notification_desc">Receive a notification 5 days before your API key expires to prevent the app from being reset.\n\nThese notifications will reappear at the indicated interval until a new API key is entered</string>
-    <string name="notify_api_token_expiry_feature_section_desc">Receive a notification 5 days before your API key expires to prevent the app from being reset</string>
+    <string name="feature_api_token_expiry_notification_desc">Receive a notification 5 days before your API key expires to prevent the app from being reset.\n\nThese notifications will reappear every day until a new API key is entered</string>
+    <string name="notify_api_token_expiry_feature_section_desc">Receive a notification 5 days before your API key expires</string>
     <string name="update_api_token_now">Update API key now</string>
     <string name="disable_notifications">Disable notifications</string>
     <string name="update_api_token_now_desc">Change the API token that AnonAddy for Android authenticates with. The instance cannot be changed</string>
     <string name="current_api_token_expiry_date">Your current API key (%1$s) will expire in %2$s</string>
     <string name="current_api_token_expiry_date_never">Your current API key (%1$s) has no expiration, visit %2$s/settings to revoke this key</string>
+    <string name="current_api_token_expiry_date_unknown">The expiry date of your API key could not be determined, visit %1$s/settings to revoke this key</string>
     <string name="app_icon">App icon</string>
     <string name="privacy_mode">Privacy mode</string>
     <string name="privacy_mode_desc">Hide personal information such as email addresses in shortcuts, widgets and notifications</string>
@@ -610,4 +620,13 @@
     <string name="pull_down_to_refresh">Pull down to refresh</string>
     <string name="release_to_refresh">Release to refresh</string>
     <string name="no_valid_email_addresses_found">No valid email addresses found</string>
+    <string name="subscription_expiry_date">Your subscription will expire in %s</string>
+    <string name="subscription_expiry_date_never">Your current subscription has no expiration</string>
+    <string name="subscription_expiry_date_unknown">The expiry date of your subscription could not be determined</string>
+    <string name="feature_subscription_expiry_notification">Subscription expiry notification</string>
+    <string name="feature_subscription_expiry_notification_desc">Receive a notification 7 days before your subscription expires to remind you to renew your subscription.\n\nThese notifications will reappear every day until the subscription has been renewed</string>
+    <string name="notify_subscription_expiry_feature_section_desc">Receive a notification 7 days before your subscription expires</string>
+    <string name="update_subscription_now">Update subscription now</string>
+    <string name="update_subscription_now_desc">Extend or upgrade your subscription, switch to a card subscription or redeem voucher codes</string>
+    <string name="subscription_expiry_date_self_hosted">You are using a self-hosted instance of AnonAddy, subscriptions do not apply to self-hosted instances</string>
 </resources>
