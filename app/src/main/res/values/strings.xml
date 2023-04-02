@@ -71,11 +71,17 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.6.0</h3>
+<h3>What\'s new in AnonAddy for Android 4.6.1</h3>
 <h4>Added</h4>
-<p>💳 Get notified when your subscription is about to expire thanks to the new "Subscription expiry notification"-feature which can be enabled under <strong>App settings-&gt;Features and integrations</strong></p>
+<p>🎨 Added a new "Inverse Gradient" icon</p>
 <h4>Fixed/Improved</h4>
-<p>✨ Fixed profile sheet not showing an alert when an update is available<br />✨ Limit the amount of expiry notifications to 1 every day<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
+<p>✨ Fixed an issue with appending CC/BCC addresses when tapping mailto links that do not contains such addresses<br />✨ Added support for 2 special characters in validation checks for mailto links<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
+<p>&nbsp;</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.1.5</h3>
+<h4>Added</h4>
+<p>🎨 Added a new "Inverse Gradient" icon</p>
+<h4>Fixed/Improved</h4>
+<p>✨ Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>

@@ -15,6 +15,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.startShareSheetActivityExcludingOwnApp
+import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
@@ -75,14 +76,14 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
                     if (recipients != null) {
                         for (email in recipients) {
-                            if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
                                 validEmails.add(email)
                             }
                         }
 
                         if (ccRecipients != null) {
                             for (email in ccRecipients) {
-                                if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
                                     validCcRecipients.add(email)
                                 }
                             }
@@ -90,7 +91,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
                         if (bccRecipients != null) {
                             for (email in bccRecipients) {
-                                if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
                                     validBccRecipients.add(email)
                                 }
                             }
@@ -316,8 +317,18 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
                 // Get recipients
                 val anonaddyRecipientAddresses = AnonAddyUtils.getSendAddress(recipients, aliasObject)
-                val anonaddyCcRecipientAddresses = AnonAddyUtils.getSendAddress(ccRecipients, aliasObject)
-                val anonaddyBccRecipientAddresses = AnonAddyUtils.getSendAddress(bccRecipients, aliasObject)
+
+                val anonaddyCcRecipientAddresses = if (ccRecipients.isNotEmpty()) {
+                    AnonAddyUtils.getSendAddress(ccRecipients, aliasObject)
+                } else {
+                    arrayOf()
+                }
+
+                val anonaddyBccRecipientAddresses = if (bccRecipients.isNotEmpty()) {
+                    AnonAddyUtils.getSendAddress(bccRecipients, aliasObject)
+                } else {
+                    arrayOf()
+                }
 
 
                 // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well

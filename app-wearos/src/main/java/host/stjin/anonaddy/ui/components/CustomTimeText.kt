@@ -49,19 +49,19 @@ fun CustomTimeText(
 
 @ExperimentalWearMaterialApi
 @Preview(
-    apiLevel = 26,
+    apiLevel = 28,
     uiMode = Configuration.UI_MODE_TYPE_WATCH,
     showSystemUi = true,
     device = Devices.WEAR_OS_LARGE_ROUND
 )
 @Preview(
-    apiLevel = 26,
+    apiLevel = 28,
     uiMode = Configuration.UI_MODE_TYPE_WATCH,
     showSystemUi = true,
     device = Devices.WEAR_OS_SQUARE
 )
 @Preview(
-    apiLevel = 26,
+    apiLevel = 28,
     uiMode = Configuration.UI_MODE_TYPE_WATCH,
     showSystemUi = true,
     device = Devices.WEAR_OS_SMALL_ROUND

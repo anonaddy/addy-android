@@ -1,5 +1,29 @@
 # Changelog
 
+## [v4.6.1] - 2023-04-02
+
+### AnonAddy for Android
+
+##### Added
+
+- 🎨 Added a new "Inverse Gradient" icon
+
+##### Fixed/Improved
+
+- ✨ Fixed an issue with appending CC/BCC addresses when tapping mailto links that do not contains such addresses
+- ✨ Added support for 2 special characters in validation checks for mailto links
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables _(v1.1.5)_
+
+##### Added
+
+- 🎨 Added a new "Inverse Gradient" icon
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.6.0] - 2023-03-12
 
 ### AnonAddy for Android

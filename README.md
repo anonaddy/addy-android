@@ -22,7 +22,7 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 > Android
 
 - Android 6.0 or higher
-- Wear OS 2.0 or higher (AnonAddy for Android Wearables)
+- Wear OS 3.0 (Android 11) or higher (AnonAddy for Android Wearables)
 
 ## Characteristics
 

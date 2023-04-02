@@ -25,6 +25,7 @@ import com.google.android.material.textfield.TextInputLayout
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSendMailFromIntentAliasBinding
+import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
@@ -219,7 +220,7 @@ class IntentSendMailRecipientBottomDialogFragment(
 
         // Check if all the entered recipients are valid email addresses
         for (email in recipients) {
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (!CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 binding.bsSendMailFromIntentAliasRecipientTil.error =
                     context.resources.getString(R.string.not_a_valid_address)
                 return
@@ -240,7 +241,7 @@ class IntentSendMailRecipientBottomDialogFragment(
             }
         } else {
             // Check if the alias is a valid email address
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(binding.bsSendMailFromIntentAliasesMact.text.toString()).matches()) {
+            if (!CustomPatterns.EMAIL_ADDRESS.matcher(binding.bsSendMailFromIntentAliasesMact.text.toString()).matches()) {
                 binding.bsSendMailFromIntentAliasesTil.error =
                     context.resources.getString(R.string.not_a_valid_address)
                 return

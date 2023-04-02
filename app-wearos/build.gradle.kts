@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = namespace
-        minSdk = 28
+        minSdk = 30
         targetSdk = 33
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.1.3 + release 01 + 01 (for wearos)
-        versionCode = 331140101
-        versionName = "1.1.4"
+        versionCode = 331150101
+        versionName = "1.1.5"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -136,7 +136,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.8.0")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 }
 
 // For parsing wearOSSettings

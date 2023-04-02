@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddrecipientBinding
+import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy_shared.NetworkHelper
 import kotlinx.coroutines.launch
 
@@ -79,7 +80,7 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
 
     private fun addRecipient(context: Context) {
 
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(binding.bsAddrecipientRecipientTiet.text.toString())
+        if (!CustomPatterns.EMAIL_ADDRESS.matcher(binding.bsAddrecipientRecipientTiet.text.toString())
                 .matches()
         ) {
             binding.bsAddrecipientRecipientTil.error =
