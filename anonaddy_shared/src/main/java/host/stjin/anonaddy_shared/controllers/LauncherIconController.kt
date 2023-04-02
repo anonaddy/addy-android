@@ -61,7 +61,7 @@ class LauncherIconController(private val context: Context) {
         INVERSE_GRADIENT(
             "InverseGradientIcon",
             R.color.ic_launcher_inverse_gradient_background,
-            R.drawable.ic_launcher_inverse_gradient_foreground,
+            R.mipmap.ic_launcher_inverse_gradient_foreground,
             R.string.AppIconInverseGradient
         );
 

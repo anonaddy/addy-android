@@ -2,11 +2,12 @@ package host.stjin.anonaddy.ui.components
 
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusRequester
@@ -26,7 +27,6 @@ import kotlinx.coroutines.launch
 internal data class TimestampedDelta(val time: Long, val delta: Float)
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 fun Modifier.rsbScroll(
     scrollableState: ScalingLazyListState,
     flingBehavior: FlingBehavior,

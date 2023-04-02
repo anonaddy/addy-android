@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>🎨 Added a new "Inverse Gradient" icon</p>
+<h4>Fixed/Improved</h4>
+<p>✨ Fixed an issue with appending CC/BCC addresses when tapping mailto links that do not contains such addresses<br />✨ Added support for 2 special characters in validation checks for mailto links<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>

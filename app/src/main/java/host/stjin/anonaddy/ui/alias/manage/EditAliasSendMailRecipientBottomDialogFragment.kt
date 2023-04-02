@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSendMailAliasBinding
+import host.stjin.anonaddy.utils.CustomPatterns
 
 class EditAliasSendMailRecipientBottomDialogFragment(
     private val aliasEmail: String?
@@ -82,7 +83,7 @@ class EditAliasSendMailRecipientBottomDialogFragment(
 
         // Check if all the entered recipients are valid email addresses
         for (email in recipients) {
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+            if (!CustomPatterns.EMAIL_ADDRESS.matcher(email)
                     .matches()
             ) {
                 binding.bsSendMailAliasRecipientTil.error =
