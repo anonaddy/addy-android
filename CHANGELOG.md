@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.6.2] - 2023-04-10
+
+### AnonAddy for Android
+
+##### Fixed/Improved
+
+- ✨ Added support for extra bundles for mailto links
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
 ## [v4.6.1] - 2023-04-02
 
 ### AnonAddy for Android
