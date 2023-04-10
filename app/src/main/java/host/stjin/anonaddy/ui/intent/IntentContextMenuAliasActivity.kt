@@ -69,6 +69,13 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                     val bccRecipients = intent.dataString?.let { getParameter(it, "bcc")?.replace(";", ",")?.split(",") }
                     body = intent.dataString?.let { getParameter(it, "body") }
 
+
+                    // Get email from extra (some apps use bundle to pass addresses)
+                    val bundle = intent.extras
+                    val recipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_EMAIL)
+                    val ccRecipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_CC)
+                    val bccRecipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_BCC)
+
                     // Filter out invalid email addrsses
                     val validEmails = arrayListOf<String>()
                     val validCcRecipients = arrayListOf<String>()
@@ -81,6 +88,15 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                             }
                         }
 
+                        if (recipientsFromBundle != null) {
+                            for (email in recipientsFromBundle) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validEmails.add(email)
+                                }
+                            }
+                        }
+
+
                         if (ccRecipients != null) {
                             for (email in ccRecipients) {
                                 if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -89,8 +105,24 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                             }
                         }
 
+                        if (ccRecipientsFromBundle != null) {
+                            for (email in ccRecipientsFromBundle) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validCcRecipients.add(email)
+                                }
+                            }
+                        }
+
                         if (bccRecipients != null) {
                             for (email in bccRecipients) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validBccRecipients.add(email)
+                                }
+                            }
+                        }
+
+                        if (bccRecipientsFromBundle != null) {
+                            for (email in bccRecipientsFromBundle) {
                                 if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
                                     validBccRecipients.add(email)
                                 }

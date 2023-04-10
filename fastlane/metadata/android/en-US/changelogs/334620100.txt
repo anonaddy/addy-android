@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>✨ Added support for extra bundles for mailto links<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
