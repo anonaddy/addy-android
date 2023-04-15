@@ -94,7 +94,6 @@
         <receiver android:name=".notifications.ActionReceiver" /> <!-- Notification -->
         <!-- END widget -->
 
-
         <activity-alias
             android:name="host.stjin.anonaddy.DefaultIcon"
             android:enabled="true"
@@ -238,6 +237,16 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
             <!-- END Creating aliases on-the-go -->
+
+            <!-- Support for the .SEND intent from other apps (for sending things like text and files over mail) -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <!-- END Support for the .SEND intent from other apps (for sending things like text and files over mail) -->
         </activity>
         <activity
             android:name=".ui.faileddeliveries.FailedDeliveriesActivity"
