@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.1.3 + release 01 + 01 (for wearos)
-        versionCode = 331150101
-        versionName = "1.1.5"
+        // SDK 33 + v1.1.6 + release 01 + 01 (for wearos)
+        versionCode = 331160101
+        versionName = "1.1.6"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -146,7 +146,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut-compose:2.2.2")
+    implementation("app.futured.donut:donut-compose:2.2.3")
 }
 
 // Tiles

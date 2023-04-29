@@ -5,9 +5,11 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
@@ -68,6 +70,21 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                     val bccRecipients = intent.dataString?.let { getParameter(it, "bcc")?.replace(";", ",")?.split(",") }
                     body = intent.dataString?.let { getParameter(it, "body") }
 
+                    val attachment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM, Parcelable::class.java)
+                    } else {
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM)
+                    }
+
+
+                    if (attachment != null) {
+                        Toast.makeText(
+                            this@IntentContextMenuAliasActivity,
+                            this@IntentContextMenuAliasActivity.resources.getString(R.string.intent_attachments_not_supported),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        finish()
+                    }
 
                     // Get all the data from bundle (some apps use bundle to pass addresses)
                     val bundle = intent.extras
