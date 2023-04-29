@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.6.3] - 2023-04-29
+
+### AnonAddy for Android
+
+##### Fixed/Improved
+
+- ✨ Added support for the SEND-intent filter allowing users to "share"-text to AnonAddy for Android for composing emails
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables _(v1.1.6)_
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.6.2] - 2023-04-10
 
 ### AnonAddy for Android
