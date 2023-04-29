@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>✨ Added support for the SEND-intent filter allowing users to "share"-text to AnonAddy for Android for composing emails<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>

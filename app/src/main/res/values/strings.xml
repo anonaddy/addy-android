@@ -71,9 +71,13 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.6.2</h3>
+<h3>What\'s new in AnonAddy for Android 4.6.3</h3>
 <h4>Fixed/Improved</h4>
-<p>✨ Added support for extra bundles for mailto links<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>]]></string>
+<p>✨ Added support for the SEND-intent filter allowing users to "share"-text to AnonAddy for Android for composing emails<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
+<p>&nbsp;</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.1.6</h3>
+<h4>Fixed/Improved</h4>
+<p>✨ Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -617,7 +621,6 @@
     <string name="view_more_aliases">View more aliases</string>
     <string name="pull_down_to_refresh">Pull down to refresh</string>
     <string name="release_to_refresh">Release to refresh</string>
-    <string name="no_valid_email_addresses_found">No valid email addresses found</string>
     <string name="subscription_expiry_date">Your subscription will expire in %s</string>
     <string name="subscription_expiry_date_never">Your current subscription has no expiration</string>
     <string name="subscription_expiry_date_unknown">The expiry date of your subscription could not be determined</string>
@@ -627,4 +630,5 @@
     <string name="update_subscription_now">Update subscription now</string>
     <string name="update_subscription_now_desc">Extend or upgrade your subscription, switch to a card subscription or redeem voucher codes</string>
     <string name="subscription_expiry_date_self_hosted">You are using a self-hosted instance of AnonAddy, subscriptions do not apply to self-hosted instances</string>
+    <string name="intent_attachments_not_supported">Attachments are not supported</string>
 </resources>

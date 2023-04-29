@@ -55,7 +55,7 @@ dependencies {
 
     // Preferences for storing settings (and crypto settings)
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha05")
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
 }
 
 // Compose

@@ -5,9 +5,11 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
@@ -60,8 +62,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                         )
                     }
 
-                    // Get the selected or clicked on email address
-
+                    // Get all the data from intent datastring
                     // mailto: contains 7 chars
                     val recipients = intent.dataString?.substringBefore("?")?.substring(7)?.replace(";", ",")?.split(",")
                     subject = intent.dataString?.let { getParameter(it, "subject") }
@@ -69,12 +70,35 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                     val bccRecipients = intent.dataString?.let { getParameter(it, "bcc")?.replace(";", ",")?.split(",") }
                     body = intent.dataString?.let { getParameter(it, "body") }
 
+                    val attachment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM, Parcelable::class.java)
+                    } else {
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM)
+                    }
 
-                    // Get email from extra (some apps use bundle to pass addresses)
+
+                    if (attachment != null) {
+                        Toast.makeText(
+                            this@IntentContextMenuAliasActivity,
+                            this@IntentContextMenuAliasActivity.resources.getString(R.string.intent_attachments_not_supported),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        finish()
+                    }
+
+                    // Get all the data from bundle (some apps use bundle to pass addresses)
                     val bundle = intent.extras
                     val recipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_EMAIL)
                     val ccRecipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_CC)
                     val bccRecipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_BCC)
+                    val subjectFromBundle = bundle?.getString(Intent.EXTRA_SUBJECT)
+                    if (!subjectFromBundle.isNullOrBlank()) {
+                        subject = subjectFromBundle
+                    }
+                    val bodyFromBundle = bundle?.getString(Intent.EXTRA_TEXT)
+                    if (!bodyFromBundle.isNullOrBlank()) {
+                        body = bodyFromBundle
+                    }
 
                     // Filter out invalid email addrsses
                     val validEmails = arrayListOf<String>()
@@ -87,70 +111,54 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                                 validEmails.add(email)
                             }
                         }
-
-                        if (recipientsFromBundle != null) {
-                            for (email in recipientsFromBundle) {
-                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                    validEmails.add(email)
-                                }
-                            }
-                        }
-
-
-                        if (ccRecipients != null) {
-                            for (email in ccRecipients) {
-                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                    validCcRecipients.add(email)
-                                }
-                            }
-                        }
-
-                        if (ccRecipientsFromBundle != null) {
-                            for (email in ccRecipientsFromBundle) {
-                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                    validCcRecipients.add(email)
-                                }
-                            }
-                        }
-
-                        if (bccRecipients != null) {
-                            for (email in bccRecipients) {
-                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                    validBccRecipients.add(email)
-                                }
-                            }
-                        }
-
-                        if (bccRecipientsFromBundle != null) {
-                            for (email in bccRecipientsFromBundle) {
-                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                    validBccRecipients.add(email)
-                                }
-                            }
-                        }
-
-                        if (validEmails.any()) {
-                            lifecycleScope.launch {
-                                // Figure out what to do next (passes the email address)
-                                figureOutNextAction(validEmails, validCcRecipients, validBccRecipients)
-                            }
-                        } else {
-                            Toast.makeText(
-                                this@IntentContextMenuAliasActivity,
-                                this@IntentContextMenuAliasActivity.resources.getString(R.string.no_valid_email_addresses_found),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            finish()
-                        }
-
-                    } else {
-                        Toast.makeText(
-                            this@IntentContextMenuAliasActivity,
-                            this@IntentContextMenuAliasActivity.resources.getString(R.string.no_valid_email_addresses_found),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        finish()
                     }
+
+                    if (recipientsFromBundle != null) {
+                        for (email in recipientsFromBundle) {
+                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                validEmails.add(email)
+                            }
+                        }
+                    }
+
+
+                    if (ccRecipients != null) {
+                        for (email in ccRecipients) {
+                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                validCcRecipients.add(email)
+                            }
+                        }
+                    }
+
+                    if (ccRecipientsFromBundle != null) {
+                        for (email in ccRecipientsFromBundle) {
+                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                validCcRecipients.add(email)
+                            }
+                        }
+                    }
+
+                    if (bccRecipients != null) {
+                        for (email in bccRecipients) {
+                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                validBccRecipients.add(email)
+                            }
+                        }
+                    }
+
+                    if (bccRecipientsFromBundle != null) {
+                        for (email in bccRecipientsFromBundle) {
+                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                validBccRecipients.add(email)
+                            }
+                        }
+                    }
+
+                    lifecycleScope.launch {
+                        // Figure out what to do next (passes the email address)
+                        figureOutNextAction(validEmails, validCcRecipients, validBccRecipients)
+                    }
+
                 }
             }
         }
@@ -173,7 +181,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         super.finish()
     }
 
-    private suspend fun figureOutNextAction(emails: ArrayList<String>, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
+    private suspend fun figureOutNextAction(emails: ArrayList<String>?, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
 
         // Obtain domain options
         networkHelper.getDomainOptions { domainOptionsObject, _ ->
@@ -182,12 +190,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 domainOptions = domainOptionsObject.data
 
 
-                if (emails.size > 1) {
-                    // There are multiple email addressed found. User most likely wants to send
-                    // an email from an alias to these email addresses
-                    sendEmailFromAlias(emails, validCcRecipients, validBccRecipients)
-                } else {
-
+                if (!emails.isNullOrEmpty() && emails.size == 1) {
                     // Only 1 email address found.
 
                     // splittedEmailAddress[0] = custom part
@@ -209,6 +212,10 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                         // an email from an alias to this email address
                         sendEmailFromAlias(emails, validCcRecipients, validBccRecipients)
                     }
+                } else {
+                    // There are either multiple email addressed found, or no email addresses found.
+                    // User most likely wants to send an email from an alias
+                    sendEmailFromAlias(emails, validCcRecipients, validBccRecipients)
                 }
 
 
@@ -223,7 +230,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
 
     private lateinit var intentSendMailRecipientBottomDialogFragment: IntentSendMailRecipientBottomDialogFragment
-    private fun sendEmailFromAlias(emails: ArrayList<String>, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
+    private fun sendEmailFromAlias(emails: ArrayList<String>?, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
         intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_send_mail_dialog))
 
         // Get aliases and pass it through to the send email bottomdialog
