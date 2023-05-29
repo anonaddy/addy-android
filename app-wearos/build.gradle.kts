@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.1.6 + release 01 + 01 (for wearos)
-        versionCode = 331160101
-        versionName = "1.1.6"
+        versionCode = 331170101
+        versionName = "1.1.7"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -90,10 +90,10 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
-    implementation("androidx.core:core-ktx:1.10.0")
+    implementation("androidx.core:core-ktx:1.10.1")
     implementation("com.google.android.gms:play-services-wearable:18.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
@@ -166,7 +166,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.7.1")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }
