@@ -1,5 +1,19 @@
 # Changelog
 
+## [v4.6.4] - 2023-05-29
+
+### AnonAddy for Android
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables _(v1.1.7)_
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.6.3] - 2023-04-29
 
 ### AnonAddy for Android

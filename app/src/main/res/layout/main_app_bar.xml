@@ -142,6 +142,7 @@
                     android:text="SV"
                     android:textColor="?colorOnSecondaryContainer"
                     android:textSize="18sp"
+                    android:autoSizeTextType="uniform"
                     app:layout_collapseMode="pin"
                     app:tint="?colorOnSecondaryContainer"
                     tools:ignore="HardcodedText" />
