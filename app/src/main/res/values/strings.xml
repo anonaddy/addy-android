@@ -71,11 +71,11 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.6.3</h3>
+<h3>What\'s new in AnonAddy for Android 4.6.4</h3>
 <h4>Fixed/Improved</h4>
-<p>✨ Added support for the SEND-intent filter allowing users to "share"-text to AnonAddy for Android for composing emails<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
+<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
 <p>&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.1.6</h3>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.1.7</h3>
 <h4>Fixed/Improved</h4>
 <p>✨ Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
