@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>✉ Added the option to show suggestions when creating aliases by tapping a MAILTO: link</p>
+<h4>Fixed/Improved</h4>
+<p>✨ Support for Android 14<br />✨ Performance improvements and other things to make the app even smoother</p>

@@ -27,6 +27,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSendMailFromIntentAliasBinding
 import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ class IntentSendMailRecipientBottomDialogFragment(
     private val domainOptions: List<String>
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
-
+    private lateinit var settingsManager: SettingsManager
     private lateinit var listener: AddIntentSendMailRecipientBottomDialogListener
 
     // True if the bottomsheet succeeded it's action and the DialogFragment should stay up after this sheet closes
@@ -112,6 +113,7 @@ class IntentSendMailRecipientBottomDialogFragment(
         val root = binding.root
 
         listener = activity as AddIntentSendMailRecipientBottomDialogListener
+        settingsManager = SettingsManager(false, requireContext())
 
         val progressDrawable = context?.getProgressBarDrawable()
 
@@ -160,7 +162,7 @@ class IntentSendMailRecipientBottomDialogFragment(
                     { list, _ ->
                         if (list != null) {
                             aliases = list.data
-                            setAliasesAdapter()
+                            setAliasesAdapter(searchQuery.substringBefore("@"))
                             binding.bsSendMailFromIntentAliasesMact.showDropDown()
                         } else {
                             binding.bsSendMailFromIntentAliasesTil.error =
@@ -187,14 +189,28 @@ class IntentSendMailRecipientBottomDialogFragment(
         }
     }
 
-    private fun setAliasesAdapter() {
-        // Set domains
-        if (aliases.isNotEmpty()) {
+    private fun setAliasesAdapter(searchQuery: String) {
+        // Set aliases
+        val arrayAdapterOptions = aliases.stream().map { it.email }.collect(
+            Collectors.toList()
+        )
+
+        if (settingsManager.getSettingsBool(SettingsManager.PREFS.MAILTO_ACTIVITY_SHOW_SUGGESTIONS)) {
+            // Add suggestions for owned domains
+            for (domainOption in domainOptions) {
+                val suggestion = "$searchQuery@${domainOption}"
+                if (!arrayAdapterOptions.contains(suggestion)) {
+                    arrayAdapterOptions.add(suggestion)
+
+                }
+            }
+        }
+
+
+        if (arrayAdapterOptions.isNotEmpty()) {
             binding.bsSendMailFromIntentAliasesMact.setAdapter(
                 ArrayAdapter(
-                    requireContext(), android.R.layout.simple_list_item_1, aliases.stream().map { it.email }.collect(
-                        Collectors.toList()
-                    )
+                    requireContext(), android.R.layout.simple_list_item_1, arrayAdapterOptions
                 )
             )
         }

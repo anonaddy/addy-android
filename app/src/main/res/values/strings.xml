@@ -71,13 +71,15 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.6.4</h3>
+<h3>What\'s new in AnonAddy for Android 4.7.0</h3>
+<h4>Added</h4>
+<p>✉ Added the option to show suggestions when creating aliases by tapping a MAILTO: link</p>
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things I might have forgot to make the app even smoother</p>
+<p>✨ Support for Android 14<br />✨ Performance improvements and other things to make the app even smoother</p>
 <p>&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.1.7</h3>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.2.0</h3>
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things to make the app even smoother</p>]]></string>
+<p>✨ Support for Android 14<br />✨ Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
     <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -631,4 +633,6 @@
     <string name="update_subscription_now_desc">Extend or upgrade your subscription, switch to a card subscription or redeem voucher codes</string>
     <string name="subscription_expiry_date_self_hosted">You are using a self-hosted instance of AnonAddy, subscriptions do not apply to self-hosted instances</string>
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
+    <string name="show_suggestions">Show suggestions</string>
+    <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
 </resources>

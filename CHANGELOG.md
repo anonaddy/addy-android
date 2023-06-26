@@ -1,5 +1,25 @@
 # Changelog
 
+## [v4.7.0] - 2023-06-26
+
+### AnonAddy for Android
+
+##### Added
+
+- ✉ Added the option to show suggestions when creating aliases by tapping a MAILTO: link
+
+##### Fixed/Improved
+
+- ✨ Support for Android 14
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### AnonAddy for Android Wearables _(v1.2.0)_
+
+##### Fixed/Improved
+
+- ✨ Support for Android 14
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.6.4] - 2023-05-29
 
 ### AnonAddy for Android
