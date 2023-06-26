@@ -8,6 +8,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -114,7 +115,11 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setHasReachedTopOfNsv()
-        activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), Context.RECEIVER_EXPORTED)
+        } else {
+            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
+        }
     }
 
 

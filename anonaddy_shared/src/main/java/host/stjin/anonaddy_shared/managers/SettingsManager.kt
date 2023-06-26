@@ -37,6 +37,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         MANAGE_MULTIPLE_ALIASES(false, PREFTYPES.BOOLEAN, "manage_multiple_aliases"),
         NOTIFY_API_TOKEN_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_api_token_expiry"),
         NOTIFY_SUBSCRIPTION_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_subscription_expiry"),
+        MAILTO_ACTIVITY_SHOW_SUGGESTIONS(false, PREFTYPES.BOOLEAN, "mailto_activity_show_suggestions"),
 
         // Sorting and Filtering for aliasFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),

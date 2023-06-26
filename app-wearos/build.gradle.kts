@@ -11,13 +11,13 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
         applicationId = namespace
         minSdk = 30
-        targetSdk = 33
+        targetSdk = 34
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.1.6 + release 01 + 01 (for wearos)
-        versionCode = 331170101
-        versionName = "1.1.7"
+        // SDK 33 + v1.2.0 + release 01 + 01 (for wearos)
+        versionCode = 341200101
+        versionName = "1.2.0"
         vectorDrawables {
             useSupportLibrary = true
         }

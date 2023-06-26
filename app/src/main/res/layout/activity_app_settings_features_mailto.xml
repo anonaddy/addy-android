@@ -57,6 +57,16 @@
                     app:sectionShowSwitch="true"
                     app:sectionTitle="@string/enable_integration" />
 
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_features_mailto_section_mailto_sheet_suggestions"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/show_suggestions_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionTitle="@string/show_suggestions">
+
+                </host.stjin.anonaddy.ui.customviews.SectionView>
+
 
             </LinearLayout>
 

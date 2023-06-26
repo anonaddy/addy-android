@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "host.stjin.anonaddy_shared"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
@@ -203,7 +204,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), Context.RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
+        }
     }
 
 

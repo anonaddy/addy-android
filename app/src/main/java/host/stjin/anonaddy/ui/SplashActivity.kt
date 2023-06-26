@@ -89,20 +89,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             }
         )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         drawBehindNavBar(
             binding.root,
             topViewsToShiftDownUsingPadding = arrayListOf(binding.activitySplashErrorLl1),

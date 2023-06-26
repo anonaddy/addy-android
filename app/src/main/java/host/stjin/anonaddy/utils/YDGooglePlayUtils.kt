@@ -53,6 +53,6 @@ object YDGooglePlayUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(flags.toLong()))
         } else {
-            @Suppress("DEPRECATION") getPackageInfo(packageName, flags)
+            getPackageInfo(packageName, flags)
         }
 }

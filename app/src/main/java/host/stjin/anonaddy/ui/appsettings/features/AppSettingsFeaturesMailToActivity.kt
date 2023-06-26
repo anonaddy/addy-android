@@ -53,6 +53,9 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
                 AppSettingsFeaturesActivity.COMPONENTS.MAILTO.componentClassName
             )
         )
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setSwitchChecked(
+            settingsManager.getSettingsBool(SettingsManager.PREFS.MAILTO_ACTIVITY_SHOW_SUGGESTIONS)
+        )
     }
 
     private fun setOnSwitchListeners() {
@@ -66,6 +69,16 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
                         AppSettingsFeaturesActivity.COMPONENTS.MAILTO.componentClassName,
                         checked
                     )
+                }
+            }
+        })
+
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed || forceSwitch) {
+                    forceSwitch = false
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.MAILTO_ACTIVITY_SHOW_SUGGESTIONS, checked)
                 }
             }
         })
@@ -83,6 +96,14 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
             override fun onClick() {
                 forceSwitch = true
                 binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.getSwitchChecked())
+            }
+        })
+
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.getSwitchChecked())
             }
         })
     }
