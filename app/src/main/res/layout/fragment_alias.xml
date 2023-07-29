@@ -26,7 +26,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
@@ -52,7 +52,7 @@
                     android:paddingEnd="@dimen/cardview_extra_padding">
 
                     <com.google.android.material.card.MaterialCardView
-                        style="@style/AnonAddyCustomCardViewStyleTop"
+                        style="@style/AddyIoCustomCardViewStyleTop"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardElevation="@dimen/cardview_default_elevation">
@@ -99,7 +99,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
-                        style="@style/AnonAddyCustomCardViewStyleBottom"
+                        style="@style/AddyIoCustomCardViewStyleBottom"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
@@ -161,7 +161,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleAction"
+                    style="@style/AddyIoTitleAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 

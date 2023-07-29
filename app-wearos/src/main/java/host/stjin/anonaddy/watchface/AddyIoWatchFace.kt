@@ -39,7 +39,7 @@ import kotlin.random.Random
  * in the Google Watch Face Code Lab:
  * https://codelabs.developers.google.com/codelabs/watchface/index.html#0
  */
-class AnonAddyWatchFace : CanvasWatchFaceService() {
+class AddyIoWatchFace : CanvasWatchFaceService() {
 
 
     companion object {
@@ -110,7 +110,7 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
             super.onCreate(holder)
 
             setWatchFaceStyle(
-                WatchFaceStyle.Builder(this@AnonAddyWatchFace)
+                WatchFaceStyle.Builder(this@AddyIoWatchFace)
                     .setAcceptsTapEvents(true)
                     .build()
             )
@@ -213,7 +213,7 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
             canvas.drawColor(Color.BLACK)
             val now = System.currentTimeMillis()
             mCalendar.timeInMillis = now
-            val hour = if (DateFormat.is24HourFormat(this@AnonAddyWatchFace)) mCalendar.get(Calendar.HOUR_OF_DAY) else mCalendar.get(Calendar.HOUR)
+            val hour = if (DateFormat.is24HourFormat(this@AddyIoWatchFace)) mCalendar.get(Calendar.HOUR_OF_DAY) else mCalendar.get(Calendar.HOUR)
 
             var hMarker = ""
             val time = String.format(
@@ -222,7 +222,7 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
             )
 
 
-            if (!DateFormat.is24HourFormat(this@AnonAddyWatchFace)) {
+            if (!DateFormat.is24HourFormat(this@AddyIoWatchFace)) {
                 val mHour = mCalendar.get(Calendar.HOUR_OF_DAY)
                 val hourOfDay: Int = mHour
                 hMarker = if (hourOfDay >= 12) {
@@ -240,7 +240,7 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
 
             // If the system is in 24h format, the AM/PM is not included. This means that an extra character can be
             // added before the time to align the text a bit more to the right
-            val dummyApiKey1 = if (DateFormat.is24HourFormat(this@AnonAddyWatchFace)) {
+            val dummyApiKey1 = if (DateFormat.is24HourFormat(this@AddyIoWatchFace)) {
                 dummyKeys[0].take(3)
             } else {
                 // If the system is in 12h format, the AM/PM is included. This means that we do not insert an extra character
@@ -297,9 +297,9 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
             mRegisteredTimeZoneReceiver = true
             val filter = IntentFilter(Intent.ACTION_TIMEZONE_CHANGED)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                this@AnonAddyWatchFace.registerReceiver(mTimeZoneReceiver, filter, Context.RECEIVER_EXPORTED)
+                this@AddyIoWatchFace.registerReceiver(mTimeZoneReceiver, filter, Context.RECEIVER_EXPORTED)
             } else {
-                this@AnonAddyWatchFace.registerReceiver(mTimeZoneReceiver, filter)
+                this@AddyIoWatchFace.registerReceiver(mTimeZoneReceiver, filter)
             }
         }
 
@@ -308,14 +308,14 @@ class AnonAddyWatchFace : CanvasWatchFaceService() {
                 return
             }
             mRegisteredTimeZoneReceiver = false
-            this@AnonAddyWatchFace.unregisterReceiver(mTimeZoneReceiver)
+            this@AddyIoWatchFace.unregisterReceiver(mTimeZoneReceiver)
         }
 
         override fun onApplyWindowInsets(insets: WindowInsets) {
             super.onApplyWindowInsets(insets)
             val typedValue = TypedValue()
 
-            val resources = this@AnonAddyWatchFace.resources
+            val resources = this@AddyIoWatchFace.resources
             resources.getValue(
                 R.dimen.digital_x_offset, typedValue, true
             )

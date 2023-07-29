@@ -12,7 +12,7 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.ComponentUtils.getComponentState
 import host.stjin.anonaddy.utils.ComponentUtils.setComponentState
 import host.stjin.anonaddy.utils.WebIntentManager
-import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -52,7 +52,7 @@ class AppSettingsFeaturesActivity : BaseActivity() {
 
     private fun checkForSelfHostedInstance() {
         // Hide the switch on Subscription Expiry Notification Card when user is using self-hosted instance
-        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.showSwitch(AnonAddy.VERSIONMAJOR == 9999)
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.showSwitch(AddyIo.VERSIONMAJOR == 9999)
 
     }
 

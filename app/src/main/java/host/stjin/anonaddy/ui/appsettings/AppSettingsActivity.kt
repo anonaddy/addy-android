@@ -324,7 +324,7 @@ class AppSettingsActivity : BaseActivity(),
 
         binding.activityAppSettingsSectionFaq.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                val url = "https://anonaddy.com/faq/"
+                val url = "https://addy.io/faq/"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)
                 startActivity(i)
@@ -334,7 +334,7 @@ class AppSettingsActivity : BaseActivity(),
 
         binding.activityAppSettingsSectionHelp.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                val url = "https://anonaddy.com/help/"
+                val url = "https://addy.io/help/"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)
                 startActivity(i)
@@ -360,6 +360,14 @@ class AppSettingsActivity : BaseActivity(),
                 startActivity(i)
             }
         })
+
+        binding.activityAppSettingsStjinLogo.setOnClickListener {
+            val url = "https://stjin.host"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }
+
 
 
         binding.activityAppSettingsSectionLogs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {

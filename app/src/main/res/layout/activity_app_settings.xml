@@ -39,7 +39,7 @@
 
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
@@ -77,9 +77,9 @@
                     android:id="@+id/activity_app_settings_section_updater"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/anonaddy_updater_desc"
+                    app:sectionDescription="@string/addyio_updater_desc"
                     app:sectionStartIcon="@drawable/ic_cloud_download"
-                    app:sectionTitle="@string/anonaddy_updater" />
+                    app:sectionTitle="@string/addyio_updater" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_features"
@@ -93,17 +93,17 @@
                     android:id="@+id/activity_app_settings_section_wearos"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionTitle="@string/anonaddy_for_wearables"
-                    app:sectionDescription="@string/anonaddy_for_wearables_desc"
+                    app:sectionDescription="@string/addyio_for_wearables_desc"
+                    app:sectionTitle="@string/addyio_for_wearables"
                     app:sectionStartIcon="@drawable/ic_device_watch" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_backup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/anonaddy_backup_desc"
+                    app:sectionDescription="@string/addyio_backup_desc"
                     app:sectionStartIcon="@drawable/ic_database_export"
-                    app:sectionTitle="@string/anonaddy_backup" />
+                    app:sectionTitle="@string/addyio_backup" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_background_service"
@@ -152,7 +152,7 @@
 
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
@@ -170,9 +170,9 @@
                     android:id="@+id/activity_app_settings_section_help"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/visit_anonaddy_helps_section"
+                    app:sectionDescription="@string/visit_addyio_helps_section"
                     app:sectionStartIcon="@drawable/ic_help"
-                    app:sectionTitle="@string/anonaddy_help" />
+                    app:sectionTitle="@string/addyio_help" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_faq"
@@ -184,7 +184,7 @@
                     app:sectionTitle="@string/faq" />
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
@@ -232,6 +232,13 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="8dp"
                 android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/activity_app_settings_stjin_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="8dp"
+                    app:srcCompat="@drawable/stjin_full_logo" />
 
                 <TextView
                     style="@style/DescTextStyle"

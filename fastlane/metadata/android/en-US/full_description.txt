@@ -1,8 +1,8 @@
-<p>Easily create and manage your AnonAddy aliases, recipients and more from your phone, tablet or wearable with the AnonAddy app for Android.</p>
-<p><strong>Requirements:<br /></strong>AnonAddy instance running v0.13.6 or higher</p>
+<p>Easily create and manage your addy.io aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> addy.io app for Android.</p>
+<p><strong>Requirements:<br /></strong>addy.io instance running v0.13.6 or higher</p>
 <p><strong>Characteristics</strong></p>
 <ul>
-<li>Connect to the AnonAddy instance or your own hosted instance</li>
+<li>Connect to the hosted addy.io instance or your own self-hosted instance</li>
 <li>A unique, gorgeous and sleek design, based on the Material You Design guidelines</li>
 <li>Support for Deep Link to easily deactivate aliases from the email banner</li>
 <li>Lock the app using Biometrics</li>
@@ -15,13 +15,13 @@
 <li>Update multiple aliases at once</li>
 </ul>
 </li>
-<li>Enable error logging to *locally* store exceptions for easy troubleshooting</li>
+<li>Enable error logging to locally store exceptions for easy troubleshooting</li>
 <li>Export and import encrypted backups of the app configuration</li>
 <li>Widgets!</li>
 </ul>
 <p><strong>Security:</strong></p>
 <ul>
-<li>Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using the AndroidX crypto library</li>
+<li>Encrypted preferences, your API key and other addy.io related settings are securely stored on your device using the AndroidX crypto library</li>
 <li>Encrypted app backups, when making a backup of the app configuration through the built-in backup manager</li>
 <li>No stats, buried points or Device IDs, or even crash reporting (Except for Google Play Store builds). So if you get a crash, please share the crash info with me &gt;_&lt;.</li>
 <li>I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.</li>
@@ -35,6 +35,6 @@
 <li>Rules</li>
 <li>Failed deliveries</li>
 </ul>
-<p><strong>What is AnonAddy</strong></p>
-<p>AnonAddy is an open source email forwarding service designed to protect an Internet user's email addresses from spam and other unwanted emails. Using the AnonAddy Android app managing your aliased has become easier than ever! <a href="https://anonaddy.com">Learn more about AnonAddy:</a> <a href="https://anonaddy.com">https://anonaddy.com </a></p>
-<p><em>Disclaimer: This app is in no way associated with the AnonAddy project and does not offer a license for the AnonAddy service</em></p>
+<p><strong>What is addy.io</strong></p>
+<p>addy.io is an open source email forwarding service designed to protect an internet user's email addresses from spam and other unwanted emails. Using the addy.io app managing your aliases has become easier than ever! <a href="https://addy.io">Learn more about addy.io:</a> <a href="https://addy.io.com">https://addy.io </a></p>
+<p><em>Disclaimer: This app is in no way associated with the addy.io project and does not offer a license for the addy.io service</em></p>

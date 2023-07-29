@@ -43,17 +43,24 @@ import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
-import host.stjin.anonaddy_shared.AnonAddy
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIo
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.*
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
 import java.time.LocalDateTime
-import java.util.*
+import java.util.Locale
 import kotlin.math.abs
 
 
@@ -333,7 +340,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private fun initialiseMainAppBar() {
         // Figure out the from name initials
-        val usernameInitials = (this.application as AnonAddyForAndroid).userResource.username.take(2).uppercase(Locale.getDefault())
+        val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainAppBarInclude.mainTopBarUserInitials.text = usernameInitials
 
         binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {
@@ -431,7 +438,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private suspend fun checkForSubscriptionExpiration() {
         // Only check on hosted instance
-        if (AnonAddy.VERSIONMAJOR == 9999) {
+        if (AddyIo.VERSIONMAJOR == 9999) {
             lifecycleScope.launch {
                 networkHelper.getUserResource { user: UserResource?, _: String? ->
                     if (user?.subscription_ends_at != null) {
@@ -454,7 +461,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                                 dialog.setPositiveButton(
                                     this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
                                 ) { _, _ ->
-                                    val url = "${AnonAddy.API_BASE_URL}/settings/subscription"
+                                    val url = "${AddyIo.API_BASE_URL}/settings/subscription"
                                     val i = Intent(Intent.ACTION_VIEW)
                                     i.data = Uri.parse(url)
                                     startActivity(i)
@@ -471,7 +478,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
     private fun verifyNewApiToken() {
-        addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AnonAddy.API_BASE_URL)
+        addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
         if (!addApiBottomDialogFragment.isAdded) {
             addApiBottomDialogFragment.show(
                 supportFragmentManager,

@@ -1,13 +1,13 @@
 <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/material_alert_dialog_input_til"
-    style="@style/AnonAddyTextInputLayoutOutlined"
+    style="@style/AddyIoTextInputLayoutOutlined"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/layout_padding">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/material_alert_dialog_input_tiet"
-        style="@style/AnonAddyTextInputEditText"
+        style="@style/AddyIoTextInputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top"

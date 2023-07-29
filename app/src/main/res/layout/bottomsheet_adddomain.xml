@@ -95,14 +95,14 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/bs_adddomain_domain_til"
-                    style="@style/AnonAddyTextInputLayoutOutlined"
+                    style="@style/AddyIoTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/address">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/bs_adddomain_domain_tiet"
-                        style="@style/AnonAddyTextInputEditText"
+                        style="@style/AddyIoTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:imeOptions="actionDone"

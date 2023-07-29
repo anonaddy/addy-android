@@ -6,7 +6,7 @@ buildscript {
         set("wear_compose_version", "1.1.2")
         // https://developer.android.com/jetpack/androidx/releases/compose
         set("compose_version", "1.4.3")
-        set("compose_compiler_version", "1.4.7")
+        set("compose_compiler_version", "1.5.1")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.7.2")
         // https://developer.android.com/jetpack/androidx/releases/compose-material3
@@ -22,8 +22,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.0.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.21")
+        classpath("com.android.tools.build:gradle:8.1.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

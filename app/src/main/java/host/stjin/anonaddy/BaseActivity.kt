@@ -279,7 +279,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
                 val promptInfo =
                     BiometricPrompt.PromptInfo.Builder()
-                        .setTitle(resources.getString(R.string.anonaddy_locked))
+                        .setTitle(resources.getString(R.string.addyio_locked))
                         .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
                         .setConfirmationRequired(false)
                         .build()

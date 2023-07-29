@@ -38,7 +38,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
@@ -93,7 +93,7 @@
                     android:layout_marginBottom="8dp" />
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
@@ -141,7 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="@string/anonaddy_for_wearables_desc" />
+                    android:text="@string/addyio_for_wearables_desc" />
             </LinearLayout>
 
         </LinearLayout>

@@ -3,8 +3,8 @@ package host.stjin.anonaddy_shared
 import host.stjin.anonaddy_shared.utils.resettableLazy
 import host.stjin.anonaddy_shared.utils.resettableManager
 
-object AnonAddy {
-    var API_BASE_URL = "https://app.anonaddy.com"
+object AddyIo {
+    var API_BASE_URL = "https://app.addy.io"
 
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release

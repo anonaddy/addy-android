@@ -13,33 +13,33 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
-import host.stjin.anonaddy_shared.AnonAddy.API_BASE_URL
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ACCOUNT_DETAILS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ACTIVE_ALIAS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ACTIVE_DOMAINS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ACTIVE_RULES
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ACTIVE_USERNAMES
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALIAS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALIAS_RECIPIENTS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ALLOWED_RECIPIENTS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_API_TOKEN_DETAILS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_APP_VERSION
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_CATCH_ALL_DOMAINS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_CATCH_ALL_USERNAMES
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_DOMAINS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_DOMAIN_OPTIONS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_ENCRYPTED_RECIPIENTS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_FAILED_DELIVERIES
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_INLINE_ENCRYPTED_RECIPIENTS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_PROTECTED_HEADERS_RECIPIENTS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_RECIPIENTS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_RECIPIENT_KEYS
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_RECIPIENT_RESEND
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_REORDER_RULES
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_RULES
-import host.stjin.anonaddy_shared.AnonAddy.API_URL_USERNAMES
-import host.stjin.anonaddy_shared.AnonAddy.GITLAB_TAGS_RSS_FEED
-import host.stjin.anonaddy_shared.AnonAddy.lazyMgr
+import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ACCOUNT_DETAILS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_ALIAS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_DOMAINS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RULES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_USERNAMES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ALLOWED_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_APP_VERSION
+import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_USERNAMES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAINS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_FAILED_DELIVERIES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_INLINE_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_PROTECTED_HEADERS_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_KEYS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_RESEND
+import host.stjin.anonaddy_shared.AddyIo.API_URL_REORDER_RULES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_RULES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_USERNAMES
+import host.stjin.anonaddy_shared.AddyIo.GITLAB_TAGS_RSS_FEED
+import host.stjin.anonaddy_shared.AddyIo.lazyMgr
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.*
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -50,7 +50,7 @@ import java.io.InputStream
 
 class NetworkHelper(private val context: Context) {
 
-    /*https://app.anonaddy.com/docs/#errors
+    /*https://app.addy.io/docs/#errors
     400	Bad Request -- Your request sucks
     401	Unauthenticated -- Your API key is wrong
     403	Forbidden -- You do not have permission to access the requested resource
@@ -187,7 +187,7 @@ class NetworkHelper(private val context: Context) {
      * GET VERSION
      */
 
-    suspend fun getAnonAddyInstanceVersion(
+    suspend fun getAddyIoInstanceVersion(
         callback: (Version?, String?) -> Unit
     ) {
 
@@ -207,8 +207,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, Version::class.java)
-                callback(anonAddyData, null)
+                val addyIoData = gson.fromJson(data, Version::class.java)
+                callback(addyIoData, null)
             }
             401 -> {
                 invalidApiKey()
@@ -218,7 +218,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
-            // Not found, aka the AnonAddy version is <0.6.0 (this endpoint was introduced in 0.6.0)
+            // Not found, aka the addy.io version is <0.6.0 (this endpoint was introduced in 0.6.0)
             // Send an empty version as callback to let the checks run in SplashActivity
             404 -> {
                 callback(Version(0, 0, 0, ""), null)
@@ -230,7 +230,7 @@ class NetworkHelper(private val context: Context) {
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
-                    "getAnonAddyInstanceVersion",
+                    "getAddyIoInstanceVersion",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )
@@ -270,8 +270,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleUserResource::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleUserResource::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -323,8 +323,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, DomainOptions::class.java)
-                callback(anonAddyData, null)
+                val addyIoData = gson.fromJson(data, DomainOptions::class.java)
+                callback(addyIoData, null)
             }
             401 -> {
                 invalidApiKey()
@@ -396,8 +396,8 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -444,7 +444,7 @@ class NetworkHelper(private val context: Context) {
 
         /*
         Parameters
-        https://app.anonaddy.com/docs/#get-all-aliases
+        https://app.addy.io/docs/#get-all-aliases
          */
         val parameters: ArrayList<Pair<String, String>> = arrayListOf()
 
@@ -493,8 +493,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, AliasesArray::class.java)
-                callback(anonAddyData, null)
+                val addyIoData = gson.fromJson(data, AliasesArray::class.java)
+                callback(addyIoData, null)
             }
             401 -> {
                 invalidApiKey()
@@ -548,8 +548,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -603,8 +603,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -666,8 +666,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -762,8 +762,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -896,8 +896,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleAlias::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -952,8 +952,8 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1004,18 +1004,18 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, RecipientsArray::class.java)
+                val addyIoData = gson.fromJson(data, RecipientsArray::class.java)
 
                 val recipientList = ArrayList<Recipients>()
 
                 if (verifiedOnly) {
-                    for (recipient in anonAddyData.data) {
+                    for (recipient in addyIoData.data) {
                         if (recipient.email_verified_at != null) {
                             recipientList.add(recipient)
                         }
                     }
                 } else {
-                    recipientList.addAll(anonAddyData.data)
+                    recipientList.addAll(addyIoData.data)
                 }
                 callback(recipientList, null)
             }
@@ -1111,8 +1111,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1251,8 +1251,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1348,8 +1348,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1444,8 +1444,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1540,8 +1540,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1590,8 +1590,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRecipient::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1693,9 +1693,9 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, DomainsArray::class.java)
+                val addyIoData = gson.fromJson(data, DomainsArray::class.java)
                 val domainList = ArrayList<Domains>()
-                domainList.addAll(anonAddyData.data)
+                domainList.addAll(addyIoData.data)
                 callback(domainList, null)
             }
             401 -> {
@@ -1789,8 +1789,8 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
-                callback(anonAddyData.data, "201", null)
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, "201", null)
             }
             // 404 means that the setup is not completed
             404 -> {
@@ -1847,8 +1847,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1903,8 +1903,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -1996,8 +1996,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2091,8 +2091,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2147,8 +2147,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleDomain::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2201,10 +2201,10 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, UsernamesArray::class.java)
+                val addyIoData = gson.fromJson(data, UsernamesArray::class.java)
 
                 val usernamesList = ArrayList<Usernames>()
-                usernamesList.addAll(anonAddyData.data)
+                usernamesList.addAll(addyIoData.data)
                 callback(usernamesList, null)
             }
             401 -> {
@@ -2298,8 +2298,8 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2352,8 +2352,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2408,8 +2408,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2501,8 +2501,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2556,8 +2556,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2650,8 +2650,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleUsername::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2708,10 +2708,10 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, RulesArray::class.java)
+                val addyIoData = gson.fromJson(data, RulesArray::class.java)
 
                 val domainList = ArrayList<Rules>()
-                domainList.addAll(anonAddyData.data)
+                domainList.addAll(addyIoData.data)
                 callback(domainList, null)
             }
             401 -> {
@@ -2722,7 +2722,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
-            // Not found, aka the AnonAddy version is <0.6.0 (this endpoint was introduced in 0.6.0)
+            // Not found, aka the addy.io version is <0.6.0 (this endpoint was introduced in 0.6.0)
             // OR
             // Not found, aka the rules API (which is in beta as of 0.6.0) is not enabled. (Not part of the user's subscription)
             // =
@@ -2776,8 +2776,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRule::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRule::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -2869,8 +2869,8 @@ class NetworkHelper(private val context: Context) {
             201 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRule::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRule::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -3068,8 +3068,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleRule::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleRule::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -3102,11 +3102,11 @@ class NetworkHelper(private val context: Context) {
     }
 
     /**
-     * ANONADDY SETTINGS
+     * ADDY.IO SETTINGS
      */
 
     /*
-    Anonaddy settings cannot be changed by API
+    addy.io settings cannot be changed by API
      */
 
 
@@ -3257,10 +3257,10 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, FailedDeliveriesArray::class.java)
+                val addyIoData = gson.fromJson(data, FailedDeliveriesArray::class.java)
 
                 val failedDeliveriesList = ArrayList<FailedDeliveries>()
-                failedDeliveriesList.addAll(anonAddyData.data)
+                failedDeliveriesList.addAll(addyIoData.data)
                 callback(failedDeliveriesList, null)
             }
             401 -> {
@@ -3271,7 +3271,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
-            // Not found, aka the AnonAddy version is <0.8.1 (this endpoint was introduced in 0.8.1)
+            // Not found, aka the addy.io version is <0.8.1 (this endpoint was introduced in 0.8.1)
             // OR
             // Not found, aka the failed deliveries API is not enabled. (Not part of the user's subscription)
             // =
@@ -3325,8 +3325,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, SingleFailedDelivery::class.java)
-                callback(anonAddyData.data, null)
+                val addyIoData = gson.fromJson(data, SingleFailedDelivery::class.java)
+                callback(addyIoData.data, null)
             }
             401 -> {
                 invalidApiKey()
@@ -3470,8 +3470,8 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val anonAddyData = gson.fromJson(data, ApiTokenDetails::class.java)
-                callback(anonAddyData, null)
+                val addyIoData = gson.fromJson(data, ApiTokenDetails::class.java)
+                callback(addyIoData, null)
             }
             401 -> {
                 invalidApiKey()

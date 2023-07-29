@@ -31,7 +31,7 @@
             android:background="@drawable/circle"
             android:backgroundTint="?colorPrimary"
             android:backgroundTintMode="src_over"
-            android:contentDescription="@string/anonaddy_settings"
+            android:contentDescription="@string/addyio_settings"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="SV"
@@ -48,21 +48,21 @@
 
             <TextView
                 android:id="@+id/main_profile_select_dialog_card_accountname"
-                style="@style/AnonAddyDialogTitle"
+                style="@style/AddyIoDialogTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="$ANONADDY_Account_Name"
+                android:text="$ADDYIO_Account_Name"
                 android:textAllCaps="false"
                 android:textColor="@color/BlackWhite"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/main_profile_select_dialog_card_subscription"
-                style="@style/AnonAddyDialogDesc"
+                style="@style/AddyIoDialogDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$ANONADDY_User_Subscription"
+                android:text="$ADDYIO_User_Subscription"
                 tools:ignore="HardcodedText" />
 
         </LinearLayout>
@@ -74,7 +74,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            android:text="@string/manage_your_anonaddy_account" />
+            android:text="@string/manage_your_addyio_account" />
 
     </LinearLayout>
 
@@ -139,7 +139,7 @@
 
                     <ProgressBar
                         android:id="@+id/main_profile_select_dialog_statistics_monthly_bandwidth_progress"
-                        style="@style/AnonAddyProgressBar"
+                        style="@style/AddyIoProgressBar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -185,7 +185,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/AnonAddyDialogTitle"
+                            style="@style/AddyIoDialogTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/manage_domains"
@@ -194,7 +194,7 @@
 
                         <TextView
                             android:id="@+id/main_profile_select_dialog_domain_settings_desc"
-                            style="@style/AnonAddyDialogDesc"
+                            style="@style/AddyIoDialogDesc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/manage_domains_desc" />
@@ -233,7 +233,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/AnonAddyDialogTitle"
+                            style="@style/AddyIoDialogTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/manage_rules"
@@ -242,7 +242,7 @@
 
                         <TextView
                             android:id="@+id/main_profile_select_dialog_rules_desc"
-                            style="@style/AnonAddyDialogDesc"
+                            style="@style/AddyIoDialogDesc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/manage_rules_desc" />
@@ -281,7 +281,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/AnonAddyDialogTitle"
+                            style="@style/AddyIoDialogTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/manage_usernames"
@@ -290,7 +290,7 @@
 
                         <TextView
                             android:id="@+id/main_profile_select_dialog_username_settings_desc"
-                            style="@style/AnonAddyDialogDesc"
+                            style="@style/AddyIoDialogDesc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/username_settings_desc" />
@@ -330,7 +330,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/AnonAddyDialogTitle"
+                            style="@style/AddyIoDialogTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/app_settings"
@@ -339,7 +339,7 @@
 
                         <TextView
                             android:id="@+id/main_profile_select_dialog_app_settings_desc"
-                            style="@style/AnonAddyDialogDesc"
+                            style="@style/AddyIoDialogDesc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Version 1.1.2"
@@ -357,20 +357,21 @@
 
                     <TextView
                         android:id="@+id/main_profile_select_dialog_anonaddy_version"
-                        style="@style/AnonAddyDialogDesc"
+                        style="@style/AddyIoDialogDesc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:gravity="center_horizontal"
-                        android:text="$ANONADDY_Version"
+                        android:text="$ADDYIO_Version"
                         android:textSize="12sp"
                         tools:ignore="HardcodedText" />
 
+                    <!-- TODO logo-->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="@string/anonaddy_android_stjin"
+                        android:text="@string/addyio_android_stjin"
                         android:textAlignment="center"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="14sp" />

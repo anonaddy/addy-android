@@ -19,7 +19,7 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import org.ocpsoft.prettytime.PrettyTime
-import java.util.*
+import java.util.Date
 
 
 class AppSettingsBackupActivity : BaseActivity(),
@@ -48,7 +48,7 @@ class AppSettingsBackupActivity : BaseActivity(),
         encryptedSettingsManager = SettingsManager(true, this)
         backupHelper = BackupHelper(this)
         setupToolbar(
-            R.string.anonaddy_backup,
+            R.string.addyio_backup,
             binding.activityAppSettingsBackupNSV,
             binding.appsettingsBackupToolbar,
             R.drawable.ic_anonaddy_backup_banner

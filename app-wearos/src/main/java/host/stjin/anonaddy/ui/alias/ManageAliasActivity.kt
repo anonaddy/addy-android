@@ -8,8 +8,20 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +36,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import androidx.wear.compose.material.*
+import androidx.wear.compose.material.Chip
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.ScalingLazyListState
+import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.ToggleChip
+import androidx.wear.compose.material.ToggleChipDefaults
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
+import androidx.wear.compose.material.rememberScalingLazyListState
 import app.futured.donut.compose.DonutProgress
 import app.futured.donut.compose.data.DonutModel
 import app.futured.donut.compose.data.DonutSection
@@ -41,8 +64,8 @@ import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
-import host.stjin.anonaddy_shared.ui.theme.getAnonAddyChipColors
-import host.stjin.anonaddy_shared.ui.theme.getAnonAddyToggleChipColors
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoChipColors
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoToggleChipColors
 import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlinx.coroutines.launch
 
@@ -262,7 +285,7 @@ class ManageAliasActivity : ComponentActivity() {
                     showAliasOnDevice(alias!!.id)
                 }
             },
-            colors = getAnonAddyChipColors(),
+            colors = getAddyIoChipColors(),
             enabled = true,
             label = { Text(text = resources.getString(R.string.show_on_paired_device)) },
             icon = {
@@ -295,7 +318,7 @@ class ManageAliasActivity : ComponentActivity() {
                     favoriteAlias(it)
                 }
             },
-            colors = getAnonAddyToggleChipColors(),
+            colors = getAddyIoToggleChipColors(),
             toggleControl = {
             },
             appIcon = {
@@ -327,7 +350,7 @@ class ManageAliasActivity : ComponentActivity() {
                 )
             },
             checked = isAliasActive,
-            colors = getAnonAddyToggleChipColors(),
+            colors = getAddyIoToggleChipColors(),
             toggleControl = {
                 Icon(
                     imageVector = ToggleChipDefaults.switchIcon(checked = isAliasActive),

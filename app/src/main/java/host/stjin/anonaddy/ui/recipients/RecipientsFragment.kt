@@ -26,7 +26,7 @@ import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
@@ -92,16 +92,16 @@ class RecipientsFragment : Fragment(),
     private fun setStats() {
         binding.activityRecipientSettingsLLCount.text = requireContext().resources.getString(
             R.string.you_ve_used_d_out_of_d_recipients,
-            (activity?.application as AnonAddyForAndroid).userResource.recipient_count,
-            if ((activity?.application as AnonAddyForAndroid).userResource.subscription != null) (activity?.application as AnonAddyForAndroid).userResource.recipient_limit else this.resources.getString(
+            (activity?.application as AddyIoApp).userResource.recipient_count,
+            if ((activity?.application as AddyIoApp).userResource.subscription != null) (activity?.application as AddyIoApp).userResource.recipient_limit else this.resources.getString(
                 R.string.unlimited
             )
         )
 
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if ((activity?.application as AnonAddyForAndroid).userResource.subscription != null) {
+        if ((activity?.application as AddyIoApp).userResource.subscription != null) {
             binding.recipientsAddRecipients.isEnabled =
-                (activity?.application as AnonAddyForAndroid).userResource.recipient_count < (activity?.application as AnonAddyForAndroid).userResource.recipient_limit
+                (activity?.application as AddyIoApp).userResource.recipient_count < (activity?.application as AddyIoApp).userResource.recipient_limit
         } else {
             binding.recipientsAddRecipients.isEnabled = true
         }
@@ -110,7 +110,7 @@ class RecipientsFragment : Fragment(),
     private suspend fun getUserResource(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                (activity?.application as AnonAddyForAndroid).userResource = user
+                (activity?.application as AddyIoApp).userResource = user
                 // Update stats
                 setStats()
             } else {

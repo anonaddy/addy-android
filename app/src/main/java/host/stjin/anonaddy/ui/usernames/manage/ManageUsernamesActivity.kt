@@ -12,7 +12,7 @@ import host.stjin.anonaddy.databinding.ActivityManageUsernamesBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -362,7 +362,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
         // Set recipient
         val recipients: String = username.default_recipient?.email ?: this.resources.getString(
-            R.string.default_recipient_s, (this.application as AnonAddyForAndroid).userResourceExtended.default_recipient_email
+            R.string.default_recipient_s, (this.application as AddyIoApp).userResourceExtended.default_recipient_email
         )
 
         binding.activityManageUsernameRecipientsEdit.setDescription(recipients)

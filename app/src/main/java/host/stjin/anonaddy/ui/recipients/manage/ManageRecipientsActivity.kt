@@ -12,7 +12,7 @@ import host.stjin.anonaddy.databinding.ActivityManageRecipientsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
@@ -521,7 +521,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientPgpInline.setDescription(this.resources.getString(R.string.pgp_inline_desc))
         }
 
-        if ((this.application as AnonAddyForAndroid).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
             binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)
             binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.you_must_be_subscribed))
         }

@@ -93,7 +93,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_addalias_alias_local_part_til"
-                style="@style/AnonAddyTextInputLayoutOutlined"
+                style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/alias_local_part"
@@ -101,7 +101,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bs_addalias_alias_local_part_tiet"
-                    style="@style/AnonAddyTextInputEditText"
+                    style="@style/AddyIoTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top"
@@ -117,14 +117,14 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_addalias_alias_desc_til"
-                style="@style/AnonAddyTextInputLayoutOutlined"
+                style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bs_addalias_alias_desc_tiet"
-                    style="@style/AnonAddyTextInputEditText"
+                    style="@style/AddyIoTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top"

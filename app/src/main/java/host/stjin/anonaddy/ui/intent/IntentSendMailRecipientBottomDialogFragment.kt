@@ -266,7 +266,7 @@ class IntentSendMailRecipientBottomDialogFragment(
             // As we can dynamically create aliases, we need to check if the entered alias has a domain name that we can use
             val splittedEmailAddress = binding.bsSendMailFromIntentAliasesMact.text.toString().split("@")
             if (domainOptions.contains(splittedEmailAddress[1])) {
-                // This is a valid domain name the user has added to their AnonAddy account
+                // This is a valid domain name the user has added to their addy.io account
 
                 // Set error to null if domain and alias is valid
                 binding.bsSendMailFromIntentAliasRecipientTil.error = null

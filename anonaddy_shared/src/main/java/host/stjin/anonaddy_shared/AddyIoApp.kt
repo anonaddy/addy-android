@@ -7,7 +7,7 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.UserResourceExtended
 
-class AnonAddyForAndroid : Application() {
+class AddyIoApp : Application() {
 
     private lateinit var encryptedSettingsManager: SettingsManager
 

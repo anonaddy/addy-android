@@ -8,7 +8,7 @@
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/custom_toolbar_CTL"
-        style="@style/AnonAddyCollapsingToolbarLayout">
+        style="@style/AddyIoCollapsingToolbarLayout">
 
 
         <LinearLayout

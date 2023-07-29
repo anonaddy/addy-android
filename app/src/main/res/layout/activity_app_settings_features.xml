@@ -31,7 +31,7 @@
 
 
             <LinearLayout
-                style="@style/AnonAddyTitleNoAction"
+                style="@style/AddyIoTitleNoAction"
                 android:layout_width="match_parent"
                 android:orientation="horizontal">
 
@@ -92,7 +92,7 @@
                 app:sectionTitle="@string/feature_subscription_expiry_notification" />
 
             <LinearLayout
-                style="@style/AnonAddyTitleNoAction"
+                style="@style/AddyIoTitleNoAction"
                 android:layout_width="match_parent"
                 android:orientation="horizontal">
 

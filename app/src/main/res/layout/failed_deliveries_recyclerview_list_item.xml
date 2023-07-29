@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/failed_deliveries_recyclerview_list_CV"
-    style="@style/AnonAddyCustomCardViewStyleCenter"
+    style="@style/AddyIoCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardElevation="@dimen/cardview_default_elevation">

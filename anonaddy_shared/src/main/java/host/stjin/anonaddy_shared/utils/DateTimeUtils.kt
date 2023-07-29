@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Date
 
 object DateTimeUtils {
 
@@ -17,7 +17,7 @@ object DateTimeUtils {
         SHORT_DATE,
     }
 
-    // This method takes the string as its stored in Anonaddy's database, and turns it into local format
+    // This method takes the string as its stored in addy.io's database, and turns it into local format
     fun turnStringIntoLocalString(string: String?, dateTimeFormat: DATETIMEUTILS = DATETIMEUTILS.DATETIME): String? {
         if (string == null) {
             return ""
@@ -45,7 +45,7 @@ object DateTimeUtils {
         }
     }
 
-    // This method takes the string as its stored in Anonaddy's database, and turns it into a datetime object
+    // This method takes the string as its stored in addy.io's database, and turns it into a datetime object
     fun turnStringIntoLocalDateTime(string: String?): LocalDateTime? {
         return LocalDateTime.parse(string, DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"))
     }

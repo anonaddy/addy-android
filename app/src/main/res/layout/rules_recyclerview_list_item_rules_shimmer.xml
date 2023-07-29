@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/recyclerview_list_CV"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/AnonAddyCustomCardViewStyleCenter"
+    style="@style/AddyIoCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"

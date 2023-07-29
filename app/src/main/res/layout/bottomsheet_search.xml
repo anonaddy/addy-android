@@ -73,7 +73,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_aliases"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -82,7 +82,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_recipient"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -90,7 +90,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_domains"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -98,7 +98,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_usernames"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -106,7 +106,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_rules"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -114,7 +114,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_search_chip_failed_deliveries"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -124,14 +124,14 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/bs_search_term_til"
-                    style="@style/AnonAddyTextInputLayoutOutlined"
+                    style="@style/AddyIoTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/search">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/bs_search_term_tiet"
-                        style="@style/AnonAddyTextInputEditText"
+                        style="@style/AddyIoTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:imeOptions="actionSearch"

@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>✨ Updated the name from AnonAddy for Android to addy.io<br />✨ Updated the icons to reflect the new brand<br />✨ Performance improvements and other things I might have forgot to make the app even smoother</p>

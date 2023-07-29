@@ -64,7 +64,7 @@ fun AppTheme(
 }
 
 @Composable
-fun getAnonAddyChipColors(): ChipColors {
+fun getAddyIoChipColors(): ChipColors {
     return chipColors(
         backgroundColor = colorResource(id = R.color.md_theme_secondaryContainer),
         contentColor = colorResource(id = R.color.md_theme_onSecondaryContainer),
@@ -74,7 +74,7 @@ fun getAnonAddyChipColors(): ChipColors {
 }
 
 @Composable
-fun getAnonAddyDangerChipColors(): ChipColors {
+fun getAddyIoDangerChipColors(): ChipColors {
     return chipColors(
         backgroundColor = colorResource(id = R.color.md_theme_errorContainer),
         contentColor = colorResource(id = R.color.md_theme_onErrorContainer),
@@ -84,14 +84,14 @@ fun getAnonAddyDangerChipColors(): ChipColors {
 }
 
 @Composable
-fun getAnonAddyInlineSliderColors(): InlineSliderColors {
+fun getAddyIoInlineSliderColors(): InlineSliderColors {
     return colors(
         selectedBarColor = colorResource(id = R.color.md_theme_secondaryContainer),
     )
 }
 
 @Composable
-fun getAnonAddyButtonColors(): ButtonColors {
+fun getAddyIoButtonColors(): ButtonColors {
     return buttonColors(
         backgroundColor = colorResource(id = R.color.md_theme_secondaryContainer),
         contentColor = colorResource(id = R.color.md_theme_onSecondaryContainer)
@@ -99,7 +99,7 @@ fun getAnonAddyButtonColors(): ButtonColors {
 }
 
 @Composable
-fun getAnonAddyToggleChipColors(): ToggleChipColors {
+fun getAddyIoToggleChipColors(): ToggleChipColors {
     return toggleChipColors(
         checkedEndBackgroundColor = colorResource(id = R.color.md_theme_primaryInverse).copy(alpha = 0.30f),
         checkedToggleControlColor = colorResource(id = R.color.md_theme_onPrimary)

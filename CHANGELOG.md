@@ -1,5 +1,23 @@
 # Changelog
 
+## [v4.8.0] - 2023-06-26
+
+### addy.io
+
+##### Fixed/Improved
+
+- ✨ Updated the name from AnonAddy for Android to addy.io
+- ✨ Updated the icons to reflect the new brand
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### addy.io for Android wearables _(v1.3.0)_
+
+##### Fixed/Improved
+
+- ✨ Updated the name from AnonAddy for Android to addy.io
+- ✨ Updated the icons to reflect the new brand
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.7.0] - 2023-06-26
 
 ### AnonAddy for Android

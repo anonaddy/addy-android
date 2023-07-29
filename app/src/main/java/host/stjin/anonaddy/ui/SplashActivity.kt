@@ -23,8 +23,9 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.ui.setup.SetupActivity
 import host.stjin.anonaddy.utils.MaterialDialogHelper
-import host.stjin.anonaddy_shared.AnonAddy
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIo
+import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -115,8 +116,15 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             return
         }
 
+        /**
+         * MIGRATE FROM APP.ANONADDY.COM TO APP.ADDY.IO
+         */
+        //migrateFromAnonAddyToAddyIo() // TODO ENABLE
+
         // This helper inits the BASE_URL var
         networkHelper = NetworkHelper(this)
+
+
         // Open setup
         if (settingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
             loadingDone = true
@@ -130,6 +138,17 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             }
         }
 
+    }
+
+    private fun migrateFromAnonAddyToAddyIo() {
+
+        val encryptedSettingsManager = SettingsManager(true, this)
+
+        val baseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
+        if (baseUrl == "https://app.anonaddy.com") {
+            // Change baseUrl to app.addy.io
+            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, API_BASE_URL)
+        }
     }
 
     fun playAnimation(playOnLoop: Boolean, animationDrawable: Int, callback: (() -> Unit)? = null) {
@@ -158,23 +177,23 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private suspend fun loadDataAndStartApp() {
-        // The default instance at anonaddy.com does NOT return its version
-        // However, assume that the creator of AnonAddy keeps the main version up-to-date :P
+        // The default instance at addy.io does NOT return its version
+        // However, assume that the creator of addy.io keeps the main version up-to-date :P
         // So set the versioncode to 9999 so it will always pass the min version check
-        if (AnonAddy.API_BASE_URL == this.resources.getString(R.string.default_base_url)) {
-            AnonAddy.VERSIONMAJOR = 9999
-            AnonAddy.VERSIONSTRING = this.resources.getString(R.string.latest)
+        if (API_BASE_URL == this.resources.getString(R.string.default_base_url)) {
+            AddyIo.VERSIONMAJOR = 9999
+            AddyIo.VERSIONSTRING = this.resources.getString(R.string.latest)
 
             lifecycleScope.launch {
                 loadUserResourceIntoMemory()
             }
         } else {
-            networkHelper.getAnonAddyInstanceVersion { version, error ->
+            networkHelper.getAddyIoInstanceVersion { version, error ->
                 if (version != null) {
-                    AnonAddy.VERSIONMAJOR = version.major
-                    AnonAddy.VERSIONMINOR = version.minor
-                    AnonAddy.VERSIONPATCH = version.patch
-                    AnonAddy.VERSIONSTRING = version.version.toString()
+                    AddyIo.VERSIONMAJOR = version.major
+                    AddyIo.VERSIONMINOR = version.minor
+                    AddyIo.VERSIONPATCH = version.patch
+                    AddyIo.VERSIONSTRING = version.version.toString()
                     if (instanceHasTheMinimumRequiredVersion()) {
                         lifecycleScope.launch {
                             loadUserResourceIntoMemory()
@@ -196,13 +215,13 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     }
 
     private fun instanceHasTheMinimumRequiredVersion(): Boolean {
-        if (AnonAddy.VERSIONMAJOR > AnonAddy.MINIMUMVERSIONCODEMAJOR) {
+        if (AddyIo.VERSIONMAJOR > AddyIo.MINIMUMVERSIONCODEMAJOR) {
             return true
-        } else if (AnonAddy.VERSIONMAJOR >= AnonAddy.MINIMUMVERSIONCODEMAJOR) {
-            if (AnonAddy.VERSIONMINOR > AnonAddy.MINIMUMVERSIONCODEMINOR) {
+        } else if (AddyIo.VERSIONMAJOR >= AddyIo.MINIMUMVERSIONCODEMAJOR) {
+            if (AddyIo.VERSIONMINOR > AddyIo.MINIMUMVERSIONCODEMINOR) {
                 return true
-            } else if (AnonAddy.VERSIONMINOR >= AnonAddy.MINIMUMVERSIONCODEMINOR) {
-                if (AnonAddy.VERSIONPATCH >= AnonAddy.MINIMUMVERSIONCODEPATCH) {
+            } else if (AddyIo.VERSIONMINOR >= AddyIo.MINIMUMVERSIONCODEMINOR) {
+                if (AddyIo.VERSIONPATCH >= AddyIo.MINIMUMVERSIONCODEPATCH) {
                     return true
                 }
             }
@@ -214,7 +233,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private suspend fun loadUserResourceIntoMemory() {
         networkHelper.getUserResource { user: UserResource?, error: String? ->
             if (user != null) {
-                (this.application as AnonAddyForAndroid).userResource = user
+                (this.application as AddyIoApp).userResource = user
                 lifecycleScope.launch {
                     getDefaultRecipientAddress(user.default_recipient_id)
                 }
@@ -227,7 +246,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
     private suspend fun getDefaultRecipientAddress(recipientId: String) {
         networkHelper.getSpecificRecipient({ recipient, error ->
             if (recipient != null) {
-                (this.application as AnonAddyForAndroid).userResourceExtended = UserResourceExtended(recipient.email)
+                (this.application as AddyIoApp).userResourceExtended = UserResourceExtended(recipient.email)
                 loadingDone = true
                 val intent = Intent(this, MainActivity::class.java)
                 // Widgets pass a target to splashActivity, so always pass a target to MainActivity (onCreate will check if there are any pending targets)

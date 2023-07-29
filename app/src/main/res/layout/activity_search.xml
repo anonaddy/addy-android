@@ -41,7 +41,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleNoAction"
+                        style="@style/AddyIoTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/aliases" />
 
@@ -65,7 +65,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleNoAction"
+                        style="@style/AddyIoTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/recipients" />
 
@@ -89,7 +89,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleNoAction"
+                        style="@style/AddyIoTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/domains" />
 
@@ -113,7 +113,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleNoAction"
+                        style="@style/AddyIoTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/usernames" />
 
@@ -137,7 +137,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleNoAction"
+                        style="@style/AddyIoTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/rules" />
 
@@ -161,7 +161,7 @@
                     android:visibility="gone">
 
                     <TextView
-                        style="@style/AnonAddyTitleNoAction"
+                        style="@style/AddyIoTitleNoAction"
                         android:layout_width="match_parent"
                         android:text="@string/failed_deliveries" />
 

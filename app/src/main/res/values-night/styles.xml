@@ -21,27 +21,27 @@
         <item name="android:windowContentTransitions">true</item>
 
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
-        <item name="chipStyle">@style/AnonAddyChip</item>
+        <item name="chipStyle">@style/AddyIoChip</item>
 
         <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
+    <style name="AddyIoCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
+    <style name="AddyIoCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
+    <style name="AddyIoCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
     </style>
 
 
-    <style name="AnonAddyMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">
+    <style name="AddyIoMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="cardElevation">12dp</item>

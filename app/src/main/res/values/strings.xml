@@ -4,7 +4,7 @@
     <string name="app_settings">App settings</string>
     <string name="title_recipients">Recipients</string>
     <string name="recipients">Recipients</string>
-    <string name="anonaddy_settings">AnonAddy settings</string>
+    <string name="addyio_settings">addy.io settings</string>
     <string name="monthly_bandwidth">Monthly bandwidth</string>
     <string name="view_more">View more</string>
     <string name="copied_alias">Copied alias</string>
@@ -24,10 +24,10 @@
     <string name="new_user">New user?</string>
     <string name="got_the_api_key">Got the API key?</string>
     <string name="how_does_it_work">How does it work?</string>
-    <string name="setup_how_1_desc">Let\'s say your username is johndoe. You can now use *@johndoe.anonaddy.com (or .me) as your email. Where * denotes any valid local part for an email address.\n\nIf you would like to remain anonymous choose a username that is not linked to your real name or identify and that you haven\'t used anywhere else.\n\nYou can also create aliases at shared domains if you are concerned about others linking alias ownership to you.</string>
+    <string name="setup_how_1_desc">Let\'s say your username is johndoe. You can now use *@johndoe.addy.io (or .me) as your email. Where * denotes any valid local part for an email address.\n\nIf you would like to remain anonymous choose a username that is not linked to your real name or identify and that you haven\'t used anywhere else.\n\nYou can also create aliases at shared domains if you are concerned about others linking alias ownership to you.</string>
     <string name="setup_how_1">1. Register Your Username</string>
     <string name="setup_how2">2. Create Aliases</string>
-    <string name="setup_how2_desc">Either on the fly or generated beforehand. Next time you are signing up to a website or newsletter, simply make up a new alias and enter that instead of your real email address.\n\nFor example, if you are on vuejs.org and you want to sign up to their newsletter you could simply enter vuejs@johndoe.anonaddy.com (or .me). \n\nWe\'ll automatically create the alias in your dashboard as soon as it receives its first email. You can reply to emails and send from aliases anonymously too!</string>
+    <string name="setup_how2_desc">Either on the fly or generated beforehand. Next time you are signing up to a website or newsletter, simply make up a new alias and enter that instead of your real email address.\n\nFor example, if you are on vuejs.org and you want to sign up to their newsletter you could simply enter vuejs@johndoe.addy.io (or .me). \n\nWe\'ll automatically create the alias in your dashboard as soon as it receives its first email. You can reply to emails and send from aliases anonymously too!</string>
     <string name="setup_how_3">3. Manage Aliases</string>
     <string name="setup_how_3_desc">Let\'s say a spammer gets hold of one of your aliases and starts sending unsolicited email to it. You can simply toggle a switch in your dashboard and deactivate that alias.\n\nOur system will then silently discard any further emails and you won\'t be forwarded anything else for that alias.\n\nYou can also delete the alias. Then our system will reject any emails and respond with an error.</string>
     <string name="setup_how_4">4. What do you think?</string>
@@ -46,12 +46,12 @@
     <string name="recipients_list_description" tools:ignore="PluralsCandidate">%1$d aliases; Emails forwarded: %2$d</string>
     <string name="encryption_enabled">Encryption enabled</string>
     <string name="open_options">Open options</string>
-    <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.anonaddy.com (or your own hosted instance)</string>
+    <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.addy.io (or your own hosted instance)</string>
     <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
     <string name="next">Next</string>
     <string name="sign_up">Sign up</string>
-    <string name="add_alias_desc">Other aliases e.g. alias@%s.anonaddy.com or .me can also be created automatically when they receive their first email</string>
+    <string name="add_alias_desc">Other aliases e.g. alias@%s.addy.io or .me can also be created automatically when they receive their first email</string>
     <string name="description">Description</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
     <string name="not_a_valid_alias_format">Not a valid alias format</string>
@@ -63,25 +63,17 @@
     <string name="see_this_version_changelogs">See this version\'s changelog</string>
     <string name="changelog">Changelog</string>
     <string name="contributors">Contributors</string>
-    <string name="visit_anonaddy_helps_section">Visit AnonAddy helps section</string>
-    <string name="anonaddy_help">AnonAddy help</string>
+    <string name="visit_addyio_helps_section">Visit addy.io help section</string>
+    <string name="addyio_help">addy.io help</string>
     <string name="appearance">Appearance</string>
     <string name="dark_mode">Dark mode</string>
     <string name="off">Off</string>
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.7.0</h3>
-<h4>Added</h4>
-<p>✉ Added the option to show suggestions when creating aliases by tapping a MAILTO: link</p>
-<h4>Fixed/Improved</h4>
-<p>✨ Support for Android 14<br />✨ Performance improvements and other things to make the app even smoother</p>
-<p>&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.2.0</h3>
-<h4>Fixed/Improved</h4>
-<p>✨ Support for Android 14<br />✨ Performance improvements and other things to make the app even smoother</p>]]></string>
-    <string name="anonaddy_instance_version_unsupported"><![CDATA[<p>The version of this AnonAddy instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</p>]]></string>
-    <string name="contributors_list">Will Browning (AnonAddy)\nStjin (Android app backend)\nJPH (Android app designer)</string>
+<h3>AnonAddy is now addy.io</h3><p><strong>AnonAddy</strong> continues to be awesome under the new name <strong>addy.io</strong>, along with that change the name of the app will change from <strong>Anonaddy for Android</strong> to <strong>addy.io</strong></p><p>Besides a new name and a new icon, the operation of the app will be just as great as you are used to! Don\'t worry about a new instance URL, it\'s already changed for you 😉</p>]]></string>
+    <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
+    <string name="contributors_list">Will Browning (addy.io)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
     <string name="delete_recipient_desc">Are you sure you want to delete this recipient?</string>
     <string name="error_deleting_recipient">Something went wrong while deleting the recipient</string>
@@ -126,7 +118,7 @@
 
     <string name="default_recipient_s">Default recipient (%s)</string>
     <string name="security">Security</string>
-    <string name="security_desc">Use your biometric or pin/pattern to open AnonAddy</string>
+    <string name="security_desc">Use your biometric or pin/pattern to open the addy.io app</string>
     <string name="store_logs_desc">Tap here to see or clear the stored logs</string>
     <string name="biometric_error_no_hardware">No biometric features available on this device</string>
     <string name="biometric_error_hw_unavailable">Biometric features are currently unavailable</string>
@@ -137,10 +129,10 @@
     <string name="disable_biometric_authentication">Disable biometric authentication</string>
     <string name="logs">Logs</string>
     <string name="clear_logs">Clear logs</string>
-    <string name="anonaddy_locked">AnonAddy locked</string>
+    <string name="addyio_locked">addy.io locked</string>
     <string name="authentication_error_11">Biometric unlocking disabled, no screen lock was found</string>
     <string name="reset_app_error_wearable">Could not reset app</string>
-    <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your AnonAddy account or anything related)</string>
+    <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your addy.io account or anything related)</string>
     <string name="edit_recipient">Edit recipient</string>
     <string name="basic">Basic</string>
     <string name="encryption">Encryption</string>
@@ -160,7 +152,7 @@
     <string name="public_key">Public key</string>
     <string name="no_active_aliases">You have no active aliases</string>
     <string name="shared_domain_aliases">Shared domain aliases</string>
-    <string name="anonaddy_load_error">Something went wrong while loading AnonAddy, you might want to check your internet connection.\nMore information about the error:</string>
+    <string name="addyio_load_error">Something went wrong while loading the addy.io app, you might want to check your internet connection.\nMore information about the error:</string>
     <string name="try_again">Try again</string>
     <string name="subscription_user">%s user</string>
     <string name="subscription_user_until">%1$s user until %2$s</string>
@@ -194,7 +186,7 @@
     <string name="domain_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this domain</string>
     <string name="username_edit_recipient_desc">The list below shows all verified recipients. Select which recipient you want to set as default recipient for this username</string>
     <string name="check_dns_desc_incorrect">Your domain has configuration errors. Tap here to check the DNS records</string>
-    <string name="anonaddy_android_stjin">AnonAddy Android | Stjin</string>
+    <string name="addyio_android_stjin">addy.io app | Stjin</string>
     <string name="default_recipient">Default recipient</string>
     <string name="filters">Filters</string>
     <string name="domains">Domains</string>
@@ -222,8 +214,8 @@
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
     <string name="no_usernames">You have no usernames, what about creating one?</string>
-    <string name="default_base_url">https://app.anonaddy.com</string>
-    <string name="anonaddy_instance">AnonAddy instance</string>
+    <string name="default_base_url">https://app.addy.io</string>
+    <string name="addyio_instance">addy.io instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
     <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$s usernames</string>
@@ -314,15 +306,15 @@
     <string name="notification_channel_watch_alias_desc">Receive a notification when an email is sent to a watched alias</string>
     <string name="notification_new_emails">New emails forwarded</string>
     <string name="notification_new_emails_desc">%1$d new email(s) have been forwarded via %2$s</string>
-    <string name="notification_new_update_available_desc">Version %s of AnonAddy for Android is available. Tap here to download it</string>
+    <string name="notification_new_update_available_desc">Version %s of the addy.io app is available. Tap here to download it</string>
     <string name="notification_new_failed_delivery">Email delivery failed</string>
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
     <string name="notification_api_token_about_to_expire">Your API key is about to expire</string>
     <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to change the API key</string>
     <string name="notification_subscription_about_to_expire">Your subscription is about to expire</string>
     <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features</string>
-    <string name="notification_channel_update">@string/anonaddy_updater</string>
-    <string name="notification_channel_update_desc">Receive a notification when a new AnonAddy for Android update is available</string>
+    <string name="notification_channel_update">@string/addyio_updater</string>
+    <string name="notification_channel_update_desc">Receive a notification when a new update is available for the addy.io app</string>
     <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
     <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
     <string name="notification_channel_api_token_expiry">API key</string>
@@ -343,7 +335,7 @@
     <string name="username">Username</string>
     <string name="rules_create_info">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
     <string name="_sMB_remaining_this_month">%sMB remaining this month</string>
-    <string name="manage_your_anonaddy_account">Manage your AnonAddy account</string>
+    <string name="manage_your_addyio_account">Manage your addy.io account</string>
     <string name="loading_recipients">Loading recipients…</string>
     <string name="intent_context_menu">Create alias or send email from alias</string>
     <string name="something_went_wrong_retrieving_domains">Something went wrong while retrieving the domains</string>
@@ -361,7 +353,7 @@
     <string name="features_and_integrations_desc">Check out app-exclusive features and integrations</string>
     <string name="integrations">Integrations</string>
     <string name="integration_mailto_alias">Email action integration</string>
-    <string name="integration_mailto_alias_desc">Create aliases on the go and send emails from an alias by highlighting an email address or tapping a mailto hyperlink.\n\nHighlight an email address that doesn\'t exist with your domain name and tap the AnonAddy for Android icon to create this alias.</string>
+    <string name="integration_mailto_alias_desc">Create aliases on the go and send emails from an alias by highlighting an email address or tapping a mailto hyperlink.\n\nHighlight an email address that doesn\'t exist with your domain name and tap the addy.io app icon to create this alias.</string>
     <string name="enable_integration">Enable integration</string>
     <string name="enable_disable_feature_desc">It may take a few minutes for the change to take effect</string>
     <string name="Info">Info</string>
@@ -373,7 +365,7 @@
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
     <string name="just_like_that">Just like that!</string>
     <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
-    <string name="widget_2_description">An overview of your anonaddy stats that dynamically adapts to size</string>
+    <string name="widget_2_description">An overview of your addy.io stats that dynamically adapts to size</string>
     <string name="widget_1_description">A handy list of the 15 most used aliases</string>
     <string name="add">Add</string>
     <string name="save">Save</string>
@@ -381,7 +373,7 @@
     <string name="obtaining_information">obtaining information…</string>
     <string name="new_update_available">New update available</string>
     <string name="new_update_available_version">%s -> %s</string>
-    <string name="anonaddy_updater">AnonAddy Updater</string>
+    <string name="addyio_updater">addy.io app updater</string>
     <string name="update_notify_title">Notify for new updates</string>
     <string name="update_notify_desc">Periodically check for updates in the background and send a notification when one is available</string>
     <string name="previous_changelogs">Previous changelogs</string>
@@ -389,8 +381,8 @@
     <string name="version_channel_info">Version: %s\nDownload channel: %s</string>
     <string name="sideloaded">sideloaded</string>
     <string name="no_new_update_available">You\'re up to date</string>
-    <string name="no_new_update_available_desc">You are currently using the latest version of AnonAddy for Android. Turn on notifications to get notified when a new version is available.</string>
-    <string name="anonaddy_updater_desc">Check for new updates and view the latest changelog</string>
+    <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available.</string>
+    <string name="addyio_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
     <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %7$s</td></tr></tbody></table>]]></string>
     <string name="code">Code</string>
@@ -419,14 +411,14 @@
     <string name="forget">Forget</string>
     <string name="version_channel_fdroid_info">Please note that it may take a little longer for updates to be visible in F-Droid</string>
     <string name="integration_webintent_resolution">Web intent resolution</string>
-    <string name="integration_webintent_resolution_desc">Open the AnonAddy for Android app instead of the website for easy access and quick actions such as deactivating your alias via the link in the email banner.\n\nSince this feature is not managed by AnonAddy for Android but by Android itself, manual action is required to link the URL to the app. On many devices this is done automatically, but on devices with Android 12 or higher it is necessary to add this URL manually. The action is easy but cannot be automated.\n\nDue to limitations added in Android 12, it is only possible to use this integration on the hosted instance found at app.anonaddy.com.</string>
+    <string name="integration_webintent_resolution_desc">Open the addy.io app instead of the website for easy access and quick actions such as deactivating your alias via the link in the email banner.\n\nSince this feature is not managed by the addy.io app but by Android itself, manual action is required to link the URL to the app. On many devices this is done automatically, but on devices with Android 12 or higher it is necessary to add this URL manually. The action is easy but cannot be automated.\n\nDue to limitations added in Android 12, it is only possible to use this integration on the hosted instance found at app.addy.io or app.anonaddy.com.</string>
     <string name="webintent_manage_default_apps_pre_sdk24_enable">Click on \"open by default\" and set app links to \"Open in this app\"</string>
     <string name="webintent_manage_default_apps_pre_sdk24_disable">Click on \"open by default\" and set app links to \"Don\'t open in this app\"</string>
     <string name="webintent_manage_default_apps_enable">Enable supported links, click on \"Add link\" and tick the checkbox in front of the URL</string>
     <string name="webintent_manage_default_apps_disable">Disable supported links</string>
     <string name="enable_disable_feature_manual_action_required_desc">Manual actions must be performed</string>
-    <string name="anonaddy_backup">AnonAddy Backup</string>
-    <string name="anonaddy_backup_desc">With AnonAddy for Android backups you can easily export and import the configuration of the app to another device. These backups include the API key and aliases that are on the watch list, but also other app settings.\n\nTo restore backups, reset AnonAddy for Android and choose \"restore from backup\" in the setup.</string>
+    <string name="addyio_backup">addy.io app Backup</string>
+    <string name="addyio_backup_desc">With addy.io app backups you can easily export and import the configuration of the app to another device. These backups include the API key and aliases that are on the watch list, but also other app settings.\n\nTo restore backups, reset the addy.io app and choose \"restore from backup\" in the setup.</string>
     <string name="backup_now">Backup now</string>
     <string name="last_backup_desc">Last backup was done %s</string>
     <string name="backup_password">Backup password</string>
@@ -451,8 +443,8 @@
     <string name="enter_backup_password_desc">Enter the backup password with which backups are encrypted.\nBackups contain sensitive information so a deleting the backup file after restoring the backup is recommended.\n\nThe backup cannot be recovered without this password</string>
     <string name="never">never</string>
     <string name="backup_location_not_accessible">Backup location not accessible, tap here to set a new location</string>
-    <string name="notification_channel_backup">@string/anonaddy_backup</string>
-    <string name="notification_channel_backup_desc">Receive a notification when periodic AnonAddy backups fail</string>
+    <string name="notification_channel_backup">@string/addyio_backup</string>
+    <string name="notification_channel_backup_desc">Receive a notification when periodic addy.io app backups fail</string>
     <string name="notification_new_backup_delivery">Periodic backup failed</string>
     <string name="notification_new_backup_delivery_desc">Unable to make periodic backup of app configuration. Tap here to view the backup log</string>
     <string name="disable_periodic_backups">Disable periodic backups</string>
@@ -461,7 +453,7 @@
     <string name="log_backup_location_changed">Backup location changed</string>
     <string name="log_backup_password_changed">Backup password changed</string>
     <string name="log_backup_retention_deleted">%1$d file(s) deleted because they were older than %2$d days</string>
-    <string name="app_data_corrupted">The app data can no longer be read. You may have recovered the app data from another device which is not supported because AnonAddy for Android encrypts all the app data with a device specific key. Please use the built-in AnonAddy backup feature in the app settings next time. The app will be reset in 15 seconds…</string>
+    <string name="app_data_corrupted">The app data can no longer be read. You may have recovered the app data from another device which is not supported because the addy.io app encrypts all the app data with a device specific key. Please use the built-in addy.io app backup feature in the app settings next time. The app will be reset in 15 seconds…</string>
     <string name="use_dynamic_colors">Use dynamic colors</string>
     <string name="use_dynamic_colors_desc">Apply dynamic colors provided by the system. (requires a restart of the app)</string>
     <string name="appearance_desc">Change the looks of the app</string>
@@ -469,7 +461,7 @@
     <string name="active_aliases">Active aliases</string>
     <string name="inactive_aliases">Inactive aliases</string>
     <string name="greetings_time_traveller">Greetings, time traveller</string>
-    <string name="greetings_time_traveller_desc">It appears that you are using a future version of AnonAddy for Android. Report any bugs you find!</string>
+    <string name="greetings_time_traveller_desc">It appears that you are using a future version of the addy.io app. Report any bugs you find!</string>
     <string name="sends">Sends</string>
     <string name="replies">Replies</string>
     <string name="forwards">Forwards</string>
@@ -522,25 +514,25 @@
     <string name="filter_active">Filter active</string>
     <string name="filter">Filter</string>
     <string name="setup_wearable_app">Setup wearable app</string>
-    <string name="setup_wearable_app_desc">Would you like to setup AnonAddy on %1$s with the account %2$s? The settings will remain on the wearable even after resetting the app on this device.</string>
+    <string name="setup_wearable_app_desc">Would you like to setup the addy.io app on %1$s with the account %2$s? The settings will remain on the wearable even after resetting the app on this device.</string>
     <string name="confirm_and_setup">Confirm and setup</string>
     <string name="do_not_ask_again">Do not ask again</string>
     <string name="wearable_device_invalid">Wearable device not recognised, please try again</string>
     <string name="check_your_wearable">Check your wearable</string>
     <string name="wearable_setup_success">@string/check_your_wearable</string>
     <string name="wearable_setup_canceled">Setup on wearable canceled</string>
-    <string name="wearable_setup_failed">Something went wrong while setting up AnonAddy on the wearable device, please try again</string>
+    <string name="wearable_setup_failed">Something went wrong while setting up the addy.io app on the wearable device, please try again</string>
     <string name="wearable_start_success">@string/check_your_wearable</string>
     <string name="wearable_start_canceled">Start on wearable canceled</string>
-    <string name="wearable_start_failed">Something went wrong while starting AnonAddy on the wearable device, please try again</string>
+    <string name="wearable_start_failed">Something went wrong while starting the addy.io app on the wearable device, please try again</string>
     <string name="wearable_reset_success">Reset on wearable complete</string>
     <string name="wearable_reset_canceled">Reset on wearable canceled</string>
-    <string name="wearable_reset_failed">Something went wrong while resetting AnonAddy on the wearable device, please try again</string>
-    <string name="wearable_setup_skip_setup">To setup AnonAddy on a wearable device, open the AnonAddy settings</string>
+    <string name="wearable_reset_failed">Something went wrong while resetting the addy.io app on the wearable device, please try again</string>
+    <string name="wearable_setup_skip_setup">To setup the addy.io app on a wearable device, open the addy.io app settings</string>
     <string name="wearable_quick_setup">Quick setup</string>
-    <string name="wearable_quick_setup_desc">When AnonAddy is opened for the first time on a wearable. Show a message on this device to quickly set up the app</string>
-    <string name="anonaddy_for_wearables">AnonAddy for Wearables</string>
-    <string name="anonaddy_for_wearables_desc">With AnonAddy on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to a beautiful watchface</string>
+    <string name="wearable_quick_setup_desc">When the addy.io app is opened for the first time on a wearable. Show a message on this device to quickly set up the app</string>
+    <string name="addyio_for_wearables">addy.io for Android wearables</string>
+    <string name="addyio_for_wearables_desc">With the addy.io app on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to a beautiful watchface</string>
     <string name="start_wearable_app">Start app</string>
     <string name="setup_app_on_wearable">Setup app</string>
     <string name="reset_app_on_wearable">Reset app</string>
@@ -550,12 +542,12 @@
     <string name="wearable">Wearable</string>
     <string name="log_wearable_requested">A new wearable setup request was received from %1$s</string>
     <string name="notification_setup_wearable_app">@string/setup_wearable_app</string>
-    <string name="notification_setup_wearable_app_desc">Tap here to setup AnonAddy on %1$s</string>
-    <string name="notification_channel_anonaddy_for_wearables">@string/anonaddy_for_wearables</string>
-    <string name="notification_channel_anonaddy_for_wearables_desc">Receive a notification when a new wearable is requesting setup</string>
+    <string name="notification_setup_wearable_app_desc">Tap here to setup the addy.io app on %1$s</string>
+    <string name="notification_channel_addyio_for_wearables">@string/addyio_for_wearables</string>
+    <string name="notification_channel_addyio_for_wearables_desc">Receive a notification when a new wearable is requesting setup</string>
     <string name="disable_quick_setup">Disable quick setup</string>
     <string name="notification_setup_app_first">Cannot setup wearable app</string>
-    <string name="notification_setup_app_first_desc">AnonAddy for Android has not been set up on this device yet. Tap here to setup the app</string>
+    <string name="notification_setup_app_first_desc">The addy.io app has not been set up on this device yet. Tap here to setup the app</string>
     <string name="reset_app_confirmation_wearable">Connected wearables found, do you want to reset the app on these wearables as well?</string>
     <string name="reset_app_error_wearable_desc">Could not reset app on connected wearables, reset just this app?</string>
     <string name="reset_app_just_this_app">Just this app</string>
@@ -565,14 +557,14 @@
     <string name="wearos_show_logs">Show logs</string>
     <string name="wearos_show_logs_desc">On your wearable device, tap \"Send logs to device\" in the settings</string>
     <string name="setup_app_on_wearable_desc">Set up the app on your wearable with the same account that this app is set up with</string>
-    <string name="reset_app_on_wearable_desc">Remotely reset the AnonAddy app on your wearable</string>
-    <string name="start_wearable_app_desc">Remotely open the AnonAddy app on your wearable</string>
-    <string name="wearable_api_not_available_desc">Wearable API is not available. In order to use AnonAddy for Wearables make sure to have a recent version of Google Play Services installed</string>
-    <string name="gplayless_wearable_api_not_available_desc">Wearable API is not available because you are using a gplayless flavor of the app. In order to use AnonAddy for Wearables make sure to install the app through the Google Play Store</string>
+    <string name="reset_app_on_wearable_desc">Remotely reset the addy.io app on your wearable</string>
+    <string name="start_wearable_app_desc">Remotely open the addy.io app on your wearable</string>
+    <string name="wearable_api_not_available_desc">Wearable API is not available. In order to use addy.io for Android wearables make sure to have a recent version of Google Play Services installed</string>
+    <string name="gplayless_wearable_api_not_available_desc">Wearable API is not available because you are using a gplayless flavor of the app. In order to use addy.io for Android wearables make sure to install the app through the Google Play Store</string>
     <string name="wearable_api_not_available">API not available</string>
     <string name="i_understand">I understand</string>
     <string name="permissions_required">Permissions required</string>
-    <string name="notification_permissions_required_desc">Notification permissions are required to fully use the app. Tap here to allow AnonAddy to send notifications. You retain control over which notification the app can send.</string>
+    <string name="notification_permissions_required_desc">Notification permissions are required to fully use the app. Tap here to allow the addy.io app to send notifications. You retain control over which notification the app can send.</string>
     <string name="can_reply_send">Reply/send allowed</string>
     <string name="cannot_reply_send">Reply/send not allowed</string>
     <string name="can_reply_send_desc">Reply and send from your aliases</string>
@@ -611,7 +603,7 @@
     <string name="notify_api_token_expiry_feature_section_desc">Receive a notification 5 days before your API key expires</string>
     <string name="update_api_token_now">Update API key now</string>
     <string name="disable_notifications">Disable notifications</string>
-    <string name="update_api_token_now_desc">Change the API token that AnonAddy for Android authenticates with. The instance cannot be changed</string>
+    <string name="update_api_token_now_desc">Change the API token that the addy.io app authenticates with. The instance cannot be changed</string>
     <string name="current_api_token_expiry_date">Your current API key (%1$s) will expire in %2$s</string>
     <string name="current_api_token_expiry_date_never">Your current API key (%1$s) has no expiration, visit %2$s/settings to revoke this key</string>
     <string name="current_api_token_expiry_date_unknown">The expiry date of your API key could not be determined, visit %1$s/settings to revoke this key</string>
@@ -631,7 +623,7 @@
     <string name="notify_subscription_expiry_feature_section_desc">Receive a notification 7 days before your subscription expires</string>
     <string name="update_subscription_now">Update subscription now</string>
     <string name="update_subscription_now_desc">Extend or upgrade your subscription, switch to a card subscription or redeem voucher codes</string>
-    <string name="subscription_expiry_date_self_hosted">You are using a self-hosted instance of AnonAddy, subscriptions do not apply to self-hosted instances</string>
+    <string name="subscription_expiry_date_self_hosted">You are using a self-hosted instance of addy.io, subscriptions do not apply to self-hosted instances</string>
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>

@@ -47,7 +47,7 @@
                 app:tint="@color/BlackWhite" />
 
             <TextView
-                style="@style/AnonAddySetupTitle"
+                style="@style/AddyIoSetupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/how_does_it_work" />

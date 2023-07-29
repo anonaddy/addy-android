@@ -1,4 +1,4 @@
 include(":app")
-rootProject.name = "AnonAddy"
+rootProject.name = "addy.io"
 include(":app-wearos")
 include(":anonaddy_shared")

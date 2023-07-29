@@ -35,7 +35,7 @@ class SetupHow4Fragment : Fragment() {
         val root = binding.root
 
         binding.setupHow4ButtonNext.setOnClickListener {
-            val url = "https://app.anonaddy.com/register"
+            val url = "https://app.addy.io/register"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)

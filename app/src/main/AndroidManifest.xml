@@ -38,7 +38,7 @@
     </queries>
 
     <application
-        android:name="host.stjin.anonaddy_shared.AnonAddyForAndroid"
+        android:name="host.stjin.anonaddy_shared.AddyIoApp"
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
         android:exported="true"
@@ -208,6 +208,9 @@
 
 
                 <!-- Hosted hosted instances (Works on > SDK31 devices) -->
+                <data
+                    android:host="app.addy.io"
+                    android:pathPrefix="/deactivate" />
                 <data
                     android:host="app.anonaddy.com"
                     android:pathPrefix="/deactivate" />

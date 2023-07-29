@@ -58,7 +58,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_editrecipient_til"
-                style="@style/AnonAddyTextInputLayoutOutlined"
+                style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -69,7 +69,7 @@
                     app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="false"
