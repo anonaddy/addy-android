@@ -417,7 +417,7 @@
     <string name="webintent_manage_default_apps_enable">Enable supported links, click on \"Add link\" and tick the checkbox in front of the URL</string>
     <string name="webintent_manage_default_apps_disable">Disable supported links</string>
     <string name="enable_disable_feature_manual_action_required_desc">Manual actions must be performed</string>
-    <string name="addyio_backup">addy.io app Backup</string>
+    <string name="addyio_backup">addy.io app backup</string>
     <string name="addyio_backup_desc">With addy.io app backups you can easily export and import the configuration of the app to another device. These backups include the API key and aliases that are on the watch list, but also other app settings.\n\nTo restore backups, reset the addy.io app and choose \"restore from backup\" in the setup.</string>
     <string name="backup_now">Backup now</string>
     <string name="last_backup_desc">Last backup was done %s</string>

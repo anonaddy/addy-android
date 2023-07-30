@@ -11,6 +11,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasActivity
+import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
@@ -65,9 +66,25 @@ class SplashActivity : ComponentActivity() {
             // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
             BackgroundWorkerHelper(this).scheduleBackgroundWorker()
 
+            /**
+             * MIGRATE FROM APP.ANONADDY.COM TO APP.ADDY.IO
+             */
+            //migrateFromAnonAddyToAddyIo() // TODO ENABLE
+
             val intent = Intent(this, AliasActivity::class.java)
             startActivity(intent)
             finish()
+        }
+    }
+
+    private fun migrateFromAnonAddyToAddyIo() {
+
+        val encryptedSettingsManager = SettingsManager(true, this)
+
+        val baseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
+        if (baseUrl == "https://app.anonaddy.com") {
+            // Change baseUrl to app.addy.io
+            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, API_BASE_URL)
         }
     }
 
