@@ -119,7 +119,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         /**
          * MIGRATE FROM APP.ANONADDY.COM TO APP.ADDY.IO
          */
-        //migrateFromAnonAddyToAddyIo() // TODO ENABLE
+        //migrateFromAnonAddyToAddyIo() // TODO ENABLE in 4.8.1
 
         // This helper inits the BASE_URL var
         networkHelper = NetworkHelper(this)
