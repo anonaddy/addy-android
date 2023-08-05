@@ -11,13 +11,13 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 33
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
         applicationId = namespace
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 33
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.

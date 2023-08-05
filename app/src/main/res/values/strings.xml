@@ -215,6 +215,7 @@
     <string name="Copy">Copy</string>
     <string name="no_usernames">You have no usernames, what about creating one?</string>
     <string name="default_base_url">https://app.addy.io</string>
+    <string name="default_base_url_old">https://app.anonaddy.com</string>
     <string name="addyio_instance">addy.io instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>

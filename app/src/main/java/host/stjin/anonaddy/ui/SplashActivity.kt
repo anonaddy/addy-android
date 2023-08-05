@@ -180,7 +180,9 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         // The default instance at addy.io does NOT return its version
         // However, assume that the creator of addy.io keeps the main version up-to-date :P
         // So set the versioncode to 9999 so it will always pass the min version check
-        if (API_BASE_URL == this.resources.getString(R.string.default_base_url)) {
+        if (API_BASE_URL == this.resources.getString(R.string.default_base_url) ||
+            API_BASE_URL == this.resources.getString(R.string.default_base_url_old)
+        ) {
             AddyIo.VERSIONMAJOR = 9999
             AddyIo.VERSIONSTRING = this.resources.getString(R.string.latest)
 
