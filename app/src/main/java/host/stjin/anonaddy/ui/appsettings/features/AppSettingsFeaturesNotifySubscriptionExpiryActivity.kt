@@ -13,8 +13,8 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
-import host.stjin.anonaddy_shared.AnonAddy
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIo
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
@@ -51,7 +51,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
             R.drawable.ic_credit_card
         )
 
-        setSubscriptionInfoText((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AnonAddyForAndroid).userResource) // Set this data right away for visuals
+        setSubscriptionInfoText((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource) // Set this data right away for visuals
         checkSubscriptionExpiry()
         checkGooglePlayGuidelines()
         loadSettings()
@@ -70,7 +70,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     }
 
     private fun checkSubscriptionExpiry() {
-        if (AnonAddy.VERSIONMAJOR == 9999) {
+        if (AddyIo.VERSIONMAJOR == 9999) {
             lifecycleScope.launch {
                 networkHelper.getUserResource { user: UserResource?, _: String? ->
                     setSubscriptionInfoText(user)
@@ -89,26 +89,28 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     private fun setSubscriptionInfoText(user: UserResource?) {
         if (user != null) {
             when {
-                (this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AnonAddyForAndroid).userResource.subscription == null -> {
+                (this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource.subscription == null -> {
                     binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =
-                        resources.getString(R.string.subscription_expiry_date_never, AnonAddy.API_BASE_URL)
+                        resources.getString(R.string.subscription_expiry_date_never, AddyIo.API_BASE_URL)
                 }
-                (this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AnonAddyForAndroid).userResource.subscription_ends_at != null -> {
+
+                (this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource.subscription_ends_at != null -> {
                     val expiryDate =
-                        DateTimeUtils.turnStringIntoLocalDateTime((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AnonAddyForAndroid).userResource.subscription_ends_at)
+                        DateTimeUtils.turnStringIntoLocalDateTime((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource.subscription_ends_at)
 
                     val text = PrettyTime().format(expiryDate)
                     binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =
                         resources.getString(R.string.subscription_expiry_date, text)
                 }
+
                 else -> {
                     binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =
-                        resources.getString(R.string.subscription_expiry_date_unknown, AnonAddy.API_BASE_URL)
+                        resources.getString(R.string.subscription_expiry_date_unknown, AddyIo.API_BASE_URL)
                 }
             }
         } else {
             binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =
-                resources.getString(R.string.subscription_expiry_date_unknown, AnonAddy.API_BASE_URL)
+                resources.getString(R.string.subscription_expiry_date_unknown, AddyIo.API_BASE_URL)
         }
     }
 
@@ -152,7 +154,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
         binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                val url = "${AnonAddy.API_BASE_URL}/settings/subscription"
+                val url = "${AddyIo.API_BASE_URL}/settings/subscription"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)
                 startActivity(i)

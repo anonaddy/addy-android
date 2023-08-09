@@ -198,17 +198,17 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                     val splittedEmailAddress = emails[0].split("@")
 
                     /*
-                    Figure out if the selected email's domain name is part of the user's AnonAddy account or not
+                    Figure out if the selected email's domain name is part of the user's addy.io account or not
                      */
 
                     if (domainOptions.contains(splittedEmailAddress[1])) {
-                        // The domain of the email address is linked to this AnonAddy account. User most likely wants to either manage or create this Alias.
+                        // The domain of the email address is linked to this addy.io account. User most likely wants to either manage or create this Alias.
                         intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, emails))
                         lifecycleScope.launch {
                             checkIfAliasExists(emails[0])
                         }
                     } else {
-                        // The domain of the email address is not linked to this AnonAddy account. User most likely wants to send
+                        // The domain of the email address is not linked to this addy.io account. User most likely wants to send
                         // an email from an alias to this email address
                         sendEmailFromAlias(emails, validCcRecipients, validBccRecipients)
                     }

@@ -11,13 +11,13 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 33
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
         applicationId = namespace
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 33
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.2.0 + release 01 + 01 (for wearos)
-        versionCode = 341200101
-        versionName = "1.2.0"
+        // SDK 33 + v1.3.0 + release 01 + 01 (for wearos)
+        versionCode = 341300101
+        versionName = "1.3.0"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -96,7 +96,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("com.google.android.gms:play-services-wearable:18.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("androidx.wear:wear:1.2.0")
     implementation(project(mapOf("path" to ":anonaddy_shared")))
 
@@ -166,7 +166,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.7.3")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }

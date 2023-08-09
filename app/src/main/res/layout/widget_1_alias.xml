@@ -11,14 +11,14 @@
         android:layout_height="50dp"
         android:background="@drawable/widget_1_background_top"
         android:backgroundTint="@color/primaryColorStatic"
-        android:padding="8dp">
+        android:paddingEnd="8dp">
 
         <ImageView
             android:id="@+id/widget_aliases_listview_list_open_app"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_logo" />
+            android:src="@drawable/horizontal_reversed" />
 
         <ImageView
             android:id="@+id/widget_aliases_listview_list_refresh"

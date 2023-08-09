@@ -12,7 +12,7 @@ object AnonAddyUtils {
         val toAddresses = Array<String?>(recipients.size) { null }
 
         for ((i, email) in recipients.withIndex()) {
-            // This method generates the to address for sending emails from this alias according to https://anonaddy.com/help/sending-email-from-an-alias/
+            // This method generates the to address for sending emails from this alias according to https://addy.io/help/sending-email-from-an-alias/
             val leftPartOfAlias = alias.local_part
             val domain = alias.domain
             val recipientLeftPartOfEmail = email.substringBeforeLast("@", "")

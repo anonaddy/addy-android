@@ -14,7 +14,7 @@ import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -235,7 +235,7 @@ class ManageDomainsActivity : BaseActivity(),
 
         binding.activityManageDomainCheckDns.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                val url = "${AnonAddy.API_BASE_URL}/domains"
+                val url = "${AddyIo.API_BASE_URL}/domains"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)
                 startActivity(i)

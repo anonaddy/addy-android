@@ -42,7 +42,7 @@
 
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -56,7 +56,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/AnonAddyDescText"
+                    style="@style/AddyIoDescText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:baselineAligned="false"
@@ -71,7 +71,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -86,7 +86,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/AnonAddyDescText"
+                    style="@style/AddyIoDescText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:baselineAligned="false"
@@ -108,7 +108,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        style="@style/AnonAddyTitleNoAction"
+                        style="@style/AddyIoTitleNoAction"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">

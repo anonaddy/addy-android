@@ -169,7 +169,7 @@ class SettingsActivity : ComponentActivity() {
                     resetApp()
                 }
             },
-            colors = getAnonAddyDangerChipColors(),
+            colors = getAddyIoDangerChipColors(),
             enabled = true,
             label = { Text(text = resources.getString(R.string.reset_app)) },
             secondaryLabel = { Text(text = resources.getString(R.string.reset_app_desc)) },
@@ -197,7 +197,7 @@ class SettingsActivity : ComponentActivity() {
                     sendLogsToPairedDevice()
                 }
             },
-            colors = getAnonAddyChipColors(),
+            colors = getAddyIoChipColors(),
             enabled = true,
             label = { Text(text = resources.getString(R.string.send_logs_to_device)) },
             icon = {
@@ -224,7 +224,7 @@ class SettingsActivity : ComponentActivity() {
                 )
             },
             checked = this.storeLogs,
-            colors = getAnonAddyToggleChipColors(),
+            colors = getAddyIoToggleChipColors(),
             toggleControl = {
                 Icon(
                     imageVector = ToggleChipDefaults.switchIcon(checked = this.storeLogs),
@@ -258,7 +258,7 @@ class SettingsActivity : ComponentActivity() {
                     BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
                 }
             },
-            colors = getAnonAddyChipColors(),
+            colors = getAddyIoChipColors(),
             enabled = true,
             label = { Text(text = resources.getString(R.string.clear_favorites)) },
             icon = {
@@ -276,7 +276,7 @@ class SettingsActivity : ComponentActivity() {
     @Composable
     private fun InlineSlider(backgroundServiceInterval: Int, hapticFeedback: HapticFeedback) {
         InlineSlider(
-            colors = getAnonAddyInlineSliderColors(),
+            colors = getAddyIoInlineSliderColors(),
             modifier = Modifier
                 .padding(top = 12.dp)
                 .fillMaxWidth(),

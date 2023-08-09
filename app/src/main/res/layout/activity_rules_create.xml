@@ -38,7 +38,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/activity_rules_create_rule_name_til"
-                    style="@style/AnonAddyTextInputLayoutOutlined"
+                    style="@style/AddyIoTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="6dp"
@@ -47,7 +47,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/activity_rules_create_rule_name_tiet"
-                        style="@style/AnonAddyTextInputEditText"
+                        style="@style/AddyIoTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"
@@ -77,7 +77,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/activity_rules_create_rule_run_chip_forwards"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -86,7 +86,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/activity_rules_create_rule_run_chip_replies"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -95,7 +95,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/activity_rules_create_rule_run_chip_sends"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -105,7 +105,7 @@
                 </com.google.android.material.chip.ChipGroup>
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:orientation="horizontal">
 
@@ -129,7 +129,7 @@
                         <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/rules_view_and_or_AND_button"
-                            style="@style/AnonAddyMaterialToggleButtonAlternative"
+                            style="@style/AddyIoMaterialToggleButtonAlternative"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -137,7 +137,7 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/rules_view_and_or_OR_button"
-                            style="@style/AnonAddyMaterialToggleButtonAlternative"
+                            style="@style/AddyIoMaterialToggleButtonAlternative"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -175,7 +175,7 @@
 
 
                 <LinearLayout
-                    style="@style/AnonAddyTitleNoAction"
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
                     android:layout_marginTop="12dp"
                     android:orientation="horizontal">

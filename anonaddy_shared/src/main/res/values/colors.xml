@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColorStatic">#19216b</color>
+    <color name="primaryColorStatic">#19216C</color>
 
     <color name="softRed">#FD5842</color>
     <color name="softRedSuperSuperLight">#32FD5842</color>

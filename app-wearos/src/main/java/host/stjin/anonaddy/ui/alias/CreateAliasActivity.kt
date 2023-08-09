@@ -44,7 +44,7 @@ class CreateAliasActivity : ComponentActivity() {
     private fun setComposeContent() {
         setContent {
             AppTheme {
-                AnonAddyScaffold(SettingsManager(false, this))
+                AddyIoScaffold(SettingsManager(false, this))
             }
         }
     }
@@ -52,7 +52,7 @@ class CreateAliasActivity : ComponentActivity() {
 
     @OptIn(ExperimentalWearMaterialApi::class)
     @Composable
-    private fun AnonAddyScaffold(settingsManager: SettingsManager) {
+    private fun AddyIoScaffold(settingsManager: SettingsManager) {
         val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
         Scaffold(
             modifier = Modifier,

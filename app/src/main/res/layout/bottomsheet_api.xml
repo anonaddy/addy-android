@@ -128,15 +128,15 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/bs_setup_instance_til"
-                    style="@style/AnonAddyTextInputLayoutOutlined"
+                    style="@style/AddyIoTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="8dp"
-                    android:hint="@string/anonaddy_instance">
+                    android:hint="@string/addyio_instance">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/bs_setup_instance_tiet"
-                        style="@style/AnonAddyTextInputEditText"
+                        style="@style/AddyIoTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:imeOptions="actionDone"
@@ -151,14 +151,14 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/bs_setup_apikey_til"
-                    style="@style/AnonAddyTextInputLayoutOutlined"
+                    style="@style/AddyIoTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/APIKey_desc">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/bs_setup_apikey_tiet"
-                        style="@style/AnonAddyTextInputEditText"
+                        style="@style/AddyIoTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"

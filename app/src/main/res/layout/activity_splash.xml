@@ -4,7 +4,7 @@
     android:id="@+id/splashBackgroundRL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/splashBackground"
+    android:background="?colorPrimary"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="@string/anonaddy_load_error"
+            android:text="@string/addyio_load_error"
             android:textAlignment="center"
             android:textColor="@android:color/white" />
 

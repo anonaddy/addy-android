@@ -3,8 +3,23 @@ package host.stjin.anonaddy.ui.components
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -17,13 +32,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.*
+import androidx.wear.compose.material.Button
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.ScalingLazyListState
+import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.models.Aliases
-import host.stjin.anonaddy_shared.ui.theme.getAnonAddyButtonColors
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoButtonColors
 
 private val SPACING_ALIAS_BUTTONS = Dp(24f)
 private val SPACING_BUTTONS = Dp(8f)
@@ -85,7 +104,7 @@ private fun AddFavoriteLayout(alias: Aliases, context: Context) {
             mutableStateOf(FavoriteAliasHelper(context))
         }
         Button(
-            colors = getAnonAddyButtonColors(),
+            colors = getAddyIoButtonColors(),
             onClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 if (isAliasFavorite) {
@@ -127,7 +146,7 @@ private fun ShowOnDeviceLayout(alias: Aliases, context: Context, activity: Creat
             }
     ) {
         Button(
-            colors = getAnonAddyButtonColors(),
+            colors = getAddyIoButtonColors(),
             onClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 

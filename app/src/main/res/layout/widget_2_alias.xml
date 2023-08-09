@@ -38,7 +38,7 @@
                     android:paddingEnd="40dp"
                     android:scaleType="fitStart"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_logo_widget_icon"
+                    android:src="@drawable/icon_monocolor"
                     android:tint="?android:attr/colorAccent"
                     app:tint="?android:attr/colorAccent" />
 

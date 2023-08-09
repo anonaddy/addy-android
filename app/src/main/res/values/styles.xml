@@ -28,7 +28,7 @@
         <item name="android:windowContentTransitions">true</item>
 
         <item name="bottomSheetDialogTheme">@style/BottomSheet</item>
-        <item name="chipStyle">@style/AnonAddyChip</item>
+        <item name="chipStyle">@style/AddyIoChip</item>
 
         <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
@@ -94,21 +94,21 @@
         <item name="android:windowLightNavigationBar">false</item>
     </style>
 
-    <style name="AnonAddyProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+    <style name="AddyIoProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable</item>
         <item name="android:maxHeight">8dip</item>
         <item name="android:minHeight">8dip</item>
     </style>
 
-    <style name="AnonAddyProgressBarHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+    <style name="AddyIoProgressBarHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable_home</item>
     </style>
 
-    <style name="AnonAddyProgressBarRedHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+    <style name="AddyIoProgressBarRedHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable_red_home</item>
     </style>
 
-    <style name="AnonAddyProgressBarEasternBlueHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
+    <style name="AddyIoProgressBarEasternBlueHome" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progressbar_drawable_eastern_blue_home</item>
     </style>
 
@@ -231,11 +231,11 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
-    <style name="AnonAddyTextInputLayoutOutlined" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+    <style name="AddyIoTextInputLayoutOutlined" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="android:layout_marginBottom">16dp</item>
     </style>
 
-    <style name="AnonAddyTextInputEditText">
+    <style name="AddyIoTextInputEditText">
         <item name="android:textColor">@color/BlackWhite</item>
     </style>
 
@@ -255,7 +255,7 @@
         <item name="android:padding">16dp</item>
     </style>
 
-    <style name="AnonAddyDialogTitle">
+    <style name="AddyIoDialogTitle">
         <item name="android:ellipsize">end</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:lines">1</item>
@@ -264,7 +264,7 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="AnonAddyDialogDesc" parent="AnonAddyDialogTitle">
+    <style name="AddyIoDialogDesc" parent="AddyIoDialogTitle">
         <item name="android:alpha">0.7</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
@@ -290,17 +290,17 @@
         <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
+    <style name="AddyIoCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@android:color/white</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
+    <style name="AddyIoCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@android:color/white</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
     </style>
 
-    <style name="AnonAddyCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
+    <style name="AddyIoCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@android:color/white</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
     </style>
@@ -322,7 +322,7 @@
         <item name="cornerSizeBottomLeft">14dp</item>
     </style>
 
-    <style name="AnonAddyTitleAction" parent="titleTextView">
+    <style name="AddyIoTitleAction" parent="titleTextView">
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
@@ -331,7 +331,7 @@
         <item name="android:layout_height">48dp</item>
     </style>
 
-    <style name="AnonAddySetupTitle" parent="titleTextView">
+    <style name="AddyIoSetupTitle" parent="titleTextView">
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:alpha">1</item>
@@ -339,7 +339,7 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="AnonAddyTitleNoAction" parent="titleTextView">
+    <style name="AddyIoTitleNoAction" parent="titleTextView">
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
@@ -349,7 +349,7 @@
         <item name="android:minHeight">32dp</item>
     </style>
 
-    <style name="AnonAddyDescText">
+    <style name="AddyIoDescText">
         <item name="android:layout_marginBottom">24dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
@@ -361,10 +361,10 @@
         <item name="strokeColor">?colorControlNormal</item>
     </style>
 
-    <style name="AnonAddyChip" parent="Widget.Material3.Chip.Filter" />
+    <style name="AddyIoChip" parent="Widget.Material3.Chip.Filter" />
 
 
-    <style name="AnonAddyCollapsingToolbarLayout" parent="Widget.Material3.CollapsingToolbar.Large">
+    <style name="AddyIoCollapsingToolbarLayout" parent="Widget.Material3.CollapsingToolbar.Large">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">?colorPrimary</item>
@@ -378,13 +378,13 @@
         <item name="layout_scrollFlags">scroll|exitUntilCollapsed|snap</item>
     </style>
 
-    <style name="AnonAddyCollapsingToolbarLayout.Title" parent="Widget.Material3.CollapsingToolbar.Large">
+    <style name="AddyIoCollapsingToolbarLayout.Title" parent="Widget.Material3.CollapsingToolbar.Large">
         <item name="android:layout_margin">@dimen/collapsingtoolbar_title_margin</item>
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
     </style>
 
-    <style name="AnonAddyCollapsingToolbarLayout.Title.Small" parent="Widget.Material3.CollapsingToolbar.Large">
+    <style name="AddyIoCollapsingToolbarLayout.Title.Small" parent="Widget.Material3.CollapsingToolbar.Large">
         <item name="android:layout_marginStart">@dimen/collapsingtoolbar_title_margin</item>
         <item name="android:layout_marginEnd">@dimen/collapsingtoolbar_title_small_margin</item>
         <item name="android:layout_marginTop">@dimen/collapsingtoolbar_title_small_margin</item>
@@ -393,7 +393,7 @@
         <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded.Small</item>
     </style>
 
-    <style name="AnonAddyCollapsingToolbarLayout.SubTitle" parent="Widget.Material3.CollapsingToolbar.Large">
+    <style name="AddyIoCollapsingToolbarLayout.SubTitle" parent="Widget.Material3.CollapsingToolbar.Large">
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="android:alpha">0.7</item>
         <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded.Subtitle</item>
@@ -415,18 +415,18 @@
         <item name="buttonBarNeutralButtonStyle">@style/Widget.Catalog.Button.TextButton.Dialog.FullWidth</item>
     </style>
 
-    <style name="AnonAddyMaterialToggleButton" parent="Widget.Material3.Button.OutlinedButton">
+    <style name="AddyIoMaterialToggleButton" parent="Widget.Material3.Button.OutlinedButton">
         <item name="cornerRadius">12dp</item>
         <item name="android:padding">4dp</item>
         <item name="strokeWidth">0dp</item>
     </style>
 
-    <style name="AnonAddyMaterialToggleButtonAlternative" parent="AnonAddyMaterialToggleButton">
+    <style name="AddyIoMaterialToggleButtonAlternative" parent="AddyIoMaterialToggleButton">
         <item name="strokeWidth">1dp</item>
         <item name="strokeColor">?colorOnBackground</item>
     </style>
 
-    <style name="AnonAddyMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">
+    <style name="AddyIoMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="cardElevation">12dp</item>

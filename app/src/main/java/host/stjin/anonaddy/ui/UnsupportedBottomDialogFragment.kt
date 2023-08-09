@@ -12,7 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.BottomsheetAnonaddyInstanceVersionUnsupportedBinding
+import host.stjin.anonaddy.databinding.BottomsheetAddyioInstanceVersionUnsupportedBinding
 
 
 class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
@@ -32,7 +32,7 @@ class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
         return dialog
     }
 
-    private var _binding: BottomsheetAnonaddyInstanceVersionUnsupportedBinding? = null
+    private var _binding: BottomsheetAddyioInstanceVersionUnsupportedBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
@@ -42,7 +42,7 @@ class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = BottomsheetAnonaddyInstanceVersionUnsupportedBinding.inflate(inflater, container, false)
+        _binding = BottomsheetAddyioInstanceVersionUnsupportedBinding.inflate(inflater, container, false)
         // get the views and attach the listener
         val root = binding.root
 
@@ -55,12 +55,12 @@ class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.bsAnonaddyInstanceVersionUnsupportedTextview.text = Html.fromHtml(
-                context?.resources?.getString(R.string.anonaddy_instance_version_unsupported),
+                context?.resources?.getString(R.string.addyio_instance_version_unsupported),
                 Html.FROM_HTML_MODE_LEGACY
             )
         } else {
             binding.bsAnonaddyInstanceVersionUnsupportedTextview.text =
-                Html.fromHtml(context?.resources?.getString(R.string.anonaddy_instance_version_unsupported))
+                Html.fromHtml(context?.resources?.getString(R.string.addyio_instance_version_unsupported))
         }
 
 

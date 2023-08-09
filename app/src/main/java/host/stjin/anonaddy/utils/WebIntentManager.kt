@@ -12,7 +12,7 @@ import android.text.TextUtils
 import android.widget.Toast
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.AddyIo
 
 
 class WebIntentManager(private val context: Context) {
@@ -49,7 +49,7 @@ class WebIntentManager(private val context: Context) {
     //If new URLS are added here, also add them to the manifest
     private fun isOurAppDefault(context: Context): Boolean {
         // Only /deactivate for now
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(AnonAddy.API_BASE_URL + "/deactivate"))
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(AddyIo.API_BASE_URL + "/deactivate"))
         val resolveInfo = context.packageManager.resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
         var defaultBrowserPkg: String? = null
         if (resolveInfo != null) {
@@ -72,7 +72,7 @@ class WebIntentManager(private val context: Context) {
             val unapprovedDomains = userState?.hostToStateMap
                 ?.filterValues { it == DomainVerificationUserState.DOMAIN_STATE_NONE }
 
-            var baseUrl = AnonAddy.API_BASE_URL
+            var baseUrl = AddyIo.API_BASE_URL
             // Remove http,https prefix
             baseUrl = baseUrl.replace("https://", "").replace("http://", "")
 

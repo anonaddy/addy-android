@@ -2,6 +2,8 @@ package host.stjin.anonaddy.ui.customviews
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -21,8 +23,14 @@ class AnimationView @JvmOverloads constructor(context: Context?, attrs: Attribut
         if (playOnLoop || callback != null) {
             animated?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
                 override fun onAnimationEnd(drawable: Drawable?) {
-                    animationView?.post { animated.start() }
-                    callback?.let { it() }
+
+                    // Add a .5 second pause before looping
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        animationView?.post { animated.start() }
+                        callback?.let { it() }
+                    }, 500)
+
+
                 }
 
             })

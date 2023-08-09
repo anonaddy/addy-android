@@ -110,8 +110,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     match = "is exactly",
                     type = "sender",
                     values = listOf(
-                        "will@anonaddy.com",
-                        "no-reply@anonaddy.com"
+                        "will@addy.io",
+                        "no-reply@addy.io"
                     )
                 ),
                 Condition(

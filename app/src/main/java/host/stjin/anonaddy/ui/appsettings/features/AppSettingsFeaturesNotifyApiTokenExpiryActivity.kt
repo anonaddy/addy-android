@@ -16,7 +16,7 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
-import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.ApiTokenDetails
@@ -88,14 +88,14 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
                     this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
                         R.string.current_api_token_expiry_date_never,
                         apiTokenDetails.name,
-                        AnonAddy.API_BASE_URL
+                        AddyIo.API_BASE_URL
                     )
             }
         } else {
             binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
                 this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(
                     R.string.current_api_token_expiry_date_unknown,
-                    AnonAddy.API_BASE_URL
+                    AddyIo.API_BASE_URL
                 )
         }
     }
@@ -137,7 +137,7 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
         })
         binding.activityAppSettingsFeaturesNotifyApiTokenExpiryChangeToken.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AnonAddy.API_BASE_URL)
+                addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
                 if (!addApiBottomDialogFragment.isAdded) {
                     addApiBottomDialogFragment.show(
                         supportFragmentManager,

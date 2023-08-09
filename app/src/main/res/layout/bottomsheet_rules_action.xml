@@ -91,7 +91,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bs_rule_action_values_til"
-                style="@style/AnonAddyTextInputLayoutOutlined"
+                style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_value"
@@ -99,7 +99,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bs_rule_action_values_tiet"
-                    style="@style/AnonAddyTextInputEditText"
+                    style="@style/AddyIoTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top"

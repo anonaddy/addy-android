@@ -57,8 +57,8 @@ class NotificationHelper(private val context: Context) {
     fun createSetupAppFirstNotification() {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
-            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables),
-            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables_desc), IMPORTANCE_HIGH
+            context.resources.getString(R.string.notification_channel_addyio_for_wearables),
+            context.resources.getString(R.string.notification_channel_addyio_for_wearables_desc), IMPORTANCE_HIGH
         )
 
         buildSetupAppFirstNotification(
@@ -71,8 +71,8 @@ class NotificationHelper(private val context: Context) {
     fun createSetupWearableAppNotification(p0: MessageEvent) {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
-            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables),
-            context.resources.getString(R.string.notification_channel_anonaddy_for_wearables_desc), IMPORTANCE_MAX
+            context.resources.getString(R.string.notification_channel_addyio_for_wearables),
+            context.resources.getString(R.string.notification_channel_addyio_for_wearables_desc), IMPORTANCE_MAX
         )
 
         buildSetupWearableAppNotification(

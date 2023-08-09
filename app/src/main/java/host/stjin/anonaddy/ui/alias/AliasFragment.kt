@@ -34,7 +34,7 @@ import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AliasSortFilter
@@ -180,7 +180,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private suspend fun getUserResource(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                (activity?.application as AnonAddyForAndroid).userResource = user
+                (activity?.application as AddyIoApp).userResource = user
                 setAliasesStatistics(
                     context,
                     user.total_emails_forwarded,

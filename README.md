@@ -1,8 +1,8 @@
 
-<h1 align="center">AnonAddy for Android</h1>
+<h1 align="center">addy.io</h1>
 
 <p align="center">
-Easily create and manage your AnonAddy aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> AnonAddy app for Android.
+Easily create and manage your addy.io aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> addy.io app for Android.
 <br><p align="center">
 <img src="static/banner.png"/>
 </p>
@@ -15,20 +15,20 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 
 ## Requirements
 
-> AnonAddy
+> addy.io
 
-- AnonAddy v0.13.6 or higher (current version of AnonAddy for Android has been tested with v0.13.6)
+- addy.io instance running v0.13.6 or higher (current version of the addy.io app has been tested with v0.13.6)
 
 > Android
 
 - Android 6.0 or higher
-- Wear OS 3.0 (Android 11) or higher (AnonAddy for Android Wearables)
+- Wear OS 3.0 (Android 11) or higher (addy.io for Android wearables)
 
 ## Characteristics
 
 > Exciting ✨
 
-- Connect to the hosted [AnonAddy](https://anonaddy.com/) instance or your own self-hosted instance
+- Connect to the hosted [addy.io](https://addy.io/) instance or your own self-hosted instance
 - A unique, gorgeous and sleek design, based on the [Material You Design](https://m3.material.io/) guidelines
 - Support for Deep Link to easily deactivate aliases from the email banner
 - Lock the app using Biometrics
@@ -45,7 +45,8 @@ Easily create and manage your AnonAddy aliases, recipients and more from your ph
 > Seriously 👓
 
 **Security**
-- Encrypted preferences, your API key and other AnonAddy related settings are securely stored on your device using
+
+- Encrypted preferences, your API key and other addy.io related settings are securely stored on your device using
   the [AndroidX crypto library](https://developer.android.com/jetpack/androidx/releases/security)
 - Encrypted app backups, when making a backup of the app configuration through the built-in backup manager
 - No stats, buried points or Device IDs, or even crash reporting (Except for Google Play Store builds). So if you get a crash, please share the crash
@@ -68,7 +69,7 @@ Developer-led download channels:
 > Recommended (access to beta's, automatic updates and support me :) )
 
 - [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
-- ⚠️Note: this version charges and contains the Google Play Services so it can be used with AnonAddy for Android Wearables. The rest of the code is identical, so if you'd like to buy me a cup of tea (or if you're more headstrong) then go here
+- ⚠️Note: this version charges and contains the Google Play Services so it can be used with addy.io for Android wearables. The rest of the code is identical, so if you'd like to buy me a cup of tea (or if you're more headstrong) then go here
   and download it, otherwise choose another source :)
 
 > Other sources (Without Google Play Services)

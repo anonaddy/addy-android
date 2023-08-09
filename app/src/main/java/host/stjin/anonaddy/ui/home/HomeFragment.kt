@@ -35,7 +35,7 @@ import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
@@ -132,7 +132,7 @@ class HomeFragment : Fragment() {
     private suspend fun getWebStatistics(context: Context) {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                (activity?.application as AnonAddyForAndroid).userResource = user
+                (activity?.application as AddyIoApp).userResource = user
                 getStatistics()
             } else {
                 val bottomNavView: BottomNavigationView? =
@@ -279,17 +279,17 @@ class HomeFragment : Fragment() {
 
     private fun getStatistics() {
         //  / 1024 / 1024 because api returns bytes
-        val currMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth_limit / 1024 / 1024
+        val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
+        val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
         setMonthlyBandwidthStatistics(currMonthlyBandwidth, maxMonthlyBandwidth)
         setAliasesStatistics(
-            (activity?.application as AnonAddyForAndroid).userResource.active_shared_domain_alias_count,
-            (activity?.application as AnonAddyForAndroid).userResource.active_shared_domain_alias_limit
+            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count,
+            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit
         )
         setRecipientStatistics(
-            (activity?.application as AnonAddyForAndroid).userResource.recipient_count,
-            (activity?.application as AnonAddyForAndroid).userResource.recipient_limit
+            (activity?.application as AddyIoApp).userResource.recipient_count,
+            (activity?.application as AddyIoApp).userResource.recipient_limit
         )
     }
 

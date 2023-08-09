@@ -19,7 +19,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
-import host.stjin.anonaddy_shared.AnonAddy
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
@@ -147,14 +147,14 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         }
     }
 
-    private fun verifyKeyAndAdd(context: Context, apiKey: String, baseUrl: String = AnonAddy.API_BASE_URL) {
+    private fun verifyKeyAndAdd(context: Context, apiKey: String, baseUrl: String = AddyIo.API_BASE_URL) {
         binding.fragmentSetupInitButtonNew.isEnabled = false
 
         // Animate the button to progress
         binding.fragmentSetupInitButtonApi.startAnimation()
 
         lifecycleScope.launch {
-            // AnonAddy.API_BASE_URL is defaulted to the anonaddy.com instance. If the API key is valid there it was meant to use that instance.
+            // AddyIo.API_BASE_URL is defaulted to the addy.io instance. If the API key is valid there it was meant to use that instance.
             // If the baseURL/API do not work or match it opens the API screen
             verifyApiKey(context, apiKey, baseUrl)
         }

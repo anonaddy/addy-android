@@ -20,7 +20,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetSetupWearosBinding
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.utils.WearOSHelper
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
 
@@ -61,7 +61,7 @@ class SetupWearOSBottomDialogFragment(private val parentActivity: Activity, priv
             binding.bsSetupWearosDesc.text = this.resources.getString(
                 R.string.setup_wearable_app_desc,
                 nodeDisplayName,
-                (activity?.application as AnonAddyForAndroid).userResource.username
+                (activity?.application as AddyIoApp).userResource.username
             )
 
             listener = activity as AddSetupWearOSBottomDialogListener

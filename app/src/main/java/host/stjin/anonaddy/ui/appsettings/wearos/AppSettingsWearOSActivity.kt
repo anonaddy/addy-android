@@ -41,7 +41,7 @@ class AppSettingsWearOSActivity : BaseActivity() {
         settingsManager = SettingsManager(false, this)
 
         setupToolbar(
-            R.string.anonaddy_for_wearables,
+            R.string.addyio_for_wearables,
             binding.appsettingsWearosNSV,
             binding.appsettingsWearosToolbar,
             R.drawable.ic_device_watch

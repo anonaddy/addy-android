@@ -7,7 +7,7 @@
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar"
-        style="@style/AnonAddyCollapsingToolbarLayout"
+        style="@style/AddyIoCollapsingToolbarLayout"
         app:titleEnabled="false">
 
         <Space
@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/main_top_bar_title"
-            style="@style/AnonAddyCollapsingToolbarLayout.Title"
+            style="@style/AddyIoCollapsingToolbarLayout.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/main_top_bar_title_small"
-            style="@style/AnonAddyCollapsingToolbarLayout.Title.Small"
+            style="@style/AddyIoCollapsingToolbarLayout.Title.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -40,7 +40,7 @@
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/main_top_bar_subtitle_shimmerframelayout"
-            style="@style/AnonAddyCollapsingToolbarLayout.SubTitle"
+            style="@style/AddyIoCollapsingToolbarLayout.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -53,7 +53,7 @@
 
             <TextView
                 android:id="@+id/main_top_bar_subtitle"
-                style="@style/AnonAddyCollapsingToolbarLayout.SubTitle"
+                style="@style/AddyIoCollapsingToolbarLayout.SubTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0" />

@@ -2,7 +2,17 @@ package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +26,7 @@ import androidx.wear.compose.material.Icon
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.settings.SettingsActivity
-import host.stjin.anonaddy_shared.ui.theme.getAnonAddyButtonColors
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoButtonColors
 
 private val SPACING_BUTTONS = Dp(8f)
 private val SPACING_ALIAS_BUTTONS = Dp(8f)
@@ -50,7 +60,7 @@ private fun ShowOnNewAliasLayout(context: Context) {
             }
     ) {
         Button(
-            colors = getAnonAddyButtonColors(),
+            colors = getAddyIoButtonColors(),
             onClick = {
                 val intent = Intent(context, CreateAliasActivity::class.java)
                 context.startActivity(intent)
@@ -77,7 +87,7 @@ private fun ShowOnSettingsLayout(context: Context) {
             }
     ) {
         Button(
-            colors = getAnonAddyButtonColors(),
+            colors = getAddyIoButtonColors(),
             onClick = {
                 val intent = Intent(context, SettingsActivity::class.java)
                 context.startActivity(intent)

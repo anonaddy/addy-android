@@ -1,7 +1,12 @@
 package host.stjin.anonaddy.ui.components
 
 import android.content.Context
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,7 +19,7 @@ import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.ui.theme.getAnonAddyChipColors
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoChipColors
 
 private val SPACING_GUIDE_BUTTONS = Dp(18f)
 
@@ -56,7 +61,7 @@ fun AliasCreateGuide(scalingLazyListState: ScalingLazyListState, settingsManager
                         settingsManager.putSettingsBool(SettingsManager.PREFS.WEAROS_SKIP_ALIAS_CREATE_GUIDE, true)
                         onIUnderstandClick()
                     },
-                    colors = getAnonAddyChipColors(),
+                    colors = getAddyIoChipColors(),
                     enabled = true,
                     label = {
                         Text(

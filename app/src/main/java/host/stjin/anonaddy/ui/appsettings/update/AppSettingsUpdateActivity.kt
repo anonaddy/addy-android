@@ -39,7 +39,7 @@ class AppSettingsUpdateActivity : BaseActivity() {
         settingsManager = SettingsManager(false, this)
 
         setupToolbar(
-            R.string.anonaddy_updater,
+            R.string.addyio_updater,
             binding.appsettingsUpdateNSV,
             binding.appsettingsUpdateToolbar,
             R.drawable.ic_settings_update

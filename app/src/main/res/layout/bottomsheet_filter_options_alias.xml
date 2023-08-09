@@ -98,7 +98,7 @@
 
 
                     <com.google.android.material.card.MaterialCardView
-                        style="@style/AnonAddyMaterialToggleButtonGroupParentCardView"
+                        style="@style/AddyIoMaterialToggleButtonGroupParentCardView"
                         android:layout_marginBottom="16dp">
 
                         <com.google.android.material.button.MaterialButtonToggleGroup
@@ -113,7 +113,7 @@
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_all_button"
-                                style="@style/AnonAddyMaterialToggleButton"
+                                style="@style/AddyIoMaterialToggleButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
@@ -121,7 +121,7 @@
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_active_button"
-                                style="@style/AnonAddyMaterialToggleButton"
+                                style="@style/AddyIoMaterialToggleButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -129,7 +129,7 @@
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_inactive_button"
-                                style="@style/AnonAddyMaterialToggleButton"
+                                style="@style/AddyIoMaterialToggleButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -139,7 +139,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
-                        style="@style/AnonAddyMaterialToggleButtonGroupParentCardView"
+                        style="@style/AddyIoMaterialToggleButtonGroupParentCardView"
                         android:layout_marginBottom="16dp">
 
                         <com.google.android.material.button.MaterialButtonToggleGroup
@@ -154,7 +154,7 @@
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_watched_only_button"
-                                style="@style/AnonAddyMaterialToggleButton"
+                                style="@style/AddyIoMaterialToggleButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -162,7 +162,7 @@
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
-                                style="@style/AnonAddyMaterialToggleButton"
+                                style="@style/AddyIoMaterialToggleButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -235,7 +235,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_local_part"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -243,7 +243,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_domain"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -251,7 +251,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -259,7 +259,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_forwarded"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -267,7 +267,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_blocked"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -275,7 +275,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_replied"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -283,7 +283,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_sent"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -291,7 +291,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_active"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -299,7 +299,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_created_at"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -308,7 +308,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_updated_at"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"
@@ -316,7 +316,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_deleted_at"
-                        style="@style/AnonAddyChip"
+                        style="@style/AddyIoChip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checkable="true"

@@ -17,7 +17,7 @@ import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
@@ -85,7 +85,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     private suspend fun getUserResource() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
-                (this.application as AnonAddyForAndroid).userResource = user
+                (this.application as AddyIoApp).userResource = user
                 // Update stats
                 setStats()
             } else {
@@ -101,16 +101,16 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     private fun setStats() {
         binding.activityDomainSettingsRLCountText.text = resources.getString(
             R.string.you_ve_used_d_out_of_d_active_domains,
-            (this.application as AnonAddyForAndroid).userResource.active_domain_count,
-            if ((this.application as AnonAddyForAndroid).userResource.subscription != null) (this.application as AnonAddyForAndroid).userResource.active_domain_limit else this.resources.getString(
+            (this.application as AddyIoApp).userResource.active_domain_count,
+            if ((this.application as AddyIoApp).userResource.subscription != null) (this.application as AddyIoApp).userResource.active_domain_limit else this.resources.getString(
                 R.string.unlimited
             )
         )
 
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if ((this.application as AnonAddyForAndroid).userResource.subscription != null) {
+        if ((this.application as AddyIoApp).userResource.subscription != null) {
             binding.activityDomainSettingsAddDomain.isEnabled =
-                (this.application as AnonAddyForAndroid).userResource.active_domain_count < (this.application as AnonAddyForAndroid).userResource.active_domain_limit
+                (this.application as AddyIoApp).userResource.active_domain_count < (this.application as AddyIoApp).userResource.active_domain_limit
         } else {
             binding.activityDomainSettingsAddDomain.isEnabled = true
         }

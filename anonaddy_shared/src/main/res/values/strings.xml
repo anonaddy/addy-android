@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AnonAddy</string>
+    <string name="app_name">addy.io</string>
     <string name="whoops">Whoops!</string>
     <string name="reset_app">Reset app</string>
     <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>

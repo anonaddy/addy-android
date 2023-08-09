@@ -25,11 +25,11 @@ import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.AttributeHelper
 import host.stjin.anonaddy.utils.NumberUtils
-import host.stjin.anonaddy_shared.AnonAddy
-import host.stjin.anonaddy_shared.AnonAddyForAndroid
+import host.stjin.anonaddy_shared.AddyIo
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import org.ocpsoft.prettytime.PrettyTime
-import java.util.*
+import java.util.Locale
 import kotlin.math.roundToInt
 
 
@@ -155,7 +155,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         }
 
         binding.mainProfileSelectDialogAnonaddySettings.setOnClickListener {
-            val url = "${AnonAddy.API_BASE_URL}/settings"
+            val url = "${AddyIo.API_BASE_URL}/settings"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
@@ -163,8 +163,8 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setMonthlyBandwidthStatistics() {
-        val currMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = (activity?.application as AnonAddyForAndroid).userResource.bandwidth_limit / 1024 / 1024
+        val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
+        val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
         binding.mainProfileSelectDialogStatisticsMonthlyBandwidthProgress.max =
             if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
@@ -201,16 +201,16 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setInfo() {
-        val usernameInitials = (activity?.application as AnonAddyForAndroid).userResource.username.take(2).uppercase(Locale.getDefault())
+        val usernameInitials = (activity?.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainProfileSelectDialogUsernameInitials.text = usernameInitials
 
         binding.mainProfileSelectDialogAnonaddyVersion.text =
-            if (AnonAddy.VERSIONMAJOR == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
+            if (AddyIo.VERSIONMAJOR == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
                 R.string.self_hosted_instance_s,
-                AnonAddy.VERSIONSTRING
+                AddyIo.VERSIONSTRING
             )
 
-        binding.mainProfileSelectDialogCardAccountname.text = (activity?.application as AnonAddyForAndroid).userResource.username
+        binding.mainProfileSelectDialogCardAccountname.text = (activity?.application as AddyIoApp).userResource.username
 
         setSubscriptionText()
 
@@ -221,16 +221,17 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         altSubscriptionTextShown = false
 
         when {
-            (activity?.application as AnonAddyForAndroid).userResource.subscription == null -> {
+            (activity?.application as AddyIoApp).userResource.subscription == null -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.GONE
             }
-            (activity?.application as AnonAddyForAndroid).userResource.subscription_ends_at != null -> {
+
+            (activity?.application as AddyIoApp).userResource.subscription_ends_at != null -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
                 binding.mainProfileSelectDialogCardSubscription.text = resources.getString(
                     R.string.subscription_user_until,
-                    (activity?.application as AnonAddyForAndroid).userResource.subscription,
+                    (activity?.application as AddyIoApp).userResource.subscription,
                     DateTimeUtils.turnStringIntoLocalString(
-                        (activity?.application as AnonAddyForAndroid).userResource.subscription_ends_at,
+                        (activity?.application as AddyIoApp).userResource.subscription_ends_at,
                         DateTimeUtils.DATETIMEUTILS.DATE
                     )
                 )
@@ -238,7 +239,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             else -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
                 binding.mainProfileSelectDialogCardSubscription.text =
-                    resources.getString(R.string.subscription_user, (activity?.application as AnonAddyForAndroid).userResource.subscription)
+                    resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
             }
         }
     }
@@ -247,20 +248,22 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         altSubscriptionTextShown = true
 
         when {
-            (activity?.application as AnonAddyForAndroid).userResource.subscription == null -> {
+            (activity?.application as AddyIoApp).userResource.subscription == null -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.GONE
             }
-            (activity?.application as AnonAddyForAndroid).userResource.subscription_ends_at != null -> {
+
+            (activity?.application as AddyIoApp).userResource.subscription_ends_at != null -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
                 val expiryDate =
-                    DateTimeUtils.turnStringIntoLocalDateTime((activity?.application as AnonAddyForAndroid).userResource.subscription_ends_at)
+                    DateTimeUtils.turnStringIntoLocalDateTime((activity?.application as AddyIoApp).userResource.subscription_ends_at)
                 val text = PrettyTime().format(expiryDate)
                 binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_expiry_date, text)
             }
+
             else -> {
                 binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
                 binding.mainProfileSelectDialogCardSubscription.text =
-                    resources.getString(R.string.subscription_user, (activity?.application as AnonAddyForAndroid).userResource.subscription)
+                    resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
             }
         }
     }
