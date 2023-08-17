@@ -122,6 +122,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(selectedAliases.count() != amountOfNetworkCallsDone)
             }
+
             NetworkAction.DELETE_STATE -> {
                 // Show the progressbar if
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
@@ -133,11 +134,19 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                     listener.onCloseMultipleSelectionBottomDialogFragment(true)
                 }
             }
+
             NetworkAction.RESTORE_STATE -> {
                 // Show the progressbar if
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRestore.showProgressBar(selectedAliases.count() != amountOfNetworkCallsDone)
+
+                // If the state is FORGET state that means that delete calls have been initiated
+                // When all the calls are done, close the dialog
+                if (selectedAliases.count() == amountOfNetworkCallsDone) {
+                    listener.onCloseMultipleSelectionBottomDialogFragment(true)
+                }
             }
+
             NetworkAction.FORGET_STATE -> {
                 // Show the progressbar if
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
@@ -149,6 +158,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                     listener.onCloseMultipleSelectionBottomDialogFragment(true)
                 }
             }
+
             else -> { /* Do nothing */
             }
         }
@@ -167,12 +177,12 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
 
 
     private var amountOfNetworkCallsDone = -1
-    private suspend fun deactivateAlias(aliasId: String) {
-        networkHelper.deactivateSpecificAlias({ result ->
-            amountOfNetworkCallsDone++
+    private suspend fun deactivateAlias(aliases: List<Aliases>) {
+        networkHelper.bulkDeactivateAlias({ alias, error ->
+            amountOfNetworkCallsDone = aliases.size
             shouldRefreshData = true
-            if (result == "204") {
-                selectedAliases.first { it.id == aliasId }.active = false
+            if (alias != null) {
+                selectedAliases.forEach { it.active = false }
                 // Recheck the UI (this will finished the activity in updateUI)
                 updateUi()
             } else {
@@ -180,21 +190,20 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 showError(
                     requireContext().resources.getString(
                         R.string.s_s,
-                        this.resources.getString(R.string.error_edit_active), result,
+                        this.resources.getString(R.string.error_edit_active), error,
                     )
                 )
             }
-        }, aliasId)
+        }, aliases)
     }
 
 
-    private suspend fun activateAlias(aliasId: String) {
-        networkHelper.activateSpecificAlias({ alias, result ->
-            amountOfNetworkCallsDone++
+    private suspend fun activateAlias(aliases: List<Aliases>) {
+        networkHelper.bulkActivateAlias({ alias, error ->
+            amountOfNetworkCallsDone = aliases.size
             shouldRefreshData = true
             if (alias != null) {
-                selectedAliases.first { it.id == aliasId }.active = true
-
+                selectedAliases.forEach { it.active = true }
                 // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
                 updateUi()
             } else {
@@ -202,11 +211,11 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 showError(
                     requireContext().resources.getString(
                         R.string.s_s,
-                        requireContext().resources.getString(R.string.error_edit_active), result
+                        requireContext().resources.getString(R.string.error_edit_active), error
                     )
                 )
             }
-        }, aliasId)
+        }, aliases)
     }
 
     private fun setOnSwitchChangeListeners() {
@@ -220,32 +229,19 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                     updateUi()
                     forceSwitch = false
                     if (checked) {
-                        for (alias in selectedAliases) {
-                            // If the alias is already active or deleted, don't make an unnecessary call and increment amountOfNetworkCallsDone
-                            // Deleted aliases cannot be activated
-                            if (alias.active || alias.deleted_at != null) {
-                                amountOfNetworkCallsDone++
-                                updateUi()
-                                continue
-                            }
-                            lifecycleScope.launch {
-                                activateAlias(alias.id)
-                            }
+                        // If the alias is already active or deleted, don't make an unnecessary call and increment amountOfNetworkCallsDone
+                        // Deleted aliases cannot be activated
+                        lifecycleScope.launch {
+                            activateAlias(selectedAliases)
                         }
-                    } else {
-                        for (alias in selectedAliases) {
-                            // If the alias is already inactive, don't make an unnecessary call and increment amountOfNetworkCallsDone
-                            // Deleted aliases cannot be deactivated, they are always deactivated
-                            if (!alias.active) {
-                                amountOfNetworkCallsDone++
-                                updateUi()
-                                continue
-                            }
 
-                            lifecycleScope.launch {
-                                deactivateAlias(alias.id)
-                            }
+                    } else {
+                        // If the alias is already inactive, don't make an unnecessary call and increment amountOfNetworkCallsDone
+                        // Deleted aliases cannot be deactivated, they are always deactivated
+                        lifecycleScope.launch {
+                            deactivateAlias(selectedAliases)
                         }
+
                     }
                 }
             }
@@ -330,19 +326,12 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             amountOfNetworkCallsDone = 0
             networkAction = NetworkAction.RESTORE_STATE
             updateUi()
-            for (alias in selectedAliases) {
 
-                // If the alias is already restored, don't make an unnecessary call and increment amountOfNetworkCallsDone
-                if (alias.deleted_at == null) {
-                    amountOfNetworkCallsDone++
-                    updateUi()
-                    continue
-                }
 
-                lifecycleScope.launch {
-                    restoreAliasHttpRequest(alias.id, requireContext())
-                }
+            lifecycleScope.launch {
+                restoreAliasHttpRequest(selectedAliases, requireContext())
             }
+
         }
     }
 
@@ -354,20 +343,11 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             amountOfNetworkCallsDone = 0
             networkAction = NetworkAction.DELETE_STATE
             updateUi()
-            for (alias in selectedAliases) {
 
-                // If the alias is already deleted, don't make an unnecessary call and increment amountOfNetworkCallsDone
-                if (alias.deleted_at != null) {
-                    amountOfNetworkCallsDone++
-                    updateUi()
-                    continue
-                }
 
-                lifecycleScope.launch {
-                    deleteAliasHttpRequest(alias.id, requireContext())
-                }
+            lifecycleScope.launch {
+                deleteAliasHttpRequest(selectedAliases, requireContext())
             }
-
         }
     }
 
@@ -378,34 +358,32 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             amountOfNetworkCallsDone = 0
             networkAction = NetworkAction.FORGET_STATE
             updateUi()
-            for (alias in selectedAliases) {
 
-                // There is no need to check if any of the requests are necessary, forgetting is a one-way action
-
-                lifecycleScope.launch {
-                    forgetAliasHttpRequest(alias.id, requireContext())
-                }
+            // There is no need to check if any of the requests are necessary, forgetting is a one-way action
+            lifecycleScope.launch {
+                forgetAliasHttpRequest(selectedAliases, requireContext())
             }
+
         }
     }
 
-    private suspend fun deleteAliasHttpRequest(id: String, context: Context) {
-        networkHelper.deleteAlias({ result ->
+    private suspend fun deleteAliasHttpRequest(aliases: List<Aliases>, context: Context) {
+        networkHelper.bulkDeleteAlias({ alias, error ->
             shouldRefreshData = true
-            amountOfNetworkCallsDone++
+            amountOfNetworkCallsDone = aliases.size
 
-            if (result == "204") {
+            if (alias != null) {
                 // Recheck the UI (this will finished the activity in updateUI)
                 updateUi()
             } else {
                 showError(
                     context.resources.getString(
                         R.string.s_s,
-                        context.resources.getString(R.string.error_deleting_alias), result
+                        context.resources.getString(R.string.error_deleting_alias), error
                     )
                 )
             }
-        }, id)
+        }, aliases)
     }
 
     private fun showError(string: String) {
@@ -424,35 +402,35 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         ).show()
     }
 
-    private suspend fun forgetAliasHttpRequest(id: String, context: Context) {
-        networkHelper.forgetAlias({ result ->
+    private suspend fun forgetAliasHttpRequest(aliases: List<Aliases>, context: Context) {
+        networkHelper.bulkForgetAlias({ alias, error ->
             shouldRefreshData = true
-            amountOfNetworkCallsDone++
+            amountOfNetworkCallsDone = aliases.size
 
-            if (result == "204") {
+            if (alias != null) {
                 // Recheck the UI (this will finished the activity in updateUI)
                 updateUi()
             } else {
                 showError(
                     context.resources.getString(
                         R.string.s_s,
-                        context.resources.getString(R.string.error_forgetting_alias), result
+                        context.resources.getString(R.string.error_forgetting_alias), error
                     )
                 )
             }
-        }, id)
+        }, aliases)
     }
 
-    private suspend fun restoreAliasHttpRequest(id: String, context: Context) {
-        networkHelper.restoreAlias({ alias, error ->
+    private suspend fun restoreAliasHttpRequest(aliases: List<Aliases>, context: Context) {
+        networkHelper.bulkRestoreAlias({ alias, error ->
             shouldRefreshData = true
-            amountOfNetworkCallsDone++
+            amountOfNetworkCallsDone = aliases.size
 
             if (alias != null) {
-                selectedAliases.first { it.id == id }.deleted_at = null
+                selectedAliases.forEach { it.deleted_at = null }
 
                 // Restoring an alias automatically makes it active
-                selectedAliases.first { it.id == id }.active = true
+                selectedAliases.forEach { it.active = true }
 
                 // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
                 updateUi()
@@ -464,7 +442,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                     )
                 )
             }
-        }, id)
+        }, aliases)
     }
 
     companion object {
