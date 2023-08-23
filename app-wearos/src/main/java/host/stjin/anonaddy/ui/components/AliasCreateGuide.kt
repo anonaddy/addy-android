@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
-import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.managers.SettingsManager

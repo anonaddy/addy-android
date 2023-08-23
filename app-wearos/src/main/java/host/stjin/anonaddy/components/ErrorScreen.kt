@@ -14,14 +14,21 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.*
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
 
-@OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
     val haptic = LocalHapticFeedback.current
@@ -62,7 +69,6 @@ fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
                     state = scalingLazyListState
                 ) {
                     item {
-                        Text(context.resources.getString(R.string.whoops), fontSize = 30.sp, textAlign = TextAlign.Center)
                         Text(text, color = MaterialTheme.colors.error, textAlign = TextAlign.Center)
                     }
                 }

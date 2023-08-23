@@ -3,16 +3,16 @@ buildscript {
     // Define versions in a single place
     extra.apply {
         // https://developer.android.com/jetpack/androidx/releases/wear-compose
-        set("wear_compose_version", "1.1.2")
+        set("wear_compose_version", "1.2.0")
         // https://developer.android.com/jetpack/androidx/releases/compose
-        set("compose_version", "1.4.3")
+        set("compose_version", "1.5.0")
         set("compose_compiler_version", "1.5.1")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.7.2")
         // https://developer.android.com/jetpack/androidx/releases/compose-material3
         set("compose_material_version", "1.1.1")
         // https://developer.android.com/jetpack/androidx/releases/wear-tiles
-        set("wear_tiles_version", "1.1.0")
+        set("wear_tiles_version", "1.2.0")
     }
     repositories {
         google()

@@ -7,7 +7,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import androidx.wear.compose.material.*
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.components.Loading

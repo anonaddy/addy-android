@@ -19,7 +19,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.*
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material.Chip
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.InlineSlider
+import androidx.wear.compose.material.InlineSliderDefaults
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.ToggleChip
+import androidx.wear.compose.material.ToggleChipDefaults
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
 import com.google.android.gms.wearable.Wearable
 import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
@@ -83,8 +96,8 @@ class SettingsActivity : ComponentActivity() {
         }
     }
 
-    private var backgroundServiceInterval by mutableStateOf(2)
-    private var backgroundServiceIntervalValue by mutableStateOf(30)
+    private var backgroundServiceInterval by mutableIntStateOf(2)
+    private var backgroundServiceIntervalValue by mutableIntStateOf(30)
     private var storeLogs by mutableStateOf(false)
 
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)

@@ -69,7 +69,7 @@ class SplashActivity : ComponentActivity() {
             /**
              * MIGRATE FROM APP.ANONADDY.COM TO APP.ADDY.IO
              */
-            //migrateFromAnonAddyToAddyIo() // TODO ENABLE in 4.8.1
+            migrateFromAnonAddyToAddyIo()
 
             val intent = Intent(this, AliasActivity::class.java)
             startActivity(intent)

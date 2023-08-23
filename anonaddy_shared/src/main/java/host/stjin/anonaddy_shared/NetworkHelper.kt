@@ -743,6 +743,65 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun bulkDeactivateAlias(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        aliases: List<Aliases>
+    ) {
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (alias in aliases) {
+            array.put(alias.id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/deactivate/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkDeactivateAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
 
     suspend fun activateSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
@@ -781,6 +840,66 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "activateSpecificAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun bulkActivateAlias(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        aliases: List<Aliases>
+    ) {
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (alias in aliases) {
+            array.put(alias.id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/activate/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkActivateAlias",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )
@@ -839,6 +958,66 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun bulkDeleteAlias(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        aliases: List<Aliases>
+    ) {
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (alias in aliases) {
+            array.put(alias.id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/delete/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkDeleteAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
     suspend fun forgetAlias(
         callback: (String?) -> Unit,
         aliasId: String
@@ -882,6 +1061,68 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
+    suspend fun bulkForgetAlias(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        aliases: List<Aliases>
+    ) {
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (alias in aliases) {
+            array.put(alias.id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/forget/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkForgetAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
     suspend fun restoreAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
@@ -915,6 +1156,66 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "restoreAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun bulkRestoreAlias(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        aliases: List<Aliases>
+    ) {
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (alias in aliases) {
+            array.put(alias.id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/restore/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkRestoreAlias",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )

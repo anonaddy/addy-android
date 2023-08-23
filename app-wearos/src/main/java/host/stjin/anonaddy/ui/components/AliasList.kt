@@ -13,7 +13,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.*
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.material.Chip
+import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.utils.ColorUtils

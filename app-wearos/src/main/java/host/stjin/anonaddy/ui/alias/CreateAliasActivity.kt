@@ -4,10 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import androidx.wear.compose.material.*
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.components.Loading
@@ -50,7 +61,7 @@ class CreateAliasActivity : ComponentActivity() {
     }
 
 
-    @OptIn(ExperimentalWearMaterialApi::class)
+    @OptIn(ExperimentalWearMaterialApi::class, ExperimentalWearMaterialApi::class)
     @Composable
     private fun AddyIoScaffold(settingsManager: SettingsManager) {
         val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()

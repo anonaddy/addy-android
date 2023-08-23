@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.8.1] - 2023-08-23
+
+### addy.io
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things I might have forgot to make the app even smoother
+
+### addy.io for Android wearables _(v1.3.1)_
+
+##### Fixed/Improved
+
+- ✨ Optimized support for new wearables
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.8.0] - 2023-08-09
 
 ### addy.io
