@@ -32,10 +32,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Icon
-import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.CreateAliasActivity

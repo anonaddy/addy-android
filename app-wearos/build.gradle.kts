@@ -11,7 +11,7 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.3.0 + release 01 + 01 (for wearos)
-        versionCode = 341300101
-        versionName = "1.3.0"
+        versionCode = 341310101
+        versionName = "1.3.1"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -169,4 +169,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.7.3")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
+}
+
+
+// For smooth scrolling
+// https://github.com/google/horologist
+dependencies {
+    implementation("com.google.android.horologist:horologist-compose-layout:0.5.4")
 }
