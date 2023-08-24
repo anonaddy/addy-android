@@ -50,7 +50,8 @@ class ManageRecipientsActivity : BaseActivity(),
         setupToolbar(
             R.string.edit_recipient,
             binding.activityManageRecipientNSV,
-            binding.activityManageRecipientToolbar
+            binding.activityManageRecipientToolbar,
+            null
         )
         networkHelper = NetworkHelper(this)
 

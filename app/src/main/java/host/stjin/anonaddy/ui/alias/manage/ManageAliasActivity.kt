@@ -207,13 +207,6 @@ class ManageAliasActivity : BaseActivity(),
         lifecycleScope.launch {
             getAliasInfo(aliasId)
             loadNodes()
-
-            // Set the AliasShortcut here, to make sure the donut is rendered
-            Handler(Looper.getMainLooper()).postDelayed({
-                // Unauthenticated, clear settings
-                addAliasAsShortcut()
-            }, binding.activityManageAliasChart.animationDurationMs)
-
         }
     }
 
@@ -596,6 +589,13 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun updateUi(alias: Aliases) {
+
+
+        // Set the AliasShortcut here, to make sure the donut is rendered
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Unauthenticated, clear settings
+            addAliasAsShortcut()
+        }, binding.activityManageAliasChart.animationDurationMs)
 
         // Set email in textview
         binding.activityManageAliasEmail.text = alias.email

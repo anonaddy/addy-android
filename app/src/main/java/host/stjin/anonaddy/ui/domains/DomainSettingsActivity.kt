@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -34,6 +33,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
     private lateinit var binding: ActivityDomainSettingsBinding
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDomainSettingsBinding.inflate(layoutInflater)
@@ -51,6 +51,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             binding.activityDomainSettingsToolbar,
             R.drawable.ic_dns
         )
+
 
         encryptedSettingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
@@ -122,19 +123,11 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(this@DomainSettingsActivity, 2)
-                } else {
-                    LinearLayoutManager(this@DomainSettingsActivity)
-                }
+                shimmerLayoutManager = LinearLayoutManager(this@DomainSettingsActivity)
 
-                layoutManager = if (this@DomainSettingsActivity.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(this@DomainSettingsActivity, 2)
-                } else {
-                    LinearLayoutManager(this@DomainSettingsActivity)
-                }
+
+                layoutManager = LinearLayoutManager(this@DomainSettingsActivity)
+
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
                 val resId: Int = R.anim.layout_animation_fall_down

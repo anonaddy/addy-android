@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseActivity
@@ -125,19 +124,11 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 OneTimeRecyclerViewActions = false
 
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, 2) ?: 2
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(this@UsernamesSettingsActivity, 2)
-                } else {
-                    LinearLayoutManager(this@UsernamesSettingsActivity)
-                }
+                shimmerLayoutManager = LinearLayoutManager(this@UsernamesSettingsActivity)
 
-                layoutManager = if (this@UsernamesSettingsActivity.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(this@UsernamesSettingsActivity, 2)
-                } else {
-                    LinearLayoutManager(this@UsernamesSettingsActivity)
-                }
+
+                layoutManager = LinearLayoutManager(this@UsernamesSettingsActivity)
+
 
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))

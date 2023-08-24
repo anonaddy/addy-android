@@ -6,12 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.adapter.*
+import host.stjin.anonaddy.adapter.AliasAdapter
+import host.stjin.anonaddy.adapter.DomainAdapter
+import host.stjin.anonaddy.adapter.FailedDeliveryAdapter
+import host.stjin.anonaddy.adapter.RecipientAdapter
+import host.stjin.anonaddy.adapter.RulesAdapter
+import host.stjin.anonaddy.adapter.UsernameAdapter
 import host.stjin.anonaddy.databinding.ActivitySearchBinding
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
@@ -29,7 +33,12 @@ import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.*
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.models.Usernames
 
 class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
 
@@ -125,14 +134,14 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         }
 
         // No need to check if there are results, this is being done in the bottomsheet.
-/*        if (filteredAliases?.size ?: 0 == 0 &&
-            filteredDomains?.size ?: 0 == 0 &&
-            filteredRecipients?.size ?: 0 == 0 &&
-            filteredUsernames?.size ?: 0 == 0 &&
-            filteredRules?.size ?: 0 == 0 &&
-            filteredFailedDeliveries?.size ?: 0 == 0
-        ) {
-        }*/
+        /*        if (filteredAliases?.size ?: 0 == 0 &&
+                    filteredDomains?.size ?: 0 == 0 &&
+                    filteredRecipients?.size ?: 0 == 0 &&
+                    filteredUsernames?.size ?: 0 == 0 &&
+                    filteredRules?.size ?: 0 == 0 &&
+                    filteredFailedDeliveries?.size ?: 0 == 0
+                ) {
+                }*/
     }
 
     /*
@@ -141,12 +150,9 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setUsernames() {
         binding.activitySearchUsernamesRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = LinearLayoutManager(this@SearchActivity)
+
+
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val usernamesAdapter = UsernameAdapter(filteredUsernames!!)
@@ -175,12 +181,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setRules() {
         binding.activitySearchRulesRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = LinearLayoutManager(this@SearchActivity)
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val rulesAdapter = RulesAdapter(filteredRules!!, false)
@@ -224,12 +225,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setFailedDeliveries() {
         binding.activitySearchFailedDeliveriesRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = LinearLayoutManager(this@SearchActivity)
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val failedDeliveryAdapter = FailedDeliveryAdapter(filteredFailedDeliveries!!)
@@ -261,12 +257,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setAliases() {
         binding.activitySearchAliasesRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = LinearLayoutManager(this@SearchActivity)
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             /**
@@ -313,12 +304,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setRecipients() {
         binding.activitySearchRecipientsRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = LinearLayoutManager(this@SearchActivity)
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val recipientAdapter = RecipientAdapter(filteredRecipients!!)
@@ -355,12 +341,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setDomains() {
         binding.activitySearchDomainsRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = LinearLayoutManager(this@SearchActivity)
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val domainsAdapter = DomainAdapter(filteredDomains!!)

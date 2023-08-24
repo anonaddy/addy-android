@@ -634,4 +634,5 @@
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
+    <string name="embedded_placeholder">Choose an action on the left to display this activity here</string>
 </resources>

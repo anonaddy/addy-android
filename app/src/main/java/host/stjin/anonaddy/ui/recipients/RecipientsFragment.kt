@@ -177,16 +177,20 @@ class RecipientsFragment : Fragment(),
                 OneTimeRecyclerViewActions = false
 
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
+                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
+                ) {
                     // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 2)
+                    GridLayoutManager(activity, 3)
                 } else {
                     LinearLayoutManager(activity)
                 }
 
-                layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                layoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
+                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
+                ) {
                     // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 2)
+                    GridLayoutManager(activity, 3)
                 } else {
                     LinearLayoutManager(activity)
                 }

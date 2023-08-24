@@ -10,8 +10,6 @@ import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -175,16 +173,20 @@ class HomeFragment : Fragment() {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
 
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
+                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
+                ) {
                     // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 2)
+                    GridLayoutManager(activity, 3)
                 } else {
                     LinearLayoutManager(activity)
                 }
 
-                layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                layoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
+                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
+                ) {
                     // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 2)
+                    GridLayoutManager(activity, 3)
                 } else {
                     LinearLayoutManager(activity)
                 }
@@ -306,15 +308,15 @@ class HomeFragment : Fragment() {
             binding.homeStatisticsAliasesCurrent.text = "$count /"
         }
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            ObjectAnimator.ofInt(
-                binding.homeStatisticsAliasesProgress,
-                "progress",
-                count * 100
-            )
-                .setDuration(STATISTICS_ANIMATION_DURATION)
-                .start()
-        }, 400)
+        /*        Handler(Looper.getMainLooper()).postDelayed({
+                    ObjectAnimator.ofInt(
+                        binding.homeStatisticsAliasesProgress,
+                        "progress",
+                        count * 100
+                    )
+                        .setDuration(STATISTICS_ANIMATION_DURATION)
+                        .start()
+                }, 400)*/
 
     }
 

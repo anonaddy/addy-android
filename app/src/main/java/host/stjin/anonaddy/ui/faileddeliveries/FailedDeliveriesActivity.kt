@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
@@ -80,19 +79,11 @@ class FailedDeliveriesActivity : BaseActivity(), FailedDeliveryDetailsBottomDial
                 OneTimeRecyclerViewActions = false
                 shimmerItemCount =
                     encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, 2) ?: 2
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(this@FailedDeliveriesActivity, 2)
-                } else {
-                    LinearLayoutManager(this@FailedDeliveriesActivity)
-                }
+                shimmerLayoutManager = LinearLayoutManager(this@FailedDeliveriesActivity)
 
-                layoutManager = if (this@FailedDeliveriesActivity.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(this@FailedDeliveriesActivity, 2)
-                } else {
-                    LinearLayoutManager(this@FailedDeliveriesActivity)
-                }
+
+                layoutManager = LinearLayoutManager(this@FailedDeliveriesActivity)
+
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
                 val resId: Int = R.anim.layout_animation_fall_down

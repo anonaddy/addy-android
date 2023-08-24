@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
-
-    <!-- This library gets override because the shared_anonaddy library implements this library but in practice
-         It only gets used on the WearOS module -->
+    <!--
+ This library gets override because the shared_anonaddy library implements this library but in practice
+         It only gets used on the WearOS module
+    -->
     <uses-sdk tools:overrideLibrary="androidx.wear.compose.material, androidx.wear.compose.foundation, androidx.wear.compose.material.core" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-
-    <!--    Used for scanning the API key-->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Used for scanning the API key -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!--
          Include all the "features" under the camera permission,
          and mark them all as optional.
-   -->
+    -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
-
-
     <!--
     Starting from Android 11, we need to query to packages with mailto: mailscheme
     This is being used in the ManageAliasActivity for sending emails from an alias
@@ -48,6 +43,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <!-- Activity Embedding -->
+        <property
+            android:name="android.window.PROPERTY_ACTIVITY_EMBEDDING_SPLITS_ENABLED"
+            android:value="true" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+
+            <!-- Make SplitInitializer discoverable by InitializationProvider. -->
+            <meta-data
+                android:name="host.stjin.anonaddy.ui.SplitInitializer"
+                android:value="androidx.startup" />
+        </provider> <!-- Activity Embedding -->
         <!-- Widget 1 -->
         <receiver
             android:name=".widget.AliasWidget1Provider"
@@ -91,88 +102,7 @@
             android:noHistory="true"
             android:theme="@style/AppTheme.Transparent" /> <!-- Widget 2 -->
         <!-- Notification -->
-        <receiver android:name=".notifications.ActionReceiver" /> <!-- Notification -->
-        <!-- END widget -->
-
-        <activity-alias
-            android:name="host.stjin.anonaddy.DefaultIcon"
-            android:enabled="true"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:targetActivity=".ui.SplashActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
-        </activity-alias>
-
-        <activity-alias
-            android:name="host.stjin.anonaddy.ClassicIcon"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_classic"
-            android:roundIcon="@mipmap/ic_launcher_classic_round"
-            android:targetActivity=".ui.SplashActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
-        </activity-alias>
-
-        <activity-alias
-            android:name="host.stjin.anonaddy.GradientIcon"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_gradient"
-            android:roundIcon="@mipmap/ic_launcher_gradient_round"
-            android:targetActivity=".ui.SplashActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
-        </activity-alias>
-
-        <activity-alias
-            android:name="host.stjin.anonaddy.InverseGradientIcon"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_inverse_gradient"
-            android:roundIcon="@mipmap/ic_launcher_inverse_gradient_round"
-            android:targetActivity=".ui.SplashActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
-        </activity-alias>
+        <receiver android:name=".notifications.ActionReceiver" />
 
         <activity
             android:name=".ui.SplashActivity"
@@ -182,6 +112,80 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity-alias
+            android:name=".InverseGradientIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_inverse_gradient"
+            android:roundIcon="@mipmap/ic_launcher_inverse_gradient_round"
+            android:targetActivity=".ui.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity-alias>
+        <activity-alias
+            android:name=".GradientIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_gradient"
+            android:roundIcon="@mipmap/ic_launcher_gradient_round"
+            android:targetActivity=".ui.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity-alias>
+        <activity-alias
+            android:name=".ClassicIcon"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_classic"
+            android:roundIcon="@mipmap/ic_launcher_classic_round"
+            android:targetActivity=".ui.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity-alias> <!-- Notification -->
+        <!-- END widget -->
+        <activity-alias
+            android:name=".DefaultIcon"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:targetActivity=".ui.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity-alias>
 
         <activity
             android:name=".ui.alias.manage.ManageAliasActivity"
@@ -241,12 +245,14 @@
             </intent-filter>
             <!-- END Creating aliases on-the-go -->
 
+
             <!-- Support for the .SEND intent from other apps (for sending things like text and files over mail) -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="*/*" />
             </intent-filter>
             <!-- END Support for the .SEND intent from other apps (for sending things like text and files over mail) -->
@@ -323,9 +329,11 @@
         <activity
             android:name=".ui.setup.SetupNewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.embedded.EmbeddedPlaceholderActivity"
+            android:theme="@style/AppTheme.Setup" />
         <activity android:name=".ui.MainActivity" />
-
-        <!-- WEAR OS-->
+        <!-- WEAR OS -->
         <service
             android:name=".service.WearableListener"
             android:enabled="true"
@@ -355,7 +363,6 @@
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:theme="@style/AppTheme.Transparent" />
-        <!-- END WEAR OS -->
     </application>
 
 </manifest>

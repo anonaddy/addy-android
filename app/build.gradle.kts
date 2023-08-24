@@ -176,3 +176,9 @@ dependencies {
 dependencies {
     implementation("com.github.einmalfel:Earl:1.2.0")
 }
+
+// Activity Embedding
+dependencies {
+    implementation("androidx.window:window:1.2.0-beta01")
+    implementation("androidx.startup:startup-runtime:1.1.1")
+}

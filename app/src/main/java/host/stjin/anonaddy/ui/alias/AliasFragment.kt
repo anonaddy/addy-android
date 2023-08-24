@@ -398,16 +398,20 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
                 shimmerItemCount = 100
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
+                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
+                ) {
                     // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 2)
+                    GridLayoutManager(activity, 3)
                 } else {
                     LinearLayoutManager(activity)
                 }
 
-                layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
+                layoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
+                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
+                ) {
                     // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 2)
+                    GridLayoutManager(activity, 3)
                 } else {
                     LinearLayoutManager(activity)
                 }
@@ -430,6 +434,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         // Pass data object in the bundle and populate details activity.
                         intent.putExtra("alias_id", aliasList!!.data[pos].id)
                         resultLauncher.launch(intent)
+
                     }
 
                     override fun onClickCopy(pos: Int, aView: View) {

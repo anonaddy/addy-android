@@ -75,6 +75,7 @@ class AppSettingsActivity : BaseActivity(),
             binding.appsettingsToolbar,
             R.drawable.ic_settings
         )
+
         setVersion()
         loadSettings()
         setOnClickListeners()
