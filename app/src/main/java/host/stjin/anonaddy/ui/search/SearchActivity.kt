@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
@@ -30,6 +32,7 @@ import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRules
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUsernames
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -76,6 +79,28 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         filteredFailedDeliveries = null
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val filteredAliasesJson = gson.toJson(filteredAliases)
+        outState.putString("filteredAliases", filteredAliasesJson)
+
+        val filteredRecipientsJson = gson.toJson(filteredRecipients)
+        outState.putString("filteredRecipients", filteredRecipientsJson)
+
+        val filteredDomainsJson = gson.toJson(filteredDomains)
+        outState.putString("filteredDomains", filteredDomainsJson)
+
+        val filteredUsernamesJson = gson.toJson(filteredUsernames)
+        outState.putString("filteredUsernames", filteredUsernamesJson)
+
+        val filteredRulesJson = gson.toJson(filteredRules)
+        outState.putString("filteredRules", filteredRulesJson)
+
+        val filteredFailedDeliveriesJson = gson.toJson(filteredFailedDeliveries)
+        outState.putString("filteredFailedDeliveries", filteredFailedDeliveriesJson)
+    }
+
     private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +124,65 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         encryptedSettingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
+
+        // In the event of a screen resize or orientation change, the filtered items will be stored in the
+        // savedInstanceState, load them back when recreating the activity.
+        if (savedInstanceState != null) {
+            getFilteredResultsFromSavedInstance(savedInstanceState)
+        }
+
         setSearchResults()
+    }
+
+    private fun getFilteredResultsFromSavedInstance(savedInstanceState: Bundle) {
+        val filteredAliasesJson = savedInstanceState.getString("filteredAliases")
+        if (!filteredAliasesJson.isNullOrEmpty() && filteredAliasesJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Aliases>>() {}.type
+            val filteredAliasesFromSavedInstance = gson.fromJson<ArrayList<Aliases>>(filteredAliasesJson, myType)
+            filteredAliases = filteredAliasesFromSavedInstance
+        }
+
+        val filteredRecipientsJson = savedInstanceState.getString("filteredRecipients")
+        if (!filteredRecipientsJson.isNullOrEmpty() && filteredRecipientsJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Recipients>>() {}.type
+            val filteredRecipientsFromSavedInstance = gson.fromJson<ArrayList<Recipients>>(filteredRecipientsJson, myType)
+            filteredRecipients = filteredRecipientsFromSavedInstance
+        }
+
+        val filteredDomainsJson = savedInstanceState.getString("filteredDomains")
+        if (!filteredDomainsJson.isNullOrEmpty() && filteredDomainsJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Domains>>() {}.type
+            val filteredDomainsFromSavedInstance = gson.fromJson<ArrayList<Domains>>(filteredDomainsJson, myType)
+            filteredDomains = filteredDomainsFromSavedInstance
+        }
+
+        val filteredUsernamesJson = savedInstanceState.getString("filteredUsernames")
+        if (!filteredUsernamesJson.isNullOrEmpty() && filteredUsernamesJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Usernames>>() {}.type
+            val filteredUsernamesFromSavedInstance = gson.fromJson<ArrayList<Usernames>>(filteredUsernamesJson, myType)
+            filteredUsernames = filteredUsernamesFromSavedInstance
+        }
+
+        val filteredRulesJson = savedInstanceState.getString("filteredRules")
+        if (!filteredRulesJson.isNullOrEmpty() && filteredRulesJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Rules>>() {}.type
+            val filteredRulesFromSavedInstance = gson.fromJson<ArrayList<Rules>>(filteredRulesJson, myType)
+            filteredRules = filteredRulesFromSavedInstance
+        }
+
+        val filteredFailedDeliveriesJson = savedInstanceState.getString("filteredFailedDeliveries")
+        if (!filteredFailedDeliveriesJson.isNullOrEmpty() && filteredFailedDeliveriesJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<FailedDeliveries>>() {}.type
+            val filteredFailedDeliveriesFromSavedInstance = gson.fromJson<ArrayList<FailedDeliveries>>(filteredFailedDeliveriesJson, myType)
+            filteredFailedDeliveries = filteredFailedDeliveriesFromSavedInstance
+        }
+
     }
 
     private fun setSearchResults() {
@@ -150,7 +233,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setUsernames() {
         binding.activitySearchUsernamesRecyclerview.apply {
 
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
 
 
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
@@ -181,7 +264,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setRules() {
         binding.activitySearchRulesRecyclerview.apply {
 
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val rulesAdapter = RulesAdapter(filteredRules!!, false)
@@ -225,7 +308,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setFailedDeliveries() {
         binding.activitySearchFailedDeliveriesRecyclerview.apply {
 
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val failedDeliveryAdapter = FailedDeliveryAdapter(filteredFailedDeliveries!!)
@@ -257,7 +340,8 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setAliases() {
         binding.activitySearchAliasesRecyclerview.apply {
 
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
+
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             /**
@@ -304,7 +388,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setRecipients() {
         binding.activitySearchRecipientsRecyclerview.apply {
 
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val recipientAdapter = RecipientAdapter(filteredRecipients!!)
@@ -341,7 +425,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setDomains() {
         binding.activitySearchDomainsRecyclerview.apply {
 
-            layoutManager = LinearLayoutManager(this@SearchActivity)
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val domainsAdapter = DomainAdapter(filteredDomains!!)

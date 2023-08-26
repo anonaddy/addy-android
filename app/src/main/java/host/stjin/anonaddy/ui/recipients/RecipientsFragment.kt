@@ -15,9 +15,10 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.RecipientAdapter
 import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
@@ -25,10 +26,12 @@ import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -41,6 +44,7 @@ class RecipientsFragment : Fragment(),
         fun newInstance() = RecipientsFragment()
     }
 
+    private var recipients: ArrayList<Recipients>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
@@ -69,19 +73,62 @@ class RecipientsFragment : Fragment(),
 
         setOnClickListener()
         setNsvListener()
+        setRecipientRecyclerView()
 
         // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
         // API calls, user should swipe to refresh starting from v4.5.0
-        getDataFromWeb()
+        getDataFromWeb(savedInstanceState)
         return root
     }
 
-    fun getDataFromWeb() {
+    private fun setRecipientRecyclerView() {
+        binding.recipientsAllRecipientsRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
+
+                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
+                shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(context))
+                layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(context))
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+
+                showShimmer()
+            }
+        }
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val json = gson.toJson(recipients)
+        outState.putString("recipients", json)
+    }
+
+
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
 
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
-            getUserResource(requireContext())
-            getAllRecipients()
+
+            if (savedInstanceState != null) {
+                setStats()
+
+                val recipientsJson = savedInstanceState.getString("recipients")
+                if (recipientsJson!!.isNotEmpty()) {
+                    val gson = Gson()
+
+                    val myType = object : TypeToken<ArrayList<Recipients>>() {}.type
+                    val list = gson.fromJson<ArrayList<Recipients>>(recipientsJson, myType)
+                    setRecipientAdapter(list)
+                }
+
+            } else {
+                getUserResource(requireContext())
+                getAllRecipients()
+            }
         }
     }
 
@@ -172,99 +219,78 @@ class RecipientsFragment : Fragment(),
 
     private lateinit var recipientAdapter: RecipientAdapter
     private suspend fun getAllRecipients() {
-        binding.recipientsAllRecipientsRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
 
-                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
-                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
-                ) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 3)
-                } else {
-                    LinearLayoutManager(activity)
-                }
+        networkHelper?.getRecipients({ list, result ->
+            // Sorted by created_at automatically
+            //list?.sortByDescending { it.emails_forwarded }
 
-                layoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
-                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
-                ) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 3)
-                } else {
-                    LinearLayoutManager(activity)
-                }
-                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-                showShimmer()
+            // Check if there are new recipients since the latest list
+            // If the list is the same, just return and don't bother re-init the layoutmanager
+            if (::recipientAdapter.isInitialized && list == recipientAdapter.getList()) {
+                return@getRecipients
             }
-            networkHelper?.getRecipients({ list, result ->
-                // Sorted by created_at automatically
-                //list?.sortByDescending { it.emails_forwarded }
 
-                // Check if there are new recipients since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                if (::recipientAdapter.isInitialized && list == recipientAdapter.getList()) {
-                    return@getRecipients
+            if (list != null) {
+                setRecipientAdapter(list)
+            } else {
+                // Data could not be loaded
+                val bottomNavView: BottomNavigationView? =
+                    activity?.findViewById(R.id.nav_view)
+                bottomNavView?.let {
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
+                        it,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    )
+                        .apply {
+                            anchorView = bottomNavView
+                        }.show()
                 }
-
-                if (list != null) {
-                    // There is always 1 recipient.
-
-                    /*if (list.size > 0) {
-                        root.recipients_no_recipients.visibility = View.GONE
-                    } else {
-                        root.recipients_no_recipients.visibility = View.VISIBLE
-                    }*/
-
-                    // Set the count of aliases so that the shimmerview looks better next time
-                    encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, list.size)
-
-                    recipientAdapter = RecipientAdapter(list)
-                    recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
-
-                        override fun onClickSettings(pos: Int, aView: View) {
-                            val intent = Intent(context, ManageRecipientsActivity::class.java)
-                            intent.putExtra("recipient_id", list[pos].id)
-                            startActivity(intent)
-                        }
-
-                        override fun onClickResend(pos: Int, aView: View) {
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                resendConfirmationMailRecipient(list[pos].id, context)
-                            }
-                        }
-
-                        override fun onClickDelete(pos: Int, aView: View) {
-                            deleteRecipient(list[pos].id, context)
-                        }
-
-                    })
-                    adapter = recipientAdapter
-                } else {
-                    // Data could not be loaded
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
-                }
-                hideShimmer()
-            }, verifiedOnly = false)
-
-        }
+            }
+        }, verifiedOnly = false)
 
     }
+
+    private fun setRecipientAdapter(list: ArrayList<Recipients>) {
+        binding.recipientsAllRecipientsRecyclerview.apply {
+            recipients = list
+            // There is always 1 recipient.
+
+            /*if (list.size > 0) {
+            root.recipients_no_recipients.visibility = View.GONE
+        } else {
+            root.recipients_no_recipients.visibility = View.VISIBLE
+        }*/
+
+            // Set the count of aliases so that the shimmerview looks better next time
+            encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, list.size)
+
+            recipientAdapter = RecipientAdapter(list)
+            recipientAdapter.setClickListener(object : RecipientAdapter.ClickListener {
+
+                override fun onClickSettings(pos: Int, aView: View) {
+                    val intent = Intent(context, ManageRecipientsActivity::class.java)
+                    intent.putExtra("recipient_id", list[pos].id)
+                    startActivity(intent)
+                }
+
+                override fun onClickResend(pos: Int, aView: View) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        resendConfirmationMailRecipient(list[pos].id, context)
+                    }
+                }
+
+                override fun onClickDelete(pos: Int, aView: View) {
+                    deleteRecipient(list[pos].id, context)
+                }
+
+            })
+            hideShimmer()
+            adapter = recipientAdapter
+        }
+    }
+
 
     private suspend fun resendConfirmationMailRecipient(id: String, context: Context) {
         networkHelper?.resendVerificationEmail({ result ->
@@ -336,7 +362,7 @@ class RecipientsFragment : Fragment(),
         networkHelper?.deleteRecipient({ result ->
             if (result == "204") {
                 deleteRecipientSnackbar.dismiss()
-                getDataFromWeb()
+                getDataFromWeb(null)
             } else {
                 val bottomNavView: BottomNavigationView? =
                     activity?.findViewById(R.id.nav_view)
@@ -362,7 +388,7 @@ class RecipientsFragment : Fragment(),
         addRecipientsFragment.dismissAllowingStateLoss()
         verificationEmailSentSnackbar(requireContext())
         // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb()
+        getDataFromWeb(null)
     }
 
     override fun onDestroyView() {

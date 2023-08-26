@@ -22,9 +22,9 @@ import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
@@ -32,11 +32,12 @@ import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
-import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -70,12 +71,21 @@ class HomeFragment : Fragment() {
         setOnClickListeners()
         getStatistics()
         setNsvListener()
+        setMostActiveAliasesRecyclerView()
 
         // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
         // API calls, user should swipe to refresh starting from v4.5.0
-        getDataFromWeb(requireContext())
+        getDataFromWeb(requireContext(), savedInstanceState)
 
         return root
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val json = gson.toJson(mostActiveAliases)
+        outState.putString("mostActiveAliases", json)
     }
 
 
@@ -99,11 +109,30 @@ class HomeFragment : Fragment() {
     }
 
 
-    fun getDataFromWeb(context: Context) {
+    fun getDataFromWeb(context: Context, savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
-            getMostActiveAliases()
-            getWebStatistics(context)
+
+            // Check if savedInstanceState is null, or not
+            // On activity recreations (orientationchanges, sizing of the app) savedInstanceState will be filled using onSaveInstanceState
+            // This way we can instantly set the values without another API call.
+            if (savedInstanceState != null) {
+                val mostActiveAliasesJson = savedInstanceState.getString("mostActiveAliases")
+                if (mostActiveAliasesJson!!.isNotEmpty()) {
+                    val gson = Gson()
+                    val list: AliasesArray = gson.fromJson(mostActiveAliasesJson, AliasesArray::class.java)
+                    setMostActiveAliasesAdapter(list)
+                }
+
+                // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
+                // no need to obtain this from savedInstanceState
+                getStatistics()
+            } else {
+                getMostActiveAliases()
+                getWebStatistics(context)
+            }
+
+
             // Set forceUpdate to false (if it was true) to prevent the lists from reloading every oneresume
             forceUpdate = false
         }
@@ -167,29 +196,60 @@ class HomeFragment : Fragment() {
     }
 
     private lateinit var aliasAdapter: AliasAdapter
-    private var previousList: ArrayList<Aliases> = arrayListOf()
+    private var mostActiveAliases: AliasesArray? = null
     private suspend fun getMostActiveAliases() {
+        networkHelper?.getAliases(
+            { list, result ->
+
+                // Check if there are new aliases since the latest list
+                // If the list is the same, just return and don't bother re-init the layoutmanager
+                // Unless forceUpdate is true. If forceupdate is true, always update
+                if (::aliasAdapter.isInitialized && list == mostActiveAliases && !forceUpdate) {
+                    return@getAliases
+                }
+
+                if (list != null) {
+                    setMostActiveAliasesAdapter(list)
+                } else {
+                    // Data could not be loaded
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
+                }
+            },
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = true,
+                onlyInactiveAliases = false,
+                includeDeleted = false,
+                onlyWatchedAliases = false,
+                sort = "emails_forwarded",
+                sortDesc = true,
+                filter = null
+            ),
+            size = 6
+        )
+
+    }
+
+    private fun setMostActiveAliasesRecyclerView() {
         binding.homeMostActiveAliasesRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
 
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
-                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
-                ) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 3)
-                } else {
-                    LinearLayoutManager(activity)
-                }
+                shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
 
-                layoutManager = if (this.resources.getBoolean(R.bool.isTablet) &&
-                    !(activity as MainActivity).isActivityEmbedded(activity as MainActivity)
-                ) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 3)
-                } else {
-                    LinearLayoutManager(activity)
-                }
+                layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
+
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
                 val resId: Int = R.anim.layout_animation_fall_down
@@ -198,84 +258,47 @@ class HomeFragment : Fragment() {
 
                 showShimmer()
             }
+        }
+    }
 
-            networkHelper?.getAliases(
-                { list, result ->
+    private fun setMostActiveAliasesAdapter(list: AliasesArray) {
+        binding.homeMostActiveAliasesRecyclerview.apply {
+            mostActiveAliases = list
 
-                    // Check if there are new aliases since the latest list
-                    // If the list is the same, just return and don't bother re-init the layoutmanager
-                    // Unless forceUpdate is true. If forceupdate is true, always update
-                    if (::aliasAdapter.isInitialized && list?.data == previousList && !forceUpdate) {
-                        return@getAliases
+            if (list.data.size > 0) {
+                binding.homeNoAliases.visibility = View.GONE
+            } else {
+                binding.homeNoAliases.visibility = View.VISIBLE
+            }
+
+            aliasAdapter = AliasAdapter(list.data, context)
+            aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
+                override fun onClick(pos: Int) {
+                    val intent = Intent(context, ManageAliasActivity::class.java)
+                    // Pass data object in the bundle and populate details activity.
+                    intent.putExtra("alias_id", list.data[pos].id)
+                    resultLauncher.launch(intent)
+                }
+
+                override fun onClickCopy(pos: Int, aView: View) {
+                    val clipboard: ClipboardManager =
+                        context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val aliasEmailAddress = list.data[pos].email
+                    val clip = ClipData.newPlainText("alias", aliasEmailAddress)
+                    clipboard.setPrimaryClip(clip)
+
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
+                            anchorView = bottomNavView
+                        }.show()
                     }
+                }
 
-
-                    if (list != null) {
-                        previousList.clear()
-                        previousList.addAll(list.data)
-
-                        if (list.data.size > 0) {
-                            binding.homeNoAliases.visibility = View.GONE
-                        } else {
-                            binding.homeNoAliases.visibility = View.VISIBLE
-                        }
-
-                        aliasAdapter = AliasAdapter(list.data, context)
-                        aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
-                            override fun onClick(pos: Int) {
-                                val intent = Intent(context, ManageAliasActivity::class.java)
-                                // Pass data object in the bundle and populate details activity.
-                                intent.putExtra("alias_id", list.data[pos].id)
-                                resultLauncher.launch(intent)
-                            }
-
-                            override fun onClickCopy(pos: Int, aView: View) {
-                                val clipboard: ClipboardManager =
-                                    context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                val aliasEmailAddress = list.data[pos].email
-                                val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                                clipboard.setPrimaryClip(clip)
-
-                                val bottomNavView: BottomNavigationView? =
-                                    activity?.findViewById(R.id.nav_view)
-                                bottomNavView?.let {
-                                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
-                                        anchorView = bottomNavView
-                                    }.show()
-                                }
-                            }
-
-                        })
-                        adapter = aliasAdapter
-                    } else {
-                        // Data could not be loaded
-                        val bottomNavView: BottomNavigationView? =
-                            activity?.findViewById(R.id.nav_view)
-                        bottomNavView?.let {
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                it,
-                                LoggingHelper.LOGFILES.DEFAULT
-                            )
-                                .apply {
-                                    anchorView = bottomNavView
-                                }.show()
-                        }
-                    }
-                    hideShimmer()
-                },
-                aliasSortFilter = AliasSortFilter(
-                    onlyActiveAliases = true,
-                    onlyInactiveAliases = false,
-                    includeDeleted = false,
-                    onlyWatchedAliases = false,
-                    sort = "emails_forwarded",
-                    sortDesc = true,
-                    filter = null
-                ),
-                size = 6
-            )
+            })
+            hideShimmer()
+            adapter = aliasAdapter
         }
     }
 

@@ -101,11 +101,14 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             if (isAuthenticated) {
                 lifecycleScope.launch {
                     loadMainActivity()
-                    checkForUpdates()
-                    checkForApiExpiration()
-                    checkForSubscriptionExpiration()
-                    // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
-                    BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
+                    // No need to check for updates on recreation of the activity
+                    if (savedInstanceState == null) {
+                        checkForUpdates()
+                        checkForApiExpiration()
+                        checkForSubscriptionExpiration()
+                        // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
+                        BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
+                    }
                 }
             }
         }
@@ -184,9 +187,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
                 val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
                 val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
-                homeFragment.getDataFromWeb(this@MainActivity)
-                aliasFragment.getDataFromWeb()
-                recipientsFragment.getDataFromWeb()
+                homeFragment.getDataFromWeb(this@MainActivity, null)
+                aliasFragment.getDataFromWeb(this@MainActivity, null)
+                recipientsFragment.getDataFromWeb(null)
 
 
                 // Since a bunch of different calls are being made, it is very hard to keep progress of everything.

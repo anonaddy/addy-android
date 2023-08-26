@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:window="http://schemas.android.com/apk/res-auto">
 
+    <!--region Mainactivity-->
+
     <!-- Define a split for the SPLIT activities. -->
     <SplitPairRule
         window:clearTop="true"
@@ -21,23 +23,11 @@
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
             window:secondaryActivityName="host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity" />
-
-        <SplitPairFilter
-            window:primaryActivityName="host.stjin.anonaddy.ui.rules.RulesSettingsActivity"
-            window:secondaryActivityName="host.stjin.anonaddy.ui.rules.CreateRuleActivity" />
-
-        <SplitPairFilter
-            window:primaryActivityName="host.stjin.anonaddy.ui.domains.DomainSettingsActivity"
-            window:secondaryActivityName="host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity" />
-
-        <SplitPairFilter
-            window:primaryActivityName="host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity"
-            window:secondaryActivityName="host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity" />
-
     </SplitPairRule>
+    <!--endregion-->
 
-
-    <!-- Define a split for the SMALL activities. -->
+    <!--region Mainactivity-SearchActivity-->
+    <!-- Define a split for the SEARCH activities. -->
     <SplitPairRule
         window:clearTop="true"
         window:finishPrimaryWithSecondary="never"
@@ -50,8 +40,9 @@
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
             window:secondaryActivityName="host.stjin.anonaddy.ui.search.SearchActivity" />
     </SplitPairRule>
+    <!--endregion-->
 
-    <!-- Define a split for the the search activities. -->
+    <!--region SearchActivities-->
     <!-- clearTop is false so people can continue scrolling -->
     <SplitPairRule
         window:clearTop="false"
@@ -84,33 +75,108 @@
 
 
     </SplitPairRule>
+    <!--endregion-->
 
-    <!-- Specify a placeholder for the secondary container when content is
-         not available. -->
+    <!--region Settings-->
+
+    <!-- TODO make a separate activity asking users to select a setting -->
     <SplitPlaceholderRule
         window:placeholderActivityName="host.stjin.anonaddy.ui.embedded.EmbeddedPlaceholderActivity"
         window:splitLayoutDirection="locale"
         window:splitMaxAspectRatioInPortrait="alwaysAllow"
         window:splitMinWidthDp="840"
         window:splitRatio="0.5"
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
         window:stickyPlaceholder="false">
         <ActivityFilter window:activityName="host.stjin.anonaddy.ui.appsettings.AppSettingsActivity" />
     </SplitPlaceholderRule>
+    <!--endregion-->
 
-    <!-- Specify a placeholder for the secondary container when content is
-     not available. -->
+    <!--region Rules-->
 
     <!-- TODO make a separate activity asking users to select a rule -->
-
     <SplitPlaceholderRule
         window:placeholderActivityName="host.stjin.anonaddy.ui.embedded.EmbeddedPlaceholderActivity"
         window:splitLayoutDirection="locale"
         window:splitMaxAspectRatioInPortrait="alwaysAllow"
         window:splitMinWidthDp="840"
         window:splitRatio="0.5"
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
         window:stickyPlaceholder="false">
         <ActivityFilter window:activityName="host.stjin.anonaddy.ui.rules.RulesSettingsActivity" />
     </SplitPlaceholderRule>
+    <!--endregion-->
+
+
+    <!--region Domains-->
+
+    <!-- TODO make a separate activity asking users to select a domain -->
+    <SplitPlaceholderRule
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
+        window:placeholderActivityName="host.stjin.anonaddy.ui.embedded.EmbeddedPlaceholderActivity"
+        window:splitLayoutDirection="locale"
+        window:splitMaxAspectRatioInPortrait="alwaysAllow"
+        window:splitMinWidthDp="840"
+        window:splitRatio="0.5"
+        window:stickyPlaceholder="false">
+        <ActivityFilter window:activityName="host.stjin.anonaddy.ui.domains.DomainSettingsActivity" />
+    </SplitPlaceholderRule>
+
+
+    <!-- Define a split for the DOMAIN activities. -->
+    <SplitPairRule
+        window:clearTop="true"
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
+        window:splitLayoutDirection="locale"
+        window:splitMaxAspectRatioInPortrait="alwaysAllow"
+        window:splitMinWidthDp="840"
+        window:splitRatio="0.5">
+
+        <SplitPairFilter
+            window:primaryActivityName="host.stjin.anonaddy.ui.domains.DomainSettingsActivity"
+            window:secondaryActivityName="host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity" />
+
+    </SplitPairRule>
+    <!--endregion-->
+
+
+    <!--region Usernames-->
+
+
+    <!-- TODO make a separate activity asking users to select a domain -->
+    <SplitPlaceholderRule
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
+        window:placeholderActivityName="host.stjin.anonaddy.ui.embedded.EmbeddedPlaceholderActivity"
+        window:splitLayoutDirection="locale"
+        window:splitMaxAspectRatioInPortrait="alwaysAllow"
+        window:splitMinWidthDp="840"
+        window:splitRatio="0.5"
+        window:stickyPlaceholder="false">
+        <ActivityFilter window:activityName="host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity" />
+    </SplitPlaceholderRule>
+
+
+    <!-- Define a split for the DOMAIN activities. -->
+    <SplitPairRule
+        window:clearTop="true"
+        window:finishPrimaryWithSecondary="never"
+        window:finishSecondaryWithPrimary="always"
+        window:splitLayoutDirection="locale"
+        window:splitMaxAspectRatioInPortrait="alwaysAllow"
+        window:splitMinWidthDp="840"
+        window:splitRatio="0.5">
+
+        <SplitPairFilter
+            window:primaryActivityName="host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity"
+            window:secondaryActivityName="host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity" />
+
+    </SplitPairRule>
+    <!--endregion-->
 
     <!-- Define activities that should never be part of a split. Note: Takes
          precedence over other split rules for the activity named in the

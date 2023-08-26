@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.UsernameAdapter
@@ -15,16 +17,19 @@ import host.stjin.anonaddy.databinding.ActivityUsernameSettingsBinding
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragment.AddUsernameBottomDialogListener {
 
+    private var usernames: ArrayList<Usernames>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
@@ -58,9 +63,17 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         setStats()
 
         setOnClickListener()
-        // Called on OnResume()
-        // getDataFromWeb()
+        setUsernamesRecyclerView()
+        getDataFromWeb(savedInstanceState)
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val json = gson.toJson(usernames)
+        outState.putString("usernames", json)
+    }
+
 
     private fun setOnClickListener() {
         binding.activityUsernameSettingsAddUsername.setOnClickListener {
@@ -73,11 +86,30 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         }
     }
 
-    private fun getDataFromWeb() {
+    private fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getAllUsernamesAndSetView()
-            getUserResource()
+            if (savedInstanceState != null) {
+                setStats()
+
+                val usernamesJson = savedInstanceState.getString("usernames")
+                if (!usernamesJson.isNullOrEmpty() && usernamesJson != "null") {
+                    val gson = Gson()
+
+                    val myType = object : TypeToken<ArrayList<Usernames>>() {}.type
+                    val list = gson.fromJson<ArrayList<Usernames>>(usernamesJson, myType)
+                    setUsernamesAdapter(list)
+                } else {
+                    // usernamesJson could be null when an embedded activity is opened instantly
+                    getUserResource()
+                    getAllUsernamesAndSetView()
+                }
+
+            } else {
+                getUserResource()
+                getAllUsernamesAndSetView()
+            }
+
         }
     }
 
@@ -117,19 +149,14 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         }
     }
 
-    private lateinit var usernamesAdapter: UsernameAdapter
-    private suspend fun getAllUsernamesAndSetView() {
+    private fun setUsernamesRecyclerView() {
         binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
             if (OneTimeRecyclerViewActions) {
                 OneTimeRecyclerViewActions = false
 
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, 2) ?: 2
-                shimmerLayoutManager = LinearLayoutManager(this@UsernamesSettingsActivity)
-
-
-                layoutManager = LinearLayoutManager(this@UsernamesSettingsActivity)
-
-
+                shimmerLayoutManager = GridLayoutManager(this@UsernamesSettingsActivity, ScreenSizeUtils.calculateNoOfColumns(context))
+                layoutManager = GridLayoutManager(this@UsernamesSettingsActivity, ScreenSizeUtils.calculateNoOfColumns(context))
 
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
@@ -139,6 +166,12 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
                 showShimmer()
             }
+        }
+    }
+
+    private lateinit var usernamesAdapter: UsernameAdapter
+    private suspend fun getAllUsernamesAndSetView() {
+        binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
             networkHelper?.getAllUsernames { list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
@@ -150,35 +183,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
                 }
 
                 if (list != null) {
-                    if (list.size > 0) {
-                        binding.activityUsernameSettingsNoUsernames.visibility = View.GONE
-                    } else {
-                        binding.activityUsernameSettingsNoUsernames.visibility = View.VISIBLE
-                    }
-
-                    // Set the count of aliases so that the shimmerview looks better next time
-                    encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, list.size)
-
-
-                    usernamesAdapter = UsernameAdapter(list)
-                    usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
-
-                        override fun onClickSettings(pos: Int, aView: View) {
-                            val intent = Intent(context, ManageUsernamesActivity::class.java)
-                            intent.putExtra("username_id", list[pos].id)
-                            startActivity(intent)
-                        }
-
-
-                        override fun onClickDelete(pos: Int, aView: View) {
-                            deleteUsername(list[pos].id, context)
-                        }
-
-                    })
-                    adapter = usernamesAdapter
-
-                    binding.animationFragment.stopAnimation()
-                    //binding.activityUsernameSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
+                    setUsernamesAdapter(list)
                 } else {
                     SnackbarHelper.createSnackbar(
                         this@UsernamesSettingsActivity,
@@ -195,6 +200,42 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
 
         }
 
+    }
+
+    private fun setUsernamesAdapter(list: java.util.ArrayList<Usernames>) {
+        binding.activityUsernameSettingsAllUsernamesRecyclerview.apply {
+            usernames = list
+            if (list.size > 0) {
+                binding.activityUsernameSettingsNoUsernames.visibility = View.GONE
+            } else {
+                binding.activityUsernameSettingsNoUsernames.visibility = View.VISIBLE
+            }
+
+            // Set the count of aliases so that the shimmerview looks better next time
+            encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, list.size)
+
+
+            usernamesAdapter = UsernameAdapter(list)
+            usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
+
+                override fun onClickSettings(pos: Int, aView: View) {
+                    val intent = Intent(context, ManageUsernamesActivity::class.java)
+                    intent.putExtra("username_id", list[pos].id)
+                    startActivity(intent)
+                }
+
+
+                override fun onClickDelete(pos: Int, aView: View) {
+                    deleteUsername(list[pos].id, context)
+                }
+
+            })
+            adapter = usernamesAdapter
+
+            binding.animationFragment.stopAnimation()
+            //binding.activityUsernameSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
+
+        }
     }
 
 
@@ -226,7 +267,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
         networkHelper?.deleteUsername({ result ->
             if (result == "204") {
                 deleteUsernameSnackbar.dismiss()
-                getDataFromWeb()
+                getDataFromWeb(null)
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -241,12 +282,7 @@ class UsernamesSettingsActivity : BaseActivity(), AddUsernameBottomDialogFragmen
     override fun onAdded() {
         addUsernameFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb()
+        getDataFromWeb(null)
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb()
-    }
 }

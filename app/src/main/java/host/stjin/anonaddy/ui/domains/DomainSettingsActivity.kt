@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.DomainAdapter
@@ -15,16 +17,19 @@ import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {
 
+    private var domains: ArrayList<Domains>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
@@ -60,9 +65,17 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         setStats()
 
         setOnClickListener()
-        // Called on OnResume()
-        // getDataFromWeb()
+        setDomainsRecyclerView()
+        getDataFromWeb(savedInstanceState)
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val json = gson.toJson(domains)
+        outState.putString("domains", json)
+    }
+
 
     private fun setOnClickListener() {
         binding.activityDomainSettingsAddDomain.setOnClickListener {
@@ -75,11 +88,31 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         }
     }
 
-    private fun getDataFromWeb() {
+    private fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
-            getAllDomainsAndSetView()
-            getUserResource()
+
+            if (savedInstanceState != null) {
+                setStats()
+
+                val domainsJson = savedInstanceState.getString("domains")
+                if (!domainsJson.isNullOrEmpty() && domainsJson != "null") {
+                    val gson = Gson()
+
+                    val myType = object : TypeToken<ArrayList<Domains>>() {}.type
+                    val list = gson.fromJson<ArrayList<Domains>>(domainsJson, myType)
+                    setDomainsAdapter(list)
+                } else {
+                    // domainsJson could be null when an embedded activity is opened instantly
+                    getUserResource()
+                    getAllDomainsAndSetView()
+                }
+
+            } else {
+                getUserResource()
+                getAllDomainsAndSetView()
+            }
+
         }
     }
 
@@ -120,22 +153,6 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     private lateinit var domainsAdapter: DomainAdapter
     private suspend fun getAllDomainsAndSetView() {
         binding.activityDomainSettingsAllDomainsRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
-                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
-                shimmerLayoutManager = LinearLayoutManager(this@DomainSettingsActivity)
-
-
-                layoutManager = LinearLayoutManager(this@DomainSettingsActivity)
-
-                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-
-                showShimmer()
-            }
             networkHelper?.getAllDomains { list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
@@ -147,34 +164,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
                 }
 
                 if (list != null) {
-                    if (list.size > 0) {
-                        binding.activityDomainSettingsNoDomains.visibility = View.GONE
-                    } else {
-                        binding.activityDomainSettingsNoDomains.visibility = View.VISIBLE
-                    }
-
-                    // Set the count of aliases so that the shimmerview looks better next time
-                    encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, list.size)
-
-                    domainsAdapter = DomainAdapter(list)
-                    domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
-
-                        override fun onClickSettings(pos: Int, aView: View) {
-                            val intent = Intent(context, ManageDomainsActivity::class.java)
-                            intent.putExtra("domain_id", list[pos].id)
-                            startActivity(intent)
-                        }
-
-
-                        override fun onClickDelete(pos: Int, aView: View) {
-                            deleteDomain(list[pos].id, context)
-                        }
-
-                    })
-                    adapter = domainsAdapter
-
-                    binding.animationFragment.stopAnimation()
-                    //binding.activityDomainSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
+                    setDomainsAdapter(list)
                 } else {
 
                     SnackbarHelper.createSnackbar(
@@ -192,6 +182,59 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
 
         }
 
+    }
+
+    private fun setDomainsAdapter(list: java.util.ArrayList<Domains>) {
+        binding.activityDomainSettingsAllDomainsRecyclerview.apply {
+            domains = list
+            if (list.size > 0) {
+                binding.activityDomainSettingsNoDomains.visibility = View.GONE
+            } else {
+                binding.activityDomainSettingsNoDomains.visibility = View.VISIBLE
+            }
+
+            // Set the count of aliases so that the shimmerview looks better next time
+            encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, list.size)
+
+            domainsAdapter = DomainAdapter(list)
+            domainsAdapter.setClickListener(object : DomainAdapter.ClickListener {
+
+                override fun onClickSettings(pos: Int, aView: View) {
+                    val intent = Intent(context, ManageDomainsActivity::class.java)
+                    intent.putExtra("domain_id", list[pos].id)
+                    startActivity(intent)
+                }
+
+
+                override fun onClickDelete(pos: Int, aView: View) {
+                    deleteDomain(list[pos].id, context)
+                }
+
+            })
+            adapter = domainsAdapter
+
+            binding.animationFragment.stopAnimation()
+            //binding.activityDomainSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
+        }
+    }
+
+    private fun setDomainsRecyclerView() {
+        binding.activityDomainSettingsAllDomainsRecyclerview.apply {
+            if (OneTimeRecyclerViewActions) {
+                OneTimeRecyclerViewActions = false
+                shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
+                shimmerLayoutManager = GridLayoutManager(this@DomainSettingsActivity, ScreenSizeUtils.calculateNoOfColumns(context))
+                layoutManager = GridLayoutManager(this@DomainSettingsActivity, ScreenSizeUtils.calculateNoOfColumns(context))
+
+                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+
+                showShimmer()
+            }
+        }
     }
 
 
@@ -223,7 +266,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
         networkHelper?.deleteDomain({ result ->
             if (result == "204") {
                 deleteDomainSnackbar.dismiss()
-                getDataFromWeb()
+                getDataFromWeb(null)
             } else {
 
                 SnackbarHelper.createSnackbar(
@@ -242,12 +285,7 @@ class DomainSettingsActivity : BaseActivity(), AddDomainBottomDialogFragment.Add
     override fun onAdded() {
         addDomainFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb()
+        getDataFromWeb(null)
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb()
-    }
 }
