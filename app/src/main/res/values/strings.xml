@@ -46,7 +46,7 @@
     <string name="recipients_list_description" tools:ignore="PluralsCandidate">%1$d aliases; Emails forwarded: %2$d</string>
     <string name="encryption_enabled">Encryption enabled</string>
     <string name="open_options">Open options</string>
-    <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.addy.io (or your own hosted instance)</string>
+    <string name="api_obtain_desc">Your API can be obtained at the settings page at app.addy.io (or your own hosted instance)</string>
     <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
     <string name="next">Next</string>
