@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:keep="@menu/bottom_nav_menu">
+    tools:keep="@menu/rail_nav_menu">
 
     <item
         android:id="@+id/navigation_home"
@@ -15,17 +15,17 @@
 
     <item
         android:id="@+id/navigation_recipients"
-        android:icon="@drawable/ic_user_anim_settings"
+        android:icon="@drawable/ic_inbox_anim_settings"
         android:title="@string/title_recipients" />
 
     <item
         android:id="@+id/navigation_usernames"
-        android:icon="@drawable/ic_user_menu"
+        android:icon="@drawable/ic_users"
         android:title="@string/usernames" />
 
     <item
         android:id="@+id/navigation_domains"
-        android:icon="@drawable/ic_dns"
+        android:icon="@drawable/ic_world"
         android:title="@string/domains" />
 
     <item

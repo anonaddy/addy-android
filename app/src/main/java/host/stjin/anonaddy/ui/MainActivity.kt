@@ -33,6 +33,7 @@ import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.domains.DomainSettingsFragment
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy.ui.home.HomeFragment
 import host.stjin.anonaddy.ui.recipients.RecipientsFragment
@@ -41,6 +42,7 @@ import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
+import host.stjin.anonaddy.ui.usernames.UsernamesSettingsFragment
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
@@ -78,11 +80,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private var addApiBottomDialogFragment: AddApiBottomDialogFragment =
         AddApiBottomDialogFragment.newInstance()
 
-    private val fragmentList = arrayListOf(
-        HomeFragment.newInstance(),
-        AliasFragment.newInstance(),
-        RecipientsFragment.newInstance()
-    )
 
     private lateinit var networkHelper: NetworkHelper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -174,9 +171,13 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
                 val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
                 val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
+                val usernamesFragment: UsernamesSettingsFragment = supportFragmentManager.fragments[3] as UsernamesSettingsFragment
+                val domainsFragment: DomainSettingsFragment = supportFragmentManager.fragments[4] as DomainSettingsFragment
                 homeFragment.getDataFromWeb(this@MainActivity, null)
                 aliasFragment.getDataFromWeb(this@MainActivity, null)
                 recipientsFragment.getDataFromWeb(null)
+                usernamesFragment.getDataFromWeb(null)
+                domainsFragment.getDataFromWeb(null)
 
 
                 // Since a bunch of different calls are being made, it is very hard to keep progress of everything.
@@ -305,6 +306,23 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val viewPager =
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp else binding.activityMainViewpager
 
+        val fragmentList = if (resources.getBoolean(R.bool.isTablet)) {
+            arrayListOf(
+                HomeFragment.newInstance(),
+                AliasFragment.newInstance(),
+                RecipientsFragment.newInstance(),
+                UsernamesSettingsFragment.newInstance(),
+                DomainSettingsFragment.newInstance()
+            )
+        } else {
+            arrayListOf(
+                HomeFragment.newInstance(),
+                AliasFragment.newInstance(),
+                RecipientsFragment.newInstance()
+            )
+        }
+
+
 
         viewPager!!.adapter = MainViewpagerAdapter(this, fragmentList)
         viewPager.offscreenPageLimit = 3
@@ -334,6 +352,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         }
 
                     }
+
                     1 -> {
                         navView!!.menu.findItem(R.id.navigation_alias).isChecked = true
 
@@ -349,6 +368,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         }
 
                     }
+
                     2 -> {
                         navView!!.menu.findItem(R.id.navigation_recipients).isChecked = true
 
@@ -363,6 +383,14 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                             )
                         }
 
+                    }
+
+                    3 -> {
+                        navView!!.menu.findItem(R.id.navigation_usernames).isChecked = true
+                    }
+
+                    4 -> {
+                        navView!!.menu.findItem(R.id.navigation_domains).isChecked = true
                     }
                 }
                 super.onPageSelected(position)
@@ -701,6 +729,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             R.id.navigation_home -> viewPager!!.currentItem = 0
             R.id.navigation_alias -> viewPager!!.currentItem = 1
             R.id.navigation_recipients -> viewPager!!.currentItem = 2
+            R.id.navigation_usernames -> viewPager!!.currentItem = 3 // Only SW600DP>
+            R.id.navigation_domains -> viewPager!!.currentItem = 4 // Only SW600DP>
         }
     }
 
@@ -742,26 +772,32 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
+    // TODO CHECK TABLET
     private fun goToTarget(string: String) {
         when (string) {
             SearchActivity.SearchTargets.ALIASES.activity -> {
                 switchFragments(R.id.navigation_alias)
             }
+
             SearchActivity.SearchTargets.RECIPIENTS.activity -> {
                 switchFragments(R.id.navigation_recipients)
             }
+
             SearchActivity.SearchTargets.DOMAINS.activity -> {
                 val intent = Intent(this, DomainSettingsActivity::class.java)
                 startActivity(intent)
             }
+
             SearchActivity.SearchTargets.USERNAMES.activity -> {
                 val intent = Intent(this, UsernamesSettingsActivity::class.java)
                 startActivity(intent)
             }
+
             SearchActivity.SearchTargets.RULES.activity -> {
                 val intent = Intent(this, RulesSettingsActivity::class.java)
                 startActivity(intent)
             }
+
             SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
                 val intent = Intent(this, FailedDeliveriesActivity::class.java)
                 startActivity(intent)

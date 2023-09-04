@@ -210,7 +210,7 @@
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
                                 android:contentDescription="@string/recipients"
-                                android:src="@drawable/ic_user"
+                                android:src="@drawable/ic_inbox"
                                 android:tint="@android:color/white"
                                 app:tint="@android:color/white"
                                 tools:ignore="UseAppTint" />

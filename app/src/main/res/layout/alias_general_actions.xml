@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         app:sectionDescription="@tools:sample/full_names"
         app:sectionEndIcon="@drawable/ic_edit"
-        app:sectionStartIcon="@drawable/ic_user"
+        app:sectionStartIcon="@drawable/ic_inbox"
         app:sectionTitle="@string/recipients" />
 
     <host.stjin.anonaddy.ui.customviews.SectionView

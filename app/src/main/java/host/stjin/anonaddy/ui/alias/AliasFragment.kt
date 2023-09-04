@@ -554,6 +554,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
             showShimmer()
         }
+
     }
 
 

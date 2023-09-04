@@ -53,7 +53,8 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
     ): View {
         _binding = BottomsheetAdddomainBinding.inflate(inflater, container, false)
         val root = binding.root
-        listener = activity as AddDomainBottomDialogListener
+
+        listener = parentFragment as AddDomainBottomDialogListener
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard

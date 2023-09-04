@@ -154,7 +154,7 @@
                         android:layout_height="match_parent"
                         app:sectionDescription="@tools:sample/full_names"
                         app:sectionEndIcon="@drawable/ic_edit"
-                        app:sectionStartIcon="@drawable/ic_user"
+                        app:sectionStartIcon="@drawable/ic_inbox"
                         app:sectionTitle="@string/default_recipient" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView

@@ -11,17 +11,19 @@
         android:layout_width="80dp"
         android:layout_height="match_parent"
         app:headerLayout="@layout/navigation_rail_fab"
+        android:clipChildren="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/rail_nav_menu"
-        app:menuGravity="center" />
+        app:menuGravity="bottom" />
 
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/activity_main_viewpager_sw600dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_marginStart="80dp"
         android:nestedScrollingEnabled="true" />
 
