@@ -94,10 +94,10 @@ dependencies {
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
     implementation("androidx.core:core-ktx:1.10.1")
-    implementation("com.google.android.gms:play-services-wearable:18.0.0")
+    implementation("com.google.android.gms:play-services-wearable:18.1.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
-    implementation("androidx.wear:wear:1.2.0")
+    implementation("androidx.wear:wear:1.3.0")
     implementation(project(mapOf("path" to ":anonaddy_shared")))
 
     compileOnly("com.google.android.wearable:wearable:2.9.0")

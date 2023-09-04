@@ -162,18 +162,29 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource = user
                 getStatistics()
             } else {
-                val bottomNavView: BottomNavigationView? =
-                    activity?.findViewById(R.id.nav_view)
-                bottomNavView?.let {
+
+
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
-                        context,
-                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        it,
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
-                    )
-                        .apply {
-                            anchorView = bottomNavView
-                        }.show()
+                    ).show()
+                } else {
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
                 }
 
             }
@@ -211,19 +222,28 @@ class HomeFragment : Fragment() {
                 if (list != null) {
                     setMostActiveAliasesAdapter(list)
                 } else {
-                    // Data could not be loaded
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
+
+                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                            it,
+                            (activity as MainActivity).findViewById(R.id.main_container),
                             LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
+                        ).show()
+                    } else {
+                        val bottomNavView: BottomNavigationView? =
+                            activity?.findViewById(R.id.nav_view)
+                        bottomNavView?.let {
+                            SnackbarHelper.createSnackbar(
+                                requireContext(),
+                                requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                it,
+                                LoggingHelper.LOGFILES.DEFAULT
+                            )
+                                .apply {
+                                    anchorView = bottomNavView
+                                }.show()
+                        }
                     }
                 }
             },
@@ -287,13 +307,22 @@ class HomeFragment : Fragment() {
                     val clip = ClipData.newPlainText("alias", aliasEmailAddress)
                     clipboard.setPrimaryClip(clip)
 
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
-                            anchorView = bottomNavView
-                        }.show()
+                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                        SnackbarHelper.createSnackbar(
+                            context,
+                            context.resources.getString(R.string.copied_alias),
+                            (activity as MainActivity).findViewById(R.id.main_container)
+                        ).show()
+                    } else {
+                        val bottomNavView: BottomNavigationView? =
+                            activity?.findViewById(R.id.nav_view)
+                        bottomNavView?.let {
+                            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
+                                anchorView = bottomNavView
+                            }.show()
+                        }
                     }
+
                 }
 
             })

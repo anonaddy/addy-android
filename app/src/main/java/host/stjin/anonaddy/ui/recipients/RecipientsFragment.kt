@@ -161,18 +161,29 @@ class RecipientsFragment : Fragment(),
                 // Update stats
                 setStats()
             } else {
-                val bottomNavView: BottomNavigationView? =
-                    activity?.findViewById(R.id.nav_view)
-                bottomNavView?.let {
+
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
-                        context,
-                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        it,
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
-                    )
-                        .apply {
-                            anchorView = bottomNavView
-                        }.show()
+                    ).show()
+                } else {
+                    // Data could not be loaded
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
                 }
 
             }
@@ -233,20 +244,32 @@ class RecipientsFragment : Fragment(),
             if (list != null) {
                 setRecipientAdapter(list)
             } else {
-                // Data could not be loaded
-                val bottomNavView: BottomNavigationView? =
-                    activity?.findViewById(R.id.nav_view)
-                bottomNavView?.let {
+
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
-                        it,
+                        (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
-                    )
-                        .apply {
-                            anchorView = bottomNavView
-                        }.show()
+                    ).show()
+                } else {
+                    // Data could not be loaded
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
                 }
+
+
             }
         }, verifiedOnly = false)
 
@@ -297,34 +320,53 @@ class RecipientsFragment : Fragment(),
             if (result == "200") {
                 verificationEmailSentSnackbar(context)
             } else {
-                val bottomNavView: BottomNavigationView? =
-                    activity?.findViewById(R.id.nav_view)
-
-                bottomNavView?.let {
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         context,
                         context.resources.getString(R.string.error_resend_verification) + "\n" + result,
-                        it,
+                        (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
-                    )
-                        .apply {
-                            anchorView = bottomNavView
-                        }.show()
-                }
+                    ).show()
+                } else {
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
 
-            }
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            context,
+                            context.resources.getString(R.string.error_resend_verification) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
+                }
+                }
         }, id)
     }
 
 
     private fun verificationEmailSentSnackbar(context: Context) {
-        val bottomNavView: BottomNavigationView? =
-            activity?.findViewById(R.id.nav_view)
-        bottomNavView?.let {
-            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.verification_email_has_been_sent), it).apply {
-                anchorView = bottomNavView
-            }.show()
+
+        if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+            SnackbarHelper.createSnackbar(
+                context,
+                context.resources.getString(R.string.verification_email_has_been_sent),
+                (activity as MainActivity).findViewById(R.id.main_container)
+            ).show()
+        } else {
+            val bottomNavView: BottomNavigationView? =
+                activity?.findViewById(R.id.nav_view)
+            bottomNavView?.let {
+                SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.verification_email_has_been_sent), it).apply {
+                    anchorView = bottomNavView
+                }.show()
+            }
         }
+
+
     }
 
     private lateinit var deleteRecipientSnackbar: Snackbar
@@ -337,19 +379,32 @@ class RecipientsFragment : Fragment(),
             neutralButtonText = resources.getString(R.string.cancel),
             positiveButtonText = resources.getString(R.string.delete),
             positiveButtonAction = {
-                val bottomNavView: BottomNavigationView? =
-                    activity?.findViewById(R.id.nav_view)
-                bottomNavView?.let {
+
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                     deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
                         context,
                         this.resources.getString(R.string.deleting_recipient),
-                        it,
+                        (activity as MainActivity).findViewById(R.id.main_container),
                         length = Snackbar.LENGTH_INDEFINITE
-                    ).apply {
-                        anchorView = bottomNavView
-                    }
+                    )
                     deleteRecipientSnackbar.show()
+                } else {
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
+                            context,
+                            this.resources.getString(R.string.deleting_recipient),
+                            it,
+                            length = Snackbar.LENGTH_INDEFINITE
+                        ).apply {
+                            anchorView = bottomNavView
+                        }
+                        deleteRecipientSnackbar.show()
+                    }
                 }
+
+
 
                 lifecycleScope.launch {
                     deleteRecipientHttpRequest(id, context)
@@ -364,22 +419,37 @@ class RecipientsFragment : Fragment(),
                 deleteRecipientSnackbar.dismiss()
                 getDataFromWeb(null)
             } else {
-                val bottomNavView: BottomNavigationView? =
-                    activity?.findViewById(R.id.nav_view)
-                bottomNavView?.let {
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                     deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
                         context,
                         context.resources.getString(
                             R.string.s_s,
                             context.resources.getString(R.string.error_deleting_recipient), result
                         ),
-                        it,
+                        (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
-                    ).apply {
-                        anchorView = bottomNavView
-                    }
+                    )
                     deleteRecipientSnackbar.show()
+                } else {
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
+                            context,
+                            context.resources.getString(
+                                R.string.s_s,
+                                context.resources.getString(R.string.error_deleting_recipient), result
+                            ),
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        ).apply {
+                            anchorView = bottomNavView
+                        }
+                        deleteRecipientSnackbar.show()
+                    }
                 }
+
+
             }
         }, id)
     }

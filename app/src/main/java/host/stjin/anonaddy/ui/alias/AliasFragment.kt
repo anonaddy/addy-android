@@ -215,19 +215,29 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     user.total_emails_sent
                 )
             } else {
-                val bottomNavView: BottomNavigationView? =
-                    activity?.findViewById(R.id.nav_view)
-                bottomNavView?.let {
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         context,
                         context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        it,
+                        (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
-                    )
-                        .apply {
-                            anchorView = bottomNavView
-                        }.show()
+                    ).show()
+                } else {
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            context,
+                            context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
                 }
+
 
             }
         }
@@ -302,19 +312,32 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         setAliasesAdapter(requireContext(), list, forceReload)
                     } else {
                         // Data could not be loaded
-                        val bottomNavView: BottomNavigationView? =
-                            activity?.findViewById(R.id.nav_view)
-                        bottomNavView?.let {
+
+
+                        if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                             SnackbarHelper.createSnackbar(
                                 requireContext(),
                                 requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                it,
+                                (activity as MainActivity).findViewById(R.id.main_container),
                                 LoggingHelper.LOGFILES.DEFAULT
-                            )
-                                .apply {
-                                    anchorView = bottomNavView
-                                }.show()
+                            ).show()
+                        } else {
+                            val bottomNavView: BottomNavigationView? =
+                                activity?.findViewById(R.id.nav_view)
+                            bottomNavView?.let {
+                                SnackbarHelper.createSnackbar(
+                                    requireContext(),
+                                    requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                    it,
+                                    LoggingHelper.LOGFILES.DEFAULT
+                                )
+                                    .apply {
+                                        anchorView = bottomNavView
+                                    }.show()
+                            }
                         }
+
+
                     }
 
                     binding.aliasAllAliasesRecyclerview.hideShimmer()
@@ -417,12 +440,21 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
                     hideFabForSnackBarTime()
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
-                            anchorView = bottomNavView
-                        }.show()
+
+                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                        SnackbarHelper.createSnackbar(
+                            context,
+                            context.resources.getString(R.string.copied_alias),
+                            (activity as MainActivity).findViewById(R.id.main_container)
+                        ).show()
+                    } else {
+                        val bottomNavView: BottomNavigationView? =
+                            activity?.findViewById(R.id.nav_view)
+                        bottomNavView?.let {
+                            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
+                                anchorView = bottomNavView
+                            }.show()
+                        }
                     }
                 }
 
@@ -469,21 +501,38 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private fun showSearchHintSnackbar() {
         hideFabForSnackBarTime()
-        val bottomNavView: BottomNavigationView? =
-            activity?.findViewById(R.id.nav_view)
-        bottomNavView?.let {
+
+
+        if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
             val snackbar = SnackbarHelper.createSnackbar(
                 requireContext(),
                 requireContext().resources.getString(R.string.alias_global_search_hint),
-                it,
+                (activity as MainActivity).findViewById(R.id.main_container),
                 LoggingHelper.LOGFILES.DEFAULT
             )
             snackbar.setAction(R.string.search) {
                 (activity as MainActivity).openSearch()
             }
-            snackbar.anchorView = bottomNavView
             snackbar.show()
+        } else {
+            val bottomNavView: BottomNavigationView? =
+                activity?.findViewById(R.id.nav_view)
+            bottomNavView?.let {
+                val snackbar = SnackbarHelper.createSnackbar(
+                    requireContext(),
+                    requireContext().resources.getString(R.string.alias_global_search_hint),
+                    it,
+                    LoggingHelper.LOGFILES.DEFAULT
+                )
+                snackbar.setAction(R.string.search) {
+                    (activity as MainActivity).openSearch()
+                }
+                snackbar.anchorView = bottomNavView
+                snackbar.show()
+            }
         }
+
+
     }
 
     private var aliasAdapter: AliasAdapter? = null
