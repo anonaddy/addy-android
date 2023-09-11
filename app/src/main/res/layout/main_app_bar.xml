@@ -153,7 +153,6 @@
                     android:layout_height="8dp"
                     android:layout_alignParentEnd="true"
                     android:clickable="true"
-                    android:contentDescription="@string/new_failed_deliveries"
                     android:focusable="true"
                     android:src="@drawable/circle"
                     android:tintMode="src_over"

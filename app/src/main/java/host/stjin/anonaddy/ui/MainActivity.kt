@@ -14,6 +14,8 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -30,14 +32,17 @@ import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasFragment
+import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsFragment
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
+import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesFragment
 import host.stjin.anonaddy.ui.home.HomeFragment
 import host.stjin.anonaddy.ui.recipients.RecipientsFragment
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
+import host.stjin.anonaddy.ui.rules.RulesSettingsFragment
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
@@ -117,6 +122,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         checkForSubscriptionExpiration()
                         // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
                         BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
+
+                        checkForNewFailedDeliveries()
                     }
                 }
             }
@@ -124,6 +131,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             setOnBigScreenClickListener()
+        }
+
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            setNavRailUserInitials()
         }
 
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
@@ -137,12 +148,19 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
+    private fun setNavRailUserInitials() {
+        val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
+        binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_user_initials)!!.text = usernameInitials
+    }
+
     private fun setOnBigScreenClickListener() {
-        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_search)!!.setOnClickListener {
-            openSearch()
+        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_settings)!!.setOnClickListener {
+            val intent = Intent(this, AppSettingsActivity::class.java)
+            startActivity(intent)
         }
     }
 
+    // This only applies to <sw600Dp devices
     private fun setRefreshLayout() {
         binding.refreshLayout!!.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
             override fun refresh() {
@@ -154,9 +172,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 )
                 shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
 
-                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                    // Refresh failed deliveries
-                    initialiseMainAppBar()
+                lifecycleScope.launch {
+                    checkForNewFailedDeliveries()
                 }
 
                 // Check for updates and check API expiration key
@@ -171,13 +188,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
                 val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
                 val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
-                val usernamesFragment: UsernamesSettingsFragment = supportFragmentManager.fragments[3] as UsernamesSettingsFragment
-                val domainsFragment: DomainSettingsFragment = supportFragmentManager.fragments[4] as DomainSettingsFragment
                 homeFragment.getDataFromWeb(this@MainActivity, null)
                 aliasFragment.getDataFromWeb(this@MainActivity, null)
                 recipientsFragment.getDataFromWeb(null)
-                usernamesFragment.getDataFromWeb(null)
-                domainsFragment.getDataFromWeb(null)
 
 
                 // Since a bunch of different calls are being made, it is very hard to keep progress of everything.
@@ -312,7 +325,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 AliasFragment.newInstance(),
                 RecipientsFragment.newInstance(),
                 UsernamesSettingsFragment.newInstance(),
-                DomainSettingsFragment.newInstance()
+                DomainSettingsFragment.newInstance(),
+                RulesSettingsFragment.newInstance(),
+                FailedDeliveriesFragment.newInstance()
             )
         } else {
             arrayListOf(
@@ -325,7 +340,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
         viewPager!!.adapter = MainViewpagerAdapter(this, fragmentList)
-        viewPager.offscreenPageLimit = 3
+        viewPager.offscreenPageLimit = if (resources.getBoolean(R.bool.isTablet)) 7 else 3
         // Allow swiping through the pages
         viewPager.isUserInputEnabled = true
         viewPager.setPageTransformer { page, position ->
@@ -391,6 +406,14 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
                     4 -> {
                         navView!!.menu.findItem(R.id.navigation_domains).isChecked = true
+                    }
+
+                    5 -> {
+                        navView!!.menu.findItem(R.id.navigation_rules).isChecked = true
+                    }
+
+                    6 -> {
+                        navView!!.menu.findItem(R.id.navigation_failed_deliveries).isChecked = true
                     }
                 }
                 super.onPageSelected(position)
@@ -466,10 +489,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon.setOnClickListener {
             val intent = Intent(this, FailedDeliveriesActivity::class.java)
             startActivity(intent)
-        }
-
-        lifecycleScope.launch {
-            checkForNewFailedDeliveries()
         }
     }
 
@@ -598,17 +617,60 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private var mUpdateAvailable = false
     private var mPermissionsRequired = false
     private fun setAlertIconToProfile(updateAvailable: Boolean? = null, permissionsRequired: Boolean? = null) {
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            // Store the bools for comparison next time this method gets called
-            if (updateAvailable != null) {
-                mUpdateAvailable = updateAvailable
-            }
-            if (permissionsRequired != null) {
-                mPermissionsRequired = permissionsRequired
-            }
+        // Store the bools for comparison next time this method gets called
+        if (updateAvailable != null) {
+            mUpdateAvailable = updateAvailable
+        }
+        if (permissionsRequired != null) {
+            mPermissionsRequired = permissionsRequired
+        }
 
-            val shouldShowDot = mUpdateAvailable || mPermissionsRequired
+        val shouldShowDot = mUpdateAvailable || mPermissionsRequired
 
+
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            // If there is an update available or there are permissions required, show the dot
+            val animZoom =
+                if (shouldShowDot && binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility != View.VISIBLE) {
+                    // loading the animation of
+                    // zoom_in.xml file into a variable
+                    AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.zoom_in
+                    )
+                } else if (
+                // If there is not update AND there are no permissions required, hide the dot
+                    !shouldShowDot &&
+                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility != View.INVISIBLE
+                ) {
+                    // loading the animation of
+                    // zoom_in.xml file into a variable
+                    AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.zoom_out
+                    )
+                } else {
+                    null
+                }
+
+            animZoom?.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {
+                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility =
+                        if (shouldShowDot) View.INVISIBLE else View.VISIBLE
+                }
+
+                override fun onAnimationEnd(p0: Animation?) {
+                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility =
+                        if (shouldShowDot) View.VISIBLE else View.INVISIBLE
+                }
+
+                override fun onAnimationRepeat(p0: Animation?) {
+                    //
+                }
+            }
+            )
+            animZoom?.let { binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.startAnimation(it) }
+        } else {
             // If there is an update available or there are permissions required, show the dot
             val animZoom = if (shouldShowDot && binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility != View.VISIBLE) {
                 // loading the animation of
@@ -662,12 +724,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     - There are more failed deliveries than the server cached last time (in which case the user should have got a notification)
      */
     private suspend fun checkForNewFailedDeliveries() {
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            val encryptedSettingsManager = SettingsManager(true, this)
-            networkHelper.getAllFailedDeliveries({ result, _ ->
-                val currentFailedDeliveries =
-                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-                if ((result?.size ?: 0) > currentFailedDeliveries) {
+        val encryptedSettingsManager = SettingsManager(true, this)
+        networkHelper.getAllFailedDeliveries({ result, _ ->
+            val currentFailedDeliveries =
+                encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+            if ((result?.size ?: 0) > currentFailedDeliveries) {
+                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                     if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
                         // loading the animation of
                         // zoom_in.xml file into a variable
@@ -692,6 +754,14 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomIn)
                     }
                 } else {
+                    val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
+                    badge.isVisible = true
+                    // An icon only badge will be displayed unless a number or text is set:
+                    badge.number = (result?.size?.minus(currentFailedDeliveries)) ?: 0  // or badge.text = "New"
+                }
+            } else {
+                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+
                     if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.INVISIBLE) {
 
                         // loading the animation of
@@ -716,9 +786,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         )
                         binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomOut)
                     }
+                } else {
+                    binding.navRail!!.removeBadge(R.id.navigation_failed_deliveries)
                 }
-            }, show404Toast = false)
-        }
+            }
+        }, show404Toast = false)
     }
 
     fun switchFragments(fragment: Int) {
@@ -731,6 +803,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             R.id.navigation_recipients -> viewPager!!.currentItem = 2
             R.id.navigation_usernames -> viewPager!!.currentItem = 3 // Only SW600DP>
             R.id.navigation_domains -> viewPager!!.currentItem = 4 // Only SW600DP>
+            R.id.navigation_rules -> viewPager!!.currentItem = 5 // Only SW600DP>
+            R.id.navigation_failed_deliveries -> viewPager!!.currentItem = 6 // Only SW600DP>
         }
     }
 
@@ -784,23 +858,41 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
 
             SearchActivity.SearchTargets.DOMAINS.activity -> {
-                val intent = Intent(this, DomainSettingsActivity::class.java)
-                startActivity(intent)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    switchFragments(R.id.navigation_domains)
+                } else {
+                    val intent = Intent(this, DomainSettingsActivity::class.java)
+                    startActivity(intent)
+                }
             }
 
             SearchActivity.SearchTargets.USERNAMES.activity -> {
-                val intent = Intent(this, UsernamesSettingsActivity::class.java)
-                startActivity(intent)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    switchFragments(R.id.navigation_usernames)
+                } else {
+                    val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
             }
 
             SearchActivity.SearchTargets.RULES.activity -> {
-                val intent = Intent(this, RulesSettingsActivity::class.java)
-                startActivity(intent)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    switchFragments(R.id.navigation_rules)
+                } else {
+                    val intent = Intent(this, RulesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+
             }
 
             SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
-                val intent = Intent(this, FailedDeliveriesActivity::class.java)
-                startActivity(intent)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    switchFragments(R.id.navigation_failed_deliveries)
+                } else {
+                    val intent = Intent(this, FailedDeliveriesActivity::class.java)
+                    startActivity(intent)
+                }
+
             }
         }
     }

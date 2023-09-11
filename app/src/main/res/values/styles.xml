@@ -33,6 +33,7 @@
         <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_anim</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
+        <item name="badgeStyle">@style/AddyIoBadge</item>
     </style>
 
     <style name="AppTheme.Transparent" parent="AppTheme.NoActionBar">
@@ -436,6 +437,10 @@
         <item name="contentPaddingRight">6dp</item>
 
         <item name="cardBackgroundColor">@android:color/white</item>
+    </style>
+
+    <style name="AddyIoBadge" parent="Widget.MaterialComponents.Badge">
+        <item name="backgroundColor">@color/softRed</item>
     </style>
 
 </resources>

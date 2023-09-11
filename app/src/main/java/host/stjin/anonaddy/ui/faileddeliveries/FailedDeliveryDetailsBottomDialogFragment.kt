@@ -55,7 +55,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
         // Check if failedDeliveryId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (failedDeliveryId != null) {
-            listener = activity as AddFailedDeliveryBottomDialogListener
+            listener = parentFragment as AddFailedDeliveryBottomDialogListener
 
             binding.bsFailedDeliveriesDeleteButton.setOnClickListener(this)
 

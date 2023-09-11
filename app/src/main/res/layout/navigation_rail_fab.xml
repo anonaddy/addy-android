@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
@@ -7,22 +8,55 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <ImageView
+
+    <TextView
+        android:id="@+id/navigation_rail_user_initials"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginBottom="16dp"
-        android:padding="8dp"
-        android:src="@drawable/icon_monocolor"
-        app:tint="?colorPrimary" />
+        android:autoSizeTextType="uniform"
+        android:background="@drawable/circle"
+        android:clickable="false"
+        android:contentDescription="@string/open_options"
+        android:focusable="false"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="SV"
+        android:textColor="?colorOnSecondaryContainer"
+        android:textSize="18sp"
+        app:layout_collapseMode="pin"
+        app:tint="?colorOnSecondaryContainer"
+        tools:ignore="HardcodedText" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/navigation_rail_fab_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clipToOutline="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_search" />
 
+    <RelativeLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp">
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/navigation_rail_fab_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_settings" />
+
+        <ImageView
+            android:id="@+id/navigation_rail_update_icon"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentEnd="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/circle"
+            android:tintMode="src_over"
+            android:visibility="invisible"
+            app:tint="@color/softRed" />
+
+    </RelativeLayout>
 </LinearLayout>

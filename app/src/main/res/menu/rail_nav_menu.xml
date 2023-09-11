@@ -34,7 +34,7 @@
         android:title="@string/rules" />
 
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/settings" />
+        android:id="@+id/navigation_failed_deliveries"
+        android:icon="@drawable/ic_mail_error"
+        android:title="@string/failed_deliveries" />
 </menu>

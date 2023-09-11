@@ -124,7 +124,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                 // Update stats
                 setStats()
             } else {
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
@@ -197,7 +197,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                     setUsernamesAdapter(list)
                 } else {
 
-                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
@@ -270,7 +270,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
             positiveButtonText = resources.getString(R.string.delete),
             positiveButtonAction = {
 
-                deleteUsernameSnackbar = if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                deleteUsernameSnackbar = if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         this.resources.getString(R.string.deleting_username),
@@ -302,7 +302,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
             } else {
 
 
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result),

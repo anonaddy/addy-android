@@ -123,7 +123,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                 // Update stats
                 setStats()
             } else {
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
@@ -175,7 +175,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                     setDomainsAdapter(list)
                 } else {
 
-                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             this.resources.getString(R.string.error_obtaining_domain) + "\n" + error,
@@ -267,7 +267,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
             positiveButtonAction = {
 
 
-                deleteDomainSnackbar = if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                deleteDomainSnackbar = if (context.resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         this.resources.getString(R.string.deleting_domain),
@@ -299,7 +299,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                 getDataFromWeb(null)
             } else {
 
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (context.resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         context.resources.getString(
