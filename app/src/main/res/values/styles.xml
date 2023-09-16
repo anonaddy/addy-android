@@ -444,32 +444,5 @@
     </style>
 
 
-    <style name="AddyIoLineChart">
-        <item name="line1Spec">@style/AddIoLineSpec1</item>
-        <item name="line2Spec">@style/AddIoLineSpec2</item>
-        <item name="line3Spec">@style/AddIoLineSpec3</item>
-    </style>
-
-    <style name="AddIoLineSpec1">
-        <item name="color">?colorTertiary</item>
-    </style>
-
-    <style name="AddIoLineSpec2">
-        <item name="color">?colorPrimary</item>
-    </style>
-
-    <style name="AddIoLineSpec3">
-        <item name="color">?colorSecondary</item>
-    </style>
-
-    <style name="AddyIoAxisStyle">
-        <item name="axisLabelStyle">@style/AddyIoAxisLabelStyle</item>
-        <item name="showGuideline">false</item>
-    </style>
-
-    <style name="AddyIoAxisLabelStyle">
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="typeface">sans</item>
-    </style>
 
 </resources>

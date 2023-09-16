@@ -18,9 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
-import com.patrykandpatrick.vico.core.axis.AxisPosition
-import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
-import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
 import com.patrykandpatrick.vico.core.entry.entriesOf
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import host.stjin.anonaddy.BuildConfig
@@ -230,14 +227,11 @@ class HomeFragment : Fragment() {
             )
         }
 
-        val bottomAxisValueFormatter =
-            AxisValueFormatter<AxisPosition.Horizontal.Bottom> { x, _ -> data.labels[x.toInt() % data.labels.size] }
 
         binding.homeChartView1.setModel(chartEntryModel)
-        (binding.homeChartView1.bottomAxis as? HorizontalAxis<AxisPosition.Horizontal.Bottom>)?.valueFormatter = bottomAxisValueFormatter
-
-
+        binding.homeChartView1.setModel(chartEntryModel)
     }
+
 
     // Update information when coming back, such as aliases and statistics
     override fun onResume() {
