@@ -15,8 +15,10 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIo
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -24,12 +26,14 @@ import kotlinx.coroutines.launch
 
 class ManageDomainsActivity : BaseActivity(),
     EditDomainDescriptionBottomDialogFragment.AddEditDomainDescriptionBottomDialogListener,
+    EditDomainFromNameBottomDialogFragment.AddEditDomainFromNameBottomDialogListener,
     EditDomainRecipientBottomDialogFragment.AddEditDomainRecipientBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment
     private lateinit var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment
+    private lateinit var editDomainFromNameBottomDialogFragment: EditDomainFromNameBottomDialogFragment
 
     private var domain: Domains? = null
         set(value) {
@@ -226,6 +230,17 @@ class ManageDomainsActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageDomainFromNameEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainFromNameBottomDialogFragment.isAdded) {
+                    editDomainFromNameBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainFromNameBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
 
         binding.activityManageDomainDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -401,6 +416,42 @@ class ManageDomainsActivity : BaseActivity(),
         )
 
         /**
+         * FROM NAME
+         */
+
+
+        // Not available for free subscriptions
+        // TODO test on selfhosted
+        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            binding.activityManageDomainFromNameEdit.setLayoutEnabled(false)
+            binding.activityManageDomainFromNameEdit.setDescription(
+                this.resources.getString(
+                    R.string.from_name_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (domain.from_name != null) {
+                binding.activityManageDomainFromNameEdit.setDescription(domain.from_name)
+            } else {
+                binding.activityManageDomainFromNameEdit.setDescription(
+                    this.resources.getString(
+                        R.string.domain_no_from_name
+                    )
+                )
+
+                // reset this value as it now includes the description
+                editDomainFromNameBottomDialogFragment = EditDomainFromNameBottomDialogFragment.newInstance(
+                    this.domain!!.id,
+                    this.domain!!.domain,
+                    domain.description
+                )
+            }
+
+        }
+
+
+        /**
          * Check DNS
          */
 
@@ -429,6 +480,12 @@ class ManageDomainsActivity : BaseActivity(),
 
     override fun recipientEdited(domain: Domains) {
         editDomainRecipientBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
+        this.domain = domain
+    }
+
+    override fun fromNameEdited(domain: Domains) {
+        editDomainFromNameBottomDialogFragment.dismissAllowingStateLoss()
         // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
         this.domain = domain
     }

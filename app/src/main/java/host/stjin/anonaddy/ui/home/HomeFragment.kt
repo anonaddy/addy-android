@@ -2,46 +2,39 @@ package host.stjin.anonaddy.ui.home
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.*
-import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
+import com.patrykandpatrick.vico.core.axis.AxisPosition
+import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
+import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
+import com.patrykandpatrick.vico.core.entry.entriesOf
+import com.patrykandpatrick.vico.core.entry.entryModelOf
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
 import host.stjin.anonaddy.ui.MainActivity
-import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
-import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
-import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
-import host.stjin.anonaddy_shared.models.AliasSortFilter
-import host.stjin.anonaddy_shared.models.AliasesArray
+import host.stjin.anonaddy_shared.models.ChartData
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 
 class HomeFragment : Fragment() {
@@ -71,7 +64,6 @@ class HomeFragment : Fragment() {
         setOnClickListeners()
         getStatistics()
         setNsvListener()
-        setMostActiveAliasesRecyclerView()
 
         // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
         // API calls, user should swipe to refresh starting from v4.5.0
@@ -81,11 +73,12 @@ class HomeFragment : Fragment() {
     }
 
 
+    private var chartData: ChartData? = null
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val gson = Gson()
-        val json = gson.toJson(mostActiveAliases)
-        outState.putString("mostActiveAliases", json)
+        val json = gson.toJson(chartData)
+        outState.putString("chartData", json)
     }
 
 
@@ -117,25 +110,133 @@ class HomeFragment : Fragment() {
             // On activity recreations (orientationchanges, sizing of the app) savedInstanceState will be filled using onSaveInstanceState
             // This way we can instantly set the values without another API call.
             if (savedInstanceState != null) {
-                val mostActiveAliasesJson = savedInstanceState.getString("mostActiveAliases")
-                if (mostActiveAliasesJson!!.isNotEmpty()) {
+                val chartData = savedInstanceState.getString("chartData")
+                if (chartData!!.isNotEmpty()) {
                     val gson = Gson()
-                    val list: AliasesArray = gson.fromJson(mostActiveAliasesJson, AliasesArray::class.java)
-                    setMostActiveAliasesAdapter(list)
+                    val data: ChartData = gson.fromJson(chartData, ChartData::class.java)
+                    setChartData(data)
                 }
 
                 // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
                 // no need to obtain this from savedInstanceState
                 getStatistics()
             } else {
-                getMostActiveAliases()
+                getChartData()
                 getWebStatistics(context)
             }
-
-
-            // Set forceUpdate to false (if it was true) to prevent the lists from reloading every oneresume
-            forceUpdate = false
         }
+    }
+
+    private suspend fun getChartData() {
+        networkHelper?.getChartData { chartData: ChartData?, result: String? ->
+            if (chartData != null) {
+                setChartData(chartData)
+            } else {
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
+                        (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                } else {
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setChartData(data: ChartData) {
+        chartData = data
+
+
+        //val numberStr = data.forwardsData.map { FloatEntry(0,it.toFloat()) }
+
+
+        val chartEntryModel = if (BuildConfig.DEBUG) {
+            val random = java.util.Random()
+            val forwardedData = entriesOf(
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20)
+            )
+            val repliesData = entriesOf(
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20)
+            )
+            val sendsData = entriesOf(
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20),
+                random.nextInt(20)
+            )
+            entryModelOf(
+                forwardedData, repliesData, sendsData
+            )
+        } else {
+            val forwardedData = entriesOf(
+                data.forwardsData[0],
+                data.forwardsData[1],
+                data.forwardsData[2],
+                data.forwardsData[3],
+                data.forwardsData[4],
+                data.forwardsData[5],
+                data.forwardsData[6]
+            )
+            val repliesData = entriesOf(
+                data.repliesData[0],
+                data.repliesData[1],
+                data.repliesData[2],
+                data.repliesData[3],
+                data.repliesData[4],
+                data.repliesData[5],
+                data.repliesData[6]
+            )
+            val sendsData = entriesOf(
+                data.sendsData[0],
+                data.sendsData[1],
+                data.sendsData[2],
+                data.sendsData[3],
+                data.sendsData[4],
+                data.sendsData[5],
+                data.sendsData[6]
+            )
+            entryModelOf(
+                forwardedData, repliesData, sendsData
+            )
+        }
+
+        val bottomAxisValueFormatter =
+            AxisValueFormatter<AxisPosition.Horizontal.Bottom> { x, _ -> data.labels[x.toInt() % data.labels.size] }
+
+        binding.homeChartView1.setModel(chartEntryModel)
+        (binding.homeChartView1.bottomAxis as? HorizontalAxis<AxisPosition.Horizontal.Bottom>)?.valueFormatter = bottomAxisValueFormatter
+
+
     }
 
     // Update information when coming back, such as aliases and statistics
@@ -151,9 +252,7 @@ class HomeFragment : Fragment() {
 
 
     private fun setOnClickListeners() {
-        binding.homeMostActiveAliasesViewMore.setOnClickListener {
-            (activity as MainActivity).switchFragments(R.id.navigation_alias)
-        }
+        //
     }
 
     private suspend fun getWebStatistics(context: Context) {
@@ -191,146 +290,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // This value is there to force updating the alias recyclerview in case "Watch alias" has been enabled.
-    private var forceUpdate = false
-
-    var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data != null) {
-                if (data.getBooleanExtra("should_update", false)) {
-                    forceUpdate = true
-                }
-            }
-        }
-    }
-
-    private lateinit var aliasAdapter: AliasAdapter
-    private var mostActiveAliases: AliasesArray? = null
-    private suspend fun getMostActiveAliases() {
-        networkHelper?.getAliases(
-            { list, result ->
-
-                // Check if there are new aliases since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                // Unless forceUpdate is true. If forceupdate is true, always update
-                if (::aliasAdapter.isInitialized && list == mostActiveAliases && !forceUpdate) {
-                    return@getAliases
-                }
-
-                if (list != null) {
-                    setMostActiveAliasesAdapter(list)
-                } else {
-
-                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                            (activity as MainActivity).findViewById(R.id.main_container),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
-                    } else {
-                        val bottomNavView: BottomNavigationView? =
-                            activity?.findViewById(R.id.nav_view)
-                        bottomNavView?.let {
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                it,
-                                LoggingHelper.LOGFILES.DEFAULT
-                            )
-                                .apply {
-                                    anchorView = bottomNavView
-                                }.show()
-                        }
-                    }
-                }
-            },
-            aliasSortFilter = AliasSortFilter(
-                onlyActiveAliases = true,
-                onlyInactiveAliases = false,
-                includeDeleted = false,
-                onlyWatchedAliases = false,
-                sort = "emails_forwarded",
-                sortDesc = true,
-                filter = null
-            ),
-            size = 6
-        )
-
-    }
-
-    private fun setMostActiveAliasesRecyclerView() {
-        binding.homeMostActiveAliasesRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
-
-                shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
-
-                layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
-
-
-                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-
-                showShimmer()
-            }
-        }
-    }
-
-    private fun setMostActiveAliasesAdapter(list: AliasesArray) {
-        binding.homeMostActiveAliasesRecyclerview.apply {
-            mostActiveAliases = list
-
-            if (list.data.size > 0) {
-                binding.homeNoAliases.visibility = View.GONE
-            } else {
-                binding.homeNoAliases.visibility = View.VISIBLE
-            }
-
-            aliasAdapter = AliasAdapter(list.data, context)
-            aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
-                override fun onClick(pos: Int) {
-                    val intent = Intent(context, ManageAliasActivity::class.java)
-                    // Pass data object in the bundle and populate details activity.
-                    intent.putExtra("alias_id", list.data[pos].id)
-                    resultLauncher.launch(intent)
-                }
-
-                override fun onClickCopy(pos: Int, aView: View) {
-                    val clipboard: ClipboardManager =
-                        context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                    val aliasEmailAddress = list.data[pos].email
-                    val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                    clipboard.setPrimaryClip(clip)
-
-                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
-                        SnackbarHelper.createSnackbar(
-                            context,
-                            context.resources.getString(R.string.copied_alias),
-                            (activity as MainActivity).findViewById(R.id.main_container)
-                        ).show()
-                    } else {
-                        val bottomNavView: BottomNavigationView? =
-                            activity?.findViewById(R.id.nav_view)
-                        bottomNavView?.let {
-                            SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
-                                anchorView = bottomNavView
-                            }.show()
-                        }
-                    }
-
-                }
-
-            })
-            hideShimmer()
-            adapter = aliasAdapter
-        }
-    }
-
     private fun getStatistics() {
         //  / 1024 / 1024 because api returns bytes
         val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
@@ -350,25 +309,23 @@ class HomeFragment : Fragment() {
 
     private val STATISTICS_ANIMATION_DURATION = 500L
     private fun setAliasesStatistics(count: Int, maxAliases: Int) {
-        binding.homeStatisticsAliasesProgress.max = maxAliases * 100
-
-        binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
-
-        try {
-            startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/", maxAliases == 0, binding.homeStatisticsAliasesProgressShimmer)
-        } catch (e: Exception) {
-            binding.homeStatisticsAliasesCurrent.text = "$count /"
-        }
-
-        /*        Handler(Looper.getMainLooper()).postDelayed({
-                    ObjectAnimator.ofInt(
-                        binding.homeStatisticsAliasesProgress,
-                        "progress",
-                        count * 100
-                    )
-                        .setDuration(STATISTICS_ANIMATION_DURATION)
-                        .start()
-                }, 400)*/
+//        binding.homeStatisticsAliasesProgress.max = maxAliases * 100
+//
+//        binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
+//
+//        try {
+//            startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/", maxAliases == 0, binding.homeStatisticsAliasesProgressShimmer)
+//        } catch (e: Exception) {
+//            binding.homeStatisticsAliasesCurrent.text = "$count /"
+//        }
+//
+//        ObjectAnimator.ofInt(
+//            binding.homeStatisticsAliasesProgress,
+//            "progress",
+//            count * 100
+//        )
+//            .setDuration(STATISTICS_ANIMATION_DURATION)
+//            .start()
 
     }
 
@@ -424,65 +381,65 @@ class HomeFragment : Fragment() {
         currMonthlyBandwidth: Double,
         maxMonthlyBandwidth: Int
     ) {
-        binding.homeStatisticsMonthlyBandwidthProgress.max =
-            if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
-
-        binding.homeStatisticsMonthlyBandwidthMax.text =
-            if (maxMonthlyBandwidth == 0) this.resources.getString(R.string._sMB, "∞") else this.resources.getString(
-                R.string._sMB,
-                maxMonthlyBandwidth.toString()
-            )
-
-        try {
-            startBandwidthCountAnimation(
-                binding.homeStatisticsMonthlyBandwidthCurrent,
-                roundOffDecimal(currMonthlyBandwidth),
-                "/",
-                maxMonthlyBandwidth == 0,
-                binding.homeStatisticsMonthlyBandwidthProgressShimmer
-            )
-        } catch (e: Exception) {
-            val currentCount = this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
-            binding.homeStatisticsMonthlyBandwidthCurrent.text = "$currentCount /"
-        }
-
-
-        ObjectAnimator.ofInt(
-            binding.homeStatisticsMonthlyBandwidthProgress,
-            "progress",
-            currMonthlyBandwidth.roundToInt() * 100
-        )
-            .setDuration(STATISTICS_ANIMATION_DURATION)
-            .start()
+//        binding.homeStatisticsMonthlyBandwidthProgress.max =
+//            if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
+//
+//        binding.homeStatisticsMonthlyBandwidthMax.text =
+//            if (maxMonthlyBandwidth == 0) this.resources.getString(R.string._sMB, "∞") else this.resources.getString(
+//                R.string._sMB,
+//                maxMonthlyBandwidth.toString()
+//            )
+//
+//        try {
+//            startBandwidthCountAnimation(
+//                binding.homeStatisticsMonthlyBandwidthCurrent,
+//                roundOffDecimal(currMonthlyBandwidth),
+//                "/",
+//                maxMonthlyBandwidth == 0,
+//                binding.homeStatisticsMonthlyBandwidthProgressShimmer
+//            )
+//        } catch (e: Exception) {
+//            val currentCount = this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
+//            binding.homeStatisticsMonthlyBandwidthCurrent.text = "$currentCount /"
+//        }
+//
+//
+//        ObjectAnimator.ofInt(
+//            binding.homeStatisticsMonthlyBandwidthProgress,
+//            "progress",
+//            currMonthlyBandwidth.roundToInt() * 100
+//        )
+//            .setDuration(STATISTICS_ANIMATION_DURATION)
+//            .start()
     }
 
 
     private fun setRecipientStatistics(currRecipients: Int, maxRecipients: Int) {
-        binding.homeStatisticsRecipientsProgress.max =
-            maxRecipients * 100
-
-        binding.homeStatisticsRecipientsMax.text =
-            if (maxRecipients == 0) "∞" else maxRecipients.toString()
-
-        try {
-            startNumberCountAnimation(
-                binding.homeStatisticsRecipientsCurrent,
-                currRecipients,
-                "/",
-                maxRecipients == 0,
-                binding.homeStatisticsRecipientsProgressShimmer
-            )
-        } catch (e: Exception) {
-            binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
-        }
-
-        ObjectAnimator.ofInt(
-            binding.homeStatisticsRecipientsProgress,
-            "progress",
-            currRecipients * 100
-        )
-            .setDuration(STATISTICS_ANIMATION_DURATION)
-            .start()
+//        binding.homeStatisticsRecipientsProgress.max =
+//            maxRecipients * 100
+//
+//        binding.homeStatisticsRecipientsMax.text =
+//            if (maxRecipients == 0) "∞" else maxRecipients.toString()
+//
+//        try {
+//            startNumberCountAnimation(
+//                binding.homeStatisticsRecipientsCurrent,
+//                currRecipients,
+//                "/",
+//                maxRecipients == 0,
+//                binding.homeStatisticsRecipientsProgressShimmer
+//            )
+//        } catch (e: Exception) {
+//            binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
+//        }
+//
+//        ObjectAnimator.ofInt(
+//            binding.homeStatisticsRecipientsProgress,
+//            "progress",
+//            currRecipients * 100
+//        )
+//            .setDuration(STATISTICS_ANIMATION_DURATION)
+//            .start()
     }
 
     override fun onDestroyView() {

@@ -635,4 +635,20 @@
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
     <string name="embedded_placeholder">Choose an action on the left to display this activity here</string>
+    <string name="stats">Stats</string>
+    <string name="error_obtaining_chart_data">Could not refresh data</string>
+    <string name="home_chart_legend_forwards">Forwards</string>
+    <string name="home_chart_legend_replies">Replies</string>
+    <string name="home_chart_legend_sends">Sends</string>
+    <string name="you_ve_used_d_out_of_d_rules">You’ve used %1$d out of %2$s rules</string>
+    <string name="from_name">From name</string>
+    <string name="alias_no_from_name">This alias has no from name set. Tap here to add one</string>
+    <string name="domain_no_from_name">This domain has no from name set. Tap here to add one</string>
+    <string name="username_no_from_name">This username has no from name set. Tap here to add one</string>
+    <string name="edit_from_name">Edit from name</string>
+    <string name="edit_from_name_alias_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"%1$s\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. <b>Alias \'From Name\'</b><br />2. Username or Custom Domain \'From Name\'<br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this specific alias, it will override the other settings.]]></string>
+    <string name="edit_from_name_domain_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"example@%1$s\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. Alias \'From Name\'<br />2. Username or <b>Custom Domain \'From Name\'</b><br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this domain, it will override the global \'From Name\' setting.]]></string>
+    <string name="edit_from_name_username_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"example@%1$s.addy.io\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. Alias \'From Name\'<br />2. <b>Username</b> or Custom Domain <b>\'From Name\'</b><br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this username, it will override the global \'From Name\' setting.]]></string>
+    <string name="error_edit_from_name">Something went wrong while editing the from name</string>
+    <string name="from_name_not_available_subscription">This feature is not available with your current subscription</string>
 </resources>

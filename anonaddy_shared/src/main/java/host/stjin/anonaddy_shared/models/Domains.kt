@@ -13,6 +13,7 @@ data class Domains(
     val user_id: String,
     val domain: String,
     val description: String?,
+    val from_name: String?,
     val aliases: List<Aliases>?,
     val default_recipient: Recipients?,
     var active: Boolean,

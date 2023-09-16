@@ -14,6 +14,7 @@ import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -22,12 +23,14 @@ import kotlinx.coroutines.launch
 
 class ManageUsernamesActivity : BaseActivity(),
     EditUsernameDescriptionBottomDialogFragment.AddEditUsernameDescriptionBottomDialogListener,
+    EditUsernameFromNameBottomDialogFragment.AddEditUsernameFromNameBottomDialogListener,
     EditUsernameRecipientBottomDialogFragment.AddEditUsernameRecipientBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var editUsernameDescriptionBottomDialogFragment: EditUsernameDescriptionBottomDialogFragment
     private lateinit var editUsernameRecipientBottomDialogFragment: EditUsernameRecipientBottomDialogFragment
+    private lateinit var editUserNameFromNameBottomDialogFragment: EditUsernameFromNameBottomDialogFragment
 
 
     private var username: Usernames? = null
@@ -227,6 +230,16 @@ class ManageUsernamesActivity : BaseActivity(),
                 }
             }
         })
+        binding.activityManageUsernameFromNameEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editUserNameFromNameBottomDialogFragment.isAdded) {
+                    editUserNameFromNameBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editUserNamFromNameBottomDialogFragment"
+                    )
+                }
+            }
+        })
 
 
         binding.activityManageUsernameDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
@@ -394,6 +407,42 @@ class ManageUsernamesActivity : BaseActivity(),
             username.description
         )
 
+        /**
+         * FROM NAME
+         */
+
+
+        // Not available for free subscriptions
+        // TODO test on selfhosted
+        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            binding.activityManageUsernameFromNameEdit.setLayoutEnabled(false)
+            binding.activityManageUsernameFromNameEdit.setDescription(
+                this.resources.getString(
+                    R.string.from_name_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (username.from_name != null) {
+                binding.activityManageUsernameFromNameEdit.setDescription(username.from_name)
+            } else {
+                binding.activityManageUsernameFromNameEdit.setDescription(
+                    this.resources.getString(
+                        R.string.username_no_from_name
+                    )
+                )
+            }
+
+            // reset this value as it now includes the description
+            editUserNameFromNameBottomDialogFragment = EditUsernameFromNameBottomDialogFragment.newInstance(
+                username.id,
+                username.username,
+                username.from_name
+            )
+
+
+        }
+
 
         binding.animationFragment.stopAnimation()
         binding.activityManageUsernameNSV.animate().alpha(1.0f)
@@ -411,6 +460,13 @@ class ManageUsernamesActivity : BaseActivity(),
 
     override fun recipientEdited(username: Usernames) {
         editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.username = username
+    }
+
+    override fun fromNameEdited(username: Usernames) {
+        editUserNameFromNameBottomDialogFragment.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
         this.username = username

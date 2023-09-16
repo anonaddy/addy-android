@@ -26,6 +26,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_APP_VERSION
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_USERNAMES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_CHART_DATA
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ENCRYPTED_RECIPIENTS
@@ -527,6 +528,56 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun getChartData(
+        callback: (ChartData?, String?) -> Unit
+    ) {
+        val (_, response, result) =
+            Fuel.get(API_URL_CHART_DATA)
+                .appendHeader(
+                    *getHeaders()
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, ChartData::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getChartData",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
     suspend fun getSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
@@ -635,6 +686,64 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
+    suspend fun updateFromNameSpecificAlias(
+        callback: (Aliases?, String?) -> Unit,
+        aliasId: String,
+        fromName: String
+    ) {
+        val json = JSONObject()
+        json.put("from_name", fromName)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_ALIAS}/$aliasId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "updateFromNameSpecificAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
 
     suspend fun updateRecipientsSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
@@ -2480,6 +2589,62 @@ class NetworkHelper(private val context: Context) {
     }
 
 
+    suspend fun updateFromNameSpecificDomain(
+        callback: (Domains?, String?) -> Unit,
+        domainId: String,
+        fromName: String
+    ) {
+        val json = JSONObject()
+        json.put("from_name", fromName)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_DOMAINS}/$domainId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateFromNameSpecificDomain",
+                    ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
     /**
      * USERNAMES
      */
@@ -2874,6 +3039,61 @@ class NetworkHelper(private val context: Context) {
                 Log.e("AFA", "${response.statusCode} - $ex")
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateDescriptionSpecificUsername",
+                    ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun updateFromNameSpecificUsername(
+        callback: (Usernames?, String?) -> Unit,
+        usernameId: String,
+        fromName: String
+    ) {
+        val json = JSONObject()
+        json.put("from_name", fromName)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_USERNAMES}/$usernameId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateFromNameSpecificUsername",
                     ErrorHelper.getErrorMessage(
                         response.data
                     )

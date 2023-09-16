@@ -126,7 +126,7 @@ class RecipientsFragment : Fragment(),
                 }
 
             } else {
-                getUserResource(requireContext())
+                getUserResource()
                 getAllRecipients()
             }
         }
@@ -154,7 +154,7 @@ class RecipientsFragment : Fragment(),
         }
     }
 
-    private suspend fun getUserResource(context: Context) {
+    private suspend fun getUserResource() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 (activity?.application as AddyIoApp).userResource = user

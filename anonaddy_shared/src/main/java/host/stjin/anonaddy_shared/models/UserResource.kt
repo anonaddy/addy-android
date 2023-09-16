@@ -35,6 +35,8 @@ data class UserResource(
     val active_domain_limit: Int,
     val active_shared_domain_alias_count: Int,
     val active_shared_domain_alias_limit: Int,
+    val active_rule_count: Int,
+    val active_rule_limit: Int,
     val total_emails_forwarded: Int,
     val total_emails_blocked: Int,
     val total_emails_replied: Int,

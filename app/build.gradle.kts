@@ -182,3 +182,12 @@ dependencies {
     implementation("androidx.window:window:1.2.0-beta01")
     implementation("androidx.startup:startup-runtime:1.1.1")
 }
+
+// Graph for home
+dependencies {
+    // Houses the core logic for charts and other elements. Included in all other modules.
+    implementation("com.patrykandpatrick.vico:core:1.11.1")
+
+    // For the view system.
+    implementation("com.patrykandpatrick.vico:views:1.11.1")
+}

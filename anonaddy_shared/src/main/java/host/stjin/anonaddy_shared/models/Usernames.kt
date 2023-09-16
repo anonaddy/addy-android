@@ -13,10 +13,12 @@ data class Usernames(
     val user_id: String,
     val username: String,
     val description: String?,
+    val from_name: String?,
     val aliases: List<Aliases>?,
     val default_recipient: Recipients?,
     var active: Boolean,
     var catch_all: Boolean,
+    var can_login: Boolean,
     val created_at: String,
     val updated_at: String
 )

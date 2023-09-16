@@ -90,13 +90,29 @@
                     android:src="@drawable/ic_info"
                     tools:ignore="RtlSymmetry" />
 
-                <TextView
-                    android:id="@+id/fragment_manage_rules_RL_count_text"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="@string/hold_the_drag_handle_and_drag_to_change_order" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/activity_manage_rules_settings_LL_count"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="@string/you_ve_used_d_out_of_d_rules" />
+
+                    <TextView
+                        android:id="@+id/fragment_manage_rules_RL_count_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/hold_the_drag_handle_and_drag_to_change_order" />
+                </LinearLayout>
+
             </LinearLayout>
+
 
         </LinearLayout>
 

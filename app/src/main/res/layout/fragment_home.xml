@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_statistics_NSV"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -49,316 +48,59 @@
                 android:paddingStart="@dimen/cardview_extra_padding"
                 android:paddingEnd="@dimen/cardview_extra_padding">
 
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/home_statistics_monthly_bandwidth_progress_shimmer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:shimmer_auto_start="false"
-                    app:shimmer_base_alpha="1"
-                    app:shimmer_highlight_alpha="0.5"
-                    app:shimmer_repeat_count="0">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ProgressBar
-                            android:id="@+id/home_statistics_monthly_bandwidth_progress"
-                            style="@style/AddyIoProgressBarHome"
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:progress="0" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/cardview_padding">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="4dp"
-                                    android:drawablePadding="4dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/monthly_bandwidth"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="16sp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_monthly_bandwidth_current"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:text="0MB "
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_monthly_bandwidth_max"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:layout_marginStart="4dp"
-                                        android:alpha="0.5"
-                                        android:text="\?"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:contentDescription="@string/monthly_bandwidth"
-                                android:src="@drawable/ic_gauge"
-                                android:tint="@android:color/white"
-                                app:tint="@android:color/white"
-                                tools:ignore="UseAppTint" />
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/home_statistics_recipients_progress_shimmer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:shimmer_auto_start="false"
-                    app:shimmer_base_alpha="1"
-                    app:shimmer_highlight_alpha="0.5"
-                    app:shimmer_repeat_count="0">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="6dp">
-
-                        <ProgressBar
-                            android:id="@+id/home_statistics_recipients_progress"
-                            style="@style/AddyIoProgressBarRedHome"
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:progress="0" />
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/cardview_padding">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="4dp"
-                                    android:drawablePadding="4dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/recipients"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="16sp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_recipients_current"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:text="0"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_recipients_max"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:layout_marginStart="4dp"
-                                        android:alpha="0.5"
-                                        android:text="\?"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:contentDescription="@string/recipients"
-                                android:src="@drawable/ic_inbox"
-                                android:tint="@android:color/white"
-                                app:tint="@android:color/white"
-                                tools:ignore="UseAppTint" />
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/home_statistics_aliases_progress_shimmer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:shimmer_auto_start="false"
-                    app:shimmer_base_alpha="1"
-                    app:shimmer_highlight_alpha="0.5"
-                    app:shimmer_repeat_count="0">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ProgressBar
-                            android:id="@+id/home_statistics_aliases_progress"
-                            style="@style/AddyIoProgressBarEasternBlueHome"
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:progress="0" />
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/cardview_padding">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="4dp"
-                                    android:drawablePadding="4dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/shared_domain_aliases"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="16sp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_aliases_current"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:text="0"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_aliases_max"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:layout_marginStart="4dp"
-                                        android:alpha="0.5"
-                                        android:text="\?"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:contentDescription="@string/shared_domain_aliases"
-                                android:src="@drawable/ic_email_at"
-                                android:tint="@android:color/white"
-                                app:tint="@android:color/white"
-                                tools:ignore="UseAppTint" />
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="TODO INFORMATION" />
             </LinearLayout>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/home_statistics_LL1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical">
 
             <LinearLayout
-                style="@style/AddyIoTitleAction"
+                android:id="@+id/home_statistics_LL1"
                 android:layout_width="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
 
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/most_active_aliases" />
+                <LinearLayout
+                    style="@style/AddyIoTitleAction"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/home_most_active_aliases_view_more"
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/stats" />
+
+                </LinearLayout>
+
+                <com.patrykandpatrick.vico.views.chart.ChartView
+                    android:id="@+id/home_chart_view_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/view_more" />
+                    app:axisStyle="@style/AddyIoAxisStyle"
+                    app:chart="line"
+                    app:chartZoomEnabled="false"
+                    app:horizontalLayout="fullWidth"
+                    app:lineChartStyle="@style/AddyIoLineChart"
+                    app:showBottomAxis="true"
+                    app:showStartAxis="true" />
+
+
+                <TextView
+                    android:id="@+id/home_no_aliases"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/no_result_textview_padding"
+                    android:text="@string/no_active_aliases"
+                    android:textAlignment="center"
+                    android:textColor="@color/BlackWhite"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
-            <com.todkars.shimmer.ShimmerRecyclerView
-                android:id="@+id/home_most_active_aliases_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:shimmer_recycler_auto_start="true"
-                app:shimmer_recycler_item_count="5"
-                app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer">
-
-            </com.todkars.shimmer.ShimmerRecyclerView>
-
-            <TextView
-                android:id="@+id/home_no_aliases"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/no_result_textview_padding"
-                android:text="@string/no_active_aliases"
-                android:textAlignment="center"
-                android:textColor="@color/BlackWhite"
-                android:visibility="gone" />
-
         </LinearLayout>
-
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

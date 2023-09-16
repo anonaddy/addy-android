@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,23 +13,24 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionUsernameBinding
+import host.stjin.anonaddy.databinding.BottomsheetEditFromNameUsernameBinding
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Usernames
 import kotlinx.coroutines.launch
 
 
-class EditUsernameDescriptionBottomDialogFragment(
+class EditUsernameFromNameBottomDialogFragment(
     private val usernameId: String?,
-    private val description: String?
+    private val username: String?,
+    private val fromName: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
-    private lateinit var listener: AddEditUsernameDescriptionBottomDialogListener
+    private lateinit var listener: AddEditUsernameFromNameBottomDialogListener
 
     // 1. Defines the listener interface with a method passing back data result.
-    interface AddEditUsernameDescriptionBottomDialogListener {
-        fun descriptionEdited(username: Usernames)
+    interface AddEditUsernameFromNameBottomDialogListener {
+        fun fromNameEdited(username: Usernames)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -38,7 +40,7 @@ class EditUsernameDescriptionBottomDialogFragment(
     }
 
 
-    private var _binding: BottomsheetEditDescriptionUsernameBinding? = null
+    private var _binding: BottomsheetEditFromNameUsernameBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
@@ -48,59 +50,70 @@ class EditUsernameDescriptionBottomDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = BottomsheetEditDescriptionUsernameBinding.inflate(inflater, container, false)
+        _binding = BottomsheetEditFromNameUsernameBinding.inflate(inflater, container, false)
         val root = binding.root
 
         // Check if usernameId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (usernameId != null) {
-            listener = activity as AddEditUsernameDescriptionBottomDialogListener
+            listener = activity as AddEditUsernameFromNameBottomDialogListener
 
             // Set button listeners and current description
-            binding.bsEditusernameUsernameSaveButton.setOnClickListener(this)
-            binding.bsEditusernameUsernameDescTiet.setText(description)
+            binding.bsEditFromNameUsernameSaveButton.setOnClickListener(this)
+            binding.bsEditFromNameUsernameFromNameTiet.setText(fromName)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                binding.bsEditFromNameUsernameDesc.text = (Html.fromHtml(
+                    requireContext().resources.getString(R.string.edit_from_name_username_desc, username),
+                    Html.FROM_HTML_MODE_COMPACT
+                ))
+            } else {
+                binding.bsEditFromNameUsernameDesc.text =
+                    (Html.fromHtml(requireContext().resources.getString(R.string.edit_from_name_username_desc, username)))
+            }
+
         } else {
             dismiss()
         }
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditusernameUsernameRoot)
+            setIMEAnimation(binding.bsEditFromNameUsernameRoot)
         }
         return root
 
     }
 
     // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null)
+    constructor() : this(null, null, null)
 
     companion object {
-        fun newInstance(id: String, description: String?): EditUsernameDescriptionBottomDialogFragment {
-            return EditUsernameDescriptionBottomDialogFragment(id, description)
+        fun newInstance(id: String, username: String, description: String?): EditUsernameFromNameBottomDialogFragment {
+            return EditUsernameFromNameBottomDialogFragment(id, username, description)
         }
     }
 
     private fun save(context: Context) {
-        val description = binding.bsEditusernameUsernameDescTiet.text.toString()
+        val description = binding.bsEditFromNameUsernameFromNameTiet.text.toString()
 
         // Animate the button to progress
-        binding.bsEditusernameUsernameSaveButton.startAnimation()
+        binding.bsEditFromNameUsernameSaveButton.startAnimation()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            editDescriptionHttp(context, description)
+            editFromNameHttp(context, description)
         }
     }
 
-    private suspend fun editDescriptionHttp(context: Context, description: String) {
+    private suspend fun editFromNameHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificUsername({ username, error ->
+        networkHelper.updateFromNameSpecificUsername({ username, error ->
             if (username != null) {
-                listener.descriptionEdited(username)
+                listener.fromNameEdited(username)
             } else {
                 // Revert the button to normal
-                binding.bsEditusernameUsernameSaveButton.revertAnimation()
+                binding.bsEditFromNameUsernameSaveButton.revertAnimation()
 
-                binding.bsEditusernameUsernameDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + error
+                binding.bsEditFromNameUsernameFromNameTil.error =
+                    context.resources.getString(R.string.error_edit_from_name) + "\n" + error
             }
             // usernameId is never null at this point, hence the !!
         }, usernameId!!, description)
@@ -108,7 +121,7 @@ class EditUsernameDescriptionBottomDialogFragment(
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
-            if (p0.id == R.id.bs_editusername_username_save_button) {
+            if (p0.id == R.id.bs_edit_from_name_username_save_button) {
                 save(
                     requireContext()
                 )

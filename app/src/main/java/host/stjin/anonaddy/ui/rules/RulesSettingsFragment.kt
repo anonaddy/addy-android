@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback
 import androidx.recyclerview.widget.ItemTouchHelper.UP
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -28,9 +29,12 @@ import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
@@ -61,6 +65,9 @@ class RulesSettingsFragment : Fragment() {
         encryptedSettingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
+        // Set stats right away, update later
+        setStats()
+
         setOnClickListener()
         setRulesRecyclerView()
         getDataFromWeb(savedInstanceState)
@@ -83,10 +90,13 @@ class RulesSettingsFragment : Fragment() {
         }
     }
 
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
+
+    private fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {
+                setStats()
+
                 val rulesJson = savedInstanceState.getString("rules")
                 if (!rulesJson.isNullOrEmpty() && rulesJson != "null") {
                     val gson = Gson()
@@ -99,10 +109,49 @@ class RulesSettingsFragment : Fragment() {
                     getAllRulesAndSetView()
                 }
             } else {
+                getUserResource()
                 getAllRulesAndSetView()
             }
         }
     }
+
+
+    private suspend fun getUserResource() {
+        networkHelper?.getUserResource { user: UserResource?, result: String? ->
+            if (user != null) {
+                (activity?.application as AddyIoApp).userResource = user
+                // Update stats
+                setStats()
+            } else {
+
+                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                } else {
+                    // Data could not be loaded
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
+                }
+
+            }
+        }
+    }
+
 
     private fun setRulesRecyclerView() {
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
@@ -163,6 +212,24 @@ class RulesSettingsFragment : Fragment() {
 
         }
 
+    }
+
+    private fun setStats() {
+        binding.activityManageRulesSettingsLLCount.text = requireContext().resources.getString(
+            R.string.you_ve_used_d_out_of_d_rules,
+            (activity?.application as AddyIoApp).userResource.active_rule_count,
+            if ((activity?.application as AddyIoApp).userResource.subscription != null) (activity?.application as AddyIoApp).userResource.active_rule_limit else this.resources.getString(
+                R.string.unlimited
+            )
+        )
+
+        // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
+        if ((activity?.application as AddyIoApp).userResource.subscription != null) {
+            binding.fragmentManageRulesCreateRules.isEnabled =
+                (activity?.application as AddyIoApp).userResource.active_rule_count < (activity?.application as AddyIoApp).userResource.active_rule_limit
+        } else {
+            binding.fragmentManageRulesCreateRules.isEnabled = true
+        }
     }
 
     private fun setRulesAdapter(list: java.util.ArrayList<Rules>) {

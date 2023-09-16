@@ -145,6 +145,15 @@
                     app:sectionTitle="@string/description" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_manage_domain_from_name_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:sectionDescription="@tools:sample/full_names"
+                    app:sectionEndIcon="@drawable/ic_edit"
+                    app:sectionStartIcon="@drawable/ic_id"
+                    app:sectionTitle="@string/from_name" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_manage_domain_recipients_edit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

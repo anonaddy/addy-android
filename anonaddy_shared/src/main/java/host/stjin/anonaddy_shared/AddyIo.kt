@@ -48,12 +48,14 @@ object AddyIo {
     val API_URL_REORDER_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/reorder-rules" }
     val API_URL_API_TOKEN_DETAILS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/api-token-details" }
 
-
     // 0.8.1
     val API_URL_FAILED_DELIVERIES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/failed-deliveries" }
 
     // 0.6.0
     val API_URL_APP_VERSION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/app-version" }
+
+    // TODO UPDATE VERSION WHEN THIS API WAS ADDED
+    val API_URL_CHART_DATA: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/chart-data" }
 
     // Gitlab built-in updater
     const val GITLAB_TAGS_RSS_FEED: String = "https://gitlab.com/Stjin/anonaddy-android/-/tags?feed_token=QQ9pQKWGBdsYzCrqkdBN&format=atom"

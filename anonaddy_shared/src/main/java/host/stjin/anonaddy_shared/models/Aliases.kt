@@ -21,6 +21,7 @@ data class Aliases(
     val email: String,
     var active: Boolean,
     val description: String?,
+    val from_name: String?,
     val emails_forwarded: Int,
     val emails_blocked: Int,
     val emails_replied: Int,

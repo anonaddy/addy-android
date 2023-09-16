@@ -34,10 +34,12 @@ import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -47,6 +49,7 @@ import java.util.*
 
 class ManageAliasActivity : BaseActivity(),
     EditAliasDescriptionBottomDialogFragment.AddEditAliasDescriptionBottomDialogListener,
+    EditAliasFromNameBottomDialogFragment.AddEditAliasFromNameBottomDialogListener,
     EditAliasRecipientsBottomDialogFragment.AddEditAliasRecipientsBottomDialogListener,
     EditAliasSendMailRecipientBottomDialogFragment.AddEditAliasSendMailRecipientBottomDialogListener {
 
@@ -54,6 +57,7 @@ class ManageAliasActivity : BaseActivity(),
     private lateinit var aliasWatcher: AliasWatcher
 
     private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
+    private lateinit var editAliasFromNameBottomDialogFragment: EditAliasFromNameBottomDialogFragment
     private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
     private lateinit var editAliasSendMailRecipientBottomDialogFragment: EditAliasSendMailRecipientBottomDialogFragment
 
@@ -411,6 +415,18 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editAliasFromNameBottomDialogFragment.isAdded) {
+                    editAliasFromNameBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editAliasFromNameBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
         binding.activityManageAliasGeneralActions.activityManageAliasDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 deleteAlias()
@@ -745,6 +761,42 @@ class ManageAliasActivity : BaseActivity(),
         )
 
 
+        /**
+         * FROM NAME
+         */
+
+
+        // Not available for free subscriptions
+        // TODO test on selfhosted
+        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setLayoutEnabled(false)
+            binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(
+                this.resources.getString(
+                    R.string.from_name_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (alias.from_name != null) {
+                binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(alias.from_name)
+            } else {
+                binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(
+                    this.resources.getString(
+                        R.string.alias_no_from_name
+                    )
+                )
+            }
+
+            // reset this value as it now includes the description
+            editAliasFromNameBottomDialogFragment = EditAliasFromNameBottomDialogFragment.newInstance(
+                alias.id,
+                alias.email,
+                alias.from_name
+            )
+
+
+        }
+
         binding.animationFragment.stopAnimation()
         binding.activityManageAliasNSV.animate().alpha(1.0f)
         binding.activityManageAliasSettingsLL.visibility = View.VISIBLE
@@ -766,6 +818,14 @@ class ManageAliasActivity : BaseActivity(),
         editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.alias = alias
+    }
+
+    override fun fromNameEdited(alias: Aliases) {
+        shouldUpdate = true
+        editAliasFromNameBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasFromNameBottomDialogFragment
         this.alias = alias
     }
 
@@ -800,4 +860,6 @@ class ManageAliasActivity : BaseActivity(),
         }
         editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }
+
+
 }

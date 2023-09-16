@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,23 +13,24 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.BottomsheetEditDescriptionDomainBinding
+import host.stjin.anonaddy.databinding.BottomsheetEditFromNameDomainBinding
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Domains
 import kotlinx.coroutines.launch
 
 
-class EditDomainDescriptionBottomDialogFragment(
+class EditDomainFromNameBottomDialogFragment(
     private val domainId: String?,
-    private val description: String?
+    private val domain: String?,
+    private val fromName: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
-    private lateinit var listener: AddEditDomainDescriptionBottomDialogListener
+    private lateinit var listener: AddEditDomainFromNameBottomDialogListener
 
     // 1. Defines the listener interface with a method passing back data result.
-    interface AddEditDomainDescriptionBottomDialogListener {
-        fun descriptionEdited(domain: Domains)
+    interface AddEditDomainFromNameBottomDialogListener {
+        fun fromNameEdited(domain: Domains)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -37,7 +39,7 @@ class EditDomainDescriptionBottomDialogFragment(
         return dialog
     }
 
-    private var _binding: BottomsheetEditDescriptionDomainBinding? = null
+    private var _binding: BottomsheetEditFromNameDomainBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
@@ -47,60 +49,68 @@ class EditDomainDescriptionBottomDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = BottomsheetEditDescriptionDomainBinding.inflate(inflater, container, false)
+        _binding = BottomsheetEditFromNameDomainBinding.inflate(inflater, container, false)
         val root = binding.root
 
         // Check if domainId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (domainId != null) {
-            listener = activity as AddEditDomainDescriptionBottomDialogListener
+            listener = activity as AddEditDomainFromNameBottomDialogListener
 
             // Set button listeners and current description
-            binding.bsEditdomainDomainSaveButton.setOnClickListener(this)
-            binding.bsEditdomainDomainDescTiet.setText(description)
+            binding.bsEditFromNameDomainSaveButton.setOnClickListener(this)
+            binding.bsEditFromNameDomainFromNameTiet.setText(fromName)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                binding.bsEditFromNameDomainDesc.text =
+                    (Html.fromHtml(requireContext().resources.getString(R.string.edit_from_name_domain_desc, domain), Html.FROM_HTML_MODE_COMPACT))
+            } else {
+                binding.bsEditFromNameDomainDesc.text =
+                    (Html.fromHtml(requireContext().resources.getString(R.string.edit_from_name_domain_desc, domain)))
+            }
         } else {
             dismiss()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditdomainDomainRoot)
+            setIMEAnimation(binding.bsEditFromNameDomainRoot)
         }
 
         return root
     }
 
     // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null)
+    constructor() : this(null, null, null)
 
     companion object {
-        fun newInstance(id: String, description: String?): EditDomainDescriptionBottomDialogFragment {
-            return EditDomainDescriptionBottomDialogFragment(id, description)
+        fun newInstance(id: String, domain: String, description: String?): EditDomainFromNameBottomDialogFragment {
+            return EditDomainFromNameBottomDialogFragment(id, domain, description)
         }
     }
 
     private fun save(context: Context) {
-        val description = binding.bsEditdomainDomainDescTiet.text.toString()
+        val description = binding.bsEditFromNameDomainFromNameTiet.text.toString()
 
         // Animate the button to progress
-        binding.bsEditdomainDomainSaveButton.startAnimation()
+        binding.bsEditFromNameDomainSaveButton.startAnimation()
 
 
         viewLifecycleOwner.lifecycleScope.launch {
-            editDescriptionHttp(context, description)
+            editFromNameHttp(context, description)
         }
     }
 
-    private suspend fun editDescriptionHttp(context: Context, description: String) {
+    private suspend fun editFromNameHttp(context: Context, description: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.updateDescriptionSpecificDomain({ domain, error ->
+        networkHelper.updateFromNameSpecificDomain({ domain, error ->
             if (domain != null) {
-                listener.descriptionEdited(domain)
+                listener.fromNameEdited(domain)
             } else {
 
                 // Revert the button to normal
-                binding.bsEditdomainDomainSaveButton.revertAnimation()
+                binding.bsEditFromNameDomainSaveButton.revertAnimation()
 
-                binding.bsEditdomainDomainDescTil.error =
-                    context.resources.getString(R.string.error_edit_description) + "\n" + error
+                binding.bsEditFromNameDomainFromNameTil.error =
+                    context.resources.getString(R.string.error_edit_from_name) + "\n" + error
             }
             // domainId is never null at this point, hence the !!
         }, domainId!!, description)
@@ -108,7 +118,7 @@ class EditDomainDescriptionBottomDialogFragment(
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
-            if (p0.id == R.id.bs_editdomain_domain_save_button) {
+            if (p0.id == R.id.bs_edit_from_name_domain_save_button) {
                 save(
                     requireContext()
                 )
