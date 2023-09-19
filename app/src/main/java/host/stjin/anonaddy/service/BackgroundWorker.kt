@@ -6,7 +6,12 @@ import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.Updater
@@ -15,7 +20,6 @@ import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.GsonTools
 import kotlinx.coroutines.Dispatchers
@@ -268,46 +272,57 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
         This method loops through all the aliases that need to be watched and caches those aliases locally
          */
 
-        // Get and turn the current list (before this call) into a string
-        val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
-        // If the list is not null, move the current list (before this call) to the PREV position for AliasWatcher to compare
-        // List could be null if this would be the first time the service is running
-        currentList?.let { settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS, it) }
-
-        // Turn the currentList into an object
-        val aliasesList = currentList?.let { GsonTools.jsonToAliasObject(appContext, it) }
-
         val aliasWatcher = AliasWatcher(appContext)
         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
 
-        val newList: ArrayList<Aliases> = arrayListOf()
-        // Loop through the aliases on the watchlist
-        for (alias in aliasesToWatch) {
-            // Get alias data
-            networkHelper.getSpecificAlias({ result, _ ->
-                // Store the result if the data succeeded to update in a boolean
-                if (result != null) {
-                    // If the call was successful, store the new alias info in the newlist
-                    newList.add(result)
-                } else {
-                    // If the call failed (eg. API call limit, no internet or anything).
-                    // Check if aliasesList is not null (it might be null if this is the first time the check has been done)
-                    // If the aliasList is not null, check if the aliasId already exists in the currentList.
-                    // If the alias is in the current list. Add that one to the newList instead.
-                    // This prevents double notifications if the call fails and the alias is removed from newlist.
-                    if (aliasesList != null) {
-                        aliasesList.firstOrNull { it.id == alias }?.let { newList.add(it) }
+        // Get all aliases from the watchList
+        networkHelper.bulkGetAlias({ result, _ ->
+            if (result != null) {
+
+                // Get a copy of the current list
+                val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
+                val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(appContext, it) }
+
+
+                //region Save a copy of the list
+
+                // When the call is successful, save a copy of the current CACHED version to `currentList`
+                val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
+
+                // If the current CACHED list is not null, move the current list to the PREV position for AliasWatcher to compare
+                // This CACHED list could be null if this would be the first time the service is running
+                currentList?.let { settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS, it) }
+                //endregion
+
+
+                //region CLEANUP DELETED ALIASES
+                // Let's say a user deletes this alias using the web-app, but this alias is watched. We need to make sure that the aliases we request
+                // Are actually returned. If aliases requested are not returned we can assume the alias has been deleted thus we can delete this alias from the watchlist
+
+                for (id in aliasesToWatch) {
+                    if (result.data.none { it.id == id }) {
+                        // This alias is being watched but not returned, delete it from the watcher
+
+                        NotificationHelper(appContext).createAliasWatcherAliasDoesNotExistAnymoreNotification(
+                            aliasesList?.first { it.id == id }?.email ?: id
+                        )
+
+                        aliasWatcher.removeAliasToWatch(id)
                     }
                 }
-            }, alias)
-        }
+                //endregion
 
+                // Turn the list into a json object
+                val data = Gson().toJson(result.data)
 
-        // Turn the list into a json object
-        val data = Gson().toJson(newList)
+                // Store a copy of the just received data locally
+                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
 
-        // Store a copy of the just received data locally
-        settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
+            } else {
+                // The call failed, it will be logged in NetworkHelper. Try again later
+            }
+        }, aliasesToWatch)
+
 
         return true
     }

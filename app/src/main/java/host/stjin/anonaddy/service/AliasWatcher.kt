@@ -30,31 +30,29 @@ class AliasWatcher(private val context: Context) {
 
                 // Loop through all the aliases in the aliasList (this only contains active and non-deleted aliases)
                 for (alias in aliasesList) {
-                    // If an alias in the list is on the watchlist
-                    if (aliasesToWatch.contains(alias.id)) {
-                        // The alias is on the watchlist
-                        // Get the amount of forwarded emails for this alias
-                        val currentEmailsForwarded = alias.emails_forwarded
+                    // The alias is on the watchlist, otherwise it would have been removed in the networkCall
+                    // Get the amount of forwarded emails for this alias
+                    val currentEmailsForwarded = alias.emails_forwarded
 
-                        // Find this alias in the previous version of the list.
-                        val index = aliasesListPrevious?.indexOfFirst { it.id == alias.id }
+                    // Find this alias in the previous version of the list.
+                    val index = aliasesListPrevious?.indexOfFirst { it.id == alias.id }
 
-                        // If index is null or -1 there is no alias like this in the previous list, alias must be new and thus will have 0 previousEmailsForwarded
-                        val previousEmailsForwarded = if (index == null || index == -1) {
-                            0
-                        } else {
-                            aliasesListPrevious[index].emails_forwarded
-                        }
-
-                        if (currentEmailsForwarded > previousEmailsForwarded) {
-                            // There are currently more emails forwarded than last time, send a notification
-                            NotificationHelper(context).createAliasWatcherNotification(
-                                currentEmailsForwarded - previousEmailsForwarded,
-                                alias.id,
-                                alias.email
-                            )
-                        }
+                    // If index is null or -1 there is no alias like this in the previous list, alias must be new and thus will have 0 previousEmailsForwarded
+                    val previousEmailsForwarded = if (index == null || index == -1) {
+                        0
+                    } else {
+                        aliasesListPrevious[index].emails_forwarded
                     }
+
+                    if (currentEmailsForwarded > previousEmailsForwarded) {
+                        // There are currently more emails forwarded than last time, send a notification
+                        NotificationHelper(context).createAliasWatcherNotification(
+                            currentEmailsForwarded - previousEmailsForwarded,
+                            alias.id,
+                            alias.email
+                        )
+                    }
+
                 }
             }
         }
@@ -79,8 +77,8 @@ class AliasWatcher(private val context: Context) {
 
     fun addAliasToWatch(alias: String): Boolean {
         val aliasList = getAliasesToWatch()
-        // The aliasWatcherlist has a maximum of 15 aliases, the reason for this is to prevent API limitations
-        return if (aliasList.count() > 14) {
+        // The aliasWatcherlist has a maximum of 25 aliases, the reason for this is to prevent API limitations
+        return if (aliasList.count() > 24) {
             Toast.makeText(context, context.resources.getString(R.string.aliaswatcher_max_reached), Toast.LENGTH_LONG).show()
             false
         } else {

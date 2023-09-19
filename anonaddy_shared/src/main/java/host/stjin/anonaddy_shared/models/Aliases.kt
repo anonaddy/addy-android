@@ -6,6 +6,10 @@ data class AliasesArray(
     var meta: Meta
 )
 
+data class BulkAliasesArray(
+    var `data`: ArrayList<Aliases>,
+)
+
 data class SingleAlias(
     val `data`: Aliases
 )

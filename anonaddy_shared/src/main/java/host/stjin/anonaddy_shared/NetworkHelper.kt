@@ -808,6 +808,66 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun bulkGetAlias(
+        callback: (BulkAliasesArray?, String?) -> Unit,
+        aliases: List<String>
+    ) {
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (id in aliases) {
+            array.put(id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/get/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkAliasesArray::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkGetAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
 
     suspend fun deactivateSpecificAlias(
         callback: (String?) -> Unit?,

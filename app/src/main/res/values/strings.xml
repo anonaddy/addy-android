@@ -366,7 +366,7 @@
     <string name="Info">Info</string>
     <string name="enable_feature">Enable feature</string>
     <string name="enable_feature_always">This feature is always enabled</string>
-    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.\n\nTo avoid reaching the API limit, you can watch a maximum of 15 aliases.</string>
+    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.\n\nYou can watch a maximum of 25 aliases.</string>
     <string name="features">Features</string>
     <string name="exceeded_bandwidth_limit">You\'ve exceeded your bandwidth limit for this month</string>
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
@@ -583,10 +583,10 @@
     <string name="error_copied_to_clipboard">Error copied to clipboard</string>
     <string name="multiple_alias_selected">%d alias(es) selected</string>
     <string name="multiple_alias_selected_desc">The actions below will be performed on all selected aliases. Pressing cancel will unselect all aliases</string>
-    <string name="aliaswatcher_max_reached">You cannot have more than 15 aliases watched</string>
-    <string name="alias_multiple_selection_max_reached">You cannot select more than 15 aliases</string>
+    <string name="aliaswatcher_max_reached">You cannot have more than 25 aliases watched</string>
+    <string name="alias_multiple_selection_max_reached">You cannot select more than 25 aliases</string>
     <string name="actions">Actions</string>
-    <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nTo avoid reaching the API limit, you can manage a maximum of 15 aliases at the same time.</string>
+    <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nYou can manage a maximum of 25 aliases at the same time.</string>
     <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode (requires a restart of the app)</string>
     <string name="feature_longpress">Manage multiple aliases</string>
     <string name="something_went_wrong_tap_here_to_see_the_error">Something went wrong, tap here to see the error</string>
@@ -651,4 +651,8 @@
     <string name="edit_from_name_username_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"example@%1$s.addy.io\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. Alias \'From Name\'<br />2. <b>Username</b> or Custom Domain <b>\'From Name\'</b><br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this username, it will override the global \'From Name\' setting.]]></string>
     <string name="error_edit_from_name">Something went wrong while editing the from name</string>
     <string name="from_name_not_available_subscription">This feature is not available with your current subscription</string>
+
+    <string name="notification_alias_watches_alias_does_not_exist_anymore">Alias removed from alias watcher</string>
+    <string name="notification_alias_watches_alias_does_not_exist_anymore_desc">%1$s has been forgotten and removed from the alias watcher</string>
+
 </resources>
