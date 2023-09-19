@@ -14,14 +14,17 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
+import host.stjin.anonaddy.R
 import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.GsonTools
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.ocpsoft.prettytime.PrettyTime
@@ -302,6 +305,16 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 for (id in aliasesToWatch) {
                     if (result.data.none { it.id == id }) {
                         // This alias is being watched but not returned, delete it from the watcher
+
+                        LoggingHelper(appContext, LoggingHelper.LOGFILES.DEFAULT).addLog(
+                            LOGIMPORTANCE.WARNING.int,
+                            appContext.resources.getString(
+                                R.string.notification_alias_watches_alias_does_not_exist_anymore_desc,
+                                aliasesList?.first { it.id == id }?.email ?: id
+                            ),
+                            "aliasWatcherTask",
+                            null
+                        )
 
                         NotificationHelper(appContext).createAliasWatcherAliasDoesNotExistAnymoreNotification(
                             aliasesList?.first { it.id == id }?.email ?: id
