@@ -654,5 +654,6 @@
 
     <string name="notification_alias_watches_alias_does_not_exist_anymore">Alias removed from alias watcher</string>
     <string name="notification_alias_watches_alias_does_not_exist_anymore_desc">%1$s has been forgotten and removed from the alias watcher</string>
+    <string name="view_all">View all</string>
 
 </resources>

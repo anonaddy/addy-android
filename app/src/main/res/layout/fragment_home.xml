@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/home_statistics_RL1"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_statistics_RL1"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -77,10 +77,14 @@
                     android:paddingStart="@dimen/cardview_extra_padding"
                     android:paddingEnd="@dimen/cardview_extra_padding">
 
-                    <TextView
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="TODO INFORMATION" />
+                        android:layout_height="wrap_content"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_email_at"
+                        app:StatCardViewShowButton="true"
+                        app:StatCardViewTitle="@string/shared_domain_aliases" />
+
                 </LinearLayout>
 
                 <LinearLayout

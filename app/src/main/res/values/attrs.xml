@@ -16,6 +16,15 @@
         <attr name="sectionBackgroundColor" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="DashboardStatCardView">
+        <attr name="StatCardViewTitle" format="string" />
+        <attr name="StatCardViewDescription" format="string" />
+        <attr name="StatCardViewButtonText" format="string" />
+        <attr name="StatCardViewShowButton" format="boolean" />
+        <attr name="StatCardViewIcon" format="integer" />
+        <attr name="StatCardViewElevation" format="float" />
+    </declare-styleable>
+
     <declare-styleable name="AnimationView">
         <attr name="animationDrawable" format="integer" />
         <attr name="loopAnimation" format="boolean" />
