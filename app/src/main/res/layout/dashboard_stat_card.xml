@@ -51,9 +51,12 @@
                     android:alpha="0.7"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLines="1"
                     android:text="@string/shared_domain_aliases"
                     android:textColor="@color/BlackWhite"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/dashboard_stat_card_desc"
@@ -64,7 +67,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/obtaining_information"
                     android:textColor="?colorPrimary"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -75,7 +78,7 @@
             android:id="@+id/dashboard_stat_card_button_LL1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_rounded_corners_top_recyclerview_cards">
+            android:background="@drawable/dashboard_stat_card_button_ripple">
 
             <!-- This extra LL5 is there for the aliasAdapter (holder.mLL0.setBackgroundColor(0))-->
             <LinearLayout

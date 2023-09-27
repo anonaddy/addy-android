@@ -15,7 +15,6 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -133,10 +132,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             setOnBigScreenClickListener()
         }
 
-        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            setNavRailUserInitials()
-        }
-
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             setAppBar()
         }
@@ -145,12 +140,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             setRefreshLayout()
         }
 
-
-    }
-
-    private fun setNavRailUserInitials() {
-        val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
-        binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_user_initials)!!.text = usernameInitials
     }
 
     private fun setOnBigScreenClickListener() {
@@ -339,7 +328,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
 
-        viewPager!!.adapter = MainViewpagerAdapter(this, fragmentList)
+        viewPager.adapter = MainViewpagerAdapter(this, fragmentList)
         viewPager.offscreenPageLimit = if (resources.getBoolean(R.bool.isTablet)) 7 else 3
         // Allow swiping through the pages
         viewPager.isUserInputEnabled = true
@@ -353,7 +342,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        navView!!.menu.findItem(R.id.navigation_home).isChecked = true
+                        navView.menu.findItem(R.id.navigation_home).isChecked = true
 
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                             changeTopBarTitle(
@@ -369,7 +358,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     }
 
                     1 -> {
-                        navView!!.menu.findItem(R.id.navigation_alias).isChecked = true
+                        navView.menu.findItem(R.id.navigation_alias).isChecked = true
 
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                             changeTopBarTitle(
@@ -385,7 +374,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     }
 
                     2 -> {
-                        navView!!.menu.findItem(R.id.navigation_recipients).isChecked = true
+                        navView.menu.findItem(R.id.navigation_recipients).isChecked = true
 
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                             changeTopBarTitle(
@@ -401,19 +390,19 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     }
 
                     3 -> {
-                        navView!!.menu.findItem(R.id.navigation_usernames).isChecked = true
+                        navView.menu.findItem(R.id.navigation_usernames).isChecked = true
                     }
 
                     4 -> {
-                        navView!!.menu.findItem(R.id.navigation_domains).isChecked = true
+                        navView.menu.findItem(R.id.navigation_domains).isChecked = true
                     }
 
                     5 -> {
-                        navView!!.menu.findItem(R.id.navigation_rules).isChecked = true
+                        navView.menu.findItem(R.id.navigation_rules).isChecked = true
                     }
 
                     6 -> {
-                        navView!!.menu.findItem(R.id.navigation_failed_deliveries).isChecked = true
+                        navView.menu.findItem(R.id.navigation_failed_deliveries).isChecked = true
                     }
                 }
                 super.onPageSelected(position)
@@ -798,13 +787,13 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp else binding.activityMainViewpager
 
         when (fragment) {
-            R.id.navigation_home -> viewPager!!.currentItem = 0
-            R.id.navigation_alias -> viewPager!!.currentItem = 1
-            R.id.navigation_recipients -> viewPager!!.currentItem = 2
-            R.id.navigation_usernames -> viewPager!!.currentItem = 3 // Only SW600DP>
-            R.id.navigation_domains -> viewPager!!.currentItem = 4 // Only SW600DP>
-            R.id.navigation_rules -> viewPager!!.currentItem = 5 // Only SW600DP>
-            R.id.navigation_failed_deliveries -> viewPager!!.currentItem = 6 // Only SW600DP>
+            R.id.navigation_home -> viewPager.currentItem = 0
+            R.id.navigation_alias -> viewPager.currentItem = 1
+            R.id.navigation_recipients -> viewPager.currentItem = 2
+            R.id.navigation_usernames -> viewPager.currentItem = 3 // Only SW600DP>
+            R.id.navigation_domains -> viewPager.currentItem = 4 // Only SW600DP>
+            R.id.navigation_rules -> viewPager.currentItem = 5 // Only SW600DP>
+            R.id.navigation_failed_deliveries -> viewPager.currentItem = 6 // Only SW600DP>
         }
     }
 

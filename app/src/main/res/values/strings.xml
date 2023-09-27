@@ -198,6 +198,7 @@
     <string name="domains">Domains</string>
     <string name="usernames">Usernames</string>
     <string name="search">Search</string>
+    <string name="search_desc">Search aliases, recipients, usernames and more…</string>
     <string name="recent_searches">Recent searches</string>
     <string name="clear">Clear</string>
     <string name="searching">Searching…</string>
@@ -280,7 +281,6 @@
     <string name="all_rules">All rules</string>
     <string name="s_s">%1$s\n%2$s</string>
     <string name="s_s_s">%1$s\n%2$s\n%3$s</string>
-    <string name="_sMB">%sMB</string>
     <string name="activate">Activate</string>
     <string name="deactivate">Deactivate</string>
     <string name="rule_activated">Rule activated</string>
@@ -655,5 +655,7 @@
     <string name="notification_alias_watches_alias_does_not_exist_anymore">Alias removed from alias watcher</string>
     <string name="notification_alias_watches_alias_does_not_exist_anymore_desc">%1$s has been forgotten and removed from the alias watcher</string>
     <string name="view_all">View all</string>
+    <string name="d_slash_d">%1$d / %2$d</string>
+    <string name="home_bandwidth_text">%1$sMB / %2$sMB</string>
 
 </resources>

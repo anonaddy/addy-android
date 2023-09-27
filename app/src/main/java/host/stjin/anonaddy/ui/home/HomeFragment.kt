@@ -1,9 +1,5 @@
 package host.stjin.anonaddy.ui.home
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.*
 import android.os.Build
 import android.os.Bundle
@@ -11,11 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
-import android.widget.TextView
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.patrykandpatrick.vico.core.entry.entriesOf
@@ -289,152 +283,53 @@ class HomeFragment : Fragment() {
         val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
         val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
-        setMonthlyBandwidthStatistics(currMonthlyBandwidth, maxMonthlyBandwidth)
-        setAliasesStatistics(
-            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count,
-            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit
+        binding.homeStatCardSharedDomainAliases.setDescription(
+            this.resources.getString(
+                R.string.d_slash_d,
+                (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count,
+                (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit
+            )
         )
-        setRecipientStatistics(
-            (activity?.application as AddyIoApp).userResource.recipient_count,
-            (activity?.application as AddyIoApp).userResource.recipient_limit
+        binding.homeStatCardRecipients.setDescription(
+            this.resources.getString(
+                R.string.d_slash_d,
+                (activity?.application as AddyIoApp).userResource.recipient_count,
+                (activity?.application as AddyIoApp).userResource.recipient_limit
+            )
         )
-    }
+        binding.homeStatCardDomains.setDescription(
+            this.resources.getString(
+                R.string.d_slash_d,
+                (activity?.application as AddyIoApp).userResource.active_domain_count,
+                (activity?.application as AddyIoApp).userResource.active_domain_count
+            )
+        )
+        binding.homeStatCardUsernames.setDescription(
+            this.resources.getString(
+                R.string.d_slash_d,
+                (activity?.application as AddyIoApp).userResource.username_count,
+                (activity?.application as AddyIoApp).userResource.username_limit
+            )
+        )
+        binding.homeStatCardRules.setDescription(
+            this.resources.getString(
+                R.string.d_slash_d,
+                (activity?.application as AddyIoApp).userResource.active_rule_count,
+                (activity?.application as AddyIoApp).userResource.active_rule_limit
+            )
+        )
 
-
-    private val STATISTICS_ANIMATION_DURATION = 500L
-    private fun setAliasesStatistics(count: Int, maxAliases: Int) {
-//        binding.homeStatisticsAliasesProgress.max = maxAliases * 100
-//
-//        binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
-//
-//        try {
-//            startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/", maxAliases == 0, binding.homeStatisticsAliasesProgressShimmer)
-//        } catch (e: Exception) {
-//            binding.homeStatisticsAliasesCurrent.text = "$count /"
-//        }
-//
-//        ObjectAnimator.ofInt(
-//            binding.homeStatisticsAliasesProgress,
-//            "progress",
-//            count * 100
-//        )
-//            .setDuration(STATISTICS_ANIMATION_DURATION)
-//            .start()
-
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun startNumberCountAnimation(
-        textView: TextView,
-        count: Int,
-        suffix: String? = null,
-        showShimmer: Boolean,
-        shimmerView: ShimmerFrameLayout
-    ) {
-        if (textView.text != "$count$suffix") {
-            val animator = ValueAnimator.ofInt(textView.text.toString().substringBefore(" ").toInt(), count)
-            animator.duration = STATISTICS_ANIMATION_DURATION
-            animator.addUpdateListener { animation -> textView.text = animation.animatedValue.toString() + " " + suffix }
-            animator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    if (showShimmer) {
-                        shimmerView.startShimmer()
-                    }
-                }
-            })
-            animator.start()
+        // Bandwidth could be unlimited
+        val bandwidthText = if (maxMonthlyBandwidth == 0) {
+            this.resources.getString(R.string.home_bandwidth_text, roundOffDecimal(currMonthlyBandwidth).toString(), "∞")
+        } else {
+            this.resources.getString(R.string.home_bandwidth_text, currMonthlyBandwidth.toString(), maxMonthlyBandwidth.toString())
         }
+
+        binding.homeStatCardBandwidth.setDescription(bandwidthText)
+
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun startBandwidthCountAnimation(
-        textView: TextView,
-        count: Float,
-        suffix: String? = null,
-        showShimmer: Boolean,
-        shimmerView: ShimmerFrameLayout
-    ) {
-        if (textView.text != "$count$suffix") {
-            val animator = ValueAnimator.ofFloat(textView.text.toString().substringBefore("MB ").toFloat(), count)
-            animator.duration = STATISTICS_ANIMATION_DURATION
-            animator.addUpdateListener { animation ->
-                textView.text = roundOffDecimal(animation.animatedValue.toString().toDouble()).toString() + "MB " + suffix
-            }
-            animator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    if (showShimmer) {
-                        shimmerView.startShimmer()
-                    }
-                }
-            })
-            animator.start()
-        }
-    }
-
-    private fun setMonthlyBandwidthStatistics(
-        currMonthlyBandwidth: Double,
-        maxMonthlyBandwidth: Int
-    ) {
-//        binding.homeStatisticsMonthlyBandwidthProgress.max =
-//            if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
-//
-//        binding.homeStatisticsMonthlyBandwidthMax.text =
-//            if (maxMonthlyBandwidth == 0) this.resources.getString(R.string._sMB, "∞") else this.resources.getString(
-//                R.string._sMB,
-//                maxMonthlyBandwidth.toString()
-//            )
-//
-//        try {
-//            startBandwidthCountAnimation(
-//                binding.homeStatisticsMonthlyBandwidthCurrent,
-//                roundOffDecimal(currMonthlyBandwidth),
-//                "/",
-//                maxMonthlyBandwidth == 0,
-//                binding.homeStatisticsMonthlyBandwidthProgressShimmer
-//            )
-//        } catch (e: Exception) {
-//            val currentCount = this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
-//            binding.homeStatisticsMonthlyBandwidthCurrent.text = "$currentCount /"
-//        }
-//
-//
-//        ObjectAnimator.ofInt(
-//            binding.homeStatisticsMonthlyBandwidthProgress,
-//            "progress",
-//            currMonthlyBandwidth.roundToInt() * 100
-//        )
-//            .setDuration(STATISTICS_ANIMATION_DURATION)
-//            .start()
-    }
-
-
-    private fun setRecipientStatistics(currRecipients: Int, maxRecipients: Int) {
-//        binding.homeStatisticsRecipientsProgress.max =
-//            maxRecipients * 100
-//
-//        binding.homeStatisticsRecipientsMax.text =
-//            if (maxRecipients == 0) "∞" else maxRecipients.toString()
-//
-//        try {
-//            startNumberCountAnimation(
-//                binding.homeStatisticsRecipientsCurrent,
-//                currRecipients,
-//                "/",
-//                maxRecipients == 0,
-//                binding.homeStatisticsRecipientsProgressShimmer
-//            )
-//        } catch (e: Exception) {
-//            binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
-//        }
-//
-//        ObjectAnimator.ofInt(
-//            binding.homeStatisticsRecipientsProgress,
-//            "progress",
-//            currRecipients * 100
-//        )
-//            .setDuration(STATISTICS_ANIMATION_DURATION)
-//            .start()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

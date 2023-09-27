@@ -8,7 +8,7 @@
 
     <com.google.android.material.navigationrail.NavigationRailView
         android:id="@+id/nav_rail"
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
         app:headerLayout="@layout/navigation_rail_fab"
         android:clipChildren="false"
@@ -16,7 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/rail_nav_menu"
-        app:menuGravity="bottom" />
+        app:labelVisibilityMode="labeled"
+        app:menuGravity="center" />
 
 
     <androidx.viewpager2.widget.ViewPager2
@@ -24,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="100dp"
         android:nestedScrollingEnabled="true" />
 
 

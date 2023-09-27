@@ -88,7 +88,7 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
         val inflater = LayoutInflater.from(context)
         inflater.inflate(R.layout.dashboard_stat_card, this)
         cardView = findViewById(R.id.dashboard_stat_card_cardview)
-        linearLayout = findViewById(R.id.custom_view_section_LL)
+        linearLayout = findViewById(R.id.dashboard_stat_card_button_LL1)
         icon = findViewById(R.id.dashboard_stat_card_icon)
         title = findViewById(R.id.dashboard_stat_card_title)
         description = findViewById(R.id.dashboard_stat_card_desc)

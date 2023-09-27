@@ -78,13 +78,63 @@
                     android:paddingEnd="@dimen/cardview_extra_padding">
 
                     <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_shared_domain_aliases"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:StatCardViewDescription="0/1"
                         app:StatCardViewIcon="@drawable/ic_email_at"
-                        app:StatCardViewShowButton="true"
+                        app:StatCardViewShowButton="false"
                         app:StatCardViewTitle="@string/shared_domain_aliases" />
 
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_recipients"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_inbox"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/recipients" />
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_usernames"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_users"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/usernames" />
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_domains"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_world"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/domains" />
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_rules"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_filter"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/rules" />
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_bandwidth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_gauge"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/monthly_bandwidth" />
                 </LinearLayout>
 
                 <LinearLayout

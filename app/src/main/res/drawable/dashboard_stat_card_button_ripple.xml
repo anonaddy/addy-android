@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:attr/colorControlHighlight">
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <corners
+                android:topLeftRadius="@dimen/corner_radius_cardview"
+                android:topRightRadius="@dimen/corner_radius_cardview" />
+            <solid android:color="?colorSurface" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/dashboard_stat_card_button" />
+</ripple>

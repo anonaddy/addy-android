@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_statistics_RL1"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -28,71 +29,72 @@
             app:showStartAxis="false" />
     </LinearLayout>
 
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/home_statistics_NSV"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="@dimen/layout_padding_top"
-            android:paddingStart="@dimen/layout_padding"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingEnd="@dimen/layout_padding">
 
+            <com.google.android.material.search.SearchBar
+                android:id="@+id/search_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/search_desc" />
+
+            <TextView
+                android:id="@+id/navigation_rail_user_initials"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:autoSizeTextType="uniform"
+                android:background="@drawable/circle"
+                android:clickable="false"
+                android:contentDescription="@string/open_options"
+                android:focusable="false"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="SV"
+                android:textColor="?colorOnSecondaryContainer"
+                android:textSize="18sp"
+                app:layout_collapseMode="pin"
+                app:tint="?colorOnSecondaryContainer"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/home_statistics_NSV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
             <LinearLayout
-                android:id="@+id/home_statistics_LL"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
+                android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/layout_padding_top"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding">
 
                 <LinearLayout
-                    style="@style/AddyIoTitleNoAction"
+                    android:id="@+id/home_statistics_LL"
                     android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/general" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingStart="@dimen/cardview_extra_padding"
-                    android:paddingEnd="@dimen/cardview_extra_padding">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="TODO INFORMATION" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/home_statistics_LL1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:orientation="vertical">
 
                     <LinearLayout
-                        style="@style/AddyIoTitleAction"
+                        style="@style/AddyIoTitleNoAction"
                         android:layout_width="match_parent"
                         android:orientation="horizontal">
 
@@ -101,24 +103,137 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="@string/stats" />
+                            android:text="@string/general" />
+
+                        <!-- TODO not visible-->
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/home_no_aliases"
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/no_result_textview_padding"
-                        android:text="@string/no_active_aliases"
-                        android:textAlignment="center"
-                        android:textColor="@color/BlackWhite"
-                        android:visibility="gone" />
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/cardview_extra_padding"
+                        android:paddingEnd="@dimen/cardview_extra_padding"
+                        android:weightSum="5">
+
+                        <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                            android:id="@+id/home_stat_card_shared_domain_aliases"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:StatCardViewDescription="0/1"
+                            app:StatCardViewIcon="@drawable/ic_email_at"
+                            app:StatCardViewShowButton="true"
+                            app:StatCardViewTitle="@string/shared_domain_aliases" />
+
+                        <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                            android:id="@+id/home_stat_card_recipients"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            app:StatCardViewDescription="0/1"
+                            app:StatCardViewIcon="@drawable/ic_inbox"
+                            app:StatCardViewShowButton="true"
+                            app:StatCardViewTitle="@string/recipients" />
+
+                        <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                            android:id="@+id/home_stat_card_usernames"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            app:StatCardViewDescription="0/1"
+                            app:StatCardViewIcon="@drawable/ic_users"
+                            app:StatCardViewShowButton="true"
+                            app:StatCardViewTitle="@string/usernames" />
+
+                        <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                            android:id="@+id/home_stat_card_domains"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            app:StatCardViewDescription="0/1"
+                            app:StatCardViewIcon="@drawable/ic_world"
+                            app:StatCardViewShowButton="true"
+                            app:StatCardViewTitle="@string/domains" />
+
+                        <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                            android:id="@+id/home_stat_card_rules"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            app:StatCardViewDescription="0/1"
+                            app:StatCardViewIcon="@drawable/ic_filter"
+                            app:StatCardViewShowButton="true"
+                            app:StatCardViewTitle="@string/rules" />
+                    </LinearLayout>
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_bandwidth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_gauge"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/monthly_bandwidth" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/cardview_extra_padding"
+                        android:paddingEnd="@dimen/cardview_extra_padding" />
+
+                    <LinearLayout
+                        android:id="@+id/home_statistics_LL1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            style="@style/AddyIoTitleAction"
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/titleTextView"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:text="@string/stats" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/home_no_aliases"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/no_result_textview_padding"
+                            android:text="@string/no_active_aliases"
+                            android:textAlignment="center"
+                            android:textColor="@color/BlackWhite"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
-
             </LinearLayout>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
+
+
+    </LinearLayout>
+
 
 </RelativeLayout>
