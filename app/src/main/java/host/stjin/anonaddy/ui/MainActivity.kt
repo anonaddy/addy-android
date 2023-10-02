@@ -304,9 +304,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             setupRefreshLayout(binding.mainAppBarInclude!!.appBar, binding.refreshLayout!!)
         }
 
-        val navView = if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.navRail else binding.navView
+        val navView = if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.navRail!! else binding.navView!!
         val viewPager =
-            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp else binding.activityMainViewpager
+            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
 
         val fragmentList = if (resources.getBoolean(R.bool.isTablet)) {
             arrayListOf(
@@ -784,7 +784,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     fun switchFragments(fragment: Int) {
         val viewPager =
-            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp else binding.activityMainViewpager
+            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
 
         when (fragment) {
             R.id.navigation_home -> viewPager.currentItem = 0

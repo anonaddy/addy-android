@@ -11,7 +11,7 @@
         window:splitLayoutDirection="locale"
         window:splitMaxAspectRatioInPortrait="alwaysAllow"
         window:splitMinWidthDp="840"
-        window:splitRatio="0.65">
+        window:splitRatio="0.55">
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
             window:secondaryActivityName="host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity" />

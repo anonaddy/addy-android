@@ -118,7 +118,7 @@
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/cardview_extra_padding"
                         android:paddingEnd="@dimen/cardview_extra_padding"
-                        android:weightSum="5">
+                        android:weightSum="4">
 
                         <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
                             android:id="@+id/home_stat_card_shared_domain_aliases"
@@ -162,28 +162,54 @@
                             app:StatCardViewIcon="@drawable/ic_world"
                             app:StatCardViewShowButton="true"
                             app:StatCardViewTitle="@string/domains" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/cardview_extra_padding"
+                        android:paddingEnd="@dimen/cardview_extra_padding"
+                        android:weightSum="4">
+
 
                         <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
                             android:id="@+id/home_stat_card_rules"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             app:StatCardViewDescription="0/1"
                             app:StatCardViewIcon="@drawable/ic_filter"
                             app:StatCardViewShowButton="true"
                             app:StatCardViewTitle="@string/rules" />
+
+                        <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                            android:id="@+id/home_stat_card_subscription"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            app:StatCardViewDescription="@string/subscription_user_until"
+                            app:StatCardViewIcon="@drawable/ic_credit_card"
+                            app:StatCardViewShowButton="true"
+                            app:StatCardViewTitle="@string/subscription_user" />
+
+                        <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                            android:id="@+id/home_stat_card_bandwidth"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="2"
+                            app:StatCardViewDescription="0/1"
+                            app:StatCardViewIcon="@drawable/ic_gauge"
+                            app:StatCardViewShowButton="true"
+                            app:StatCardViewTitle="@string/monthly_bandwidth" />
+
                     </LinearLayout>
 
-                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
-                        android:id="@+id/home_stat_card_bandwidth"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:StatCardViewDescription="0/1"
-                        app:StatCardViewIcon="@drawable/ic_gauge"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/monthly_bandwidth" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

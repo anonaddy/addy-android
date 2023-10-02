@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.home
 
 import android.content.*
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,14 +25,15 @@ import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.ChartData
 import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
+import org.ocpsoft.prettytime.PrettyTime
 
 
 class HomeFragment : Fragment() {
 
     private var networkHelper: NetworkHelper? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -54,6 +56,7 @@ class HomeFragment : Fragment() {
         // load values from local to make the app look quick and snappy!
         setOnClickListeners()
         getStatistics()
+        setSubscriptionText()
         setNsvListener()
 
         // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
@@ -111,6 +114,7 @@ class HomeFragment : Fragment() {
                 // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
                 // no need to obtain this from savedInstanceState
                 getStatistics()
+                setSubscriptionText()
             } else {
                 getChartData()
                 getWebStatistics(context)
@@ -248,6 +252,7 @@ class HomeFragment : Fragment() {
             if (user != null) {
                 (activity?.application as AddyIoApp).userResource = user
                 getStatistics()
+                setSubscriptionText()
             } else {
 
 
@@ -277,6 +282,50 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
+
+    private fun setSubscriptionText() {
+
+        when {
+            (activity?.application as AddyIoApp).userResource.subscription == null -> {
+                binding.homeStatCardSubscription.visibility = View.GONE
+            }
+
+            (activity?.application as AddyIoApp).userResource.subscription_ends_at != null -> {
+                binding.homeStatCardSubscription.visibility = View.VISIBLE
+                binding.homeStatCardSubscription.setTitle(
+                    resources.getString(
+                        R.string.subscription_user,
+                        (activity?.application as AddyIoApp).userResource.subscription
+                    )
+                )
+                binding.homeStatCardSubscription.setDescription(
+                    resources.getString(
+                        R.string.subscription_user_until,
+                        (activity?.application as AddyIoApp).userResource.subscription,
+                        DateTimeUtils.turnStringIntoLocalString(
+                            (activity?.application as AddyIoApp).userResource.subscription_ends_at,
+                            DateTimeUtils.DATETIMEUTILS.DATE
+                        )
+                    )
+                )
+            }
+
+            else -> {
+                binding.homeStatCardSubscription.visibility = View.VISIBLE
+                binding.homeStatCardSubscription.setTitle(
+                    resources.getString(
+                        R.string.subscription_user,
+                        (activity?.application as AddyIoApp).userResource.subscription
+                    )
+                )
+                binding.homeStatCardSubscription.setDescription(
+                    resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
+                )
+            }
+        }
+    }
+
 
     private fun getStatistics() {
         //  / 1024 / 1024 because api returns bytes
