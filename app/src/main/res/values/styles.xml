@@ -101,6 +101,10 @@
         <item name="android:minHeight">8dip</item>
     </style>
 
+    <style name="AddyIoProgressBar.Square" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progressbar_drawable_square</item>
+    </style>
+
 
     <!-- SECONDARY -->
     <style name="CircularProgressButtonSecondary" parent="MaterialButtonSecondary">

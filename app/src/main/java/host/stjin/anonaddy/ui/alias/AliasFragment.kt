@@ -40,6 +40,7 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.AliasesArray
+import host.stjin.anonaddy_shared.models.BulkAliasesArray
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.GsonTools
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -58,8 +59,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     // Default filter
     private val defaultAliasSortFilter: AliasSortFilter = AliasSortFilter(
         onlyActiveAliases = false,
+        onlyDeletedAliases = false,
         onlyInactiveAliases = false,
-        includeDeleted = false,
         onlyWatchedAliases = false,
         sort = null,
         sortDesc = false,
@@ -306,74 +307,106 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 showSearchHintSnackbar()
             }
 
-            networkHelper?.getAliases(
-                { list: AliasesArray?, result: String? ->
-                    if (list != null) {
-                        setAliasesAdapter(requireContext(), list, forceReload)
-                    } else {
-                        // Data could not be loaded
+            /**
+             * CHECK IF WATCHED ONLY IS TRUE
+             * If true simply bulk-obtain all the watched aliases
+             */
 
+            if (aliasSortFilter.onlyWatchedAliases) {
 
-                        if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                (activity as MainActivity).findViewById(R.id.main_container),
-                                LoggingHelper.LOGFILES.DEFAULT
-                            ).show()
+                val aliasWatcher = AliasWatcher(requireContext())
+                val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
+
+                networkHelper?.bulkGetAlias(
+                    { list: BulkAliasesArray?, result: String? ->
+                        if (list != null) {
+                            val aliasesArray = AliasesArray(list.data, links = null, meta = null)
+                            setAliasesAdapter(requireContext(), aliasesArray, forceReload)
                         } else {
-                            val bottomNavView: BottomNavigationView? =
-                                activity?.findViewById(R.id.nav_view)
-                            bottomNavView?.let {
+                            // Data could not be loaded
+
+
+                            if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                                 SnackbarHelper.createSnackbar(
                                     requireContext(),
                                     requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                    it,
+                                    (activity as MainActivity).findViewById(R.id.main_container),
                                     LoggingHelper.LOGFILES.DEFAULT
-                                )
-                                    .apply {
-                                        anchorView = bottomNavView
-                                    }.show()
+                                ).show()
+                            } else {
+                                val bottomNavView: BottomNavigationView? =
+                                    activity?.findViewById(R.id.nav_view)
+                                bottomNavView?.let {
+                                    SnackbarHelper.createSnackbar(
+                                        requireContext(),
+                                        requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                        it,
+                                        LoggingHelper.LOGFILES.DEFAULT
+                                    )
+                                        .apply {
+                                            anchorView = bottomNavView
+                                        }.show()
+                                }
+                            }
+
+                        }
+                    }, aliasesToWatch
+                )
+            } else {
+                networkHelper?.getAliases(
+                    { list: AliasesArray?, result: String? ->
+                        if (list != null) {
+                            setAliasesAdapter(requireContext(), list, forceReload)
+                        } else {
+                            // Data could not be loaded
+                            if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                                SnackbarHelper.createSnackbar(
+                                    requireContext(),
+                                    requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                    (activity as MainActivity).findViewById(R.id.main_container),
+                                    LoggingHelper.LOGFILES.DEFAULT
+                                ).show()
+                            } else {
+                                val bottomNavView: BottomNavigationView? =
+                                    activity?.findViewById(R.id.nav_view)
+                                bottomNavView?.let {
+                                    SnackbarHelper.createSnackbar(
+                                        requireContext(),
+                                        requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                        it,
+                                        LoggingHelper.LOGFILES.DEFAULT
+                                    )
+                                        .apply {
+                                            anchorView = bottomNavView
+                                        }.show()
+                                }
                             }
                         }
+                    },
+                    aliasSortFilter = aliasSortFilter,
+                    page = (aliasList?.meta?.current_page ?: 0) + 1,
+                    size = 25 // Get only 25 aliases for performance
+                )
+            }
 
 
-                    }
-
-                    binding.aliasAllAliasesRecyclerview.hideShimmer()
-                    binding.aliasProgress.visibility = View.GONE
-
-                    // Enable scrollviewlistener again
-                    setOnNestedScrollViewListener(set = true)
-                    // Size 100 is being used for above WORKAROUND #0001
-                },
-                aliasSortFilter = aliasSortFilter,
-                page = (aliasList?.meta?.current_page ?: 0) + 1,
-                size = 100
-            )
         }
     }
 
     private fun setAliasesAdapter(context: Context, list: AliasesArray, forceReload: Boolean) {
         binding.aliasAllAliasesRecyclerview.apply {
-
             if (aliasList == null || forceReload) {
                 // If aliasList is empty, assign it
                 aliasList = list
-
-                // Make sure to have the aliases in the array be filtered, aliases are being filtered on API level
-                // But some filters can only be applied locally
-                aliasList!!.data = getFilteredAliasList(list.data)
             } else {
                 // If aliasList is not empty, set the meta and links and append the retrieved aliases to the list (as pagination is being used)
                 aliasList?.meta = list.meta
                 aliasList?.links = list.links
-                val filteredAliases = getFilteredAliasList(list.data)
-                aliasList?.data?.addAll(filteredAliases)
+                aliasList?.data?.addAll(list.data)
 
 
                 // If there are 0 new items in this page but there are more pages, continue searching to the next page
-                if (filteredAliases.size == 0 && (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
+                if (list.data.size == 0 && (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
                     viewLifecycleOwner.lifecycleScope.launch {
                         getAliasesAndAddThemToList()
                     }
@@ -383,40 +416,19 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 // Get the totalsize of the adapteritems
                 val totalSize = aliasAdapter?.itemCount ?: 0
                 // Tell the adapter there is new data (from the original size to the added items)
-                binding.aliasAllAliasesRecyclerview.post { aliasAdapter?.notifyItemRangeInserted(totalSize, filteredAliases.size - 1) }
+                binding.aliasAllAliasesRecyclerview.post { aliasAdapter?.notifyItemRangeInserted(totalSize, list.data.size - 1) }
             }
-
-
-            // TODO fix workaround?
-            // WORKAROUND #0001 START
-            /*
-        Situation: An alias on the 2nd page of the API is being watched or inactive.
-        The aliasfragment shows only 2 results (as the first page only contains 2 inactive/watched aliases)
-        Due to the 2 results the NSV is not scrollable thus this method will not be called again which results in missing results.
-
-        Solution: As long as there are less than 100 items (which is the default number of aliases to obtain as seen in getAllAliases)
-                  Keep loading results as long as there are more pages
-     */
-
-            if ((aliasList?.data?.size ?: 0) < 100 && (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    getAliasesAndAddThemToList()
-                }
-            }
-
-            // WORKAROUND END
-
 
             // If the list is empty, set noAliasVisibility to visible
-            if (aliasList!!.data.size == 0) {
-                // Set to GONE in getDataFromWeb
-                binding.aliasNoAliases.visibility = View.VISIBLE
-            } else {
+            if (aliasList!!.data.size > 0) {
                 binding.aliasNoAliases.visibility = View.GONE
+            } else {
+                binding.aliasNoAliases.visibility = View.VISIBLE
             }
 
-            // Okay we got data, init the recyclerview
+            // Hide snackbar
             hideSnackBar()
+
             aliasAdapter = AliasAdapter(
                 aliasList!!.data,
                 context,
@@ -463,18 +475,15 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                     if (selectionMode) {
                         binding.aliasAddAliasFab.hide()
-                        val bottomNavView: BottomNavigationView? =
-                            activity?.findViewById(R.id.nav_view)
-                        bottomNavView?.let {
-                            aliasSelectionSnackbar = SnackbarHelper.createSnackbar(
+
+                        if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                            SnackbarHelper.createSnackbar(
                                 context,
                                 context.resources.getString(R.string.multiple_alias_selected, selectedAliases.count()),
-                                it,
+                                (activity as MainActivity).findViewById(R.id.main_container),
                                 length = Snackbar.LENGTH_INDEFINITE,
                                 allowSwipeDismiss = false
-                            ).apply {
-                                anchorView = bottomNavView
-                            }.setAction(R.string.actions) {
+                            ).setAction(R.string.actions) {
                                 aliasMultipleSelectionBottomDialogFragment =
                                     AliasMultipleSelectionBottomDialogFragment.newInstance(selectedAliases)
                                 if (!aliasMultipleSelectionBottomDialogFragment.isAdded) {
@@ -483,8 +492,31 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                                         "aliasMultipleSelectionBottomDialogFragment"
                                     )
                                 }
+                            }.show()
+                        } else {
+                            val bottomNavView: BottomNavigationView? =
+                                activity?.findViewById(R.id.nav_view)
+                            bottomNavView?.let {
+                                aliasSelectionSnackbar = SnackbarHelper.createSnackbar(
+                                    context,
+                                    context.resources.getString(R.string.multiple_alias_selected, selectedAliases.count()),
+                                    it,
+                                    length = Snackbar.LENGTH_INDEFINITE,
+                                    allowSwipeDismiss = false
+                                ).apply {
+                                    anchorView = bottomNavView
+                                }.setAction(R.string.actions) {
+                                    aliasMultipleSelectionBottomDialogFragment =
+                                        AliasMultipleSelectionBottomDialogFragment.newInstance(selectedAliases)
+                                    if (!aliasMultipleSelectionBottomDialogFragment.isAdded) {
+                                        aliasMultipleSelectionBottomDialogFragment.show(
+                                            childFragmentManager,
+                                            "aliasMultipleSelectionBottomDialogFragment"
+                                        )
+                                    }
+                                }
+                                aliasSelectionSnackbar?.show()
                             }
-                            aliasSelectionSnackbar?.show()
                         }
                     } else {
                         hideSnackBar()
@@ -493,8 +525,12 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 }
 
             })
-            adapter = aliasAdapter
+            binding.aliasProgress.visibility = View.GONE
+            hideShimmer()
+            // Enable scrollviewlistener again
+            setOnNestedScrollViewListener(set = true)
 
+            adapter = aliasAdapter
         }
     }
 
@@ -563,15 +599,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         aliasSelectionSnackbar?.dismiss()
     }
 
-    private fun getFilteredAliasList(aliasesList: ArrayList<Aliases>): ArrayList<Aliases> {
-        if (aliasSortFilter.onlyWatchedAliases) {
-            val aliasesToWatch = context?.let { AliasWatcher(it).getAliasesToWatch() }
-            if (aliasesToWatch != null) {
-                aliasesList.removeAll { alias -> alias.id !in aliasesToWatch }
-            }
-        }
-        return aliasesList
-    }
 
     private fun hideFabForSnackBarTime() {
         binding.aliasAddAliasFab.hide()
@@ -599,14 +626,16 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         replied: Int,
         sent: Int
     ) {
-        binding.aliasRepliedSentStatsTextview.text =
+        binding.aliasStats2.setDescription(
             context.resources.getString(R.string.replied_replied_sent_stat, replied, sent)
-        binding.aliasForwardedBlockedStatsTextview.text =
+        )
+        binding.aliasStats1.setDescription(
             context.resources.getString(
                 R.string.replied_forwarded_blocked_stat,
                 forwarded,
                 blocked
             )
+        )
     }
 
     override fun onAdded() {
@@ -632,7 +661,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         settingsManager?.putSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER, data)
 
 
-        filterOptionsAliasBottomDialogFragment.dismissAllowingStateLoss()
+        if (filterOptionsAliasBottomDialogFragment.isAdded) {
+            // Could not be added because this is calle from homeFragment on sw600dp
+            filterOptionsAliasBottomDialogFragment.dismissAllowingStateLoss()
+        }
         getDataFromWeb(requireContext(), null)
     }
 

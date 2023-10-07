@@ -8,7 +8,11 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -221,7 +225,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             } else if (p0.id == R.id.bs_setup_apikey_get_button) {
                 val baseUrl = binding.bsSetupInstanceTiet.text.toString()
 
-                val url = "$baseUrl/settings"
+                val url = "$baseUrl/settings/api"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)
                 startActivity(i)

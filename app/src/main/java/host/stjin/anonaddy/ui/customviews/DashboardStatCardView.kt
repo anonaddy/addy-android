@@ -1,24 +1,30 @@
 package host.stjin.anonaddy.ui.customviews
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.animation.DecelerateInterpolator
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
+import kotlin.math.roundToInt
 
 
 class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle) {
     private var onClicklistener: OnLayoutClickedListener? = null
     var description: TextView? = null
+    var buttonText: TextView? = null
     private var title: TextView? = null
     private var icon: ImageView? = null
+    private var progress: ProgressBar? = null
     private var linearLayout: LinearLayout? = null
     private var cardView: MaterialCardView? = null
 
@@ -51,6 +57,10 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
         }
     }
 
+    fun setButtonText(text: String?) {
+        buttonText?.text = text
+    }
+
     fun setTitle(text: String?) {
         if (text.isNullOrEmpty()) {
             title?.text = text
@@ -61,6 +71,23 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
         }
     }
 
+    fun setProgress(progressValue: Float) {
+        progress?.animateTo(progressValue.roundToInt(), 0)
+    }
+
+
+    private fun ProgressBar.animateTo(progressTo: Int, startDelay: Long) {
+        val animation = ObjectAnimator.ofInt(
+            this,
+            "progress",
+            this.progress,
+            progressTo
+        )
+        animation.duration = 300
+        animation.interpolator = DecelerateInterpolator()
+        animation.startDelay = startDelay
+        animation.start()
+    }
 
     fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
         if (startIcon != null) {
@@ -90,8 +117,10 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
         cardView = findViewById(R.id.dashboard_stat_card_cardview)
         linearLayout = findViewById(R.id.dashboard_stat_card_button_LL1)
         icon = findViewById(R.id.dashboard_stat_card_icon)
+        progress = findViewById(R.id.dashboard_stat_card_progress)
         title = findViewById(R.id.dashboard_stat_card_title)
         description = findViewById(R.id.dashboard_stat_card_desc)
+        buttonText = findViewById(R.id.dashboard_stat_card_button_text)
 
         if (attrs != null) {
             // Get attributes
@@ -111,6 +140,7 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
             // Set title and description
             setTitle(a.getString(R.styleable.DashboardStatCardView_StatCardViewTitle))
             setDescription(a.getString(R.styleable.DashboardStatCardView_StatCardViewDescription))
+            setButtonText(a.getString(R.styleable.DashboardStatCardView_StatCardViewButtonText))
 
 
             // Set icons

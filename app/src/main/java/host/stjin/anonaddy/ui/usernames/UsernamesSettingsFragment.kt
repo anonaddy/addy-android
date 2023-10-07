@@ -28,6 +28,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.Usernames
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.AddUsernameBottomDialogListener {
@@ -129,12 +130,14 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                         requireContext(),
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
+                        LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 }
             }
@@ -202,12 +205,14 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                             requireContext(),
                             this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
                             (activity as MainActivity).findViewById(R.id.main_container),
+                            LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
                             (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
+                            LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     }
 
@@ -307,12 +312,14 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                         requireContext(),
                         context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result),
                         (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         context.resources.getString(R.string.s_s, context.resources.getString(R.string.error_deleting_username), result),
                         (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
+                        LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 }
             }

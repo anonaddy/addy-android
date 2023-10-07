@@ -454,11 +454,13 @@ class NetworkHelper(private val context: Context) {
             parameters.add("filter[active]=" to "true")
         } else if (aliasSortFilter.onlyInactiveAliases) {
             parameters.add("filter[active]=" to "false")
-        }
-
-        if (aliasSortFilter.includeDeleted) {
+            parameters.add("filter[deleted]=" to "with")
+        } else if (aliasSortFilter.onlyDeletedAliases) {
+            parameters.add("filter[deleted]=" to "only")
+        } else {
             parameters.add("filter[deleted]=" to "with")
         }
+
 
         if (size != null) {
             parameters.add("page[size]" to size.toString())
@@ -3723,8 +3725,8 @@ class NetworkHelper(private val context: Context) {
             },
             aliasSortFilter = AliasSortFilter(
                 onlyActiveAliases = true,
+                onlyDeletedAliases = false,
                 onlyInactiveAliases = false,
-                includeDeleted = false,
                 onlyWatchedAliases = false,
                 sort = "emails_forwarded",
                 sortDesc = true,
@@ -3757,8 +3759,8 @@ class NetworkHelper(private val context: Context) {
             },
             aliasSortFilter = AliasSortFilter(
                 onlyActiveAliases = true,
+                onlyDeletedAliases = false,
                 onlyInactiveAliases = false,
-                includeDeleted = false,
                 onlyWatchedAliases = false,
                 sort = "updated_at",
                 sortDesc = true,

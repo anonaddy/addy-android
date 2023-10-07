@@ -27,6 +27,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {
@@ -128,12 +129,14 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                         requireContext(),
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
+                        LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 }
             }
@@ -180,12 +183,14 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                             requireContext(),
                             this.resources.getString(R.string.error_obtaining_domain) + "\n" + error,
                             (activity as MainActivity).findViewById(R.id.main_container),
+                            LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             this.resources.getString(R.string.error_obtaining_domain) + "\n" + error,
                             (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
+                            LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     }
 
@@ -307,6 +312,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                             context.resources.getString(R.string.error_deleting_domain), result
                         ),
                         (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
@@ -316,6 +322,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                             context.resources.getString(R.string.error_deleting_domain), result
                         ),
                         (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
+                        LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 }
             }

@@ -198,8 +198,8 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                     },
                     aliasSortFilter = AliasSortFilter(
                         onlyActiveAliases = false,
+                        onlyDeletedAliases = false,
                         onlyInactiveAliases = false,
-                        includeDeleted = true,
                         onlyWatchedAliases = false,
                         sort = null,
                         sortDesc = true,

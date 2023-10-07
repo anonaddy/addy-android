@@ -1,5 +1,7 @@
 package host.stjin.anonaddy
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Build
 import android.view.ViewGroup
 import android.view.WindowInsets
@@ -29,6 +31,24 @@ open class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 }
             }
         linearLayout.setWindowInsetsAnimationCallback(callback)
+    }
+
+    open fun dpToPx(dp: Int): Int {
+        // https://developer.android.com/guide/practices/screens_support.html#dips-pels
+        val density: Float = Resources.getSystem().displayMetrics.density
+        return (dp * density + 0.5f).toInt()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val configuration: Configuration = requireActivity().resources.configuration
+        if (configuration.orientation === Configuration.ORIENTATION_LANDSCAPE &&
+            configuration.screenWidthDp > 450
+        ) {
+            // you can go more fancy and vary the bottom sheet width depending on the screen width
+            // see recommendations on https://material.io/components/sheets-bottom#specs
+            dialog!!.window!!.setLayout(dpToPx(600), -1)
+        }
     }
 
 }

@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/rail_nav_menu"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="auto"
         app:menuGravity="center" />
 
 

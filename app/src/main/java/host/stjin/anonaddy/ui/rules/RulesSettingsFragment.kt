@@ -194,12 +194,14 @@ class RulesSettingsFragment : Fragment() {
                             requireContext(),
                             requireContext().resources.getString(R.string.error_obtaining_rules) + "\n" + error,
                             (activity as MainActivity).findViewById(R.id.main_container),
+                            LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             requireContext().resources.getString(R.string.error_obtaining_rules) + "\n" + error,
                             (activity as RulesSettingsActivity).findViewById(R.id.activity_rules_settings_CL),
+                            LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     }
 

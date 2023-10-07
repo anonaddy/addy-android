@@ -13,12 +13,14 @@ import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.FailedDeliveryAdapter
 import host.stjin.anonaddy.databinding.FragmentFailedDeliveriesBinding
+import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
@@ -127,11 +129,22 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 if (list != null) {
                     setFailedDeliveriesAdapter(list)
                 } else {
-                    SnackbarHelper.createSnackbar(
-                        requireContext(),
-                        requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
-                        binding.fragmentFailedDeliveriesCL
-                    ).show()
+                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                            (activity as MainActivity).findViewById(R.id.main_container),
+                            LoggingHelper.LOGFILES.DEFAULT
+                        ).show()
+                    } else {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                            binding.fragmentFailedDeliveriesCL,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        ).show()
+                    }
+
 
                     // Show error animations
                     binding.fragmentFailedDeliveriesLL1.visibility = View.GONE

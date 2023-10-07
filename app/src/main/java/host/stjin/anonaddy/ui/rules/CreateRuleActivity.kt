@@ -157,7 +157,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_obtaining_rule) + "\n" + error,
-                    binding.activityRulesCreateCL
+                    binding.activityRulesCreateCL,
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
 
                 // Show error animations

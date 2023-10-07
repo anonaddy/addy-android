@@ -177,7 +177,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
                 val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
                 val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
-                homeFragment.getDataFromWeb(this@MainActivity, null)
+                homeFragment.getDataFromWeb(null)
                 aliasFragment.getDataFromWeb(this@MainActivity, null)
                 recipientsFragment.getDataFromWeb(null)
 
@@ -411,12 +411,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             binding.navRail!!.setOnItemSelectedListener {
-                switchFragments(it.itemId)
+                navigateTo(it.itemId)
                 false
             }
         } else {
             binding.navView!!.setOnItemSelectedListener {
-                switchFragments(it.itemId)
+                navigateTo(it.itemId)
                 false
             }
         }
@@ -782,7 +782,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }, show404Toast = false)
     }
 
-    fun switchFragments(fragment: Int) {
+    fun navigateTo(fragment: Int) {
         val viewPager =
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
 
@@ -790,10 +790,41 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             R.id.navigation_home -> viewPager.currentItem = 0
             R.id.navigation_alias -> viewPager.currentItem = 1
             R.id.navigation_recipients -> viewPager.currentItem = 2
-            R.id.navigation_usernames -> viewPager.currentItem = 3 // Only SW600DP>
-            R.id.navigation_domains -> viewPager.currentItem = 4 // Only SW600DP>
-            R.id.navigation_rules -> viewPager.currentItem = 5 // Only SW600DP>
-            R.id.navigation_failed_deliveries -> viewPager.currentItem = 6 // Only SW600DP>
+            R.id.navigation_usernames -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 3
+                } else {
+                    val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_domains -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 4
+                } else {
+                    val intent = Intent(this, DomainSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_rules -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 5
+                } else {
+                    val intent = Intent(this, RulesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_failed_deliveries -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 6
+                } else {
+                    val intent = Intent(this, FailedDeliveriesActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
     }
 
@@ -839,16 +870,16 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private fun goToTarget(string: String) {
         when (string) {
             SearchActivity.SearchTargets.ALIASES.activity -> {
-                switchFragments(R.id.navigation_alias)
+                navigateTo(R.id.navigation_alias)
             }
 
             SearchActivity.SearchTargets.RECIPIENTS.activity -> {
-                switchFragments(R.id.navigation_recipients)
+                navigateTo(R.id.navigation_recipients)
             }
 
             SearchActivity.SearchTargets.DOMAINS.activity -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
-                    switchFragments(R.id.navigation_domains)
+                    navigateTo(R.id.navigation_domains)
                 } else {
                     val intent = Intent(this, DomainSettingsActivity::class.java)
                     startActivity(intent)
@@ -857,7 +888,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
             SearchActivity.SearchTargets.USERNAMES.activity -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
-                    switchFragments(R.id.navigation_usernames)
+                    navigateTo(R.id.navigation_usernames)
                 } else {
                     val intent = Intent(this, UsernamesSettingsActivity::class.java)
                     startActivity(intent)
@@ -866,7 +897,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
             SearchActivity.SearchTargets.RULES.activity -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
-                    switchFragments(R.id.navigation_rules)
+                    navigateTo(R.id.navigation_rules)
                 } else {
                     val intent = Intent(this, RulesSettingsActivity::class.java)
                     startActivity(intent)
@@ -876,7 +907,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
             SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
-                    switchFragments(R.id.navigation_failed_deliveries)
+                    navigateTo(R.id.navigation_failed_deliveries)
                 } else {
                     val intent = Intent(this, FailedDeliveriesActivity::class.java)
                     startActivity(intent)

@@ -1,9 +1,14 @@
 package host.stjin.anonaddy.ui.home
 
-import android.content.*
-import android.content.res.Configuration
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,20 +20,24 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.patrykandpatrick.vico.core.entry.entriesOf
 import com.patrykandpatrick.vico.core.entry.entryModelOf
-import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
+import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
+import host.stjin.anonaddy.ui.alias.AliasFragment
+import host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.ChartData
 import host.stjin.anonaddy_shared.models.UserResource
-import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
-import org.ocpsoft.prettytime.PrettyTime
 
 
 class HomeFragment : Fragment() {
@@ -55,15 +64,23 @@ class HomeFragment : Fragment() {
 
         // load values from local to make the app look quick and snappy!
         setOnClickListeners()
-        getStatistics()
-        setSubscriptionText()
+        setStatistics()
         setNsvListener()
 
-        // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
-        // API calls, user should swipe to refresh starting from v4.5.0
-        getDataFromWeb(requireContext(), savedInstanceState)
+        setGridLayout()
+
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
+            // API calls, user should swipe to refresh starting from v4.5.0
+            getDataFromWeb(savedInstanceState)
+        }, 5000)
 
         return root
+    }
+
+    private fun setGridLayout() {
+        binding.homeStatsGridlayout.columnCount = ScreenSizeUtils.calculateNoOfColumns(requireContext())
     }
 
 
@@ -96,7 +113,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    fun getDataFromWeb(context: Context, savedInstanceState: Bundle?) {
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
 
@@ -113,11 +130,10 @@ class HomeFragment : Fragment() {
 
                 // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
                 // no need to obtain this from savedInstanceState
-                getStatistics()
-                setSubscriptionText()
+                setStatistics()
             } else {
                 getChartData()
-                getWebStatistics(context)
+                getWebStatistics()
             }
         }
     }
@@ -155,75 +171,40 @@ class HomeFragment : Fragment() {
 
     private fun setChartData(data: ChartData) {
         chartData = data
-
-
         //val numberStr = data.forwardsData.map { FloatEntry(0,it.toFloat()) }
 
 
-        val chartEntryModel = if (BuildConfig.DEBUG) {
-            val random = java.util.Random()
-            val forwardedData = entriesOf(
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20)
-            )
-            val repliesData = entriesOf(
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20)
-            )
-            val sendsData = entriesOf(
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20),
-                random.nextInt(20)
-            )
-            entryModelOf(
-                forwardedData, repliesData, sendsData
-            )
-        } else {
-            val forwardedData = entriesOf(
-                data.forwardsData[0],
-                data.forwardsData[1],
-                data.forwardsData[2],
-                data.forwardsData[3],
-                data.forwardsData[4],
-                data.forwardsData[5],
-                data.forwardsData[6]
-            )
-            val repliesData = entriesOf(
-                data.repliesData[0],
-                data.repliesData[1],
-                data.repliesData[2],
-                data.repliesData[3],
-                data.repliesData[4],
-                data.repliesData[5],
-                data.repliesData[6]
-            )
-            val sendsData = entriesOf(
-                data.sendsData[0],
-                data.sendsData[1],
-                data.sendsData[2],
-                data.sendsData[3],
-                data.sendsData[4],
-                data.sendsData[5],
-                data.sendsData[6]
-            )
-            entryModelOf(
-                forwardedData, repliesData, sendsData
-            )
-        }
+        val forwardedData = entriesOf(
+            data.forwardsData[0],
+            data.forwardsData[1],
+            data.forwardsData[2],
+            data.forwardsData[3],
+            data.forwardsData[4],
+            data.forwardsData[5],
+            data.forwardsData[6]
+        )
+        val repliesData = entriesOf(
+            data.repliesData[0],
+            data.repliesData[1],
+            data.repliesData[2],
+            data.repliesData[3],
+            data.repliesData[4],
+            data.repliesData[5],
+            data.repliesData[6]
+        )
+        val sendsData = entriesOf(
+            data.sendsData[0],
+            data.sendsData[1],
+            data.sendsData[2],
+            data.sendsData[3],
+            data.sendsData[4],
+            data.sendsData[5],
+            data.sendsData[6]
+        )
+        val chartEntryModel = entryModelOf(
+            forwardedData, repliesData, sendsData
+        )
+
 
 
         binding.homeChartView1.setModel(chartEntryModel)
@@ -244,18 +225,212 @@ class HomeFragment : Fragment() {
 
 
     private fun setOnClickListeners() {
-        //
+        binding.homeStatCardSharedDomainAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_alias)
+            }
+        })
+
+        binding.homeStatCardRecipients.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_recipients)
+            }
+        })
+
+        binding.homeStatCardUsernames.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_usernames)
+            }
+        })
+
+        binding.homeStatCardDomains.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_domains)
+            }
+        })
+
+        binding.homeStatCardRules.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_rules)
+            }
+        })
+
+        binding.homeStatCardBandwidth.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = AddyIo.API_BASE_URL
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+        binding.searchBar?.setOnClickListener {
+            (activity as MainActivity).openSearch()
+        }
+
+
+        binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = false,
+                                onlyDeletedAliases = false,
+                                onlyInactiveAliases = false,
+                                onlyWatchedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+        binding.homeStatCardActiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = true,
+                                onlyDeletedAliases = false,
+                                onlyInactiveAliases = false,
+                                onlyWatchedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+        binding.homeStatInactiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = false,
+                                onlyDeletedAliases = false,
+                                onlyInactiveAliases = true,
+                                onlyWatchedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+
+        binding.homeStatDeletedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = false,
+                                onlyDeletedAliases = true,
+                                onlyInactiveAliases = true,
+                                onlyWatchedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+        binding.homeStatWatchedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+
+                        val aliasWatcher = AliasWatcher(requireContext())
+                        val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
+                        binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())
+                        if (aliasesToWatch.isNotEmpty()) {
+                            val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                            aliasFragment.setFilterAndSortingSettings(
+                                AliasSortFilter(
+                                    onlyActiveAliases = false,
+                                    onlyDeletedAliases = false,
+                                    onlyInactiveAliases = false,
+                                    onlyWatchedAliases = true,
+                                    sort = null,
+                                    sortDesc = false,
+                                    filter = null
+                                )
+                            )
+                        }
+
+
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
     }
 
-    private suspend fun getWebStatistics(context: Context) {
+    private suspend fun getWebStatistics() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 (activity?.application as AddyIoApp).userResource = user
-                getStatistics()
-                setSubscriptionText()
+                setStatistics()
             } else {
-
-
                 if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
@@ -284,61 +459,28 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun setSubscriptionText() {
-
-        when {
-            (activity?.application as AddyIoApp).userResource.subscription == null -> {
-                binding.homeStatCardSubscription.visibility = View.GONE
-            }
-
-            (activity?.application as AddyIoApp).userResource.subscription_ends_at != null -> {
-                binding.homeStatCardSubscription.visibility = View.VISIBLE
-                binding.homeStatCardSubscription.setTitle(
-                    resources.getString(
-                        R.string.subscription_user,
-                        (activity?.application as AddyIoApp).userResource.subscription
-                    )
-                )
-                binding.homeStatCardSubscription.setDescription(
-                    resources.getString(
-                        R.string.subscription_user_until,
-                        (activity?.application as AddyIoApp).userResource.subscription,
-                        DateTimeUtils.turnStringIntoLocalString(
-                            (activity?.application as AddyIoApp).userResource.subscription_ends_at,
-                            DateTimeUtils.DATETIMEUTILS.DATE
-                        )
-                    )
-                )
-            }
-
-            else -> {
-                binding.homeStatCardSubscription.visibility = View.VISIBLE
-                binding.homeStatCardSubscription.setTitle(
-                    resources.getString(
-                        R.string.subscription_user,
-                        (activity?.application as AddyIoApp).userResource.subscription
-                    )
-                )
-                binding.homeStatCardSubscription.setDescription(
-                    resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
-                )
-            }
-        }
-    }
-
-
-    private fun getStatistics() {
+    private fun setStatistics() {
         //  / 1024 / 1024 because api returns bytes
         val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
         val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
+
+        val activeSharedDomainAliasLimitText = if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toString()
+        }
         binding.homeStatCardSharedDomainAliases.setDescription(
             this.resources.getString(
-                R.string.d_slash_d,
+                R.string.d_slash_s,
                 (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count,
-                (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit
+                activeSharedDomainAliasLimitText
             )
         )
+        if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit > 0) {
+            binding.homeStatCardSharedDomainAliases.setProgress((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toFloat() * 100)
+        }
+
         binding.homeStatCardRecipients.setDescription(
             this.resources.getString(
                 R.string.d_slash_d,
@@ -346,13 +488,19 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource.recipient_limit
             )
         )
+        binding.homeStatCardRecipients.setProgress((activity?.application as AddyIoApp).userResource.recipient_count.toFloat() / (activity?.application as AddyIoApp).userResource.recipient_limit.toFloat() * 100)
+
+
         binding.homeStatCardDomains.setDescription(
             this.resources.getString(
                 R.string.d_slash_d,
                 (activity?.application as AddyIoApp).userResource.active_domain_count,
-                (activity?.application as AddyIoApp).userResource.active_domain_count
+                (activity?.application as AddyIoApp).userResource.active_domain_limit
             )
         )
+        binding.homeStatCardDomains.setProgress((activity?.application as AddyIoApp).userResource.active_domain_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_domain_limit.toFloat() * 100)
+
+
         binding.homeStatCardUsernames.setDescription(
             this.resources.getString(
                 R.string.d_slash_d,
@@ -360,6 +508,9 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource.username_limit
             )
         )
+        binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
+
+
         binding.homeStatCardRules.setDescription(
             this.resources.getString(
                 R.string.d_slash_d,
@@ -367,6 +518,8 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource.active_rule_limit
             )
         )
+        binding.homeStatCardRules.setProgress((activity?.application as AddyIoApp).userResource.active_rule_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_rule_limit.toFloat() * 100)
+
 
         // Bandwidth could be unlimited
         val bandwidthText = if (maxMonthlyBandwidth == 0) {
@@ -377,6 +530,21 @@ class HomeFragment : Fragment() {
 
         binding.homeStatCardBandwidth.setDescription(bandwidthText)
 
+        if (maxMonthlyBandwidth > 0) {
+            binding.homeStatCardBandwidth.setProgress(currMonthlyBandwidth.toFloat() / maxMonthlyBandwidth.toFloat() * 100)
+        }
+
+
+        // TODO take the totals and fill in the alias stats
+        val aliasWatcher = AliasWatcher(requireContext())
+        val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
+        binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())
+
+        if (aliasesToWatch.isNullOrEmpty()) {
+            binding.homeStatWatchedAliases.setButtonText(requireContext().resources.getString(R.string.start_watching))
+        } else {
+            binding.homeStatWatchedAliases.setButtonText(requireContext().resources.getString(R.string.view_watched))
+        }
     }
 
 

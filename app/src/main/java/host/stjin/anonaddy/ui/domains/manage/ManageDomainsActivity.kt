@@ -310,7 +310,8 @@ class ManageDomainsActivity : BaseActivity(),
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_obtaining_domains) + "\n" + error,
-                    binding.activityManageDomainCL
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
 
                 // Show error animations

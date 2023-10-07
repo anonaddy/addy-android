@@ -2,8 +2,8 @@ package host.stjin.anonaddy_shared.models
 
 data class AliasesArray(
     var `data`: ArrayList<Aliases>,
-    var links: Links,
-    var meta: Meta
+    var links: Links?,
+    var meta: Meta?
 )
 
 data class BulkAliasesArray(
