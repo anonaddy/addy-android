@@ -99,12 +99,15 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun checkForUpdates() {
         lifecycleScope.launch {
-            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
-                binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
-                if (updateAvailable) {
-                    binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
-                }
-            }, this@AppSettingsActivity)
+            val settingsManager = SettingsManager(false, this@AppSettingsActivity)
+            if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
+                Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
+                    binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
+                    if (updateAvailable) {
+                        binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
+                    }
+                }, this@AppSettingsActivity)
+            }
         }
     }
 

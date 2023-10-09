@@ -506,14 +506,17 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
     private suspend fun checkForUpdates() {
-        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
+        val settingsManager = SettingsManager(false, this)
+        if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
+            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
 
-            // Set the update status in profileBottomDialogFragment
-            profileBottomDialogFragment.updateAvailable = updateAvailable
+                // Set the update status in profileBottomDialogFragment
+                profileBottomDialogFragment.updateAvailable = updateAvailable
 
-            // An update is available, set the update  profile bottomdialog fragment
-            setAlertIconToProfile(updateAvailable = updateAvailable)
-        }, this)
+                // An update is available, set the update  profile bottomdialog fragment
+                setAlertIconToProfile(updateAvailable = updateAvailable)
+            }, this)
+        }
     }
 
 
