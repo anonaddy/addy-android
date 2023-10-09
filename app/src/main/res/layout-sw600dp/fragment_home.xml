@@ -240,7 +240,7 @@
                         app:StatCardViewTitle="@string/active_aliases" />
 
                     <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
-                        android:id="@+id/home_stat_inactive_aliases"
+                        android:id="@+id/home_stat_card_inactive_aliases"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_rowWeight="1"
@@ -252,7 +252,7 @@
                         app:StatCardViewTitle="@string/inactive_aliases" />
 
                     <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
-                        android:id="@+id/home_stat_deleted_aliases"
+                        android:id="@+id/home_stat_card_deleted_aliases"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_rowWeight="1"

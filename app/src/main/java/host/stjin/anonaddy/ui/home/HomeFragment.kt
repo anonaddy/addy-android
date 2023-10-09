@@ -327,7 +327,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatInactiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardInactiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -357,7 +357,7 @@ class HomeFragment : Fragment() {
         })
 
 
-        binding.homeStatDeletedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardDeletedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -536,6 +536,13 @@ class HomeFragment : Fragment() {
 
 
         // TODO take the totals and fill in the alias stats
+
+        binding.homeStatCardTotalAliases.setDescription((activity?.application as AddyIoApp).userResource.total_aliases.toString())
+        binding.homeStatCardActiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_active_aliases.toString())
+        binding.homeStatCardInactiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_inactive_aliases.toString())
+        binding.homeStatCardDeletedAliases.setDescription((activity?.application as AddyIoApp).userResource.total_deleted_aliases.toString())
+
+
         val aliasWatcher = AliasWatcher(requireContext())
         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
         binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())

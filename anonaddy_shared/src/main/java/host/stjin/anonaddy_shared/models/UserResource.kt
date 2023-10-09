@@ -23,6 +23,7 @@ data class UserResource(
     val bandwidth: Int,
     val username_count: Int,
     val username_limit: Int,
+    val default_username_id: String,
     val default_recipient_id: String,
     val default_alias_domain: String,
     val default_alias_format: String,
@@ -41,6 +42,10 @@ data class UserResource(
     val total_emails_blocked: Int,
     val total_emails_replied: Int,
     val total_emails_sent: Int,
+    val total_aliases: Int,
+    val total_active_aliases: Int,
+    val total_inactive_aliases: Int,
+    val total_deleted_aliases: Int,
     val created_at: String,
     val updated_at: String
 )
