@@ -25,16 +25,16 @@
 
     <item
         android:id="@+id/navigation_domains"
-        android:icon="@drawable/ic_world"
+        android:icon="@drawable/ic_world_anim_settings"
         android:title="@string/domains" />
 
     <item
         android:id="@+id/navigation_rules"
-        android:icon="@drawable/ic_filter"
+        android:icon="@drawable/ic_filter_anim_settings"
         android:title="@string/rules" />
 
     <item
         android:id="@+id/navigation_failed_deliveries"
-        android:icon="@drawable/ic_mail_error"
+        android:icon="@drawable/ic_mail_error_anim_settings"
         android:title="@string/failed_deliveries" />
 </menu>

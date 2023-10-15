@@ -342,6 +342,16 @@ class ManageAliasActivity : BaseActivity(),
             if (result == "204") {
                 this.alias!!.active = false
                 updateUi(this.alias!!)
+
+                if (shouldDeactivateThisAlias) {
+                    shouldDeactivateThisAlias = false
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.alias_deactivated),
+                        binding.activityManageAliasCL
+                    ).show()
+                }
+
             } else {
                 binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
