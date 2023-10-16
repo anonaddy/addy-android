@@ -157,6 +157,7 @@
                     android:src="@drawable/circle"
                     android:tintMode="src_over"
                     android:visibility="invisible"
+                    android:contentDescription="@string/new_update_available"
                     app:tint="@color/softRed" />
             </RelativeLayout>
 

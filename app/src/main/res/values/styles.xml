@@ -275,28 +275,9 @@
         <item name="android:background">?colorSurfaceVariant</item>
     </style>
 
-
-    <style name="ShapeAppearanceOverlay_card_custom_corners_top" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopRight">14dp</item>
-        <item name="cornerSizeTopLeft">14dp</item>
-        <item name="cornerSizeBottomRight">@dimen/corner_radius_cardview</item>
-        <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
-    </style>
-
-    <style name="AddyIoCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@android:color/white</item>
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
-    </style>
-
     <style name="AddyIoCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@android:color/white</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
-    </style>
-
-    <style name="AddyIoCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@android:color/white</item>
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
     </style>
 
     <style name="ShapeAppearanceOverlay_card_custom_corners_center" parent="">
@@ -305,15 +286,6 @@
         <item name="cornerSizeTopLeft">@dimen/corner_radius_cardview</item>
         <item name="cornerSizeBottomRight">@dimen/corner_radius_cardview</item>
         <item name="cornerSizeBottomLeft">@dimen/corner_radius_cardview</item>
-    </style>
-
-
-    <style name="ShapeAppearanceOverlay_card_custom_corners_bottom" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopRight">@dimen/corner_radius_cardview</item>
-        <item name="cornerSizeTopLeft">@dimen/corner_radius_cardview</item>
-        <item name="cornerSizeBottomRight">14dp</item>
-        <item name="cornerSizeBottomLeft">14dp</item>
     </style>
 
     <style name="AddyIoTitleAction" parent="titleTextView">

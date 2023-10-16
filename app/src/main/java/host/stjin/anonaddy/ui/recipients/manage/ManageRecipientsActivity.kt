@@ -524,7 +524,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
         if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
             binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)
-            binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.you_must_be_subscribed))
+            binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.feature_not_available_subscription))
         }
 
 

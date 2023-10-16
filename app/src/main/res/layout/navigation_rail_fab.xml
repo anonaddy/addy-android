@@ -14,6 +14,7 @@
         android:layout_marginBottom="16dp"
         android:padding="12dp"
         android:src="@drawable/icon_monocolor"
+        android:contentDescription="@string/app_name"
         app:tint="?colorPrimary" />
 
 
@@ -31,6 +32,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/settings"
             app:srcCompat="@drawable/ic_settings" />
 
         <ImageView
@@ -43,6 +45,7 @@
             android:src="@drawable/circle"
             android:tintMode="src_over"
             android:visibility="invisible"
+            android:contentDescription="@string/new_update_available"
             app:tint="@color/softRed" />
 
     </RelativeLayout>

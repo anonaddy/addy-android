@@ -39,7 +39,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingEnd="@dimen/layout_padding">
+            android:paddingEnd="@dimen/layout_padding"
+            tools:ignore="RtlSymmetry">
 
             <com.google.android.material.search.SearchBar
                 android:id="@+id/search_bar"

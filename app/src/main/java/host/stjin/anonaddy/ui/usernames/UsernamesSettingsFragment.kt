@@ -91,7 +91,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
         }
     }
 
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
+    private fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {

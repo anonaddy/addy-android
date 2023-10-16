@@ -20,64 +20,52 @@
             android:paddingEnd="@dimen/layout_padding">
 
             <LinearLayout
+                style="@style/AddyIoTitleNoAction"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/aliases_statistics" />
+
+            </LinearLayout>
+
+            <GridLayout
                 android:id="@+id/alias_statistics_LL"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:orientation="vertical">
+                android:columnCount="1"
+                android:orientation="vertical"
+                android:useDefaultMargins="true">
 
-                <LinearLayout
-                    style="@style/AddyIoTitleNoAction"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center_vertical"
-                        android:text="@string/aliases_statistics"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/alias_stats_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingStart="@dimen/cardview_extra_padding"
-                    android:paddingEnd="@dimen/cardview_extra_padding">
-
-                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
-                        android:id="@+id/alias_stats_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:layout_marginBottom="8dp"
-                        app:StatCardViewDescription="@string/replied_forwarded_blocked_stat"
-                        app:StatCardViewIcon="@drawable/ic_email_at"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/emails_forwarded" />
+                    android:clickable="false"
+                    android:focusable="false"
+                    app:StatCardViewDescription="@string/replied_forwarded_blocked_stat"
+                    app:StatCardViewIcon="@drawable/ic_email_at"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/emails_forwarded" />
 
 
-                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
-                        android:id="@+id/alias_stats_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        app:StatCardViewDescription="@string/replied_replied_sent_stat"
-                        app:StatCardViewIcon="@drawable/ic_mail_forward"
-                        app:StatCardViewShowButton="false"
-                        app:StatCardViewTitle="@string/emails_replied_sent" />
-                </LinearLayout>
-            </LinearLayout>
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/alias_stats_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    app:StatCardViewDescription="@string/replied_replied_sent_stat"
+                    app:StatCardViewIcon="@drawable/ic_mail_forward"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/emails_replied_sent" />
+            </GridLayout>
 
 
             <!-- 8dp for spacing below scroll-->
@@ -93,7 +81,7 @@
                 <LinearLayout
                     style="@style/AddyIoTitleAction"
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="12dp"
                     android:orientation="horizontal">
 
 

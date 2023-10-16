@@ -89,7 +89,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
         }
     }
 
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
+    private fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
 

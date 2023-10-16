@@ -418,7 +418,7 @@ class ManageUsernamesActivity : BaseActivity(),
             binding.activityManageUsernameFromNameEdit.setLayoutEnabled(false)
             binding.activityManageUsernameFromNameEdit.setDescription(
                 this.resources.getString(
-                    R.string.from_name_not_available_subscription
+                    R.string.feature_not_available_subscription
                 )
             )
         } else {

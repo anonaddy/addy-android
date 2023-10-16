@@ -40,7 +40,8 @@
                     android:layout_height="20dp"
                     android:src="@drawable/icon_monocolor"
                     android:tint="?android:attr/colorAccent"
-                    app:tint="?android:attr/colorAccent" />
+                    app:tint="?android:attr/colorAccent"
+                    tools:ignore="RtlSymmetry" />
 
             </LinearLayout>
 

@@ -2,7 +2,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="1000dp" />
-            <solid android:color="@color/bandwidthSuperSuperLightColor" />
+            <solid android:color="?colorPrimaryContainer" />
         </shape>
     </item>
 
@@ -11,7 +11,7 @@
         <scale android:scaleWidth="100%">
             <shape>
                 <corners android:radius="1000dp" />
-                <solid android:color="@color/bandwidthColor" />
+                <solid android:color="?colorPrimary" />
             </shape>
         </scale>
     </item>

@@ -188,6 +188,7 @@ class ManageAliasActivity : BaseActivity(),
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        super.onBackPressed()
         finishWithUpdate()
     }
 
@@ -782,7 +783,7 @@ class ManageAliasActivity : BaseActivity(),
             binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setLayoutEnabled(false)
             binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(
                 this.resources.getString(
-                    R.string.from_name_not_available_subscription
+                    R.string.feature_not_available_subscription
                 )
             )
         } else {

@@ -143,7 +143,7 @@ class HomeFragment : Fragment() {
             if (chartData != null) {
                 setChartData(chartData)
             } else {
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
@@ -431,7 +431,7 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource = user
                 setStatistics()
             } else {
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
@@ -488,7 +488,9 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource.recipient_limit
             )
         )
-        binding.homeStatCardRecipients.setProgress((activity?.application as AddyIoApp).userResource.recipient_count.toFloat() / (activity?.application as AddyIoApp).userResource.recipient_limit.toFloat() * 100)
+        if ((activity?.application as AddyIoApp).userResource.recipient_limit > 0) {
+            binding.homeStatCardRecipients.setProgress((activity?.application as AddyIoApp).userResource.recipient_count.toFloat() / (activity?.application as AddyIoApp).userResource.recipient_limit.toFloat() * 100)
+        }
 
 
         binding.homeStatCardDomains.setDescription(
@@ -498,7 +500,9 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource.active_domain_limit
             )
         )
-        binding.homeStatCardDomains.setProgress((activity?.application as AddyIoApp).userResource.active_domain_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_domain_limit.toFloat() * 100)
+        if ((activity?.application as AddyIoApp).userResource.active_domain_limit > 0) {
+            binding.homeStatCardDomains.setProgress((activity?.application as AddyIoApp).userResource.active_domain_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_domain_limit.toFloat() * 100)
+        }
 
 
         binding.homeStatCardUsernames.setDescription(
@@ -508,8 +512,9 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource.username_limit
             )
         )
-        binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
-
+        if ((activity?.application as AddyIoApp).userResource.username_limit > 0) {
+            binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
+        }
 
         binding.homeStatCardRules.setDescription(
             this.resources.getString(
@@ -518,14 +523,16 @@ class HomeFragment : Fragment() {
                 (activity?.application as AddyIoApp).userResource.active_rule_limit
             )
         )
-        binding.homeStatCardRules.setProgress((activity?.application as AddyIoApp).userResource.active_rule_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_rule_limit.toFloat() * 100)
+        if ((activity?.application as AddyIoApp).userResource.active_rule_limit > 0) {
+            binding.homeStatCardRules.setProgress((activity?.application as AddyIoApp).userResource.active_rule_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_rule_limit.toFloat() * 100)
+        }
 
 
         // Bandwidth could be unlimited
         val bandwidthText = if (maxMonthlyBandwidth == 0) {
             this.resources.getString(R.string.home_bandwidth_text, roundOffDecimal(currMonthlyBandwidth).toString(), "∞")
         } else {
-            this.resources.getString(R.string.home_bandwidth_text, currMonthlyBandwidth.toString(), maxMonthlyBandwidth.toString())
+            this.resources.getString(R.string.home_bandwidth_text, roundOffDecimal(currMonthlyBandwidth).toString(), maxMonthlyBandwidth.toString())
         }
 
         binding.homeStatCardBandwidth.setDescription(bandwidthText)
@@ -547,7 +554,7 @@ class HomeFragment : Fragment() {
         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
         binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())
 
-        if (aliasesToWatch.isNullOrEmpty()) {
+        if (aliasesToWatch.isEmpty()) {
             binding.homeStatWatchedAliases.setButtonText(requireContext().resources.getString(R.string.start_watching))
         } else {
             binding.homeStatWatchedAliases.setButtonText(requireContext().resources.getString(R.string.view_watched))

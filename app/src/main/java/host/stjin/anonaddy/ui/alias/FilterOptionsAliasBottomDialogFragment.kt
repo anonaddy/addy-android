@@ -75,7 +75,8 @@ class FilterOptionsAliasBottomDialogFragment(
         binding.bsFilteroptionsAliasesActiveButton.isChecked = aliasSortFilter.onlyActiveAliases
         binding.bsFilteroptionsAliasesInactiveButton.isChecked = aliasSortFilter.onlyInactiveAliases
         binding.bsFilteroptionsAliasesDeletedButton.isChecked = aliasSortFilter.onlyDeletedAliases
-        binding.bsFilteroptionsAliasesAllButton.isChecked = !aliasSortFilter.onlyActiveAliases && !aliasSortFilter.onlyInactiveAliases
+        binding.bsFilteroptionsAliasesAllButton.isChecked =
+            !aliasSortFilter.onlyActiveAliases && !aliasSortFilter.onlyInactiveAliases && !aliasSortFilter.onlyDeletedAliases
 
         binding.bsFilteroptionsAliasesWatchedOnlyButton.isChecked = aliasSortFilter.onlyWatchedAliases
         binding.bsFilteroptionsAliasesWatchedOnlyAllAliasesButton.isChecked = !aliasSortFilter.onlyWatchedAliases

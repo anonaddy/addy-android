@@ -427,7 +427,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainFromNameEdit.setLayoutEnabled(false)
             binding.activityManageDomainFromNameEdit.setDescription(
                 this.resources.getString(
-                    R.string.from_name_not_available_subscription
+                    R.string.feature_not_available_subscription
                 )
             )
         } else {
@@ -448,8 +448,11 @@ class ManageDomainsActivity : BaseActivity(),
                     domain.description
                 )
             }
-
         }
+
+
+        // Please note that the "Catch-all" feature is also only available for paid subcriptions. However, you cannot add your own domains
+        // on the free plan, making a check useless
 
 
         /**

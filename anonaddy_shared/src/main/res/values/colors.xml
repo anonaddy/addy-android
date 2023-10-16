@@ -3,27 +3,16 @@
     <color name="primaryColorStatic">#19216C</color>
 
     <color name="softRed">#FD5842</color>
-    <color name="softRedSuperSuperLight">#32FD5842</color>
 
     <color name="logImportanceCritical">@color/softRed</color>
     <color name="logImportanceWarning">@color/portalOrange</color>
     <color name="logImportanceInfo">@color/green</color>
 
-    <color name="bandwidthColor">#353C7D</color>
-    <color name="bandwidthSuperSuperLightColor">#504D499A</color>
     <color name="easternBlue">#16A8B8</color>
-    <color name="easternBlueSuperLight">#5016A8B8</color>
     <color name="portalBlue">#4289FD</color>
-    <color name="portalBlueSuperLight">#504289FD</color>
     <color name="portalOrange">#FF9800</color>
-    <color name="portalOrangeSuperLight">#50FF9800</color>
     <color name="green">#8BC34A</color>
 
-    <!-- Replaced by ?colorSurfaceVariant -->
-    <!--<color name="shimmerGray">#74CDCDCD</color>
-
-    <color name="pillColor">#CCCCCC</color>
-    <color name="titOutlineColor">#BABABA</color>-->
     <color name="colorControlNormal">#89000000</color> <!-- I decided to keep this one -->
 
     <!--grey-->

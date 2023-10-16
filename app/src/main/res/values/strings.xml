@@ -1,12 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_aliases">Aliases</string>
+    <string name="title_aliases">@string/aliases</string>
     <string name="app_settings">App settings</string>
-    <string name="title_recipients">Recipients</string>
+    <string name="title_recipients">@string/recipients</string>
     <string name="recipients">Recipients</string>
     <string name="addyio_settings">addy.io settings</string>
     <string name="monthly_bandwidth">Monthly bandwidth</string>
-    <string name="view_more">View more</string>
     <string name="copied_alias">Copied alias</string>
     <string name="most_active_aliases">Most active aliases</string>
     <string name="created_at_s">Created %s</string>
@@ -86,7 +85,7 @@
     <string name="address">Address</string>
     <string name="add_recipient_desc">Enter the individual email of the new recipient you’d like to add.\n\nYou will receive an email with a verification link that will expire in one hour, you can tap “Resend email” to get a new one</string>
     <string name="not_a_valid_address">This is not a valid address</string>
-    <string name="not_a_valid_web_address">This is not a valid address</string>
+    <string name="not_a_valid_web_address">@string/not_a_valid_address</string>
     <string name="error_adding_recipient">Something went wrong while adding this recipient</string>
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
     <string name="no_aliases">No aliases with these filter settings.\n\nLooking for a specific alias? Use the global search function by clicking the magnifying glass in the app bar.</string>
@@ -156,7 +155,6 @@
     <string name="fingerprint_s">Fingerprint:\n%s</string>
     <string name="remove_public_key_desc">Are you sure you want to remove the public key for this recipient? It will also be removed from any other recipients using the same key.</string>
     <string name="public_key">Public key</string>
-    <string name="no_active_aliases">You have no active aliases</string>
     <string name="shared_domain_aliases">Shared domain aliases</string>
     <string name="addyio_load_error">Something went wrong while loading the addy.io app, you might want to check your internet connection.\nMore information about the error:</string>
     <string name="try_again">Try again</string>
@@ -324,7 +322,7 @@
     <string name="notification_channel_update_desc">Receive a notification when a new update is available for the addy.io app</string>
     <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
     <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
-    <string name="notification_channel_api_token_expiry">API key</string>
+    <string name="notification_channel_api_token_expiry">@string/APIKey</string>
     <string name="notification_channel_api_token_expiry_desc">Receive a notification when your API key is about to expire</string>
     <string name="notification_channel_subscription_expiry">Subscription</string>
     <string name="notification_channel_subscription_expiry_desc">Receive a notification when your subscription is about to expire</string>
@@ -388,7 +386,7 @@
     <string name="version_channel_info">Version: %s\nDownload channel: %s</string>
     <string name="sideloaded">sideloaded</string>
     <string name="no_new_update_available">You\'re up to date</string>
-    <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available.</string>
+    <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available</string>
     <string name="addyio_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
     <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %7$s</td></tr></tbody></table>]]></string>
@@ -500,19 +498,17 @@
     <string name="error_obtaining_usernames">@string/could_not_refresh_data</string>
     <string name="filtering_and_sorting">Filtering and sorting</string>
     <string name="filtering_and_sorting_desc">Decide which aliases to display and in which order to display them. Filters are saved and retained on app restart</string>
-    <string name="include_deleted_aliases">Include deleted aliases</string>
-    <string name="include_deleted_aliases_desc">Show deleted aliases in the overview. Deleted aliases are always inactive</string>
     <string name="filter_watched_only">Watched only</string>
     <string name="sort_localpart">Local part</string>
-    <string name="sort_domain">Domain</string>
+    <string name="sort_domain">@string/domain</string>
     <string name="sort_email">Email</string>
     <string name="sort_email_forwarded">Forwarded</string>
     <string name="sort_email_blocked">Blocked</string>
     <string name="sort_email_replied">Replied</string>
     <string name="sort_email_sent">Sent</string>
-    <string name="sort_active">Active</string>
-    <string name="sort_created_at">Created at</string>
-    <string name="sort_updated_at">Updated at</string>
+    <string name="sort_active">@string/filter_active_aliases</string>
+    <string name="sort_created_at">@string/created_at</string>
+    <string name="sort_updated_at">@string/updated_at</string>
     <string name="sort_deleted_at">Deleted at</string>
     <string name="sort_asc">Ascending</string>
     <string name="clear_filter">Clear filter</string>
@@ -542,7 +538,6 @@
     <string name="addyio_for_wearables_desc">With the addy.io app on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to a beautiful watchface</string>
     <string name="start_wearable_app">Start app</string>
     <string name="setup_app_on_wearable">Setup app</string>
-    <string name="reset_app_on_wearable">Reset app</string>
     <string name="select_wearable_device">Select wearable device</string>
     <string name="no_wearable_devices_available">No wearable devices available</string>
     <string name="this_device">This device</string>
@@ -594,7 +589,6 @@
     <string name="pgp_inline_desc">Use inline (PGP/Inline) instead of PGP/MIME encryption for forwarded messages. Please Note: This will ONLY encrypt and forward the plain text content!</string>
     <string name="protected_headers">Hide subject</string>
     <string name="protected_headers_subject_desc">Enabling this setting will hide and encrypt the email subject using protected headers. Many mail clients are able to automatically decrypt and display the subject once the email arrives.</string>
-    <string name="you_must_be_subscribed">You must be subscribed to unlock this feature</string>
     <string name="prerequisite_disable_pgp_inline">You need to disable inline encryption before you can enable protected headers (hide subject)</string>
     <string name="prerequisite_disable_protected_headers">You need to disable protected headers (hide subject) before you can enable inline encryption</string>
     <string name="api_token_about_to_expire">API key about to expire</string>
@@ -636,10 +630,7 @@
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
     <string name="embedded_placeholder">Choose an action on the left to display this activity here</string>
     <string name="stats">Stats</string>
-    <string name="error_obtaining_chart_data">Could not refresh data</string>
-    <string name="home_chart_legend_forwards">Forwards</string>
-    <string name="home_chart_legend_replies">Replies</string>
-    <string name="home_chart_legend_sends">Sends</string>
+    <string name="error_obtaining_chart_data">@string/could_not_refresh_data</string>
     <string name="you_ve_used_d_out_of_d_rules">You’ve used %1$d out of %2$s rules</string>
     <string name="from_name">From name</string>
     <string name="alias_no_from_name">This alias has no from name set. Tap here to add one</string>
@@ -650,8 +641,8 @@
     <string name="edit_from_name_domain_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"example@%1$s\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. Alias \'From Name\'<br />2. Username or <b>Custom Domain \'From Name\'</b><br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this domain, it will override the global \'From Name\' setting.]]></string>
     <string name="edit_from_name_username_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"example@%1$s.addy.io\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. Alias \'From Name\'<br />2. <b>Username</b> or Custom Domain <b>\'From Name\'</b><br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this username, it will override the global \'From Name\' setting.]]></string>
     <string name="error_edit_from_name">Something went wrong while editing the from name</string>
-    <string name="from_name_not_available_subscription">This feature is not available with your current subscription</string>
-
+    <string name="feature_not_available_subscription">This feature is not available with your current subscription</string>
+    <string name="error_edit_active">An error occurred while changing the active state</string>
     <string name="notification_alias_watches_alias_does_not_exist_anymore">Alias removed from alias watcher</string>
     <string name="notification_alias_watches_alias_does_not_exist_anymore_desc">%1$s has been forgotten and removed from the alias watcher</string>
     <string name="view_all">View all</string>
@@ -673,5 +664,9 @@
     <string name="filter_inactive_aliases">Inactive</string>
     <string name="filter_deleted_aliases">Deleted</string>
     <string name="start_watching">Start watching</string>
+    <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
+    <string name="whoops">Whoops!</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="check_for_updates_desc">Tap here to manually check for new updates</string>
 
 </resources>

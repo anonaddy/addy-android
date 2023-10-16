@@ -12,7 +12,7 @@
     <string name="changing_status">Changing status</string>
     <string name="favorite">Favorite</string>
     <string name="tile_favorite_aliases_label">Favorite aliases</string>
-    <string name="tile_favorite_aliases_title">Aliases</string>
+    <string name="tile_favorite_aliases_title">@string/aliases</string>
     <string name="tile_favorite_aliases_subtitle">Favorites</string>
     <string name="tile_favorite_aliases_all">All aliases</string>
     <string name="tile_favorite_aliases_create">Create alias</string>

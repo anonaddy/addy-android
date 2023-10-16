@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:sectionStartIcon="@drawable/ic_loader"
-                    app:sectionTitle="@string/reset_app_on_wearable"
+                    app:sectionTitle="@string/reset_app"
                     app:sectionDescription="@string/reset_app_on_wearable_desc" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView

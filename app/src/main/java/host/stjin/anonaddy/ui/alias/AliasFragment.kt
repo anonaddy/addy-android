@@ -216,7 +216,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     user.total_emails_sent
                 )
             } else {
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         context,
                         context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
@@ -326,7 +326,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             // Data could not be loaded
 
 
-                            if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                            if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                                 SnackbarHelper.createSnackbar(
                                     requireContext(),
                                     requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
@@ -359,7 +359,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                             setAliasesAdapter(requireContext(), list, forceReload)
                         } else {
                             // Data could not be loaded
-                            if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                            if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                                 SnackbarHelper.createSnackbar(
                                     requireContext(),
                                     requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
@@ -453,7 +453,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                     hideFabForSnackBarTime()
 
-                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
                             context,
                             context.resources.getString(R.string.copied_alias),
@@ -476,7 +476,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     if (selectionMode) {
                         binding.aliasAddAliasFab.hide()
 
-                        if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                             SnackbarHelper.createSnackbar(
                                 context,
                                 context.resources.getString(R.string.multiple_alias_selected, selectedAliases.count()),
@@ -539,7 +539,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         hideFabForSnackBarTime()
 
 
-        if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
             val snackbar = SnackbarHelper.createSnackbar(
                 requireContext(),
                 requireContext().resources.getString(R.string.alias_global_search_hint),

@@ -162,7 +162,7 @@ class RecipientsFragment : Fragment(),
                 setStats()
             } else {
 
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
@@ -245,7 +245,7 @@ class RecipientsFragment : Fragment(),
                 setRecipientAdapter(list)
             } else {
 
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
@@ -320,7 +320,7 @@ class RecipientsFragment : Fragment(),
             if (result == "200") {
                 verificationEmailSentSnackbar(context)
             } else {
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         context,
                         context.resources.getString(R.string.error_resend_verification) + "\n" + result,
@@ -350,7 +350,7 @@ class RecipientsFragment : Fragment(),
 
     private fun verificationEmailSentSnackbar(context: Context) {
 
-        if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
             SnackbarHelper.createSnackbar(
                 context,
                 context.resources.getString(R.string.verification_email_has_been_sent),
@@ -380,7 +380,7 @@ class RecipientsFragment : Fragment(),
             positiveButtonText = resources.getString(R.string.delete),
             positiveButtonAction = {
 
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
                         context,
                         this.resources.getString(R.string.deleting_recipient),
@@ -419,7 +419,7 @@ class RecipientsFragment : Fragment(),
                 deleteRecipientSnackbar.dismiss()
                 getDataFromWeb(null)
             } else {
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     deleteRecipientSnackbar = SnackbarHelper.createSnackbar(
                         context,
                         context.resources.getString(

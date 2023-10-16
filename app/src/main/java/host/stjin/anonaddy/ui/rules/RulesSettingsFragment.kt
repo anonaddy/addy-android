@@ -124,7 +124,7 @@ class RulesSettingsFragment : Fragment() {
                 setStats()
             } else {
 
-                if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,

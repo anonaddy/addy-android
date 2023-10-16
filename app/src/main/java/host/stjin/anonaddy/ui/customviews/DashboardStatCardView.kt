@@ -21,7 +21,7 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
     LinearLayout(context, attrs, defStyle) {
     private var onClicklistener: OnLayoutClickedListener? = null
     var description: TextView? = null
-    var buttonText: TextView? = null
+    private var buttonText: TextView? = null
     private var title: TextView? = null
     private var icon: ImageView? = null
     private var progress: ProgressBar? = null
@@ -72,7 +72,10 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
     }
 
     fun setProgress(progressValue: Float) {
-        progress?.animateTo(progressValue.roundToInt(), 0)
+        // Not gonna round 0 to Int, that will fail
+        if (progressValue > 0) {
+            progress?.animateTo(progressValue.roundToInt(), 0)
+        }
     }
 
 
@@ -89,7 +92,7 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
         animation.start()
     }
 
-    fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
+    private fun setImageResourceIcons(startIcon: Int?, endIcon: Int?) {
         if (startIcon != null) {
             icon?.setImageResource(startIcon)
         }

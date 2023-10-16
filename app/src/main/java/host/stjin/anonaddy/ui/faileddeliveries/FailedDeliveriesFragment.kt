@@ -68,7 +68,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     }
 
 
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
+    private fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {
@@ -129,7 +129,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 if (list != null) {
                     setFailedDeliveriesAdapter(list)
                 } else {
-                    if ((activity as MainActivity).resources.getBoolean(R.bool.isTablet)) {
+                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
                             requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
