@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.recipients
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ScrollView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -98,6 +100,16 @@ class RecipientsFragment : Fragment(),
             }
         }
 
+    }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
+                getDataFromWeb(null)
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -295,7 +307,7 @@ class RecipientsFragment : Fragment(),
                 override fun onClickSettings(pos: Int, aView: View) {
                     val intent = Intent(context, ManageRecipientsActivity::class.java)
                     intent.putExtra("recipient_id", list[pos].id)
-                    startActivity(intent)
+                    resultLauncher.launch(intent)
                 }
 
                 override fun onClickResend(pos: Int, aView: View) {

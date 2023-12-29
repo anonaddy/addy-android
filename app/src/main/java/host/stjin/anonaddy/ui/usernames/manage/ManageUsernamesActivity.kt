@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.usernames.manage
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
@@ -33,6 +34,7 @@ class ManageUsernamesActivity : BaseActivity(),
     private lateinit var editUserNameFromNameBottomDialogFragment: EditUsernameFromNameBottomDialogFragment
 
 
+    private var shouldRefreshOnFinish = false
     private var username: Usernames? = null
         set(value) {
             field = value
@@ -69,9 +71,16 @@ class ManageUsernamesActivity : BaseActivity(),
             finish()
             return
         }
+
         setPage(usernameId)
     }
 
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
 
     private fun setPage(usernameId: String) {
         // Get the username
@@ -125,6 +134,7 @@ class ManageUsernamesActivity : BaseActivity(),
             binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
             if (result == "204") {
                 this.username!!.catch_all = false
+                shouldRefreshOnFinish = true
                 updateUi(this.username!!)
             } else {
                 binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(true)
@@ -144,6 +154,7 @@ class ManageUsernamesActivity : BaseActivity(),
             binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
             if (username != null) {
                 this.username = username
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -161,6 +172,7 @@ class ManageUsernamesActivity : BaseActivity(),
             binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
                 this.username!!.active = false
+                shouldRefreshOnFinish = true
                 updateUi(this.username!!)
             } else {
                 binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(true)
@@ -180,6 +192,7 @@ class ManageUsernamesActivity : BaseActivity(),
             binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
             if (username != null) {
                 this.username = username
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -279,6 +292,7 @@ class ManageUsernamesActivity : BaseActivity(),
         networkHelper.deleteUsername({ result ->
             if (result == "204") {
                 deleteUsernameSnackbar.dismiss()
+                shouldRefreshOnFinish = true
                 finish()
             } else {
                 SnackbarHelper.createSnackbar(

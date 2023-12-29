@@ -30,6 +30,7 @@ class ManageDomainsActivity : BaseActivity(),
     EditDomainRecipientBottomDialogFragment.AddEditDomainRecipientBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
+    private var shouldRefreshOnFinish = false
 
     private lateinit var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment
     private lateinit var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment
@@ -72,6 +73,14 @@ class ManageDomainsActivity : BaseActivity(),
             return
         }
         setPage(domainId)
+    }
+
+
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
     }
 
 
@@ -127,6 +136,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
             if (result == "204") {
                 this.domain!!.catch_all = false
+                shouldRefreshOnFinish = true
                 updateUi(this.domain!!)
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(true)
@@ -145,6 +155,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
             if (domain != null) {
                 this.domain = domain
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -162,6 +173,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
                 this.domain!!.active = false
+                shouldRefreshOnFinish = true
                 updateUi(this.domain!!)
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(true)
@@ -180,6 +192,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
             if (domain != null) {
                 this.domain = domain
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -288,6 +301,7 @@ class ManageDomainsActivity : BaseActivity(),
         networkHelper.deleteDomain({ result ->
             if (result == "204") {
                 deleteDomainSnackbar.dismiss()
+                shouldRefreshOnFinish = true
                 finish()
             } else {
                 SnackbarHelper.createSnackbar(

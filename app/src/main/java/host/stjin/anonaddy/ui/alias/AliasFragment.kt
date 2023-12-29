@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ScrollView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -115,6 +114,16 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         val gson = Gson()
         val json = gson.toJson(aliasList)
         outState.putString("aliasesList", json)
+    }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
+                getDataFromWeb(requireContext(), null)
+            }
+        }
     }
 
     private fun initShimmerRecyclerView() {
@@ -605,18 +614,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         Handler(Looper.getMainLooper()).postDelayed({
             binding.aliasAddAliasFab.show()
         }, 3500)
-    }
-
-    var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data != null) {
-                if (data.getBooleanExtra("should_update", false)) {
-                    getDataFromWeb(requireContext(), null)
-                }
-            }
-        }
     }
 
     private fun setAliasesStatistics(

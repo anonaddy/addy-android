@@ -60,6 +60,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         return root
     }
 
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val gson = Gson()
@@ -68,7 +69,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     }
 
 
-    private fun getDataFromWeb(savedInstanceState: Bundle?) {
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {

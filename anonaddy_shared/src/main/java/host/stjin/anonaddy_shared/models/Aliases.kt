@@ -48,14 +48,14 @@ data class Meta(
 )
 
 data class Link(
-    val url: Any,
+    val url: String?,
     val label: String,
     val active: Boolean
 )
 
 data class Links(
-    val first: String,
-    val last: String,
-    val prev: Any,
-    val next: Any
+    val first: String?,
+    val last: String?,
+    val prev: String?,
+    val next: String?
 )

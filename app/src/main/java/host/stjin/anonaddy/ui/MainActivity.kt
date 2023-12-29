@@ -140,6 +140,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             setRefreshLayout()
         }
 
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            binding.activityMainViewpagerSw600dp!!.isUserInputEnabled = false
+        }
+
     }
 
     private fun setOnBigScreenClickListener() {
@@ -147,6 +151,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             val intent = Intent(this, AppSettingsActivity::class.java)
             startActivity(intent)
         }
+
+        binding.searchBar?.setOnClickListener {
+            openSearch()
+        }
+
+        binding.navigationRailUserRefresh?.setOnClickListener {
+            openSearch()
+        }
+
     }
 
     // This only applies to <sw600Dp devices
@@ -173,13 +186,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 }
 
 
-                // Refresh all data in child fragments
-                val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
-                val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
-                val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
-                homeFragment.getDataFromWeb(null)
-                aliasFragment.getDataFromWeb(this@MainActivity, null)
-                recipientsFragment.getDataFromWeb(null)
+                refreshAllData()
 
 
                 // Since a bunch of different calls are being made, it is very hard to keep progress of everything.
@@ -236,6 +243,32 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 )
             }
         })
+    }
+
+    private fun refreshAllData() {
+        // Refresh all data in child fragments
+        val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
+        val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
+        val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
+        homeFragment.getDataFromWeb(null)
+        aliasFragment.getDataFromWeb(this@MainActivity, null)
+        recipientsFragment.getDataFromWeb(null)
+
+
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            val usernamesSettingsFragment: UsernamesSettingsFragment = supportFragmentManager.fragments[3] as UsernamesSettingsFragment
+            usernamesSettingsFragment.getDataFromWeb(null)
+
+            val domainSettingsFragment: DomainSettingsFragment = supportFragmentManager.fragments[4] as DomainSettingsFragment
+            domainSettingsFragment.getDataFromWeb(null)
+
+            val rulesSettingsFragment: RulesSettingsFragment = supportFragmentManager.fragments[5] as RulesSettingsFragment
+            rulesSettingsFragment.getDataFromWeb(null)
+
+            val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
+            failedDeliveriesFragment.getDataFromWeb(null)
+        }
+
     }
 
     private fun setAppBar() {

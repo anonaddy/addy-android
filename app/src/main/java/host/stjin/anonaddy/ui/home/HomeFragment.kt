@@ -264,10 +264,6 @@ class HomeFragment : Fragment() {
             }
         })
 
-        binding.searchBar?.setOnClickListener {
-            (activity as MainActivity).openSearch()
-        }
-
 
         binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
             override fun onClick() {

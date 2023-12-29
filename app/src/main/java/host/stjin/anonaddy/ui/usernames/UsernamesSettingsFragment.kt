@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.usernames
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -91,7 +93,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
         }
     }
 
-    private fun getDataFromWeb(savedInstanceState: Bundle?) {
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {
@@ -246,7 +248,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                 override fun onClickSettings(pos: Int, aView: View) {
                     val intent = Intent(context, ManageUsernamesActivity::class.java)
                     intent.putExtra("username_id", list[pos].id)
-                    startActivity(intent)
+                    resultLauncher.launch(intent)
                 }
 
 
@@ -260,6 +262,16 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
             binding.animationFragment.stopAnimation()
             //binding.fragmentUsernameSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
 
+        }
+    }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
+                getDataFromWeb(null)
+            }
         }
     }
 

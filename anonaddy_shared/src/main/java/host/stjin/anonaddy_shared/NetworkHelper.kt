@@ -42,7 +42,35 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.GITLAB_TAGS_RSS_FEED
 import host.stjin.anonaddy_shared.AddyIo.lazyMgr
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.*
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.AliasesArray
+import host.stjin.anonaddy_shared.models.ApiTokenDetails
+import host.stjin.anonaddy_shared.models.BulkActionResponse
+import host.stjin.anonaddy_shared.models.BulkAliasesArray
+import host.stjin.anonaddy_shared.models.ChartData
+import host.stjin.anonaddy_shared.models.DomainOptions
+import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.DomainsArray
+import host.stjin.anonaddy_shared.models.ErrorHelper
+import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.models.FailedDeliveriesArray
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.models.RecipientsArray
+import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.models.RulesArray
+import host.stjin.anonaddy_shared.models.SingleAlias
+import host.stjin.anonaddy_shared.models.SingleDomain
+import host.stjin.anonaddy_shared.models.SingleFailedDelivery
+import host.stjin.anonaddy_shared.models.SingleRecipient
+import host.stjin.anonaddy_shared.models.SingleRule
+import host.stjin.anonaddy_shared.models.SingleUserResource
+import host.stjin.anonaddy_shared.models.SingleUsername
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.models.Usernames
+import host.stjin.anonaddy_shared.models.UsernamesArray
+import host.stjin.anonaddy_shared.models.Version
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import org.json.JSONArray
 import org.json.JSONObject
@@ -1489,6 +1517,13 @@ class NetworkHelper(private val context: Context) {
                 } else {
                     recipientList.addAll(addyIoData.data)
                 }
+
+                //TODO remove when not required per Addy's API
+                recipientList.forEach {
+                    it.aliases_count = it.aliases?.size ?: 0
+                    it.aliases = null
+                }
+
                 callback(recipientList, null)
             }
             401 -> {
@@ -2168,6 +2203,13 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, DomainsArray::class.java)
                 val domainList = ArrayList<Domains>()
                 domainList.addAll(addyIoData.data)
+
+                //TODO remove when not required per Addy's API
+                domainList.forEach {
+                    it.aliases_count = it.aliases?.size ?: 0
+                    it.aliases = null
+                }
+
                 callback(domainList, null)
             }
             401 -> {
@@ -2733,6 +2775,13 @@ class NetworkHelper(private val context: Context) {
 
                 val usernamesList = ArrayList<Usernames>()
                 usernamesList.addAll(addyIoData.data)
+
+                //TODO remove when not required per Addy's API
+                usernamesList.forEach {
+                    it.aliases_count = it.aliases?.size ?: 0
+                    it.aliases = null
+                }
+
                 callback(usernamesList, null)
             }
             401 -> {

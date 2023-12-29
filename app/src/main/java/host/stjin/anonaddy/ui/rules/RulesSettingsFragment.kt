@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui.rules
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -86,12 +88,21 @@ class RulesSettingsFragment : Fragment() {
     private fun setOnClickListener() {
         binding.fragmentManageRulesCreateRules.setOnClickListener {
             val intent = Intent(requireContext(), CreateRuleActivity::class.java)
-            startActivity(intent)
+            resultLauncher.launch(intent)
         }
     }
 
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
+                getDataFromWeb(null)
+            }
+        }
+    }
 
-    private fun getDataFromWeb(savedInstanceState: Bundle?) {
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {
@@ -265,7 +276,7 @@ class RulesSettingsFragment : Fragment() {
                 override fun onClickSettings(pos: Int, aView: View) {
                     val intent = Intent(context, CreateRuleActivity::class.java)
                     intent.putExtra("rule_id", list[pos].id)
-                    startActivity(intent)
+                    resultLauncher.launch(intent)
                 }
 
 

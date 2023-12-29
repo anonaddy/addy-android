@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,7 +14,6 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Toast
-import android.window.OnBackInvokedDispatcher
 import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -44,7 +42,6 @@ import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
-import java.util.*
 
 
 class ManageAliasActivity : BaseActivity(),
@@ -55,6 +52,7 @@ class ManageAliasActivity : BaseActivity(),
 
     lateinit var networkHelper: NetworkHelper
     private lateinit var aliasWatcher: AliasWatcher
+    private var shouldRefreshOnFinish = false
 
     private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
     private lateinit var editAliasFromNameBottomDialogFragment: EditAliasFromNameBottomDialogFragment
@@ -72,7 +70,6 @@ class ManageAliasActivity : BaseActivity(),
 
     // This value is here to keep track if the activity to which we return on finishWithUpdate should update its data.
     // Basically, whenever some information is changed we flip the boolean to true.
-    private var shouldUpdate: Boolean = false
     private lateinit var binding: ActivityManageAliasBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,12 +89,9 @@ class ManageAliasActivity : BaseActivity(),
             R.string.edit_alias,
             binding.activityManageAliasNSV,
             binding.activityManageAliasToolbar,
-            R.drawable.ic_email_at,
-            customBackPressedMethod = { finishWithUpdate() }
+            R.drawable.ic_email_at
         )
 
-
-        customOnBackPressed()
 
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
@@ -173,23 +167,6 @@ class ManageAliasActivity : BaseActivity(),
                 ShortcutManagerCompat.removeAllDynamicShortcuts(this)
             }
         }
-    }
-
-
-    private fun customOnBackPressed() {
-        if (Build.VERSION.SDK_INT >= 33) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(
-                OnBackInvokedDispatcher.PRIORITY_DEFAULT
-            ) {
-                finishWithUpdate()
-            }
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finishWithUpdate()
     }
 
     private fun setPage(aliasId: String) {
@@ -299,7 +276,7 @@ class ManageAliasActivity : BaseActivity(),
                 if (compoundButton.isPressed || forceSwitch) {
                     binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
-                    shouldUpdate = true
+                    shouldRefreshOnFinish = true
                     if (checked) {
                         lifecycleScope.launch {
                             activateAlias()
@@ -319,7 +296,7 @@ class ManageAliasActivity : BaseActivity(),
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
                     forceSwitch = false
-                    shouldUpdate = true
+                    shouldRefreshOnFinish = true
                     if (checked) {
                         // In case the alias could not be added to watchlist, the switch will be reverted
                         binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(
@@ -336,12 +313,19 @@ class ManageAliasActivity : BaseActivity(),
         })
     }
 
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
                 this.alias!!.active = false
+                shouldRefreshOnFinish = true
                 updateUi(this.alias!!)
 
                 if (shouldDeactivateThisAlias) {
@@ -371,6 +355,7 @@ class ManageAliasActivity : BaseActivity(),
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (alias != null) {
                 this.alias = alias
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -533,8 +518,8 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
                 deleteAliasSnackbar.dismiss()
-                shouldUpdate = true
-                finishWithUpdate()
+                shouldRefreshOnFinish = true
+                finish()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -553,8 +538,8 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.forgetAlias({ result ->
             if (result == "204") {
                 forgetAliasSnackbar.dismiss()
-                shouldUpdate = true
-                finishWithUpdate()
+                shouldRefreshOnFinish = true
+                finish()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -573,7 +558,7 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.restoreAlias({ alias, error ->
             if (alias != null) {
                 restoreAliasSnackbar.dismiss()
-                shouldUpdate = true
+                shouldRefreshOnFinish = true
                 this.alias = alias
             } else {
                 SnackbarHelper.createSnackbar(
@@ -587,13 +572,6 @@ class ManageAliasActivity : BaseActivity(),
                 ).show()
             }
         }, id)
-    }
-
-    private fun finishWithUpdate() {
-        val intent = Intent()
-        intent.putExtra("should_update", shouldUpdate)
-        setResult(RESULT_OK, intent)
-        finish()
     }
 
     private suspend fun getAliasInfo(id: String) {
@@ -825,7 +803,7 @@ class ManageAliasActivity : BaseActivity(),
 
 
     override fun descriptionEdited(alias: Aliases) {
-        shouldUpdate = true
+        shouldRefreshOnFinish = true
         editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
@@ -833,7 +811,7 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     override fun fromNameEdited(alias: Aliases) {
-        shouldUpdate = true
+        shouldRefreshOnFinish = true
         editAliasFromNameBottomDialogFragment.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasFromNameBottomDialogFragment
@@ -844,7 +822,7 @@ class ManageAliasActivity : BaseActivity(),
     override fun recipientsEdited(alias: Aliases) {
         // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasFragment.
         // So we update the list when coming back
-        shouldUpdate = true
+        shouldRefreshOnFinish = true
         editAliasRecipientsBottomDialogFragment.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
