@@ -477,11 +477,16 @@ class HomeFragment : Fragment() {
             binding.homeStatCardSharedDomainAliases.setProgress((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toFloat() * 100)
         }
 
+        val recipientsLimitText = if ((activity?.application as AddyIoApp).userResource.recipient_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.recipient_limit.toString()
+        }
         binding.homeStatCardRecipients.setDescription(
             this.resources.getString(
-                R.string.d_slash_d,
+                R.string.d_slash_s,
                 (activity?.application as AddyIoApp).userResource.recipient_count,
-                (activity?.application as AddyIoApp).userResource.recipient_limit
+                recipientsLimitText
             )
         )
         if ((activity?.application as AddyIoApp).userResource.recipient_limit > 0) {
@@ -489,11 +494,16 @@ class HomeFragment : Fragment() {
         }
 
 
+        val domainsLimitText = if ((activity?.application as AddyIoApp).userResource.active_domain_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.active_domain_limit.toString()
+        }
         binding.homeStatCardDomains.setDescription(
             this.resources.getString(
-                R.string.d_slash_d,
+                R.string.d_slash_s,
                 (activity?.application as AddyIoApp).userResource.active_domain_count,
-                (activity?.application as AddyIoApp).userResource.active_domain_limit
+                domainsLimitText
             )
         )
         if ((activity?.application as AddyIoApp).userResource.active_domain_limit > 0) {
@@ -501,22 +511,32 @@ class HomeFragment : Fragment() {
         }
 
 
+        val usernamesLimitText = if ((activity?.application as AddyIoApp).userResource.username_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.username_limit.toString()
+        }
         binding.homeStatCardUsernames.setDescription(
             this.resources.getString(
-                R.string.d_slash_d,
+                R.string.d_slash_s,
                 (activity?.application as AddyIoApp).userResource.username_count,
-                (activity?.application as AddyIoApp).userResource.username_limit
+                usernamesLimitText
             )
         )
         if ((activity?.application as AddyIoApp).userResource.username_limit > 0) {
             binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
         }
 
+        val rulesLimitText = if ((activity?.application as AddyIoApp).userResource.active_rule_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.active_rule_limit.toString()
+        }
         binding.homeStatCardRules.setDescription(
             this.resources.getString(
-                R.string.d_slash_d,
+                R.string.d_slash_s,
                 (activity?.application as AddyIoApp).userResource.active_rule_count,
-                (activity?.application as AddyIoApp).userResource.active_rule_limit
+                rulesLimitText
             )
         )
         if ((activity?.application as AddyIoApp).userResource.active_rule_limit > 0) {
