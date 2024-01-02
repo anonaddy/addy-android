@@ -43,5 +43,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="cardview_extra_padding">3dp</dimen>
     <dimen name="collapsed_text_size">24sp</dimen>
     <dimen name="expanded_text_size">32sp</dimen>
+    <dimen name="home_cardview_padding">32dp</dimen>
 
 </resources>

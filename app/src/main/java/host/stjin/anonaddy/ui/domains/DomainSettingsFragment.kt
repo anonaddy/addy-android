@@ -295,7 +295,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         this.resources.getString(R.string.deleting_domain),
-                        (activity as MainActivity).findViewById(R.id.activity_domain_settings_CL),
+                        (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
                         length = Snackbar.LENGTH_INDEFINITE
                     )
                 }

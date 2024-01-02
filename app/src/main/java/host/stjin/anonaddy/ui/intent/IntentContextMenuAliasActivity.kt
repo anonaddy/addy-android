@@ -203,7 +203,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
                     if (domainOptions.contains(splittedEmailAddress[1])) {
                         // The domain of the email address is linked to this addy.io account. User most likely wants to either manage or create this Alias.
-                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, emails))
+                        intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_creating_alias, emails[0]))
                         lifecycleScope.launch {
                             checkIfAliasExists(emails[0])
                         }
@@ -247,12 +247,12 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
     }
 
-    private suspend fun checkIfAliasExists(text: CharSequence) {
+    private suspend fun checkIfAliasExists(text: String) {
         networkHelper.getAliases(
             { result, _ ->
                 if (result != null) {
                     // Check if there is an alias with this email address and get its ID
-                    val aliasId: String? = result.data.firstOrNull { it.email == text }?.id
+                    val aliasId: String? = result.data.firstOrNull { it.email.lowercase() == text.lowercase() }?.id
                     if (!aliasId.isNullOrEmpty()) {
                         // ID is not empty, thus there was a match
                         // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity

@@ -90,7 +90,7 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
     implementation("androidx.core:core-ktx:1.12.0")
@@ -175,5 +175,5 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.5.16")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.5.17")
 }

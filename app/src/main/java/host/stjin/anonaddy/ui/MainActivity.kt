@@ -96,8 +96,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             drawBehindNavBar(
                 binding.root,
-                arrayListOf(binding.root),
-                bottomViewsToShiftUpUsingPadding = arrayListOf(binding.navRail!!, binding.activityMainViewpagerSw600dp!!)
+                arrayListOf(binding.root)
             )
         } else {
             drawBehindNavBar(
@@ -157,7 +156,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.navigationRailUserRefresh?.setOnClickListener {
-            openSearch()
+            refreshAllData()
         }
 
     }

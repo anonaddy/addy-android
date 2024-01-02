@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback
 import androidx.recyclerview.widget.ItemTouchHelper.UP
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -143,20 +142,12 @@ class RulesSettingsFragment : Fragment() {
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
-                    // Data could not be loaded
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_rules) + "\n" + result,
+                        (activity as RulesSettingsActivity).findViewById(R.id.activity_rules_settings_CL),
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
                 }
 
             }
@@ -431,7 +422,7 @@ class RulesSettingsFragment : Fragment() {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
                         this.resources.getString(R.string.deleting_rule),
-                        (activity as MainActivity).findViewById(R.id.activity_domain_settings_CL),
+                        (activity as RulesSettingsActivity).findViewById(R.id.activity_rules_settings_CL),
                         length = Snackbar.LENGTH_INDEFINITE
                     )
                 }

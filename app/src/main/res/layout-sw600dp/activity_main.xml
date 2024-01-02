@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_container"
@@ -22,9 +22,9 @@
 
 
     <LinearLayout
+        android:layout_marginBottom="@dimen/home_cardview_padding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="100dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingEnd="@dimen/layout_padding"
@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:paddingStart="-16dp"
             android:orientation="horizontal">
 
             <com.google.android.material.search.SearchBar
@@ -61,15 +62,23 @@
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/activity_main_viewpager_sw600dp"
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/activity_main_viewpager_sw600dp_cardview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:nestedScrollingEnabled="true"
-            android:orientation="vertical" />
+            app:cardBackgroundColor="?colorSurfaceContainer"
+            app:cardCornerRadius="@dimen/corner_radius_cardview">
 
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/activity_main_viewpager_sw600dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="true"
+                android:orientation="vertical" />
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

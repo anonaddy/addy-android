@@ -159,6 +159,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 // Set default domain
                 if (domainOptions.defaultAliasDomain != null) {
                     binding.bsAddaliasDomainMact.setText(domainOptions.defaultAliasDomain, false)
+                } else {
+                    binding.bsAddaliasDomainMact.setText(DOMAINS[0])
                 }
 
                 // Set default format
