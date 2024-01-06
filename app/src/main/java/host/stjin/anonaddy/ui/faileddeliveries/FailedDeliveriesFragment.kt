@@ -158,6 +158,17 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
 
     }
 
+    fun fragmentShown() {
+        if (::failedDeliveriesAdapter.isInitialized) {
+            // Set the count of failed deliveries so that the shimmerview looks better next time AND so that we can use it for the backgroundservice AND mark this a read for the badge
+            encryptedSettingsManager?.putSettingsInt(
+                SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT,
+                failedDeliveriesAdapter.itemCount
+            )
+        }
+    }
+
+
     private fun setFailedDeliveriesAdapter(list: ArrayList<FailedDeliveries>) {
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
             failedDeliveries = list
@@ -167,8 +178,6 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 binding.fragmentFailedDeliveriesNoFailedDeliveries.visibility = View.VISIBLE
             }
 
-            // Set the count of failed deliveries so that the shimmerview looks better next time AND so that we can use it for the backgroundservice
-            encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, list.size)
 
             failedDeliveriesAdapter = FailedDeliveryAdapter(list)
             failedDeliveriesAdapter.setClickListener(object : FailedDeliveryAdapter.ClickListener {
@@ -177,6 +186,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                     failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(
                         list[pos].id,
                         list[pos].created_at,
+                        list[pos].attempted_at,
                         list[pos].alias_email,
                         list[pos].recipient_email,
                         list[pos].bounce_type,
@@ -192,6 +202,15 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
 
             })
             adapter = failedDeliveriesAdapter
+
+
+            // When in tablet mode (aka split screen mode) loading this fragment should not automatically update the value, it should only be updated
+            // upon showing (so that the value keeps notifying the user until the user clicks on it.
+            // When in phone mode the activity is in foreground and should update the value automatically.
+            if (!this.resources.getBoolean(R.bool.isTablet)) {
+                fragmentShown()
+            }
+
             binding.animationFragment.stopAnimation()
             //binding.activityFailedDeliveriesNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
         }

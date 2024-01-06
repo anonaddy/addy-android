@@ -106,11 +106,6 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, encryptedSettingsManager)
 
 
-                networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
-                    // Store the result if the data succeeded to update in a boolean
-                    failedDeliveriesNetworkCallResult = result
-                }
-
 
                 /*
                 UPDATES
@@ -230,6 +225,11 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                  */
 
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)) {
+                    networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
+                        // Store the result if the data succeeded to update in a boolean
+                        failedDeliveriesNetworkCallResult = result
+                    }
+
                     val currentFailedDeliveries =
                         encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
                     val previousFailedDeliveries =
@@ -240,6 +240,9 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                             currentFailedDeliveries - previousFailedDeliveries
                         )
                     }
+                } else {
+                    // Not required so always success
+                    failedDeliveriesNetworkCallResult = true
                 }
             }
 
@@ -278,64 +281,70 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
         val aliasWatcher = AliasWatcher(appContext)
         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
 
-        // Get all aliases from the watchList
-        networkHelper.bulkGetAlias({ result, _ ->
-            if (result != null) {
+        if (aliasesToWatch.isNotEmpty()) {
+            // Get all aliases from the watchList
+            networkHelper.bulkGetAlias({ result, _ ->
+                if (result != null) {
 
-                // Get a copy of the current list
-                val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
-                val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(appContext, it) }
-
-
-                //region Save a copy of the list
-
-                // When the call is successful, save a copy of the current CACHED version to `currentList`
-                val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
-
-                // If the current CACHED list is not null, move the current list to the PREV position for AliasWatcher to compare
-                // This CACHED list could be null if this would be the first time the service is running
-                currentList?.let { settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS, it) }
-                //endregion
+                    // Get a copy of the current list
+                    val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
+                    val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(appContext, it) }
 
 
-                //region CLEANUP DELETED ALIASES
-                // Let's say a user deletes this alias using the web-app, but this alias is watched. We need to make sure that the aliases we request
-                // Are actually returned. If aliases requested are not returned we can assume the alias has been deleted thus we can delete this alias from the watchlist
+                    //region Save a copy of the list
 
-                for (id in aliasesToWatch) {
-                    if (result.data.none { it.id == id }) {
-                        // This alias is being watched but not returned, delete it from the watcher
+                    // When the call is successful, save a copy of the current CACHED version to `currentList`
+                    val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
 
-                        LoggingHelper(appContext, LoggingHelper.LOGFILES.DEFAULT).addLog(
-                            LOGIMPORTANCE.WARNING.int,
-                            appContext.resources.getString(
-                                R.string.notification_alias_watches_alias_does_not_exist_anymore_desc,
-                                aliasesList?.first { it.id == id }?.email ?: id
-                            ),
-                            "aliasWatcherTask",
-                            null
+                    // If the current CACHED list is not null, move the current list to the PREV position for AliasWatcher to compare
+                    // This CACHED list could be null if this would be the first time the service is running
+                    currentList?.let {
+                        settingsManager.putSettingsString(
+                            SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS,
+                            it
                         )
-
-                        NotificationHelper(appContext).createAliasWatcherAliasDoesNotExistAnymoreNotification(
-                            aliasesList?.first { it.id == id }?.email ?: id
-                        )
-
-                        aliasWatcher.removeAliasToWatch(id)
                     }
+                    //endregion
+
+
+                    //region CLEANUP DELETED ALIASES
+                    // Let's say a user forgets this alias using the web-app, but this alias is watched. We need to make sure that the aliases we request
+                    // Are actually returned. If aliases requested are not returned we can assume the alias has been deleted thus we can delete this alias from the watchlist
+
+                    for (id in aliasesToWatch) {
+                        if (result.data.none { it.id == id }) {
+                            // This alias is being watched but not returned, delete it from the watcher
+
+                            LoggingHelper(appContext, LoggingHelper.LOGFILES.DEFAULT).addLog(
+                                LOGIMPORTANCE.WARNING.int,
+                                appContext.resources.getString(
+                                    R.string.notification_alias_watches_alias_does_not_exist_anymore_desc,
+                                    aliasesList?.first { it.id == id }?.email ?: id
+                                ),
+                                "aliasWatcherTask",
+                                null
+                            )
+
+                            NotificationHelper(appContext).createAliasWatcherAliasDoesNotExistAnymoreNotification(
+                                aliasesList?.first { it.id == id }?.email ?: id
+                            )
+
+                            aliasWatcher.removeAliasToWatch(id)
+                        }
+                    }
+                    //endregion
+
+                    // Turn the list into a json object
+                    val data = Gson().toJson(result.data)
+
+                    // Store a copy of the just received data locally
+                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
+
+                } else {
+                    // The call failed, it will be logged in NetworkHelper. Try again later
                 }
-                //endregion
-
-                // Turn the list into a json object
-                val data = Gson().toJson(result.data)
-
-                // Store a copy of the just received data locally
-                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
-
-            } else {
-                // The call failed, it will be logged in NetworkHelper. Try again later
-            }
-        }, aliasesToWatch)
-
+            }, aliasesToWatch)
+        }
 
         return true
     }

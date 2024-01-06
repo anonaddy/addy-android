@@ -140,6 +140,15 @@
                         app:sectionTitle="@string/catch_all_enabled" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_username_can_login_switch_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/can_login_username_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_login"
+                        app:sectionTitle="@string/can_be_used_to_login" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_username_desc_edit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

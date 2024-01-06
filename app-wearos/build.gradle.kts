@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.3.0 + release 01 + 01 (for wearos)
-        versionCode = 341310101
-        versionName = "1.3.1"
+        // SDK 33 + v1.3.2 + release 01 + 01 (for wearos)
+        versionCode = 341320101
+        versionName = "1.3.2"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -152,7 +152,7 @@ dependencies {
 // Tiles
 dependencies {
     // For watchface
-    implementation("com.google.android.gms:play-services-base:18.2.0")
+    implementation("com.google.android.gms:play-services-base:18.3.0")
 
     // Use to implement support for wear tiles
     implementation("androidx.wear.tiles:tiles:$wear_tiles_version")

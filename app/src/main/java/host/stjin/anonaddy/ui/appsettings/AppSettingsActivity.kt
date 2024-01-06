@@ -86,6 +86,7 @@ class AppSettingsActivity : BaseActivity(),
         checkPermissions()
     }
 
+
     private fun checkPermissions() {
         val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -147,6 +148,7 @@ class AppSettingsActivity : BaseActivity(),
     override fun onResume() {
         super.onResume()
         setOnBiometricSwitchListeners()
+        checkPermissions() // When the user allows permissions through the system settings app, this value needs to be updated when coming back
         loadSettings()
     }
 

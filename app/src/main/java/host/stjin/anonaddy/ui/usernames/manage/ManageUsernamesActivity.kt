@@ -127,6 +127,64 @@ class ManageUsernamesActivity : BaseActivity(),
                 }
             }
         })
+
+        binding.activityManageUsernameCanLoginSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableCanLogin()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableCanLogin()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+
+    private suspend fun disableCanLogin() {
+        networkHelper.disableCanLoginSpecificUsername({ result ->
+            binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(false)
+            if (result == "204") {
+                this.username!!.can_login = false
+                shouldRefreshOnFinish = true
+                updateUi(this.username!!)
+            } else {
+                binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_can_login) + "\n" + result,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
+    }
+
+
+    private suspend fun enableCanLogin() {
+        networkHelper.enableCanLoginSpecificUsername({ username, error ->
+            binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(false)
+            if (username != null) {
+                this.username = username
+                shouldRefreshOnFinish = true
+            } else {
+                binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_can_login) + "\n" + error,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
     }
 
     private suspend fun disableCatchAll() {
@@ -218,6 +276,13 @@ class ManageUsernamesActivity : BaseActivity(),
             override fun onClick() {
                 forceSwitch = true
                 binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(!binding.activityManageUsernameCatchAllSwitchLayout.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageUsernameCanLoginSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(!binding.activityManageUsernameCanLoginSwitchLayout.getSwitchChecked())
             }
         })
 
@@ -344,6 +409,11 @@ class ManageUsernamesActivity : BaseActivity(),
             if (username.catch_all) resources.getString(R.string.catch_all_enabled) else resources.getString(R.string.catch_all_disabled)
         )
 
+        binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(username.can_login)
+        binding.activityManageUsernameCanLoginSwitchLayout.setTitle(
+            if (username.can_login) resources.getString(R.string.can_login_enabled) else resources.getString(R.string.can_login_disabled)
+        )
+
         /**
          * TEXT
          */
@@ -358,6 +428,7 @@ class ManageUsernamesActivity : BaseActivity(),
         val buf = StringBuilder()
 
         if (username.aliases != null) {
+            username.aliases = username.aliases?.sortedBy { it.email }
             for (alias in username.aliases!!) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked

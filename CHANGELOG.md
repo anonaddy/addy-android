@@ -1,5 +1,33 @@
 # Changelog
 
+## [v5.0.0] - 2024-TBD
+
+### addy.io
+
+##### Added
+
+- A brand new tablet UI, with embedded activities for the best big screen experience
+- Home has now been renamed to Dashboard and shows more information
+- Added support for the new "from-name" feature
+- Added support for the new "can-login" feature
+
+##### Fixed/Improved
+
+- Some navigation icons have been changed to match the addy.io dashboard
+- Forgotten aliases that are on the watchlist will now be removed automatically
+- Disable the automatic update check by default to comply with F-Droid's "anti-feature" list
+- Reduced API calls for a faster and smoother experience
+- Increased the alias watcher and multiple alias management from 15 to 25 aliases
+- Show a snackbar when alias has been disabled through the link in the email banner
+- Fixed a bug where on self-hosted instances the app would show a limit of 0
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.3.2)_
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v4.8.1] - 2023-08-23
 
 ### addy.io

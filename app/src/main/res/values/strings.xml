@@ -42,7 +42,7 @@
     <string name="settings">Settings</string>
     <string name="resend_email">Resend email</string>
     <string name="delete">Delete</string>
-    <string name="recipients_list_description" tools:ignore="PluralsCandidate">%1$d aliases; Emails forwarded: %2$d</string>
+    <string name="recipients_list_description" tools:ignore="PluralsCandidate">%1$d aliases</string>
     <string name="encryption_enabled">Encryption enabled</string>
     <string name="open_options">Open options</string>
     <string name="api_obtain_desc">Your API can be obtained at the settings page at app.addy.io (or your own hosted instance)</string>
@@ -70,20 +70,32 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.8.1</h3>
+<h3>What\'s new in AnonAddy for Android 5.0.0</h3>
+<h4>Added</h4>
+- A brand new tablet UI, with embedded activities for the best big screen experience<br />
+- Home has now been renamed to Dashboard and shows more information<br />
+- Added support for the new "from-name" feature<br />
+- Added support for the new "can-login" feature<br />
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things to make the app even smoother</p>
-<p>&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.3.1</h3>
+- Some navigation icons have been changed to match the addy.io dashboard<br />
+- Forgotten aliases that are on the watchlist will now be removed automatically<br />
+- Disable the automatic update check by default to comply with F-Droid\'s "anti-feature" list<br />
+- Reduced API calls for a faster and smoother experience<br />
+- Increased the Alias watcher and multiple alias management from 15 to 25 aliases<br />
+- Show a snackbar when alias has been disabled through the link in the email banner<br />
+- Fixed a bug where on self-hosted instances the app would show a limit of 0<br />
+- Performance improvements and other things to make the app even smoother<br />
+&nbsp;<br />
+<h3>What\'s new in AnonAddy for Android for Wearables 1.3.2</h3>
 <h4>Fixed/Improved</h4>
-<p>✨ Optimized support for new wearables<br />✨ Performance improvements and other things to make the app even smoother</p>]]></string>
+- Performance improvements and other things to make the app even smoother<br />]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
     <string name="delete_recipient_desc">Are you sure you want to delete this recipient?</string>
     <string name="error_deleting_recipient">Something went wrong while deleting the recipient</string>
     <string name="address">Address</string>
-    <string name="add_recipient_desc">Enter the individual email of the new recipient you’d like to add.\n\nYou will receive an email with a verification link that will expire in one hour, you can tap “Resend email” to get a new one</string>
+    <string name="add_recipient_desc"><![CDATA[Enter the individual email of the new recipient you\'d like to add. This is where your aliases will <b>forward messages to.</b><br /> <br />You will receive an email with a verification link that will <b>expire in one hour</b>, you can click "Resend email" to get a new one.]]></string>
     <string name="not_a_valid_address">This is not a valid address</string>
     <string name="not_a_valid_web_address">@string/not_a_valid_address</string>
     <string name="error_adding_recipient">Something went wrong while adding this recipient</string>
@@ -105,6 +117,7 @@
     <string name="error_edit_recipient">Something went wrong while editing the recipient</string>
     <string name="error_rules_active">An error occurred while changing the rule state</string>
     <string name="error_edit_catch_all">An error occurred while changing the catch-all state</string>
+    <string name="error_edit_can_login">An error occurred while changing the can login state</string>
 
     <string name="alias_deactivated">Alias deactivated</string>
     <string name="alias_activated">Alias activated</string>
@@ -207,7 +220,7 @@
     <string name="delete_username">Delete username</string>
     <string name="delete_username_desc_confirm">Are you sure you want to delete this username? This will also delete all aliases associated with this username. You will no longer be able to receive any emails at this username subdomain. This will still count towards your additional username limit even once deleted.</string>
     <string name="error_deleting_username">Something went wrong while deleting this username</string>
-    <string name="add_username_desc">Please choose additional usernames carefully as you can only add a limited amount.\n\nYou cannot login with these usernames, only the one you originally signed up with</string>
+    <string name="add_username_desc"><![CDATA[Please choose usernames carefully as you can only add a <b>maximum of %1$d.</b> You can login with <b>any of your usernames.</b><br /><br />You can prevent a username from being used to login by toggling the "can login" option.]]></string>
     <string name="error_adding_username">Something went wrong while adding this username</string>
     <string name="username_deactivated">Username deactivated</string>
     <string name="username_activated">Username activated</string>
@@ -389,7 +402,7 @@
     <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available</string>
     <string name="addyio_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
-    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %7$s</td></tr></tbody></table>]]></string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>First attempted</strong><br />%2$s</p><p><strong>Alias</strong> %3$s</p><p><strong>Recipient</strong> %4$s</p><p><strong>Type</strong> %5$s</p><p><strong>Mail Server</strong> %6$s</p><p><strong>Sender</strong> %7$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %8$s</td></tr></tbody></table>]]></string>
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>
@@ -569,7 +582,7 @@
     <string name="notification_permissions_required_desc">Notification permissions are required to fully use the app. Tap here to allow the addy.io app to send notifications. You retain control over which notification the app can send.</string>
     <string name="can_reply_send">Reply/send allowed</string>
     <string name="cannot_reply_send">Reply/send not allowed</string>
-    <string name="can_reply_send_desc">Reply and send from your aliases</string>
+    <string name="can_reply_send_desc">Toggle this option to determine whether this recipient is allowed to reply and send from your aliases. When set to off this recipient will not be able to reply or send from your aliases and you will be notified when an attempt is made</string>
     <string name="tap_here_to_see_the_error">Tap here to see the error</string>
     <string name="error_details">Error details</string>
     <string name="no_error_message">No error message</string>
@@ -668,5 +681,9 @@
     <string name="whoops">Whoops!</string>
     <string name="check_for_updates">Check for updates</string>
     <string name="check_for_updates_desc">Tap here to manually check for new updates</string>
+    <string name="can_be_used_to_login">Can be used to login</string>
+    <string name="can_login_username_desc">Toggle this option to determine whether this username can be used to login to your account or not. When set to off you will not be able to use this username to login to your account</string>
+    <string name="can_login_enabled">Can login enabled</string>
+    <string name="can_login_disabled">Can login disabled</string>
 
 </resources>

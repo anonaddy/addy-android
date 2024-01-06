@@ -17,7 +17,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 
 > addy.io
 
-- addy.io instance running v0.13.6 or higher (current version of the addy.io app has been tested with v0.13.6)
+- addy.io instance running v1.0.4 or higher (current version of the addy.io app has been tested with v1.0.4)
 
 > Android
 
@@ -34,10 +34,10 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 - Lock the app using Biometrics
 - App exclusive features
   - Watching aliases for new emails
-  - Get notified when a new update is available
   - Send emails from aliases by selecting an email address or clicking a mailto link
   - Get notified on failed deliveries
   - Update multiple aliases at once
+  - Get notified on expiring subscriptions
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Export and import *encrypted* backups of the app configuration
 - Widgets!

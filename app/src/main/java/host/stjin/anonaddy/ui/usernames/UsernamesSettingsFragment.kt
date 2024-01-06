@@ -39,7 +39,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
     private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
 
-    private val addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance()
+    private var addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance(0)
 
     companion object {
         fun newInstance() = UsernamesSettingsFragment()
@@ -123,6 +123,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 (activity?.application as AddyIoApp).userResource = user
+                addUsernameFragment = AddUsernameBottomDialogFragment.newInstance(user.username_limit)
                 // Update stats
                 setStats()
             } else {

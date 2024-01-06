@@ -581,6 +581,7 @@ class ManageRecipientsActivity : BaseActivity(),
         val buf = StringBuilder()
 
         if (recipient.aliases != null) {
+            recipient.aliases = recipient.aliases?.sortedBy { it.email }
             for (alias in recipient.aliases!!) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked

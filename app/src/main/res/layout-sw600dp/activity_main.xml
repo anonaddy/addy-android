@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_container"
@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
+        android:layout_marginStart="100dp"
         android:orientation="vertical"
         android:paddingEnd="@dimen/layout_padding"
         tools:ignore="RtlSymmetry">
@@ -55,10 +56,8 @@
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:padding="12dp"
-                app:drawableStartCompat="@drawable/ic_refresh"
-                app:drawableTint="?colorOnSecondaryContainer"
+                app:drawableStartCompat="@drawable/ic_refresh_anim"
                 app:layout_collapseMode="pin"
-                app:tint="?colorOnSecondaryContainer"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
@@ -81,4 +80,4 @@
     </LinearLayout>
 
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

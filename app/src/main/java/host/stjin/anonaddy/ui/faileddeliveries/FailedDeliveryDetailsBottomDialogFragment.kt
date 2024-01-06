@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 class FailedDeliveryDetailsBottomDialogFragment(
     private val failedDeliveryId: String?,
     private val created: String?,
+    private val attempted: String?,
     private val alias: String?,
     private val recipient: String?,
     private val type: String?,
@@ -55,13 +56,29 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
         // Check if failedDeliveryId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
         if (failedDeliveryId != null) {
-            listener = parentFragment as AddFailedDeliveryBottomDialogListener
+
+            // Could be opened from searchactivity
+            if (parentFragment != null) {
+                listener = parentFragment as AddFailedDeliveryBottomDialogListener
+            } else if (activity != null) {
+                listener = activity as AddFailedDeliveryBottomDialogListener
+            }
 
             binding.bsFailedDeliveriesDeleteButton.setOnClickListener(this)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 binding.bsFailedDeliveriesTextview.text = Html.fromHtml(
-                    context?.resources?.getString(R.string.failed_delivery_details_text, created, alias, recipient, type, remoteMTA, sender, code),
+                    context?.resources?.getString(
+                        R.string.failed_delivery_details_text,
+                        created,
+                        attempted,
+                        alias,
+                        recipient,
+                        type,
+                        remoteMTA,
+                        sender,
+                        code
+                    ),
                     Html.FROM_HTML_MODE_LEGACY
                 )
             } else {
@@ -70,6 +87,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
                         context?.resources?.getString(
                             R.string.failed_delivery_details_text,
                             created,
+                            attempted,
                             alias,
                             recipient,
                             type,
@@ -142,6 +160,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
         fun newInstance(
             failedDeliveryId: String?,
             created: String?,
+            attempted: String?,
             alias: String?,
             recipient: String?,
             type: String?,
@@ -149,7 +168,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
             sender: String?,
             code: String?
         ): FailedDeliveryDetailsBottomDialogFragment {
-            return FailedDeliveryDetailsBottomDialogFragment(failedDeliveryId, created, alias, recipient, type, remoteMTA, sender, code)
+            return FailedDeliveryDetailsBottomDialogFragment(failedDeliveryId, created, attempted, alias, recipient, type, remoteMTA, sender, code)
         }
     }
 }

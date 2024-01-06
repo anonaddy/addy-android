@@ -8,6 +8,8 @@ object ScreenSizeUtils {
         val displayMetrics = context.resources.displayMetrics
         val dpWidth = displayMetrics.widthPixels / displayMetrics.density
         // Where 360 is the width of your grid item. You can change it as per your convention.
-        return (dpWidth / 360).toInt()
+        var columns = (dpWidth / 360).toInt()
+        if (columns == 0) columns = 1
+        return columns
     }
 }

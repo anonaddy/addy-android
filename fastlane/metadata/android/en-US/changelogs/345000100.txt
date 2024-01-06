@@ -1,0 +1,14 @@
+<h4>Added</h4>
+- A brand new tablet UI, with embedded activities for the best big screen experience<br />
+- Home has now been renamed to Dashboard and shows more information<br />
+- Added support for the new "from-name" feature<br />
+- Added support for the new "can-login" feature<br />
+<h4>Fixed/Improved</h4>
+- Some navigation icons have been changed to match the addy.io dashboard<br />
+- Forgotten aliases that are on the watchlist will now be removed automatically<br />
+- Disable the automatic update check by default to comply with F-Droid's "anti-feature" list<br />
+- Reduced API calls for a faster and smoother experience<br />
+- Increased the alias watcher and multiple alias management from 15 to 25 aliases<br />
+- Show a snackbar when alias has been disabled through the link in the email banner<br />
+- Fixed a bug where on self-hosted instances the app would show a limit of 0<br />
+- Performance improvements and other things to make the app even smoother<br />

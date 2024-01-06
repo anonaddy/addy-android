@@ -204,10 +204,6 @@ class HomeFragment : Fragment() {
         val chartEntryModel = entryModelOf(
             forwardedData, repliesData, sendsData
         )
-
-
-
-        binding.homeChartView1.setModel(chartEntryModel)
         binding.homeChartView1.setModel(chartEntryModel)
     }
 

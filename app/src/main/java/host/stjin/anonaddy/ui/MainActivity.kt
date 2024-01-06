@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -156,6 +157,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.navigationRailUserRefresh?.setOnClickListener {
+            (binding.navigationRailUserRefresh!!.compoundDrawables[0] as AnimatedVectorDrawable).start()
             refreshAllData()
         }
 
@@ -434,6 +436,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     }
 
                     6 -> {
+                        hideFailedDeliveriesBadge()
+
                         navView.menu.findItem(R.id.navigation_failed_deliveries).isChecked = true
                     }
                 }
@@ -508,6 +512,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon.setOnClickListener {
+            hideFailedDeliveriesBadge()
             val intent = Intent(this, FailedDeliveriesActivity::class.java)
             startActivity(intent)
         }
@@ -784,37 +789,41 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     badge.number = (result?.size?.minus(currentFailedDeliveries)) ?: 0  // or badge.text = "New"
                 }
             } else {
-                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-
-                    if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.INVISIBLE) {
-
-                        // loading the animation of
-                        // zoom_out.xml file into a variable
-                        val animZoomOut = AnimationUtils.loadAnimation(
-                            this,
-                            R.anim.zoom_out
-                        )
-                        animZoomOut.setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(p0: Animation?) {
-                                //
-                            }
-
-                            override fun onAnimationEnd(p0: Animation?) {
-                                binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.INVISIBLE
-                            }
-
-                            override fun onAnimationRepeat(p0: Animation?) {
-                                //
-                            }
-                        }
-                        )
-                        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomOut)
-                    }
-                } else {
-                    binding.navRail!!.removeBadge(R.id.navigation_failed_deliveries)
-                }
+                hideFailedDeliveriesBadge()
             }
         }, show404Toast = false)
+    }
+
+    private fun hideFailedDeliveriesBadge() {
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+
+            if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.INVISIBLE) {
+
+                // loading the animation of
+                // zoom_out.xml file into a variable
+                val animZoomOut = AnimationUtils.loadAnimation(
+                    this,
+                    R.anim.zoom_out
+                )
+                animZoomOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(p0: Animation?) {
+                        //
+                    }
+
+                    override fun onAnimationEnd(p0: Animation?) {
+                        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.INVISIBLE
+                    }
+
+                    override fun onAnimationRepeat(p0: Animation?) {
+                        //
+                    }
+                }
+                )
+                binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomOut)
+            }
+        } else {
+            binding.navRail!!.removeBadge(R.id.navigation_failed_deliveries)
+        }
     }
 
     fun navigateTo(fragment: Int) {
@@ -853,6 +862,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
 
             R.id.navigation_failed_deliveries -> {  // Only SW600DP>
+                // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
+                val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
+                failedDeliveriesFragment.fragmentShown()
+                hideFailedDeliveriesBadge()
+
                 if (this.resources.getBoolean(R.bool.isTablet)) {
                     viewPager.currentItem = 6
                 } else {
@@ -944,6 +958,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 if (resources.getBoolean(R.bool.isTablet)) {
                     navigateTo(R.id.navigation_failed_deliveries)
                 } else {
+                    hideFailedDeliveriesBadge()
                     val intent = Intent(this, FailedDeliveriesActivity::class.java)
                     startActivity(intent)
                 }

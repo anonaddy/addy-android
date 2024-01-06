@@ -364,6 +364,7 @@ class ManageDomainsActivity : BaseActivity(),
         val buf = StringBuilder()
 
         if (domain.aliases != null) {
+            domain.aliases = domain.aliases?.sortedBy { it.email }
             for (alias in domain.aliases!!) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked

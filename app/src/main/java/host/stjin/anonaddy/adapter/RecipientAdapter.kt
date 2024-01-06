@@ -31,21 +31,12 @@ class RecipientAdapter(
         holder.mTitle.text = listWithRecipients[position].email
 
 
-        val aliases = listWithRecipients[position].aliases?.size ?: 0
-        var forwardedEmails = 0
+        val aliases = listWithRecipients[position].aliases_count
 
-        // Count the total amount of forwarded emails for all aliases
-        // can only check the forwarded emails if the aliases are more than 0
-        if (aliases > 0) {
-            for (alias in listWithRecipients[position].aliases!!) {
-                forwardedEmails += alias.emails_forwarded
-            }
-        }
 
         holder.mDescription.text = holder.mDescription.context.resources.getString(
             R.string.recipients_list_description,
-            aliases,
-            forwardedEmails
+            aliases
         )
 
         when {

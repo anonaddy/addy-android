@@ -317,6 +317,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                     failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(
                         filteredFailedDeliveries!![pos].id,
                         filteredFailedDeliveries!![pos].created_at,
+                        filteredFailedDeliveries!![pos].attempted_at,
                         filteredFailedDeliveries!![pos].alias_email,
                         filteredFailedDeliveries!![pos].recipient_email,
                         filteredFailedDeliveries!![pos].bounce_type,

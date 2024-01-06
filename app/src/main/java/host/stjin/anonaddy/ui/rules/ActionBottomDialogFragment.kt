@@ -78,8 +78,7 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             }
 
 
-            val typeText =
-                TYPES_NAME[TYPES.indexOf(actionEditObject?.type)]
+            val typeText = TYPES_NAME[TYPES.indexOf(actionEditObject?.type)]
             binding.bsRuleActionTypeMact.setText(typeText, false)
             binding.bsRuleActionValuesTiet.setText(actionEditObject?.value)
 

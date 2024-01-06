@@ -148,7 +148,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
 
         filterOptionsAliasBottomDialogFragment = FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
-
     }
 
     private fun setHasReachedTopOfNsv() {
@@ -659,9 +658,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
         if (filterOptionsAliasBottomDialogFragment.isAdded) {
-            // Could not be added because this is calle from homeFragment on sw600dp
+            // Could not be added because this is called from homeFragment on sw600dp
             filterOptionsAliasBottomDialogFragment.dismissAllowingStateLoss()
         }
+
+        loadFilter()
         getDataFromWeb(requireContext(), null)
     }
 
