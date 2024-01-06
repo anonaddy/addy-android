@@ -655,7 +655,6 @@
     <string name="edit_from_name_username_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"example@%1$s.addy.io\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. Alias \'From Name\'<br />2. <b>Username</b> or Custom Domain <b>\'From Name\'</b><br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this username, it will override the global \'From Name\' setting.]]></string>
     <string name="error_edit_from_name">Something went wrong while editing the from name</string>
     <string name="feature_not_available_subscription">This feature is not available with your current subscription</string>
-    <string name="error_edit_active">An error occurred while changing the active state</string>
     <string name="notification_alias_watches_alias_does_not_exist_anymore">Alias removed from alias watcher</string>
     <string name="notification_alias_watches_alias_does_not_exist_anymore_desc">%1$s has been forgotten and removed from the alias watcher</string>
     <string name="view_all">View all</string>
