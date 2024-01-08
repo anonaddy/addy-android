@@ -683,5 +683,6 @@
     <string name="can_login_username_desc">Toggle this option to determine whether this username can be used to login to your account or not. When set to off you will not be able to use this username to login to your account</string>
     <string name="can_login_enabled">Can login enabled</string>
     <string name="can_login_disabled">Can login disabled</string>
+    <string name="hosted">Hosted</string>
 
 </resources>

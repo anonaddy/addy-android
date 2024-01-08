@@ -16,6 +16,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -142,8 +143,18 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             binding.activityMainViewpagerSw600dp!!.isUserInputEnabled = false
+
+            setRailVersion()
         }
 
+    }
+
+
+    // Only for Sw600>
+    private fun setRailVersion() {
+        val railVersionText =
+            if (AddyIo.VERSIONMAJOR == 9999) this.resources.getString(R.string.hosted) else AddyIo.VERSIONSTRING
+        binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)!!.text = railVersionText
     }
 
     private fun setOnBigScreenClickListener() {
