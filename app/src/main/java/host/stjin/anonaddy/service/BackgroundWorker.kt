@@ -152,7 +152,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                                 }
 
                             } else {
-                                // The current date is not yet before the deadline date. It will expire within 5 days
+                                // The current date is not yet after the deadline date.
                             }
                         }
                         // If expires_at is null it will never expire
@@ -188,7 +188,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                                     NotificationHelper(appContext).createSubscriptionExpiryNotification(text)
                                 }
                             } else {
-                                // The current date is not yet before the deadline date. It will expire within 5 days
+                                // The current date is not yet after the deadline date.
                             }
                         }
                         // If expires_at is null it will never expire
