@@ -329,9 +329,6 @@
         <activity
             android:name=".ui.setup.SetupNewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.embedded.EmbeddedPlaceholderActivity"
-            android:theme="@style/AppTheme.Setup" />
         <activity android:name=".ui.MainActivity" />
         <!-- WEAR OS -->
         <service

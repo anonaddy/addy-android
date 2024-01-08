@@ -201,16 +201,20 @@ class ManageAliasActivity : BaseActivity(),
                     // Send a message to all connected nodes
                     // Nodes with the app installed will receive this message and open the ManageAliasActivity
                     if (nodes.any()) {
-                        toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
-                            for (node in nodes) {
-                                Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+                        if (this@ManageAliasActivity.alias != null) {
+                            toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
+                                for (node in nodes) {
+                                    Wearable.getMessageClient(this)
+                                        .sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+                                }
+                                SnackbarHelper.createSnackbar(
+                                    this,
+                                    this.resources.getString(R.string.check_your_wearable),
+                                    binding.activityManageAliasCL
+                                ).show()
                             }
-                            SnackbarHelper.createSnackbar(
-                                this,
-                                this.resources.getString(R.string.check_your_wearable),
-                                binding.activityManageAliasCL
-                            ).show()
                         }
+
                     }
                 }
             } catch (ex: Exception) {
@@ -756,7 +760,6 @@ class ManageAliasActivity : BaseActivity(),
 
 
         // Not available for free subscriptions
-        // TODO test on selfhosted
         if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
             binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setLayoutEnabled(false)
             binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(

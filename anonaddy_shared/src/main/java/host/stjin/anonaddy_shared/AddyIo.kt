@@ -55,7 +55,7 @@ object AddyIo {
     // 0.6.0
     val API_URL_APP_VERSION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/app-version" }
 
-    // TODO UPDATE VERSION WHEN THIS API WAS ADDED
+    // 1.0.0
     val API_URL_CHART_DATA: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/chart-data" }
 
     // Gitlab built-in updater

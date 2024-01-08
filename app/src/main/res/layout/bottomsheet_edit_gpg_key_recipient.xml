@@ -60,7 +60,7 @@
                 style="@style/AddyIoTextInputLayoutOutlined"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/public_key">
+                android:hint="@string/public_key_placeholder">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bs_edit_recipient_gpg_key_tiet"

@@ -554,8 +554,6 @@ class HomeFragment : Fragment() {
         }
 
 
-        // TODO take the totals and fill in the alias stats
-
         binding.homeStatCardTotalAliases.setDescription((activity?.application as AddyIoApp).userResource.total_aliases.toString())
         binding.homeStatCardActiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_active_aliases.toString())
         binding.homeStatCardInactiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_inactive_aliases.toString())

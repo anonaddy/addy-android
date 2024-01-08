@@ -33,7 +33,6 @@ class FailedDeliveriesActivity : BaseActivity() {
         setPage()
     }
 
-    //TODO Test
     private fun setPage() {
         /**
          * This activity can be called by an URI or Widget/Notification Intent.

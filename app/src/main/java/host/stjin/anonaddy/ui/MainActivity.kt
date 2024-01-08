@@ -915,7 +915,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
-    // TODO CHECK TABLET
+    // TODO CHECK TABLET, doesnt work from search
     private fun goToTarget(string: String) {
         when (string) {
             SearchActivity.SearchTargets.ALIASES.activity -> {

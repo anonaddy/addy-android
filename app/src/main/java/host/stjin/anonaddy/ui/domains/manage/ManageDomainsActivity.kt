@@ -399,7 +399,7 @@ class ManageDomainsActivity : BaseActivity(),
 
         // Set recipient
         val recipients: String = domain.default_recipient?.email ?: this.resources.getString(
-            R.string.default_recipient
+            R.string.default_recipient_s, (this.application as AddyIoApp).userResourceExtended.default_recipient_email
         )
 
 
@@ -437,7 +437,6 @@ class ManageDomainsActivity : BaseActivity(),
 
 
         // Not available for free subscriptions
-        // TODO test on selfhosted
         if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
             binding.activityManageDomainFromNameEdit.setLayoutEnabled(false)
             binding.activityManageDomainFromNameEdit.setDescription(
@@ -455,14 +454,13 @@ class ManageDomainsActivity : BaseActivity(),
                         R.string.domain_no_from_name
                     )
                 )
-
-                // reset this value as it now includes the description
-                editDomainFromNameBottomDialogFragment = EditDomainFromNameBottomDialogFragment.newInstance(
-                    this.domain!!.id,
-                    this.domain!!.domain,
-                    domain.description
-                )
             }
+            // reset this value as it now includes the description
+            editDomainFromNameBottomDialogFragment = EditDomainFromNameBottomDialogFragment.newInstance(
+                this.domain!!.id,
+                this.domain!!.domain,
+                domain.from_name
+            )
         }
 
 

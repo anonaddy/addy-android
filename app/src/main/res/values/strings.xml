@@ -161,13 +161,13 @@
     <string name="change_public_gpg_key">Change public GPG key</string>
     <string name="add_public_gpg_key">Add public GPG key</string>
     <string name="manage_recipient_basic_info">Email: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
-    <string name="add_public_gpg_key_desc">Enter your PUBLIC key data in the textbox below\n\nMake sure to remove Comment: and Version:</string>
+    <string name="add_public_gpg_key_desc">Enter your PUBLIC key data in the textbox below\n\nMake sure to remove Comment: and Version:\n\nElGamal keys are not currently supported.</string>
     <string name="error_add_gpg_key">Something went wrong while adding your public GPG key</string>
     <string name="error_removing_gpg_key">Something went wrong while removing the public key</string>
     <string name="encrypt_emails_to_this_recipient">Encrypt emails to this recipient</string>
     <string name="fingerprint_s">Fingerprint:\n%s</string>
     <string name="remove_public_key_desc">Are you sure you want to remove the public key for this recipient? It will also be removed from any other recipients using the same key.</string>
-    <string name="public_key">Public key</string>
+    <string name="public_key_placeholder">Begins with \'-----BEGIN PGP PUBLIC KEY BLOCK-----\'</string>
     <string name="shared_domain_aliases">Shared domain aliases</string>
     <string name="addyio_load_error">Something went wrong while loading the addy.io app, you might want to check your internet connection.\nMore information about the error:</string>
     <string name="try_again">Try again</string>
@@ -641,7 +641,6 @@
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
-    <string name="embedded_placeholder">Choose an action on the left to display this activity here</string>
     <string name="stats">Stats</string>
     <string name="error_obtaining_chart_data">@string/could_not_refresh_data</string>
     <string name="you_ve_used_d_out_of_d_rules">You’ve used %1$d out of %2$s rules</string>

@@ -399,6 +399,11 @@ class NetworkHelper(private val context: Context) {
         local_part: String,
         recipients: ArrayList<String>?
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val array = JSONArray()
 
         if (recipients != null) {
@@ -562,6 +567,11 @@ class NetworkHelper(private val context: Context) {
     suspend fun getChartData(
         callback: (ChartData?, String?) -> Unit
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) =
             Fuel.get(API_URL_CHART_DATA)
                 .appendHeader(
@@ -668,6 +678,11 @@ class NetworkHelper(private val context: Context) {
         aliasId: String,
         description: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("description", description)
 
@@ -723,6 +738,11 @@ class NetworkHelper(private val context: Context) {
         aliasId: String,
         fromName: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("from_name", fromName)
 
@@ -781,6 +801,11 @@ class NetworkHelper(private val context: Context) {
         aliasId: String,
         recipients: ArrayList<String>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         val array = JSONArray()
 
@@ -844,6 +869,10 @@ class NetworkHelper(private val context: Context) {
         aliases: List<String>
     ) {
 
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         val array = JSONArray()
 
@@ -904,6 +933,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_ALIAS}/$aliasId")
             .appendHeader(
                 *getHeaders()
@@ -947,6 +981,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1007,6 +1045,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", aliasId)
 
@@ -1058,6 +1101,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1119,6 +1166,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId")
             .appendHeader(
                 *getHeaders()
@@ -1162,6 +1214,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1222,6 +1278,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId/forget")
             .appendHeader(
                 *getHeaders()
@@ -1266,6 +1327,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1327,6 +1392,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.patch("${API_URL_ALIAS}/$aliasId/restore")
             .appendHeader(
                 *getHeaders()
@@ -1374,6 +1444,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1439,6 +1513,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         address: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("email", address)
 
@@ -1561,6 +1640,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1604,6 +1688,10 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -1656,6 +1744,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ALLOWED_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1700,6 +1793,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ENCRYPTED_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1744,6 +1842,10 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -1797,6 +1899,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_INLINE_ENCRYPTED_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1841,6 +1948,10 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -1893,6 +2004,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_PROTECTED_HEADERS_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1937,6 +2053,10 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -1989,6 +2109,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENT_KEYS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -2033,6 +2158,11 @@ class NetworkHelper(private val context: Context) {
         recipientId: String,
         keyData: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("key_data", keyData)
 
@@ -2086,6 +2216,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) =
             Fuel.get("${API_URL_RECIPIENTS}/$recipientId")
                 .appendHeader(
@@ -2135,6 +2270,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("recipient_id", recipientId)
 
@@ -2247,6 +2387,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         id: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_DOMAINS}/$id")
             .appendHeader(
                 *getHeaders()
@@ -2290,6 +2435,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Domains?, String?, String?) -> Unit,
         domain: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("domain", domain)
 
@@ -2401,6 +2551,11 @@ class NetworkHelper(private val context: Context) {
         domainId: String,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("default_recipient", recipientId)
 
@@ -2453,6 +2608,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         domainId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_DOMAINS}/$domainId")
             .appendHeader(
                 *getHeaders()
@@ -2497,6 +2657,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Domains?, String?) -> Unit,
         domainId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", domainId)
 
@@ -2548,6 +2713,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         domainId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_DOMAINS}/$domainId")
             .appendHeader(
                 *getHeaders()
@@ -2592,6 +2762,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Domains?, String?) -> Unit,
         domainId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", domainId)
 
@@ -2645,6 +2820,11 @@ class NetworkHelper(private val context: Context) {
         domainId: String,
         description: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("description", description)
 
@@ -2699,6 +2879,11 @@ class NetworkHelper(private val context: Context) {
         domainId: String,
         fromName: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("from_name", fromName)
 
@@ -2819,6 +3004,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         id: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_USERNAMES}/$id")
             .appendHeader(
                 *getHeaders()
@@ -2862,6 +3052,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Usernames?, String?) -> Unit,
         username: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("username", username)
 
@@ -2969,6 +3164,11 @@ class NetworkHelper(private val context: Context) {
         userNameId: String,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("default_recipient", recipientId)
 
@@ -3021,6 +3221,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         usernameId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_USERNAMES}/$usernameId")
             .appendHeader(
                 *getHeaders()
@@ -3065,6 +3270,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", usernameId)
 
@@ -3117,6 +3327,11 @@ class NetworkHelper(private val context: Context) {
         usernameId: String,
         description: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("description", description)
 
@@ -3170,6 +3385,11 @@ class NetworkHelper(private val context: Context) {
         usernameId: String,
         fromName: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("from_name", fromName)
 
@@ -3225,6 +3445,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         usernameId: String
     ) {
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+
         val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_USERNAMES}/$usernameId")
             .appendHeader(
                 *getHeaders()
@@ -3269,6 +3494,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", usernameId)
 
@@ -3320,6 +3550,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         usernameId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_CAN_LOGIN_USERNAMES}/$usernameId")
             .appendHeader(
                 *getHeaders()
@@ -3366,6 +3601,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", usernameId)
 
@@ -3546,6 +3786,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         id: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_RULES}/$id")
             .appendHeader(
                 *getHeaders()
@@ -3589,6 +3834,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Rules?, String?) -> Unit,
         rule: Rules
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.post(API_URL_RULES)
             .appendHeader(
@@ -3697,6 +3947,11 @@ class NetworkHelper(private val context: Context) {
         ruleId: String,
         rule: Rules
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.patch("${API_URL_RULES}/$ruleId")
             .appendHeader(
@@ -3742,6 +3997,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         ruleId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_RULES}/$ruleId")
             .appendHeader(
                 *getHeaders()
@@ -3786,6 +4046,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Rules?, String?) -> Unit,
         ruleId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", ruleId)
 
@@ -3855,6 +4120,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit,
         amountOfAliasesToCache: Int? = 15
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         getAliases(
             { list, _ ->
                 if (list == null) {
@@ -3889,6 +4159,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit,
         amountOfAliasesToCache: Int? = 15
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         getAliases(
             { list, _ ->
                 if (list == null) {
@@ -3923,6 +4198,11 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheUserResourceForWidget(
         callback: (Boolean) -> Unit
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         getUserResource { userResource: UserResource?, _: String? ->
             if (userResource == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
@@ -3944,6 +4224,11 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
         callback: (Boolean) -> Unit
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         getAllFailedDeliveries({ result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
@@ -4094,6 +4379,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         id: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_FAILED_DELIVERIES}/$id")
             .appendHeader(
                 *getHeaders()

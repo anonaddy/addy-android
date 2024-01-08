@@ -2,7 +2,12 @@ package host.stjin.anonaddy.service
 
 import android.content.Context
 import androidx.wear.tiles.TileService
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.tiles.FavoriteAliasesTileService
@@ -78,14 +83,14 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
             /*
             STORE FAVORITE ALIASES SEPARATELY
              */
-            val favoriteAliases = FavoriteAliasHelper(ctx).getFavoriteAliases()
+            val favoriteAliases = FavoriteAliasHelper(ctx).getFavoriteAliases()?.toList()
             val settingsManager = SettingsManager(encrypt = true, context = ctx)
             if (favoriteAliases != null) {
                 val favoriteAliasesObjects = ArrayList<Aliases>()
-                for (favAlias in favoriteAliases) {
-                    networkHelper.getSpecificAlias({ alias, _ ->
-                        alias?.let { favoriteAliasesObjects.add(it) }
-                    }, favAlias)
+                if (favoriteAliases.isNotEmpty()) {
+                    networkHelper.bulkGetAlias({ aliases, _ ->
+                        aliases?.data?.forEach { favoriteAliasesObjects.add(it) }
+                    }, favoriteAliases)
                 }
 
                 // Turn the list into a json object

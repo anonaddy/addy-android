@@ -28,6 +28,8 @@ import com.google.android.material.appbar.AppBarLayout
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -241,6 +243,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             errString: CharSequence
                         ) {
                             super.onAuthenticationError(errorCode, errString)
+                            LoggingHelper(this@BaseActivity).addLog(LOGIMPORTANCE.WARNING.int, "$errorCode $errString", "isAuthenticated", null)
 
                             when (errorCode) {
                                 BiometricPrompt.ERROR_NO_BIOMETRICS -> {

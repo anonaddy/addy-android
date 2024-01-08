@@ -498,7 +498,6 @@ class ManageUsernamesActivity : BaseActivity(),
 
 
         // Not available for free subscriptions
-        // TODO test on selfhosted
         if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
             binding.activityManageUsernameFromNameEdit.setLayoutEnabled(false)
             binding.activityManageUsernameFromNameEdit.setDescription(
