@@ -11,6 +11,7 @@
     <dimen name="corner_radius_widget_2_inner_layout">20dp</dimen>
     <dimen name="corner_radius_cardview">12dp</dimen>
     <dimen name="cardview_default_elevation">2dp</dimen>
+    <dimen name="corner_radius_button">8dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

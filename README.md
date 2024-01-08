@@ -4,7 +4,7 @@
 <p align="center">
 Easily create and manage your addy.io aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> addy.io app for Android.
 <br><p align="center">
-<img src="static/banner.png"/>
+<img src="static/banner.png" alt="banner"/>
 </p>
 
 <p align="center">

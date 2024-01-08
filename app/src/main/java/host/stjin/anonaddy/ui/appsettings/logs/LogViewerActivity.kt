@@ -44,7 +44,7 @@ class LogViewerActivity : BaseActivity() {
             return
         }
 
-        loggingHelper = LoggingHelper(this, LoggingHelper.LOGFILES.values().first { it.filename == filename })
+        loggingHelper = LoggingHelper(this, LoggingHelper.LOGFILES.entries.first { it.filename == filename })
         getAllLogsAndSetRecyclerview()
 
         binding.appsettingsLogviewerEfab.setOnClickListener {

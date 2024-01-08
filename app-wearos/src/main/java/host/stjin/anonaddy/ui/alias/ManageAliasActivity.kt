@@ -220,10 +220,9 @@ class ManageAliasActivity : ComponentActivity() {
                     }
                 ) {
                     ScalingLazyColumnWithRSB(
-                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth(),
-                        snap = false,
-                        state = scalingLazyListState
+                        state = scalingLazyListState,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         item { GetDonut() }
                         item {

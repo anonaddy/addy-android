@@ -285,7 +285,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 onlyWatchedAliases = false,
                 sort = null,
                 sortDesc = true,
-                filter = text.toString()
+                filter = text
             )
         )
 

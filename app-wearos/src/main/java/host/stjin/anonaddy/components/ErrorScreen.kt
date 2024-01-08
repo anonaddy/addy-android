@@ -63,10 +63,9 @@ fun ErrorScreen(context: Context, text: String, leadingText: String? = null) {
                     .padding(start = 16.dp, end = 16.dp)
             ) {
                 ScalingLazyColumnWithRSB(
-                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth(),
-                    snap = false,
-                    state = scalingLazyListState
+                    state = scalingLazyListState,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     item {
                         Text(text, color = MaterialTheme.colors.error, textAlign = TextAlign.Center)

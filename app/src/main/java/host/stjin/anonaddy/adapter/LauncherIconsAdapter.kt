@@ -23,7 +23,7 @@ class LauncherIconsAdapter(context: Context) : RecyclerView.Adapter<LauncherIcon
     lateinit var onIconClickListener: ClickListener
 
     var context: Context
-    var launcherIcons = LauncherIconController.LauncherIcon.values()
+    var launcherIcons = LauncherIconController.LauncherIcon.entries.toTypedArray()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // infalte the item Layout
         val v: View = LayoutInflater.from(parent.context).inflate(R.layout.appearance_icons_list_item, parent, false)

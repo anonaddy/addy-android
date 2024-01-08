@@ -6,8 +6,19 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -43,7 +54,11 @@ import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
 import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.ui.theme.*
+import host.stjin.anonaddy_shared.ui.theme.AppTheme
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoChipColors
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoDangerChipColors
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoInlineSliderColors
+import host.stjin.anonaddy_shared.ui.theme.getAddyIoToggleChipColors
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 class SettingsActivity : ComponentActivity() {
@@ -129,10 +144,9 @@ class SettingsActivity : ComponentActivity() {
                 },
             ) {
                 ScalingLazyColumnWithRSB(
-                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth(),
-                    snap = false,
-                    state = scalingLazyListState
+                    state = scalingLazyListState,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     item { Text(text = resources.getString(R.string.background_service_interval), textAlign = TextAlign.Center) }
                     item {

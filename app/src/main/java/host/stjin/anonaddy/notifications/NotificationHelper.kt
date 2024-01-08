@@ -8,8 +8,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.os.Build
-import androidx.core.app.NotificationCompat.*
-import androidx.core.app.NotificationManagerCompat.*
+import androidx.core.app.NotificationCompat.BigTextStyle
+import androidx.core.app.NotificationCompat.Builder
+import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
+import androidx.core.app.NotificationCompat.PRIORITY_HIGH
+import androidx.core.app.NotificationCompat.PRIORITY_LOW
+import androidx.core.app.NotificationCompat.VISIBILITY_PRIVATE
+import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
+import androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT
+import androidx.core.app.NotificationManagerCompat.IMPORTANCE_HIGH
+import androidx.core.app.NotificationManagerCompat.IMPORTANCE_MAX
+import androidx.core.app.NotificationManagerCompat.from
 import androidx.core.content.ContextCompat
 import com.google.android.gms.wearable.MessageEvent
 import host.stjin.anonaddy.BuildConfig
@@ -53,7 +62,7 @@ class NotificationHelper(private val context: Context) {
     }
 
     //region Wearable notifications
-    @Suppress("unused") // Is used in gplay version
+    // Is used in gplay version
     fun createSetupAppFirstNotification() {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
@@ -67,7 +76,7 @@ class NotificationHelper(private val context: Context) {
         )
     }
 
-    @Suppress("unused") // Is used in gplay version
+    // Is used in gplay version
     fun createSetupWearableAppNotification(p0: MessageEvent) {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,

@@ -34,10 +34,9 @@ fun AliasCreateGuide(scalingLazyListState: ScalingLazyListState, settingsManager
             .padding(start = 16.dp, end = 16.dp)
     ) {
         ScalingLazyColumnWithRSB(
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth(),
-            snap = false,
-            state = scalingLazyListState
+            state = scalingLazyListState,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 Spacer(modifier = Modifier.height(Dp(36f)))
