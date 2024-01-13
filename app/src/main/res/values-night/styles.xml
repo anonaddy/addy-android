@@ -28,16 +28,8 @@
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
     </style>
 
-    <style name="AddyIoCustomCardViewStyleTop" parent="Widget.Material3.CardView.Elevated">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_top</item>
-    </style>
-
     <style name="AddyIoCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
-    </style>
-
-    <style name="AddyIoCustomCardViewStyleBottom" parent="Widget.Material3.CardView.Elevated">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_bottom</item>
     </style>
 
 

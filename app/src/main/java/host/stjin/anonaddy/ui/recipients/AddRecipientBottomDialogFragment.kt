@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -51,6 +52,14 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
         val root = binding.root
 
         listener = parentFragment as AddRecipientBottomDialogListener
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            binding.bsAddrecipientRecipientDesc.text =
+                (Html.fromHtml(requireContext().resources.getString(R.string.add_recipient_desc), Html.FROM_HTML_MODE_COMPACT))
+        } else {
+            binding.bsAddrecipientRecipientDesc.text =
+                (Html.fromHtml(requireContext().resources.getString(R.string.add_recipient_desc)))
+        }
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard

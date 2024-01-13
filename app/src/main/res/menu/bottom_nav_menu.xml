@@ -6,7 +6,7 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home_anim_settings"
-        android:title="@string/title_home" />
+        android:title="@string/title_dashboard" />
 
     <item
         android:id="@+id/navigation_alias"
@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/navigation_recipients"
-        android:icon="@drawable/ic_user_anim_settings"
+        android:icon="@drawable/ic_inbox_anim_settings"
         android:title="@string/title_recipients" />
 
 

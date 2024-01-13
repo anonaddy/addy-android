@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.recipients.manage
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
@@ -26,6 +27,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
     lateinit var networkHelper: NetworkHelper
     private lateinit var addRecipientPublicGpgKeyBottomDialogFragment: AddRecipientPublicGpgKeyBottomDialogFragment
+    private var shouldRefreshOnFinish = false
 
     private var recipient: Recipients? = null
         set(value) {
@@ -50,7 +52,8 @@ class ManageRecipientsActivity : BaseActivity(),
         setupToolbar(
             R.string.edit_recipient,
             binding.activityManageRecipientNSV,
-            binding.activityManageRecipientToolbar
+            binding.activityManageRecipientToolbar,
+            null
         )
         networkHelper = NetworkHelper(this)
 
@@ -63,6 +66,13 @@ class ManageRecipientsActivity : BaseActivity(),
             return
         }
         setPage(recipientId)
+    }
+
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
     }
 
 
@@ -171,6 +181,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientCanReplySend.showProgressBar(false)
             if (result == "204") {
                 this.recipient!!.can_reply_send = false
+                shouldRefreshOnFinish = true
                 updateUi(this.recipient!!)
             } else {
                 binding.activityManageRecipientCanReplySend.setSwitchChecked(true)
@@ -189,6 +200,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientCanReplySend.showProgressBar(false)
             if (recipient != null) {
                 this.recipient = recipient
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageRecipientCanReplySend.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -207,6 +219,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientActive.showProgressBar(false)
             if (result == "204") {
                 this.recipient!!.should_encrypt = false
+                shouldRefreshOnFinish = true
                 updateUi(this.recipient!!)
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(true)
@@ -226,6 +239,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientActive.showProgressBar(false)
             if (recipient != null) {
                 this.recipient = recipient
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageRecipientActive.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -244,6 +258,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientPgpInline.showProgressBar(false)
             if (result == "204") {
                 this.recipient!!.inline_encryption = false
+                shouldRefreshOnFinish = true
                 updateUi(this.recipient!!)
             } else {
                 binding.activityManageRecipientPgpInline.setSwitchChecked(true)
@@ -263,6 +278,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientPgpInline.showProgressBar(false)
             if (recipient != null) {
                 this.recipient = recipient
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageRecipientPgpInline.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -281,6 +297,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientProtectedHeaders.showProgressBar(false)
             if (result == "204") {
                 this.recipient!!.protected_headers = false
+                shouldRefreshOnFinish = true
                 updateUi(this.recipient!!)
             } else {
                 binding.activityManageRecipientProtectedHeaders.setSwitchChecked(true)
@@ -300,6 +317,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientProtectedHeaders.showProgressBar(false)
             if (recipient != null) {
                 this.recipient = recipient
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageRecipientProtectedHeaders.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -419,6 +437,7 @@ class ManageRecipientsActivity : BaseActivity(),
         networkHelper.deleteRecipient({ result ->
             if (result == "204") {
                 deleteRecipientSnackbar.dismiss()
+                shouldRefreshOnFinish = true
                 finish()
             } else {
                 SnackbarHelper.createSnackbar(
@@ -440,6 +459,7 @@ class ManageRecipientsActivity : BaseActivity(),
                 removeGpgKeySnackbar.dismiss()
                 this.recipient!!.should_encrypt = false
                 this.recipient!!.fingerprint = null
+                shouldRefreshOnFinish = true
                 // Recheck the UI
                 updateUi(this.recipient!!)
             } else {
@@ -523,7 +543,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
         if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
             binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)
-            binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.you_must_be_subscribed))
+            binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.feature_not_available_subscription))
         }
 
 
@@ -561,6 +581,7 @@ class ManageRecipientsActivity : BaseActivity(),
         val buf = StringBuilder()
 
         if (recipient.aliases != null) {
+            recipient.aliases = recipient.aliases?.sortedBy { it.email }
             for (alias in recipient.aliases!!) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked

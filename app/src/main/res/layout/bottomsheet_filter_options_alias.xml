@@ -106,7 +106,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:weightSum="3"
+                            android:weightSum="4"
                             app:checkedButton="@+id/bs_filteroptions_aliases_all_button"
                             app:selectionRequired="true"
                             app:singleSelection="true">
@@ -117,7 +117,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:text="@string/all_aliases" />
+                                android:text="@string/filter_all_aliases" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_active_button"
@@ -125,7 +125,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/active_aliases" />
+                                android:text="@string/filter_active_aliases" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_inactive_button"
@@ -133,7 +133,15 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/inactive_aliases" />
+                                android:text="@string/filter_inactive_aliases" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/bs_filteroptions_aliases_deleted_button"
+                                style="@style/AddyIoMaterialToggleButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/filter_deleted_aliases" />
 
                         </com.google.android.material.button.MaterialButtonToggleGroup>
                     </com.google.android.material.card.MaterialCardView>
@@ -153,14 +161,6 @@
                             app:singleSelection="true">
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bs_filteroptions_aliases_watched_only_button"
-                                style="@style/AddyIoMaterialToggleButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/filter_watched_only" />
-
-                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/bs_filteroptions_aliases_watched_only_all_aliases_button"
                                 style="@style/AddyIoMaterialToggleButton"
                                 android:layout_width="match_parent"
@@ -168,20 +168,16 @@
                                 android:layout_weight="1"
                                 android:text="@string/all_aliases" />
 
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/bs_filteroptions_aliases_watched_only_button"
+                                style="@style/AddyIoMaterialToggleButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/filter_watched_only" />
+
                         </com.google.android.material.button.MaterialButtonToggleGroup>
                     </com.google.android.material.card.MaterialCardView>
-
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/bs_filteroptions_aliases_include_deleted_switch"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionBackgroundColor="@android:color/transparent"
-                        app:sectionDescription="@string/include_deleted_aliases_desc"
-                        app:sectionElevation="0"
-                        app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_trash"
-                        app:sectionSwitchChecked="true"
-                        app:sectionTitle="@string/include_deleted_aliases" />
 
                 </LinearLayout>
 

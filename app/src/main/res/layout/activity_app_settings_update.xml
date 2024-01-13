@@ -55,9 +55,9 @@
                     android:id="@+id/activity_app_settings_update_section_download"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/obtaining_information"
-                    app:sectionTitle="@string/obtaining_information"
-                    app:sectionStartIcon="@drawable/ic_cloud_download"/>
+                    app:sectionDescription="@string/check_for_updates_desc"
+                    app:sectionStartIcon="@drawable/ic_cloud_download"
+                    app:sectionTitle="@string/check_for_updates" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_update_section_notify"

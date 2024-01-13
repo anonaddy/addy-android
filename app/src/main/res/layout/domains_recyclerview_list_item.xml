@@ -39,7 +39,7 @@
                     android:id="@+id/domains_recyclerview_list_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_dns"
+                    android:src="@drawable/ic_world"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>

@@ -8,8 +8,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.os.Build
-import androidx.core.app.NotificationCompat.*
-import androidx.core.app.NotificationManagerCompat.*
+import androidx.core.app.NotificationCompat.BigTextStyle
+import androidx.core.app.NotificationCompat.Builder
+import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
+import androidx.core.app.NotificationCompat.PRIORITY_HIGH
+import androidx.core.app.NotificationCompat.PRIORITY_LOW
+import androidx.core.app.NotificationCompat.VISIBILITY_PRIVATE
+import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
+import androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT
+import androidx.core.app.NotificationManagerCompat.IMPORTANCE_HIGH
+import androidx.core.app.NotificationManagerCompat.IMPORTANCE_MAX
+import androidx.core.app.NotificationManagerCompat.from
 import androidx.core.content.ContextCompat
 import com.google.android.gms.wearable.MessageEvent
 import host.stjin.anonaddy.BuildConfig
@@ -53,7 +62,7 @@ class NotificationHelper(private val context: Context) {
     }
 
     //region Wearable notifications
-    @Suppress("unused") // Is used in gplay version
+    // Is used in gplay version
     fun createSetupAppFirstNotification() {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
@@ -67,7 +76,7 @@ class NotificationHelper(private val context: Context) {
         )
     }
 
-    @Suppress("unused") // Is used in gplay version
+    // Is used in gplay version
     fun createSetupWearableAppNotification(p0: MessageEvent) {
         createChannel(
             NEW_WEARABLE_PAIRING_REQUEST_CHANNEL_ID,
@@ -576,6 +585,33 @@ class NotificationHelper(private val context: Context) {
 
     }
 
+    fun createAliasWatcherAliasDoesNotExistAnymoreNotification(email: String) {
+        createChannel(
+            ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID,
+            context.resources.getString(R.string.watch_alias),
+            context.resources.getString(R.string.notification_channel_watch_alias_desc), IMPORTANCE_DEFAULT
+        )
+
+        val encryptedSettingsManager = SettingsManager(true, context)
+        if (encryptedSettingsManager.getSettingsBool(SettingsManager.PREFS.PRIVACY_MODE)) {
+            // If privacy mode, hide email address
+            buildAliasWatcherAliasDoesNotExistAnymoreNotification(
+                context.resources.getString(R.string.notification_alias_watches_alias_does_not_exist_anymore),
+                context.resources.getString(
+                    R.string.notification_alias_watches_alias_does_not_exist_anymore_desc,
+                    context.resources.getString(R.string.one_of_your_aliases)
+                )
+            )
+        } else {
+            buildAliasWatcherAliasDoesNotExistAnymoreNotification(
+                context.resources.getString(R.string.notification_alias_watches_alias_does_not_exist_anymore),
+                context.resources.getString(R.string.notification_alias_watches_alias_does_not_exist_anymore_desc, email)
+            )
+        }
+
+    }
+
+
     // Every alias gets its own notification (See AliasWatcher)
     private fun buildAliasWatcherNotification(title: String, text: String, aliasId: String) {
         // Decide notification visibility based on if biometrics is enabled
@@ -650,6 +686,44 @@ class NotificationHelper(private val context: Context) {
                 val ex = e.message
                 // User did not gave app POST_NOTIFICATION permissions
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildAliasWatcherNotification", null)
+            }
+        }
+    }
+
+    private fun buildAliasWatcherAliasDoesNotExistAnymoreNotification(title: String, text: String) {
+        // Decide notification visibility based on if biometrics is enabled
+        val visibility =
+            if (SettingsManager(true, context).getSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED)) VISIBILITY_PRIVATE else VISIBILITY_PUBLIC
+
+        // Decide notificationID here, and send it to the actionReceiver so the correct notification can be cancelled
+        // notificationID gets concat here with prefix of ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID
+        // So 1 + 443 = 1443
+        val notificationID = Integer.valueOf(ALIAS_WATCHER_NOTIFICATION_NOTIFICATION_ID.toString() + Random.nextInt(0, 999).toString())
+
+        val notification = Builder(context, ALIAS_WATCHER_NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(
+                BigTextStyle()
+                    .bigText(text)
+            )
+            .setPriority(PRIORITY_HIGH)
+            .setVisibility(visibility)
+            // Notifications should always have a static color to identify the app
+            .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
+            .setSmallIcon(R.drawable.ic_watch_alias)
+            // Notifications should always have a static color to identify the app
+            .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
+            .setAutoCancel(true)
+            .build()
+        with(from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            try {
+                notify(notificationID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildAliasWatcherAliasDoesNotExistAnymoreNotification", null)
             }
         }
     }

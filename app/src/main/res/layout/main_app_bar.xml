@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:text="@string/title_home" />
+            android:text="@string/title_dashboard" />
 
         <TextView
             android:id="@+id/main_top_bar_title_small"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:alpha="0"
-            android:text="@string/title_home" />
+            android:text="@string/title_dashboard" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/main_top_bar_subtitle_shimmerframelayout"
@@ -153,11 +153,11 @@
                     android:layout_height="8dp"
                     android:layout_alignParentEnd="true"
                     android:clickable="true"
-                    android:contentDescription="@string/new_failed_deliveries"
                     android:focusable="true"
                     android:src="@drawable/circle"
                     android:tintMode="src_over"
                     android:visibility="invisible"
+                    android:contentDescription="@string/new_update_available"
                     app:tint="@color/softRed" />
             </RelativeLayout>
 

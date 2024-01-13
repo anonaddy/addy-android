@@ -1,13 +1,10 @@
 package host.stjin.anonaddy.ui.home
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.*
-import android.content.Context.CLIPBOARD_SERVICE
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,40 +12,37 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.ScrollView
-import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import com.patrykandpatrick.vico.core.entry.entriesOf
+import com.patrykandpatrick.vico.core.entry.entryModelOf
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
+import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
-import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
-import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.ui.alias.AliasFragment
+import host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
-import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.ChartData
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 
 class HomeFragment : Fragment() {
 
     private var networkHelper: NetworkHelper? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -70,14 +64,32 @@ class HomeFragment : Fragment() {
 
         // load values from local to make the app look quick and snappy!
         setOnClickListeners()
-        getStatistics()
+        setStatistics()
         setNsvListener()
 
-        // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
-        // API calls, user should swipe to refresh starting from v4.5.0
-        getDataFromWeb(requireContext())
+        setGridLayout()
+
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
+            // API calls, user should swipe to refresh starting from v4.5.0
+            getDataFromWeb(savedInstanceState)
+        }, 5000)
 
         return root
+    }
+
+    private fun setGridLayout() {
+        binding.homeStatsGridlayout.columnCount = ScreenSizeUtils.calculateNoOfColumns(requireContext())
+    }
+
+
+    private var chartData: ChartData? = null
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val json = gson.toJson(chartData)
+        outState.putString("chartData", json)
     }
 
 
@@ -101,15 +113,100 @@ class HomeFragment : Fragment() {
     }
 
 
-    fun getDataFromWeb(context: Context) {
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         viewLifecycleOwner.lifecycleScope.launch {
-            getMostActiveAliases()
-            getWebStatistics(context)
-            // Set forceUpdate to false (if it was true) to prevent the lists from reloading every oneresume
-            forceUpdate = false
+
+            // Check if savedInstanceState is null, or not
+            // On activity recreations (orientationchanges, sizing of the app) savedInstanceState will be filled using onSaveInstanceState
+            // This way we can instantly set the values without another API call.
+            if (savedInstanceState != null) {
+                val chartData = savedInstanceState.getString("chartData")
+                if (chartData!!.isNotEmpty()) {
+                    val gson = Gson()
+                    val data: ChartData = gson.fromJson(chartData, ChartData::class.java)
+                    setChartData(data)
+                }
+
+                // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
+                // no need to obtain this from savedInstanceState
+                setStatistics()
+            } else {
+                getChartData()
+                getWebStatistics()
+            }
         }
     }
+
+    private suspend fun getChartData() {
+        networkHelper?.getChartData { chartData: ChartData?, result: String? ->
+            if (chartData != null) {
+                setChartData(chartData)
+            } else {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
+                        (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                } else {
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setChartData(data: ChartData) {
+        chartData = data
+        //val numberStr = data.forwardsData.map { FloatEntry(0,it.toFloat()) }
+
+
+        val forwardedData = entriesOf(
+            data.forwardsData[0],
+            data.forwardsData[1],
+            data.forwardsData[2],
+            data.forwardsData[3],
+            data.forwardsData[4],
+            data.forwardsData[5],
+            data.forwardsData[6]
+        )
+        val repliesData = entriesOf(
+            data.repliesData[0],
+            data.repliesData[1],
+            data.repliesData[2],
+            data.repliesData[3],
+            data.repliesData[4],
+            data.repliesData[5],
+            data.repliesData[6]
+        )
+        val sendsData = entriesOf(
+            data.sendsData[0],
+            data.sendsData[1],
+            data.sendsData[2],
+            data.sendsData[3],
+            data.sendsData[4],
+            data.sendsData[5],
+            data.sendsData[6]
+        )
+        val chartEntryModel = entryModelOf(
+            forwardedData, repliesData, sendsData
+        )
+        binding.homeChartView1.setModel(chartEntryModel)
+    }
+
 
     // Update information when coming back, such as aliases and statistics
     override fun onResume() {
@@ -124,312 +221,356 @@ class HomeFragment : Fragment() {
 
 
     private fun setOnClickListeners() {
-        binding.homeMostActiveAliasesViewMore.setOnClickListener {
-            (activity as MainActivity).switchFragments(R.id.navigation_alias)
-        }
+        binding.homeStatCardSharedDomainAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_alias)
+            }
+        })
+
+        binding.homeStatCardRecipients.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_recipients)
+            }
+        })
+
+        binding.homeStatCardUsernames.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_usernames)
+            }
+        })
+
+        binding.homeStatCardDomains.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_domains)
+            }
+        })
+
+        binding.homeStatCardRules.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_rules)
+            }
+        })
+
+        binding.homeStatCardBandwidth.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                val url = AddyIo.API_BASE_URL
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+        })
+
+
+        binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = false,
+                                onlyDeletedAliases = false,
+                                onlyInactiveAliases = false,
+                                onlyWatchedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+        binding.homeStatCardActiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = true,
+                                onlyDeletedAliases = false,
+                                onlyInactiveAliases = false,
+                                onlyWatchedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+        binding.homeStatCardInactiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = false,
+                                onlyDeletedAliases = false,
+                                onlyInactiveAliases = true,
+                                onlyWatchedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+
+        binding.homeStatCardDeletedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = false,
+                                onlyDeletedAliases = true,
+                                onlyInactiveAliases = true,
+                                onlyWatchedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+        binding.homeStatWatchedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+
+                        val aliasWatcher = AliasWatcher(requireContext())
+                        val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
+                        binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())
+                        if (aliasesToWatch.isNotEmpty()) {
+                            val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                            aliasFragment.setFilterAndSortingSettings(
+                                AliasSortFilter(
+                                    onlyActiveAliases = false,
+                                    onlyDeletedAliases = false,
+                                    onlyInactiveAliases = false,
+                                    onlyWatchedAliases = true,
+                                    sort = null,
+                                    sortDesc = false,
+                                    filter = null
+                                )
+                            )
+                        }
+
+
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
     }
 
-    private suspend fun getWebStatistics(context: Context) {
+    private suspend fun getWebStatistics() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
                 (activity?.application as AddyIoApp).userResource = user
-                getStatistics()
+                setStatistics()
             } else {
-                val bottomNavView: BottomNavigationView? =
-                    activity?.findViewById(R.id.nav_view)
-                bottomNavView?.let {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
-                        context,
-                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        it,
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                        (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
-                    )
-                        .apply {
-                            anchorView = bottomNavView
-                        }.show()
-                }
-
-            }
-        }
-    }
-
-    // This value is there to force updating the alias recyclerview in case "Watch alias" has been enabled.
-    private var forceUpdate = false
-
-    var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data != null) {
-                if (data.getBooleanExtra("should_update", false)) {
-                    forceUpdate = true
-                }
-            }
-        }
-    }
-
-    private lateinit var aliasAdapter: AliasAdapter
-    private var previousList: ArrayList<Aliases> = arrayListOf()
-    private suspend fun getMostActiveAliases() {
-        binding.homeMostActiveAliasesRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
-
-                shimmerLayoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 2)
+                    ).show()
                 } else {
-                    LinearLayoutManager(activity)
+                    val bottomNavView: BottomNavigationView? =
+                        activity?.findViewById(R.id.nav_view)
+                    bottomNavView?.let {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
+                            it,
+                            LoggingHelper.LOGFILES.DEFAULT
+                        )
+                            .apply {
+                                anchorView = bottomNavView
+                            }.show()
+                    }
                 }
 
-                layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
-                    // set a GridLayoutManager for tablets
-                    GridLayoutManager(activity, 2)
-                } else {
-                    LinearLayoutManager(activity)
-                }
-
-                addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-
-                showShimmer()
             }
-
-            networkHelper?.getAliases(
-                { list, result ->
-
-                    // Check if there are new aliases since the latest list
-                    // If the list is the same, just return and don't bother re-init the layoutmanager
-                    // Unless forceUpdate is true. If forceupdate is true, always update
-                    if (::aliasAdapter.isInitialized && list?.data == previousList && !forceUpdate) {
-                        return@getAliases
-                    }
-
-
-                    if (list != null) {
-                        previousList.clear()
-                        previousList.addAll(list.data)
-
-                        if (list.data.size > 0) {
-                            binding.homeNoAliases.visibility = View.GONE
-                        } else {
-                            binding.homeNoAliases.visibility = View.VISIBLE
-                        }
-
-                        aliasAdapter = AliasAdapter(list.data, context)
-                        aliasAdapter.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
-                            override fun onClick(pos: Int) {
-                                val intent = Intent(context, ManageAliasActivity::class.java)
-                                // Pass data object in the bundle and populate details activity.
-                                intent.putExtra("alias_id", list.data[pos].id)
-                                resultLauncher.launch(intent)
-                            }
-
-                            override fun onClickCopy(pos: Int, aView: View) {
-                                val clipboard: ClipboardManager =
-                                    context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                                val aliasEmailAddress = list.data[pos].email
-                                val clip = ClipData.newPlainText("alias", aliasEmailAddress)
-                                clipboard.setPrimaryClip(clip)
-
-                                val bottomNavView: BottomNavigationView? =
-                                    activity?.findViewById(R.id.nav_view)
-                                bottomNavView?.let {
-                                    SnackbarHelper.createSnackbar(context, context.resources.getString(R.string.copied_alias), it).apply {
-                                        anchorView = bottomNavView
-                                    }.show()
-                                }
-                            }
-
-                        })
-                        adapter = aliasAdapter
-                    } else {
-                        // Data could not be loaded
-                        val bottomNavView: BottomNavigationView? =
-                            activity?.findViewById(R.id.nav_view)
-                        bottomNavView?.let {
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                it,
-                                LoggingHelper.LOGFILES.DEFAULT
-                            )
-                                .apply {
-                                    anchorView = bottomNavView
-                                }.show()
-                        }
-                    }
-                    hideShimmer()
-                },
-                aliasSortFilter = AliasSortFilter(
-                    onlyActiveAliases = true,
-                    onlyInactiveAliases = false,
-                    includeDeleted = false,
-                    onlyWatchedAliases = false,
-                    sort = "emails_forwarded",
-                    sortDesc = true,
-                    filter = null
-                ),
-                size = 6
-            )
         }
     }
 
-    private fun getStatistics() {
+
+    private fun setStatistics() {
         //  / 1024 / 1024 because api returns bytes
         val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
         val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
-        setMonthlyBandwidthStatistics(currMonthlyBandwidth, maxMonthlyBandwidth)
-        setAliasesStatistics(
-            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count,
-            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit
-        )
-        setRecipientStatistics(
-            (activity?.application as AddyIoApp).userResource.recipient_count,
-            (activity?.application as AddyIoApp).userResource.recipient_limit
-        )
-    }
 
-
-    private val STATISTICS_ANIMATION_DURATION = 500L
-    private fun setAliasesStatistics(count: Int, maxAliases: Int) {
-        binding.homeStatisticsAliasesProgress.max = maxAliases * 100
-
-        binding.homeStatisticsAliasesMax.text = if (maxAliases == 0) "∞" else maxAliases.toString()
-
-        try {
-            startNumberCountAnimation(binding.homeStatisticsAliasesCurrent, count, "/", maxAliases == 0, binding.homeStatisticsAliasesProgressShimmer)
-        } catch (e: Exception) {
-            binding.homeStatisticsAliasesCurrent.text = "$count /"
+        val activeSharedDomainAliasLimitText = if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toString()
         }
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            ObjectAnimator.ofInt(
-                binding.homeStatisticsAliasesProgress,
-                "progress",
-                count * 100
+        binding.homeStatCardSharedDomainAliases.setDescription(
+            this.resources.getString(
+                R.string.d_slash_s,
+                (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count,
+                activeSharedDomainAliasLimitText
             )
-                .setDuration(STATISTICS_ANIMATION_DURATION)
-                .start()
-        }, 400)
-
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun startNumberCountAnimation(
-        textView: TextView,
-        count: Int,
-        suffix: String? = null,
-        showShimmer: Boolean,
-        shimmerView: ShimmerFrameLayout
-    ) {
-        if (textView.text != "$count$suffix") {
-            val animator = ValueAnimator.ofInt(textView.text.toString().substringBefore(" ").toInt(), count)
-            animator.duration = STATISTICS_ANIMATION_DURATION
-            animator.addUpdateListener { animation -> textView.text = animation.animatedValue.toString() + " " + suffix }
-            animator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    if (showShimmer) {
-                        shimmerView.startShimmer()
-                    }
-                }
-            })
-            animator.start()
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun startBandwidthCountAnimation(
-        textView: TextView,
-        count: Float,
-        suffix: String? = null,
-        showShimmer: Boolean,
-        shimmerView: ShimmerFrameLayout
-    ) {
-        if (textView.text != "$count$suffix") {
-            val animator = ValueAnimator.ofFloat(textView.text.toString().substringBefore("MB ").toFloat(), count)
-            animator.duration = STATISTICS_ANIMATION_DURATION
-            animator.addUpdateListener { animation ->
-                textView.text = roundOffDecimal(animation.animatedValue.toString().toDouble()).toString() + "MB " + suffix
-            }
-            animator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    if (showShimmer) {
-                        shimmerView.startShimmer()
-                    }
-                }
-            })
-            animator.start()
-        }
-    }
-
-    private fun setMonthlyBandwidthStatistics(
-        currMonthlyBandwidth: Double,
-        maxMonthlyBandwidth: Int
-    ) {
-        binding.homeStatisticsMonthlyBandwidthProgress.max =
-            if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
-
-        binding.homeStatisticsMonthlyBandwidthMax.text =
-            if (maxMonthlyBandwidth == 0) this.resources.getString(R.string._sMB, "∞") else this.resources.getString(
-                R.string._sMB,
-                maxMonthlyBandwidth.toString()
-            )
-
-        try {
-            startBandwidthCountAnimation(
-                binding.homeStatisticsMonthlyBandwidthCurrent,
-                roundOffDecimal(currMonthlyBandwidth),
-                "/",
-                maxMonthlyBandwidth == 0,
-                binding.homeStatisticsMonthlyBandwidthProgressShimmer
-            )
-        } catch (e: Exception) {
-            val currentCount = this.resources.getString(R.string._sMB, roundOffDecimal(currMonthlyBandwidth).toString())
-            binding.homeStatisticsMonthlyBandwidthCurrent.text = "$currentCount /"
-        }
-
-
-        ObjectAnimator.ofInt(
-            binding.homeStatisticsMonthlyBandwidthProgress,
-            "progress",
-            currMonthlyBandwidth.roundToInt() * 100
         )
-            .setDuration(STATISTICS_ANIMATION_DURATION)
-            .start()
-    }
-
-
-    private fun setRecipientStatistics(currRecipients: Int, maxRecipients: Int) {
-        binding.homeStatisticsRecipientsProgress.max =
-            maxRecipients * 100
-
-        binding.homeStatisticsRecipientsMax.text =
-            if (maxRecipients == 0) "∞" else maxRecipients.toString()
-
-        try {
-            startNumberCountAnimation(
-                binding.homeStatisticsRecipientsCurrent,
-                currRecipients,
-                "/",
-                maxRecipients == 0,
-                binding.homeStatisticsRecipientsProgressShimmer
-            )
-        } catch (e: Exception) {
-            binding.homeStatisticsRecipientsCurrent.text = "$currRecipients /"
+        if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit > 0) {
+            binding.homeStatCardSharedDomainAliases.setProgress((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toFloat() * 100)
         }
 
-        ObjectAnimator.ofInt(
-            binding.homeStatisticsRecipientsProgress,
-            "progress",
-            currRecipients * 100
+        val recipientsLimitText = if ((activity?.application as AddyIoApp).userResource.recipient_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.recipient_limit.toString()
+        }
+        binding.homeStatCardRecipients.setDescription(
+            this.resources.getString(
+                R.string.d_slash_s,
+                (activity?.application as AddyIoApp).userResource.recipient_count,
+                recipientsLimitText
+            )
         )
-            .setDuration(STATISTICS_ANIMATION_DURATION)
-            .start()
+        if ((activity?.application as AddyIoApp).userResource.recipient_limit > 0) {
+            binding.homeStatCardRecipients.setProgress((activity?.application as AddyIoApp).userResource.recipient_count.toFloat() / (activity?.application as AddyIoApp).userResource.recipient_limit.toFloat() * 100)
+        }
+
+
+        val domainsLimitText = if ((activity?.application as AddyIoApp).userResource.active_domain_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.active_domain_limit.toString()
+        }
+        binding.homeStatCardDomains.setDescription(
+            this.resources.getString(
+                R.string.d_slash_s,
+                (activity?.application as AddyIoApp).userResource.active_domain_count,
+                domainsLimitText
+            )
+        )
+        if ((activity?.application as AddyIoApp).userResource.active_domain_limit > 0) {
+            binding.homeStatCardDomains.setProgress((activity?.application as AddyIoApp).userResource.active_domain_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_domain_limit.toFloat() * 100)
+        }
+
+
+        val usernamesLimitText = if ((activity?.application as AddyIoApp).userResource.username_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.username_limit.toString()
+        }
+        binding.homeStatCardUsernames.setDescription(
+            this.resources.getString(
+                R.string.d_slash_s,
+                (activity?.application as AddyIoApp).userResource.username_count,
+                usernamesLimitText
+            )
+        )
+        if ((activity?.application as AddyIoApp).userResource.username_limit > 0) {
+            binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
+        }
+
+        val rulesLimitText = if ((activity?.application as AddyIoApp).userResource.active_rule_limit == 0) {
+            "∞"
+        } else {
+            (activity?.application as AddyIoApp).userResource.active_rule_limit.toString()
+        }
+        binding.homeStatCardRules.setDescription(
+            this.resources.getString(
+                R.string.d_slash_s,
+                (activity?.application as AddyIoApp).userResource.active_rule_count,
+                rulesLimitText
+            )
+        )
+        if ((activity?.application as AddyIoApp).userResource.active_rule_limit > 0) {
+            binding.homeStatCardRules.setProgress((activity?.application as AddyIoApp).userResource.active_rule_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_rule_limit.toFloat() * 100)
+        }
+
+
+        // Bandwidth could be unlimited
+        val bandwidthText = if (maxMonthlyBandwidth == 0) {
+            this.resources.getString(R.string.home_bandwidth_text, roundOffDecimal(currMonthlyBandwidth).toString(), "∞")
+        } else {
+            this.resources.getString(R.string.home_bandwidth_text, roundOffDecimal(currMonthlyBandwidth).toString(), maxMonthlyBandwidth.toString())
+        }
+
+        binding.homeStatCardBandwidth.setDescription(bandwidthText)
+
+        if (maxMonthlyBandwidth > 0) {
+            binding.homeStatCardBandwidth.setProgress(currMonthlyBandwidth.toFloat() / maxMonthlyBandwidth.toFloat() * 100)
+        }
+
+
+        binding.homeStatCardTotalAliases.setDescription((activity?.application as AddyIoApp).userResource.total_aliases.toString())
+        binding.homeStatCardActiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_active_aliases.toString())
+        binding.homeStatCardInactiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_inactive_aliases.toString())
+        binding.homeStatCardDeletedAliases.setDescription((activity?.application as AddyIoApp).userResource.total_deleted_aliases.toString())
+
+
+        val aliasWatcher = AliasWatcher(requireContext())
+        val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
+        binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())
+
+        if (aliasesToWatch.isEmpty()) {
+            binding.homeStatWatchedAliases.setButtonText(requireContext().resources.getString(R.string.start_watching))
+        } else {
+            binding.homeStatWatchedAliases.setButtonText(requireContext().resources.getString(R.string.view_watched))
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

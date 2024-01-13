@@ -77,7 +77,7 @@ class EditDomainDescriptionBottomDialogFragment(
         }
     }
 
-    private fun verifyKey(context: Context) {
+    private fun save(context: Context) {
         val description = binding.bsEditdomainDomainDescTiet.text.toString()
 
         // Animate the button to progress
@@ -109,7 +109,7 @@ class EditDomainDescriptionBottomDialogFragment(
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_editdomain_domain_save_button) {
-                verifyKey(
+                save(
                     requireContext()
                 )
             }

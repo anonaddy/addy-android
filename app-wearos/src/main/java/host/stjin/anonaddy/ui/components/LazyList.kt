@@ -2,7 +2,9 @@ package host.stjin.anonaddy.ui.components
 
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -25,7 +27,6 @@ fun ScalingLazyColumnWithRSB(
     state: ScalingLazyListState = rememberScalingLazyListState(),
     scalingParams: ScalingParams = ScalingLazyColumnDefaults.scalingParams(),
     reverseLayout: Boolean = false,
-    snap: Boolean = true,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(
         space = 2.dp,

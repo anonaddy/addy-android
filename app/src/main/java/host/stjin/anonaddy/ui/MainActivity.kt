@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,11 +15,14 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -29,17 +33,22 @@ import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasFragment
+import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
+import host.stjin.anonaddy.ui.domains.DomainSettingsFragment
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
+import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesFragment
 import host.stjin.anonaddy.ui.home.HomeFragment
 import host.stjin.anonaddy.ui.recipients.RecipientsFragment
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
+import host.stjin.anonaddy.ui.rules.RulesSettingsFragment
 import host.stjin.anonaddy.ui.search.SearchActivity
 import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
+import host.stjin.anonaddy.ui.usernames.UsernamesSettingsFragment
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
@@ -77,11 +86,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private var addApiBottomDialogFragment: AddApiBottomDialogFragment =
         AddApiBottomDialogFragment.newInstance()
 
-    private val fragmentList = arrayListOf(
-        HomeFragment.newInstance(),
-        AliasFragment.newInstance(),
-        RecipientsFragment.newInstance()
-    )
 
     private lateinit var networkHelper: NetworkHelper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,87 +94,101 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            binding.root,
-            arrayListOf(binding.root),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.navView, binding.activityMainViewpager)
-        )
+
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            drawBehindNavBar(
+                binding.root,
+                arrayListOf(binding.root)
+            )
+        } else {
+            drawBehindNavBar(
+                binding.root,
+                arrayListOf(binding.root),
+                bottomViewsToShiftUpUsingPadding = arrayListOf(binding.navView!!, binding.activityMainViewpager!!)
+            )
+        }
+
+
         networkHelper = NetworkHelper(this@MainActivity)
 
         isAuthenticated { isAuthenticated ->
             if (isAuthenticated) {
                 lifecycleScope.launch {
                     loadMainActivity()
-                    checkForUpdates()
-                    checkForApiExpiration()
-                    checkForSubscriptionExpiration()
-                    // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
-                    BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
+                    // No need to check for updates on recreation of the activity
+                    if (savedInstanceState == null) {
+                        checkForUpdates()
+                        checkForApiExpiration()
+                        checkForSubscriptionExpiration()
+                        // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
+                        BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
+
+                        checkForNewFailedDeliveries()
+                    }
                 }
             }
         }
 
-        var collapsingToolbarExpanded = false
-        binding.mainAppBarInclude.appBar.addOnOffsetChangedListener { _, verticalOffset ->
-            if (verticalOffset == -binding.mainAppBarInclude.collapsingToolbar.height + binding.mainAppBarInclude.toolbar.height) {
-                if (!collapsingToolbarExpanded) {
-                    collapsingToolbarExpanded = true
-
-                    // FADE
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "alpha", 0f).apply {
-                        duration = 300
-                        start()
-                    }
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitleSmall, "alpha", 1f).apply {
-                        duration = 300
-                        start()
-                    }
-
-                    // MOVE
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "translationY", -32f).apply {
-                        duration = 300
-                        start()
-                    }
-                }
-            } else {
-                if (collapsingToolbarExpanded) {
-                    collapsingToolbarExpanded = false
-
-                    // FADE
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "alpha", 1f).apply {
-                        duration = 300
-                        start()
-                    }
-
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitleSmall, "alpha", 0f).apply {
-                        duration = 300
-                        start()
-                    }
-
-                    // MOVE
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude.mainTopBarTitle, "translationY", 0f).apply {
-                        duration = 300
-                        start()
-                    }
-
-                }
-            }
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            setOnBigScreenClickListener()
         }
 
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            setAppBar()
+        }
+
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            setRefreshLayout()
+        }
+
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            binding.activityMainViewpagerSw600dp!!.isUserInputEnabled = false
+
+            setRailVersion()
+        }
+
+    }
 
 
-        binding.refreshLayout.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
+    // Only for Sw600>
+    private fun setRailVersion() {
+        val railVersionText =
+            if (AddyIo.VERSIONMAJOR == 9999) this.resources.getString(R.string.hosted) else AddyIo.VERSIONSTRING
+        binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)!!.text = railVersionText
+    }
+
+    private fun setOnBigScreenClickListener() {
+        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_settings)!!.setOnClickListener {
+            val intent = Intent(this, AppSettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.searchBar?.setOnClickListener {
+            openSearch()
+        }
+
+        binding.navigationRailUserRefresh?.setOnClickListener {
+            (binding.navigationRailUserRefresh!!.compoundDrawables[0] as AnimatedVectorDrawable).start()
+            refreshAllData()
+        }
+
+    }
+
+    // This only applies to <sw600Dp devices
+    private fun setRefreshLayout() {
+        binding.refreshLayout!!.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
             override fun refresh() {
                 changeTopBarSubTitle(
-                    binding.mainAppBarInclude.mainTopBarSubtitle,
-                    binding.mainAppBarInclude.mainTopBarTitle,
-                    binding.mainAppBarInclude.mainTopBarTitleSmall,
+                    binding.mainAppBarInclude!!.mainTopBarSubtitle,
+                    binding.mainAppBarInclude!!.mainTopBarTitle,
+                    binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                     this@MainActivity.resources.getString(R.string.refreshing_data)
                 )
-                shimmerTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitleShimmerframelayout, true)
+                shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
 
-                // Refresh failed deliveries
-                initialiseMainAppBar()
+                lifecycleScope.launch {
+                    checkForNewFailedDeliveries()
+                }
 
                 // Check for updates and check API expiration key
                 lifecycleScope.launch {
@@ -180,13 +198,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 }
 
 
-                // Refresh all data in child fragments
-                val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
-                val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
-                val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
-                homeFragment.getDataFromWeb(this@MainActivity)
-                aliasFragment.getDataFromWeb()
-                recipientsFragment.getDataFromWeb()
+                refreshAllData()
 
 
                 // Since a bunch of different calls are being made, it is very hard to keep progress of everything.
@@ -194,12 +206,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 // TODO Any way to keep track of all this?
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
-                    binding.refreshLayout.finishRefreshing()
-                    shimmerTopBarSubTitle(binding.mainAppBarInclude.mainTopBarSubtitleShimmerframelayout, true)
+                    binding.refreshLayout!!.finishRefreshing()
+                    shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
                     changeTopBarSubTitle(
-                        binding.mainAppBarInclude.mainTopBarSubtitle,
-                        binding.mainAppBarInclude.mainTopBarTitle,
-                        binding.mainAppBarInclude.mainTopBarTitleSmall,
+                        binding.mainAppBarInclude!!.mainTopBarSubtitle,
+                        binding.mainAppBarInclude!!.mainTopBarTitle,
+                        binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                         null
                     )
                 }, 2000)
@@ -210,24 +222,24 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 if (pixelsMoved > 50) {
                     if (shouldRefreshOnRelease) {
                         changeTopBarSubTitle(
-                            binding.mainAppBarInclude.mainTopBarSubtitle,
-                            binding.mainAppBarInclude.mainTopBarTitle,
-                            binding.mainAppBarInclude.mainTopBarTitleSmall,
+                            binding.mainAppBarInclude!!.mainTopBarSubtitle,
+                            binding.mainAppBarInclude!!.mainTopBarTitle,
+                            binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                             this@MainActivity.resources.getString(R.string.release_to_refresh)
                         )
                     } else {
                         changeTopBarSubTitle(
-                            binding.mainAppBarInclude.mainTopBarSubtitle,
-                            binding.mainAppBarInclude.mainTopBarTitle,
-                            binding.mainAppBarInclude.mainTopBarTitleSmall,
+                            binding.mainAppBarInclude!!.mainTopBarSubtitle,
+                            binding.mainAppBarInclude!!.mainTopBarTitle,
+                            binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                             this@MainActivity.resources.getString(R.string.pull_down_to_refresh)
                         )
                     }
                 } else {
                     changeTopBarSubTitle(
-                        binding.mainAppBarInclude.mainTopBarSubtitle,
-                        binding.mainAppBarInclude.mainTopBarTitle,
-                        binding.mainAppBarInclude.mainTopBarTitleSmall,
+                        binding.mainAppBarInclude!!.mainTopBarSubtitle,
+                        binding.mainAppBarInclude!!.mainTopBarTitle,
+                        binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                         null
                     )
                 }
@@ -236,19 +248,95 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
             override fun cancel() {
                 changeTopBarSubTitle(
-                    binding.mainAppBarInclude.mainTopBarSubtitle,
-                    binding.mainAppBarInclude.mainTopBarTitle,
-                    binding.mainAppBarInclude.mainTopBarTitleSmall,
+                    binding.mainAppBarInclude!!.mainTopBarSubtitle,
+                    binding.mainAppBarInclude!!.mainTopBarTitle,
+                    binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                     null
                 )
             }
         })
+    }
 
+    private fun refreshAllData() {
+        // Refresh all data in child fragments
+        val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
+        val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
+        val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
+        homeFragment.getDataFromWeb(null)
+        aliasFragment.getDataFromWeb(this@MainActivity, null)
+        recipientsFragment.getDataFromWeb(null)
+
+
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            val usernamesSettingsFragment: UsernamesSettingsFragment = supportFragmentManager.fragments[3] as UsernamesSettingsFragment
+            usernamesSettingsFragment.getDataFromWeb(null)
+
+            val domainSettingsFragment: DomainSettingsFragment = supportFragmentManager.fragments[4] as DomainSettingsFragment
+            domainSettingsFragment.getDataFromWeb(null)
+
+            val rulesSettingsFragment: RulesSettingsFragment = supportFragmentManager.fragments[5] as RulesSettingsFragment
+            rulesSettingsFragment.getDataFromWeb(null)
+
+            val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
+            failedDeliveriesFragment.getDataFromWeb(null)
+        }
+
+    }
+
+    private fun setAppBar() {
+        var collapsingToolbarExpanded = false
+        binding.mainAppBarInclude!!.appBar.addOnOffsetChangedListener { _, verticalOffset ->
+            if (verticalOffset == -binding.mainAppBarInclude!!.collapsingToolbar.height + binding.mainAppBarInclude!!.toolbar.height) {
+                if (!collapsingToolbarExpanded) {
+                    collapsingToolbarExpanded = true
+
+                    // FADE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitle, "alpha", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitleSmall, "alpha", 1f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    // MOVE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitle, "translationY", -32f).apply {
+                        duration = 300
+                        start()
+                    }
+                }
+            } else {
+                if (collapsingToolbarExpanded) {
+                    collapsingToolbarExpanded = false
+
+                    // FADE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitle, "alpha", 1f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitleSmall, "alpha", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                    // MOVE
+                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitle, "translationY", 0f).apply {
+                        duration = 300
+                        start()
+                    }
+
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        initialiseMainAppBar()
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            initialiseMainAppBar()
+        }
         checkForPermissions()
     }
 
@@ -256,58 +344,136 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private lateinit var binding: ActivityMainBinding
     private fun loadMainActivity() {
         showChangeLog()
-        setupRefreshLayout(binding.mainAppBarInclude.appBar, binding.refreshLayout)
 
-        binding.activityMainViewpager.adapter = MainViewpagerAdapter(this, fragmentList)
-        binding.activityMainViewpager.offscreenPageLimit = 3
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            setupRefreshLayout(binding.mainAppBarInclude!!.appBar, binding.refreshLayout!!)
+        }
+
+        val navView = if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.navRail!! else binding.navView!!
+        val viewPager =
+            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
+
+        val fragmentList = if (resources.getBoolean(R.bool.isTablet)) {
+            arrayListOf(
+                HomeFragment.newInstance(),
+                AliasFragment.newInstance(),
+                RecipientsFragment.newInstance(),
+                UsernamesSettingsFragment.newInstance(),
+                DomainSettingsFragment.newInstance(),
+                RulesSettingsFragment.newInstance(),
+                FailedDeliveriesFragment.newInstance()
+            )
+        } else {
+            arrayListOf(
+                HomeFragment.newInstance(),
+                AliasFragment.newInstance(),
+                RecipientsFragment.newInstance()
+            )
+        }
+
+
+
+        viewPager.adapter = MainViewpagerAdapter(this, fragmentList)
+        viewPager.offscreenPageLimit = if (resources.getBoolean(R.bool.isTablet)) 7 else 3
         // Allow swiping through the pages
-        binding.activityMainViewpager.isUserInputEnabled = true
-        binding.activityMainViewpager.setPageTransformer { page, position ->
+        viewPager.isUserInputEnabled = true
+        viewPager.setPageTransformer { page, position ->
             val normalizedposition = abs(abs(position) - 1)
             page.alpha = normalizedposition
         }
 
-        binding.activityMainViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        binding.navView.menu.findItem(R.id.navigation_home).isChecked = true
-                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_home))
-                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitleSmall, this@MainActivity.resources.getString(R.string.title_home))
+                        navView.menu.findItem(R.id.navigation_home).isChecked = true
+
+                        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                            changeTopBarTitle(
+                                binding.mainAppBarInclude!!.mainTopBarTitle,
+                                this@MainActivity.resources.getString(R.string.title_dashboard)
+                            )
+                            changeTopBarTitle(
+                                binding.mainAppBarInclude!!.mainTopBarTitleSmall,
+                                this@MainActivity.resources.getString(R.string.title_dashboard)
+                            )
+                        }
 
                     }
+
                     1 -> {
-                        binding.navView.menu.findItem(R.id.navigation_alias).isChecked = true
-                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_aliases))
-                        changeTopBarTitle(
-                            binding.mainAppBarInclude.mainTopBarTitleSmall,
-                            this@MainActivity.resources.getString(R.string.title_aliases)
-                        )
+                        navView.menu.findItem(R.id.navigation_alias).isChecked = true
+
+                        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                            changeTopBarTitle(
+                                binding.mainAppBarInclude!!.mainTopBarTitle,
+                                this@MainActivity.resources.getString(R.string.title_aliases)
+                            )
+                            changeTopBarTitle(
+                                binding.mainAppBarInclude!!.mainTopBarTitleSmall,
+                                this@MainActivity.resources.getString(R.string.title_aliases)
+                            )
+                        }
 
                     }
-                    2 -> {
-                        binding.navView.menu.findItem(R.id.navigation_recipients).isChecked = true
-                        changeTopBarTitle(binding.mainAppBarInclude.mainTopBarTitle, this@MainActivity.resources.getString(R.string.title_recipients))
-                        changeTopBarTitle(
-                            binding.mainAppBarInclude.mainTopBarTitleSmall,
-                            this@MainActivity.resources.getString(R.string.title_recipients)
-                        )
 
+                    2 -> {
+                        navView.menu.findItem(R.id.navigation_recipients).isChecked = true
+
+                        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                            changeTopBarTitle(
+                                binding.mainAppBarInclude!!.mainTopBarTitle,
+                                this@MainActivity.resources.getString(R.string.title_recipients)
+                            )
+                            changeTopBarTitle(
+                                binding.mainAppBarInclude!!.mainTopBarTitleSmall,
+                                this@MainActivity.resources.getString(R.string.title_recipients)
+                            )
+                        }
+
+                    }
+
+                    3 -> {
+                        navView.menu.findItem(R.id.navigation_usernames).isChecked = true
+                    }
+
+                    4 -> {
+                        navView.menu.findItem(R.id.navigation_domains).isChecked = true
+                    }
+
+                    5 -> {
+                        navView.menu.findItem(R.id.navigation_rules).isChecked = true
+                    }
+
+                    6 -> {
+                        hideFailedDeliveriesBadge()
+
+                        navView.menu.findItem(R.id.navigation_failed_deliveries).isChecked = true
                     }
                 }
                 super.onPageSelected(position)
             }
         })
 
-        binding.navView.setOnItemSelectedListener {
-            switchFragments(it.itemId)
-            false
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            binding.navRail!!.setOnItemSelectedListener {
+                navigateTo(it.itemId)
+                false
+            }
+        } else {
+            binding.navView!!.setOnItemSelectedListener {
+                navigateTo(it.itemId)
+                false
+            }
         }
 
-        binding.mainAppBarInclude.toolbar.setOnClickListener {
-            val intent = Intent("scroll_up")
-            sendBroadcast(intent)
-            binding.mainAppBarInclude.appBar.setExpanded(true, true)
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            binding.mainAppBarInclude!!.toolbar.setOnClickListener {
+                val intent = Intent("scroll_up")
+                sendBroadcast(intent)
+                binding.mainAppBarInclude!!.appBar.setExpanded(true, true)
+            }
         }
 
         checkForTargetExtras()
@@ -337,13 +503,13 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         settingsManager.putSettingsInt(SettingsManager.PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
     }
 
-
+    // Only gets calls on mobile (not tablet)
     private fun initialiseMainAppBar() {
         // Figure out the from name initials
         val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
-        binding.mainAppBarInclude.mainTopBarUserInitials.text = usernameInitials
+        binding.mainAppBarInclude!!.mainTopBarUserInitials.text = usernameInitials
 
-        binding.mainAppBarInclude.mainTopBarUserInitials.setOnClickListener {
+        binding.mainAppBarInclude!!.mainTopBarUserInitials.setOnClickListener {
             if (!profileBottomDialogFragment.isAdded) {
                 profileBottomDialogFragment.show(
                     supportFragmentManager,
@@ -352,17 +518,14 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
-        binding.mainAppBarInclude.mainTopBarSearchIcon.setOnClickListener {
+        binding.mainAppBarInclude!!.mainTopBarSearchIcon.setOnClickListener {
             openSearch()
         }
 
-        binding.mainAppBarInclude.mainTopBarFailedDeliveriesIcon.setOnClickListener {
+        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon.setOnClickListener {
+            hideFailedDeliveriesBadge()
             val intent = Intent(this, FailedDeliveriesActivity::class.java)
             startActivity(intent)
-        }
-
-        lifecycleScope.launch {
-            checkForNewFailedDeliveries()
         }
     }
 
@@ -391,14 +554,17 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
     private suspend fun checkForUpdates() {
-        Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
+        val settingsManager = SettingsManager(false, this)
+        if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
+            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
 
-            // Set the update status in profileBottomDialogFragment
-            profileBottomDialogFragment.updateAvailable = updateAvailable
+                // Set the update status in profileBottomDialogFragment
+                profileBottomDialogFragment.updateAvailable = updateAvailable
 
-            // An update is available, set the update  profile bottomdialog fragment
-            setAlertIconToProfile(updateAvailable = updateAvailable)
-        }, this)
+                // An update is available, set the update  profile bottomdialog fragment
+                setAlertIconToProfile(updateAvailable = updateAvailable)
+            }, this)
+        }
     }
 
 
@@ -491,7 +657,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private var mUpdateAvailable = false
     private var mPermissionsRequired = false
     private fun setAlertIconToProfile(updateAvailable: Boolean? = null, permissionsRequired: Boolean? = null) {
-
         // Store the bools for comparison next time this method gets called
         if (updateAvailable != null) {
             mUpdateAvailable = updateAvailable
@@ -502,45 +667,89 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         val shouldShowDot = mUpdateAvailable || mPermissionsRequired
 
-        // If there is an update available or there are permissions required, show the dot
-        val animZoom = if (shouldShowDot && binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility != View.VISIBLE) {
-            // loading the animation of
-            // zoom_in.xml file into a variable
-            AnimationUtils.loadAnimation(
-                this,
-                R.anim.zoom_in
+
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            // If there is an update available or there are permissions required, show the dot
+            val animZoom =
+                if (shouldShowDot && binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility != View.VISIBLE) {
+                    // loading the animation of
+                    // zoom_in.xml file into a variable
+                    AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.zoom_in
+                    )
+                } else if (
+                // If there is not update AND there are no permissions required, hide the dot
+                    !shouldShowDot &&
+                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility != View.INVISIBLE
+                ) {
+                    // loading the animation of
+                    // zoom_in.xml file into a variable
+                    AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.zoom_out
+                    )
+                } else {
+                    null
+                }
+
+            animZoom?.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {
+                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility =
+                        if (shouldShowDot) View.INVISIBLE else View.VISIBLE
+                }
+
+                override fun onAnimationEnd(p0: Animation?) {
+                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility =
+                        if (shouldShowDot) View.VISIBLE else View.INVISIBLE
+                }
+
+                override fun onAnimationRepeat(p0: Animation?) {
+                    //
+                }
+            }
             )
-        } else if (
-        // If there is not update AND there are no permissions required, hide the dot
-            !shouldShowDot &&
-            binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility != View.INVISIBLE
-        ) {
-            // loading the animation of
-            // zoom_in.xml file into a variable
-            AnimationUtils.loadAnimation(
-                this,
-                R.anim.zoom_out
-            )
+            animZoom?.let { binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.startAnimation(it) }
         } else {
-            null
+            // If there is an update available or there are permissions required, show the dot
+            val animZoom = if (shouldShowDot && binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility != View.VISIBLE) {
+                // loading the animation of
+                // zoom_in.xml file into a variable
+                AnimationUtils.loadAnimation(
+                    this,
+                    R.anim.zoom_in
+                )
+            } else if (
+            // If there is not update AND there are no permissions required, hide the dot
+                !shouldShowDot &&
+                binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility != View.INVISIBLE
+            ) {
+                // loading the animation of
+                // zoom_in.xml file into a variable
+                AnimationUtils.loadAnimation(
+                    this,
+                    R.anim.zoom_out
+                )
+            } else {
+                null
+            }
+
+            animZoom?.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {
+                    binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility = if (shouldShowDot) View.INVISIBLE else View.VISIBLE
+                }
+
+                override fun onAnimationEnd(p0: Animation?) {
+                    binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility = if (shouldShowDot) View.VISIBLE else View.INVISIBLE
+                }
+
+                override fun onAnimationRepeat(p0: Animation?) {
+                    //
+                }
+            }
+            )
+            animZoom?.let { binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.startAnimation(it) }
         }
-
-        animZoom?.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(p0: Animation?) {
-                binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility = if (shouldShowDot) View.INVISIBLE else View.VISIBLE
-            }
-
-            override fun onAnimationEnd(p0: Animation?) {
-                binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.visibility = if (shouldShowDot) View.VISIBLE else View.INVISIBLE
-            }
-
-            override fun onAnimationRepeat(p0: Animation?) {
-                //
-            }
-        }
-        )
-        animZoom?.let { binding.mainAppBarInclude.mainTopBarUserInitialsUpdateIcon.startAnimation(it) }
-
     }
 
     /*
@@ -560,63 +769,122 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             val currentFailedDeliveries =
                 encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
             if ((result?.size ?: 0) > currentFailedDeliveries) {
-                if (binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
-                    // loading the animation of
-                    // zoom_in.xml file into a variable
-                    val animZoomIn = AnimationUtils.loadAnimation(
-                        this,
-                        R.anim.zoom_in
-                    )
-                    animZoomIn.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(p0: Animation?) {
-                            binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.VISIBLE
-                        }
+                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                    if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
+                        // loading the animation of
+                        // zoom_in.xml file into a variable
+                        val animZoomIn = AnimationUtils.loadAnimation(
+                            this,
+                            R.anim.zoom_in
+                        )
+                        animZoomIn.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(p0: Animation?) {
+                                binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.VISIBLE
+                            }
 
-                        override fun onAnimationEnd(p0: Animation?) {
-                            //
-                        }
+                            override fun onAnimationEnd(p0: Animation?) {
+                                //
+                            }
 
-                        override fun onAnimationRepeat(p0: Animation?) {
-                            //
+                            override fun onAnimationRepeat(p0: Animation?) {
+                                //
+                            }
                         }
+                        )
+                        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomIn)
                     }
-                    )
-                    binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomIn)
+                } else {
+                    val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
+                    badge.isVisible = true
+                    // An icon only badge will be displayed unless a number or text is set:
+                    badge.number = (result?.size?.minus(currentFailedDeliveries)) ?: 0  // or badge.text = "New"
                 }
             } else {
-                if (binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.INVISIBLE) {
-
-                    // loading the animation of
-                    // zoom_out.xml file into a variable
-                    val animZoomOut = AnimationUtils.loadAnimation(
-                        this,
-                        R.anim.zoom_out
-                    )
-                    animZoomOut.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(p0: Animation?) {
-                            //
-                        }
-
-                        override fun onAnimationEnd(p0: Animation?) {
-                            binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.INVISIBLE
-                        }
-
-                        override fun onAnimationRepeat(p0: Animation?) {
-                            //
-                        }
-                    }
-                    )
-                    binding.mainAppBarInclude.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomOut)
-                }
+                hideFailedDeliveriesBadge()
             }
         }, show404Toast = false)
     }
 
-    fun switchFragments(fragment: Int) {
+    private fun hideFailedDeliveriesBadge() {
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+
+            if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.INVISIBLE) {
+
+                // loading the animation of
+                // zoom_out.xml file into a variable
+                val animZoomOut = AnimationUtils.loadAnimation(
+                    this,
+                    R.anim.zoom_out
+                )
+                animZoomOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(p0: Animation?) {
+                        //
+                    }
+
+                    override fun onAnimationEnd(p0: Animation?) {
+                        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.INVISIBLE
+                    }
+
+                    override fun onAnimationRepeat(p0: Animation?) {
+                        //
+                    }
+                }
+                )
+                binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomOut)
+            }
+        } else {
+            binding.navRail!!.removeBadge(R.id.navigation_failed_deliveries)
+        }
+    }
+
+    fun navigateTo(fragment: Int) {
+        val viewPager =
+            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
+
         when (fragment) {
-            R.id.navigation_home -> binding.activityMainViewpager.currentItem = 0
-            R.id.navigation_alias -> binding.activityMainViewpager.currentItem = 1
-            R.id.navigation_recipients -> binding.activityMainViewpager.currentItem = 2
+            R.id.navigation_home -> viewPager.currentItem = 0
+            R.id.navigation_alias -> viewPager.currentItem = 1
+            R.id.navigation_recipients -> viewPager.currentItem = 2
+            R.id.navigation_usernames -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 3
+                } else {
+                    val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_domains -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 4
+                } else {
+                    val intent = Intent(this, DomainSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_rules -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 5
+                } else {
+                    val intent = Intent(this, RulesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_failed_deliveries -> {  // Only SW600DP>
+                // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
+                val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
+                failedDeliveriesFragment.fragmentShown()
+                hideFailedDeliveriesBadge()
+
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 6
+                } else {
+                    val intent = Intent(this, FailedDeliveriesActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
     }
 
@@ -658,29 +926,54 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
+    // TODO CHECK TABLET, doesnt work from search
     private fun goToTarget(string: String) {
         when (string) {
             SearchActivity.SearchTargets.ALIASES.activity -> {
-                switchFragments(R.id.navigation_alias)
+                navigateTo(R.id.navigation_alias)
             }
+
             SearchActivity.SearchTargets.RECIPIENTS.activity -> {
-                switchFragments(R.id.navigation_recipients)
+                navigateTo(R.id.navigation_recipients)
             }
+
             SearchActivity.SearchTargets.DOMAINS.activity -> {
-                val intent = Intent(this, DomainSettingsActivity::class.java)
-                startActivity(intent)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    navigateTo(R.id.navigation_domains)
+                } else {
+                    val intent = Intent(this, DomainSettingsActivity::class.java)
+                    startActivity(intent)
+                }
             }
+
             SearchActivity.SearchTargets.USERNAMES.activity -> {
-                val intent = Intent(this, UsernamesSettingsActivity::class.java)
-                startActivity(intent)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    navigateTo(R.id.navigation_usernames)
+                } else {
+                    val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
             }
+
             SearchActivity.SearchTargets.RULES.activity -> {
-                val intent = Intent(this, RulesSettingsActivity::class.java)
-                startActivity(intent)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    navigateTo(R.id.navigation_rules)
+                } else {
+                    val intent = Intent(this, RulesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+
             }
+
             SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
-                val intent = Intent(this, FailedDeliveriesActivity::class.java)
-                startActivity(intent)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    navigateTo(R.id.navigation_failed_deliveries)
+                } else {
+                    hideFailedDeliveriesBadge()
+                    val intent = Intent(this, FailedDeliveriesActivity::class.java)
+                    startActivity(intent)
+                }
+
             }
         }
     }
@@ -689,18 +982,33 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private fun updateKey(apiKey: String) {
         val encryptedSettingsManager = SettingsManager(true, this)
         encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
-        binding.navView.let {
+
+        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             SnackbarHelper.createSnackbar(
                 this,
                 this.resources.getString(R.string.api_key_updated),
-                it
-            ).apply {
-                anchorView = binding.navView
-            }.show()
+                binding.mainContainer
+            ).show()
 
             val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
+
+        } else {
+            binding.navView.let {
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.api_key_updated),
+                    it!!
+                ).apply {
+                    anchorView = binding.navView
+                }.show()
+
+                val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
+            }
         }
+
+
     }
 
     override fun onClickSave(baseUrl: String, apiKey: String) {

@@ -225,7 +225,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
             if (selectedAliases.contains(listWithAliases[adapterPosition])) {
                 selectedAliases.remove(listWithAliases[adapterPosition])
             } else {
-                if (selectedAliases.count() < 15) {
+                if (selectedAliases.count() < 25) {
                     selectedAliases.add(listWithAliases[adapterPosition])
                 } else {
                     Toast.makeText(mCV.context, mCV.context.resources.getString(R.string.alias_multiple_selection_max_reached), Toast.LENGTH_LONG)

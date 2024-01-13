@@ -20,137 +20,55 @@
             android:paddingEnd="@dimen/layout_padding">
 
             <LinearLayout
-                android:id="@+id/alias_statistics_LL"
+                style="@style/AddyIoTitleNoAction"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    style="@style/AddyIoTitleNoAction"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/aliases_statistics" />
 
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center_vertical"
-                        android:text="@string/aliases_statistics"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingStart="@dimen/cardview_extra_padding"
-                    android:paddingEnd="@dimen/cardview_extra_padding">
-
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/AddyIoCustomCardViewStyleTop"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardElevation="@dimen/cardview_default_elevation">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/cardview_padding">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/emails_forwarded"
-                                    android:textColor="@color/BlackWhite"
-                                    android:textSize="16sp" />
-
-                                <TextView
-                                    android:id="@+id/alias_forwarded_blocked_stats_textview"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/obtaining_information" />
-                            </LinearLayout>
-
-
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="16dp"
-                                android:contentDescription="@string/emails_forwarded"
-                                app:srcCompat="@drawable/ic_inbox"
-                                app:tint="?colorPrimary" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/AddyIoCustomCardViewStyleBottom"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="8dp"
-                        app:cardElevation="@dimen/cardview_default_elevation">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/cardview_padding">
-
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/emails_replied_sent"
-                                    android:textColor="@color/BlackWhite"
-                                    android:textSize="16sp" />
-
-                                <TextView
-                                    android:id="@+id/alias_replied_sent_stats_textview"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/obtaining_information" />
-                            </LinearLayout>
-
-
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="16dp"
-                                android:contentDescription="@string/emails_replied_sent"
-                                app:srcCompat="@drawable/ic_mail_forward"
-                                app:tint="?colorPrimary" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
             </LinearLayout>
 
+            <GridLayout
+                android:id="@+id/alias_statistics_LL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:columnCount="1"
+                android:orientation="vertical"
+                android:useDefaultMargins="true">
 
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/alias_stats_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    app:StatCardViewDescription="@string/replied_forwarded_blocked_stat"
+                    app:StatCardViewIcon="@drawable/ic_email_at"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/emails_forwarded" />
+
+
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/alias_stats_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    app:StatCardViewDescription="@string/replied_replied_sent_stat"
+                    app:StatCardViewIcon="@drawable/ic_mail_forward"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/emails_replied_sent" />
+            </GridLayout>
+
+
+            <!-- 8dp for spacing below scroll-->
             <LinearLayout
                 android:id="@+id/alias_list_LL1"
                 android:layout_width="match_parent"
@@ -163,6 +81,7 @@
                 <LinearLayout
                     style="@style/AddyIoTitleAction"
                     android:layout_width="match_parent"
+                    android:layout_marginBottom="12dp"
                     android:orientation="horizontal">
 
 

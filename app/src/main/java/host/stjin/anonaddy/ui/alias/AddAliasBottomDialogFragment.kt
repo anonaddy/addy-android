@@ -62,6 +62,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         _binding = BottomsheetAddaliasBinding.inflate(inflater, container, false)
         val root = binding.root
 
+
         // Listener only works when called from fragment (this sheet can be called from widget)
         if (parentFragment != null) {
             listener = parentFragment as AddAliasBottomDialogListener
@@ -159,6 +160,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 // Set default domain
                 if (domainOptions.defaultAliasDomain != null) {
                     binding.bsAddaliasDomainMact.setText(domainOptions.defaultAliasDomain, false)
+                } else {
+                    binding.bsAddaliasDomainMact.setText(DOMAINS[0])
                 }
 
                 // Set default format
@@ -248,6 +251,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // Set error to null if domain and alias is valid
         binding.bsAddaliasDomainTil.error = null
         binding.bsAddaliasAliasFormatTil.error = null
+        binding.bsAddaliasAliasLocalPartTil.error = null
 
         // Animate the button to progress
         binding.bsAddaliasAliasAddAliasButton.startAnimation()

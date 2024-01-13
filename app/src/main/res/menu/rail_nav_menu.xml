@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@menu/rail_nav_menu">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_anim_settings"
+        android:title="@string/title_dashboard" />
+
+    <item
+        android:id="@+id/navigation_alias"
+        android:icon="@drawable/ic_email_at_anim_settings"
+        android:title="@string/title_aliases" />
+
+    <item
+        android:id="@+id/navigation_recipients"
+        android:icon="@drawable/ic_inbox_anim_settings"
+        android:title="@string/title_recipients" />
+
+    <item
+        android:id="@+id/navigation_usernames"
+        android:icon="@drawable/ic_users_anim_settings"
+        android:title="@string/usernames" />
+
+    <item
+        android:id="@+id/navigation_domains"
+        android:icon="@drawable/ic_world_anim_settings"
+        android:title="@string/domains" />
+
+    <item
+        android:id="@+id/navigation_rules"
+        android:icon="@drawable/ic_filter_anim_settings"
+        android:title="@string/rules" />
+
+    <item
+        android:id="@+id/navigation_failed_deliveries"
+        android:icon="@drawable/ic_mail_error_anim_settings"
+        android:title="@string/failed_deliveries" />
+</menu>

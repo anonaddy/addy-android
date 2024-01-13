@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.rules
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     }
 
     lateinit var networkHelper: NetworkHelper
+    private var shouldRefreshOnFinish = false
 
     private var ruleId: String? = null
     private lateinit var rules: Rules
@@ -90,6 +92,14 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         }
 
 
+    }
+
+
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
     }
 
     private fun generateEmptyRule() {
@@ -157,7 +167,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_obtaining_rule) + "\n" + error,
-                    binding.activityRulesCreateCL
+                    binding.activityRulesCreateCL,
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
 
                 // Show error animations
@@ -390,6 +401,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                     networkHelper.updateRule({ result ->
                         when (result) {
                             "200" -> {
+                                shouldRefreshOnFinish = true
                                 finish()
                             }
                             else -> {
@@ -409,6 +421,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                 lifecycleScope.launch {
                     networkHelper.createRule({ rule, error ->
                         if (rule != null) {
+                            shouldRefreshOnFinish = true
                             finish()
                         } else {
                             binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE

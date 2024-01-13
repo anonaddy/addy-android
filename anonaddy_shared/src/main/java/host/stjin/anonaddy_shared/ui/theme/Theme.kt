@@ -47,9 +47,13 @@ private fun getLightThemeColors(): ColorScheme {
         outline = colorResource(id = R.color.md_theme_outline),
         inverseOnSurface = colorResource(id = R.color.md_theme_inverseOnSurface),
         inverseSurface = colorResource(id = R.color.md_theme_inverseSurface),
-        inversePrimary = colorResource(id = R.color.md_theme_primaryInverse),
+        inversePrimary = colorResource(id = R.color.md_theme_inversePrimary),
+        outlineVariant = colorResource(id = R.color.md_theme_outlineVariant),
+        scrim = colorResource(id = R.color.md_theme_scrim),
         //shadow = md_theme_light_shadow,
     )
+
+
 }
 
 @Composable
@@ -101,7 +105,7 @@ fun getAddyIoButtonColors(): ButtonColors {
 @Composable
 fun getAddyIoToggleChipColors(): ToggleChipColors {
     return toggleChipColors(
-        checkedEndBackgroundColor = colorResource(id = R.color.md_theme_primaryInverse).copy(alpha = 0.30f),
+        checkedEndBackgroundColor = colorResource(id = R.color.md_theme_inversePrimary).copy(alpha = 0.30f),
         checkedToggleControlColor = colorResource(id = R.color.md_theme_onPrimary)
     )
 }

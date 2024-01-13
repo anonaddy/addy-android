@@ -11,6 +11,7 @@
     <dimen name="corner_radius_widget_2_inner_layout">20dp</dimen>
     <dimen name="corner_radius_cardview">12dp</dimen>
     <dimen name="cardview_default_elevation">2dp</dimen>
+    <dimen name="corner_radius_button">8dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information
@@ -43,5 +44,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="cardview_extra_padding">3dp</dimen>
     <dimen name="collapsed_text_size">24sp</dimen>
     <dimen name="expanded_text_size">32sp</dimen>
+    <dimen name="home_cardview_padding">32dp</dimen>
 
 </resources>

@@ -4,16 +4,16 @@
     <!-- provide a different drawable for each state-->
     <item
         android:id="@+id/state_on"
-        android:drawable="@drawable/ic_user"
+        android:drawable="@drawable/ic_filter"
         android:state_checked="true" />
 
     <item
         android:id="@+id/state_off"
-        android:drawable="@drawable/ic_user" />
+        android:drawable="@drawable/ic_filter" />
 
     <!-- specify transitions -->
     <transition
-        android:drawable="@drawable/ic_user_anim"
+        android:drawable="@drawable/ic_filter_anim"
         android:fromId="@id/state_off"
         android:toId="@id/state_on" />
 

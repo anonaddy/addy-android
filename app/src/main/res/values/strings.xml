@@ -1,12 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="title_home">Home</string>
-    <string name="title_aliases">Aliases</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_aliases">@string/aliases</string>
     <string name="app_settings">App settings</string>
-    <string name="title_recipients">Recipients</string>
+    <string name="title_recipients">@string/recipients</string>
     <string name="recipients">Recipients</string>
     <string name="addyio_settings">addy.io settings</string>
     <string name="monthly_bandwidth">Monthly bandwidth</string>
-    <string name="view_more">View more</string>
     <string name="copied_alias">Copied alias</string>
     <string name="most_active_aliases">Most active aliases</string>
     <string name="created_at_s">Created %s</string>
@@ -43,10 +42,10 @@
     <string name="settings">Settings</string>
     <string name="resend_email">Resend email</string>
     <string name="delete">Delete</string>
-    <string name="recipients_list_description" tools:ignore="PluralsCandidate">%1$d aliases; Emails forwarded: %2$d</string>
+    <string name="recipients_list_description" tools:ignore="PluralsCandidate">%1$d aliases</string>
     <string name="encryption_enabled">Encryption enabled</string>
     <string name="open_options">Open options</string>
-    <string name="api_obtain_desc">Your API can be obtained at the bottom of the settings page at app.addy.io (or your own hosted instance)</string>
+    <string name="api_obtain_desc">Your API can be obtained at the settings page at app.addy.io (or your own hosted instance)</string>
     <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
     <string name="next">Next</string>
@@ -71,22 +70,34 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 4.8.1</h3>
+<h3>What\'s new in AnonAddy for Android 5.0.0</h3>
+<h4>Added</h4>
+- A brand new tablet UI, with embedded activities for the best big screen experience<br />
+- Home has now been renamed to Dashboard and shows more information<br />
+- Added support for the new "from-name" feature<br />
+- Added support for the new "can-login" feature<br />
 <h4>Fixed/Improved</h4>
-<p>✨ Performance improvements and other things to make the app even smoother</p>
-<p>&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.3.1</h3>
+- Some navigation icons have been changed to match the addy.io dashboard<br />
+- Forgotten aliases that are on the watchlist will now be removed automatically<br />
+- Disable the automatic update check by default to comply with F-Droid\'s "anti-feature" list<br />
+- Reduced API calls for a faster and smoother experience<br />
+- Increased the Alias watcher and multiple alias management from 15 to 25 aliases<br />
+- Show a snackbar when alias has been disabled through the link in the email banner<br />
+- Fixed a bug where on self-hosted instances the app would show a limit of 0<br />
+- Performance improvements and other things to make the app even smoother<br />
+&nbsp;<br />
+<h3>What\'s new in AnonAddy for Android for Wearables 1.3.2</h3>
 <h4>Fixed/Improved</h4>
-<p>✨ Optimized support for new wearables<br />✨ Performance improvements and other things to make the app even smoother</p>]]></string>
+- Performance improvements and other things to make the app even smoother<br />]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
     <string name="delete_recipient_desc">Are you sure you want to delete this recipient?</string>
     <string name="error_deleting_recipient">Something went wrong while deleting the recipient</string>
     <string name="address">Address</string>
-    <string name="add_recipient_desc">Enter the individual email of the new recipient you’d like to add.\n\nYou will receive an email with a verification link that will expire in one hour, you can tap “Resend email” to get a new one</string>
+    <string name="add_recipient_desc"><![CDATA[Enter the individual email of the new recipient you\'d like to add. This is where your aliases will <b>forward messages to.</b><br /> <br />You will receive an email with a verification link that will <b>expire in one hour</b>, you can click "Resend email" to get a new one.]]></string>
     <string name="not_a_valid_address">This is not a valid address</string>
-    <string name="not_a_valid_web_address">This is not a valid address</string>
+    <string name="not_a_valid_web_address">@string/not_a_valid_address</string>
     <string name="error_adding_recipient">Something went wrong while adding this recipient</string>
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
     <string name="no_aliases">No aliases with these filter settings.\n\nLooking for a specific alias? Use the global search function by clicking the magnifying glass in the app bar.</string>
@@ -106,6 +117,7 @@
     <string name="error_edit_recipient">Something went wrong while editing the recipient</string>
     <string name="error_rules_active">An error occurred while changing the rule state</string>
     <string name="error_edit_catch_all">An error occurred while changing the catch-all state</string>
+    <string name="error_edit_can_login">An error occurred while changing the can login state</string>
 
     <string name="alias_deactivated">Alias deactivated</string>
     <string name="alias_activated">Alias activated</string>
@@ -149,14 +161,13 @@
     <string name="change_public_gpg_key">Change public GPG key</string>
     <string name="add_public_gpg_key">Add public GPG key</string>
     <string name="manage_recipient_basic_info">Email: %1$s\nCreated: %2$s\nUpdated at: %3$s\nEmail forwarded: %4$d\nEmail blocked: %5$d\nEmail replies: %6$d\nEmail sent: %7$d</string>
-    <string name="add_public_gpg_key_desc">Enter your PUBLIC key data in the textbox below\n\nMake sure to remove Comment: and Version:</string>
+    <string name="add_public_gpg_key_desc">Enter your PUBLIC key data in the textbox below\n\nMake sure to remove Comment: and Version:\n\nElGamal keys are not currently supported.</string>
     <string name="error_add_gpg_key">Something went wrong while adding your public GPG key</string>
     <string name="error_removing_gpg_key">Something went wrong while removing the public key</string>
     <string name="encrypt_emails_to_this_recipient">Encrypt emails to this recipient</string>
     <string name="fingerprint_s">Fingerprint:\n%s</string>
     <string name="remove_public_key_desc">Are you sure you want to remove the public key for this recipient? It will also be removed from any other recipients using the same key.</string>
-    <string name="public_key">Public key</string>
-    <string name="no_active_aliases">You have no active aliases</string>
+    <string name="public_key_placeholder">Begins with \'-----BEGIN PGP PUBLIC KEY BLOCK-----\'</string>
     <string name="shared_domain_aliases">Shared domain aliases</string>
     <string name="addyio_load_error">Something went wrong while loading the addy.io app, you might want to check your internet connection.\nMore information about the error:</string>
     <string name="try_again">Try again</string>
@@ -166,7 +177,7 @@
     <string name="manage_domains">Manage domains</string>
     <string name="all_domains">All domains</string>
     <string name="add_domain">Add domain</string>
-    <string name="domains_list_description" tools:ignore="PluralsCandidate">%1$d aliases; Emails forwarded: %2$d</string>
+    <string name="domains_list_description" tools:ignore="PluralsCandidate">%1$d aliases</string>
     <string name="delete_domain">Delete domain</string>
     <string name="delete_domain_desc_confirm">Are you sure you want to delete this domain? This will also delete all aliases associated with this domain. You will no longer be able to receive any emails at this domain.</string>
     <string name="error_deleting_domain">Something went wrong while deleting this domain</string>
@@ -198,6 +209,7 @@
     <string name="domains">Domains</string>
     <string name="usernames">Usernames</string>
     <string name="search">Search</string>
+    <string name="search_desc">Search aliases, recipients, usernames and more…</string>
     <string name="recent_searches">Recent searches</string>
     <string name="clear">Clear</string>
     <string name="searching">Searching…</string>
@@ -208,7 +220,7 @@
     <string name="delete_username">Delete username</string>
     <string name="delete_username_desc_confirm">Are you sure you want to delete this username? This will also delete all aliases associated with this username. You will no longer be able to receive any emails at this username subdomain. This will still count towards your additional username limit even once deleted.</string>
     <string name="error_deleting_username">Something went wrong while deleting this username</string>
-    <string name="add_username_desc">Please choose additional usernames carefully as you can only add a limited amount.\n\nYou cannot login with these usernames, only the one you originally signed up with</string>
+    <string name="add_username_desc"><![CDATA[Please choose usernames carefully as you can only add a <b>maximum of %1$d.</b> You can login with <b>any of your usernames.</b><br /><br />You can prevent a username from being used to login by toggling the "can login" option.]]></string>
     <string name="error_adding_username">Something went wrong while adding this username</string>
     <string name="username_deactivated">Username deactivated</string>
     <string name="username_activated">Username activated</string>
@@ -280,7 +292,6 @@
     <string name="all_rules">All rules</string>
     <string name="s_s">%1$s\n%2$s</string>
     <string name="s_s_s">%1$s\n%2$s\n%3$s</string>
-    <string name="_sMB">%sMB</string>
     <string name="activate">Activate</string>
     <string name="deactivate">Deactivate</string>
     <string name="rule_activated">Rule activated</string>
@@ -324,7 +335,7 @@
     <string name="notification_channel_update_desc">Receive a notification when a new update is available for the addy.io app</string>
     <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
     <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
-    <string name="notification_channel_api_token_expiry">API key</string>
+    <string name="notification_channel_api_token_expiry">@string/APIKey</string>
     <string name="notification_channel_api_token_expiry_desc">Receive a notification when your API key is about to expire</string>
     <string name="notification_channel_subscription_expiry">Subscription</string>
     <string name="notification_channel_subscription_expiry_desc">Receive a notification when your subscription is about to expire</string>
@@ -366,7 +377,7 @@
     <string name="Info">Info</string>
     <string name="enable_feature">Enable feature</string>
     <string name="enable_feature_always">This feature is always enabled</string>
-    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.\n\nTo avoid reaching the API limit, you can watch a maximum of 15 aliases.</string>
+    <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.\n\nYou can watch a maximum of 25 aliases.</string>
     <string name="features">Features</string>
     <string name="exceeded_bandwidth_limit">You\'ve exceeded your bandwidth limit for this month</string>
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
@@ -388,10 +399,10 @@
     <string name="version_channel_info">Version: %s\nDownload channel: %s</string>
     <string name="sideloaded">sideloaded</string>
     <string name="no_new_update_available">You\'re up to date</string>
-    <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available.</string>
+    <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available</string>
     <string name="addyio_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
-    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>Alias</strong><br />%2$s</p><p><strong>Recipient</strong> %3$s</p><p><strong>Type</strong> %4$s</p><p><strong>Remote MTA</strong> %5$s</p><p><strong>Sender</strong> %6$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %7$s</td></tr></tbody></table>]]></string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>First attempted</strong><br />%2$s</p><p><strong>Alias</strong> %3$s</p><p><strong>Recipient</strong> %4$s</p><p><strong>Type</strong> %5$s</p><p><strong>Mail Server</strong> %6$s</p><p><strong>Sender</strong> %7$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %8$s</td></tr></tbody></table>]]></string>
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>
@@ -500,19 +511,17 @@
     <string name="error_obtaining_usernames">@string/could_not_refresh_data</string>
     <string name="filtering_and_sorting">Filtering and sorting</string>
     <string name="filtering_and_sorting_desc">Decide which aliases to display and in which order to display them. Filters are saved and retained on app restart</string>
-    <string name="include_deleted_aliases">Include deleted aliases</string>
-    <string name="include_deleted_aliases_desc">Show deleted aliases in the overview. Deleted aliases are always inactive</string>
     <string name="filter_watched_only">Watched only</string>
     <string name="sort_localpart">Local part</string>
-    <string name="sort_domain">Domain</string>
+    <string name="sort_domain">@string/domain</string>
     <string name="sort_email">Email</string>
     <string name="sort_email_forwarded">Forwarded</string>
     <string name="sort_email_blocked">Blocked</string>
     <string name="sort_email_replied">Replied</string>
     <string name="sort_email_sent">Sent</string>
-    <string name="sort_active">Active</string>
-    <string name="sort_created_at">Created at</string>
-    <string name="sort_updated_at">Updated at</string>
+    <string name="sort_active">@string/filter_active_aliases</string>
+    <string name="sort_created_at">@string/created_at</string>
+    <string name="sort_updated_at">@string/updated_at</string>
     <string name="sort_deleted_at">Deleted at</string>
     <string name="sort_asc">Ascending</string>
     <string name="clear_filter">Clear filter</string>
@@ -542,7 +551,6 @@
     <string name="addyio_for_wearables_desc">With the addy.io app on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to a beautiful watchface</string>
     <string name="start_wearable_app">Start app</string>
     <string name="setup_app_on_wearable">Setup app</string>
-    <string name="reset_app_on_wearable">Reset app</string>
     <string name="select_wearable_device">Select wearable device</string>
     <string name="no_wearable_devices_available">No wearable devices available</string>
     <string name="this_device">This device</string>
@@ -574,7 +582,7 @@
     <string name="notification_permissions_required_desc">Notification permissions are required to fully use the app. Tap here to allow the addy.io app to send notifications. You retain control over which notification the app can send.</string>
     <string name="can_reply_send">Reply/send allowed</string>
     <string name="cannot_reply_send">Reply/send not allowed</string>
-    <string name="can_reply_send_desc">Reply and send from your aliases</string>
+    <string name="can_reply_send_desc">Toggle this option to determine whether this recipient is allowed to reply and send from your aliases. When set to off this recipient will not be able to reply or send from your aliases and you will be notified when an attempt is made</string>
     <string name="tap_here_to_see_the_error">Tap here to see the error</string>
     <string name="error_details">Error details</string>
     <string name="no_error_message">No error message</string>
@@ -583,10 +591,10 @@
     <string name="error_copied_to_clipboard">Error copied to clipboard</string>
     <string name="multiple_alias_selected">%d alias(es) selected</string>
     <string name="multiple_alias_selected_desc">The actions below will be performed on all selected aliases. Pressing cancel will unselect all aliases</string>
-    <string name="aliaswatcher_max_reached">You cannot have more than 15 aliases watched</string>
-    <string name="alias_multiple_selection_max_reached">You cannot select more than 15 aliases</string>
+    <string name="aliaswatcher_max_reached">You cannot have more than 25 aliases watched</string>
+    <string name="alias_multiple_selection_max_reached">You cannot select more than 25 aliases</string>
     <string name="actions">Actions</string>
-    <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nTo avoid reaching the API limit, you can manage a maximum of 15 aliases at the same time.</string>
+    <string name="feature_longpress_desc">Perform quick actions on multiple aliases by long pressing them in the alias overview.\n\nYou can manage a maximum of 25 aliases at the same time.</string>
     <string name="feature_longpress_enable_desc">Press and hold aliases in the alias overview to enter selection mode (requires a restart of the app)</string>
     <string name="feature_longpress">Manage multiple aliases</string>
     <string name="something_went_wrong_tap_here_to_see_the_error">Something went wrong, tap here to see the error</string>
@@ -594,7 +602,6 @@
     <string name="pgp_inline_desc">Use inline (PGP/Inline) instead of PGP/MIME encryption for forwarded messages. Please Note: This will ONLY encrypt and forward the plain text content!</string>
     <string name="protected_headers">Hide subject</string>
     <string name="protected_headers_subject_desc">Enabling this setting will hide and encrypt the email subject using protected headers. Many mail clients are able to automatically decrypt and display the subject once the email arrives.</string>
-    <string name="you_must_be_subscribed">You must be subscribed to unlock this feature</string>
     <string name="prerequisite_disable_pgp_inline">You need to disable inline encryption before you can enable protected headers (hide subject)</string>
     <string name="prerequisite_disable_protected_headers">You need to disable protected headers (hide subject) before you can enable inline encryption</string>
     <string name="api_token_about_to_expire">API key about to expire</string>
@@ -634,4 +641,47 @@
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
+    <string name="stats">Stats</string>
+    <string name="error_obtaining_chart_data">@string/could_not_refresh_data</string>
+    <string name="you_ve_used_d_out_of_d_rules">You’ve used %1$d out of %2$s rules</string>
+    <string name="from_name">From name</string>
+    <string name="alias_no_from_name">This alias has no from name set. Tap here to add one</string>
+    <string name="domain_no_from_name">This domain has no from name set. Tap here to add one</string>
+    <string name="username_no_from_name">This username has no from name set. Tap here to add one</string>
+    <string name="edit_from_name">Edit from name</string>
+    <string name="edit_from_name_alias_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"%1$s\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. <b>Alias \'From Name\'</b><br />2. Username or Custom Domain \'From Name\'<br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this specific alias, it will override the other settings.]]></string>
+    <string name="edit_from_name_domain_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"example@%1$s\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. Alias \'From Name\'<br />2. Username or <b>Custom Domain \'From Name\'</b><br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this domain, it will override the global \'From Name\' setting.]]></string>
+    <string name="edit_from_name_username_desc"><![CDATA[The \'From Name\' is shown when you send an email from an alias or reply anonymously to a forwarded email. If left blank, then the email alias itself will be used as the \'From Name\' e.g. \"example@%1$s.addy.io\".<br /><br />The \'From Name\' that is used for an alias is determined by the following <b>priority:</b><br />1. Alias \'From Name\'<br />2. <b>Username</b> or Custom Domain <b>\'From Name\'</b><br />3. Global \'From Name\' from the settings page<br /><br />If you set the \'From Name\' for this username, it will override the global \'From Name\' setting.]]></string>
+    <string name="error_edit_from_name">Something went wrong while editing the from name</string>
+    <string name="feature_not_available_subscription">This feature is not available with your current subscription</string>
+    <string name="notification_alias_watches_alias_does_not_exist_anymore">Alias removed from alias watcher</string>
+    <string name="notification_alias_watches_alias_does_not_exist_anymore_desc">%1$s has been forgotten and removed from the alias watcher</string>
+    <string name="view_all">View all</string>
+    <string name="d_slash_s">%1$d / %2$s</string>
+    <string name="home_bandwidth_text">%1$sMB / %2$sMB</string>
+    <string name="stat_card_view_online">View online</string>
+    <string name="total_aliases">Total aliases</string>
+    <string name="deleted_aliases">Deleted aliases</string>
+    <string name="view_active">View active</string>
+    <string name="view_inactive">View inactive</string>
+    <string name="view_deleted">View deleted</string>
+    <string name="apply_filter">Apply filter</string>
+    <string name="apply_filter_desc">Do you want to apply this filter to the aliases list? This would clear your current filter</string>
+    <string name="view_watched">View watched</string>
+    <string name="watched_aliases">Watched aliases</string>
+    <string name="filter_all_aliases">All</string>
+    <string name="filter_active_aliases">Active</string>
+    <string name="filter_inactive_aliases">Inactive</string>
+    <string name="filter_deleted_aliases">Deleted</string>
+    <string name="start_watching">Start watching</string>
+    <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
+    <string name="whoops">Whoops!</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="check_for_updates_desc">Tap here to manually check for new updates</string>
+    <string name="can_be_used_to_login">Can be used to login</string>
+    <string name="can_login_username_desc">Toggle this option to determine whether this username can be used to login to your account or not. When set to off you will not be able to use this username to login to your account</string>
+    <string name="can_login_enabled">Can login enabled</string>
+    <string name="can_login_disabled">Can login disabled</string>
+    <string name="hosted">Hosted</string>
+
 </resources>

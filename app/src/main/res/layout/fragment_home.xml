@@ -1,29 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home_statistics_NSV"
+    android:id="@+id/home_statistics_RL1"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
         android:orientation="vertical"
-        android:padding="@dimen/layout_padding_top"
-        android:paddingStart="@dimen/layout_padding"
-        android:paddingEnd="@dimen/layout_padding">
+        android:weightSum="1">
+
+        <com.patrykandpatrick.vico.views.chart.ChartView
+            android:id="@+id/home_chart_view_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:alpha="0.1"
+            app:chart="line"
+            app:fadingEdgeVisibilityInterpolator="androidx.interpolator.view.animation.FastOutSlowInInterpolator"
+            app:fadingEdgeWidth="32dp"
+            app:horizontalLayout="fullWidth"
+            app:lineChartStyle="@style/Chart3LineChartStyle"
+            app:showBottomAxis="false"
+            app:showStartAxis="false" />
+    </LinearLayout>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/home_statistics_NSV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/home_statistics_LL"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
+
 
             <LinearLayout
                 style="@style/AddyIoTitleNoAction"
@@ -40,325 +62,171 @@
             </LinearLayout>
 
 
-            <LinearLayout
+            <GridLayout
+                android:id="@+id/home_stats_gridlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:columnCount="1"
                 android:orientation="vertical"
-                android:paddingStart="@dimen/cardview_extra_padding"
-                android:paddingEnd="@dimen/cardview_extra_padding">
+                android:useDefaultMargins="true">
 
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/home_statistics_monthly_bandwidth_progress_shimmer"
-                    android:layout_width="wrap_content"
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/home_stat_card_shared_domain_aliases"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:shimmer_auto_start="false"
-                    app:shimmer_base_alpha="1"
-                    app:shimmer_highlight_alpha="0.5"
-                    app:shimmer_repeat_count="0">
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_email_at"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/shared_domain_aliases" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ProgressBar
-                            android:id="@+id/home_statistics_monthly_bandwidth_progress"
-                            style="@style/AddyIoProgressBarHome"
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:progress="0" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/cardview_padding">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="4dp"
-                                    android:drawablePadding="4dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/monthly_bandwidth"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="16sp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_monthly_bandwidth_current"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:text="0MB "
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_monthly_bandwidth_max"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:layout_marginStart="4dp"
-                                        android:alpha="0.5"
-                                        android:text="\?"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:contentDescription="@string/monthly_bandwidth"
-                                android:src="@drawable/ic_gauge"
-                                android:tint="@android:color/white"
-                                app:tint="@android:color/white"
-                                tools:ignore="UseAppTint" />
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/home_statistics_recipients_progress_shimmer"
-                    android:layout_width="wrap_content"
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/home_stat_card_recipients"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:shimmer_auto_start="false"
-                    app:shimmer_base_alpha="1"
-                    app:shimmer_highlight_alpha="0.5"
-                    app:shimmer_repeat_count="0">
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_inbox"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/recipients" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="6dp">
-
-                        <ProgressBar
-                            android:id="@+id/home_statistics_recipients_progress"
-                            style="@style/AddyIoProgressBarRedHome"
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:progress="0" />
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/cardview_padding">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="4dp"
-                                    android:drawablePadding="4dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/recipients"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="16sp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_recipients_current"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:text="0"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_recipients_max"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:layout_marginStart="4dp"
-                                        android:alpha="0.5"
-                                        android:text="\?"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:contentDescription="@string/recipients"
-                                android:src="@drawable/ic_user"
-                                android:tint="@android:color/white"
-                                app:tint="@android:color/white"
-                                tools:ignore="UseAppTint" />
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/home_statistics_aliases_progress_shimmer"
-                    android:layout_width="wrap_content"
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/home_stat_card_usernames"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:shimmer_auto_start="false"
-                    app:shimmer_base_alpha="1"
-                    app:shimmer_highlight_alpha="0.5"
-                    app:shimmer_repeat_count="0">
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_users"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/usernames" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/home_stat_card_domains"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_world"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/domains" />
 
-                        <ProgressBar
-                            android:id="@+id/home_statistics_aliases_progress"
-                            style="@style/AddyIoProgressBarEasternBlueHome"
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:progress="0" />
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="90dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/cardview_padding">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="4dp"
-                                    android:drawablePadding="4dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:gravity="center_vertical"
-                                    android:text="@string/shared_domain_aliases"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="16sp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_aliases_current"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:text="0"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-
-                                    <TextView
-                                        android:id="@+id/home_statistics_aliases_max"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="bottom"
-                                        android:layout_marginStart="4dp"
-                                        android:alpha="0.5"
-                                        android:text="\?"
-                                        android:textColor="@android:color/white"
-                                        tools:ignore="HardcodedText" />
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:contentDescription="@string/shared_domain_aliases"
-                                android:src="@drawable/ic_email_at"
-                                android:tint="@android:color/white"
-                                app:tint="@android:color/white"
-                                tools:ignore="UseAppTint" />
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-            </LinearLayout>
-
-        </LinearLayout>
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/home_stat_card_rules"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_filter"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/rules" />
 
 
-        <LinearLayout
-            android:id="@+id/home_statistics_LL1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical">
+                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    android:id="@+id/home_stat_card_bandwidth"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:StatCardViewDescription="0/1"
+                    app:StatCardViewIcon="@drawable/ic_gauge"
+                    app:StatCardViewShowButton="false"
+                    app:StatCardViewTitle="@string/monthly_bandwidth" />
+            </GridLayout>
 
             <LinearLayout
-                style="@style/AddyIoTitleAction"
+                android:id="@+id/home_statistics_LL1"
                 android:layout_width="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
 
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/most_active_aliases" />
+                <LinearLayout
+                    style="@style/AddyIoTitleAction"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="12dp"
+                    android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/home_most_active_aliases_view_more"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/stats" />
+
+                </LinearLayout>
+
+                <!-- 8dp for spacing below scroll-->
+                <GridLayout
+                    android:id="@+id/home_stats_aliases_gridlayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/view_more" />
+                    android:layout_marginBottom="8dp"
+                    android:alignmentMode="alignBounds"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:columnCount="1"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/cardview_extra_padding"
+                    android:paddingEnd="@dimen/cardview_extra_padding"
+                    android:useDefaultMargins="true">
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_total_aliases"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_email_at"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/total_aliases" />
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_active_aliases"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_check"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/active_aliases" />
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_inactive_aliases"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_close"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/inactive_aliases" />
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_card_deleted_aliases"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_trash"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/deleted_aliases" />
+
+                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                        android:id="@+id/home_stat_watched_aliases"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_watch_alias"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/watched_aliases" />
+                </GridLayout>
+
 
             </LinearLayout>
 
-            <com.todkars.shimmer.ShimmerRecyclerView
-                android:id="@+id/home_most_active_aliases_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:shimmer_recycler_auto_start="true"
-                app:shimmer_recycler_item_count="5"
-                app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer">
-
-            </com.todkars.shimmer.ShimmerRecyclerView>
-
-            <TextView
-                android:id="@+id/home_no_aliases"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/no_result_textview_padding"
-                android:text="@string/no_active_aliases"
-                android:textAlignment="center"
-                android:textColor="@color/BlackWhite"
-                android:visibility="gone" />
-
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</RelativeLayout>

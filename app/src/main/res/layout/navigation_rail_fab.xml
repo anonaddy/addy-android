@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToOutline="false"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:padding="12dp"
+        android:src="@drawable/icon_monocolor"
+        android:contentDescription="@string/app_name"
+        app:tint="?colorPrimary" />
+
+    <RelativeLayout
+        android:layout_width="56dp"
+        android:layout_height="18dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/navigation_rail_fab_version"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:background="@drawable/drag_pill"
+            android:backgroundTint="?colorPrimaryContainer"
+            android:backgroundTintMode="src_over"
+            android:contentDescription="@string/drag_down_to_close"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="version"
+            android:textAlignment="center"
+            android:textColor="?colorOnPrimaryContainer"
+            android:textSize="8sp"
+            tools:ignore="HardcodedText,SmallSp" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/navigation_rail_fab_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/settings"
+            app:srcCompat="@drawable/ic_settings" />
+
+        <ImageView
+            android:id="@+id/navigation_rail_update_icon"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentEnd="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/circle"
+            android:tintMode="src_over"
+            android:visibility="invisible"
+            android:contentDescription="@string/new_update_available"
+            app:tint="@color/softRed" />
+
+    </RelativeLayout>
+</LinearLayout>

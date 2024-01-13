@@ -49,7 +49,7 @@ class WearableListenerService : WearableListenerService() {
                 startActivity(intent)
             }
             "/setIcon" -> {
-                val iconToSet = LauncherIconController.LauncherIcon.values().firstOrNull { it.key == String(p0.data) }
+                val iconToSet = LauncherIconController.LauncherIcon.entries.firstOrNull { it.key == String(p0.data) }
                 if (iconToSet != null) {
                     LauncherIconController(this).setIcon(iconToSet)
                 }

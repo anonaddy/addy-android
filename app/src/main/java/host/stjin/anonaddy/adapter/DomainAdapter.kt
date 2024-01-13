@@ -31,18 +31,6 @@ class DomainAdapter(
         holder.mTitle.text = listWithDomains[position].domain
 
 
-        val aliases = listWithDomains[position].aliases?.size ?: 0
-        var forwardedEmails = 0
-
-        // Count the total amount of forwarded emails for all aliases
-        // can only check the forwarded emails if the aliases are more than 0
-        if (aliases > 0) {
-            for (alias in listWithDomains[position].aliases!!) {
-                forwardedEmails += alias.emails_forwarded
-            }
-        }
-
-
         when (listWithDomains[position].domain_sending_verified_at) {
             null -> {
                 holder.mDescription.text = holder.mDescription.context.resources.getString(
@@ -53,8 +41,7 @@ class DomainAdapter(
             else -> {
                 holder.mDescription.text = holder.mDescription.context.resources.getString(
                     R.string.domains_list_description,
-                    aliases,
-                    forwardedEmails
+                    listWithDomains[position].aliases_count
                 )
                 holder.domainsRecyclerviewListIcon.setImageResource(R.drawable.ic_dns)
             }

@@ -40,10 +40,9 @@ fun AliasList(aliases: List<Aliases>, favoriteAliases: List<String>?, scalingLaz
     }
 
     ScalingLazyColumnWithRSB(
-        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
         state = scalingLazyListState,
-        snap = false,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item { AliasActionRow(context = context) }
         items(aliases) { alias ->

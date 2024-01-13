@@ -15,8 +15,10 @@ import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIo
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -24,12 +26,15 @@ import kotlinx.coroutines.launch
 
 class ManageDomainsActivity : BaseActivity(),
     EditDomainDescriptionBottomDialogFragment.AddEditDomainDescriptionBottomDialogListener,
+    EditDomainFromNameBottomDialogFragment.AddEditDomainFromNameBottomDialogListener,
     EditDomainRecipientBottomDialogFragment.AddEditDomainRecipientBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
+    private var shouldRefreshOnFinish = false
 
     private lateinit var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment
     private lateinit var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment
+    private lateinit var editDomainFromNameBottomDialogFragment: EditDomainFromNameBottomDialogFragment
 
     private var domain: Domains? = null
         set(value) {
@@ -68,6 +73,14 @@ class ManageDomainsActivity : BaseActivity(),
             return
         }
         setPage(domainId)
+    }
+
+
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
     }
 
 
@@ -123,6 +136,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
             if (result == "204") {
                 this.domain!!.catch_all = false
+                shouldRefreshOnFinish = true
                 updateUi(this.domain!!)
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(true)
@@ -141,6 +155,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainCatchAllSwitchLayout.showProgressBar(false)
             if (domain != null) {
                 this.domain = domain
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageDomainCatchAllSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -158,6 +173,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
                 this.domain!!.active = false
+                shouldRefreshOnFinish = true
                 updateUi(this.domain!!)
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(true)
@@ -176,6 +192,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainActiveSwitchLayout.showProgressBar(false)
             if (domain != null) {
                 this.domain = domain
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageDomainActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -221,6 +238,17 @@ class ManageDomainsActivity : BaseActivity(),
                     editDomainRecipientBottomDialogFragment.show(
                         supportFragmentManager,
                         "editDomainRecipientsBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityManageDomainFromNameEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainFromNameBottomDialogFragment.isAdded) {
+                    editDomainFromNameBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainFromNameBottomDialogFragment"
                     )
                 }
             }
@@ -273,6 +301,7 @@ class ManageDomainsActivity : BaseActivity(),
         networkHelper.deleteDomain({ result ->
             if (result == "204") {
                 deleteDomainSnackbar.dismiss()
+                shouldRefreshOnFinish = true
                 finish()
             } else {
                 SnackbarHelper.createSnackbar(
@@ -295,7 +324,8 @@ class ManageDomainsActivity : BaseActivity(),
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_obtaining_domains) + "\n" + error,
-                    binding.activityManageDomainCL
+                    binding.activityManageDomainCL,
+                    LoggingHelper.LOGFILES.DEFAULT
                 ).show()
 
                 // Show error animations
@@ -334,6 +364,7 @@ class ManageDomainsActivity : BaseActivity(),
         val buf = StringBuilder()
 
         if (domain.aliases != null) {
+            domain.aliases = domain.aliases?.sortedBy { it.email }
             for (alias in domain.aliases!!) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked
@@ -368,7 +399,7 @@ class ManageDomainsActivity : BaseActivity(),
 
         // Set recipient
         val recipients: String = domain.default_recipient?.email ?: this.resources.getString(
-            R.string.default_recipient
+            R.string.default_recipient_s, (this.application as AddyIoApp).userResourceExtended.default_recipient_email
         )
 
 
@@ -401,6 +432,43 @@ class ManageDomainsActivity : BaseActivity(),
         )
 
         /**
+         * FROM NAME
+         */
+
+
+        // Not available for free subscriptions
+        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            binding.activityManageDomainFromNameEdit.setLayoutEnabled(false)
+            binding.activityManageDomainFromNameEdit.setDescription(
+                this.resources.getString(
+                    R.string.feature_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (domain.from_name != null) {
+                binding.activityManageDomainFromNameEdit.setDescription(domain.from_name)
+            } else {
+                binding.activityManageDomainFromNameEdit.setDescription(
+                    this.resources.getString(
+                        R.string.domain_no_from_name
+                    )
+                )
+            }
+            // reset this value as it now includes the description
+            editDomainFromNameBottomDialogFragment = EditDomainFromNameBottomDialogFragment.newInstance(
+                this.domain!!.id,
+                this.domain!!.domain,
+                domain.from_name
+            )
+        }
+
+
+        // Please note that the "Catch-all" feature is also only available for paid subcriptions. However, you cannot add your own domains
+        // on the free plan, making a check useless
+
+
+        /**
          * Check DNS
          */
 
@@ -429,6 +497,12 @@ class ManageDomainsActivity : BaseActivity(),
 
     override fun recipientEdited(domain: Domains) {
         editDomainRecipientBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
+        this.domain = domain
+    }
+
+    override fun fromNameEdited(domain: Domains) {
+        editDomainFromNameBottomDialogFragment.dismissAllowingStateLoss()
         // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
         this.domain = domain
     }

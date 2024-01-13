@@ -79,7 +79,7 @@ class EditUsernameDescriptionBottomDialogFragment(
         }
     }
 
-    private fun verifyKey(context: Context) {
+    private fun save(context: Context) {
         val description = binding.bsEditusernameUsernameDescTiet.text.toString()
 
         // Animate the button to progress
@@ -109,7 +109,7 @@ class EditUsernameDescriptionBottomDialogFragment(
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_editusername_username_save_button) {
-                verifyKey(
+                save(
                     requireContext()
                 )
             }

@@ -55,10 +55,9 @@ fun CreatedAliasDetails(scalingLazyListState: ScalingLazyListState, alias: Alias
     // Creates a CoroutineScope bound to the lifecycle
     val haptic = LocalHapticFeedback.current
     ScalingLazyColumnWithRSB(
-        horizontalAlignment = CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
-        snap = false,
-        state = scalingLazyListState
+        state = scalingLazyListState,
+        horizontalAlignment = CenterHorizontally
     ) {
         item {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)

@@ -40,7 +40,8 @@
                     android:layout_height="20dp"
                     android:src="@drawable/icon_monocolor"
                     android:tint="?android:attr/colorAccent"
-                    app:tint="?android:attr/colorAccent" />
+                    app:tint="?android:attr/colorAccent"
+                    tools:ignore="RtlSymmetry" />
 
             </LinearLayout>
 
@@ -463,7 +464,7 @@
                 android:layout_marginBottom="8dp"
                 android:contentDescription="@string/recipients"
                 android:padding="16dp"
-                android:src="@drawable/ic_user"
+                android:src="@drawable/ic_inbox"
                 android:tint="?android:attr/colorAccent"
                 app:tint="?android:attr/colorAccent"
                 tools:ignore="UseAppTint" />
@@ -475,7 +476,7 @@
                 android:layout_marginBottom="8dp"
                 android:contentDescription="@string/domains"
                 android:padding="16dp"
-                android:src="@drawable/ic_dns"
+                android:src="@drawable/ic_world"
                 android:tint="?android:attr/colorAccent"
                 app:tint="?android:attr/colorAccent"
                 tools:ignore="UseAppTint" />
@@ -498,7 +499,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/usernames"
                 android:padding="16dp"
-                android:src="@drawable/ic_user_menu"
+                android:src="@drawable/ic_users"
                 android:tint="?android:attr/colorAccent"
                 app:tint="?android:attr/colorAccent"
                 tools:ignore="UseAppTint" />

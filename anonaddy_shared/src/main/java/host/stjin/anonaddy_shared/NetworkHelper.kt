@@ -24,8 +24,10 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALLOWED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_APP_VERSION
+import host.stjin.anonaddy_shared.AddyIo.API_URL_CAN_LOGIN_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_USERNAMES
+import host.stjin.anonaddy_shared.AddyIo.API_URL_CHART_DATA
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ENCRYPTED_RECIPIENTS
@@ -41,7 +43,35 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.GITLAB_TAGS_RSS_FEED
 import host.stjin.anonaddy_shared.AddyIo.lazyMgr
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.*
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.AliasesArray
+import host.stjin.anonaddy_shared.models.ApiTokenDetails
+import host.stjin.anonaddy_shared.models.BulkActionResponse
+import host.stjin.anonaddy_shared.models.BulkAliasesArray
+import host.stjin.anonaddy_shared.models.ChartData
+import host.stjin.anonaddy_shared.models.DomainOptions
+import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.DomainsArray
+import host.stjin.anonaddy_shared.models.ErrorHelper
+import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.models.FailedDeliveriesArray
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.models.RecipientsArray
+import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.models.RulesArray
+import host.stjin.anonaddy_shared.models.SingleAlias
+import host.stjin.anonaddy_shared.models.SingleDomain
+import host.stjin.anonaddy_shared.models.SingleFailedDelivery
+import host.stjin.anonaddy_shared.models.SingleRecipient
+import host.stjin.anonaddy_shared.models.SingleRule
+import host.stjin.anonaddy_shared.models.SingleUserResource
+import host.stjin.anonaddy_shared.models.SingleUsername
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.models.Usernames
+import host.stjin.anonaddy_shared.models.UsernamesArray
+import host.stjin.anonaddy_shared.models.Version
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import org.json.JSONArray
 import org.json.JSONObject
@@ -369,6 +399,11 @@ class NetworkHelper(private val context: Context) {
         local_part: String,
         recipients: ArrayList<String>?
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val array = JSONArray()
 
         if (recipients != null) {
@@ -453,11 +488,13 @@ class NetworkHelper(private val context: Context) {
             parameters.add("filter[active]=" to "true")
         } else if (aliasSortFilter.onlyInactiveAliases) {
             parameters.add("filter[active]=" to "false")
-        }
-
-        if (aliasSortFilter.includeDeleted) {
+            parameters.add("filter[deleted]=" to "with")
+        } else if (aliasSortFilter.onlyDeletedAliases) {
+            parameters.add("filter[deleted]=" to "only")
+        } else {
             parameters.add("filter[deleted]=" to "with")
         }
+
 
         if (size != null) {
             parameters.add("page[size]" to size.toString())
@@ -513,6 +550,61 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "getAliases",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun getChartData(
+        callback: (ChartData?, String?) -> Unit
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) =
+            Fuel.get(API_URL_CHART_DATA)
+                .appendHeader(
+                    *getHeaders()
+                )
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, ChartData::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getChartData",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )
@@ -586,6 +678,11 @@ class NetworkHelper(private val context: Context) {
         aliasId: String,
         description: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("description", description)
 
@@ -636,11 +733,79 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun updateFromNameSpecificAlias(
+        callback: (Aliases?, String?) -> Unit,
+        aliasId: String,
+        fromName: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("from_name", fromName)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_ALIAS}/$aliasId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "updateFromNameSpecificAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
     suspend fun updateRecipientsSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String,
         recipients: ArrayList<String>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         val array = JSONArray()
 
@@ -699,11 +864,80 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun bulkGetAlias(
+        callback: (BulkAliasesArray?, String?) -> Unit,
+        aliases: List<String>
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (id in aliases) {
+            array.put(id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/get/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkAliasesArray::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkGetAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
 
     suspend fun deactivateSpecificAlias(
         callback: (String?) -> Unit?,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_ALIAS}/$aliasId")
             .appendHeader(
                 *getHeaders()
@@ -747,6 +981,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -807,6 +1045,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", aliasId)
 
@@ -858,6 +1101,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -919,6 +1166,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId")
             .appendHeader(
                 *getHeaders()
@@ -962,6 +1214,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1022,6 +1278,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId/forget")
             .appendHeader(
                 *getHeaders()
@@ -1066,6 +1327,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1127,6 +1392,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.patch("${API_URL_ALIAS}/$aliasId/restore")
             .appendHeader(
                 *getHeaders()
@@ -1174,6 +1444,10 @@ class NetworkHelper(private val context: Context) {
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1239,6 +1513,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         address: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("email", address)
 
@@ -1318,6 +1597,13 @@ class NetworkHelper(private val context: Context) {
                 } else {
                     recipientList.addAll(addyIoData.data)
                 }
+
+                //TODO remove when not required per Addy's API
+                recipientList.forEach {
+                    it.aliases_count = it.aliases?.size ?: 0
+                    it.aliases = null
+                }
+
                 callback(recipientList, null)
             }
             401 -> {
@@ -1354,6 +1640,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1397,6 +1688,10 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -1449,6 +1744,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ALLOWED_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1493,6 +1793,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ENCRYPTED_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1537,6 +1842,10 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -1590,6 +1899,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_INLINE_ENCRYPTED_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1634,6 +1948,10 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -1686,6 +2004,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_PROTECTED_HEADERS_RECIPIENTS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1730,6 +2053,10 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -1782,6 +2109,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENT_KEYS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -1826,6 +2158,11 @@ class NetworkHelper(private val context: Context) {
         recipientId: String,
         keyData: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("key_data", keyData)
 
@@ -1879,6 +2216,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) =
             Fuel.get("${API_URL_RECIPIENTS}/$recipientId")
                 .appendHeader(
@@ -1928,6 +2270,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("recipient_id", recipientId)
 
@@ -1997,6 +2344,13 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, DomainsArray::class.java)
                 val domainList = ArrayList<Domains>()
                 domainList.addAll(addyIoData.data)
+
+                //TODO remove when not required per Addy's API
+                domainList.forEach {
+                    it.aliases_count = it.aliases?.size ?: 0
+                    it.aliases = null
+                }
+
                 callback(domainList, null)
             }
             401 -> {
@@ -2033,6 +2387,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         id: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_DOMAINS}/$id")
             .appendHeader(
                 *getHeaders()
@@ -2076,6 +2435,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Domains?, String?, String?) -> Unit,
         domain: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("domain", domain)
 
@@ -2187,6 +2551,11 @@ class NetworkHelper(private val context: Context) {
         domainId: String,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("default_recipient", recipientId)
 
@@ -2239,6 +2608,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         domainId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_DOMAINS}/$domainId")
             .appendHeader(
                 *getHeaders()
@@ -2283,6 +2657,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Domains?, String?) -> Unit,
         domainId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", domainId)
 
@@ -2334,6 +2713,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         domainId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_DOMAINS}/$domainId")
             .appendHeader(
                 *getHeaders()
@@ -2378,6 +2762,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Domains?, String?) -> Unit,
         domainId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", domainId)
 
@@ -2431,6 +2820,11 @@ class NetworkHelper(private val context: Context) {
         domainId: String,
         description: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("description", description)
 
@@ -2480,6 +2874,67 @@ class NetworkHelper(private val context: Context) {
     }
 
 
+    suspend fun updateFromNameSpecificDomain(
+        callback: (Domains?, String?) -> Unit,
+        domainId: String,
+        fromName: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("from_name", fromName)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_DOMAINS}/$domainId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateFromNameSpecificDomain",
+                    ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
     /**
      * USERNAMES
      */
@@ -2506,6 +2961,13 @@ class NetworkHelper(private val context: Context) {
 
                 val usernamesList = ArrayList<Usernames>()
                 usernamesList.addAll(addyIoData.data)
+
+                //TODO remove when not required per Addy's API
+                usernamesList.forEach {
+                    it.aliases_count = it.aliases?.size ?: 0
+                    it.aliases = null
+                }
+
                 callback(usernamesList, null)
             }
             401 -> {
@@ -2542,6 +3004,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         id: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_USERNAMES}/$id")
             .appendHeader(
                 *getHeaders()
@@ -2585,6 +3052,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Usernames?, String?) -> Unit,
         username: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("username", username)
 
@@ -2692,6 +3164,11 @@ class NetworkHelper(private val context: Context) {
         userNameId: String,
         recipientId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("default_recipient", recipientId)
 
@@ -2744,6 +3221,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         usernameId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_USERNAMES}/$usernameId")
             .appendHeader(
                 *getHeaders()
@@ -2788,6 +3270,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", usernameId)
 
@@ -2840,6 +3327,11 @@ class NetworkHelper(private val context: Context) {
         usernameId: String,
         description: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("description", description)
 
@@ -2888,11 +3380,76 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun updateFromNameSpecificUsername(
+        callback: (Usernames?, String?) -> Unit,
+        usernameId: String,
+        fromName: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("from_name", fromName)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_USERNAMES}/$usernameId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateFromNameSpecificUsername",
+                    ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
 
     suspend fun disableCatchAllSpecificUsername(
         callback: (String?) -> Unit?,
         usernameId: String
     ) {
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+
         val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_USERNAMES}/$usernameId")
             .appendHeader(
                 *getHeaders()
@@ -2937,6 +3494,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", usernameId)
 
@@ -2970,6 +3532,115 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "enableCatchAllSpecificUsername",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun disableCanLoginSpecificUsername(
+        callback: (String?) -> Unit?,
+        usernameId: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.delete("${API_URL_CAN_LOGIN_USERNAMES}/$usernameId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disableCanLoginSpecificUsername",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
+    suspend fun enableCanLoginSpecificUsername(
+        callback: (Usernames?, String?) -> Unit,
+        usernameId: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("id", usernameId)
+
+        val (_, response, result) = Fuel.post(API_URL_CAN_LOGIN_USERNAMES)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enableCanLoginSpecificUsername",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )
@@ -3115,6 +3786,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         id: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_RULES}/$id")
             .appendHeader(
                 *getHeaders()
@@ -3158,6 +3834,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Rules?, String?) -> Unit,
         rule: Rules
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.post(API_URL_RULES)
             .appendHeader(
@@ -3266,6 +3947,11 @@ class NetworkHelper(private val context: Context) {
         ruleId: String,
         rule: Rules
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.patch("${API_URL_RULES}/$ruleId")
             .appendHeader(
@@ -3311,6 +3997,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         ruleId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_RULES}/$ruleId")
             .appendHeader(
                 *getHeaders()
@@ -3355,6 +4046,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Rules?, String?) -> Unit,
         ruleId: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val json = JSONObject()
         json.put("id", ruleId)
 
@@ -3424,6 +4120,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit,
         amountOfAliasesToCache: Int? = 15
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         getAliases(
             { list, _ ->
                 if (list == null) {
@@ -3443,8 +4144,8 @@ class NetworkHelper(private val context: Context) {
             },
             aliasSortFilter = AliasSortFilter(
                 onlyActiveAliases = true,
+                onlyDeletedAliases = false,
                 onlyInactiveAliases = false,
-                includeDeleted = false,
                 onlyWatchedAliases = false,
                 sort = "emails_forwarded",
                 sortDesc = true,
@@ -3458,6 +4159,11 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit,
         amountOfAliasesToCache: Int? = 15
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         getAliases(
             { list, _ ->
                 if (list == null) {
@@ -3477,8 +4183,8 @@ class NetworkHelper(private val context: Context) {
             },
             aliasSortFilter = AliasSortFilter(
                 onlyActiveAliases = true,
+                onlyDeletedAliases = false,
                 onlyInactiveAliases = false,
-                includeDeleted = false,
                 onlyWatchedAliases = false,
                 sort = "updated_at",
                 sortDesc = true,
@@ -3492,6 +4198,11 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheUserResourceForWidget(
         callback: (Boolean) -> Unit
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         getUserResource { userResource: UserResource?, _: String? ->
             if (userResource == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
@@ -3513,6 +4224,11 @@ class NetworkHelper(private val context: Context) {
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
         callback: (Boolean) -> Unit
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         getAllFailedDeliveries({ result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
@@ -3663,6 +4379,11 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit,
         id: String
     ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
         val (_, response, result) = Fuel.delete("${API_URL_FAILED_DELIVERIES}/$id")
             .appendHeader(
                 *getHeaders()

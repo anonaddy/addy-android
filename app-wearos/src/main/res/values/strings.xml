@@ -1,6 +1,5 @@
 <resources>
     <string name="app_reset_requested_by">addy.io reset requested by %1$s</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="app_configuration_not_valid">addy.io configuration not valid</string>
     <string name="app_data_corrupted">The app data can no longer be read. The app will be reset in 15 seconds…</string>
     <string name="setup_wearos_check_paired_device">Check your paired device to setup the app</string>
@@ -12,7 +11,7 @@
     <string name="changing_status">Changing status</string>
     <string name="favorite">Favorite</string>
     <string name="tile_favorite_aliases_label">Favorite aliases</string>
-    <string name="tile_favorite_aliases_title">Aliases</string>
+    <string name="tile_favorite_aliases_title">@string/aliases</string>
     <string name="tile_favorite_aliases_subtitle">Favorites</string>
     <string name="tile_favorite_aliases_all">All aliases</string>
     <string name="tile_favorite_aliases_create">Create alias</string>

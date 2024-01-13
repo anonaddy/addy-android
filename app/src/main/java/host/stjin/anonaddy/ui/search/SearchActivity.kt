@@ -7,11 +7,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.adapter.*
+import host.stjin.anonaddy.adapter.AliasAdapter
+import host.stjin.anonaddy.adapter.DomainAdapter
+import host.stjin.anonaddy.adapter.FailedDeliveryAdapter
+import host.stjin.anonaddy.adapter.RecipientAdapter
+import host.stjin.anonaddy.adapter.RulesAdapter
+import host.stjin.anonaddy.adapter.UsernameAdapter
 import host.stjin.anonaddy.databinding.ActivitySearchBinding
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
@@ -26,10 +32,16 @@ import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRules
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUsernames
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.*
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.models.Usernames
 
 class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
 
@@ -67,6 +79,28 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         filteredFailedDeliveries = null
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val filteredAliasesJson = gson.toJson(filteredAliases)
+        outState.putString("filteredAliases", filteredAliasesJson)
+
+        val filteredRecipientsJson = gson.toJson(filteredRecipients)
+        outState.putString("filteredRecipients", filteredRecipientsJson)
+
+        val filteredDomainsJson = gson.toJson(filteredDomains)
+        outState.putString("filteredDomains", filteredDomainsJson)
+
+        val filteredUsernamesJson = gson.toJson(filteredUsernames)
+        outState.putString("filteredUsernames", filteredUsernamesJson)
+
+        val filteredRulesJson = gson.toJson(filteredRules)
+        outState.putString("filteredRules", filteredRulesJson)
+
+        val filteredFailedDeliveriesJson = gson.toJson(filteredFailedDeliveries)
+        outState.putString("filteredFailedDeliveries", filteredFailedDeliveriesJson)
+    }
+
     private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +124,65 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         encryptedSettingsManager = SettingsManager(true, this)
         networkHelper = NetworkHelper(this)
 
+
+        // In the event of a screen resize or orientation change, the filtered items will be stored in the
+        // savedInstanceState, load them back when recreating the activity.
+        if (savedInstanceState != null) {
+            getFilteredResultsFromSavedInstance(savedInstanceState)
+        }
+
         setSearchResults()
+    }
+
+    private fun getFilteredResultsFromSavedInstance(savedInstanceState: Bundle) {
+        val filteredAliasesJson = savedInstanceState.getString("filteredAliases")
+        if (!filteredAliasesJson.isNullOrEmpty() && filteredAliasesJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Aliases>>() {}.type
+            val filteredAliasesFromSavedInstance = gson.fromJson<ArrayList<Aliases>>(filteredAliasesJson, myType)
+            filteredAliases = filteredAliasesFromSavedInstance
+        }
+
+        val filteredRecipientsJson = savedInstanceState.getString("filteredRecipients")
+        if (!filteredRecipientsJson.isNullOrEmpty() && filteredRecipientsJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Recipients>>() {}.type
+            val filteredRecipientsFromSavedInstance = gson.fromJson<ArrayList<Recipients>>(filteredRecipientsJson, myType)
+            filteredRecipients = filteredRecipientsFromSavedInstance
+        }
+
+        val filteredDomainsJson = savedInstanceState.getString("filteredDomains")
+        if (!filteredDomainsJson.isNullOrEmpty() && filteredDomainsJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Domains>>() {}.type
+            val filteredDomainsFromSavedInstance = gson.fromJson<ArrayList<Domains>>(filteredDomainsJson, myType)
+            filteredDomains = filteredDomainsFromSavedInstance
+        }
+
+        val filteredUsernamesJson = savedInstanceState.getString("filteredUsernames")
+        if (!filteredUsernamesJson.isNullOrEmpty() && filteredUsernamesJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Usernames>>() {}.type
+            val filteredUsernamesFromSavedInstance = gson.fromJson<ArrayList<Usernames>>(filteredUsernamesJson, myType)
+            filteredUsernames = filteredUsernamesFromSavedInstance
+        }
+
+        val filteredRulesJson = savedInstanceState.getString("filteredRules")
+        if (!filteredRulesJson.isNullOrEmpty() && filteredRulesJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<Rules>>() {}.type
+            val filteredRulesFromSavedInstance = gson.fromJson<ArrayList<Rules>>(filteredRulesJson, myType)
+            filteredRules = filteredRulesFromSavedInstance
+        }
+
+        val filteredFailedDeliveriesJson = savedInstanceState.getString("filteredFailedDeliveries")
+        if (!filteredFailedDeliveriesJson.isNullOrEmpty() && filteredFailedDeliveriesJson != "null") {
+            val gson = Gson()
+            val myType = object : TypeToken<ArrayList<FailedDeliveries>>() {}.type
+            val filteredFailedDeliveriesFromSavedInstance = gson.fromJson<ArrayList<FailedDeliveries>>(filteredFailedDeliveriesJson, myType)
+            filteredFailedDeliveries = filteredFailedDeliveriesFromSavedInstance
+        }
+
     }
 
     private fun setSearchResults() {
@@ -125,14 +217,14 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         }
 
         // No need to check if there are results, this is being done in the bottomsheet.
-/*        if (filteredAliases?.size ?: 0 == 0 &&
-            filteredDomains?.size ?: 0 == 0 &&
-            filteredRecipients?.size ?: 0 == 0 &&
-            filteredUsernames?.size ?: 0 == 0 &&
-            filteredRules?.size ?: 0 == 0 &&
-            filteredFailedDeliveries?.size ?: 0 == 0
-        ) {
-        }*/
+        /*        if (filteredAliases?.size ?: 0 == 0 &&
+                    filteredDomains?.size ?: 0 == 0 &&
+                    filteredRecipients?.size ?: 0 == 0 &&
+                    filteredUsernames?.size ?: 0 == 0 &&
+                    filteredRules?.size ?: 0 == 0 &&
+                    filteredFailedDeliveries?.size ?: 0 == 0
+                ) {
+                }*/
     }
 
     /*
@@ -141,12 +233,9 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setUsernames() {
         binding.activitySearchUsernamesRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
+
+
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val usernamesAdapter = UsernameAdapter(filteredUsernames!!)
@@ -175,12 +264,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setRules() {
         binding.activitySearchRulesRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val rulesAdapter = RulesAdapter(filteredRules!!, false)
@@ -224,12 +308,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setFailedDeliveries() {
         binding.activitySearchFailedDeliveriesRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val failedDeliveryAdapter = FailedDeliveryAdapter(filteredFailedDeliveries!!)
@@ -238,6 +317,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                     failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(
                         filteredFailedDeliveries!![pos].id,
                         filteredFailedDeliveries!![pos].created_at,
+                        filteredFailedDeliveries!![pos].attempted_at,
                         filteredFailedDeliveries!![pos].alias_email,
                         filteredFailedDeliveries!![pos].recipient_email,
                         filteredFailedDeliveries!![pos].bounce_type,
@@ -261,12 +341,8 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setAliases() {
         binding.activitySearchAliasesRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
+
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             /**
@@ -313,12 +389,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setRecipients() {
         binding.activitySearchRecipientsRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val recipientAdapter = RecipientAdapter(filteredRecipients!!)
@@ -355,12 +426,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     private fun setDomains() {
         binding.activitySearchDomainsRecyclerview.apply {
 
-            layoutManager = if (this@SearchActivity.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(this@SearchActivity, 2)
-            } else {
-                LinearLayoutManager(this@SearchActivity)
-            }
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
             val domainsAdapter = DomainAdapter(filteredDomains!!)

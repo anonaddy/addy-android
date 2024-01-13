@@ -49,6 +49,7 @@
             android:padding="@dimen/layout_padding">
 
             <TextView
+                android:id="@+id/bs_addusername_username_desc"
                 style="@style/DescTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

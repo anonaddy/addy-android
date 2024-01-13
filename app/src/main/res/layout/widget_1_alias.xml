@@ -11,7 +11,8 @@
         android:layout_height="50dp"
         android:background="@drawable/widget_1_background_top"
         android:backgroundTint="@color/primaryColorStatic"
-        android:paddingEnd="8dp">
+        android:paddingEnd="8dp"
+        tools:ignore="RtlSymmetry">
 
         <ImageView
             android:id="@+id/widget_aliases_listview_list_open_app"

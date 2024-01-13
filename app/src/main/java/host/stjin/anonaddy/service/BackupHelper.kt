@@ -15,7 +15,8 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
@@ -252,7 +253,7 @@ class BackupHelper(private val context: Context) {
                     val value = line.split("|||")[1]
 
                     // Loop through all the settings available in the app and check for matches
-                    for (enum in SettingsManager.PREFS.values()) {
+                    for (enum in SettingsManager.PREFS.entries) {
                         // If a key from the sharedpreference file matches a key from the app
                         if (enum.key == key) {
                             // Check if settings is encrypted and place it in the right file accordingly

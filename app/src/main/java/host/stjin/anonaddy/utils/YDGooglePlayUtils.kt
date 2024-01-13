@@ -35,7 +35,7 @@ object YDGooglePlayUtils {
             return pm.getInstallerPackageName(packageName)
         } catch (_: PackageManager.NameNotFoundException) {
         }
-        return ""
+        return null
     }
 
     fun getInstallerApplicationName(ctx: Context, packageName: String): String {

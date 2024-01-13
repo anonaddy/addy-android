@@ -16,7 +16,6 @@ import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
@@ -24,11 +23,18 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.SearchAdapter
 import host.stjin.anonaddy.databinding.BottomsheetSearchBinding
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.*
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.models.Recipients
+import host.stjin.anonaddy_shared.models.Rules
+import host.stjin.anonaddy_shared.models.Usernames
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 
 
 class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
@@ -116,12 +122,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
         binding.bsSearchRecyclerview.apply {
 
-            layoutManager = if (this.resources.getBoolean(R.bool.isTablet)) {
-                // set a GridLayoutManager for tablets
-                GridLayoutManager(activity, 2)
-            } else {
-                LinearLayoutManager(activity)
-            }
+            layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(context))
             if (!hasSetItemDecoration) {
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
                 hasSetItemDecoration = true
@@ -197,8 +198,8 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                     },
                     aliasSortFilter = AliasSortFilter(
                         onlyActiveAliases = false,
+                        onlyDeletedAliases = false,
                         onlyInactiveAliases = false,
-                        includeDeleted = true,
                         onlyWatchedAliases = false,
                         sort = null,
                         sortDesc = true,

@@ -63,21 +63,28 @@
             android:name=".ui.alias.ManageAliasActivity"
             android:exported="true"
             android:label="@string/edit_alias"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/settings"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.alias.CreateAliasActivity"
             android:exported="true"
             android:label="@string/add_alias"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.alias.AliasActivity"
             android:exported="true"
-            android:label="@string/title_activity_main"
+            android:label="@string/aliases"
+            android:taskAffinity="host.stjin.anonaddy"
             android:theme="@style/AppTheme" />
 
         <service
@@ -192,7 +199,8 @@
 
         <activity
             android:name=".ui.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:taskAffinity="host.stjin.anonaddy">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -200,6 +208,8 @@
         <activity
             android:name=".ui.SetupActivity"
             android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
             android:theme="@style/AppTheme" />
     </application>
 

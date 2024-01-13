@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <com.google.android.material.navigationrail.NavigationRailView
+        android:id="@+id/nav_rail"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        app:headerLayout="@layout/navigation_rail_fab"
+        app:labelVisibilityMode="auto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/rail_nav_menu"
+        app:menuGravity="center" />
+
+
+    <LinearLayout
+        android:layout_marginBottom="@dimen/home_cardview_padding"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_marginStart="100dp"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/layout_padding"
+        tools:ignore="RtlSymmetry">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingStart="-16dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.search.SearchBar
+                android:id="@+id/search_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/search_desc" />
+
+            <TextView
+                android:id="@+id/navigation_rail_user_refresh"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle"
+                android:clickable="false"
+                android:contentDescription="@string/open_options"
+                android:focusable="false"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:padding="12dp"
+                app:drawableStartCompat="@drawable/ic_refresh_anim"
+                app:layout_collapseMode="pin"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/activity_main_viewpager_sw600dp_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="?colorSurfaceContainer"
+            app:cardCornerRadius="@dimen/corner_radius_cardview">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/activity_main_viewpager_sw600dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="true"
+                android:orientation="vertical" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

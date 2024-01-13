@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFilterOptionsAliasBinding
-import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 
 
@@ -70,14 +70,16 @@ class FilterOptionsAliasBottomDialogFragment(
 
 
     private fun loadFilter() {
+        disableOptionsWhenWatched()
+
         binding.bsFilteroptionsAliasesActiveButton.isChecked = aliasSortFilter.onlyActiveAliases
         binding.bsFilteroptionsAliasesInactiveButton.isChecked = aliasSortFilter.onlyInactiveAliases
-        binding.bsFilteroptionsAliasesAllButton.isChecked = !aliasSortFilter.onlyActiveAliases && !aliasSortFilter.onlyInactiveAliases
+        binding.bsFilteroptionsAliasesDeletedButton.isChecked = aliasSortFilter.onlyDeletedAliases
+        binding.bsFilteroptionsAliasesAllButton.isChecked =
+            !aliasSortFilter.onlyActiveAliases && !aliasSortFilter.onlyInactiveAliases && !aliasSortFilter.onlyDeletedAliases
 
         binding.bsFilteroptionsAliasesWatchedOnlyButton.isChecked = aliasSortFilter.onlyWatchedAliases
         binding.bsFilteroptionsAliasesWatchedOnlyAllAliasesButton.isChecked = !aliasSortFilter.onlyWatchedAliases
-
-        binding.bsFilteroptionsAliasesIncludeDeletedSwitch.setSwitchChecked(aliasSortFilter.includeDeleted)
 
         if (aliasSortFilter.sortDesc) {
             binding.bsFilteroptionsAliasesSortOrder.text = binding.bsFilteroptionsAliasesSortOrder.context.resources.getString(R.string.sort_desc)
@@ -151,7 +153,7 @@ class FilterOptionsAliasBottomDialogFragment(
             aliasSortFilter.onlyActiveAliases = false
             aliasSortFilter.onlyInactiveAliases = false
             aliasSortFilter.onlyWatchedAliases = false
-            aliasSortFilter.includeDeleted = false
+            aliasSortFilter.onlyDeletedAliases = false
             aliasSortFilter.sort = null
             aliasSortFilter.sortDesc = false
 
@@ -161,18 +163,28 @@ class FilterOptionsAliasBottomDialogFragment(
         binding.bsFilteroptionsAliasesAllButton.setOnClickListener {
             aliasSortFilter.onlyActiveAliases = false
             aliasSortFilter.onlyInactiveAliases = false
+            aliasSortFilter.onlyDeletedAliases = false
             loadFilter()
         }
 
         binding.bsFilteroptionsAliasesActiveButton.setOnClickListener {
             aliasSortFilter.onlyActiveAliases = true
             aliasSortFilter.onlyInactiveAliases = false
+            aliasSortFilter.onlyDeletedAliases = false
             loadFilter()
         }
 
         binding.bsFilteroptionsAliasesInactiveButton.setOnClickListener {
             aliasSortFilter.onlyActiveAliases = false
             aliasSortFilter.onlyInactiveAliases = true
+            aliasSortFilter.onlyDeletedAliases = false
+            loadFilter()
+        }
+
+        binding.bsFilteroptionsAliasesDeletedButton.setOnClickListener {
+            aliasSortFilter.onlyActiveAliases = false
+            aliasSortFilter.onlyInactiveAliases = false
+            aliasSortFilter.onlyDeletedAliases = true
             loadFilter()
         }
 
@@ -185,20 +197,14 @@ class FilterOptionsAliasBottomDialogFragment(
             aliasSortFilter.onlyWatchedAliases = false
             loadFilter()
         }
-
-        binding.bsFilteroptionsAliasesIncludeDeletedSwitch.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                aliasSortFilter.includeDeleted = checked
-            }
-        })
     }
 
     // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
     constructor() : this(
         AliasSortFilter(
             onlyActiveAliases = false,
+            onlyDeletedAliases = false,
             onlyInactiveAliases = false,
-            includeDeleted = false,
             onlyWatchedAliases = false,
             sort = null,
             sortDesc = false,
@@ -217,6 +223,25 @@ class FilterOptionsAliasBottomDialogFragment(
             )
         }
     }
+
+
+    override fun onResume() {
+        super.onResume()
+        disableWatchedOption()
+    }
+
+    private fun disableOptionsWhenWatched() {
+        binding.bsFilteroptionsAliasesMbtg.isEnabled = !aliasSortFilter.onlyWatchedAliases
+        binding.bsFilteroptionsAliasesSortingChipgroup.children.forEach { it.isEnabled = !aliasSortFilter.onlyWatchedAliases }
+        binding.bsFilteroptionsAliasesSortOrder.isEnabled = !aliasSortFilter.onlyWatchedAliases
+    }
+
+    private fun disableWatchedOption() {
+        val aliasWatcher = AliasWatcher(requireContext())
+        val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
+        binding.bsFilteroptionsAliasesWatchedMbtg.isEnabled = aliasesToWatch.isNotEmpty()
+    }
+
 
     override fun onClick(p0: View?) {
         if (p0 != null) {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- provide a different drawable for each state-->
+    <item
+        android:id="@+id/state_on"
+        android:drawable="@drawable/ic_world"
+        android:state_checked="true" />
+
+    <item
+        android:id="@+id/state_off"
+        android:drawable="@drawable/ic_world" />
+
+    <!-- specify transitions -->
+    <transition
+        android:drawable="@drawable/ic_world_anim"
+        android:fromId="@id/state_off"
+        android:toId="@id/state_on" />
+
+</animated-selector>

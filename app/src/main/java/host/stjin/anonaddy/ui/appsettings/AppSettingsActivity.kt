@@ -75,6 +75,7 @@ class AppSettingsActivity : BaseActivity(),
             binding.appsettingsToolbar,
             R.drawable.ic_settings
         )
+
         setVersion()
         loadSettings()
         setOnClickListeners()
@@ -84,6 +85,7 @@ class AppSettingsActivity : BaseActivity(),
         checkForUpdates()
         checkPermissions()
     }
+
 
     private fun checkPermissions() {
         val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -98,12 +100,15 @@ class AppSettingsActivity : BaseActivity(),
 
     private fun checkForUpdates() {
         lifecycleScope.launch {
-            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
-                binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
-                if (updateAvailable) {
-                    binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
-                }
-            }, this@AppSettingsActivity)
+            val settingsManager = SettingsManager(false, this@AppSettingsActivity)
+            if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
+                Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
+                    binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
+                    if (updateAvailable) {
+                        binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))
+                    }
+                }, this@AppSettingsActivity)
+            }
         }
     }
 
@@ -143,6 +148,7 @@ class AppSettingsActivity : BaseActivity(),
     override fun onResume() {
         super.onResume()
         setOnBiometricSwitchListeners()
+        checkPermissions() // When the user allows permissions through the system settings app, this value needs to be updated when coming back
         loadSettings()
     }
 

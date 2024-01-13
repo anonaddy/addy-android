@@ -8,7 +8,7 @@ import host.stjin.anonaddy_shared.R
 class LauncherIconController(private val context: Context) {
 
     fun tryFixLauncherIconIfNeeded() {
-        for (icon in LauncherIcon.values()) {
+        for (icon in LauncherIcon.entries) {
             if (isEnabled(icon)) {
                 return
             }
@@ -23,7 +23,7 @@ class LauncherIconController(private val context: Context) {
 
     fun setIcon(icon: LauncherIcon) {
         val pm = context.packageManager
-        for (i in LauncherIcon.values()) {
+        for (i in LauncherIcon.entries) {
             pm.setComponentEnabledSetting(
                 i.getComponentName(context)!!,
                 if (i === icon) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED,

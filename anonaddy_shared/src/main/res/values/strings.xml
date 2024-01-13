@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">addy.io</string>
-    <string name="whoops">Whoops!</string>
     <string name="reset_app">Reset app</string>
-    <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>
-    <string name="logs_cleared">Logs cleared</string>
-    <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
-    <string name="api_key_invalid">API key invalid, app will reset and close in 5 seconds</string>
-    <string name="failed_deliveries_unavailable_404">The failed deliveries feature is not available. Please make sure that the failed deliveries API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="d_blocked">%1$d blocked</string>
     <string name="d_forwarded">%1$d forwarded</string>
     <string name="d_replied">%1$d replied</string>
     <string name="d_sent">%1$d sent</string>
     <string name="alias_status_desc">Use this alias for mail forwarding</string>
-    <string name="error_edit_active">An error occurred while changing the active state</string>
     <string name="aliases">Aliases</string>
     <string name="could_not_refresh_data">Could not refresh data</string>
     <string name="edit_alias">Edit alias</string>
@@ -21,11 +14,15 @@
     <string name="error_adding_alias">Something went wrong while adding the alias</string>
     <string name="store_logs">Store logs</string>
     <string name="background_service_interval">Background service interval</string>
-    <string name="background_service_desc">Change the interval at which data is updated in the background for widgets, for example</string>
     <string name="crafted_with_love_and_privacy">Crafted with love and privacy</string>
+    <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
+    <string name="api_key_invalid">API key invalid, app will reset and close in 5 seconds</string>
+    <string name="failed_deliveries_unavailable_404">The failed deliveries feature is not available. Please make sure that the failed deliveries API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="AppIconDefault">Default</string>
     <string name="AppIconClassic">Classic</string>
     <string name="AppIconGradient">Gradient</string>
     <string name="AppIconInverseGradient">Inverse gradient</string>
-
+    <string name="logs_reset_due_to_error">Logs could not be parsed and have been reset</string>
+    <string name="logs_cleared">Logs cleared</string>
+    <string name="error_edit_active">An error occurred while changing the active state</string>
 </resources>

@@ -174,7 +174,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/manage_domains"
-                            android:src="@drawable/ic_dns" />
+                            android:src="@drawable/ic_world" />
 
                     </LinearLayout>
 
@@ -270,7 +270,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/manage_usernames"
-                            android:src="@drawable/ic_user_menu" />
+                            android:src="@drawable/ic_users" />
 
                     </LinearLayout>
 

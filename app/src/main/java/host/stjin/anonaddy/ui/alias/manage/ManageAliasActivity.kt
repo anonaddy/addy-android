@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,7 +14,6 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Toast
-import android.window.OnBackInvokedDispatcher
 import androidx.core.content.ContextCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -34,26 +32,30 @@ import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
-import java.util.*
 
 
 class ManageAliasActivity : BaseActivity(),
     EditAliasDescriptionBottomDialogFragment.AddEditAliasDescriptionBottomDialogListener,
+    EditAliasFromNameBottomDialogFragment.AddEditAliasFromNameBottomDialogListener,
     EditAliasRecipientsBottomDialogFragment.AddEditAliasRecipientsBottomDialogListener,
     EditAliasSendMailRecipientBottomDialogFragment.AddEditAliasSendMailRecipientBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
     private lateinit var aliasWatcher: AliasWatcher
+    private var shouldRefreshOnFinish = false
 
     private lateinit var editAliasDescriptionBottomDialogFragment: EditAliasDescriptionBottomDialogFragment
+    private lateinit var editAliasFromNameBottomDialogFragment: EditAliasFromNameBottomDialogFragment
     private lateinit var editAliasRecipientsBottomDialogFragment: EditAliasRecipientsBottomDialogFragment
     private lateinit var editAliasSendMailRecipientBottomDialogFragment: EditAliasSendMailRecipientBottomDialogFragment
 
@@ -68,7 +70,6 @@ class ManageAliasActivity : BaseActivity(),
 
     // This value is here to keep track if the activity to which we return on finishWithUpdate should update its data.
     // Basically, whenever some information is changed we flip the boolean to true.
-    private var shouldUpdate: Boolean = false
     private lateinit var binding: ActivityManageAliasBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,12 +89,9 @@ class ManageAliasActivity : BaseActivity(),
             R.string.edit_alias,
             binding.activityManageAliasNSV,
             binding.activityManageAliasToolbar,
-            R.drawable.ic_email_at,
-            customBackPressedMethod = { finishWithUpdate() }
+            R.drawable.ic_email_at
         )
 
-
-        customOnBackPressed()
 
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
@@ -171,22 +169,6 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
-
-    private fun customOnBackPressed() {
-        if (Build.VERSION.SDK_INT >= 33) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(
-                OnBackInvokedDispatcher.PRIORITY_DEFAULT
-            ) {
-                finishWithUpdate()
-            }
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        finishWithUpdate()
-    }
-
     private fun setPage(aliasId: String) {
         /**
          * This activity can be called by an URI or Widget/Notification Intent.
@@ -207,13 +189,6 @@ class ManageAliasActivity : BaseActivity(),
         lifecycleScope.launch {
             getAliasInfo(aliasId)
             loadNodes()
-
-            // Set the AliasShortcut here, to make sure the donut is rendered
-            Handler(Looper.getMainLooper()).postDelayed({
-                // Unauthenticated, clear settings
-                addAliasAsShortcut()
-            }, binding.activityManageAliasChart.animationDurationMs)
-
         }
     }
 
@@ -226,16 +201,20 @@ class ManageAliasActivity : BaseActivity(),
                     // Send a message to all connected nodes
                     // Nodes with the app installed will receive this message and open the ManageAliasActivity
                     if (nodes.any()) {
-                        toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
-                            for (node in nodes) {
-                                Wearable.getMessageClient(this).sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+                        if (this@ManageAliasActivity.alias != null) {
+                            toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
+                                for (node in nodes) {
+                                    Wearable.getMessageClient(this)
+                                        .sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+                                }
+                                SnackbarHelper.createSnackbar(
+                                    this,
+                                    this.resources.getString(R.string.check_your_wearable),
+                                    binding.activityManageAliasCL
+                                ).show()
                             }
-                            SnackbarHelper.createSnackbar(
-                                this,
-                                this.resources.getString(R.string.check_your_wearable),
-                                binding.activityManageAliasCL
-                            ).show()
                         }
+
                     }
                 }
             } catch (ex: Exception) {
@@ -301,7 +280,7 @@ class ManageAliasActivity : BaseActivity(),
                 if (compoundButton.isPressed || forceSwitch) {
                     binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(true)
                     forceSwitch = false
-                    shouldUpdate = true
+                    shouldRefreshOnFinish = true
                     if (checked) {
                         lifecycleScope.launch {
                             activateAlias()
@@ -321,7 +300,7 @@ class ManageAliasActivity : BaseActivity(),
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
                     forceSwitch = false
-                    shouldUpdate = true
+                    shouldRefreshOnFinish = true
                     if (checked) {
                         // In case the alias could not be added to watchlist, the switch will be reverted
                         binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(
@@ -338,13 +317,30 @@ class ManageAliasActivity : BaseActivity(),
         })
     }
 
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (result == "204") {
                 this.alias!!.active = false
+                shouldRefreshOnFinish = true
                 updateUi(this.alias!!)
+
+                if (shouldDeactivateThisAlias) {
+                    shouldDeactivateThisAlias = false
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.alias_deactivated),
+                        binding.activityManageAliasCL
+                    ).show()
+                }
+
             } else {
                 binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
@@ -363,6 +359,7 @@ class ManageAliasActivity : BaseActivity(),
             binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
             if (alias != null) {
                 this.alias = alias
+                shouldRefreshOnFinish = true
             } else {
                 binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
@@ -413,6 +410,18 @@ class ManageAliasActivity : BaseActivity(),
                     editAliasRecipientsBottomDialogFragment.show(
                         supportFragmentManager,
                         "editAliasRecipientsBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editAliasFromNameBottomDialogFragment.isAdded) {
+                    editAliasFromNameBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editAliasFromNameBottomDialogFragment"
                     )
                 }
             }
@@ -513,8 +522,8 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.deleteAlias({ result ->
             if (result == "204") {
                 deleteAliasSnackbar.dismiss()
-                shouldUpdate = true
-                finishWithUpdate()
+                shouldRefreshOnFinish = true
+                finish()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -533,8 +542,8 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.forgetAlias({ result ->
             if (result == "204") {
                 forgetAliasSnackbar.dismiss()
-                shouldUpdate = true
-                finishWithUpdate()
+                shouldRefreshOnFinish = true
+                finish()
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -553,7 +562,7 @@ class ManageAliasActivity : BaseActivity(),
         networkHelper.restoreAlias({ alias, error ->
             if (alias != null) {
                 restoreAliasSnackbar.dismiss()
-                shouldUpdate = true
+                shouldRefreshOnFinish = true
                 this.alias = alias
             } else {
                 SnackbarHelper.createSnackbar(
@@ -567,13 +576,6 @@ class ManageAliasActivity : BaseActivity(),
                 ).show()
             }
         }, id)
-    }
-
-    private fun finishWithUpdate() {
-        val intent = Intent()
-        intent.putExtra("should_update", shouldUpdate)
-        setResult(RESULT_OK, intent)
-        finish()
     }
 
     private suspend fun getAliasInfo(id: String) {
@@ -596,6 +598,13 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun updateUi(alias: Aliases) {
+
+
+        // Set the AliasShortcut here, to make sure the donut is rendered
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Unauthenticated, clear settings
+            addAliasAsShortcut()
+        }, binding.activityManageAliasChart.animationDurationMs)
 
         // Set email in textview
         binding.activityManageAliasEmail.text = alias.email
@@ -745,6 +754,41 @@ class ManageAliasActivity : BaseActivity(),
         )
 
 
+        /**
+         * FROM NAME
+         */
+
+
+        // Not available for free subscriptions
+        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setLayoutEnabled(false)
+            binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(
+                this.resources.getString(
+                    R.string.feature_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (alias.from_name != null) {
+                binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(alias.from_name)
+            } else {
+                binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(
+                    this.resources.getString(
+                        R.string.alias_no_from_name
+                    )
+                )
+            }
+
+            // reset this value as it now includes the description
+            editAliasFromNameBottomDialogFragment = EditAliasFromNameBottomDialogFragment.newInstance(
+                alias.id,
+                alias.email,
+                alias.from_name
+            )
+
+
+        }
+
         binding.animationFragment.stopAnimation()
         binding.activityManageAliasNSV.animate().alpha(1.0f)
         binding.activityManageAliasSettingsLL.visibility = View.VISIBLE
@@ -762,10 +806,18 @@ class ManageAliasActivity : BaseActivity(),
 
 
     override fun descriptionEdited(alias: Aliases) {
-        shouldUpdate = true
+        shouldRefreshOnFinish = true
         editAliasDescriptionBottomDialogFragment.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        this.alias = alias
+    }
+
+    override fun fromNameEdited(alias: Aliases) {
+        shouldRefreshOnFinish = true
+        editAliasFromNameBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editAliasFromNameBottomDialogFragment
         this.alias = alias
     }
 
@@ -773,7 +825,7 @@ class ManageAliasActivity : BaseActivity(),
     override fun recipientsEdited(alias: Aliases) {
         // This changes the last updated time of the alias which is being shown in the recyclerview in the aliasFragment.
         // So we update the list when coming back
-        shouldUpdate = true
+        shouldRefreshOnFinish = true
         editAliasRecipientsBottomDialogFragment.dismissAllowingStateLoss()
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
@@ -800,4 +852,6 @@ class ManageAliasActivity : BaseActivity(),
         }
         editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }
+
+
 }

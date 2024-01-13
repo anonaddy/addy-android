@@ -13,7 +13,9 @@ data class Domains(
     val user_id: String,
     val domain: String,
     val description: String?,
-    val aliases: List<Aliases>?,
+    val from_name: String?,
+    var aliases: List<Aliases>?, // TODO turn back to val when below is done
+    var aliases_count: Int?, // TODO NEEDS TO BE APPROVED BY ADDY
     val default_recipient: Recipients?,
     var active: Boolean,
     var catch_all: Boolean,
