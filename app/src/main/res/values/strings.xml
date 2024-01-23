@@ -220,7 +220,7 @@
     <string name="delete_username">Delete username</string>
     <string name="delete_username_desc_confirm">Are you sure you want to delete this username? This will also delete all aliases associated with this username. You will no longer be able to receive any emails at this username subdomain. This will still count towards your additional username limit even once deleted.</string>
     <string name="error_deleting_username">Something went wrong while deleting this username</string>
-    <string name="add_username_desc"><![CDATA[Please choose usernames carefully as you can only add a <b>maximum of %1$d.</b> You can login with <b>any of your usernames.</b><br /><br />You can prevent a username from being used to login by toggling the "can login" option.]]></string>
+    <string name="add_username_desc"><![CDATA[Please choose usernames carefully as you can only add a <b>maximum of %1$s.</b> You can login with <b>any of your usernames.</b><br /><br />You can prevent a username from being used to login by toggling the "can login" option.]]></string>
     <string name="error_adding_username">Something went wrong while adding this username</string>
     <string name="username_deactivated">Username deactivated</string>
     <string name="username_activated">Username activated</string>
@@ -237,7 +237,7 @@
     <string name="addyio_instance">addy.io instance</string>
     <string name="refreshing_data">Refreshing data…</string>
     <string name="refresh">Refresh</string>
-    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$s usernames</string>
+    <string name="you_ve_used_d_out_of_d_usernames">You’ve used %1$d out of %2$d usernames</string>
     <string name="you_ve_used_d_out_of_d_active_domains">You’ve used %1$d out of %2$s active domains</string>
     <string name="you_ve_used_d_out_of_d_recipients">You’ve used %1$d out of %2$s recipients</string>
     <string name="no_domains">You have no domains, what about creating one?</string>

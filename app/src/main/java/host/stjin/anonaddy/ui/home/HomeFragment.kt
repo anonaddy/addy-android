@@ -507,11 +507,9 @@ class HomeFragment : Fragment() {
         }
 
 
-        val usernamesLimitText = if ((activity?.application as AddyIoApp).userResource.username_limit == 0) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.username_limit.toString()
-        }
+        // Username does not have unlimited
+        //https://github.com/anonaddy/anonaddy/blob/c8296a1a68178a1165fe9dafd1904973db260ff3/config/anonaddy.php#L157
+        val usernamesLimitText = (activity?.application as AddyIoApp).userResource.username_limit.toString()
         binding.homeStatCardUsernames.setDescription(
             this.resources.getString(
                 R.string.d_slash_s,
