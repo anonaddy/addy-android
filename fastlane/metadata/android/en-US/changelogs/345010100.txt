@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+- Fixed the limit count for bandwidth and usernames on self-hosted instances<br />

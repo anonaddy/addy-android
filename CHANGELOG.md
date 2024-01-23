@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.0.1] - 2024-01-23
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed the limit count for bandwidth and usernames on self-hosted instances
+
+### addy.io for Android wearables _(v1.3.3)_
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v5.0.0] - 2024-01-13
 
 ### addy.io

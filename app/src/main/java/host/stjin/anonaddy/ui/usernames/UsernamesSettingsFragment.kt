@@ -147,22 +147,16 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
     }
 
     private fun setStats() {
+        // Usernames don't have an unlimited count
         binding.fragmentUsernameSettingsRLCountText.text =
             resources.getString(
                 R.string.you_ve_used_d_out_of_d_usernames,
                 (activity?.application as AddyIoApp).userResource.username_count,
-                if ((activity?.application as AddyIoApp).userResource.subscription != null) (activity?.application as AddyIoApp).userResource.username_limit else this.resources.getString(
-                    R.string.unlimited
-                )
+                (activity?.application as AddyIoApp).userResource.username_limit
             )
 
-        // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
-        if ((activity?.application as AddyIoApp).userResource.subscription != null) {
-            binding.fragmentUsernameSettingsAddUsername.isEnabled =
-                (activity?.application as AddyIoApp).userResource.username_count < (activity?.application as AddyIoApp).userResource.username_limit
-        } else {
-            binding.fragmentUsernameSettingsAddUsername.isEnabled = true
-        }
+        binding.fragmentUsernameSettingsAddUsername.isEnabled =
+            (activity?.application as AddyIoApp).userResource.username_count < (activity?.application as AddyIoApp).userResource.username_limit
     }
 
     private fun setUsernamesRecyclerView() {
