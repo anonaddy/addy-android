@@ -70,23 +70,11 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.0.0</h3>
-<h4>Added</h4>
-- A brand new tablet UI, with embedded activities for the best big screen experience<br />
-- Home has now been renamed to Dashboard and shows more information<br />
-- Added support for the new "from-name" feature<br />
-- Added support for the new "can-login" feature<br />
+<h3>What\'s new in AnonAddy for Android 5.0.1</h3>
 <h4>Fixed/Improved</h4>
-- Some navigation icons have been changed to match the addy.io dashboard<br />
-- Forgotten aliases that are on the watchlist will now be removed automatically<br />
-- Disable the automatic update check by default to comply with F-Droid\'s "anti-feature" list<br />
-- Reduced API calls for a faster and smoother experience<br />
-- Increased the Alias watcher and multiple alias management from 15 to 25 aliases<br />
-- Show a snackbar when alias has been disabled through the link in the email banner<br />
-- Fixed a bug where on self-hosted instances the app would show a limit of 0<br />
-- Performance improvements and other things to make the app even smoother<br />
+- Fixed the limit count for bandwidth and usernames on self-hosted instances<br />
 &nbsp;<br />
-<h3>What\'s new in AnonAddy for Android for Wearables 1.3.2</h3>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.3.3</h3>
 <h4>Fixed/Improved</h4>
 - Performance improvements and other things to make the app even smoother<br />]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>

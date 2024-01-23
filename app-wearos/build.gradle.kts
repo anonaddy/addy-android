@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.3.2 + release 01 + 01 (for wearos)
-        versionCode = 341320101
-        versionName = "1.3.2"
+        versionCode = 341330101
+        versionName = "1.3.3"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -175,5 +175,5 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.5.17")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.5.19")
 }

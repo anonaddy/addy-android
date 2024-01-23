@@ -517,6 +517,8 @@ class HomeFragment : Fragment() {
                 usernamesLimitText
             )
         )
+
+        //FIXME This can not be 0 (yet..)
         if ((activity?.application as AddyIoApp).userResource.username_limit > 0) {
             binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
         }
