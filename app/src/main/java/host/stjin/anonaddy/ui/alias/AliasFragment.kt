@@ -324,42 +324,44 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                 val aliasWatcher = AliasWatcher(requireContext())
                 val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
-
-                networkHelper?.bulkGetAlias(
-                    { list: BulkAliasesArray?, result: String? ->
-                        if (list != null) {
-                            val aliasesArray = AliasesArray(list.data, links = null, meta = null)
-                            setAliasesAdapter(requireContext(), aliasesArray, forceReload)
-                        } else {
-                            // Data could not be loaded
-
-
-                            if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                                SnackbarHelper.createSnackbar(
-                                    requireContext(),
-                                    requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                    (activity as MainActivity).findViewById(R.id.main_container),
-                                    LoggingHelper.LOGFILES.DEFAULT
-                                ).show()
+                if (aliasesToWatch.isNotEmpty()) {
+                    networkHelper?.bulkGetAlias(
+                        { list: BulkAliasesArray?, result: String? ->
+                            if (list != null) {
+                                val aliasesArray = AliasesArray(list.data, links = null, meta = null)
+                                setAliasesAdapter(requireContext(), aliasesArray, forceReload)
                             } else {
-                                val bottomNavView: BottomNavigationView? =
-                                    activity?.findViewById(R.id.nav_view)
-                                bottomNavView?.let {
+                                // Data could not be loaded
+                                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                                     SnackbarHelper.createSnackbar(
                                         requireContext(),
                                         requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                        it,
+                                        (activity as MainActivity).findViewById(R.id.main_container),
                                         LoggingHelper.LOGFILES.DEFAULT
-                                    )
-                                        .apply {
-                                            anchorView = bottomNavView
-                                        }.show()
+                                    ).show()
+                                } else {
+                                    val bottomNavView: BottomNavigationView? =
+                                        activity?.findViewById(R.id.nav_view)
+                                    bottomNavView?.let {
+                                        SnackbarHelper.createSnackbar(
+                                            requireContext(),
+                                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                            it,
+                                            LoggingHelper.LOGFILES.DEFAULT
+                                        )
+                                            .apply {
+                                                anchorView = bottomNavView
+                                            }.show()
+                                    }
                                 }
-                            }
 
-                        }
-                    }, aliasesToWatch
-                )
+                            }
+                        }, aliasesToWatch
+                    )
+                } else {
+                    val aliasesArray = AliasesArray(arrayListOf(), links = null, meta = null)
+                    setAliasesAdapter(requireContext(), aliasesArray, forceReload)
+                }
             } else {
                 networkHelper?.getAliases(
                     { list: AliasesArray?, result: String? ->

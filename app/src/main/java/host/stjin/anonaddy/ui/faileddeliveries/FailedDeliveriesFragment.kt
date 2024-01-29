@@ -146,7 +146,6 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                         ).show()
                     }
 
-
                     // Show error animations
                     binding.fragmentFailedDeliveriesLL1.visibility = View.GONE
                     binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)

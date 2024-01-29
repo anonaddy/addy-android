@@ -4297,7 +4297,7 @@ class NetworkHelper(private val context: Context) {
                 if (show404Toast) {
                     Toast.makeText(context, context.resources.getString(R.string.failed_deliveries_unavailable_404), Toast.LENGTH_LONG).show()
                 }
-                callback(null, null)
+                callback(null, "404")
             }
             else -> {
                 val ex = result.component2()?.message

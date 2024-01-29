@@ -175,5 +175,5 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.5.19")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.5.20")
 }
