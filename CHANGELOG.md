@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.0.2] - 2024-02-07
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed a crash on some tablets
+
+### addy.io for Android wearables _(v1.3.4)_
+
+##### Fixed/Improved
+
+- ✨ Performance improvements and other things to make the app even smoother
+
 ## [v5.0.1] - 2024-01-23
 
 ### addy.io

@@ -185,7 +185,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     fun getDataFromWeb(context: Context, savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
-        viewLifecycleOwner.lifecycleScope.launch {
+        lifecycleScope.launch {
             if (savedInstanceState != null) {
                 setAliasesStatistics(
                     context,
@@ -195,12 +195,15 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     (activity?.application as AddyIoApp).userResource.total_emails_sent
                 )
 
-                val mostActiveAliasesJson = savedInstanceState.getString("aliasesList")
-                if (mostActiveAliasesJson!!.isNotEmpty()) {
+                val aliasesJson = savedInstanceState.getString("aliasesList")
+                if (aliasesJson!!.isNotEmpty() && aliasesJson != "null") {
                     val gson = Gson()
-                    val list: AliasesArray = gson.fromJson(mostActiveAliasesJson, AliasesArray::class.java)
+                    val list: AliasesArray = gson.fromJson(aliasesJson, AliasesArray::class.java)
                     setAliasesAdapter(requireContext(), list, true)
                     // need to force reload in order to init the adapter (which has been reset due to the recreation of the activity
+                } else {
+                    getUserResource(requireContext())
+                    getAliasesAndAddThemToList(forceReload = true)
                 }
 
             } else {
@@ -324,42 +327,44 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
                 val aliasWatcher = AliasWatcher(requireContext())
                 val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
-
-                networkHelper?.bulkGetAlias(
-                    { list: BulkAliasesArray?, result: String? ->
-                        if (list != null) {
-                            val aliasesArray = AliasesArray(list.data, links = null, meta = null)
-                            setAliasesAdapter(requireContext(), aliasesArray, forceReload)
-                        } else {
-                            // Data could not be loaded
-
-
-                            if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                                SnackbarHelper.createSnackbar(
-                                    requireContext(),
-                                    requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                    (activity as MainActivity).findViewById(R.id.main_container),
-                                    LoggingHelper.LOGFILES.DEFAULT
-                                ).show()
+                if (aliasesToWatch.isNotEmpty()) {
+                    networkHelper?.bulkGetAlias(
+                        { list: BulkAliasesArray?, result: String? ->
+                            if (list != null) {
+                                val aliasesArray = AliasesArray(list.data, links = null, meta = null)
+                                setAliasesAdapter(requireContext(), aliasesArray, forceReload)
                             } else {
-                                val bottomNavView: BottomNavigationView? =
-                                    activity?.findViewById(R.id.nav_view)
-                                bottomNavView?.let {
+                                // Data could not be loaded
+                                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                                     SnackbarHelper.createSnackbar(
                                         requireContext(),
                                         requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                        it,
+                                        (activity as MainActivity).findViewById(R.id.main_container),
                                         LoggingHelper.LOGFILES.DEFAULT
-                                    )
-                                        .apply {
-                                            anchorView = bottomNavView
-                                        }.show()
+                                    ).show()
+                                } else {
+                                    val bottomNavView: BottomNavigationView? =
+                                        activity?.findViewById(R.id.nav_view)
+                                    bottomNavView?.let {
+                                        SnackbarHelper.createSnackbar(
+                                            requireContext(),
+                                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                            it,
+                                            LoggingHelper.LOGFILES.DEFAULT
+                                        )
+                                            .apply {
+                                                anchorView = bottomNavView
+                                            }.show()
+                                    }
                                 }
-                            }
 
-                        }
-                    }, aliasesToWatch
-                )
+                            }
+                        }, aliasesToWatch
+                    )
+                } else {
+                    val aliasesArray = AliasesArray(arrayListOf(), links = null, meta = null)
+                    setAliasesAdapter(requireContext(), aliasesArray, forceReload)
+                }
             } else {
                 networkHelper?.getAliases(
                     { list: AliasesArray?, result: String? ->

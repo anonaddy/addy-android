@@ -7,8 +7,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,12 +67,9 @@ class HomeFragment : Fragment() {
 
         setGridLayout()
 
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
-            // API calls, user should swipe to refresh starting from v4.5.0
-            getDataFromWeb(savedInstanceState)
-        }, 5000)
+        // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
+        // API calls, user should swipe to refresh starting from v4.5.0
+        getDataFromWeb(savedInstanceState)
 
         return root
     }
@@ -122,10 +117,13 @@ class HomeFragment : Fragment() {
             // This way we can instantly set the values without another API call.
             if (savedInstanceState != null) {
                 val chartData = savedInstanceState.getString("chartData")
-                if (chartData!!.isNotEmpty()) {
+                if (chartData!!.isNotEmpty() && chartData != "null") {
                     val gson = Gson()
                     val data: ChartData = gson.fromJson(chartData, ChartData::class.java)
                     setChartData(data)
+                } else {
+                    getChartData()
+                    getWebStatistics()
                 }
 
                 // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,

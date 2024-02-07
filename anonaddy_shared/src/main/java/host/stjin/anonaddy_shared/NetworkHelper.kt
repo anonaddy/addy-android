@@ -1599,6 +1599,7 @@ class NetworkHelper(private val context: Context) {
                 }
 
                 //TODO remove when not required per Addy's API
+                // Including the aliases would kill the performance of the app and would be a massive no for savedinstances
                 recipientList.forEach {
                     it.aliases_count = it.aliases?.size ?: 0
                     it.aliases = null
@@ -2346,6 +2347,7 @@ class NetworkHelper(private val context: Context) {
                 domainList.addAll(addyIoData.data)
 
                 //TODO remove when not required per Addy's API
+                // Including the aliases would kill the performance of the app and would be a massive no for savedinstances
                 domainList.forEach {
                     it.aliases_count = it.aliases?.size ?: 0
                     it.aliases = null
@@ -2963,6 +2965,7 @@ class NetworkHelper(private val context: Context) {
                 usernamesList.addAll(addyIoData.data)
 
                 //TODO remove when not required per Addy's API
+                // Including the aliases would kill the performance of the app and would be a massive no for savedinstances
                 usernamesList.forEach {
                     it.aliases_count = it.aliases?.size ?: 0
                     it.aliases = null
@@ -4297,7 +4300,7 @@ class NetworkHelper(private val context: Context) {
                 if (show404Toast) {
                     Toast.makeText(context, context.resources.getString(R.string.failed_deliveries_unavailable_404), Toast.LENGTH_LONG).show()
                 }
-                callback(null, null)
+                callback(null, "404")
             }
             else -> {
                 val ex = result.component2()?.message
