@@ -117,10 +117,13 @@ class HomeFragment : Fragment() {
             // This way we can instantly set the values without another API call.
             if (savedInstanceState != null) {
                 val chartData = savedInstanceState.getString("chartData")
-                if (chartData!!.isNotEmpty()) {
+                if (chartData!!.isNotEmpty() && chartData != "null") {
                     val gson = Gson()
                     val data: ChartData = gson.fromJson(chartData, ChartData::class.java)
                     setChartData(data)
+                } else {
+                    getChartData()
+                    getWebStatistics()
                 }
 
                 // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,

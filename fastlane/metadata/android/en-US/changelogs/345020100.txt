@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+- Fixed a crash on some tablets<br />

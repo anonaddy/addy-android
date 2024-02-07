@@ -129,12 +129,15 @@ class RecipientsFragment : Fragment(),
                 setStats()
 
                 val recipientsJson = savedInstanceState.getString("recipients")
-                if (recipientsJson!!.isNotEmpty()) {
+                if (recipientsJson!!.isNotEmpty() && recipientsJson != "null") {
                     val gson = Gson()
 
                     val myType = object : TypeToken<ArrayList<Recipients>>() {}.type
                     val list = gson.fromJson<ArrayList<Recipients>>(recipientsJson, myType)
                     setRecipientAdapter(list)
+                } else {
+                    getUserResource()
+                    getAllRecipients()
                 }
 
             } else {

@@ -75,7 +75,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
             if (savedInstanceState != null) {
 
                 val failedDeliveriesJson = savedInstanceState.getString("failedDeliveries")
-                if (failedDeliveriesJson!!.isNotEmpty()) {
+                if (failedDeliveriesJson!!.isNotEmpty() && failedDeliveriesJson != "null") {
                     val gson = Gson()
 
                     val myType = object : TypeToken<ArrayList<FailedDeliveries>>() {}.type
@@ -130,21 +130,25 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 if (list != null) {
                     setFailedDeliveriesAdapter(list)
                 } else {
-                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
-                            (activity as MainActivity).findViewById(R.id.main_container),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
-                    } else {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
-                            (activity as FailedDeliveriesActivity).findViewById(R.id.activity_failed_deliveries_settings_CL),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
+                    // If the error is 404, the feature is unavailable, no need to let the user know that we could not refresh data
+                    if (error != "404") {
+                        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                            SnackbarHelper.createSnackbar(
+                                requireContext(),
+                                requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                                (activity as MainActivity).findViewById(R.id.main_container),
+                                LoggingHelper.LOGFILES.DEFAULT
+                            ).show()
+                        } else {
+                            SnackbarHelper.createSnackbar(
+                                requireContext(),
+                                requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                                (activity as FailedDeliveriesActivity).findViewById(R.id.activity_failed_deliveries_settings_CL),
+                                LoggingHelper.LOGFILES.DEFAULT
+                            ).show()
+                        }
                     }
+
 
                     // Show error animations
                     binding.fragmentFailedDeliveriesLL1.visibility = View.GONE

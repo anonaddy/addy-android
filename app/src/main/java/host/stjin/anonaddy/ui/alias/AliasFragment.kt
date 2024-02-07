@@ -185,7 +185,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     fun getDataFromWeb(context: Context, savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
-        viewLifecycleOwner.lifecycleScope.launch {
+        lifecycleScope.launch {
             if (savedInstanceState != null) {
                 setAliasesStatistics(
                     context,
@@ -195,12 +195,15 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     (activity?.application as AddyIoApp).userResource.total_emails_sent
                 )
 
-                val mostActiveAliasesJson = savedInstanceState.getString("aliasesList")
-                if (mostActiveAliasesJson!!.isNotEmpty()) {
+                val aliasesJson = savedInstanceState.getString("aliasesList")
+                if (aliasesJson!!.isNotEmpty() && aliasesJson != "null") {
                     val gson = Gson()
-                    val list: AliasesArray = gson.fromJson(mostActiveAliasesJson, AliasesArray::class.java)
+                    val list: AliasesArray = gson.fromJson(aliasesJson, AliasesArray::class.java)
                     setAliasesAdapter(requireContext(), list, true)
                     // need to force reload in order to init the adapter (which has been reset due to the recreation of the activity
+                } else {
+                    getUserResource(requireContext())
+                    getAliasesAndAddThemToList(forceReload = true)
                 }
 
             } else {
