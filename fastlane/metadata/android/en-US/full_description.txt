@@ -18,6 +18,7 @@
 <li>Enable error logging to locally store exceptions for easy troubleshooting</li>
 <li>Export and import encrypted backups of the app configuration</li>
 <li>Widgets!</li>
+<li>Manage and create aliases on the go with the Wear OS app, including a tile for quick access to your favorite aliases!</li>
 </ul>
 <p><strong>Security:</strong></p>
 <ul>
