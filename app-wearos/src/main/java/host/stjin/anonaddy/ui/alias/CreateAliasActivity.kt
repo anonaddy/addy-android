@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +25,6 @@ import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.AliasCreateGuide
 import host.stjin.anonaddy.ui.components.CreatedAliasDetails
-import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
@@ -67,13 +65,6 @@ class CreateAliasActivity : ComponentActivity() {
         val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
         Scaffold(
             modifier = Modifier,
-            timeText = {
-                CustomTimeText(
-                    visible = (remember { derivedStateOf { scalingLazyListState.centerItemScrollOffset } }).value == 0,
-                    showLeadingText = true,
-                    leadingText = resources.getString(R.string.add_alias)
-                )
-            },
             vignette = {
                 Vignette(vignettePosition = VignettePosition.TopAndBottom)
             },

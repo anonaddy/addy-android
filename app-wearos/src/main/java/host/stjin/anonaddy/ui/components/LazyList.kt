@@ -40,7 +40,7 @@ fun ScalingLazyColumnWithRSB(
         modifier = modifier.rotaryWithScroll(
             scrollableState = state,
             flingBehavior = ScrollableDefaults.flingBehavior(),
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
         ),
         state = state,
         reverseLayout = reverseLayout,

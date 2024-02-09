@@ -6,8 +6,22 @@ import androidx.wear.tiles.ActionBuilders
 import androidx.wear.tiles.ColorBuilders.argb
 import androidx.wear.tiles.DeviceParametersBuilders.DeviceParameters
 import androidx.wear.tiles.DimensionBuilders.dp
-import androidx.wear.tiles.LayoutElementBuilders.*
-import androidx.wear.tiles.ModifiersBuilders.*
+import androidx.wear.tiles.LayoutElementBuilders.Box
+import androidx.wear.tiles.LayoutElementBuilders.Column
+import androidx.wear.tiles.LayoutElementBuilders.FontStyles
+import androidx.wear.tiles.LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER
+import androidx.wear.tiles.LayoutElementBuilders.Image
+import androidx.wear.tiles.LayoutElementBuilders.Layout
+import androidx.wear.tiles.LayoutElementBuilders.LayoutElement
+import androidx.wear.tiles.LayoutElementBuilders.Row
+import androidx.wear.tiles.LayoutElementBuilders.Spacer
+import androidx.wear.tiles.LayoutElementBuilders.Text
+import androidx.wear.tiles.ModifiersBuilders.Background
+import androidx.wear.tiles.ModifiersBuilders.Clickable
+import androidx.wear.tiles.ModifiersBuilders.Corner
+import androidx.wear.tiles.ModifiersBuilders.Modifiers
+import androidx.wear.tiles.ModifiersBuilders.Padding
+import androidx.wear.tiles.ModifiersBuilders.Semantics
 import androidx.wear.tiles.RequestBuilders.ResourcesRequest
 import androidx.wear.tiles.RequestBuilders.TileRequest
 import androidx.wear.tiles.ResourceBuilders
@@ -24,6 +38,7 @@ import host.stjin.anonaddy.ui.alias.AliasActivity
 import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
 import host.stjin.anonaddy.utils.ColorUtils
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlinx.coroutines.CoroutineScope
@@ -66,6 +81,11 @@ class FavoriteAliasesTileService : TileService() {
     ): ListenableFuture<Tile> = serviceScope.future {
 
         val aliases = CacheHelper.getBackgroundServiceCacheFavoriteAliasesData(this@FavoriteAliasesTileService)
+        val encryptedSettingsManager = try {
+            SettingsManager(true, this@FavoriteAliasesTileService)
+        } catch (e: Exception) {
+            null
+        }
 
         Tile.Builder()
             .setResourcesVersion(RESOURCES_VERSION)
@@ -75,7 +95,11 @@ class FavoriteAliasesTileService : TileService() {
                     .addTimelineEntry(
                         TimelineEntry.Builder()
                             .setLayout(
-                                Layout.Builder().setRoot(layout(aliases, requestParams.deviceParameters!!)).build()
+                                if (encryptedSettingsManager?.getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+                                    Layout.Builder().setRoot(setupLayout(requestParams.deviceParameters!!)).build()
+                                } else {
+                                    Layout.Builder().setRoot(layout(aliases, requestParams.deviceParameters!!)).build()
+                                }
                             )
                             .build()
                     )
@@ -220,6 +244,61 @@ class FavoriteAliasesTileService : TileService() {
             Row.Builder()
                 .addContent(allAliasesLayout())
                 .addContent(Spacer.Builder().setWidth(SPACING_BUTTONS).build())
+                .addContent(addAliasesLayout())
+                .build()
+        )
+        .setModifiers(
+            Modifiers.Builder()
+                .setSemantics(
+                    Semantics.Builder()
+                        .setContentDescription(getString(R.string.tile_favorite_aliases_label))
+                        .build()
+                )
+                .build()
+        )
+        .build()
+
+    private fun setupLayout(
+        deviceParameters: DeviceParameters
+    ): LayoutElement = Column.Builder()
+        .addContent(
+            Text.Builder()
+                .setText(resources.getString(R.string.tile_favorite_aliases_title))
+                .setFontStyle(
+                    FontStyles
+                        .title3(deviceParameters)
+                        .setColor(
+                            argb(ContextCompat.getColor(baseContext, R.color.md_theme_primary))
+                        )
+                        .build()
+                )
+                .build()
+        )
+        .addContent(Spacer.Builder().setHeight(SPACING_TITLE_SUBTITLE).build())
+        .addContent(
+            Box.Builder().setModifiers(
+                Modifiers.Builder()
+                    .setPadding(Padding.Builder().setStart(dp(16f)).setEnd(dp(16f)).build()).build()
+            ).addContent(
+                Text.Builder()
+                    .setText(resources.getString(R.string.tile_favorite_aliases_subtitle_not_logged_in))
+                    .setMaxLines(3)
+                    .setFontStyle(
+                        FontStyles
+                            .body1(deviceParameters)
+                            .setColor(
+                                argb(ContextCompat.getColor(baseContext, R.color.md_grey_500))
+                            )
+                            .build()
+                    )
+                    .build()
+            ).build()
+
+
+        )
+        .addContent(Spacer.Builder().setHeight(SPACING_SUBTITLE_ALIASES).build())
+        .addContent(
+            Row.Builder()
                 .addContent(addAliasesLayout())
                 .build()
         )

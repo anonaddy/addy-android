@@ -9,8 +9,8 @@ import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -24,15 +24,21 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.Wearable
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.components.CustomTimeText
+import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
 
 class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
@@ -51,7 +57,9 @@ class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
     @Composable
     private fun SetComposeView() {
         AppTheme {
+            val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
             Scaffold(
+                modifier = Modifier,
                 timeText = {
                     CustomTimeText(
                         visible = true,
@@ -59,34 +67,52 @@ class SetupActivity : ComponentActivity(), DataClient.OnDataChangedListener {
                         leadingText = resources.getString(R.string.app_name)
                     )
                 },
+                vignette = {
+                    Vignette(vignettePosition = VignettePosition.TopAndBottom)
+                },
+                positionIndicator = {
+                    PositionIndicator(
+                        scalingLazyListState = scalingLazyListState
+                    )
+                }
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
+                        .padding(start = 16.dp, end = 16.dp)
                 ) {
-                    Column {
-                        val image = AnimatedImageVector.animatedVectorResource(id = R.drawable.ic_watch_setup_notification_anim)
-                        var atEnd by remember { mutableStateOf(false) }
-                        Icon(
-                            painter = rememberAnimatedVectorPainter(image, atEnd),
-                            contentDescription = null, // decorative element
-                            modifier = Modifier
-                                .size(96.dp)
-                                .align(CenterHorizontally)
-                        )
+                    val image = AnimatedImageVector.animatedVectorResource(id = R.drawable.ic_watch_setup_notification_anim)
+                    var atEnd by remember { mutableStateOf(false) }
+
+                    ScalingLazyColumnWithRSB(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = scalingLazyListState,
+                        horizontalAlignment = CenterHorizontally
+                    ) {
+                        item {
+                            Icon(
+                                painter = rememberAnimatedVectorPainter(image, atEnd),
+                                contentDescription = null, // decorative element
+                                modifier = Modifier
+                                    .size(96.dp)
+                                    .align(Alignment.Center)
+                            )
+                        }
                         if (hasPairedDevices) {
-                            Text(this@SetupActivity.resources.getString(R.string.setup_wearos_check_paired_device), textAlign = TextAlign.Center)
+                            item {
+                                Text(this@SetupActivity.resources.getString(R.string.setup_wearos_check_paired_device), textAlign = TextAlign.Center)
+                            }
                         } else {
-                            Text(this@SetupActivity.resources.getString(R.string.setup_wearos_no_paired_device), textAlign = TextAlign.Center)
+                            item {
+                                Text(this@SetupActivity.resources.getString(R.string.setup_wearos_no_paired_device), textAlign = TextAlign.Center)
+                            }
                         }
 
-
-                        DisposableEffect(Unit) {
-                            atEnd = !atEnd
-                            onDispose { }
-                        }
+                    }
+                    DisposableEffect(Unit) {
+                        atEnd = !atEnd
+                        onDispose { }
                     }
                 }
             }
