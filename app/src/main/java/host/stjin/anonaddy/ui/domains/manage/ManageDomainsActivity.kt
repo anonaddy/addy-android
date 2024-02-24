@@ -555,7 +555,7 @@ class ManageDomainsActivity : BaseActivity(),
                 sortDesc = false,
                 filter = null
             ),
-            page = (aliasList?.meta?.current_page ?: 0) + 1,
+            page = (workingAliasList?.meta?.current_page ?: 0) + 1,
             size = 100,
             domain = domain.id
         )
