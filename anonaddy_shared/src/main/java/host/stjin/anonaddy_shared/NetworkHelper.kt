@@ -470,6 +470,9 @@ class NetworkHelper(private val context: Context) {
         aliasSortFilter: AliasSortFilter,
         page: Int? = null,
         size: Int? = 20,
+        recipient: String? = null,
+        domain: String? = null,
+        username: String? = null,
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -517,6 +520,16 @@ class NetworkHelper(private val context: Context) {
             }
 
             parameters.add("sort" to sortFilter)
+        }
+
+        if (!recipient.isNullOrEmpty()) {
+            parameters.add("recipient" to recipient)
+        }
+        if (!domain.isNullOrEmpty()) {
+            parameters.add("domain" to domain)
+        }
+        if (!username.isNullOrEmpty()) {
+            parameters.add("username" to username)
         }
 
         val (_, response, result) = Fuel.get(API_URL_ALIAS, parameters)
@@ -1598,13 +1611,6 @@ class NetworkHelper(private val context: Context) {
                     recipientList.addAll(addyIoData.data)
                 }
 
-                //TODO remove when not required per Addy's API
-                // Including the aliases would kill the performance of the app and would be a massive no for savedinstances
-                recipientList.forEach {
-                    it.aliases_count = it.aliases?.size ?: 0
-                    it.aliases = null
-                }
-
                 callback(recipientList, null)
             }
             401 -> {
@@ -2346,13 +2352,6 @@ class NetworkHelper(private val context: Context) {
                 val domainList = ArrayList<Domains>()
                 domainList.addAll(addyIoData.data)
 
-                //TODO remove when not required per Addy's API
-                // Including the aliases would kill the performance of the app and would be a massive no for savedinstances
-                domainList.forEach {
-                    it.aliases_count = it.aliases?.size ?: 0
-                    it.aliases = null
-                }
-
                 callback(domainList, null)
             }
             401 -> {
@@ -2963,13 +2962,6 @@ class NetworkHelper(private val context: Context) {
 
                 val usernamesList = ArrayList<Usernames>()
                 usernamesList.addAll(addyIoData.data)
-
-                //TODO remove when not required per Addy's API
-                // Including the aliases would kill the performance of the app and would be a massive no for savedinstances
-                usernamesList.forEach {
-                    it.aliases_count = it.aliases?.size ?: 0
-                    it.aliases = null
-                }
 
                 callback(usernamesList, null)
             }

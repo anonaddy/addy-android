@@ -1,5 +1,24 @@
 # Changelog
 
+## [v5.1.0] - TBD
+
+### addy.io
+
+##### Added
+
+- Receive a notification when one of your domains has a configuration error
+
+##### Fixed/Improved
+
+- API changes to make the app compatible with the new version of addy.io
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.3.7)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.0.2] - 2024-02-07
 
 ### addy.io

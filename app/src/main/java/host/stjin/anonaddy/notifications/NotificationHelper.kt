@@ -29,6 +29,7 @@ import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.SetupWearOSBottomSheetActivity
+import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesActivity
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
@@ -41,6 +42,7 @@ class NotificationHelper(private val context: Context) {
     private val UPDATER_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_DELIVERIES_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val API_TOKEN_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
+    private val DOMAIN_ERROR_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val SUBSCRIPTION_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_BACKUP_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -59,6 +61,7 @@ class NotificationHelper(private val context: Context) {
         const val NEW_WEARABLE_PAIRING_REQUEST_NOTIFICATION_ID = 5
         const val API_KEY_EXPIRE_NOTIFICATION_ID = 6
         const val SUBSCRIPTION_EXPIRE_NOTIFICATION_ID = 7
+        const val DOMAIN_ERROR_NOTIFICATION_ID = 8
     }
 
     //region Wearable notifications
@@ -724,6 +727,73 @@ class NotificationHelper(private val context: Context) {
                 val ex = e.message
                 // User did not gave app POST_NOTIFICATION permissions
                 loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildAliasWatcherAliasDoesNotExistAnymoreNotification", null)
+            }
+        }
+    }
+
+    /*
+    Domain errors
+    */
+    fun createDomainErrorNotification(count: Int) {
+        createChannel(
+            DOMAIN_ERROR_NOTIFICATION_CHANNEL_ID,
+            context.resources.getString(R.string.notification_channel_domain_error),
+            context.resources.getString(R.string.notification_channel_domain_error_desc), IMPORTANCE_DEFAULT
+        )
+
+        buildDomainErrorNotification(
+            context.resources.getString(R.string.notification_domain_error),
+            context.resources.getString(R.string.notification_domain_error_desc, count.toString())
+        )
+    }
+
+    private fun buildDomainErrorNotification(title: String, text: String) {
+        val stopCheckingFailedDeliveryIntent = Intent(context, ActionReceiver::class.java).apply {
+            action = ActionReceiver.NOTIFICATIONACTIONS.STOP_DOMAIN_ERROR_CHECK
+        }
+        val stopCheckingDomainErrorsPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                stopCheckingFailedDeliveryIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+        val openDomainSettingsIntent = Intent(context, DomainSettingsActivity::class.java)
+        val openDomainSettingsPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(openDomainSettingsIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        val notification = Builder(context, DOMAIN_ERROR_NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(
+                BigTextStyle()
+                    .bigText(text)
+            )
+            .setPriority(PRIORITY_DEFAULT)
+            .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
+            .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
+            .setSmallIcon(R.drawable.ic_dns_alert)
+            .addAction(R.drawable.ic_dns_alert, context.resources.getString(R.string.disable_notifications), stopCheckingDomainErrorsPendingIntent)
+            // Notifications should always have a static color to identify the app
+            .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
+            .setContentIntent(openDomainSettingsPendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        with(from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            try {
+                notify(DOMAIN_ERROR_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildDomainErrorNotification", null)
             }
         }
     }

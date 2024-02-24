@@ -15,6 +15,8 @@ import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -34,6 +36,14 @@ class ManageRecipientsActivity : BaseActivity(),
             field = value
             value?.let { updateUi(it) }
         }
+    private var aliasList: AliasesArray? = null
+        set(value) {
+            field = value
+            value?.let { recipient?.let { recipient -> updateUi(recipient, it) } }
+        }
+
+    private var workingAliasList: AliasesArray? = null
+
 
     private var forceSwitch = false
     private lateinit var binding: ActivityManageRecipientsBinding
@@ -483,6 +493,11 @@ class ManageRecipientsActivity : BaseActivity(),
             if (recipient != null) {
                 // Triggers updateUi
                 this.recipient = recipient
+
+                // Now that we have the recipient, obtain the aliases separately
+                lifecycleScope.launch {
+                    getAliasesAndAddThemToList(recipient)
+                }
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -497,7 +512,7 @@ class ManageRecipientsActivity : BaseActivity(),
         }, id)
     }
 
-    private fun updateUi(recipient: Recipients) {
+    private fun updateUi(recipient: Recipients, aliasesArray: AliasesArray? = null) {
 
         /**
          *  SWITCH STATUS
@@ -575,14 +590,14 @@ class ManageRecipientsActivity : BaseActivity(),
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        val totalAliases = recipient.aliases?.size
+        val totalAliases = recipient.aliases_count
         var aliases = ""
 
         val buf = StringBuilder()
 
-        if (recipient.aliases != null) {
-            recipient.aliases = recipient.aliases?.sortedBy { it.email }
-            for (alias in recipient.aliases!!) {
+        if (aliasesArray != null) {
+            aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
+            for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked
                 totalReplies += alias.emails_replied
@@ -594,9 +609,13 @@ class ManageRecipientsActivity : BaseActivity(),
                 buf.append(alias.email)
             }
             aliases = buf.toString()
+
+            binding.activityManageRecipientAliasesTextview.text = aliases
+            binding.activityManageRecipientAliasesShimmerframelayout.hideShimmer()
+            binding.activityManageRecipientBasicShimmerframelayout.hideShimmer() // Stop shimmer only after this info is loaded
+
         }
 
-        binding.activityManageRecipientAliasesTitleTextview.text = resources.getString(R.string.recipient_aliases_d, totalAliases)
         binding.activityManageRecipientBasicTextview.text = resources.getString(
             R.string.manage_recipient_basic_info,
             recipient.email,
@@ -605,7 +624,8 @@ class ManageRecipientsActivity : BaseActivity(),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
 
-        binding.activityManageRecipientAliasesTextview.text = aliases
+        binding.activityManageRecipientAliasesTitleTextview.text = resources.getString(R.string.recipient_aliases_d, totalAliases)
+
 
 
         binding.animationFragment.stopAnimation()
@@ -619,5 +639,64 @@ class ManageRecipientsActivity : BaseActivity(),
 
         // Do this last, will trigger updateUI as well as re-init addRecipientPublicGpgKeyBottomDialogFragment
         this.recipient = recipient
+    }
+
+
+    private suspend fun getAliasesAndAddThemToList(recipient: Recipients) {
+        binding.activityManageRecipientAliasesShimmerframelayout.startShimmer()
+
+        networkHelper.getAliases(
+            { list: AliasesArray?, result: String? ->
+                if (list != null) {
+                    lifecycleScope.launch {
+                        addAliasesToList(recipient, list)
+                    }
+                } else {
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                        binding.activityManageRecipientCL,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                }
+            },
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = false,
+                onlyDeletedAliases = false,
+                onlyInactiveAliases = false,
+                onlyWatchedAliases = false,
+                sort = null,
+                sortDesc = false,
+                filter = null
+            ),
+            page = (aliasList?.meta?.current_page ?: 0) + 1,
+            size = 100,
+            recipient = recipient.id
+        )
+
+
+    }
+
+    private suspend fun addAliasesToList(recipient: Recipients, aliasesArray: AliasesArray) {
+        // If the aliasList is null, completely set it
+        if (workingAliasList == null) {
+            workingAliasList = aliasesArray
+        } else {
+            // If not, update meta,links and append aliases
+            workingAliasList?.meta = aliasesArray.meta
+            workingAliasList?.links = aliasesArray.links
+            workingAliasList?.data?.addAll(aliasesArray.data)
+        }
+
+        // Check if there are more aliases to obtain (are there more pages)
+        // If so, repeat.
+        if ((workingAliasList?.meta?.current_page ?: 0) < (workingAliasList?.meta?.last_page ?: 0)) {
+            getAliasesAndAddThemToList(recipient)
+        } else {
+            // Else, set aliasList to call updateUi()
+            this.aliasList = workingAliasList
+            // Clear workingAliasList to free up space
+            workingAliasList = null
+        }
     }
 }

@@ -18,8 +18,7 @@ data class Recipients(
     var protected_headers: Boolean,
     var fingerprint: String?,
     val email_verified_at: String?,
-    var aliases: List<Aliases>?, // TODO turn back to val when below is done
-    var aliases_count: Int?, // TODO NEEDS TO BE APPROVED BY ADDY
+    var aliases_count: Int?,
     val created_at: String,
     val updated_at: String
 )
