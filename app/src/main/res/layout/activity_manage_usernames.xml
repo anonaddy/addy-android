@@ -28,39 +28,48 @@
         android:alpha="0"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <LinearLayout
+            android:id="@+id/activity_manage_username_LL1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="24dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
+
+
             <LinearLayout
-                android:id="@+id/activity_manage_username_LL1"
+                style="@style/AddyIoTitleNoAction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/basic" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/AddyIoDescText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="24dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:padding="@dimen/layout_padding_top"
-                android:paddingStart="@dimen/layout_padding"
-                android:paddingEnd="@dimen/layout_padding">
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
-
-                <LinearLayout
-                    style="@style/AddyIoTitleNoAction"
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/activity_manage_username_basic_shimmerframelayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/basic" />
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/AddyIoDescText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:shimmer_auto_start="true"
+                    app:shimmer_base_alpha="1"
+                    app:shimmer_highlight_alpha="0.5"
+                    app:shimmer_repeat_count="99">
 
                     <TextView
                         android:id="@+id/activity_manage_username_basic_textview"
@@ -68,7 +77,55 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/BlackWhite"
                         tools:text="@tools:sample/lorem/random" />
-                </LinearLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/AddyIoTitleNoAction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/activity_manage_username_aliases_title_textview"
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/username_aliases_d" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/AddyIoDescText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/activity_manage_username_aliases_shimmerframelayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:shimmer_auto_start="true"
+                    app:shimmer_base_alpha="0.5"
+                    app:shimmer_highlight_alpha="0.2"
+                    app:shimmer_repeat_count="99">
+
+                    <TextView
+                        android:id="@+id/activity_manage_username_aliases_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/BlackWhite"
+                        android:text="@string/aliases_placeholder" />
+                </com.facebook.shimmer.ShimmerFrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
 
                 <LinearLayout
                     style="@style/AddyIoTitleNoAction"
@@ -77,117 +134,80 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/activity_manage_username_aliases_title_textview"
                         style="@style/titleTextView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/username_aliases_d" />
+                        android:text="@string/action" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/AddyIoDescText"
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_manage_username_active_switch_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    app:sectionDescription="@string/username_status_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_circle_check"
+                    app:sectionTitle="@string/username_status_active" />
 
-                    <TextView
-                        android:id="@+id/activity_manage_username_aliases_textview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/BlackWhite"
-                        tools:text="@tools:sample/lorem/random" />
-                </LinearLayout>
-
-                <LinearLayout
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_manage_username_catch_all_switch_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical">
+                    app:sectionDescription="@string/catch_all_username_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_pokeball"
+                    app:sectionTitle="@string/catch_all_enabled" />
 
-                    <LinearLayout
-                        style="@style/AddyIoTitleNoAction"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_manage_username_can_login_switch_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/can_login_username_desc"
+                    app:sectionShowSwitch="true"
+                    app:sectionStartIcon="@drawable/ic_login"
+                    app:sectionTitle="@string/can_be_used_to_login" />
 
-                        <TextView
-                            style="@style/titleTextView"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="@string/action" />
-                    </LinearLayout>
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_manage_username_desc_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@tools:sample/lorem/random"
+                    app:sectionEndIcon="@drawable/ic_edit"
+                    app:sectionStartIcon="@drawable/ic_align_justified"
+                    app:sectionTitle="@string/description" />
 
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_username_active_switch_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionDescription="@string/username_status_desc"
-                        app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_circle_check"
-                        app:sectionTitle="@string/username_status_active" />
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_manage_username_from_name_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:sectionDescription="@tools:sample/full_names"
+                    app:sectionEndIcon="@drawable/ic_edit"
+                    app:sectionStartIcon="@drawable/ic_id"
+                    app:sectionTitle="@string/from_name" />
 
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_username_catch_all_switch_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionDescription="@string/catch_all_username_desc"
-                        app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_pokeball"
-                        app:sectionTitle="@string/catch_all_enabled" />
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_manage_username_recipients_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@tools:sample/full_names"
+                    app:sectionEndIcon="@drawable/ic_edit"
+                    app:sectionStartIcon="@drawable/ic_inbox"
+                    app:sectionTitle="@string/default_recipient" />
 
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_username_can_login_switch_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionDescription="@string/can_login_username_desc"
-                        app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_login"
-                        app:sectionTitle="@string/can_be_used_to_login" />
-
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_username_desc_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionDescription="@tools:sample/lorem/random"
-                        app:sectionEndIcon="@drawable/ic_edit"
-                        app:sectionStartIcon="@drawable/ic_align_justified"
-                        app:sectionTitle="@string/description" />
-
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_username_from_name_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:sectionDescription="@tools:sample/full_names"
-                        app:sectionEndIcon="@drawable/ic_edit"
-                        app:sectionStartIcon="@drawable/ic_id"
-                        app:sectionTitle="@string/from_name" />
-
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_username_recipients_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionDescription="@tools:sample/full_names"
-                        app:sectionEndIcon="@drawable/ic_edit"
-                        app:sectionStartIcon="@drawable/ic_inbox"
-                        app:sectionTitle="@string/default_recipient" />
-
-                    <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_username_delete"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:sectionColorAccent="@color/softRed"
-                        app:sectionDescription="@string/delete_username_desc"
-                        app:sectionStartIcon="@drawable/ic_trash"
-                        app:sectionTitle="@string/delete_username" />
-
-                </LinearLayout>
-
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_manage_username_delete"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionColorAccent="@color/softRed"
+                    app:sectionDescription="@string/delete_username_desc"
+                    app:sectionStartIcon="@drawable/ic_trash"
+                    app:sectionTitle="@string/delete_username" />
 
             </LinearLayout>
+
+
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

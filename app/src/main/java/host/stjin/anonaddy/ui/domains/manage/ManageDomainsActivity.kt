@@ -17,6 +17,8 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -41,6 +43,16 @@ class ManageDomainsActivity : BaseActivity(),
             field = value
             value?.let { updateUi(it) }
         }
+
+
+    private var aliasList: AliasesArray? = null
+        set(value) {
+            field = value
+            value?.let { domain?.let { domain -> updateUi(domain, it) } }
+        }
+
+    private var workingAliasList: AliasesArray? = null
+
 
     private var forceSwitch = false
 
@@ -320,6 +332,11 @@ class ManageDomainsActivity : BaseActivity(),
             if (domain != null) {
                 // Triggers updateUi
                 this.domain = domain
+
+                // Now that we have the domain, obtain the aliases separately
+                lifecycleScope.launch {
+                    getAliasesAndAddThemToList(domain)
+                }
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -335,7 +352,7 @@ class ManageDomainsActivity : BaseActivity(),
         }, id)
     }
 
-    private fun updateUi(domain: Domains) {
+    private fun updateUi(domain: Domains, aliasesArray: AliasesArray? = null) {
         /**
          *  SWITCH STATUS
          */
@@ -354,18 +371,19 @@ class ManageDomainsActivity : BaseActivity(),
          * TEXT
          */
 
+
         var totalForwarded = 0
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        val totalAliases = domain.aliases?.size
+        val totalAliases = domain.aliases_count
         var aliases = ""
 
         val buf = StringBuilder()
 
-        if (domain.aliases != null) {
-            domain.aliases = domain.aliases?.sortedBy { it.email }
-            for (alias in domain.aliases!!) {
+        if (aliasesArray != null) {
+            aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
+            for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked
                 totalReplies += alias.emails_replied
@@ -377,9 +395,12 @@ class ManageDomainsActivity : BaseActivity(),
                 buf.append(alias.email)
             }
             aliases = buf.toString()
+            binding.activityManageDomainAliasesTextview.text = aliases
+            binding.activityManageDomainAliasesShimmerframelayout.hideShimmer()
+            binding.activityManageDomainBasicShimmerframelayout.hideShimmer() // Stop shimmer only after this info is loaded
+
         }
 
-        binding.activityManageDomainAliasesTitleTextview.text = resources.getString(R.string.domain_aliases_d, totalAliases)
         binding.activityManageDomainBasicTextview.text = resources.getString(
             R.string.manage_domain_basic_info,
             domain.domain,
@@ -390,8 +411,8 @@ class ManageDomainsActivity : BaseActivity(),
             DateTimeUtils.turnStringIntoLocalString(domain.domain_sending_verified_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
+        binding.activityManageDomainAliasesTitleTextview.text = resources.getString(R.string.domain_aliases_d, totalAliases)
 
-        binding.activityManageDomainAliasesTextview.text = aliases
 
         /**
          * RECIPIENTS
@@ -505,5 +526,63 @@ class ManageDomainsActivity : BaseActivity(),
         editDomainFromNameBottomDialogFragment.dismissAllowingStateLoss()
         // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
         this.domain = domain
+    }
+
+    private suspend fun getAliasesAndAddThemToList(domain: Domains) {
+        binding.activityManageDomainAliasesShimmerframelayout.startShimmer()
+
+        networkHelper.getAliases(
+            { list: AliasesArray?, result: String? ->
+                if (list != null) {
+                    lifecycleScope.launch {
+                        addAliasesToList(domain, list)
+                    }
+                } else {
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                        binding.activityManageDomainCL,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                }
+            },
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = false,
+                onlyDeletedAliases = false,
+                onlyInactiveAliases = false,
+                onlyWatchedAliases = false,
+                sort = null,
+                sortDesc = false,
+                filter = null
+            ),
+            page = (workingAliasList?.meta?.current_page ?: 0) + 1,
+            size = 100,
+            domain = domain.id
+        )
+
+
+    }
+
+    private suspend fun addAliasesToList(domain: Domains, aliasesArray: AliasesArray) {
+        // If the aliasList is null, completely set it
+        if (workingAliasList == null) {
+            workingAliasList = aliasesArray
+        } else {
+            // If not, update meta,links and append aliases
+            workingAliasList?.meta = aliasesArray.meta
+            workingAliasList?.links = aliasesArray.links
+            workingAliasList?.data?.addAll(aliasesArray.data)
+        }
+
+        // Check if there are more aliases to obtain (are there more pages)
+        // If so, repeat.
+        if ((workingAliasList?.meta?.current_page ?: 0) < (workingAliasList?.meta?.last_page ?: 0)) {
+            getAliasesAndAddThemToList(domain)
+        } else {
+            // Else, set aliasList to call updateUi()
+            this.aliasList = workingAliasList
+            // Clear workingAliasList to free up space
+            workingAliasList = null
+        }
     }
 }

@@ -17,7 +17,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 
 > addy.io
 
-- addy.io instance running v1.0.5 or higher (current version of the addy.io app has been tested with v1.0.5)
+- addy.io instance running v1.1.0 or higher (current version of the addy.io app has been tested with v1.1.0)
 
 > Android
 
@@ -41,6 +41,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Export and import *encrypted* backups of the app configuration
 - Widgets!
+- Manage and create aliases on the go with the Wear OS app, including a tile for quick access to your favorite aliases
 
 > Seriously 👓
 

@@ -1,9 +1,11 @@
 package host.stjin.anonaddy.ui.domains
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityDomainSettingsBinding
+import kotlinx.coroutines.launch
 
 class DomainSettingsActivity : BaseActivity() {
 
@@ -29,12 +31,24 @@ class DomainSettingsActivity : BaseActivity() {
             R.drawable.ic_world
         )
 
+        setPage()
+    }
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.activity_domain_settings_fcv, DomainSettingsFragment())
-            .commit()
-
+    private fun setPage() {
+        /**
+         * This activity can be called by an URI or Widget/Notification Intent.
+         * Protect this part
+         */
+        lifecycleScope.launch {
+            isAuthenticated { isAuthenticated ->
+                if (isAuthenticated) {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.activity_domain_settings_fcv, DomainSettingsFragment())
+                        .commit()
+                }
+            }
+        }
 
     }
 

@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
@@ -20,6 +21,8 @@ class SplashActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         loadSettings()
 

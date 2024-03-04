@@ -9,10 +9,10 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.0.4
+    // 1.1.0
     var MINIMUMVERSIONCODEMAJOR = 1
-    var MINIMUMVERSIONCODEMINOR = 0
-    var MINIMUMVERSIONCODEPATCH = 5
+    var MINIMUMVERSIONCODEMINOR = 1
+    var MINIMUMVERSIONCODEPATCH = 0
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0

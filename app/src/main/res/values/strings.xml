@@ -70,11 +70,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.0.2</h3>
+<h3>What\'s new in AnonAddy for Android 5.1.0</h3>
+<h4>Added</h4>
+- Receive a notification when one of your domains has a configuration error<br />
 <h4>Fixed/Improved</h4>
-- Fixed a crash on some tablets<br />
+- API changes to make the app compatible with the new version of addy.io<br />
+- Performance improvements and other things to make the app even smoother<br />
 &nbsp;<br />
-<h3>What\'s new in AnonAddy for Android for Wearables 1.3.4</h3>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.3.7</h3>
 <h4>Fixed/Improved</h4>
 - Performance improvements and other things to make the app even smoother<br />]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
@@ -671,5 +674,12 @@
     <string name="can_login_enabled">Can login enabled</string>
     <string name="can_login_disabled">Can login disabled</string>
     <string name="hosted">Hosted</string>
-
+    <string name="aliases_placeholder">jJWXNAuiZr@addy.io\nqkEZplEAjI@addy.io\ndjtPGlgekN@addy.io\nHeCGU0Eu18@addy.io\nxayQnQKMxB@addy.io\nzQpyRY6NSP@addy.io\np91Jt6BxsT@addy.io\nziyDtuFrem@addy.io\n54zlr6pVat@addy.io\n6AZnQeuCFn@addy.io\nn4Itdz4ccK@addy.io\n3wZJ6aZsdD@addy.io\nKD01UZ3c9A@addy.io\nKLD2Ic9zEb@addy.io\npHhv2o4oke@addy.io</string>
+    <string name="feature_domain_error_notification">Domain error notification</string>
+    <string name="feature_domain_error_notification_desc">Receive a notification when a domain has configuration errors.\n\nThese notifications will appear once (unless another domain with configuration errors is detected)</string>
+    <string name="notify_domain_error_feature_section_desc">Receive a notification when a domain has configuration errors</string>
+    <string name="notification_channel_domain_error">@string/domains</string>
+    <string name="notification_channel_domain_error_desc">@string/notify_domain_error_feature_section_desc</string>
+    <string name="notification_domain_error">Domain configuration error</string>
+    <string name="notification_domain_error_desc">%s domain(s) have configuration errors. Tap here to view the domains</string>
 </resources>

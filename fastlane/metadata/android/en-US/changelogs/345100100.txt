@@ -1,0 +1,6 @@
+<h3>What's new in AnonAddy for Android 5.1.0</h3>
+<h4>Added</h4>
+- Receive a notification when one of your domains has a configuration error<br />
+<h4>Fixed/Improved</h4>
+- API changes to make the app compatible with the new version of addy.io<br />
+- Performance improvements and other things to make the app even smoother<br />

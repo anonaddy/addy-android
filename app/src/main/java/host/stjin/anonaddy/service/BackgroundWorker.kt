@@ -161,6 +161,36 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 }
 
                 /*
+                DOMAIN ERRORS
+                 */
+
+                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, false)) {
+                    networkHelper.getAllDomains { domains, _ ->
+                        if (!domains.isNullOrEmpty()) {
+                            // Check the amount of domains with MX errors
+                            val amountOfDomainsWithErrors = domains.count { it.domain_mx_validated_at == null }
+                            if (amountOfDomainsWithErrors > 0) {
+
+                                // Check if the notification has already been fired for this count of domains
+                                val previousNotificationLeftDays =
+                                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT)
+
+                                // If the domains with errors have been changed, fire a notification
+                                if (previousNotificationLeftDays != amountOfDomainsWithErrors) {
+                                    encryptedSettingsManager.putSettingsInt(
+                                        SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT,
+                                        amountOfDomainsWithErrors
+                                    )
+                                    NotificationHelper(appContext).createDomainErrorNotification(amountOfDomainsWithErrors)
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+
+                /*
                 SUBSCRIPTION EXPIRY
                  */
 

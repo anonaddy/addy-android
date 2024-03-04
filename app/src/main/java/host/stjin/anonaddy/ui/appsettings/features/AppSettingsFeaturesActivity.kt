@@ -77,6 +77,10 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
         )
 
+        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setSwitchChecked(
+            settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, false)
+        )
+
         binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.setSwitchChecked(
             settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)
         )
@@ -129,6 +133,18 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 if (compoundButton.isPressed) {
                     settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, checked)
+
+                    // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
+                }
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed) {
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, checked)
 
                     // Since api token check should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
                     BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
@@ -199,6 +215,14 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyApiTokenExpiryActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionDomainErrorNotification.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyDomainErrorActivity::class.java)
                 startActivity(intent)
             }
         })

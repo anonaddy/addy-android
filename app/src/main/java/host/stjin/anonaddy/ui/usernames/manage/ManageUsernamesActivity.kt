@@ -15,6 +15,8 @@ import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -40,6 +42,15 @@ class ManageUsernamesActivity : BaseActivity(),
             field = value
             value?.let { updateUi(it) }
         }
+    private var aliasList: AliasesArray? = null
+        set(value) {
+            field = value
+            value?.let { username?.let { username -> updateUi(username, it) } }
+        }
+
+    private var workingAliasList: AliasesArray? = null
+
+
     private var forceSwitch = false
 
 
@@ -380,6 +391,12 @@ class ManageUsernamesActivity : BaseActivity(),
             if (username != null) {
                 // Triggers updateUi
                 this.username = username
+
+                // Now that we have the username, obtain the aliases separately
+                lifecycleScope.launch {
+                    getAliasesAndAddThemToList(username)
+                }
+
             } else {
                 SnackbarHelper.createSnackbar(
                     this,
@@ -394,7 +411,7 @@ class ManageUsernamesActivity : BaseActivity(),
         }, id)
     }
 
-    private fun updateUi(username: Usernames) {
+    private fun updateUi(username: Usernames, aliasesArray: AliasesArray? = null) {
         /**
          *  SWITCH STATUS
          */
@@ -422,14 +439,14 @@ class ManageUsernamesActivity : BaseActivity(),
         var totalBlocked = 0
         var totalReplies = 0
         var totalSent = 0
-        val totalAliases = username.aliases?.size
+        val totalAliases = username.aliases_count
         var aliases = ""
 
         val buf = StringBuilder()
 
-        if (username.aliases != null) {
-            username.aliases = username.aliases?.sortedBy { it.email }
-            for (alias in username.aliases!!) {
+        if (aliasesArray != null) {
+            aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
+            for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
                 totalBlocked += alias.emails_blocked
                 totalReplies += alias.emails_replied
@@ -441,9 +458,12 @@ class ManageUsernamesActivity : BaseActivity(),
                 buf.append(alias.email)
             }
             aliases = buf.toString()
+            binding.activityManageUsernameAliasesTextview.text = aliases
+            binding.activityManageUsernameAliasesShimmerframelayout.hideShimmer()
+            binding.activityManageUsernameBasicShimmerframelayout.hideShimmer() // Stop shimmer only after this info is loaded
+
         }
 
-        binding.activityManageUsernameAliasesTitleTextview.text = resources.getString(R.string.username_aliases_d, totalAliases)
         binding.activityManageUsernameBasicTextview.text = resources.getString(
             R.string.manage_username_basic_info,
             username.username,
@@ -452,7 +472,8 @@ class ManageUsernamesActivity : BaseActivity(),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
 
-        binding.activityManageUsernameAliasesTextview.text = aliases
+        binding.activityManageUsernameAliasesTitleTextview.text = resources.getString(R.string.username_aliases_d, totalAliases)
+
 
         /**
          * RECIPIENTS
@@ -554,5 +575,64 @@ class ManageUsernamesActivity : BaseActivity(),
 
         // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
         this.username = username
+    }
+
+
+    private suspend fun getAliasesAndAddThemToList(username: Usernames) {
+        binding.activityManageUsernameAliasesShimmerframelayout.startShimmer()
+
+        networkHelper.getAliases(
+            { list: AliasesArray?, result: String? ->
+                if (list != null) {
+                    lifecycleScope.launch {
+                        addAliasesToList(username, list)
+                    }
+                } else {
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                        binding.activityManageUsernameCL,
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                }
+            },
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = false,
+                onlyDeletedAliases = false,
+                onlyInactiveAliases = false,
+                onlyWatchedAliases = false,
+                sort = null,
+                sortDesc = false,
+                filter = null
+            ),
+            page = (workingAliasList?.meta?.current_page ?: 0) + 1,
+            size = 100,
+            username = username.id
+        )
+
+
+    }
+
+    private suspend fun addAliasesToList(username: Usernames, aliasesArray: AliasesArray) {
+        // If the aliasList is null, completely set it
+        if (workingAliasList == null) {
+            workingAliasList = aliasesArray
+        } else {
+            // If not, update meta,links and append aliases
+            workingAliasList?.meta = aliasesArray.meta
+            workingAliasList?.links = aliasesArray.links
+            workingAliasList?.data?.addAll(aliasesArray.data)
+        }
+
+        // Check if there are more aliases to obtain (are there more pages)
+        // If so, repeat.
+        if ((workingAliasList?.meta?.current_page ?: 0) < (workingAliasList?.meta?.last_page ?: 0)) {
+            getAliasesAndAddThemToList(username)
+        } else {
+            // Else, set aliasList to call updateUi()
+            this.aliasList = workingAliasList
+            // Clear workingAliasList to free up space
+            workingAliasList = null
+        }
     }
 }

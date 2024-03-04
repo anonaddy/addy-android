@@ -29,4 +29,5 @@
     <string name="reset_app_desc">Clear all data</string>
     <string name="increase">Increase</string>
     <string name="decrease">Decrease</string>
+    <string name="tile_favorite_aliases_subtitle_not_logged_in">Add an account to view your favorite aliases</string>
 </resources>
