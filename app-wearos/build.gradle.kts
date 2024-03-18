@@ -166,7 +166,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.0")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }
@@ -175,7 +175,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.5.21")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.4")
 }
 
 // Splash screen

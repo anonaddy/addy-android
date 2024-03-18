@@ -72,7 +72,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 }
 
 
