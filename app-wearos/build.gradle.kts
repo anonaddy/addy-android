@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.3.7 + release 01 + 01 (for wearos)
-        versionCode = 341370201 //TODO move release back to 01
-        versionName = "1.3.7"
+        // SDK 33 + v1.3.8 + release 01 + 01 (for wearos)
+        versionCode = 341380101
+        versionName = "1.3.8"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -43,6 +43,7 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -175,7 +176,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.4")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.5")
 }
 
 // Splash screen

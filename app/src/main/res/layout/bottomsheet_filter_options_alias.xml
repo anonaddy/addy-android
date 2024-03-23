@@ -286,6 +286,38 @@
                         android:text="@string/sort_email_sent" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_last_forwarded"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_last_forwarded" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_last_blocked"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_last_blocked" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_last_replied"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_last_replied" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/bs_filteroptions_aliases_sorting_last_sent"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/sort_last_sent" />
+
+                    <com.google.android.material.chip.Chip
                         android:id="@+id/bs_filteroptions_aliases_sorting_email_active"
                         style="@style/AddyIoChip"
                         android:layout_width="wrap_content"

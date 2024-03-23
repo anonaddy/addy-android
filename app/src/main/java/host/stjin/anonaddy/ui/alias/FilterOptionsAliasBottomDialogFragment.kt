@@ -99,6 +99,10 @@ class FilterOptionsAliasBottomDialogFragment(
         binding.bsFilteroptionsAliasesSortingEmailBlocked.isChecked = aliasSortFilter.sort == "emails_blocked"
         binding.bsFilteroptionsAliasesSortingEmailReplied.isChecked = aliasSortFilter.sort == "emails_replied"
         binding.bsFilteroptionsAliasesSortingEmailSent.isChecked = aliasSortFilter.sort == "emails_sent"
+        binding.bsFilteroptionsAliasesSortingLastForwarded.isChecked = aliasSortFilter.sort == "last_forwarded"
+        binding.bsFilteroptionsAliasesSortingLastBlocked.isChecked = aliasSortFilter.sort == "last_blocked"
+        binding.bsFilteroptionsAliasesSortingLastReplied.isChecked = aliasSortFilter.sort == "last_replied"
+        binding.bsFilteroptionsAliasesSortingLastSent.isChecked = aliasSortFilter.sort == "last_sent"
         binding.bsFilteroptionsAliasesSortingEmailActive.isChecked = aliasSortFilter.sort == "active"
         binding.bsFilteroptionsAliasesSortingEmailCreatedAt.isChecked = aliasSortFilter.sort == "created_at" || aliasSortFilter.sort == null
         binding.bsFilteroptionsAliasesSortingEmailUpdatedAt.isChecked = aliasSortFilter.sort == "updated_at"
@@ -128,6 +132,18 @@ class FilterOptionsAliasBottomDialogFragment(
         }
         binding.bsFilteroptionsAliasesSortingEmailSent.setOnClickListener {
             aliasSortFilter.sort = "emails_sent"
+        }
+        binding.bsFilteroptionsAliasesSortingLastForwarded.setOnClickListener {
+            aliasSortFilter.sort = "last_forwarded"
+        }
+        binding.bsFilteroptionsAliasesSortingLastBlocked.setOnClickListener {
+            aliasSortFilter.sort = "last_blocked"
+        }
+        binding.bsFilteroptionsAliasesSortingLastReplied.setOnClickListener {
+            aliasSortFilter.sort = "last_replied"
+        }
+        binding.bsFilteroptionsAliasesSortingLastSent.setOnClickListener {
+            aliasSortFilter.sort = "last_sent"
         }
         binding.bsFilteroptionsAliasesSortingEmailActive.setOnClickListener {
             aliasSortFilter.sort = "active"

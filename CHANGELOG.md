@@ -1,5 +1,24 @@
 # Changelog
 
+## [v5.2.0] - 2024-03-23
+
+### addy.io
+
+##### Added
+
+- View the last forwarded, last replied, last sent and last blocked moment of aliases
+- Sort aliases by the last forwarded, last replied, last sent and last blocked moment
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.3.8)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.1.0] - 2024-03-04
 
 ### addy.io

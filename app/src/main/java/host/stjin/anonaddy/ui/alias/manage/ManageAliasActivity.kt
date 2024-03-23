@@ -725,6 +725,15 @@ class ManageAliasActivity : BaseActivity(),
             EditAliasRecipientsBottomDialogFragment.newInstance(this@ManageAliasActivity.alias!!.id, alias.recipients)
 
 
+        DateTimeUtils.turnStringIntoLocalString(alias.last_forwarded)
+            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(it) }
+        DateTimeUtils.turnStringIntoLocalString(alias.last_replied)
+            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(it) }
+        DateTimeUtils.turnStringIntoLocalString(alias.last_sent)
+            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(it) }
+        DateTimeUtils.turnStringIntoLocalString(alias.last_blocked)
+            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(it) }
+
         // Set created at and updated at
         DateTimeUtils.turnStringIntoLocalString(alias.created_at)
             ?.let { binding.activityManageAliasGeneralActions.activityManageAliasCreatedAt.setDescription(it) }

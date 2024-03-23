@@ -85,6 +85,10 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         binding.bsMultipleSelectionAliasTitle.text = resources.getString(R.string.multiple_alias_selected, selectedAliases.count())
 
         // No need for the created and updated views
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLastForwarded.visibility = View.GONE
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLastReplied.visibility = View.GONE
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLastSent.visibility = View.GONE
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLastBlocked.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasCreatedAt.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasUpdatedAt.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRecipientsEdit.visibility = View.GONE
