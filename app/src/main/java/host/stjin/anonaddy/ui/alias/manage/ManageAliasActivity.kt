@@ -725,14 +725,31 @@ class ManageAliasActivity : BaseActivity(),
             EditAliasRecipientsBottomDialogFragment.newInstance(this@ManageAliasActivity.alias!!.id, alias.recipients)
 
 
-        DateTimeUtils.turnStringIntoLocalString(alias.last_forwarded)
-            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(it) }
-        DateTimeUtils.turnStringIntoLocalString(alias.last_replied)
-            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(it) }
-        DateTimeUtils.turnStringIntoLocalString(alias.last_sent)
-            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(it) }
-        DateTimeUtils.turnStringIntoLocalString(alias.last_blocked)
-            ?.let { binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(it) }
+
+        if (alias.last_forwarded.isNullOrEmpty()) {
+            binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(this.resources.getString(R.string.unknown))
+        } else {
+            binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(alias.last_forwarded)
+        }
+
+        if (alias.last_replied.isNullOrEmpty()) {
+            binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(this.resources.getString(R.string.unknown))
+        } else {
+            binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(alias.last_replied)
+        }
+
+        if (alias.last_sent.isNullOrEmpty()) {
+            binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(this.resources.getString(R.string.unknown))
+        } else {
+            binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(alias.last_sent)
+        }
+
+        if (alias.last_blocked.isNullOrEmpty()) {
+            binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(this.resources.getString(R.string.unknown))
+        } else {
+            binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(alias.last_blocked)
+        }
+
 
         // Set created at and updated at
         DateTimeUtils.turnStringIntoLocalString(alias.created_at)

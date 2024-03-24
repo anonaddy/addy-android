@@ -59,6 +59,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:gravity="bottom"
                     android:lines="1"
+                    android:paddingEnd="16dp"
                     android:maxLines="1"
                     android:text="0"
                     android:textColor="?android:attr/colorAccent"

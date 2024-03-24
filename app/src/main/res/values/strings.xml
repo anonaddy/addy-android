@@ -688,4 +688,5 @@
     <string name="last_replied">Last replied</string>
     <string name="last_sent">Last sent</string>
     <string name="last_blocked">Last blocked</string>
+    <string name="unknown">Unknown</string>
 </resources>
