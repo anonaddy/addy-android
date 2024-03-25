@@ -11,10 +11,27 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 345100100,
-      "versionName": "v5.1.0",
+      "versionCode": 345200100,
+      "versionName": "v5.2.0",
       "outputFile": "app-gplayless-release.apk"
     }
   ],
-  "elementType": "File"
+  "elementType": "File",
+  "baselineProfiles": [
+    {
+      "minApi": 28,
+      "maxApi": 30,
+      "baselineProfiles": [
+        "baselineProfiles/1/app-gplayless-release.dm"
+      ]
+    },
+    {
+      "minApi": 31,
+      "maxApi": 2147483647,
+      "baselineProfiles": [
+        "baselineProfiles/0/app-gplayless-release.dm"
+      ]
+    }
+  ],
+  "minSdkVersionForDexing": 23
 }

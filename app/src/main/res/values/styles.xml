@@ -382,7 +382,7 @@
     </style>
 
     <style name="AddyIoMaterialToggleButton" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="cornerRadius">12dp</item>
+        <item name="cornerRadius">8dp</item>
         <item name="android:padding">4dp</item>
         <item name="strokeWidth">0dp</item>
     </style>

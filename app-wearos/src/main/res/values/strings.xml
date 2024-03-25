@@ -30,4 +30,6 @@
     <string name="increase">Increase</string>
     <string name="decrease">Decrease</string>
     <string name="tile_favorite_aliases_subtitle_not_logged_in">Add an account to view your favorite aliases</string>
+    <string name="on">on</string>
+    <string name="off">off</string>
 </resources>

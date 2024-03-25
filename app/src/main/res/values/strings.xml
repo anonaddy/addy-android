@@ -70,16 +70,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.1.0</h3>
+<h3>What\'s new in AnonAddy for Android 5.2.0</h3>
 <h4>Added</h4>
-- Receive a notification when one of your domains has a configuration error<br />
+<p>- View the last forwarded, last replied, last sent and last blocked moment of aliases<br />- Sort aliases by the last forwarded, last replied, last sent and last blocked moment</p>
 <h4>Fixed/Improved</h4>
-- API changes to make the app compatible with the new version of addy.io<br />
-- Performance improvements and other things to make the app even smoother<br />
-&nbsp;<br />
-<h3>What\'s new in AnonAddy for Android for Wearables 1.3.7</h3>
+<p>- Performance improvements and other things to make the app even smoother<br />&nbsp;</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.3.8</h3>
 <h4>Fixed/Improved</h4>
-- Performance improvements and other things to make the app even smoother<br />]]></string>
+<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (Android app backend)\nJPH (Android app designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -682,4 +680,13 @@
     <string name="notification_channel_domain_error_desc">@string/notify_domain_error_feature_section_desc</string>
     <string name="notification_domain_error">Domain configuration error</string>
     <string name="notification_domain_error_desc">%s domain(s) have configuration errors. Tap here to view the domains</string>
+    <string name="sort_last_forwarded">@string/last_forwarded</string>
+    <string name="sort_last_blocked">@string/last_blocked</string>
+    <string name="sort_last_replied">@string/last_replied</string>
+    <string name="sort_last_sent">@string/last_sent</string>
+    <string name="last_forwarded">Last forwarded</string>
+    <string name="last_replied">Last replied</string>
+    <string name="last_sent">Last sent</string>
+    <string name="last_blocked">Last blocked</string>
+    <string name="unknown">Unknown</string>
 </resources>

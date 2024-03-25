@@ -52,6 +52,41 @@
         app:sectionStartIcon="@drawable/ic_id"
         app:sectionTitle="@string/from_name" />
 
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_last_forwarded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionRippleEffect="false"
+        app:sectionStartIcon="@drawable/ic_inbox"
+        app:sectionTitle="@string/last_forwarded" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_last_replied"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionRippleEffect="false"
+        app:sectionStartIcon="@drawable/ic_arrow_back_up"
+        app:sectionTitle="@string/last_replied" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_last_sent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionRippleEffect="false"
+        app:sectionStartIcon="@drawable/ic_mail_forward"
+        app:sectionTitle="@string/last_sent" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_last_blocked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@tools:sample/date/ddmmyy"
+        app:sectionRippleEffect="false"
+        app:sectionStartIcon="@drawable/ic_forbid"
+        app:sectionTitle="@string/last_blocked" />
 
     <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_created_at"

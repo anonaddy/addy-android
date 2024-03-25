@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- View the last forwarded, last replied, last sent and last blocked moment of aliases<br />- Sort aliases by the last forwarded, last replied, last sent and last blocked moment</p>
+<h4>Fixed/Improved</h4>
+<p>- Performance improvements and other things to make the app even smoother<br />
