@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.2.1] - 2024-03-28
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed the last_used properties not being displayed in the local time format
+
+### addy.io for Android wearables _(v1.3.9)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.2.0] - 2024-03-25
 
 ### addy.io

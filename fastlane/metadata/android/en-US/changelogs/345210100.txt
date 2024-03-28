@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Fixed the last_used properties not being displayed in the local time format<br />
