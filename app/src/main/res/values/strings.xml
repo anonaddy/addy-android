@@ -70,12 +70,10 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.2.0</h3>
-<h4>Added</h4>
-<p>- View the last forwarded, last replied, last sent and last blocked moment of aliases<br />- Sort aliases by the last forwarded, last replied, last sent and last blocked moment</p>
+<h3>What\'s new in AnonAddy for Android 5.2.1</h3>
 <h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother<br />&nbsp;</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.3.8</h3>
+<p>- Fixed the last_used properties not being displayed in the local time format<br />&nbsp;</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.3.9</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>

@@ -729,25 +729,25 @@ class ManageAliasActivity : BaseActivity(),
         if (alias.last_forwarded.isNullOrEmpty()) {
             binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(this.resources.getString(R.string.unknown))
         } else {
-            binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(alias.last_forwarded)
+            binding.activityManageAliasGeneralActions.activityManageAliasLastForwarded.setDescription(DateTimeUtils.turnStringIntoLocalString(alias.last_forwarded))
         }
 
         if (alias.last_replied.isNullOrEmpty()) {
             binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(this.resources.getString(R.string.unknown))
         } else {
-            binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(alias.last_replied)
+            binding.activityManageAliasGeneralActions.activityManageAliasLastReplied.setDescription(DateTimeUtils.turnStringIntoLocalString(alias.last_replied))
         }
 
         if (alias.last_sent.isNullOrEmpty()) {
             binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(this.resources.getString(R.string.unknown))
         } else {
-            binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(alias.last_sent)
+            binding.activityManageAliasGeneralActions.activityManageAliasLastSent.setDescription(DateTimeUtils.turnStringIntoLocalString(alias.last_sent))
         }
 
         if (alias.last_blocked.isNullOrEmpty()) {
             binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(this.resources.getString(R.string.unknown))
         } else {
-            binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(alias.last_blocked)
+            binding.activityManageAliasGeneralActions.activityManageAliasLastBlocked.setDescription(DateTimeUtils.turnStringIntoLocalString(alias.last_blocked))
         }
 
 
