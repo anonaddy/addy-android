@@ -539,7 +539,7 @@ class HomeFragment : Fragment() {
 
 
         // Bandwidth could be unlimited
-        val bandwidthText = if (maxMonthlyBandwidth == 0) {
+        val bandwidthText = if (maxMonthlyBandwidth.compareTo(0) == 0) {
             this.resources.getString(R.string.home_bandwidth_text, roundOffDecimal(currMonthlyBandwidth).toString(), "∞")
         } else {
             this.resources.getString(R.string.home_bandwidth_text, roundOffDecimal(currMonthlyBandwidth).toString(), maxMonthlyBandwidth.toString())
