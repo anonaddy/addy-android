@@ -105,8 +105,21 @@ class NetworkHelper(private val context: Context) {
             "Authorization" to "Bearer $apiKeyToSend",
             "Content-Type" to "application/json",
             "X-Requested-With" to "XMLHttpRequest",
-            "Accept" to "application/json"
+            "Accept" to "application/json",
+            "User-Agent" to getUserAgent()
         )
+    }
+
+
+    private fun getUserAgent(): String {
+        // User-Agent: <product> / <product-version> <comment>
+        // <product> / <product-version> <comment>
+
+        val userAgent =
+            "${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationID} (${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationBuildType}) / ${(context.applicationContext as AddyIoApp).userAgent.userAgentVersion} (${(context.applicationContext as AddyIoApp).userAgent.userAgentVersionCode}) ${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationFlavor}"
+        println("User-Agent: $userAgent")
+
+        return userAgent
     }
 
 
@@ -148,6 +161,7 @@ class NetworkHelper(private val context: Context) {
                 val data = result.get()
                 callback(data, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -240,6 +254,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, Version::class.java)
                 callback(addyIoData, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -253,6 +268,7 @@ class NetworkHelper(private val context: Context) {
             404 -> {
                 callback(Version(0, 0, 0, ""), null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -303,6 +319,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleUserResource::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -311,6 +328,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -356,6 +374,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, DomainOptions::class.java)
                 callback(addyIoData, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -364,6 +383,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -434,6 +454,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -442,6 +463,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -546,6 +568,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, AliasesArray::class.java)
                 callback(addyIoData, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -554,6 +577,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -656,6 +680,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -664,6 +689,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -716,6 +742,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -724,6 +751,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -847,6 +875,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -855,6 +884,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -961,6 +991,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -969,6 +1000,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1080,6 +1112,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1088,6 +1121,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1194,6 +1228,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1202,6 +1237,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1306,6 +1342,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1314,6 +1351,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1423,6 +1461,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleAlias::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1431,6 +1470,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1548,6 +1588,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1556,6 +1597,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1613,6 +1655,7 @@ class NetworkHelper(private val context: Context) {
 
                 callback(recipientList, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1621,6 +1664,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1662,6 +1706,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1670,6 +1715,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1717,6 +1763,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1725,6 +1772,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1766,6 +1814,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1774,6 +1823,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1815,6 +1865,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1823,6 +1874,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1871,6 +1923,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1879,6 +1932,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1921,6 +1975,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1929,6 +1984,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -1977,6 +2033,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -1985,6 +2042,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2026,6 +2084,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2034,6 +2093,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2082,6 +2142,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2090,6 +2151,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2131,6 +2193,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2139,6 +2202,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2188,6 +2252,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2196,6 +2261,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2243,6 +2309,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2251,6 +2318,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2296,6 +2364,7 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 callback("200")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2304,6 +2373,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2354,6 +2424,7 @@ class NetworkHelper(private val context: Context) {
 
                 callback(domainList, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2362,6 +2433,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2403,6 +2475,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2411,6 +2484,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2462,6 +2536,7 @@ class NetworkHelper(private val context: Context) {
             404 -> {
                 callback(null, "404", String(response.body().toByteArray()))
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2470,6 +2545,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2516,6 +2592,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2524,6 +2601,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2577,6 +2655,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2585,6 +2664,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2624,6 +2704,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2632,6 +2713,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2680,6 +2762,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2688,6 +2771,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2729,6 +2813,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2737,6 +2822,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2785,6 +2871,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2793,6 +2880,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2846,6 +2934,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleDomain::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2854,6 +2943,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -2965,6 +3055,7 @@ class NetworkHelper(private val context: Context) {
 
                 callback(usernamesList, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -2973,6 +3064,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3014,6 +3106,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3022,6 +3115,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3069,6 +3163,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3077,6 +3172,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3123,6 +3219,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3131,6 +3228,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3184,6 +3282,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3192,6 +3291,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3231,6 +3331,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3239,6 +3340,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3287,6 +3389,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3295,6 +3398,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3347,6 +3451,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3355,6 +3460,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3455,6 +3561,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3463,6 +3570,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3511,6 +3619,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleUsername::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3519,6 +3628,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3681,6 +3791,7 @@ class NetworkHelper(private val context: Context) {
                 domainList.addAll(addyIoData.data)
                 callback(domainList, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3700,6 +3811,7 @@ class NetworkHelper(private val context: Context) {
                 }
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3746,6 +3858,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRule::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3754,6 +3867,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3796,6 +3910,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3804,6 +3919,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3849,6 +3965,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRule::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3857,6 +3974,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3908,6 +4026,7 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 callback("200")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3916,6 +4035,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -3959,6 +4079,7 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 callback("200")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -3967,6 +4088,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -4007,6 +4129,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -4015,6 +4138,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -4063,6 +4187,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleRule::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -4071,6 +4196,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -4275,6 +4401,7 @@ class NetworkHelper(private val context: Context) {
                 failedDeliveriesList.addAll(addyIoData.data)
                 callback(failedDeliveriesList, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -4294,6 +4421,7 @@ class NetworkHelper(private val context: Context) {
                 }
                 callback(null, "404")
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -4340,6 +4468,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, SingleFailedDelivery::class.java)
                 callback(addyIoData.data, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -4348,6 +4477,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -4389,6 +4519,7 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -4397,6 +4528,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -4441,6 +4573,7 @@ class NetworkHelper(private val context: Context) {
                 val feed = EarlParser.parse(inputStream, 0)
                 callback(feed, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -4490,6 +4623,7 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, ApiTokenDetails::class.java)
                 callback(addyIoData, null)
             }
+
             401 -> {
                 invalidApiKey()
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -4498,6 +4632,7 @@ class NetworkHelper(private val context: Context) {
                 }, 5000)
                 callback(null, null)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()

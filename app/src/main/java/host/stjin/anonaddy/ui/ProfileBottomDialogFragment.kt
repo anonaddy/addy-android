@@ -167,13 +167,13 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
         binding.mainProfileSelectDialogStatisticsMonthlyBandwidthProgress.max =
-            if (maxMonthlyBandwidth == 0) 0 else maxMonthlyBandwidth * 100
+            if (maxMonthlyBandwidth.compareTo(0) == 0) 0 else (maxMonthlyBandwidth * 100).toInt()
 
 
 
         binding.mainProfileSelectDialogStatisticsMonthlyBandwidthLeftText.text =
             when {
-                maxMonthlyBandwidth == 0 -> this.resources.getString(
+                maxMonthlyBandwidth.compareTo(0) == 0 -> this.resources.getString(
                     R.string._sMB_remaining_this_month,
                     "∞"
                 )
@@ -184,7 +184,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                 )
             }
 
-        if (maxMonthlyBandwidth == 0) {
+        if (maxMonthlyBandwidth.compareTo(0) == 0) {
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.mainProfileSelectDialogStatisticsMonthlyBandwidthProgressShimmer.startShimmer()
             }, 500)

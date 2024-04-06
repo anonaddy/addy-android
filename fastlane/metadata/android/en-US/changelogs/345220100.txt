@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Fixed crashes on self-hosted instances where the bandwidth was larger than an integer<br />- Implemented a custom User-Agent for better logging on addy.io instances</p>

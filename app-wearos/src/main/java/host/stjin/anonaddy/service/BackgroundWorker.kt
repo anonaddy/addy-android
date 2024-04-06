@@ -27,26 +27,8 @@ This BackgroundWorker is used for obtaining data in the background, this data is
 class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
 
     private fun updateTiles() {
-
         TileService.getUpdater(ctx)
             .requestUpdate(FavoriteAliasesTileService::class.java)
-
-        /*// Update widget 1
-        val updateWidget1Intent = Intent(applicationContext, AliasWidget1Provider::class.java)
-        updateWidget1Intent.action = ACTION_APPWIDGET_UPDATE
-        val ids1 = AppWidgetManager.getInstance(applicationContext)
-            .getAppWidgetIds(ComponentName(applicationContext, AliasWidget1Provider::class.java))
-        updateWidget1Intent.putExtra(EXTRA_APPWIDGET_IDS, ids1)
-        applicationContext.sendBroadcast(updateWidget1Intent)
-
-
-        // Update widget 2
-        val updateWidget2Intent = Intent(applicationContext, AliasWidget2Provider::class.java)
-        updateWidget2Intent.action = ACTION_APPWIDGET_UPDATE
-        val ids2 = AppWidgetManager.getInstance(applicationContext)
-            .getAppWidgetIds(ComponentName(applicationContext, AliasWidget2Provider::class.java))
-        updateWidget2Intent.putExtra(EXTRA_APPWIDGET_IDS, ids2)
-        applicationContext.sendBroadcast(updateWidget2Intent)*/
     }
 
     override fun doWork(): Result {
