@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.3.8 + release 01 + 01 (for wearos)
-        versionCode = 341390101
-        versionName = "1.3.9"
+        versionCode = 341400101
+        versionName = "1.4.0"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -181,5 +181,5 @@ dependencies {
 
 // Splash screen
 dependencies {
-    implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
+    implementation("androidx.core:core-splashscreen:1.1.0-rc01")
 }

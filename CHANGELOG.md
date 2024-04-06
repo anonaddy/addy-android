@@ -1,5 +1,20 @@
 # Changelog
 
+## [v5.2.2] - 2024-04-06
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed crashes on self-hosted instances where the bandwidth was larger than an integer
+- Implemented a custom User-Agent for better logging on addy.io instances
+
+### addy.io for Android wearables _(v1.4.0)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.2.1] - 2024-03-28
 
 ### addy.io
