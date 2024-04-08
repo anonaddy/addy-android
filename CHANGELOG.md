@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.2.3] - 2024-04-08
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed crashes when opening the app from intents in some cases
+
+### addy.io for Android wearables _(v1.4.1)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.2.2] - 2024-04-06
 
 ### addy.io

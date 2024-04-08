@@ -8,16 +8,13 @@ import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.components.ErrorScreen
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.alias.AliasActivity
 import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
-import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.UserAgent
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity() {
@@ -25,18 +22,6 @@ class SplashActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-
-
-        /*
-        Init the userAgent values
-         */
-        (this.application as AddyIoApp).userAgent = UserAgent(
-            userAgentApplicationID = BuildConfig.APPLICATION_ID,
-            userAgentVersion = BuildConfig.VERSION_NAME,
-            userAgentVersionCode = BuildConfig.VERSION_CODE,
-            userAgentApplicationFlavor = "wearos",
-            userAgentApplicationBuildType = BuildConfig.BUILD_TYPE
-        )
 
         super.onCreate(savedInstanceState)
         loadSettings()

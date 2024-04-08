@@ -116,7 +116,7 @@ class NetworkHelper(private val context: Context) {
         // <product> / <product-version> <comment>
 
         val userAgent =
-            "${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationID} (${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationBuildType}) / ${(context.applicationContext as AddyIoApp).userAgent.userAgentVersion} (${(context.applicationContext as AddyIoApp).userAgent.userAgentVersionCode}) ${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationFlavor}"
+            "${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationID} (${(context.applicationContext as AddyIoApp).userAgent.userAgentApplicationBuildType}) / ${(context.applicationContext as AddyIoApp).userAgent.userAgentVersion} (${(context.applicationContext as AddyIoApp).userAgent.userAgentVersionCode})"
 
         if (BuildConfig.DEBUG) {
             println("User-Agent: $userAgent")

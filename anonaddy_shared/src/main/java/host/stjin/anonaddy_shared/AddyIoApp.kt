@@ -38,6 +38,20 @@ class AddyIoApp : Application() {
         val settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
 
+
+        // set userAgent by default (in case splashActivity has not set it yet)
+        // This would happen on direct (eg. widget) actions where splashActivity gets skipped
+        val packageName = applicationContext.packageName // need to put this line
+        val version = applicationContext.packageManager.getPackageInfo(packageName, 0).versionName
+        val versionCode = applicationContext.packageManager.getPackageInfo(packageName, 0).versionCode
+
+        userAgent = UserAgent(
+            userAgentApplicationID = packageName,
+            userAgentVersion = version,
+            userAgentVersionCode = versionCode,
+            userAgentApplicationBuildType = BuildConfig.BUILD_TYPE
+        )
+
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS)) {
             // Apply dynamic color
             DynamicColors.applyToActivitiesIfAvailable(this)

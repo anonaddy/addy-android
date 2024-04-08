@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Fixed crashes when opening the app from intents in some cases</p>

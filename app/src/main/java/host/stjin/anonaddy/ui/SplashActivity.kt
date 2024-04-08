@@ -19,7 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySplashBinding
 import host.stjin.anonaddy.ui.setup.SetupActivity
@@ -30,7 +29,6 @@ import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.UserAgent
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.UserResourceExtended
 import kotlinx.coroutines.launch
@@ -52,18 +50,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-        /*
-        Init the userAgent values
-         */
-        (this.application as AddyIoApp).userAgent = UserAgent(
-            userAgentApplicationID = BuildConfig.APPLICATION_ID,
-            userAgentVersion = BuildConfig.VERSION_NAME,
-            userAgentVersionCode = BuildConfig.VERSION_CODE,
-            userAgentApplicationFlavor = BuildConfig.FLAVOR,
-            userAgentApplicationBuildType = BuildConfig.BUILD_TYPE
-        )
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
