@@ -70,10 +70,10 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.2.2</h3>
+<h3>What\'s new in AnonAddy for Android 5.2.3</h3>
 <h4>Fixed/Improved</h4>
-<p>- Fixed crashes on self-hosted instances where the bandwidth was larger than an integer<br />- Implemented a custom User-Agent for better logging on addy.io instances<br /></p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.4.0</h3>
+<p>- Fixed crashes when opening the app from intents in some cases</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.4.1</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
