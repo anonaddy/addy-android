@@ -419,6 +419,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
 
                 // If there are 0 new items in this page but there are more pages, continue searching to the next page
+
+                // TODO Is this ever the case? Why would the API return nothing but still have more pages?
                 if (list.data.size == 0 && (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
                     viewLifecycleOwner.lifecycleScope.launch {
                         getAliasesAndAddThemToList()
