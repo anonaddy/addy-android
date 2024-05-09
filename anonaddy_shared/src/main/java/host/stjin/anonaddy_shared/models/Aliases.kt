@@ -17,7 +17,7 @@ data class SingleAlias(
 data class Aliases(
     val id: String,
     val user_id: String,
-    val aliasable_id: String,
+    val aliasable_id: String?,
     val aliasable_type: String?,
     val local_part: String,
     val extension: String?,
