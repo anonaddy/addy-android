@@ -630,11 +630,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         sent: Int
     ) {
         binding.aliasStats2.setDescription(
-            context.resources.getString(R.string.replied_replied_sent_stat, replied, sent)
+            context.resources.getString(R.string.replied_sent_stat, replied, sent)
         )
         binding.aliasStats1.setDescription(
             context.resources.getString(
-                R.string.replied_forwarded_blocked_stat,
+                R.string.forwarded_blocked_stat,
                 forwarded,
                 blocked
             )

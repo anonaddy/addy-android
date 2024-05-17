@@ -37,8 +37,8 @@
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
     <string name="all_aliases">All aliases</string>
-    <string name="replied_forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
-    <string name="replied_replied_sent_stat" tools:ignore="PluralsCandidate">%1$d replied; %2$d sent</string>
+    <string name="forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
+    <string name="replied_sent_stat" tools:ignore="PluralsCandidate">%1$d replied; %2$d sent</string>
     <string name="settings">Settings</string>
     <string name="resend_email">Resend email</string>
     <string name="delete">Delete</string>

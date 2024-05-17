@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:focusable="false"
-                    app:StatCardViewDescription="@string/replied_forwarded_blocked_stat"
+                    app:StatCardViewDescription="@string/forwarded_blocked_stat"
                     app:StatCardViewIcon="@drawable/ic_email_at"
                     app:StatCardViewShowButton="false"
                     app:StatCardViewTitle="@string/emails_forwarded" />
@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:focusable="false"
-                    app:StatCardViewDescription="@string/replied_replied_sent_stat"
+                    app:StatCardViewDescription="@string/replied_sent_stat"
                     app:StatCardViewIcon="@drawable/ic_mail_forward"
                     app:StatCardViewShowButton="false"
                     app:StatCardViewTitle="@string/emails_replied_sent" />
