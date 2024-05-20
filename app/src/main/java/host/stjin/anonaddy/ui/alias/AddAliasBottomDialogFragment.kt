@@ -113,6 +113,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             }
 
         }, true)
+
+        // TODO what if null?
     }
 
 
@@ -158,11 +160,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasDomainMact.setAdapter(domainAdapter)
 
                 // Set default domain
-                if (domainOptions.defaultAliasDomain != null) {
-                    binding.bsAddaliasDomainMact.setText(domainOptions.defaultAliasDomain, false)
-                } else {
-                    binding.bsAddaliasDomainMact.setText(DOMAINS[0])
-                }
+                binding.bsAddaliasDomainMact.setText(domainOptions.defaultAliasDomain, false)
 
                 // Set default format
                 // Get all formats
@@ -178,22 +176,17 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasAliasFormatMact.setAdapter(formatAdapter)
 
                 // Set default format
-                if (domainOptions.defaultAliasFormat != null) {
-                    // Get the string for the default format ID
-                    // Try/catch, in case there is a default alias format that's not in the formats array
-                    try {
-                        binding.bsAddaliasAliasFormatMact.setText(
-                            FORMATS[FORMATSID.indexOf(domainOptions.defaultAliasFormat)],
-                            false
-                        )
-                    } catch (e: Exception) {
-                        // The default alias format does not exist in the formats array, perhaps it was just added?
-                        // To prevent a crash from the ArrayIndexOutOfBoundsException log the error and just continue without filling the spinner
-                        val ex = e.message
-                        Log.e("AFA", ex.toString())
-                        LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "fillSpinners", null)
-                    }
-
+                try {
+                    binding.bsAddaliasAliasFormatMact.setText(
+                        FORMATS[FORMATSID.indexOf(domainOptions.defaultAliasFormat)],
+                        false
+                    )
+                } catch (e: Exception) {
+                    // The default alias format does not exist in the formats array, perhaps it was just added?
+                    // To prevent a crash from the ArrayIndexOutOfBoundsException log the error and just continue without filling the spinner
+                    val ex = e.message
+                    Log.e("AFA", ex.toString())
+                    LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "fillSpinners", null)
                 }
             }
 
