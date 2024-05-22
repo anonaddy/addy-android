@@ -14,18 +14,6 @@
         <item>custom</item>
     </string-array>
 
-    <!--the custom format is not available for shared domains -->
-    <string-array name="shared_domains">
-        <item>anonaddy.com</item>
-        <item>anonaddy.me</item>
-        <item>addymail.com</item>
-        <item>mailer.me</item>
-        <item>4wrd.cc</item>
-        <item>addy.io</item>
-        <item>addy.to</item>
-    </string-array>
-
-
     <!-- RULE CONDITIONS -->
     <string-array name="conditions.type">
         <item>sender</item>

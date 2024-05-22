@@ -144,6 +144,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
 
     private var DOMAINS: List<String> = listOf()
+    private var sharedDomains: List<String> = listOf()
     private var FORMATS: List<String> = listOf()
     private suspend fun fillSpinners(context: Context) {
         val networkHelper = NetworkHelper(context)
@@ -151,6 +152,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             // Set domains and default format/domain
             if (domainOptions?.data != null) {
                 DOMAINS = domainOptions.data
+                sharedDomains = domainOptions.sharedDomains
 
                 val domainAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
@@ -229,8 +231,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // If the selected domain format is custom
         if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_custom)) {
             // If the selected domain contains a shared domain disable the local part box
-            //TODO: Use the shared domains data instead of hardcoded
-            if (context.resources.getStringArray(R.array.shared_domains).contains(binding.bsAddaliasDomainMact.text.toString())) {
+
+            if (sharedDomains.contains(binding.bsAddaliasDomainMact.text.toString())) {
                 binding.bsAddaliasAliasFormatTil.error = context.resources.getString(R.string.domains_format_custom_not_available_for_this_domain)
                 return
             }
