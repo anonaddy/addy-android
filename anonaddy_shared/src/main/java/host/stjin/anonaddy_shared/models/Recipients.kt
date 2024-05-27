@@ -18,7 +18,7 @@ data class Recipients(
     var protected_headers: Boolean,
     var fingerprint: String?,
     val email_verified_at: String?,
-    var aliases_count: Int?,
+    var aliases_count: Int,
     val created_at: String,
     val updated_at: String
 )

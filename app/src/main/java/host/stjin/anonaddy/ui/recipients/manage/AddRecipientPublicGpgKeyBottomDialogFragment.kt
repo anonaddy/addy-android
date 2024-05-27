@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 
 class AddRecipientPublicGpgKeyBottomDialogFragment(
-    private val aliasId: String?
+    private val recipientId: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -51,7 +51,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
         val root = binding.root
 
         // Check if aliasId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-        if (aliasId != null) {
+        if (recipientId != null) {
             listener = activity as ManageRecipientsActivity
 
             // Set button listeners and current description
@@ -97,7 +97,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
         }
     }
 
-    private suspend fun addGpgKeyHttp(context: Context, description: String) {
+    private suspend fun addGpgKeyHttp(context: Context, publicPgpKey: String) {
         val networkHelper = NetworkHelper(context)
         networkHelper.addEncryptionKeyRecipient({ recipient, error ->
             if (recipient != null) {
@@ -111,7 +111,7 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
                     context.resources.getString(R.string.error_add_gpg_key) + "\n" + error
             }
             // aliasId is never null at this point, hence the !!
-        }, aliasId!!, description)
+        }, recipientId!!, publicPgpKey)
     }
 
     override fun onClick(p0: View?) {
