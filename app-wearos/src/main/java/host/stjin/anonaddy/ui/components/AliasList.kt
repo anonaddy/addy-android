@@ -82,11 +82,11 @@ fun AliasList(aliases: List<Aliases>, favoriteAliases: List<String>?, scalingLaz
                                 R.string.aliases_recyclerview_list_item_date_time,
                                 DateTimeUtils.turnStringIntoLocalString(
                                     alias.created_at,
-                                    DateTimeUtils.DATETIMEUTILS.SHORT_DATE
+                                    DateTimeUtils.DatetimeFormat.SHORT_DATE
                                 ),
                                 DateTimeUtils.turnStringIntoLocalString(
                                     alias.created_at,
-                                    DateTimeUtils.DATETIMEUTILS.TIME
+                                    DateTimeUtils.DatetimeFormat.TIME
                                 )
                             )
                         }).toString()
