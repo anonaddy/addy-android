@@ -230,7 +230,7 @@ class RulesSettingsFragment : Fragment() {
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
         if ((activity?.application as AddyIoApp).userResource.subscription != null) {
             binding.fragmentManageRulesCreateRules.isEnabled =
-                (activity?.application as AddyIoApp).userResource.active_rule_count < (activity?.application as AddyIoApp).userResource.active_rule_limit
+                (activity?.application as AddyIoApp).userResource.active_rule_count < (activity?.application as AddyIoApp).userResource.active_rule_limit!! //Cannot be null since subscription is not null
         } else {
             binding.fragmentManageRulesCreateRules.isEnabled = true
         }

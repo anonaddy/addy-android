@@ -467,8 +467,8 @@ class HomeFragment : Fragment() {
                 activeSharedDomainAliasLimitText
             )
         )
-        if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit > 0) {
-            binding.homeStatCardSharedDomainAliases.setProgress((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toFloat() * 100)
+        if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit != null &&  (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit!! > 0) {
+            binding.homeStatCardSharedDomainAliases.setProgress((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit!!.toFloat() * 100)
         }
 
         val recipientsLimitText = if ((activity?.application as AddyIoApp).userResource.recipient_limit == 0) {
@@ -483,8 +483,8 @@ class HomeFragment : Fragment() {
                 recipientsLimitText
             )
         )
-        if ((activity?.application as AddyIoApp).userResource.recipient_limit > 0) {
-            binding.homeStatCardRecipients.setProgress((activity?.application as AddyIoApp).userResource.recipient_count.toFloat() / (activity?.application as AddyIoApp).userResource.recipient_limit.toFloat() * 100)
+        if ((activity?.application as AddyIoApp).userResource.recipient_limit != null && (activity?.application as AddyIoApp).userResource.recipient_limit!! > 0) {
+            binding.homeStatCardRecipients.setProgress((activity?.application as AddyIoApp).userResource.recipient_count.toFloat() / (activity?.application as AddyIoApp).userResource.recipient_limit!!.toFloat() * 100)
         }
 
 
@@ -500,8 +500,8 @@ class HomeFragment : Fragment() {
                 domainsLimitText
             )
         )
-        if ((activity?.application as AddyIoApp).userResource.active_domain_limit > 0) {
-            binding.homeStatCardDomains.setProgress((activity?.application as AddyIoApp).userResource.active_domain_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_domain_limit.toFloat() * 100)
+        if ((activity?.application as AddyIoApp).userResource.active_domain_limit != null && (activity?.application as AddyIoApp).userResource.active_domain_limit!! > 0) {
+            binding.homeStatCardDomains.setProgress((activity?.application as AddyIoApp).userResource.active_domain_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_domain_limit!!.toFloat() * 100)
         }
 
 
@@ -533,8 +533,8 @@ class HomeFragment : Fragment() {
                 rulesLimitText
             )
         )
-        if ((activity?.application as AddyIoApp).userResource.active_rule_limit > 0) {
-            binding.homeStatCardRules.setProgress((activity?.application as AddyIoApp).userResource.active_rule_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_rule_limit.toFloat() * 100)
+        if ((activity?.application as AddyIoApp).userResource.active_rule_limit != null && (activity?.application as AddyIoApp).userResource.active_rule_limit!! > 0) {
+            binding.homeStatCardRules.setProgress((activity?.application as AddyIoApp).userResource.active_rule_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_rule_limit!!.toFloat() * 100)
         }
 
 

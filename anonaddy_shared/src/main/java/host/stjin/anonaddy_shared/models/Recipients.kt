@@ -18,6 +18,7 @@ data class Recipients(
     var protected_headers: Boolean,
     var fingerprint: String?,
     val email_verified_at: String?,
-    var aliases_count: Int?, // Could be null as it does not come with a specific alias->recipients endpoint    val created_at: String,
+    var aliases_count: Int?, // Could be null as it does not come with a specific alias->recipients endpoint
+    val created_at: String,
     val updated_at: String
 )

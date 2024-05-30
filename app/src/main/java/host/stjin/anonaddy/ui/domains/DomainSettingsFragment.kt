@@ -167,7 +167,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
         if ((activity?.application as AddyIoApp).userResource.subscription != null) {
             binding.fragmentDomainSettingsAddDomain.isEnabled =
-                (activity?.application as AddyIoApp).userResource.active_domain_count < (activity?.application as AddyIoApp).userResource.active_domain_limit
+                (activity?.application as AddyIoApp).userResource.active_domain_count < (activity?.application as AddyIoApp).userResource.active_domain_limit!! //Cannot be null since subscription is not null
         } else {
             binding.fragmentDomainSettingsAddDomain.isEnabled = true
         }

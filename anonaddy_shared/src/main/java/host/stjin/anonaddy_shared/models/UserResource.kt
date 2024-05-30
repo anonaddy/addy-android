@@ -27,17 +27,17 @@ data class UserResource(
     val default_recipient_id: String,
     val default_alias_domain: String,
     val default_alias_format: String,
-    val subscription: String?,
-    val subscription_ends_at: String?,
+    val subscription: String?, // Can be null on selfhosted
+    val subscription_ends_at: String?, // Can be null on selfhosted
     val bandwidth_limit: Long,
     val recipient_count: Int,
-    val recipient_limit: Int,
+    val recipient_limit: Int?, // Can be null on selfhosted
     val active_domain_count: Int,
-    val active_domain_limit: Int,
+    val active_domain_limit: Int?, // Can be null on selfhosted
     val active_shared_domain_alias_count: Int,
-    val active_shared_domain_alias_limit: Int,
+    val active_shared_domain_alias_limit: Int?, // Can be null on selfhosted
     val active_rule_count: Int,
-    val active_rule_limit: Int,
+    val active_rule_limit: Int?, // Can be null on selfhosted
     val total_emails_forwarded: Int,
     val total_emails_blocked: Int,
     val total_emails_replied: Int,
