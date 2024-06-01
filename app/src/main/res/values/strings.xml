@@ -176,7 +176,7 @@
     <string name="edit_desc_username_desc">Change the description for this username, describe what this username is used for</string>
     <string name="edit_domain">Edit domain</string>
     <string name="domain_aliases_d">Domain aliases (%d)</string>
-    <string name="username_aliases_d">Domain aliases (%d)</string>
+    <string name="username_aliases_d">Username aliases (%d)</string>
     <string name="domain_status_active">Domain active</string>
     <string name="domain_status_desc">Use this domain for mail forwarding</string>
     <string name="username_status_desc">Use this username for mail forwarding</string>
@@ -218,7 +218,6 @@
     <string name="nothing_found">Nothing found</string>
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
-    <string name="no_usernames">You have no usernames, what about creating one?</string>
     <string name="default_base_url">https://app.addy.io</string>
     <string name="default_base_url_old">https://app.anonaddy.com</string>
     <string name="addyio_instance">addy.io instance</string>

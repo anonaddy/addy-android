@@ -226,11 +226,13 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
     private fun setUsernamesAdapter(list: java.util.ArrayList<Usernames>) {
         binding.fragmentUsernameSettingsAllUsernamesRecyclerview.apply {
             usernames = list
-            if (list.size > 0) {
+            // There is always 1 username.
+
+            /*if (list.size > 0) {
                 binding.fragmentUsernameSettingsNoUsernames.visibility = View.GONE
             } else {
                 binding.fragmentUsernameSettingsNoUsernames.visibility = View.VISIBLE
-            }
+            }*/
 
             // Set the count of aliases so that the shimmerview looks better next time
             encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, list.size)
