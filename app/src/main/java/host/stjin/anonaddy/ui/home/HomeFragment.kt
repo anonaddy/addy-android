@@ -455,7 +455,7 @@ class HomeFragment : Fragment() {
         val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
 
-        val activeSharedDomainAliasLimitText = if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit == 0) {
+        val activeSharedDomainAliasLimitText = if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
             "∞"
         } else {
             (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toString()
@@ -471,7 +471,7 @@ class HomeFragment : Fragment() {
             binding.homeStatCardSharedDomainAliases.setProgress((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit!!.toFloat() * 100)
         }
 
-        val recipientsLimitText = if ((activity?.application as AddyIoApp).userResource.recipient_limit == 0) {
+        val recipientsLimitText = if ((activity?.application as AddyIoApp).userResource.recipient_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
             "∞"
         } else {
             (activity?.application as AddyIoApp).userResource.recipient_limit.toString()
@@ -488,7 +488,7 @@ class HomeFragment : Fragment() {
         }
 
 
-        val domainsLimitText = if ((activity?.application as AddyIoApp).userResource.active_domain_limit == 0) {
+        val domainsLimitText = if ((activity?.application as AddyIoApp).userResource.active_domain_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
             "∞"
         } else {
             (activity?.application as AddyIoApp).userResource.active_domain_limit.toString()
@@ -521,7 +521,7 @@ class HomeFragment : Fragment() {
             binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
         }
 
-        val rulesLimitText = if ((activity?.application as AddyIoApp).userResource.active_rule_limit == 0) {
+        val rulesLimitText = if ((activity?.application as AddyIoApp).userResource.active_rule_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
             "∞"
         } else {
             (activity?.application as AddyIoApp).userResource.active_rule_limit.toString()

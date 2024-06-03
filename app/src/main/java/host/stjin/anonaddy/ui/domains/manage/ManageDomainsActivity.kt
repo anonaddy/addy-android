@@ -289,7 +289,7 @@ class ManageDomainsActivity : BaseActivity(),
         MaterialDialogHelper.showMaterialDialog(
             context = this,
             title = resources.getString(R.string.delete_domain),
-            message = resources.getString(R.string.delete_domain_desc_confirm),
+            message = resources.getString(R.string.delete_domain_confirmation_desc),
             icon = R.drawable.ic_trash,
             neutralButtonText = resources.getString(R.string.cancel),
             positiveButtonText = resources.getString(R.string.delete),
