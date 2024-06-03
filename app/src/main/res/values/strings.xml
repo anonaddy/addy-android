@@ -177,7 +177,6 @@
     <string name="edit_domain">Edit domain</string>
     <string name="domain_aliases_d">Domain aliases (%d)</string>
     <string name="username_aliases_d">Username aliases (%d)</string>
-    <string name="domain_status_active">Domain active</string>
     <string name="domain_status_desc">Use this domain for mail forwarding</string>
     <string name="username_status_desc">Use this username for mail forwarding</string>
     <string name="delete_domain_desc">You will no longer be able to receive any emails at this domain</string>
