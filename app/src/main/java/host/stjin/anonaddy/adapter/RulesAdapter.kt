@@ -52,7 +52,7 @@ class RulesAdapter(
 
         val descConditions =
             "${listWithRules[position].conditions[0].type} ${listWithRules[position].conditions[0].match} ${listWithRules[position].conditions[0].values[0]}"
-        val descActions = "${listWithRules[position].conditions[0].type} ${listWithRules[position].conditions[0].values}"
+        val descActions = "${listWithRules[position].actions[0].type} ${listWithRules[position].actions[0].value}"
 
         holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
 

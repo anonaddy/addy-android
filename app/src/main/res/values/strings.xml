@@ -387,7 +387,7 @@
     <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available</string>
     <string name="addyio_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
-    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>First attempted</strong><br />%2$s</p><p><strong>Alias</strong> %3$s</p><p><strong>Recipient</strong> %4$s</p><p><strong>Type</strong> %5$s</p><p><strong>Mail Server</strong> %6$s</p><p><strong>Sender</strong> %7$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %8$s</td></tr></tbody></table>]]></string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>First attempted</strong><br />%2$s</p><p><strong>Alias</strong><br />%3$s</p><p><strong>Recipient</strong><br />%4$s</p><p><strong>Type</strong><br />%5$s</p><p><strong>Mail Server</strong><br />%6$s</p><p><strong>Sender</strong><br />%7$s</p><p><strong>Code</strong><br />%8$s</p>]]></string>
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>
