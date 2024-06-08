@@ -259,16 +259,11 @@
     <string name="add_condition_desc">Add a condition which must be met before actions are performed</string>
     <string name="add_action_desc">Decide what action should be performed when conditions are met</string>
     <string name="add_action">Add action</string>
-    <string name="not_a_valid_condition_type">Not a valid condition type</string>
-    <string name="not_a_valid_action_type">Not a valid action type</string>
-    <string name="not_a_valid_condition_match">Not a valid condition match</string>
-    <string name="not_a_valid_banner_location">Not a valid banner location</string>
     <string name="conditions">Conditions</string>
     <string name="actions_then">Actions (then)</string>
     <string name="enter_name">Enter name</string>
     <string name="banner_location">Banner location</string>
     <string name="match">Match</string>
-    <string name="not_a_valid_value">Not a valid value</string>
     <string name="enter_values_comma_separated">Enter values (comma separated)</string>
     <string name="save_rule">Save rule</string>
     <string name="or">OR</string>

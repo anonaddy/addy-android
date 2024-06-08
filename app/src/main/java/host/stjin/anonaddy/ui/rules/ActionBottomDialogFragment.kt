@@ -91,7 +91,6 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
 
             checkIfTypeRequiresValueField(context)
-            binding.bsRuleActionTypeTil.error = null
         }
 
     }
@@ -103,7 +102,6 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     private fun spinnerChangeListener(context: Context) {
         binding.bsRuleActionTypeMact.setOnItemClickListener { _, _, _, _ ->
             checkIfTypeRequiresValueField(context)
-            binding.bsRuleActionTypeTil.error = null
         }
     }
 
@@ -166,25 +164,6 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     }
 
     private fun addAction(context: Context) {
-
-        if (!TYPES_NAME.contains(binding.bsRuleActionTypeMact.text.toString())) {
-            binding.bsRuleActionTypeTil.error =
-                context.resources.getString(R.string.not_a_valid_action_type)
-            return
-        }
-
-        if (!VALUE_BANNER_LOCATION_NAME.contains(binding.bsRuleActionValuesSpinnerBannerLocationMact.text.toString())) {
-            binding.bsRuleActionValuesSpinnerBannerLocationTil.error =
-                context.resources.getString(R.string.not_a_valid_banner_location)
-            return
-        }
-
-
-        // Set error to null
-        binding.bsRuleActionTypeTil.error = null
-        binding.bsRuleActionValuesSpinnerBannerLocationTil.error = null
-
-
         val type =
             TYPES[TYPES_NAME.indexOf(binding.bsRuleActionTypeMact.text.toString())]
 

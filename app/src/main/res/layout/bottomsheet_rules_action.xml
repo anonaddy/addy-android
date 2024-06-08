@@ -68,7 +68,8 @@
                     android:id="@+id/bs_rule_action_type_mact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:text="@string/replace_the_subject_with"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

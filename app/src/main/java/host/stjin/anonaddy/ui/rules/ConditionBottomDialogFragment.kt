@@ -129,32 +129,7 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         }
     }
 
-    private fun addCondition(context: Context) {
-        if (!TYPES_NAME.contains(binding.bsRuleConditionTypeMact.text.toString())) {
-            binding.bsRuleConditionTypeTil.error =
-                context.resources.getString(R.string.not_a_valid_condition_type)
-            return
-        }
-
-        if (!MATCHES_NAME.contains(binding.bsRuleConditionMatchMact.text.toString())) {
-            binding.bsRuleConditionMatchTil.error =
-                context.resources.getString(R.string.not_a_valid_condition_match)
-            return
-        }
-
-        if (binding.bsRuleConditionValuesTiet.text.toString().isEmpty()) {
-            binding.bsRuleConditionValuesTil.error =
-                context.resources.getString(R.string.not_a_valid_value)
-            return
-        }
-
-        // Set error to null if domain and alias is valid
-        binding.bsRuleConditionTypeTil.error = null
-        binding.bsRuleConditionMatchTil.error = null
-        binding.bsRuleConditionValuesTil.error = null
-
-        binding.bsRuleConditionAddConditionButton.isEnabled = false
-
+    private fun addCondition() {
         val type =
             TYPES[TYPES_NAME.indexOf(binding.bsRuleConditionTypeMact.text.toString())]
         val match =
@@ -169,7 +144,7 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_rule_condition_add_condition_button) {
-                addCondition(requireContext())
+                addCondition()
             }
         }
     }
