@@ -83,6 +83,12 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             binding.bsRuleActionValuesTiet.setText(actionEditObject?.value)
 
 
+            // If type is banner location, set value for it
+            if (typeText == context.resources.getString(R.string.set_the_banner_information_location_to)){
+                binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject?.value, false)
+            }
+
+
 
             checkIfTypeRequiresValueField(context)
             binding.bsRuleActionTypeTil.error = null
@@ -174,11 +180,10 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         }
 
 
-        // Set error to null if domain and alias is valid
+        // Set error to null
         binding.bsRuleActionTypeTil.error = null
         binding.bsRuleActionValuesSpinnerBannerLocationTil.error = null
 
-        binding.bsRuleActionAddActionButton.isEnabled = false
 
         val type =
             TYPES[TYPES_NAME.indexOf(binding.bsRuleActionTypeMact.text.toString())]
