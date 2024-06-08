@@ -46,7 +46,7 @@
         <item>@string/does_not_end_with</item>
     </string-array>
 
-    <!-- RULE CONDITIONS -->
+    <!-- RULE ACTIONS -->
     <string-array name="actions.type">
         <item>subject</item>
         <item>displayFrom</item>
