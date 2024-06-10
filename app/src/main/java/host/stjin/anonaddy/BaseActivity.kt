@@ -3,6 +3,7 @@ package host.stjin.anonaddy
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -26,8 +27,12 @@ import androidx.window.embedding.ActivityEmbeddingController
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
+import host.stjin.anonaddy.ui.MainActivity
+import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
@@ -247,16 +252,19 @@ abstract class BaseActivity : AppCompatActivity() {
 
                             when (errorCode) {
                                 BiometricPrompt.ERROR_NO_BIOMETRICS -> {
-                                    // The user has removed the screen lock completely.
-                                    // Unlock the app and continue
-                                    SettingsManager(true, this@BaseActivity).putSettingsBool(SettingsManager.PREFS.BIOMETRIC_ENABLED, false)
-                                    Toast.makeText(
-                                        this@BaseActivity, resources.getString(
-                                            R.string.authentication_error_11
-                                        ), Toast.LENGTH_LONG
-                                    ).show()
-                                    isSessionAuthenticated = true
-                                    callback(true)
+                                    MaterialDialogHelper.showMaterialDialog(
+                                        context = this@BaseActivity,
+                                        message = this@BaseActivity.resources.getString(R.string.authentication_splash_error_unavailable),
+                                        icon = R.drawable.ic_fingerprint,
+                                        neutralButtonText = this@BaseActivity.resources.getString(R.string.try_again),
+                                        neutralButtonAction = {
+                                             isAuthenticated(shouldFinishOnError, callback)
+                                        },
+                                        positiveButtonText = this@BaseActivity.resources.getString(R.string.reset_app),
+                                        positiveButtonAction = {
+                                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                                        }
+                                    ).setCancelable(false).show()
                                 }
                                 BiometricPrompt.ERROR_USER_CANCELED -> {
                                     if (shouldFinishOnError) {

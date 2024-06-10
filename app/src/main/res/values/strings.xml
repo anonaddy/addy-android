@@ -135,7 +135,6 @@
     <string name="logs">Logs</string>
     <string name="clear_logs">Clear logs</string>
     <string name="addyio_locked">addy.io locked</string>
-    <string name="authentication_error_11">Biometric unlocking disabled, no screen lock was found</string>
     <string name="reset_app_error_wearable">Could not reset app</string>
     <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your addy.io account or anything related)</string>
     <string name="edit_recipient">Edit recipient</string>
@@ -680,4 +679,5 @@
     <string name="last_sent">Last sent</string>
     <string name="last_blocked">Last blocked</string>
     <string name="unknown">Unknown</string>
+    <string name="authentication_splash_error_unavailable">The addy.io app is protected using biometrics, but they are currently unavailable. Without biometric authentication, access to the data is restricted. Would you like to reset the app?</string>
 </resources>
