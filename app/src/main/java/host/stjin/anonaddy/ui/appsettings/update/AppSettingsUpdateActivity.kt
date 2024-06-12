@@ -12,6 +12,7 @@ import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.databinding.ActivityAppSettingsUpdateBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.YDGooglePlayUtils
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
@@ -59,32 +60,44 @@ class AppSettingsUpdateActivity : BaseActivity() {
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES) || forceCheck) {
             binding.activityAppSettingsUpdateSectionDownload.setTitle(this.resources.getString(R.string.obtaining_information))
             lifecycleScope.launch {
-                Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, isRunningFutureVersion: Boolean ->
+                Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, isRunningFutureVersion: Boolean, error: String? ->
                     checkedForUpdates = true
-                    when {
-                        updateAvailable -> {
-                            binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.new_update_available))
-                            binding.activityAppSettingsUpdateSectionDownload.setDescription(
-                                this@AppSettingsUpdateActivity.resources.getString(
-                                    R.string.new_update_available_version,
-                                    BuildConfig.VERSION_NAME,
-                                    latestVersion
+
+                    if (error == null){
+                        when {
+                            updateAvailable -> {
+                                binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.new_update_available))
+                                binding.activityAppSettingsUpdateSectionDownload.setDescription(
+                                    this@AppSettingsUpdateActivity.resources.getString(
+                                        R.string.new_update_available_version,
+                                        BuildConfig.VERSION_NAME,
+                                        latestVersion
+                                    )
                                 )
-                            )
-                        }
+                            }
 
-                        isRunningFutureVersion -> {
-                            binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.greetings_time_traveller))
-                            binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.greetings_time_traveller_desc))
-                            binding.activityAppSettingsUpdateSectionDownload.setImageResourceIcons(R.drawable.ic_infinity, null)
-                        }
+                            isRunningFutureVersion -> {
+                                binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.greetings_time_traveller))
+                                binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.greetings_time_traveller_desc))
+                                binding.activityAppSettingsUpdateSectionDownload.setImageResourceIcons(R.drawable.ic_infinity, null)
+                            }
 
-                        else -> {
-                            binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available))
-                            binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available_desc))
+                            else -> {
+                                binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available))
+                                binding.activityAppSettingsUpdateSectionDownload.setDescription(this@AppSettingsUpdateActivity.resources.getString(R.string.no_new_update_available_desc))
+                            }
                         }
+                        binding.activityAppSettingsUpdateSectionDownload.setSectionAlert(updateAvailable)
+                    } else {
+                        binding.activityAppSettingsUpdateSectionDownload.setTitle(this@AppSettingsUpdateActivity.resources.getString(R.string.could_not_check_for_updates))
+
+                        SnackbarHelper.createSnackbar(
+                            this@AppSettingsUpdateActivity,
+                            this@AppSettingsUpdateActivity.resources.getString(R.string.could_not_check_for_updates),
+                            binding.appsettingsUpdateCL
+                        ).show()
                     }
-                    binding.activityAppSettingsUpdateSectionDownload.setSectionAlert(updateAvailable)
+
                 }, this@AppSettingsUpdateActivity)
             }
         }

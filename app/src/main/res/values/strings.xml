@@ -680,4 +680,5 @@
     <string name="last_blocked">Last blocked</string>
     <string name="unknown">Unknown</string>
     <string name="authentication_splash_error_unavailable">The addy.io app is protected using biometrics, but they are currently unavailable. Without biometric authentication, access to the data is restricted. Would you like to reset the app?</string>
+    <string name="could_not_check_for_updates">Could not check for updates</string>
 </resources>

@@ -102,7 +102,7 @@ class AppSettingsActivity : BaseActivity(),
         lifecycleScope.launch {
             val settingsManager = SettingsManager(false, this@AppSettingsActivity)
             if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
-                Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
+                Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean, _: String? ->
                     binding.activityAppSettingsSectionUpdater.setSectionAlert(updateAvailable)
                     if (updateAvailable) {
                         binding.activityAppSettingsSectionUpdater.setTitle(this@AppSettingsActivity.resources.getString(R.string.new_update_available))

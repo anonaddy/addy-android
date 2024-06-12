@@ -112,7 +112,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                  */
 
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
-                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean ->
+                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean, _ :String? ->
                         if (updateAvailable) {
                             latestVersion?.let {
                                 NotificationHelper(appContext).createUpdateNotification(

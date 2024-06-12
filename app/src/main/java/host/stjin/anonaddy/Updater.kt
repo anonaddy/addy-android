@@ -7,21 +7,24 @@ import host.stjin.anonaddy_shared.NetworkHelper
 object Updater {
     // This bit is getting called by default, it checks the Gitlab RSS feed for the latest version
     suspend fun isUpdateAvailable(
-        callback: (Boolean, String?, Boolean) -> Unit, context: Context
+        callback: (Boolean, String?, Boolean, String?) -> Unit, context: Context
     ) {
-        NetworkHelper(context).getGitlabTags { feed, _ ->
-            // Get the title (version name) of the first (thus latest) entry
-            val version = feed?.items?.get(0)?.title
-            if (version != null) {
-                // Take the latest server version and remove the prefix (v) and version separators (.)
-                // Turn the server version into an int.
+        NetworkHelper(context).getGitlabTags { feed, error ->
+            if (error == null){
+                // Get the title (version name) of the first (thus latest) entry
+                val version = feed?.items?.get(0)?.title
+                if (version != null) {
+                    // Take the latest server version and remove the prefix (v) and version separators (.)
+                    // Turn the server version into an int.
 
-                val serverVersionCodeAsInt = version.replace("v", "").replace(".", "").toInt()
-                val appVersionCodeAsInt = BuildConfig.VERSION_NAME.replace("v", "").replace(".", "").toInt()
-                callback(serverVersionCodeAsInt > appVersionCodeAsInt, version, appVersionCodeAsInt > serverVersionCodeAsInt)
-            } else {
+                    val serverVersionCodeAsInt = version.replace("v", "").replace(".", "").toInt()
+                    val appVersionCodeAsInt = BuildConfig.VERSION_NAME.replace("v", "").replace(".", "").toInt()
+                    callback(serverVersionCodeAsInt > appVersionCodeAsInt, version, appVersionCodeAsInt > serverVersionCodeAsInt, null)
+                }
+            }
+           else {
                 // If version is null something must have gone wrong with checking for updates. Return false to make the app think its up-to-date
-                callback(false, null, false)
+                callback(false, null, false, error)
             }
 
         }

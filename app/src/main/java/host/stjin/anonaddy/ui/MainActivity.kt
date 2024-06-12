@@ -556,7 +556,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     private suspend fun checkForUpdates() {
         val settingsManager = SettingsManager(false, this)
         if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
-            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean ->
+            Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean, _: String? ->
 
                 // Set the update status in profileBottomDialogFragment
                 profileBottomDialogFragment.updateAvailable = updateAvailable
