@@ -413,13 +413,12 @@ class BackgroundWorkerHelper(private val context: Context) {
     }
 
     fun isThereWorkTodo(): Boolean {
-        val encryptedSettingsManager = SettingsManager(true, context)
         val settingsManager = SettingsManager(false, context)
 
         // Count amount of aliases to be watched
-        val aliasToWatch = encryptedSettingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
+        val aliasToWatch = AliasWatcher(context).getAliasesToWatch()
         // Count amount of widgets
-        val amountOfWidgets = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
+        val amountOfWidgets = settingsManager.getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
 
         val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
         val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
