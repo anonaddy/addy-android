@@ -95,7 +95,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("com.google.android.gms:play-services-wearable:18.1.0")
+    implementation("com.google.android.gms:play-services-wearable:18.2.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.wear:wear:1.3.0")
@@ -153,7 +153,7 @@ dependencies {
 // Tiles
 dependencies {
     // For watchface
-    implementation("com.google.android.gms:play-services-base:18.4.0")
+    implementation("com.google.android.gms:play-services-base:18.5.0")
 
     // Use to implement support for wear tiles
     implementation("androidx.wear.tiles:tiles:$wear_tiles_version")
@@ -176,7 +176,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.12")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.14")
 }
 
 // Splash screen
