@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.Rules
 
 class RulesAdapter(
     private val listWithRules: ArrayList<Rules>,
+    private val recipients: ArrayList<Recipients>?,
     private val allowDrag: Boolean
 ) :
     RecyclerView.Adapter<RulesAdapter.ViewHolder>() {
@@ -50,11 +52,35 @@ class RulesAdapter(
                 R.string.activate
             )
 
-        val descConditions =
-            "${listWithRules[position].conditions[0].type} ${listWithRules[position].conditions[0].match} ${listWithRules[position].conditions[0].values[0]}"
-        val descActions = "${listWithRules[position].actions[0].type} ${listWithRules[position].actions[0].value}"
 
-        holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
+        val typeText =
+            holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.conditions_type_name)[holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.conditions_type)
+                .indexOf(listWithRules[position].conditions[0].type)]
+        val matchText =
+            holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.conditions_match_name)[holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.conditions_match)
+                .indexOf(listWithRules[position].conditions[0].match)]
+        val descConditions =
+            "$typeText $matchText ${listWithRules[position].conditions[0].values[0]}"
+
+        val actionTypeText =
+            holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.actions_type_name)[holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.actions_type).indexOf(listWithRules[position].actions[0].type)]
+
+        // If forward_to type resolve the recipient
+        if (actionTypeText == holder.rulesRecyclerviewListActivateButton.context.resources.getString(R.string.forward_to) && recipients != null){
+
+            val recipient = recipients.first { it.id == listWithRules[position].actions[0].value }
+            val descActions = "$actionTypeText ${recipient.email}"
+
+            holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
+
+        } else {
+            val descActions = "$actionTypeText ${listWithRules[position].actions[0].value}"
+
+            holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
+
+        }
+
+
 
         if (listWithRules[position].active) {
             holder.rulesRecyclerviewListIcon.setImageResource(R.drawable.ic_clipboard_list)

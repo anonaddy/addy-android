@@ -33,6 +33,7 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.Rules
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -42,6 +43,7 @@ import kotlinx.coroutines.launch
 class RulesSettingsFragment : Fragment() {
 
     private var rules: ArrayList<Rules>? = null
+    private var recipients: ArrayList<Recipients>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
     private var OneTimeRecyclerViewActions: Boolean = true
@@ -81,12 +83,16 @@ class RulesSettingsFragment : Fragment() {
         val gson = Gson()
         val json = gson.toJson(rules)
         outState.putString("rules", json)
+
+        val recipientsJson = gson.toJson(recipients)
+        outState.putString("recipients", recipientsJson)
     }
 
 
     private fun setOnClickListener() {
         binding.fragmentManageRulesCreateRules.setOnClickListener {
             val intent = Intent(requireContext(), CreateRuleActivity::class.java)
+            intent.putExtra("recipients", Gson().toJson(recipients))
             resultLauncher.launch(intent)
         }
     }
@@ -107,24 +113,49 @@ class RulesSettingsFragment : Fragment() {
             if (savedInstanceState != null) {
                 setStats()
 
+                val recipientsJson = savedInstanceState.getString("recipients")
                 val rulesJson = savedInstanceState.getString("rules")
-                if (!rulesJson.isNullOrEmpty() && rulesJson != "null") {
+
+                if (!recipientsJson.isNullOrEmpty() && recipientsJson != "null" &&
+                    !rulesJson.isNullOrEmpty() && rulesJson != "null") {
                     val gson = Gson()
 
-                    val myType = object : TypeToken<ArrayList<Rules>>() {}.type
-                    val list = gson.fromJson<ArrayList<Rules>>(rulesJson, myType)
-                    setRulesAdapter(list)
+                    val recipientsType = object : TypeToken<ArrayList<Recipients>>() {}.type
+                    val recipientsList = gson.fromJson<ArrayList<Recipients>>(recipientsJson, recipientsType)
+
+                    val rulesType = object : TypeToken<ArrayList<Rules>>() {}.type
+                    val rulesList = gson.fromJson<ArrayList<Rules>>(rulesJson, rulesType)
+
+                    setRulesAdapter(recipientsList, rulesList)
                 } else {
-                    // rulesJson could be null when an embedded activity is opened instantly
-                    getAllRulesAndSetView()
+                    // recipientsJson could be null when an embedded activity is opened instantly
+                    // This will also call getAllRulesAndSetView
+                    getAllRecipients()
                 }
+
             } else {
                 getUserResource()
-                getAllRulesAndSetView()
+
+                // This will also call getAllRulesAndSetView
+                getAllRecipients()
             }
         }
     }
 
+    private suspend fun getAllRecipients() {
+        val networkHelper = NetworkHelper(requireContext())
+
+        networkHelper.getRecipients({ result, _ ->
+            if (result != null) {
+                lifecycleScope.launch {
+                    recipients = result
+                    getAllRulesAndSetView(result)
+                }
+
+            }
+
+        }, false)
+    }
 
     private suspend fun getUserResource() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
@@ -176,7 +207,7 @@ class RulesSettingsFragment : Fragment() {
 
 
     private lateinit var rulesAdapter: RulesAdapter
-    private suspend fun getAllRulesAndSetView() {
+    private suspend fun getAllRulesAndSetView(recipients: ArrayList<Recipients>) {
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
             networkHelper?.getAllRules({ list, error ->
                 // Sorted by created_at automatically
@@ -189,7 +220,7 @@ class RulesSettingsFragment : Fragment() {
                 }
 
                 if (list != null) {
-                    setRulesAdapter(list)
+                    setRulesAdapter(recipients, list)
                 } else {
                     if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
@@ -236,7 +267,7 @@ class RulesSettingsFragment : Fragment() {
         }
     }
 
-    private fun setRulesAdapter(list: java.util.ArrayList<Rules>) {
+    private fun setRulesAdapter(recipients: ArrayList<Recipients>, list: java.util.ArrayList<Rules>) {
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
             rules = list
             if (list.size > 0) {
@@ -249,7 +280,7 @@ class RulesSettingsFragment : Fragment() {
             encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, list.size)
 
 
-            rulesAdapter = RulesAdapter(list, true)
+            rulesAdapter = RulesAdapter(list, recipients, true)
             rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
 
                 override fun onClickActivate(pos: Int, aView: View) {
@@ -266,6 +297,7 @@ class RulesSettingsFragment : Fragment() {
 
                 override fun onClickSettings(pos: Int, aView: View) {
                     val intent = Intent(context, CreateRuleActivity::class.java)
+                    intent.putExtra("recipients", Gson().toJson(recipients))
                     intent.putExtra("rule_id", list[pos].id)
                     resultLauncher.launch(intent)
                 }

@@ -1,6 +1,7 @@
 package host.stjin.anonaddy.ui.rules
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +13,9 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityRulesCreateBinding
@@ -20,6 +23,7 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Action
 import host.stjin.anonaddy_shared.models.Condition
+import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.Rules
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -40,6 +44,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     private var ruleId: String? = null
     private lateinit var rules: Rules
+    private var recipients: ArrayList<Recipients>? = null
 
     private var conditionBottomDialogFragment: ConditionBottomDialogFragment =
         ConditionBottomDialogFragment.newInstance()
@@ -71,15 +76,28 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
         // Check if there is an instance to restore (in case of rotations or folding)
         val json = savedInstanceState?.getString("rules")
-        if (json?.isNotEmpty() == true) {
+        val recipientsJson = savedInstanceState?.getString("recipients")
+        if (json?.isNotEmpty() == true && recipientsJson?.isNotEmpty() == true) {
             val gson = Gson()
             rules = gson.fromJson(json, Rules::class.java)
+
+            val recipientsType = object : TypeToken<ArrayList<Recipients>>() {}.type
+            val recipientsList = gson.fromJson<ArrayList<Recipients>>(recipientsJson, recipientsType)
+            recipients = recipientsList
+
+
             this.ruleId = savedInstanceState.getString("rule_id")
             setPage()
         } else {
             val b = intent.extras
-            val ruleId = b?.getString("rule_id")
+            val gson = Gson()
 
+            val recipientsStringFromBundle = b?.getString("recipients")
+            val recipientsType = object : TypeToken<ArrayList<Recipients>>() {}.type
+            val recipientsList = gson.fromJson<ArrayList<Recipients>>(recipientsStringFromBundle, recipientsType)
+            recipients = recipientsList
+
+            val ruleId = b?.getString("rule_id")
             if (ruleId == null) {
                 // No ruleID, generate an empty rule
                 generateEmptyRule()
@@ -153,6 +171,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             ruleId?.let { getRuleInfo(it) }
         }
     }
+
+
 
     private suspend fun getRuleInfo(id: String) {
         networkHelper.getSpecificRule({ list, error ->
@@ -336,7 +356,17 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             title.text = this.resources.getString(R.string.rule_then_, "`${typeText}`")
 
             val subtitle = inflatedLayout.findViewById<TextView>(R.id.rules_view_condition_action_subtitle)
-            subtitle.text = action.value
+
+
+
+            // If forward_to type resolve the recipient
+            if (typeText == this.resources.getString(R.string.forward_to) && recipients != null){
+                val recipient = recipients!!.first { it.id == action.value }
+                subtitle.text = recipient.email
+            } else {
+                subtitle.text = action.value
+            }
+
 
 
             deleteAction.setOnClickListener {
@@ -472,8 +502,10 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
         val gson = Gson()
         val json = gson.toJson(rules)
+        val recipientsJson = gson.toJson(recipients)
         outState.putSerializable("rules", json)
         outState.putString("rule_id", this.ruleId)
+        outState.putString("recipients", recipientsJson)
     }
 
     // Actions

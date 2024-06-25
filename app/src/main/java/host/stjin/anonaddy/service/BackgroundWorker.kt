@@ -277,7 +277,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             }
 
             // If the aliasNetwork call was successful, perform the check
-            if (aliasNetworkCallResult) {
+            if (aliasWatcherNetworkCallResult) {
                 // Now the data has been updated, perform the AliasWatcher check
                 AliasWatcher(appContext).watchAliasesForDifferences()
             }

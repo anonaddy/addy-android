@@ -19,11 +19,13 @@
         <item>sender</item>
         <item>subject</item>
         <item>alias</item>
+        <item>alias_description</item>
     </string-array>
     <string-array name="conditions.type.name">
         <item>@string/the_sender</item>
         <item>@string/the_subject</item>
         <item>@string/the_alias</item>
+        <item>@string/the_alias_description</item>
     </string-array>
     <string-array name="conditions.match">
         <item>contains</item>
@@ -53,6 +55,8 @@
         <item>encryption</item>
         <item>banner</item>
         <item>block</item>
+        <item>removeAttachments</item>
+        <item>forwardTo</item>
     </string-array>
     <string-array name="actions.type.name">
         <item>@string/replace_the_subject_with</item>
@@ -60,6 +64,8 @@
         <item>@string/turn_PGP_encryption_off</item>
         <item>@string/set_the_banner_information_location_to</item>
         <item>@string/block_the_email</item>
+        <item>@string/remove_attachments</item>
+        <item>@string/forward_to</item>
     </string-array>
 
     <string-array name="actions.type.bannerlocation.options">
@@ -80,6 +86,7 @@
     <string name="the_sender">the sender</string>
     <string name="the_subject">the subject</string>
     <string name="the_alias">the alias</string>
+    <string name="the_alias_description">the alias description</string>
     <string name="does_not_contain">does not contain</string>
     <string name="is_exactly">is exactly</string>
     <string name="is_not">is not</string>
@@ -92,6 +99,8 @@
     <string name="turn_PGP_encryption_off">turn PGP encryption off</string>
     <string name="set_the_banner_information_location_to">set the banner information location to</string>
     <string name="block_the_email">block the email</string>
+    <string name="remove_attachments">remove attachment</string>
+    <string name="forward_to">forward to</string>
     <string name="domains_format_random_words">Random words</string>
     <string name="domains_format_custom">Custom</string>
     <string name="domains_format_uuid">UUID</string>

@@ -267,7 +267,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
             layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
             addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
 
-            val rulesAdapter = RulesAdapter(filteredRules!!, false)
+            val rulesAdapter = RulesAdapter(filteredRules!!, null, false)
             rulesAdapter.setClickListener(object : RulesAdapter.ClickListener {
                 override fun onClickActivate(pos: Int, aView: View) {
                     val data = Intent()

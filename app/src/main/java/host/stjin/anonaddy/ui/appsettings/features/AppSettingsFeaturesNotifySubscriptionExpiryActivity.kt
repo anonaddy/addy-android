@@ -89,14 +89,14 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     private fun setSubscriptionInfoText(user: UserResource?) {
         if (user != null) {
             when {
-                (this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource.subscription == null -> {
+                user.subscription == null -> {
                     binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =
                         resources.getString(R.string.subscription_expiry_date_never, AddyIo.API_BASE_URL)
                 }
 
-                (this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource.subscription_ends_at != null -> {
+                user.subscription_ends_at != null -> {
                     val expiryDate =
-                        DateTimeUtils.turnStringIntoLocalDateTime((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource.subscription_ends_at)
+                        DateTimeUtils.turnStringIntoLocalDateTime(user.subscription_ends_at)
 
                     val text = PrettyTime().format(expiryDate)
                     binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =

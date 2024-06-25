@@ -9,15 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesActionBinding
+import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Action
+import kotlinx.coroutines.launch
 
 
-class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+class ActionBottomDialogFragment: BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddActionBottomDialogListener
@@ -67,6 +71,29 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         return root
     }
 
+    private suspend fun getAllRecipients(selectedRecipientId: String?, context: Context) {
+        val networkHelper = NetworkHelper(context)
+
+        networkHelper.getRecipients({ result, _ ->
+            if (result != null) {
+                // Remove the default "Loading recipients" chip
+                binding.bsRuleActionForwardToChipgroup.removeAllViewsInLayout()
+                binding.bsRuleActionForwardToChipgroup.requestLayout()
+                binding.bsRuleActionForwardToChipgroup.invalidate()
+
+                for (recipient in result) {
+                    val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsRuleActionForwardToChipgroup, false) as Chip
+                    chip.text = recipient.email
+                    chip.tag = recipient.id
+                    chip.isChecked = selectedRecipientId.equals(recipient.id)
+
+                    binding.bsRuleActionForwardToChipgroup.addView(chip)
+                }
+            }
+
+        }, true)
+    }
+
     private fun checkForArguments(context: Context) {
         // Check if there arguments (to be filled from the Create Rule Activity)
         if ((arguments?.size() ?: 0) > 0) {
@@ -88,9 +115,24 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject?.value, false)
             }
 
-
+            // If type is banner location, set value for it
+            if (typeText == context.resources.getString(R.string.forward_to)){
+                viewLifecycleOwner.lifecycleScope.launch {
+                    getAllRecipients(actionEditObject?.value, requireContext())
+                }
+            } else {
+                // If not forward_to, get recipients without selected
+                viewLifecycleOwner.lifecycleScope.launch {
+                    getAllRecipients(null, requireContext())
+                }
+            }
 
             checkIfTypeRequiresValueField(context)
+        } else {
+            // If no arguments, get recipients without selected
+            viewLifecycleOwner.lifecycleScope.launch {
+                getAllRecipients(null, requireContext())
+            }
         }
 
     }
@@ -110,20 +152,38 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         // If the type is set to set banner location show the spinner and hide the value field
         when {
             binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.set_the_banner_information_location_to) -> {
+                binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.VISIBLE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
-            // If the type is set to block email hide both
+            // If the type is set to block email hide all
             binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.block_the_email) -> {
+                binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
-            // If the type is set to turn off PGP hide both
+            // If the type is set to turn off PGP hide all
             binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.turn_PGP_encryption_off) -> {
+                binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
+            // If the type is set to remove attachment hide all
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.remove_attachments) -> {
+                binding.bsRuleActionForwardToTil.visibility = View.GONE
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
+                binding.bsRuleActionValuesTil.visibility = View.GONE
+            }
+            // If the type is set to forward to show recipients only
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.forward_to) -> {
+                binding.bsRuleActionForwardToTil.visibility = View.VISIBLE
+                binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
+                binding.bsRuleActionValuesTil.visibility = View.GONE
+            }
+
+
             else -> {
+                binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.VISIBLE
             }
@@ -187,6 +247,28 @@ class ActionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             // If the type is set to turn off PGP send a true
             binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.turn_PGP_encryption_off) -> {
                 listener.onAddedAction(actionEditIndex, type, true)
+            }
+            // If the type is set to remove attachment send a true
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.remove_attachments) -> {
+                listener.onAddedAction(actionEditIndex, type, true)
+            }
+            // If the type is set to forward to send selected recipientID
+            binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.forward_to) -> {
+
+                // Get selected chip
+                var recipient: String
+                val ids: List<Int> = binding.bsRuleActionForwardToChipgroup.checkedChipIds
+                if (ids.isEmpty()){
+                    binding.bsRuleActionForwardToTil.error = context.resources.getString(R.string.select_a_recipient)
+                } else {
+                    for (id in ids) {
+                        val chip: Chip = binding.bsRuleActionForwardToChipgroup.findViewById(id)
+                        recipient = chip.tag.toString()
+                        listener.onAddedAction(actionEditIndex, type, recipient)
+                    }
+                }
+
+
             }
             else -> {
                 // Else just get the textfield value
