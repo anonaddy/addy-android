@@ -97,6 +97,7 @@ class RulesSettingsFragment : Fragment() {
         }
     }
 
+    //FIXME: This is being called on tablet, however it might be possible that getDataFromWeb gets called AFTER this call, making the app restore the old data
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
@@ -267,8 +268,9 @@ class RulesSettingsFragment : Fragment() {
         }
     }
 
-    private fun setRulesAdapter(recipients: ArrayList<Recipients>, list: java.util.ArrayList<Rules>) {
+    private fun setRulesAdapter(recipientsList: ArrayList<Recipients>, list: java.util.ArrayList<Rules>) {
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
+            recipients = recipientsList
             rules = list
             if (list.size > 0) {
                 binding.fragmentManageRulesNoRules.visibility = View.GONE

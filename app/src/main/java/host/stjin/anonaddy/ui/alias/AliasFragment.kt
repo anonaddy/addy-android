@@ -362,6 +362,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         }, aliasesToWatch
                     )
                 } else {
+                    // This could be triggered if you remove the last watched alias and then refresh
                     val aliasesArray = AliasesArray(arrayListOf(), links = null, meta = null)
                     setAliasesAdapter(requireContext(), aliasesArray, forceReload)
                 }
@@ -416,17 +417,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 aliasList?.meta = list.meta
                 aliasList?.links = list.links
                 aliasList?.data?.addAll(list.data)
-
-
-                // If there are 0 new items in this page but there are more pages, continue searching to the next page
-
-                // TODO Is this ever the case? Why would the API return nothing but still have more pages?
-                if (list.data.size == 0 && (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        getAliasesAndAddThemToList()
-                    }
-                    return
-                }
 
                 // Get the totalsize of the adapteritems
                 val totalSize = aliasAdapter?.itemCount ?: 0
