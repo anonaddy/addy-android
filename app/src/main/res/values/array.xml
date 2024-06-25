@@ -99,7 +99,7 @@
     <string name="turn_PGP_encryption_off">turn PGP encryption off</string>
     <string name="set_the_banner_information_location_to">set the banner information location to</string>
     <string name="block_the_email">block the email</string>
-    <string name="remove_attachments">remove attachment</string>
+    <string name="remove_attachments">remove attachments</string>
     <string name="forward_to">forward to</string>
     <string name="domains_format_random_words">Random words</string>
     <string name="domains_format_custom">Custom</string>
