@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Added new rule-conditions and actions for addy.io 1.2.1</p>
+<h4>Fixed/Improved</h4>
+<p>- Shared domains are now retrieved from the API instead of being hardcoded<br />- Performance improvements and other things to make the app even smoother, including but not limited to some string changes</p>

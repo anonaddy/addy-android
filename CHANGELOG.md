@@ -1,5 +1,24 @@
 # Changelog
 
+## [v5.2.4] - 2024-06-26
+
+### addy.io
+
+##### Added
+
+- Added new rule-conditions and actions for addy.io 1.2.1
+
+##### Fixed/Improved
+
+- Shared domains are now retrieved from the API instead of being hardcoded
+- Performance improvements and other things to make the app even smoother, including but not limited to some string changes
+
+### addy.io for Android wearables _(v1.4.2)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.2.3] - 2024-04-08
 
 ### addy.io
