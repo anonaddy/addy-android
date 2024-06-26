@@ -33,6 +33,8 @@ data class Rules(
     var replies: Boolean,
     var sends: Boolean,
     val active: Boolean,
+    val applied: Int,
+    val last_applied: String,
     val created_at: String,
     val updated_at: String
 )
