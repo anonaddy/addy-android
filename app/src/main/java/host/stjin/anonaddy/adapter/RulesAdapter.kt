@@ -66,7 +66,7 @@ class RulesAdapter(
             holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.actions_type_name)[holder.rulesRecyclerviewListActivateButton.context.resources.getStringArray(R.array.actions_type).indexOf(listWithRules[position].actions[0].type)]
 
         // If forward_to type resolve the recipient
-        if (actionTypeText == holder.rulesRecyclerviewListActivateButton.context.resources.getString(R.string.forward_to) && recipients != null){
+        if (listWithRules[position].actions[0].type == "forwardTo" && recipients != null){
 
             val recipient = recipients.first { it.id == listWithRules[position].actions[0].value }
             val descActions = "$actionTypeText ${recipient.email}"

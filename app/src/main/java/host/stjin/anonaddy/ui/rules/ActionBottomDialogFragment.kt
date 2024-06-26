@@ -100,9 +100,9 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
         }
 
         // If type is banner location, set value for it
-        if (typeText == context.resources.getString(R.string.forward_to)){
+        if (actionEditObject?.type == "forwardTo"){
             viewLifecycleOwner.lifecycleScope.launch {
-                getAllRecipients(actionEditObject?.value)
+                getAllRecipients(actionEditObject.value)
             }
         } else {
             // If not forward_to, get recipients without selected
