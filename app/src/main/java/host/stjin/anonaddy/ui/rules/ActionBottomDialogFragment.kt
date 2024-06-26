@@ -16,17 +16,15 @@ import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRulesActionBinding
-import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Action
+import host.stjin.anonaddy_shared.models.Recipients
 import kotlinx.coroutines.launch
 
 
-class ActionBottomDialogFragment: BaseBottomSheetDialogFragment(), View.OnClickListener {
+class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, private val actionEditIndex: Int?, private val actionEditObject: Action?): BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddActionBottomDialogListener
-    private var actionEditIndex: Int? = null
-    private var actionEditObject: Action? = null
 
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -61,8 +59,7 @@ class ActionBottomDialogFragment: BaseBottomSheetDialogFragment(), View.OnClickL
         binding.bsRuleActionAddActionButton.setOnClickListener(this)
         spinnerChangeListener(requireContext())
 
-        checkForArguments(requireContext())
-
+        updateUi(requireContext())
 
         if (VERSION.SDK_INT >= VERSION_CODES.R) {
             setIMEAnimation(binding.bsRuleActionRoot)
@@ -71,17 +68,14 @@ class ActionBottomDialogFragment: BaseBottomSheetDialogFragment(), View.OnClickL
         return root
     }
 
-    private suspend fun getAllRecipients(selectedRecipientId: String?, context: Context) {
-        val networkHelper = NetworkHelper(context)
+    private fun getAllRecipients(selectedRecipientId: String?) {
+            // Remove the default "Loading recipients" chip
+            binding.bsRuleActionForwardToChipgroup.removeAllViewsInLayout()
+            binding.bsRuleActionForwardToChipgroup.requestLayout()
+            binding.bsRuleActionForwardToChipgroup.invalidate()
 
-        networkHelper.getRecipients({ result, _ ->
-            if (result != null) {
-                // Remove the default "Loading recipients" chip
-                binding.bsRuleActionForwardToChipgroup.removeAllViewsInLayout()
-                binding.bsRuleActionForwardToChipgroup.requestLayout()
-                binding.bsRuleActionForwardToChipgroup.invalidate()
-
-                for (recipient in result) {
+            for (recipient in recipients) {
+                if (recipient.email_verified_at != null) {
                     val chip = layoutInflater.inflate(R.layout.chip_view, binding.bsRuleActionForwardToChipgroup, false) as Chip
                     chip.text = recipient.email
                     chip.tag = recipient.id
@@ -91,49 +85,34 @@ class ActionBottomDialogFragment: BaseBottomSheetDialogFragment(), View.OnClickL
                 }
             }
 
-        }, true)
     }
 
-    private fun checkForArguments(context: Context) {
-        // Check if there arguments (to be filled from the Create Rule Activity)
-        if ((arguments?.size() ?: 0) > 0) {
-            arguments?.getInt(CreateRuleActivity.ARGUMENTS.ACTION_EDIT_INDEX.argument)?.let {
-                actionEditIndex = it
-            }
-            arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.ACTION_EDIT.argument)?.let {
-                actionEditObject = it as? Action
-            }
+    private fun updateUi(context: Context) {
+
+        val typeText = TYPES_NAME[TYPES.indexOf(actionEditObject?.type)]
+        binding.bsRuleActionTypeMact.setText(typeText, false)
+        binding.bsRuleActionValuesTiet.setText(actionEditObject?.value)
 
 
-            val typeText = TYPES_NAME[TYPES.indexOf(actionEditObject?.type)]
-            binding.bsRuleActionTypeMact.setText(typeText, false)
-            binding.bsRuleActionValuesTiet.setText(actionEditObject?.value)
+        // If type is banner location, set value for it
+        if (typeText == context.resources.getString(R.string.set_the_banner_information_location_to)){
+            binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject?.value, false)
+        }
 
-
-            // If type is banner location, set value for it
-            if (typeText == context.resources.getString(R.string.set_the_banner_information_location_to)){
-                binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject?.value, false)
-            }
-
-            // If type is banner location, set value for it
-            if (typeText == context.resources.getString(R.string.forward_to)){
-                viewLifecycleOwner.lifecycleScope.launch {
-                    getAllRecipients(actionEditObject?.value, requireContext())
-                }
-            } else {
-                // If not forward_to, get recipients without selected
-                viewLifecycleOwner.lifecycleScope.launch {
-                    getAllRecipients(null, requireContext())
-                }
-            }
-
-            checkIfTypeRequiresValueField(context)
-        } else {
-            // If no arguments, get recipients without selected
+        // If type is banner location, set value for it
+        if (typeText == context.resources.getString(R.string.forward_to)){
             viewLifecycleOwner.lifecycleScope.launch {
-                getAllRecipients(null, requireContext())
+                getAllRecipients(actionEditObject?.value)
+            }
+        } else {
+            // If not forward_to, get recipients without selected
+            viewLifecycleOwner.lifecycleScope.launch {
+                getAllRecipients(null)
             }
         }
+
+        checkIfTypeRequiresValueField(context)
+
 
     }
 
@@ -218,8 +197,8 @@ class ActionBottomDialogFragment: BaseBottomSheetDialogFragment(), View.OnClickL
     }
 
     companion object {
-        fun newInstance(): ActionBottomDialogFragment {
-            return ActionBottomDialogFragment()
+        fun newInstance(recipients: ArrayList<Recipients>, actionEditIndex: Int?, actionEditObject: Action?): ActionBottomDialogFragment {
+            return ActionBottomDialogFragment(recipients, actionEditIndex, actionEditObject)
         }
     }
 

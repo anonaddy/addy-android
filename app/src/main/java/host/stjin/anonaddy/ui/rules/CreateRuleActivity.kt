@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityRulesCreateBinding
+import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Action
@@ -36,7 +37,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         ACTION_EDIT_INDEX("action_edit_index"),
         ACTION_EDIT("action_edit"),
         CONDITION_EDIT_INDEX("condition_edit_index"),
-        CONDITION_EDIT("condition_edit"),
+        CONDITION_EDIT("condition_edit")
     }
 
     lateinit var networkHelper: NetworkHelper
@@ -44,13 +45,13 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
     private var ruleId: String? = null
     private lateinit var rules: Rules
-    private var recipients: ArrayList<Recipients>? = null
+    private lateinit var recipients: ArrayList<Recipients>
 
     private var conditionBottomDialogFragment: ConditionBottomDialogFragment =
-        ConditionBottomDialogFragment.newInstance()
+        ConditionBottomDialogFragment.newInstance(null, null)
 
     private var actionBottomDialogFragment: ActionBottomDialogFragment =
-        ActionBottomDialogFragment.newInstance()
+        ActionBottomDialogFragment.newInstance(arrayListOf(), null, null)
 
     private lateinit var binding: ActivityRulesCreateBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,26 +93,62 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             val b = intent.extras
             val gson = Gson()
 
-            val recipientsStringFromBundle = b?.getString("recipients")
-            val recipientsType = object : TypeToken<ArrayList<Recipients>>() {}.type
-            val recipientsList = gson.fromJson<ArrayList<Recipients>>(recipientsStringFromBundle, recipientsType)
-            recipients = recipientsList
 
-            val ruleId = b?.getString("rule_id")
-            if (ruleId == null) {
-                // No ruleID, generate an empty rule
-                generateEmptyRule()
-                setPage()
+            // Get recipients from the parent activity (this can be null in case of a searchActivity link)
+            // In the case of nullOrEmpty, get the recipients first, then load the Rule
+            val recipientsStringFromBundle = b?.getString("recipients")
+            if (recipientsStringFromBundle.isNullOrEmpty()) {
+                lifecycleScope.launch {
+                    getAllRecipients(b)
+                }
             } else {
-                // ruleID, generate the rule
-                this.ruleId = ruleId
-                getRule()
+                val recipientsType = object : TypeToken<ArrayList<Recipients>>() {}.type
+                val recipientsList = gson.fromJson<ArrayList<Recipients>>(recipientsStringFromBundle, recipientsType)
+                recipients = recipientsList
+                loadRule(b)
             }
+
         }
 
 
     }
 
+    private fun loadRule(b: Bundle?){
+        val ruleId = b?.getString("rule_id")
+        if (ruleId == null) {
+            // No ruleID, generate an empty rule
+            generateEmptyRule()
+            setPage()
+        } else {
+            // ruleID, generate the rule
+            this.ruleId = ruleId
+            getRule()
+        }
+    }
+
+    private suspend fun getAllRecipients(b: Bundle?) {
+        val networkHelper = NetworkHelper(this)
+
+        networkHelper.getRecipients({ result, error ->
+            if (result != null) {
+                lifecycleScope.launch {
+                    recipients = result
+                    loadRule(b)
+                }
+            } else {
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_obtaining_recipients) + "\n" + error,
+                    binding.activityRulesCreateCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+
+                // Show error animations
+                binding.activityRulesCreateLL1.visibility = View.GONE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
+            }
+        }, false)
+    }
 
     override fun finish() {
         val resultIntent = Intent()
@@ -298,11 +335,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             cardView.setOnClickListener {
                 if (!conditionBottomDialogFragment.isAdded) {
                     // Reset the variable to remove the arguments that could be sent with the previous edit button
-                    conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance()
-                    conditionBottomDialogFragment.arguments = Bundle().apply {
-                        putSerializable(ARGUMENTS.CONDITION_EDIT.argument, rules.conditions[conditionNumber])
-                        putInt(ARGUMENTS.CONDITION_EDIT_INDEX.argument, conditionNumber)
-                    }
+                    conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance(conditionNumber, rules.conditions[conditionNumber])
                     conditionBottomDialogFragment.show(
                         supportFragmentManager,
                         "conditionBottomDialogFragment"
@@ -318,7 +351,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         inflatedAddConditionLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_add).setOnClickListener {
             if (!conditionBottomDialogFragment.isAdded) {
                 // Remove the arguments that could be sent with the edit button
-                conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance()
+                conditionBottomDialogFragment = ConditionBottomDialogFragment.newInstance(null, null)
                 conditionBottomDialogFragment.show(
                     supportFragmentManager,
                     "conditionBottomDialogFragment"
@@ -377,11 +410,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             cardView.setOnClickListener {
                 if (!actionBottomDialogFragment.isAdded) {
                     // Reset the variable to remove the arguments that could be sent with the previous edit button
-                    actionBottomDialogFragment = ActionBottomDialogFragment.newInstance()
-                    actionBottomDialogFragment.arguments = Bundle().apply {
-                        putSerializable(ARGUMENTS.ACTION_EDIT.argument, rules.actions[actionNumber])
-                        putInt(ARGUMENTS.ACTION_EDIT_INDEX.argument, actionNumber)
-                    }
+                    actionBottomDialogFragment = ActionBottomDialogFragment.newInstance(recipients, actionNumber, rules.actions[actionNumber])
                     actionBottomDialogFragment.show(
                         supportFragmentManager,
                         "actionBottomDialogFragment"
@@ -398,7 +427,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
         inflatedAddActionLayout.findViewById<MaterialButton>(R.id.rules_view_condition_action_add).setOnClickListener {
             if (!actionBottomDialogFragment.isAdded) {
                 // Reset the variable to remove the arguments that could be sent with the edit button
-                actionBottomDialogFragment = ActionBottomDialogFragment.newInstance()
+                actionBottomDialogFragment = ActionBottomDialogFragment.newInstance(recipients, null, null)
                 actionBottomDialogFragment.show(
                     supportFragmentManager,
                     "actionBottomDialogFragment"
