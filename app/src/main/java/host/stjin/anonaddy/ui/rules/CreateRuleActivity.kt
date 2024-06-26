@@ -197,7 +197,9 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
             user_id = "",
             forwards = true,
             replies = true,
-            sends = true
+            sends = true,
+            last_applied = "",
+            applied = 0
         )
         rules = rule
     }
