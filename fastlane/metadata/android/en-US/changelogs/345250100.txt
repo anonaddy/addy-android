@@ -1,0 +1,3 @@
+<h4>Fixed/Improved</h4>
+<p>- Recipients in the rule editor actionsheet are now obtained instantly reducing the amount of calls<br />
+- Performance improvements and other things to make the app even smoother</p>

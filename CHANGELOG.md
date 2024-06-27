@@ -1,5 +1,20 @@
 # Changelog
 
+## [v5.2.5] - 2024-06-28
+
+### addy.io
+
+##### Fixed/Improved
+
+- Recipients in the rule editor actionsheet are now obtained instantly reducing the amount of calls
+- Performance improvements and other things to make the app even smoother
+- 
+### addy.io for Android wearables _(v1.4.3)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.2.4] - 2024-06-26
 
 ### addy.io

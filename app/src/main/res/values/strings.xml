@@ -70,12 +70,10 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.2.4</h3>
-<h4>Added</h4>
-<p>- Added new rule-conditions and actions for addy.io 1.2.1</p>
+<h3>What\'s new in AnonAddy for Android 5.2.5</h3>
 <h4>Fixed/Improved</h4>
-<p>- Shared domains are now retrieved from the API instead of being hardcoded<br />- Performance improvements and other things to make the app even smoother, including but not limited to some string changes</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.4.2</h3>
+<p>- Recipients in the rule editor actionsheet are now obtained instantly reducing the amount of calls<br />- Performance improvements and other things to make the app even smoother</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.4.3</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>

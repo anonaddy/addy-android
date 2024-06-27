@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v5.2.4 + release 01 + 00 (for app)
-        versionCode = 345240100 // https://developer.android.com/training/wearables/packaging
+        // SDK 34 + v5.2.5 + release 01 + 00 (for app)
+        versionCode = 345250100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v5.2.4"
+        versionName = "v5.2.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
