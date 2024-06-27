@@ -16,12 +16,10 @@ import host.stjin.anonaddy.databinding.BottomsheetRulesConditionBinding
 import host.stjin.anonaddy_shared.models.Condition
 
 
-class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, private val conditionEditObject: Condition?) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddConditionBottomDialogListener
-    private var conditionEditIndex: Int? = null
-    private var conditionEditObject: Condition? = null
 
     // 1. Defines the listener interface with a method passing back data result.
     interface AddConditionBottomDialogListener {
@@ -54,7 +52,7 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         fillSpinners(requireContext())
         binding.bsRuleConditionAddConditionButton.setOnClickListener(this)
 
-        checkForArguments()
+        updateUi()
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -65,22 +63,8 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         return root
     }
 
-    private fun checkForArguments() {
+    private fun updateUi() {
         // Check if there arguments (to be filled from the Create Rule Activity)
-        if ((arguments?.size() ?: 0) > 0) {
-            arguments?.getInt(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT_INDEX.argument)?.let {
-                conditionEditIndex = it
-            }
-            if (Build.VERSION.SDK_INT >= 33) {
-                arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT.argument, Condition::class.java)?.let {
-                    conditionEditObject = it
-                }
-            } else {
-                arguments?.getSerializable(CreateRuleActivity.ARGUMENTS.CONDITION_EDIT.argument)?.let {
-                    conditionEditObject = it as? Condition
-                }
-            }
-
 
             val typeText =
                 TYPES_NAME[TYPES.indexOf(conditionEditObject?.type)]
@@ -92,7 +76,7 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
 
 
             binding.bsRuleConditionValuesTiet.setText(conditionEditObject?.values?.joinToString())
-        }
+
 
     }
 
@@ -124,8 +108,8 @@ class ConditionBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
     }
 
     companion object {
-        fun newInstance(): ConditionBottomDialogFragment {
-            return ConditionBottomDialogFragment()
+        fun newInstance(conditionEditIndex: Int?, conditionEditObject: Condition?): ConditionBottomDialogFragment {
+            return ConditionBottomDialogFragment(conditionEditIndex, conditionEditObject)
         }
     }
 

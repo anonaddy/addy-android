@@ -140,7 +140,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:imeOptions="actionDone"
-                        android:inputType="textEmailAddress"
+                        android:inputType="textWebEmailAddress"
                         android:lines="1"
                         android:maxLines="1"
                         android:minLines="1"

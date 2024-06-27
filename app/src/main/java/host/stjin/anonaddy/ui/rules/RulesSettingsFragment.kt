@@ -146,15 +146,33 @@ class RulesSettingsFragment : Fragment() {
     private suspend fun getAllRecipients() {
         val networkHelper = NetworkHelper(requireContext())
 
-        networkHelper.getRecipients({ result, _ ->
+        networkHelper.getRecipients({ result, error ->
             if (result != null) {
                 lifecycleScope.launch {
                     recipients = result
                     getAllRulesAndSetView(result)
                 }
+            } else {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + error,
+                        (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                } else {
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + error,
+                        (activity as RulesSettingsActivity).findViewById(R.id.activity_rules_settings_CL),
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                }
 
+                // Show error animations
+                binding.fragmentManageRulesLL1.visibility = View.GONE
+                binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
-
         }, false)
     }
 
