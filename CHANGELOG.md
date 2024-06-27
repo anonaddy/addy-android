@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.2.6] - 2024-06-28
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed a crash when creating new rule action
+
 ## [v5.2.5] - 2024-06-28
 
 ### addy.io

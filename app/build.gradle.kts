@@ -19,9 +19,9 @@ android {
          */
 
         // SDK 34 + v5.2.5 + release 01 + 00 (for app)
-        versionCode = 345250100 // https://developer.android.com/training/wearables/packaging
+        versionCode = 345260100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v5.2.5"
+        versionName = "v5.2.6"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
