@@ -8,7 +8,7 @@
 
 - Recipients in the rule editor actionsheet are now obtained instantly reducing the amount of calls
 - Performance improvements and other things to make the app even smoother
-- 
+
 ### addy.io for Android wearables _(v1.4.3)_
 
 ##### Fixed/Improved
