@@ -89,18 +89,19 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
 
     private fun updateUi(context: Context) {
 
-        val typeText = TYPES_NAME[TYPES.indexOf(actionEditObject?.type)]
+    if (actionEditObject != null) {
+        val typeText = TYPES_NAME[TYPES.indexOf(actionEditObject.type)]
         binding.bsRuleActionTypeMact.setText(typeText, false)
-        binding.bsRuleActionValuesTiet.setText(actionEditObject?.value)
+        binding.bsRuleActionValuesTiet.setText(actionEditObject.value)
 
 
         // If type is banner location, set value for it
-        if (typeText == context.resources.getString(R.string.set_the_banner_information_location_to)){
-            binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject?.value, false)
+        if (typeText == context.resources.getString(R.string.set_the_banner_information_location_to)) {
+            binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject.value, false)
         }
 
         // If type is banner location, set value for it
-        if (actionEditObject?.type == "forwardTo"){
+        if (actionEditObject.type == "forwardTo") {
             viewLifecycleOwner.lifecycleScope.launch {
                 getAllRecipients(actionEditObject.value)
             }
@@ -111,7 +112,14 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
             }
         }
 
-        checkIfTypeRequiresValueField(context)
+    } else {
+        // If not forward_to, get recipients without selected
+        viewLifecycleOwner.lifecycleScope.launch {
+            getAllRecipients(null)
+        }
+    }
+
+    checkIfTypeRequiresValueField(context)
 
 
     }
