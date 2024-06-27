@@ -62,16 +62,6 @@
                 app:shimmer_recycler_auto_start="true"
                 app:shimmer_recycler_layout="@layout/usernames_recyclerview_list_item_usernames_shimmer" />
 
-            <TextView
-                android:id="@+id/fragment_username_settings_no_usernames"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/no_result_textview_padding"
-                android:text="@string/no_usernames"
-                android:textAlignment="center"
-                android:textColor="@color/BlackWhite"
-                android:visibility="gone" />
-
             <View
                 style="@style/divider"
                 android:layout_width="match_parent"

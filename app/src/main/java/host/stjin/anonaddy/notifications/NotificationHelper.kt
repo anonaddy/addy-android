@@ -748,14 +748,14 @@ class NotificationHelper(private val context: Context) {
     }
 
     private fun buildDomainErrorNotification(title: String, text: String) {
-        val stopCheckingFailedDeliveryIntent = Intent(context, ActionReceiver::class.java).apply {
+        val stopCheckingDomaineErrorIntent = Intent(context, ActionReceiver::class.java).apply {
             action = ActionReceiver.NOTIFICATIONACTIONS.STOP_DOMAIN_ERROR_CHECK
         }
         val stopCheckingDomainErrorsPendingIntent: PendingIntent =
             PendingIntent.getBroadcast(
                 context,
                 Random.nextInt(0, 999),
-                stopCheckingFailedDeliveryIntent,
+                stopCheckingDomaineErrorIntent,
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 

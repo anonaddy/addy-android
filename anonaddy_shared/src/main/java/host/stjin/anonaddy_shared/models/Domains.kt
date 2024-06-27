@@ -24,9 +24,9 @@ data class Domains(
     val created_at: String,
     val updated_at: String
 )
-
 data class DomainOptions(
     val `data`: List<String>,
-    val defaultAliasDomain: String?,
-    val defaultAliasFormat: String?
+    val defaultAliasDomain: String,
+    val defaultAliasFormat: String,
+    val sharedDomains: List<String>
 )

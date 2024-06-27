@@ -362,6 +362,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         }, aliasesToWatch
                     )
                 } else {
+                    // This could be triggered if you remove the last watched alias and then refresh
                     val aliasesArray = AliasesArray(arrayListOf(), links = null, meta = null)
                     setAliasesAdapter(requireContext(), aliasesArray, forceReload)
                 }
@@ -416,15 +417,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 aliasList?.meta = list.meta
                 aliasList?.links = list.links
                 aliasList?.data?.addAll(list.data)
-
-
-                // If there are 0 new items in this page but there are more pages, continue searching to the next page
-                if (list.data.size == 0 && (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        getAliasesAndAddThemToList()
-                    }
-                    return
-                }
 
                 // Get the totalsize of the adapteritems
                 val totalSize = aliasAdapter?.itemCount ?: 0
@@ -628,11 +620,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         sent: Int
     ) {
         binding.aliasStats2.setDescription(
-            context.resources.getString(R.string.replied_replied_sent_stat, replied, sent)
+            context.resources.getString(R.string.replied_sent_stat, replied, sent)
         )
         binding.aliasStats1.setDescription(
             context.resources.getString(
-                R.string.replied_forwarded_blocked_stat,
+                R.string.forwarded_blocked_stat,
                 forwarded,
                 blocked
             )

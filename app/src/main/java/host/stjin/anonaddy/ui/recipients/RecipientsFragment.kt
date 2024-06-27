@@ -163,7 +163,7 @@ class RecipientsFragment : Fragment(),
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
         if ((activity?.application as AddyIoApp).userResource.subscription != null) {
             binding.recipientsAddRecipients.isEnabled =
-                (activity?.application as AddyIoApp).userResource.recipient_count < (activity?.application as AddyIoApp).userResource.recipient_limit
+                (activity?.application as AddyIoApp).userResource.recipient_count < (activity?.application as AddyIoApp).userResource.recipient_limit!! //Cannot be null since subscription is not null
         } else {
             binding.recipientsAddRecipients.isEnabled = true
         }

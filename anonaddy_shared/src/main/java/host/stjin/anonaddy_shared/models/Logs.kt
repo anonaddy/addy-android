@@ -10,9 +10,9 @@ data class Logs(
      */
 
     val importance: Int = LOGIMPORTANCE.INFO.int,
-    val dateTime: String?,
+    val dateTime: String,
     val method: String?,
-    val message: String?,
+    val message: String,
     val extra: String?,
 
     )

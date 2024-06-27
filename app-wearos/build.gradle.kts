@@ -26,8 +26,8 @@ android {
          */
 
         // SDK 33 + v1.4.1 + release 01 + 01 (for wearos)
-        versionCode = 341410101
-        versionName = "1.4.1"
+        versionCode = 341420101
+        versionName = "1.4.2"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -91,11 +91,11 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("com.google.android.gms:play-services-wearable:18.1.0")
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("com.google.android.gms:play-services-wearable:18.2.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.wear:wear:1.3.0")
@@ -105,8 +105,8 @@ dependencies {
     implementation("com.google.android.support:wearable:2.9.0")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.0")
 }
 
 
@@ -142,7 +142,7 @@ dependencies {
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.code.gson:gson:2.11.0")
 }
 
 // For the donut in the aliasview
@@ -153,7 +153,7 @@ dependencies {
 // Tiles
 dependencies {
     // For watchface
-    implementation("com.google.android.gms:play-services-base:18.3.0")
+    implementation("com.google.android.gms:play-services-base:18.5.0")
 
     // Use to implement support for wear tiles
     implementation("androidx.wear.tiles:tiles:$wear_tiles_version")
@@ -167,7 +167,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.1")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }
@@ -176,7 +176,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.6")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.14")
 }
 
 // Splash screen

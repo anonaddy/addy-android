@@ -113,6 +113,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             }
 
         }, true)
+
+        // TODO what if null?
     }
 
 
@@ -142,6 +144,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
 
     private var DOMAINS: List<String> = listOf()
+    private var sharedDomains: List<String> = listOf()
     private var FORMATS: List<String> = listOf()
     private suspend fun fillSpinners(context: Context) {
         val networkHelper = NetworkHelper(context)
@@ -149,6 +152,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             // Set domains and default format/domain
             if (domainOptions?.data != null) {
                 DOMAINS = domainOptions.data
+                sharedDomains = domainOptions.sharedDomains
 
                 val domainAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
@@ -158,11 +162,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasDomainMact.setAdapter(domainAdapter)
 
                 // Set default domain
-                if (domainOptions.defaultAliasDomain != null) {
-                    binding.bsAddaliasDomainMact.setText(domainOptions.defaultAliasDomain, false)
-                } else {
-                    binding.bsAddaliasDomainMact.setText(DOMAINS[0])
-                }
+                binding.bsAddaliasDomainMact.setText(domainOptions.defaultAliasDomain, false)
 
                 // Set default format
                 // Get all formats
@@ -178,22 +178,17 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasAliasFormatMact.setAdapter(formatAdapter)
 
                 // Set default format
-                if (domainOptions.defaultAliasFormat != null) {
-                    // Get the string for the default format ID
-                    // Try/catch, in case there is a default alias format that's not in the formats array
-                    try {
-                        binding.bsAddaliasAliasFormatMact.setText(
-                            FORMATS[FORMATSID.indexOf(domainOptions.defaultAliasFormat)],
-                            false
-                        )
-                    } catch (e: Exception) {
-                        // The default alias format does not exist in the formats array, perhaps it was just added?
-                        // To prevent a crash from the ArrayIndexOutOfBoundsException log the error and just continue without filling the spinner
-                        val ex = e.message
-                        Log.e("AFA", ex.toString())
-                        LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "fillSpinners", null)
-                    }
-
+                try {
+                    binding.bsAddaliasAliasFormatMact.setText(
+                        FORMATS[FORMATSID.indexOf(domainOptions.defaultAliasFormat)],
+                        false
+                    )
+                } catch (e: Exception) {
+                    // The default alias format does not exist in the formats array, perhaps it was just added?
+                    // To prevent a crash from the ArrayIndexOutOfBoundsException log the error and just continue without filling the spinner
+                    val ex = e.message
+                    Log.e("AFA", ex.toString())
+                    LoggingHelper(context).addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "fillSpinners", null)
                 }
             }
 
@@ -236,7 +231,8 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // If the selected domain format is custom
         if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_custom)) {
             // If the selected domain contains a shared domain disable the local part box
-            if (context.resources.getStringArray(R.array.shared_domains).contains(binding.bsAddaliasDomainMact.text.toString())) {
+
+            if (sharedDomains.contains(binding.bsAddaliasDomainMact.text.toString())) {
                 binding.bsAddaliasAliasFormatTil.error = context.resources.getString(R.string.domains_format_custom_not_available_for_this_domain)
                 return
             }

@@ -37,8 +37,8 @@
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
     <string name="all_aliases">All aliases</string>
-    <string name="replied_forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
-    <string name="replied_replied_sent_stat" tools:ignore="PluralsCandidate">%1$d replied; %2$d sent</string>
+    <string name="forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
+    <string name="replied_sent_stat" tools:ignore="PluralsCandidate">%1$d replied; %2$d sent</string>
     <string name="settings">Settings</string>
     <string name="resend_email">Resend email</string>
     <string name="delete">Delete</string>
@@ -70,14 +70,16 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.2.3</h3>
+<h3>What\'s new in AnonAddy for Android 5.2.4</h3>
+<h4>Added</h4>
+<p>- Added new rule-conditions and actions for addy.io 1.2.1</p>
 <h4>Fixed/Improved</h4>
-<p>- Fixed crashes when opening the app from intents in some cases</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.4.1</h3>
+<p>- Shared domains are now retrieved from the API instead of being hardcoded<br />- Performance improvements and other things to make the app even smoother, including but not limited to some string changes</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.4.2</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
-    <string name="contributors_list">Will Browning (addy.io)\nStjin (Android app backend)\nJPH (Android app designer)</string>
+    <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
     <string name="delete_recipient_desc">Are you sure you want to delete this recipient?</string>
     <string name="error_deleting_recipient">Something went wrong while deleting the recipient</string>
@@ -135,7 +137,6 @@
     <string name="logs">Logs</string>
     <string name="clear_logs">Clear logs</string>
     <string name="addyio_locked">addy.io locked</string>
-    <string name="authentication_error_11">Biometric unlocking disabled, no screen lock was found</string>
     <string name="reset_app_error_wearable">Could not reset app</string>
     <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your addy.io account or anything related)</string>
     <string name="edit_recipient">Edit recipient</string>
@@ -166,7 +167,7 @@
     <string name="add_domain">Add domain</string>
     <string name="domains_list_description" tools:ignore="PluralsCandidate">%1$d aliases</string>
     <string name="delete_domain">Delete domain</string>
-    <string name="delete_domain_desc_confirm">Are you sure you want to delete this domain? This will also delete all aliases associated with this domain. You will no longer be able to receive any emails at this domain.</string>
+    <string name="delete_domain_confirmation_desc">Are you sure you want to delete this domain? This will also delete all aliases associated with this domain. You will no longer be able to receive any emails at this domain.</string>
     <string name="error_deleting_domain">Something went wrong while deleting this domain</string>
     <string name="error_deleting_rule">Something went wrong while deleting this rule</string>
     <string name="add_domain_desc">Enter the domain you would like to add.\n\nYou will have to verify the ownership of the domain, so make sure you have access to the DNS settings of this domain</string>
@@ -176,8 +177,7 @@
     <string name="edit_desc_username_desc">Change the description for this username, describe what this username is used for</string>
     <string name="edit_domain">Edit domain</string>
     <string name="domain_aliases_d">Domain aliases (%d)</string>
-    <string name="username_aliases_d">Domain aliases (%d)</string>
-    <string name="domain_status_active">Domain active</string>
+    <string name="username_aliases_d">Username aliases (%d)</string>
     <string name="domain_status_desc">Use this domain for mail forwarding</string>
     <string name="username_status_desc">Use this username for mail forwarding</string>
     <string name="delete_domain_desc">You will no longer be able to receive any emails at this domain</string>
@@ -207,7 +207,7 @@
     <string name="delete_username">Delete username</string>
     <string name="delete_username_desc_confirm">Are you sure you want to delete this username? This will also delete all aliases associated with this username. You will no longer be able to receive any emails at this username subdomain. This will still count towards your additional username limit even once deleted.</string>
     <string name="error_deleting_username">Something went wrong while deleting this username</string>
-    <string name="add_username_desc"><![CDATA[Please choose usernames carefully as you can only add a <b>maximum of %1$s.</b> You can login with <b>any of your usernames.</b><br /><br />You can prevent a username from being used to login by toggling the "can login" option.]]></string>
+    <string name="add_username_desc"><![CDATA[Please choose usernames carefully as you can only add a <b>maximum of %1$d.</b> You can login with <b>any of your usernames.</b><br /><br />You can prevent a username from being used to login by toggling the "can login" option.]]></string>
     <string name="error_adding_username">Something went wrong while adding this username</string>
     <string name="username_deactivated">Username deactivated</string>
     <string name="username_activated">Username activated</string>
@@ -218,7 +218,6 @@
     <string name="nothing_found">Nothing found</string>
     <string name="API_key_copied_from_clipboard">API Key copied from clipboard</string>
     <string name="Copy">Copy</string>
-    <string name="no_usernames">You have no usernames, what about creating one?</string>
     <string name="default_base_url">https://app.addy.io</string>
     <string name="default_base_url_old">https://app.anonaddy.com</string>
     <string name="addyio_instance">addy.io instance</string>
@@ -259,18 +258,13 @@
     <string name="enter_value">Enter value</string>
     <string name="add_condition">Add condition</string>
     <string name="add_condition_desc">Add a condition which must be met before actions are performed</string>
-    <string name="add_rule_desc">Decide what action should be performed when conditions are met</string>
+    <string name="add_action_desc">Decide what action should be performed when conditions are met</string>
     <string name="add_action">Add action</string>
-    <string name="not_a_valid_condition_type">Not a valid condition type</string>
-    <string name="not_a_valid_action_type">Not a valid action type</string>
-    <string name="not_a_valid_condition_match">Not a valid condition match</string>
-    <string name="not_a_valid_banner_location">Not a valid banner location</string>
     <string name="conditions">Conditions</string>
     <string name="actions_then">Actions (then)</string>
     <string name="enter_name">Enter name</string>
     <string name="banner_location">Banner location</string>
     <string name="match">Match</string>
-    <string name="not_a_valid_value">Not a valid value</string>
     <string name="enter_values_comma_separated">Enter values (comma separated)</string>
     <string name="save_rule">Save rule</string>
     <string name="or">OR</string>
@@ -389,7 +383,7 @@
     <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available</string>
     <string name="addyio_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
-    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>First attempted</strong><br />%2$s</p><p><strong>Alias</strong> %3$s</p><p><strong>Recipient</strong> %4$s</p><p><strong>Type</strong> %5$s</p><p><strong>Mail Server</strong> %6$s</p><p><strong>Sender</strong> %7$s</p><table><tbody><tr><td><strong>Code</strong></td><td> %8$s</td></tr></tbody></table>]]></string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>First attempted</strong><br />%2$s</p><p><strong>Alias</strong><br />%3$s</p><p><strong>Recipient</strong><br />%4$s</p><p><strong>Type</strong><br />%5$s</p><p><strong>Mail Server</strong><br />%6$s</p><p><strong>Sender</strong><br />%7$s</p><p><strong>Code</strong><br />%8$s</p>]]></string>
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>
@@ -687,4 +681,7 @@
     <string name="last_sent">Last sent</string>
     <string name="last_blocked">Last blocked</string>
     <string name="unknown">Unknown</string>
+    <string name="authentication_splash_error_unavailable">The addy.io app is protected using biometrics, but they are currently unavailable. Without biometric authentication, access to the data is restricted. Would you like to reset the app?</string>
+    <string name="could_not_check_for_updates">Could not check for updates</string>
+    <string name="select_a_recipient">Select a recipient</string>
 </resources>

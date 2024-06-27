@@ -112,7 +112,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                  */
 
                 if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
-                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean ->
+                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean, _ :String? ->
                         if (updateAvailable) {
                             latestVersion?.let {
                                 NotificationHelper(appContext).createUpdateNotification(
@@ -277,7 +277,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             }
 
             // If the aliasNetwork call was successful, perform the check
-            if (aliasNetworkCallResult) {
+            if (aliasWatcherNetworkCallResult) {
                 // Now the data has been updated, perform the AliasWatcher check
                 AliasWatcher(appContext).watchAliasesForDifferences()
             }
@@ -413,13 +413,12 @@ class BackgroundWorkerHelper(private val context: Context) {
     }
 
     fun isThereWorkTodo(): Boolean {
-        val encryptedSettingsManager = SettingsManager(true, context)
         val settingsManager = SettingsManager(false, context)
 
         // Count amount of aliases to be watched
-        val aliasToWatch = encryptedSettingsManager.getStringSet(SettingsManager.PREFS.BACKGROUND_SERVICE_WATCH_ALIAS_LIST)
+        val aliasToWatch = AliasWatcher(context).getAliasesToWatch()
         // Count amount of widgets
-        val amountOfWidgets = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
+        val amountOfWidgets = settingsManager.getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
 
         val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
         val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)

@@ -10,7 +10,7 @@ import java.util.Date
 
 object DateTimeUtils {
 
-    enum class DATETIMEUTILS {
+    enum class DatetimeFormat {
         DATE,
         TIME,
         DATETIME,
@@ -18,7 +18,7 @@ object DateTimeUtils {
     }
 
     // This method takes the string as its stored in addy.io's database, and turns it into local format
-    fun turnStringIntoLocalString(string: String?, dateTimeFormat: DATETIMEUTILS = DATETIMEUTILS.DATETIME): String? {
+    fun turnStringIntoLocalString(string: String?, dateTimeFormat: DatetimeFormat = DatetimeFormat.DATETIME): String? {
         if (string == null) {
             return ""
         } else {
@@ -34,10 +34,10 @@ object DateTimeUtils {
 
 
                 return when (dateTimeFormat) {
-                    DATETIMEUTILS.DATE -> DateFormat.getDateInstance(DateFormat.SHORT).format(date)
-                    DATETIMEUTILS.TIME -> DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
-                    DATETIMEUTILS.DATETIME -> DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
-                    DATETIMEUTILS.SHORT_DATE -> SimpleDateFormat("E d MMM").format(date)
+                    DatetimeFormat.DATE -> DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+                    DatetimeFormat.TIME -> DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+                    DatetimeFormat.DATETIME -> DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
+                    DatetimeFormat.SHORT_DATE -> SimpleDateFormat("E d MMM").format(date)
                 }
             } catch (e: Exception) {
                 "$string (GMT)"

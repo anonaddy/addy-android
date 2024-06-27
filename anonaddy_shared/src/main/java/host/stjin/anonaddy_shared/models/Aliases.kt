@@ -17,10 +17,10 @@ data class SingleAlias(
 data class Aliases(
     val id: String,
     val user_id: String,
-    val aliasable_id: String,
-    val aliasable_type: String,
+    val aliasable_id: String?,
+    val aliasable_type: String?,
     val local_part: String,
-    val extension: String,
+    val extension: String?,
     val domain: String,
     val email: String,
     var active: Boolean,
@@ -42,12 +42,12 @@ data class Aliases(
 
 data class Meta(
     val current_page: Int,
-    val from: Int,
+    val from: Int?,
     val last_page: Int,
     val links: List<Link>,
     val path: String,
     val per_page: Int,
-    val to: Int,
+    val to: Int?,
     val total: Int
 )
 

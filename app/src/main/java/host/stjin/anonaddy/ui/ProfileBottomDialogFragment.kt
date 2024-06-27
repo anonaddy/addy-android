@@ -232,7 +232,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                     (activity?.application as AddyIoApp).userResource.subscription,
                     DateTimeUtils.turnStringIntoLocalString(
                         (activity?.application as AddyIoApp).userResource.subscription_ends_at,
-                        DateTimeUtils.DATETIMEUTILS.DATE
+                        DateTimeUtils.DatetimeFormat.DATE
                     )
                 )
             }

@@ -5,7 +5,9 @@ import android.widget.Toast
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.GsonTools
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 class AliasWatcher(private val context: Context) {
     val encryptedSettingsManager = SettingsManager(true, context)
@@ -79,6 +81,7 @@ class AliasWatcher(private val context: Context) {
         val aliasList = getAliasesToWatch()
         // The aliasWatcherlist has a maximum of 25 aliases, the reason for this is to prevent API limitations
         return if (aliasList.count() > 24) {
+            LoggingHelper(context).addLog(LOGIMPORTANCE.INFO.int, context.resources.getString(R.string.aliaswatcher_max_reached), "addAliasToWatch", null)
             Toast.makeText(context, context.resources.getString(R.string.aliaswatcher_max_reached), Toast.LENGTH_LONG).show()
             false
         } else {

@@ -167,7 +167,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
         // If userResource.subscription == null, that means that the user has no subscription (thus a self-hosted instance without limits)
         if ((activity?.application as AddyIoApp).userResource.subscription != null) {
             binding.fragmentDomainSettingsAddDomain.isEnabled =
-                (activity?.application as AddyIoApp).userResource.active_domain_count < (activity?.application as AddyIoApp).userResource.active_domain_limit
+                (activity?.application as AddyIoApp).userResource.active_domain_count < (activity?.application as AddyIoApp).userResource.active_domain_limit!! //Cannot be null since subscription is not null
         } else {
             binding.fragmentDomainSettingsAddDomain.isEnabled = true
         }
@@ -277,7 +277,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
         MaterialDialogHelper.showMaterialDialog(
             context = requireContext(),
             title = resources.getString(R.string.delete_domain),
-            message = resources.getString(R.string.delete_domain_desc_confirm),
+            message = resources.getString(R.string.delete_domain_confirmation_desc),
             icon = R.drawable.ic_trash,
             neutralButtonText = resources.getString(R.string.cancel),
             positiveButtonText = resources.getString(R.string.delete),

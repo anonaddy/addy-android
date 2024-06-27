@@ -144,7 +144,7 @@
                     app:sectionDescription="@string/domain_status_desc"
                     app:sectionShowSwitch="true"
                     app:sectionStartIcon="@drawable/ic_circle_check"
-                    app:sectionTitle="@string/domain_status_active" />
+                    app:sectionTitle="@string/domain_activated" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_manage_domain_catch_all_switch_layout"

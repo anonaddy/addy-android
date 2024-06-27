@@ -18,11 +18,10 @@ import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
-class LauncherIconsAdapter(context: Context) : RecyclerView.Adapter<LauncherIconsAdapter.ViewHolder>() {
+class LauncherIconsAdapter(var context: Context) : RecyclerView.Adapter<LauncherIconsAdapter.ViewHolder>() {
 
     lateinit var onIconClickListener: ClickListener
 
-    var context: Context
     var launcherIcons = LauncherIconController.LauncherIcon.entries.toTypedArray()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // infalte the item Layout
@@ -83,17 +82,13 @@ class LauncherIconsAdapter(context: Context) : RecyclerView.Adapter<LauncherIcon
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         // init the item view's
-        var iconLl: LinearLayout
-        var icon: ImageFilterView
-        var name: TextView
-        private var iconMotionLayout: MotionLayout
+        // get the reference of item view's
+        var iconLl: LinearLayout = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon_LL) as LinearLayout
+        var icon: ImageFilterView = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon) as ImageFilterView
+        var name: TextView = itemView.findViewById<View>(R.id.appearance_icon_list_item_name) as TextView
+        private var iconMotionLayout: MotionLayout = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon_ML) as MotionLayout
 
         init {
-            // get the reference of item view's
-            iconLl = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon_LL) as LinearLayout
-            icon = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon) as ImageFilterView
-            iconMotionLayout = itemView.findViewById<View>(R.id.appearance_icon_list_item_icon_ML) as MotionLayout
-            name = itemView.findViewById<View>(R.id.appearance_icon_list_item_name) as TextView
 
             icon.setOnClickListener(this)
         }
@@ -115,10 +110,6 @@ class LauncherIconsAdapter(context: Context) : RecyclerView.Adapter<LauncherIcon
                 }
             }
         }
-    }
-
-    init {
-        this.context = context
     }
 
 }
