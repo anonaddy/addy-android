@@ -181,7 +181,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         super.finish()
     }
 
-    private suspend fun figureOutNextAction(emails: ArrayList<String>?, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
+    private suspend fun figureOutNextAction(emails: ArrayList<String>, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
 
         // Obtain domain options
         networkHelper.getDomainOptions { domainOptionsObject, _ ->
@@ -190,7 +190,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 domainOptions = domainOptionsObject.data
 
 
-                if (!emails.isNullOrEmpty() && emails.size == 1) {
+                if (emails.isNotEmpty() && emails.size == 1) {
                     // Only 1 email address found.
 
                     // splittedEmailAddress[0] = custom part
@@ -230,7 +230,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
 
     private lateinit var intentSendMailRecipientBottomDialogFragment: IntentSendMailRecipientBottomDialogFragment
-    private fun sendEmailFromAlias(emails: ArrayList<String>?, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
+    private fun sendEmailFromAlias(emails: ArrayList<String>, validCcRecipients: ArrayList<String>, validBccRecipients: ArrayList<String>) {
         intentBottomDialogFragment.setText(this.resources.getString(R.string.intent_opening_send_mail_dialog))
 
         // Get aliases and pass it through to the send email bottomdialog
