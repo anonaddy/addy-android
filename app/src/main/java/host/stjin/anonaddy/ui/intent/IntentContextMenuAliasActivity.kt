@@ -19,6 +19,7 @@ import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.startShareSheetActivityExcludingOwnApp
 import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
@@ -42,123 +43,127 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
+        if (SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.API_KEY) == null) {
+            Toast.makeText(this, this.resources.getString(R.string.intent_app_not_setup), Toast.LENGTH_LONG).show()
+            finish()
+        } else {
+            networkHelper = NetworkHelper(this)
 
-        networkHelper = NetworkHelper(this)
+            /**
+             * This activity can be called by an URI or Widget/Notification Intent.
+             * Protect this part
+             */
+            lifecycleScope.launch {
+                isAuthenticated { isAuthenticated ->
+                    if (isAuthenticated) {
 
-        /**
-         * This activity can be called by an URI or Widget/Notification Intent.
-         * Protect this part
-         */
-        lifecycleScope.launch {
-            isAuthenticated { isAuthenticated ->
-                if (isAuthenticated) {
+                        // Main fragment (the one with the text and loading indicator)
+                        intentBottomDialogFragment = IntentBottomDialogFragment.newInstance()
+                        if (!intentBottomDialogFragment.isAdded) {
+                            intentBottomDialogFragment.show(
+                                supportFragmentManager,
+                                "intentBottomDialogFragment"
+                            )
+                        }
 
-                    // Main fragment (the one with the text and loading indicator)
-                    intentBottomDialogFragment = IntentBottomDialogFragment.newInstance()
-                    if (!intentBottomDialogFragment.isAdded) {
-                        intentBottomDialogFragment.show(
-                            supportFragmentManager,
-                            "intentBottomDialogFragment"
-                        )
-                    }
+                        // Get all the data from intent datastring
+                        // mailto: contains 7 chars
+                        val recipients = intent.dataString?.substringBefore("?")?.substring(7)?.replace(";", ",")?.split(",")
+                        subject = intent.dataString?.let { getParameter(it, "subject") }
+                        val ccRecipients = intent.dataString?.let { getParameter(it, "cc")?.replace(";", ",")?.split(",") }
+                        val bccRecipients = intent.dataString?.let { getParameter(it, "bcc")?.replace(";", ",")?.split(",") }
+                        body = intent.dataString?.let { getParameter(it, "body") }
 
-                    // Get all the data from intent datastring
-                    // mailto: contains 7 chars
-                    val recipients = intent.dataString?.substringBefore("?")?.substring(7)?.replace(";", ",")?.split(",")
-                    subject = intent.dataString?.let { getParameter(it, "subject") }
-                    val ccRecipients = intent.dataString?.let { getParameter(it, "cc")?.replace(";", ",")?.split(",") }
-                    val bccRecipients = intent.dataString?.let { getParameter(it, "bcc")?.replace(";", ",")?.split(",") }
-                    body = intent.dataString?.let { getParameter(it, "body") }
-
-                    val attachment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        intent.getParcelableExtra(Intent.EXTRA_STREAM, Parcelable::class.java)
-                    } else {
-                        intent.getParcelableExtra(Intent.EXTRA_STREAM)
-                    }
+                        val attachment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            intent.getParcelableExtra(Intent.EXTRA_STREAM, Parcelable::class.java)
+                        } else {
+                            intent.getParcelableExtra(Intent.EXTRA_STREAM)
+                        }
 
 
-                    if (attachment != null) {
-                        Toast.makeText(
-                            this@IntentContextMenuAliasActivity,
-                            this@IntentContextMenuAliasActivity.resources.getString(R.string.intent_attachments_not_supported),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        finish()
-                    }
+                        if (attachment != null) {
+                            Toast.makeText(
+                                this@IntentContextMenuAliasActivity,
+                                this@IntentContextMenuAliasActivity.resources.getString(R.string.intent_attachments_not_supported),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            finish()
+                        }
 
-                    // Get all the data from bundle (some apps use bundle to pass addresses)
-                    val bundle = intent.extras
-                    val recipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_EMAIL)
-                    val ccRecipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_CC)
-                    val bccRecipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_BCC)
-                    val subjectFromBundle = bundle?.getString(Intent.EXTRA_SUBJECT)
-                    if (!subjectFromBundle.isNullOrBlank()) {
-                        subject = subjectFromBundle
-                    }
-                    val bodyFromBundle = bundle?.getString(Intent.EXTRA_TEXT)
-                    if (!bodyFromBundle.isNullOrBlank()) {
-                        body = bodyFromBundle
-                    }
+                        // Get all the data from bundle (some apps use bundle to pass addresses)
+                        val bundle = intent.extras
+                        val recipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_EMAIL)
+                        val ccRecipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_CC)
+                        val bccRecipientsFromBundle = bundle?.getStringArray(Intent.EXTRA_BCC)
+                        val subjectFromBundle = bundle?.getString(Intent.EXTRA_SUBJECT)
+                        if (!subjectFromBundle.isNullOrBlank()) {
+                            subject = subjectFromBundle
+                        }
+                        val bodyFromBundle = bundle?.getString(Intent.EXTRA_TEXT)
+                        if (!bodyFromBundle.isNullOrBlank()) {
+                            body = bodyFromBundle
+                        }
 
-                    // Filter out invalid email addrsses
-                    val validEmails = arrayListOf<String>()
-                    val validCcRecipients = arrayListOf<String>()
-                    val validBccRecipients = arrayListOf<String>()
+                        // Filter out invalid email addrsses
+                        val validEmails = arrayListOf<String>()
+                        val validCcRecipients = arrayListOf<String>()
+                        val validBccRecipients = arrayListOf<String>()
 
-                    if (recipients != null) {
-                        for (email in recipients) {
-                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                validEmails.add(email)
+                        if (recipients != null) {
+                            for (email in recipients) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validEmails.add(email)
+                                }
                             }
                         }
-                    }
 
-                    if (recipientsFromBundle != null) {
-                        for (email in recipientsFromBundle) {
-                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                validEmails.add(email)
+                        if (recipientsFromBundle != null) {
+                            for (email in recipientsFromBundle) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validEmails.add(email)
+                                }
                             }
                         }
-                    }
 
 
-                    if (ccRecipients != null) {
-                        for (email in ccRecipients) {
-                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                validCcRecipients.add(email)
+                        if (ccRecipients != null) {
+                            for (email in ccRecipients) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validCcRecipients.add(email)
+                                }
                             }
                         }
-                    }
 
-                    if (ccRecipientsFromBundle != null) {
-                        for (email in ccRecipientsFromBundle) {
-                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                validCcRecipients.add(email)
+                        if (ccRecipientsFromBundle != null) {
+                            for (email in ccRecipientsFromBundle) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validCcRecipients.add(email)
+                                }
                             }
                         }
-                    }
 
-                    if (bccRecipients != null) {
-                        for (email in bccRecipients) {
-                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                validBccRecipients.add(email)
+                        if (bccRecipients != null) {
+                            for (email in bccRecipients) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validBccRecipients.add(email)
+                                }
                             }
                         }
-                    }
 
-                    if (bccRecipientsFromBundle != null) {
-                        for (email in bccRecipientsFromBundle) {
-                            if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                validBccRecipients.add(email)
+                        if (bccRecipientsFromBundle != null) {
+                            for (email in bccRecipientsFromBundle) {
+                                if (CustomPatterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    validBccRecipients.add(email)
+                                }
                             }
                         }
-                    }
 
-                    lifecycleScope.launch {
-                        // Figure out what to do next (passes the email address)
-                        figureOutNextAction(validEmails, validCcRecipients, validBccRecipients)
-                    }
+                        lifecycleScope.launch {
+                            // Figure out what to do next (passes the email address)
+                            figureOutNextAction(validEmails, validCcRecipients, validBccRecipients)
+                        }
 
+                    }
                 }
             }
         }
