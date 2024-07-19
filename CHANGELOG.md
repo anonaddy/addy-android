@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.2.8] - 2024-07-19
+
+### addy.io
+
+##### Fixed/Improved
+
+- Moved back to targetSDK 34 after seeing some artifacts on some devices, will move back to targetSDK 35 soon.
+
 ## [v5.2.7] - 2024-07-19
 
 ### addy.io

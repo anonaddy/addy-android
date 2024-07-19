@@ -15,10 +15,10 @@
       </SelectionState>
       <SelectionState runConfigName="app-wearos">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-07-13T19:11:01.783079Z">
+        <DropdownSelection timestamp="2024-07-19T17:16:06.122199Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=P11277001376" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=28151FDH30055U" />
             </handle>
           </Target>
         </DropdownSelection>
