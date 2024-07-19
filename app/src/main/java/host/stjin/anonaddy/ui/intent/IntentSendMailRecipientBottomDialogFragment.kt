@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
 class IntentSendMailRecipientBottomDialogFragment(
-    private val recipientEmails: ArrayList<String>?,
+    private val recipientEmails: ArrayList<String>,
     private val recipientCcEmails: ArrayList<String>,
     private val recipientBccEmails: ArrayList<String>,
     private val domainOptions: List<String>
@@ -134,7 +134,7 @@ class IntentSendMailRecipientBottomDialogFragment(
         }
 
         // Set recipient text
-        if (!recipientEmails.isNullOrEmpty()) {
+        if (recipientEmails.isNotEmpty()) {
             binding.bsSendMailFromIntentAliasRecipientTiet.setText(recipientEmails.joinToString(","))
         }
 
@@ -221,7 +221,7 @@ class IntentSendMailRecipientBottomDialogFragment(
 
     companion object {
         fun newInstance(
-            recipientEmail: ArrayList<String>?,
+            recipientEmail: ArrayList<String>,
             recipientCcEmail: ArrayList<String>,
             recipientBccEmail: ArrayList<String>,
             domainOptions: List<String>

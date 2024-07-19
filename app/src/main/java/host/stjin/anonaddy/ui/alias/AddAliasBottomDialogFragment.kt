@@ -21,6 +21,7 @@ import com.google.android.material.chip.Chip
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetAddaliasBinding
+import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
@@ -232,9 +233,12 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_custom)) {
             // If the selected domain contains a shared domain disable the local part box
 
-            if (sharedDomains.contains(binding.bsAddaliasDomainMact.text.toString())) {
-                binding.bsAddaliasAliasFormatTil.error = context.resources.getString(R.string.domains_format_custom_not_available_for_this_domain)
-                return
+            // Only check on hosted instance
+            if (AddyIo.VERSIONMAJOR == 9999) {
+                if (sharedDomains.contains(binding.bsAddaliasDomainMact.text.toString())) {
+                    binding.bsAddaliasAliasFormatTil.error = context.resources.getString(R.string.domains_format_custom_not_available_for_this_domain)
+                    return
+                }
             }
 
             if (binding.bsAddaliasAliasLocalPartTiet.text.toString().isEmpty()) {
