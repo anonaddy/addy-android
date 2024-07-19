@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Fixed an issue where the custom alias format was not available on self-hosted instances</p>

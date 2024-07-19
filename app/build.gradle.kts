@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = namespace
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 34
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -19,9 +19,9 @@ android {
          */
 
         // SDK 34 + v5.2.7 + release 01 + 00 (for app)
-        versionCode = 345270100 // https://developer.android.com/training/wearables/packaging
+        versionCode = 345280100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v5.2.7"
+        versionName = "v5.2.8"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

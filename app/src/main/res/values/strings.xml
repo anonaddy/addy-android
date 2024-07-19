@@ -70,9 +70,9 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.2.7</h3>
+<h3>What\'s new in AnonAddy for Android 5.2.8</h3>
 <h4>Fixed/Improved</h4>
-<p>- Fixed an issue where the custom alias format was not available on self-hosted instances<br />- Targeting Android 15 now</p>
+<p>- Fixed an issue where the custom alias format was not available on self-hosted instances</p>
 <h3>What\'s new in AnonAddy for Android for Wearables 1.4.4</h3>
 <h4>Fixed/Improved</h4>
 <p>- Targeting WearOS 5 now</p>
