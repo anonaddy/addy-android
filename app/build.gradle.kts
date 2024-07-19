@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "host.stjin.anonaddy"
     //compileSdkPreview = "Tiramisu"
     defaultConfig {
         applicationId = namespace
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v5.2.5 + release 01 + 00 (for app)
-        versionCode = 345260100 // https://developer.android.com/training/wearables/packaging
+        // SDK 34 + v5.2.7 + release 01 + 00 (for app)
+        versionCode = 345270100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v5.2.6"
+        versionName = "v5.2.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -104,8 +104,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.0")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
 }
 
@@ -131,7 +131,7 @@ dependencies {
 // Apache for extracting strings ManageAliasActivity
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation("org.apache.commons:commons-lang3:3.14.0")
+    implementation("org.apache.commons:commons-lang3:3.15.0")
 }
 
 // Scanning QR codes

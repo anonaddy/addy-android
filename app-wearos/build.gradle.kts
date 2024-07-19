@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId = namespace
         minSdk = 30
-        targetSdk = 33
+        targetSdk = 34
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.4.3 + release 01 + 01 (for wearos)
-        versionCode = 341430101
-        versionName = "1.4.3"
+        // SDK 33 + v1.4.4 + release 01 + 01 (for wearos)
+        versionCode = 341440101
+        versionName = "1.4.4"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -105,8 +105,8 @@ dependencies {
     implementation("com.google.android.support:wearable:2.9.0")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.0")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 }
 
 
@@ -176,7 +176,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.14")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.16")
 }
 
 // Splash screen

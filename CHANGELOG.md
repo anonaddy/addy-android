@@ -1,5 +1,20 @@
 # Changelog
 
+## [v5.2.7] - 2024-07-19
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed an issue where the custom alias format was not available on self-hosted instances
+- Targeting Android 15 now
+
+### addy.io for Android wearables _(v1.4.4)_
+
+##### Fixed/Improved
+
+- Targeting WearOS 5 now
+
 ## [v5.2.6] - 2024-06-28
 
 ### addy.io
