@@ -99,7 +99,7 @@ Third party libraries used. (WearOS)
 ## Feedback and contribution
 
 I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me. Of course, you can
-also contact the developer directly via telegram or email and I'll get back to you shortly.
+also directly contact me via telegram or email and I'll get back to you.
 
 ## Donation
 
