@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 class ManageDomainsActivity : BaseActivity(),
     EditDomainDescriptionBottomDialogFragment.AddEditDomainDescriptionBottomDialogListener,
     EditDomainFromNameBottomDialogFragment.AddEditDomainFromNameBottomDialogListener,
-    EditDomainRecipientBottomDialogFragment.AddEditDomainRecipientBottomDialogListener {
+    EditDomainRecipientBottomDialogFragment.AddEditDomainRecipientBottomDialogListener,
+    EditDomainAutoCreateRegexBottomDialogFragment.AddEditDomainAutoCreateRegexBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
     private var shouldRefreshOnFinish = false
@@ -37,6 +38,7 @@ class ManageDomainsActivity : BaseActivity(),
     private lateinit var editDomainDescriptionBottomDialogFragment: EditDomainDescriptionBottomDialogFragment
     private lateinit var editDomainRecipientBottomDialogFragment: EditDomainRecipientBottomDialogFragment
     private lateinit var editDomainFromNameBottomDialogFragment: EditDomainFromNameBottomDialogFragment
+    private lateinit var editDomainAutoCreateRegexBottomDialogFragment: EditDomainAutoCreateRegexBottomDialogFragment
 
     private var domain: Domains? = null
         set(value) {
@@ -266,6 +268,17 @@ class ManageDomainsActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageDomainAutoCreateRegexEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editDomainAutoCreateRegexBottomDialogFragment.isAdded) {
+                    editDomainAutoCreateRegexBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editDomainAutoCreateRegexBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
 
         binding.activityManageDomainDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -485,6 +498,39 @@ class ManageDomainsActivity : BaseActivity(),
         }
 
 
+        /**
+         * AUTO CREATE REGEX
+         */
+
+
+        // Not available for free subscriptions
+        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            binding.activityManageDomainAutoCreateRegexEdit.setLayoutEnabled(false)
+            binding.activityManageDomainAutoCreateRegexEdit.setDescription(
+                this.resources.getString(
+                    R.string.feature_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (domain.auto_create_regex != null) {
+                binding.activityManageDomainAutoCreateRegexEdit.setDescription(domain.auto_create_regex)
+            } else {
+                binding.activityManageDomainAutoCreateRegexEdit.setDescription(
+                    this.resources.getString(
+                        R.string.domain_no_auto_create_regex
+                    )
+                )
+            }
+            // reset this value as it now includes the description
+            editDomainAutoCreateRegexBottomDialogFragment = EditDomainAutoCreateRegexBottomDialogFragment.newInstance(
+                this.domain!!.id,
+                domain.auto_create_regex
+            )
+        }
+
+
+
         // Please note that the "Catch-all" feature is also only available for paid subcriptions. However, you cannot add your own domains
         // on the free plan, making a check useless
 
@@ -524,9 +570,17 @@ class ManageDomainsActivity : BaseActivity(),
 
     override fun fromNameEdited(domain: Domains) {
         editDomainFromNameBottomDialogFragment.dismissAllowingStateLoss()
-        // Do this last, will trigger updateUI as well as re-init editDomainRecipientBottomDialogFragment
+        // Do this last, will trigger updateUI as well as re-init editDomainFromNameBottomDialogFragment
         this.domain = domain
     }
+
+
+    override fun autoCreateRegexEdited(domain: Domains) {
+        editDomainAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
+        // Do this last, will trigger updateUI as well as re-init editDomainAutoCreateRegexBottomDialogFragment
+        this.domain = domain
+    }
+
 
     private suspend fun getAliasesAndAddThemToList(domain: Domains) {
         binding.activityManageDomainAliasesShimmerframelayout.startShimmer()

@@ -18,6 +18,7 @@ data class Domains(
     val default_recipient: Recipients?,
     var active: Boolean,
     var catch_all: Boolean,
+    var auto_create_regex: String?,
     val domain_verified_at: String?,
     val domain_mx_validated_at: String?,
     val domain_sending_verified_at: String?,

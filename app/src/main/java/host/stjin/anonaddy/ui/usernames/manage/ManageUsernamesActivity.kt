@@ -27,13 +27,15 @@ import kotlinx.coroutines.launch
 class ManageUsernamesActivity : BaseActivity(),
     EditUsernameDescriptionBottomDialogFragment.AddEditUsernameDescriptionBottomDialogListener,
     EditUsernameFromNameBottomDialogFragment.AddEditUsernameFromNameBottomDialogListener,
-    EditUsernameRecipientBottomDialogFragment.AddEditUsernameRecipientBottomDialogListener {
+    EditUsernameRecipientBottomDialogFragment.AddEditUsernameRecipientBottomDialogListener,
+    EditUsernameAutoCreateRegexBottomDialogFragment.AddEditUsernameAutoCreateRegexBottomDialogListener {
 
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var editUsernameDescriptionBottomDialogFragment: EditUsernameDescriptionBottomDialogFragment
     private lateinit var editUsernameRecipientBottomDialogFragment: EditUsernameRecipientBottomDialogFragment
     private lateinit var editUserNameFromNameBottomDialogFragment: EditUsernameFromNameBottomDialogFragment
+    private lateinit var editUsernameAutoCreateRegexBottomDialogFragment: EditUsernameAutoCreateRegexBottomDialogFragment
 
 
     private var shouldRefreshOnFinish = false
@@ -330,6 +332,17 @@ class ManageUsernamesActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageUsernameAutoCreateRegexEdit.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!editUsernameAutoCreateRegexBottomDialogFragment.isAdded) {
+                    editUsernameAutoCreateRegexBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editUsernameAutoCreateRegexBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
 
         binding.activityManageUsernameDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -548,6 +561,40 @@ class ManageUsernamesActivity : BaseActivity(),
 
         }
 
+        /**
+         * AUTO CREATE REGEX
+         */
+
+
+        // Not available for free subscriptions
+        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            binding.activityManageUsernameAutoCreateRegexEdit.setLayoutEnabled(false)
+            binding.activityManageUsernameAutoCreateRegexEdit.setDescription(
+                this.resources.getString(
+                    R.string.feature_not_available_subscription
+                )
+            )
+        } else {
+            // Set description and initialise the bottomDialogFragment
+            if (username.auto_create_regex != null) {
+                binding.activityManageUsernameAutoCreateRegexEdit.setDescription(username.auto_create_regex)
+            } else {
+                binding.activityManageUsernameAutoCreateRegexEdit.setDescription(
+                    this.resources.getString(
+                        R.string.username_no_auto_create_regex
+                    )
+                )
+            }
+
+            // reset this value as it now includes the description
+            editUsernameAutoCreateRegexBottomDialogFragment = EditUsernameAutoCreateRegexBottomDialogFragment.newInstance(
+                username.id,
+                username.auto_create_regex,
+            )
+
+
+        }
+
 
         binding.animationFragment.stopAnimation()
         binding.activityManageUsernameNSV.animate().alpha(1.0f)
@@ -559,21 +606,30 @@ class ManageUsernamesActivity : BaseActivity(),
     override fun descriptionEdited(username: Usernames) {
         editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
 
-        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        // Do this last, will trigger updateUI as well as re-init editUsernameDescriptionBottomDialogFragment
         this.username = username
     }
 
     override fun recipientEdited(username: Usernames) {
         editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
 
-        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        // Do this last, will trigger updateUI as well as re-init editUsernameRecipientBottomDialogFragment
         this.username = username
     }
 
     override fun fromNameEdited(username: Usernames) {
         editUserNameFromNameBottomDialogFragment.dismissAllowingStateLoss()
 
-        // Do this last, will trigger updateUI as well as re-init editAliasDescriptionBottomDialogFragment
+        // Do this last, will trigger updateUI as well as re-init editUserNameFromNameBottomDialogFragment
+        this.username = username
+    }
+
+
+
+    override fun autoCreateRegexEdited(username: Usernames) {
+        editUsernameAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editUsernameAutoCreateRegexBottomDialogFragment
         this.username = username
     }
 
