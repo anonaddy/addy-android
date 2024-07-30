@@ -532,7 +532,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
 
         // Not available for free subscriptions
-        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+        if ((this.application as AddyIoApp).userResource.hasUserFreeSubscription) {
             binding.activityManageUsernameFromNameEdit.setLayoutEnabled(false)
             binding.activityManageUsernameFromNameEdit.setDescription(
                 this.resources.getString(
@@ -567,7 +567,7 @@ class ManageUsernamesActivity : BaseActivity(),
 
 
         // Not available for free subscriptions
-        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+        if ((this.application as AddyIoApp).userResource.hasUserFreeSubscription) {
             binding.activityManageUsernameAutoCreateRegexEdit.setLayoutEnabled(false)
             binding.activityManageUsernameAutoCreateRegexEdit.setDescription(
                 this.resources.getString(

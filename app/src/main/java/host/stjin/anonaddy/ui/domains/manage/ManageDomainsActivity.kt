@@ -471,7 +471,7 @@ class ManageDomainsActivity : BaseActivity(),
 
 
         // Not available for free subscriptions
-        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+        if ((this.application as AddyIoApp).userResource.hasUserFreeSubscription) {
             binding.activityManageDomainFromNameEdit.setLayoutEnabled(false)
             binding.activityManageDomainFromNameEdit.setDescription(
                 this.resources.getString(
@@ -504,7 +504,7 @@ class ManageDomainsActivity : BaseActivity(),
 
 
         // Not available for free subscriptions
-        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+        if ((this.application as AddyIoApp).userResource.hasUserFreeSubscription) {
             binding.activityManageDomainAutoCreateRegexEdit.setLayoutEnabled(false)
             binding.activityManageDomainAutoCreateRegexEdit.setDescription(
                 this.resources.getString(

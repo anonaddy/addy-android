@@ -176,7 +176,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.16")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.17")
 }
 
 // Splash screen

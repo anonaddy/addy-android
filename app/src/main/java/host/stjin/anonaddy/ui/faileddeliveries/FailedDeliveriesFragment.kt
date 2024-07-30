@@ -117,7 +117,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     private lateinit var failedDeliveriesAdapter: FailedDeliveryAdapter
     private suspend fun getAllFailedDeliveriesAndSetRecyclerview() {
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
-            networkHelper?.getAllFailedDeliveries({ list, error ->
+            networkHelper?.getAllFailedDeliveries { list, error ->
                 // Sorted by created_at automatically
                 //list?.sortByDescending { it.emails_forwarded }
 
@@ -130,8 +130,11 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 if (list != null) {
                     setFailedDeliveriesAdapter(list)
                 } else {
-                    // If the error is 404, the feature is unavailable, no need to let the user know that we could not refresh data
-                    if (error != "404") {
+                    // If the error is 404, the feature is unavailable, let the user know that the feature is not available
+                    if (error == "404") {
+                        binding.fragmentFailedDeliveriesLL1.visibility = View.GONE
+                        binding.root.findViewById<View>(R.id.fragment_content_unavailable).visibility = View.VISIBLE
+                    } else {
                         if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                             SnackbarHelper.createSnackbar(
                                 requireContext(),
@@ -147,15 +150,16 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                                 LoggingHelper.LOGFILES.DEFAULT
                             ).show()
                         }
+
+                        // Show error animations
+                        binding.fragmentFailedDeliveriesLL1.visibility = View.GONE
+                        binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                     }
 
 
-                    // Show error animations
-                    binding.fragmentFailedDeliveriesLL1.visibility = View.GONE
-                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
                 }
                 hideShimmer()
-            }, show404Toast = true)
+            }
 
         }
 

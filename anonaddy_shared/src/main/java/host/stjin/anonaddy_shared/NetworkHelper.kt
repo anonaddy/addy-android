@@ -4475,7 +4475,7 @@ class NetworkHelper(private val context: Context) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
 
-        getAllFailedDeliveries({ result, _ ->
+        getAllFailedDeliveries { result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
@@ -4493,7 +4493,7 @@ class NetworkHelper(private val context: Context) {
                 callback(true)
             }
             // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
-        })
+        }
     }
 
 
@@ -4502,8 +4502,7 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllFailedDeliveries(
-        callback: (ArrayList<FailedDeliveries>?, String?) -> Unit,
-        show404Toast: Boolean = false
+        callback: (ArrayList<FailedDeliveries>?, String?) -> Unit
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -4541,9 +4540,6 @@ class NetworkHelper(private val context: Context) {
             // =
             // Show a toast (if enabled) letting the user know this feature is only available if the failed deliveries API is enabled
             404 -> {
-                if (show404Toast) {
-                    Toast.makeText(context, context.resources.getString(R.string.failed_deliveries_unavailable_404), Toast.LENGTH_LONG).show()
-                }
                 callback(null, "404")
             }
 

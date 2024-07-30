@@ -222,7 +222,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // If the selected domain format is random words
         if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_random_words)) {
             // If the user has a free subscription
-            if ((activity?.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+            if ((activity?.application as AddyIoApp).userResource.hasUserFreeSubscription) {
                 binding.bsAddaliasAliasFormatTil.error =
                     context.resources.getString(R.string.domains_format_random_words_not_available_for_this_subscription)
                 return

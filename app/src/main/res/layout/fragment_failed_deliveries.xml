@@ -13,6 +13,8 @@
         android:layout_height="match_parent"
         app:loopAnimation="false" />
 
+    <include android:id="@+id/fragment_content_unavailable" android:visibility="gone" layout="@layout/fragment_feature_not_available_subscription" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/fragment_failed_deliveries_NSV"
         android:layout_width="match_parent"
