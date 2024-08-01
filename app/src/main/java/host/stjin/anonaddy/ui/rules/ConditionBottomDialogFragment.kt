@@ -66,17 +66,18 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
     private fun updateUi() {
         // Check if there arguments (to be filled from the Create Rule Activity)
 
+        if (conditionEditObject != null) {
             val typeText =
-                TYPES_NAME[TYPES.indexOf(conditionEditObject?.type)]
+                TYPES_NAME[TYPES.indexOf(conditionEditObject.type)]
             binding.bsRuleConditionTypeMact.setText(typeText, false)
 
             val matchText =
-                MATCHES_NAME[MATCHES.indexOf(conditionEditObject?.match)]
+                MATCHES_NAME[MATCHES.indexOf(conditionEditObject.match)]
             binding.bsRuleConditionMatchMact.setText(matchText, false)
 
 
-            binding.bsRuleConditionValuesTiet.setText(conditionEditObject?.values?.joinToString())
-
+            binding.bsRuleConditionValuesTiet.setText(conditionEditObject.values.joinToString())
+        }
 
     }
 
