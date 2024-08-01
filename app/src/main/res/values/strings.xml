@@ -70,12 +70,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.2.8</h3>
+<h3>What\'s new in AnonAddy for Android 5.2.9</h3>
+<h4>Added</h4>
+<p>- Added new regex options for domains and usernames<br />- Added new regex rule conditions</p>
 <h4>Fixed/Improved</h4>
-<p>- Fixed an issue where the custom alias format was not available on self-hosted instances</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.4.4</h3>
+<p>- Performance improvements and other things to make the app even smoother</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.4.5</h3>
 <h4>Fixed/Improved</h4>
-<p>- Targeting WearOS 5 now</p>
+<p>- Performance improvements and other things to make the app even smoother</p>
 ]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>

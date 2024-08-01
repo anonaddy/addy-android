@@ -25,9 +25,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.4.4 + release 01 + 01 (for wearos)
-        versionCode = 341440101
-        versionName = "1.4.4"
+        // SDK 33 + v1.4.5 + release 01 + 01 (for wearos)
+        versionCode = 341450101
+        versionName = "1.4.5"
         vectorDrawables {
             useSupportLibrary = true
         }

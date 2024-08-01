@@ -8,7 +8,7 @@ buildscript {
         set("compose_version", "1.6.8")
         set("compose_compiler_version", "1.5.14")
         // https://developer.android.com/jetpack/androidx/releases/activity
-        set("compose_activity_version", "1.9.0")
+        set("compose_activity_version", "1.9.1")
         // https://developer.android.com/jetpack/androidx/releases/compose-material3
         set("compose_material_version", "1.2.1")
         // https://developer.android.com/jetpack/androidx/releases/wear-tiles
