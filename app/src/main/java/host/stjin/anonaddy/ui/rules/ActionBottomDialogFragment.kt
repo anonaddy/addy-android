@@ -113,7 +113,6 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
         }
 
     } else {
-        // If not forward_to, get recipients without selected
         viewLifecycleOwner.lifecycleScope.launch {
             getAllRecipients(null)
         }

@@ -33,13 +33,6 @@ import kotlinx.coroutines.launch
 class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddConditionBottomDialogListener,
     ActionBottomDialogFragment.AddActionBottomDialogListener {
 
-    enum class ARGUMENTS(val argument: String) {
-        ACTION_EDIT_INDEX("action_edit_index"),
-        ACTION_EDIT("action_edit"),
-        CONDITION_EDIT_INDEX("condition_edit_index"),
-        CONDITION_EDIT("condition_edit")
-    }
-
     lateinit var networkHelper: NetworkHelper
     private var shouldRefreshOnFinish = false
 
