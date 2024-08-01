@@ -118,7 +118,8 @@ class RulesSettingsFragment : Fragment() {
                 val rulesJson = savedInstanceState.getString("rules")
 
                 if (!recipientsJson.isNullOrEmpty() && recipientsJson != "null" &&
-                    !rulesJson.isNullOrEmpty() && rulesJson != "null") {
+                    !rulesJson.isNullOrEmpty() && rulesJson != "null"
+                ) {
                     val gson = Gson()
 
                     val recipientsType = object : TypeToken<ArrayList<Recipients>>() {}.type
@@ -153,6 +154,7 @@ class RulesSettingsFragment : Fragment() {
                     getAllRulesAndSetView(result)
                 }
             } else {
+
                 if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
@@ -239,7 +241,14 @@ class RulesSettingsFragment : Fragment() {
                 }
 
                 if (list != null) {
-                    setRulesAdapter(recipients, list)
+
+                    if (list.size == 0) {
+                        binding.fragmentManageRulesLL1.visibility = View.GONE
+                        binding.root.findViewById<View>(R.id.fragment_content_unavailable).visibility = View.VISIBLE
+                    } else {
+                        setRulesAdapter(recipients, list)
+
+                    }
                 } else {
                     if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(

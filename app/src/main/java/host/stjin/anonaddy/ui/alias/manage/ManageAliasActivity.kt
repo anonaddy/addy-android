@@ -786,7 +786,7 @@ class ManageAliasActivity : BaseActivity(),
 
 
         // Not available for free subscriptions
-        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+        if ((this.application as AddyIoApp).userResource.hasUserFreeSubscription) {
             binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setLayoutEnabled(false)
             binding.activityManageAliasGeneralActions.activityManageAliasFromNameEdit.setDescription(
                 this.resources.getString(

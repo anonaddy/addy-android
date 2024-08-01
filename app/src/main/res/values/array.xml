@@ -36,6 +36,8 @@
         <item>does not start with</item>
         <item>ends with</item>
         <item>does not end with</item>
+        <item>matches regex</item>
+        <item>does not match regex</item>
     </string-array>
     <string-array name="conditions.match.name">
         <item>@string/contains</item>
@@ -46,6 +48,8 @@
         <item>@string/does_not_start_with</item>
         <item>@string/ends_with</item>
         <item>@string/does_not_end_with</item>
+        <item>@string/matches_regex</item>
+        <item>@string/does_not_match_regex</item>
     </string-array>
 
     <!-- RULE ACTIONS -->
@@ -105,4 +109,6 @@
     <string name="domains_format_custom">Custom</string>
     <string name="domains_format_uuid">UUID</string>
     <string name="domains_format_random_characters">Random characters</string>
+    <string name="matches_regex">matches regex</string>
+    <string name="does_not_match_regex">does not match regex</string>
 </resources>

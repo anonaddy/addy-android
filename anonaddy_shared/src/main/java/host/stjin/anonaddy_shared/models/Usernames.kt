@@ -18,6 +18,7 @@ data class Usernames(
     val default_recipient: Recipients?,
     var active: Boolean,
     var catch_all: Boolean,
+    var auto_create_regex: String?,
     var can_login: Boolean,
     val created_at: String,
     val updated_at: String

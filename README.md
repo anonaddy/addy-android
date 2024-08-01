@@ -17,7 +17,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 
 > addy.io
 
-- addy.io instance running v1.2.1 or higher (current version of the addy.io app has been tested with v1.2.1)
+- addy.io instance running v1.2.2 or higher (current version of the addy.io app has been tested with v1.2.2)
 
 > Android
 
@@ -99,7 +99,7 @@ Third party libraries used. (WearOS)
 ## Feedback and contribution
 
 I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me. Of course, you can
-also contact the developer directly via telegram or email and I'll get back to you shortly.
+also directly contact me via telegram or email and I'll get back to you.
 
 ## Donation
 

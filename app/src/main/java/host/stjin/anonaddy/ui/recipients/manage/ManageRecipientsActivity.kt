@@ -556,7 +556,7 @@ class ManageRecipientsActivity : BaseActivity(),
             binding.activityManageRecipientPgpInline.setDescription(this.resources.getString(R.string.pgp_inline_desc))
         }
 
-        if ((this.application as AddyIoApp).userResource.subscription == SUBSCRIPTIONS.FREE.subscription) {
+        if ((this.application as AddyIoApp).userResource.hasUserFreeSubscription) {
             binding.activityManageRecipientProtectedHeaders.setLayoutEnabled(false)
             binding.activityManageRecipientProtectedHeaders.setDescription(this.resources.getString(R.string.feature_not_available_subscription))
         }

@@ -1,5 +1,24 @@
 # Changelog
 
+## [v5.2.9] - 2024-08-01
+
+### addy.io
+
+##### Added
+
+- Added new regex options for domains and usernames
+- Added new regex rule conditions
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.4.5)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.2.8] - 2024-07-19
 
 ### addy.io

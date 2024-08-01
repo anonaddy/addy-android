@@ -48,4 +48,7 @@ data class UserResource(
     val total_deleted_aliases: Int,
     val created_at: String,
     val updated_at: String
-)
+) {
+    val hasUserFreeSubscription: Boolean
+        get() = subscription == SUBSCRIPTIONS.FREE.subscription
+}

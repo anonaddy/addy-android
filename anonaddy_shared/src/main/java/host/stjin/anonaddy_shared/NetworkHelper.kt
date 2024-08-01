@@ -1740,6 +1740,8 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
+
     suspend fun allowRecipientToReplySend(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2968,6 +2970,67 @@ class NetworkHelper(private val context: Context) {
     }
 
 
+    suspend fun updateAutoCreateRegexSpecificDomain(
+        callback: (Domains?, String?) -> Unit,
+        domainId: String,
+        autoCreateRegex: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("auto_create_regex", autoCreateRegex)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_DOMAINS}/$domainId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleDomain::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateAutoCreateRegexSpecificDomain",
+                    ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
     suspend fun updateFromNameSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -3254,6 +3317,65 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun updateAutoCreateRegexSpecificUsername(
+        callback: (Usernames?, String?) -> Unit,
+        usernameId: String,
+        autoCreateRegex: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("auto_create_regex", autoCreateRegex)
+
+
+        val (_, response, result) =
+            Fuel.patch("${API_URL_USERNAMES}/$usernameId")
+                .appendHeader(
+                    *getHeaders()
+                )
+                .body(json.toString())
+                .awaitStringResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleUsername::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int, ex.toString(), "updateAutoCreateRegexSpecificUsername",
+                    ErrorHelper.getErrorMessage(
+                        response.data
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
 
     suspend fun updateDefaultRecipientForSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
@@ -4353,7 +4475,7 @@ class NetworkHelper(private val context: Context) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
 
-        getAllFailedDeliveries({ result, _ ->
+        getAllFailedDeliveries { result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
@@ -4371,7 +4493,7 @@ class NetworkHelper(private val context: Context) {
                 callback(true)
             }
             // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
-        })
+        }
     }
 
 
@@ -4380,8 +4502,7 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllFailedDeliveries(
-        callback: (ArrayList<FailedDeliveries>?, String?) -> Unit,
-        show404Toast: Boolean = false
+        callback: (ArrayList<FailedDeliveries>?, String?) -> Unit
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -4419,9 +4540,6 @@ class NetworkHelper(private val context: Context) {
             // =
             // Show a toast (if enabled) letting the user know this feature is only available if the failed deliveries API is enabled
             404 -> {
-                if (show404Toast) {
-                    Toast.makeText(context, context.resources.getString(R.string.failed_deliveries_unavailable_404), Toast.LENGTH_LONG).show()
-                }
                 callback(null, "404")
             }
 

@@ -765,7 +765,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
      */
     private suspend fun checkForNewFailedDeliveries() {
         val encryptedSettingsManager = SettingsManager(true, this)
-        networkHelper.getAllFailedDeliveries({ result, _ ->
+        networkHelper.getAllFailedDeliveries { result, _ ->
             val currentFailedDeliveries =
                 encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
             if ((result?.size ?: 0) > currentFailedDeliveries) {
@@ -802,7 +802,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             } else {
                 hideFailedDeliveriesBadge()
             }
-        }, show404Toast = false)
+        }
     }
 
     private fun hideFailedDeliveriesBadge() {

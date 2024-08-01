@@ -264,11 +264,11 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             sourcesToSearch++
 
             viewLifecycleOwner.lifecycleScope.launch {
-                networkHelper.getAllFailedDeliveries({ failedDeliveriesList, _ ->
+                networkHelper.getAllFailedDeliveries { failedDeliveriesList, _ ->
                     failedDeliveries = failedDeliveriesList
                     sourcesSearched++
                     performSearch(context)
-                })
+                }
             }
         }
     }
