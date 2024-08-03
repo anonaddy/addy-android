@@ -32,7 +32,7 @@ import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
-import host.stjin.anonaddy_shared.models.ChartData
+import host.stjin.anonaddy_shared.models.AddyChartData
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -79,11 +79,11 @@ class HomeFragment : Fragment() {
     }
 
 
-    private var chartData: ChartData? = null
+    private var addyChartData: AddyChartData? = null
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val gson = Gson()
-        val json = gson.toJson(chartData)
+        val json = gson.toJson(addyChartData)
         outState.putString("chartData", json)
     }
 
@@ -119,7 +119,7 @@ class HomeFragment : Fragment() {
                 val chartData = savedInstanceState.getString("chartData")
                 if (chartData!!.isNotEmpty() && chartData != "null") {
                     val gson = Gson()
-                    val data: ChartData = gson.fromJson(chartData, ChartData::class.java)
+                    val data: AddyChartData = gson.fromJson(chartData, AddyChartData::class.java)
                     setChartData(data)
                 } else {
                     getChartData()
@@ -137,9 +137,9 @@ class HomeFragment : Fragment() {
     }
 
     private suspend fun getChartData() {
-        networkHelper?.getChartData { chartData: ChartData?, result: String? ->
-            if (chartData != null) {
-                setChartData(chartData)
+        networkHelper?.getChartData { addyChartData: AddyChartData?, result: String? ->
+            if (addyChartData != null) {
+                setChartData(addyChartData)
             } else {
                 if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
@@ -167,8 +167,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setChartData(data: ChartData) {
-        chartData = data
+    private fun setChartData(data: AddyChartData) {
+        addyChartData = data
         //val numberStr = data.forwardsData.map { FloatEntry(0,it.toFloat()) }
 
 

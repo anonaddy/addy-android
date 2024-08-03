@@ -49,7 +49,7 @@ import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.ApiTokenDetails
 import host.stjin.anonaddy_shared.models.BulkActionResponse
 import host.stjin.anonaddy_shared.models.BulkAliasesArray
-import host.stjin.anonaddy_shared.models.ChartData
+import host.stjin.anonaddy_shared.models.AddyChartData
 import host.stjin.anonaddy_shared.models.DomainOptions
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.models.DomainsArray
@@ -605,7 +605,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun getChartData(
-        callback: (ChartData?, String?) -> Unit
+        callback: (AddyChartData?, String?) -> Unit
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -624,7 +624,7 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val addyIoData = gson.fromJson(data, ChartData::class.java)
+                val addyIoData = gson.fromJson(data, AddyChartData::class.java)
                 callback(addyIoData, null)
             }
 
