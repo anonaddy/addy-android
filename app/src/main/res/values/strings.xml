@@ -698,5 +698,6 @@
 <br><p>You can use&nbsp;<a href="https://regex101.com/" target="_blank" rel="nofollow noreferrer noopener">regex101.com</a>&nbsp;to help you write your regular expressions.</p>]]></string>
     <string name="auto_create_regex">Auto create regex</string>
     <string name="auto_create_regex_hint">Regex pattern</string>
+    <string name="sort_last_used">Last used</string>
 
 </resources>
