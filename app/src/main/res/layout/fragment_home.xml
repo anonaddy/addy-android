@@ -271,7 +271,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 app:StatCardViewDescription="0"
-                app:StatCardViewIcon="@drawable/ic_users"
+                app:StatCardViewIcon="@drawable/ic_inbox"
                 app:StatCardViewShowButton="false"
                 app:StatCardViewTitle="@string/total_recipients" />
             </GridLayout>
