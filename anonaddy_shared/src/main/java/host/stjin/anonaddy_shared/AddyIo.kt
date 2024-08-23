@@ -20,6 +20,11 @@ object AddyIo {
     var VERSIONSTRING = ""
 
 
+    val isUsingHostedInstance: Boolean
+    get() = VERSIONMAJOR == 9999
+
+
+
     //resettableLazy(lazyMgr) properties: the value gets computed only upon first access
     val lazyMgr = resettableManager()
     val API_URL_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/recipients" }

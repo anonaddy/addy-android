@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_account_notifications_CL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <host.stjin.anonaddy.ui.customviews.AnimationView
+        android:id="@+id/animation_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:loopAnimation="false" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/fragment_account_notifications_NSV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/fragment_account_notifications_LL1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
+
+            <LinearLayout
+                style="@style/AddyIoTitleAction"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/all_account_notifications" />
+
+            </LinearLayout>
+
+            <com.todkars.shimmer.ShimmerRecyclerView
+                android:id="@+id/fragment_account_notifications_all_account_notifications_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:shimmer_recycler_auto_start="true"
+                app:shimmer_recycler_layout="@layout/account_notifications_recyclerview_list_item_shimmer" />
+
+            <TextView
+                android:id="@+id/fragment_account_notifications_no_account_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/no_result_textview_padding"
+                android:text="@string/no_account_notifications"
+                android:textAlignment="center"
+                android:textColor="@color/BlackWhite"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

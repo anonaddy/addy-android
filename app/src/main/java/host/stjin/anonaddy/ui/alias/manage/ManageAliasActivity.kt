@@ -37,7 +37,6 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
-import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch

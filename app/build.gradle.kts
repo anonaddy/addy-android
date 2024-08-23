@@ -93,7 +93,7 @@ dependencies {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.20")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
@@ -131,7 +131,7 @@ dependencies {
 // Apache for extracting strings ManageAliasActivity
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation("org.apache.commons:commons-lang3:3.15.0")
+    implementation("org.apache.commons:commons-lang3:3.16.0")
 }
 
 // Scanning QR codes
@@ -141,7 +141,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 }
 
 // For the donut in the aliasview

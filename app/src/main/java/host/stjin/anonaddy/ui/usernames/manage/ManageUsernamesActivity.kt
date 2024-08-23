@@ -17,7 +17,6 @@ import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.AliasesArray
-import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper

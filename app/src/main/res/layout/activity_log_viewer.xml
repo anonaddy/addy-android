@@ -37,7 +37,7 @@
 
 
             <TextView
-                android:id="@+id/activity_failed_deliveries_no_logs"
+                android:id="@+id/appsettings_logviewer_no_logs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/no_result_textview_padding"

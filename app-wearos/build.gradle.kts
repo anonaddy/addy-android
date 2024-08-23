@@ -137,7 +137,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 }
 
 // For parsing wearOSSettings
@@ -176,7 +176,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.17")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.18")
 }
 
 // Splash screen

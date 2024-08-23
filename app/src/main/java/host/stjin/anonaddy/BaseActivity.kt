@@ -2,7 +2,6 @@ package host.stjin.anonaddy
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -23,16 +22,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
-import androidx.window.embedding.ActivityEmbeddingController
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
-import host.stjin.anonaddy.ui.MainActivity
-import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
@@ -46,10 +41,6 @@ abstract class BaseActivity : AppCompatActivity() {
         var isSessionAuthenticated = false
     }
 
-
-    fun isActivityEmbedded(activity: Activity): Boolean {
-        return ActivityEmbeddingController.getInstance(this).isActivityEmbedded(activity)
-    }
 
     /*
     This method forces the use of dark/light/auto mode

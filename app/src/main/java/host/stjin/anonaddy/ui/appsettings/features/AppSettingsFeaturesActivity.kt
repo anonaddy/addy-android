@@ -52,7 +52,7 @@ class AppSettingsFeaturesActivity : BaseActivity() {
 
     private fun checkForSelfHostedInstance() {
         // Hide the switch on Subscription Expiry Notification Card when user is using self-hosted instance
-        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.showSwitch(AddyIo.VERSIONMAJOR == 9999)
+        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.showSwitch(AddyIo.isUsingHostedInstance)
 
     }
 
@@ -67,6 +67,10 @@ class AppSettingsFeaturesActivity : BaseActivity() {
 
         binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setSwitchChecked(
             settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
+        )
+
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setSwitchChecked(
+            settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)
         )
 
         binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setSwitchChecked(
@@ -107,6 +111,18 @@ class AppSettingsFeaturesActivity : BaseActivity() {
                     settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES, checked)
 
                     // Since failed deliveries should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                    BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
+                }
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                if (compoundButton.isPressed) {
+                    settingsManager.putSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS, checked)
+
+                    // Since account notifications should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
                     BackgroundWorkerHelper(this@AppSettingsFeaturesActivity).scheduleBackgroundWorker()
                 }
             }
@@ -203,6 +219,22 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             }
         })
 
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyAccountNotificationsActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
         binding.activityAppSettingsFeaturesSectionManageMultipleAliasesSheet.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -231,15 +263,6 @@ class AppSettingsFeaturesActivity : BaseActivity() {
             SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifySubscriptionExpiryActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-
-        binding.activityAppSettingsFeaturesSectionNotifyFailedDeliveriesSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesActivity, AppSettingsFeaturesNotifyFailedDeliveriesActivity::class.java)
                 startActivity(intent)
             }
         })

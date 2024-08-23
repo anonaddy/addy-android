@@ -261,6 +261,9 @@
             android:name=".ui.faileddeliveries.FailedDeliveriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.accountnotifications.AccountNotificationsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.logs.LogViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -304,6 +307,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyFailedDeliveriesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyAccountNotificationsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyApiTokenExpiryActivity"

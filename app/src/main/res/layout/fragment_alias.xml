@@ -10,73 +10,17 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/alias_list_LL1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="@dimen/layout_padding_top"
             android:paddingStart="@dimen/layout_padding"
-            android:paddingEnd="@dimen/layout_padding">
+            android:paddingEnd="@dimen/layout_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:layout_marginBottom="8dp">
 
-            <LinearLayout
-                style="@style/AddyIoTitleNoAction"
-                android:layout_width="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/aliases_statistics" />
-
-            </LinearLayout>
-
-            <GridLayout
-                android:id="@+id/alias_statistics_LL"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:columnCount="1"
-                android:orientation="vertical"
-                android:useDefaultMargins="true">
-
-                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
-                    android:id="@+id/alias_stats_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"
-                    app:StatCardViewDescription="@string/forwarded_blocked_stat"
-                    app:StatCardViewIcon="@drawable/ic_email_at"
-                    app:StatCardViewShowButton="false"
-                    app:StatCardViewTitle="@string/emails_forwarded" />
-
-
-                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
-                    android:id="@+id/alias_stats_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"
-                    app:StatCardViewDescription="@string/replied_sent_stat"
-                    app:StatCardViewIcon="@drawable/ic_mail_forward"
-                    app:StatCardViewShowButton="false"
-                    app:StatCardViewTitle="@string/emails_replied_sent" />
-            </GridLayout>
-
-
-            <!-- 8dp for spacing below scroll-->
-            <LinearLayout
-                android:id="@+id/alias_list_LL1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="vertical">
 
                 <LinearLayout
                     style="@style/AddyIoTitleAction"
@@ -129,7 +73,6 @@
                     android:textColor="@color/BlackWhite"
                     android:visibility="gone" />
 
-            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

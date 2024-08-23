@@ -37,8 +37,6 @@
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
     <string name="all_aliases">All aliases</string>
-    <string name="forwarded_blocked_stat" tools:ignore="PluralsCandidate">%1$d forwarded; %2$d blocked</string>
-    <string name="replied_sent_stat" tools:ignore="PluralsCandidate">%1$d replied; %2$d sent</string>
     <string name="settings">Settings</string>
     <string name="resend_email">Resend email</string>
     <string name="delete">Delete</string>
@@ -314,10 +312,14 @@
     <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to change the API key</string>
     <string name="notification_subscription_about_to_expire">Your subscription is about to expire</string>
     <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features</string>
+    <string name="notification_new_account_notifications">New notification</string>
+    <string name="notification_new_account_notifications_desc">You have %s new notification(s). Tap here to view the notifications</string>
     <string name="notification_channel_update">@string/addyio_updater</string>
     <string name="notification_channel_update_desc">Receive a notification when a new update is available for the addy.io app</string>
     <string name="notification_channel_failed_deliveries">@string/failed_deliveries</string>
     <string name="notification_channel_failed_deliveries_desc">Receive a notification if an email sent from an alias cannot be delivered</string>
+    <string name="notification_channel_account_notifications">@string/account_notifications</string>
+    <string name="notification_channel_account_notifications_desc">Receive a notification on your device when new notifications appear in addy.io</string>
     <string name="notification_channel_api_token_expiry">@string/APIKey</string>
     <string name="notification_channel_api_token_expiry_desc">Receive a notification when your API key is about to expire</string>
     <string name="notification_channel_subscription_expiry">Subscription</string>
@@ -326,7 +328,6 @@
     <string name="not_verified">Not verified</string>
     <string name="you_ll_be_notified_if_this_alias_has_activity">You’ll be notified if this alias has activity</string>
     <string name="reset_app_desc">Clear all data and start over</string>
-
     <string name="send_mail">Send mail</string>
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
     <string name="addresses">Addresses</string>
@@ -402,6 +403,7 @@
     <string name="error_delete_failed_delivery">Something went wrong while deleting this failed delivery</string>
     <string name="notify_failed_deliveries_feature_desc">For an overview of all failed deliveries, go back to main section and tap on the failed deliveries button at the top. (mail with exclamation mark)\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for failed deliveries.</string>
     <string name="feature_notify_failed_deliveries">Failed delivery notifications</string>
+    <string name="feature_notify_account_notifications">Account notifications</string>
     <string name="unlimited">unlimited</string>
     <string name="view_failed_deliveries">View failed deliveries</string>
     <string name="view_failed_deliveries_desc">Open an overview of recent failed deliveries</string>
@@ -478,8 +480,6 @@
     <string name="deleting_rule">Deleting rule…</string>
     <string name="deleting_username">Deleting username…</string>
     <string name="start_typing_to_show_aliases">Start typing to show aliases</string>
-
-
     <string name="error_obtaining_user">@string/could_not_refresh_data</string>
     <string name="error_obtaining_failed_deliveries">@string/could_not_refresh_data</string>
     <string name="error_obtaining_alias">@string/could_not_refresh_data</string>
@@ -624,7 +624,7 @@
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
-    <string name="stats">Stats</string>
+    <string name="statistics">Statistics</string>
     <string name="error_obtaining_chart_data">@string/could_not_refresh_data</string>
     <string name="you_ve_used_d_out_of_d_rules">You’ve used %1$d out of %2$s rules</string>
     <string name="from_name">From name</string>
@@ -642,9 +642,7 @@
     <string name="notification_alias_watches_alias_does_not_exist_anymore">Alias removed from alias watcher</string>
     <string name="notification_alias_watches_alias_does_not_exist_anymore_desc">%1$s has been forgotten and removed from the alias watcher</string>
     <string name="view_all">View all</string>
-    <string name="d_slash_s">%1$d / %2$s</string>
     <string name="home_bandwidth_text">%1$sMB / %2$sMB</string>
-    <string name="stat_card_view_online">View online</string>
     <string name="total_aliases">Total aliases</string>
     <string name="deleted_aliases">Deleted aliases</string>
     <string name="view_active">View active</string>
@@ -699,5 +697,17 @@
     <string name="auto_create_regex">Auto create regex</string>
     <string name="auto_create_regex_hint">Regex pattern</string>
     <string name="sort_last_used">Last used</string>
+    <string name="account_notifications">Notifications</string>
+    <string name="new_account_notifications">New account notifications</string>
+    <string name="all_account_notifications">All notifications</string>
+    <string name="no_account_notifications">No notifications</string>
+    <string name="something_went_wrong_retrieving_account_notifications">Something went wrong retrieving notifications</string>
+    <string name="notify_account_notifications_feature_desc">Receive a notification on your device when new notifications appear in addy.io</string>
+    <string name="view_account_notifications">View notifications</string>
+    <string name="view_account_notifications_desc">Open an overview of notifications</string>
+    <string name="emails_blocked">Emails blocked</string>
+    <string name="email_replies">Email replies</string>
+    <string name="email_sent">Email sent</string>
+    <string name="total_recipients">Total recipients</string>
 
 </resources>

@@ -4495,7 +4495,6 @@ class NetworkHelper(private val context: Context) {
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
-            // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
         }
     }
 
@@ -4783,6 +4782,35 @@ class NetworkHelper(private val context: Context) {
     /**
      * ACCOUNT NOTIFICATIONS
      */
+
+    suspend fun cacheAccountNotificationsCountForWidgetAndBackgroundService(
+        callback: (Boolean) -> Unit
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        getAllAccountNotifications { result, _ ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getAllAccountNotifications
+            } else {
+                // First move the current count to the previous count (for comparison)
+                encryptedSettingsManager.putSettingsInt(
+                    SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS,
+                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
+                )
+                // Now store the current count
+                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+        }
+    }
+
     suspend fun getAllAccountNotifications(
         callback: (ArrayList<AccountNotifications>?, String?) -> Unit
     ) {

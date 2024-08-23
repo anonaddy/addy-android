@@ -26,6 +26,10 @@
 
         <SplitPairFilter
             window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
+            window:secondaryActivityName="host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity" />
+
+        <SplitPairFilter
+            window:primaryActivityName="host.stjin.anonaddy.ui.MainActivity"
             window:secondaryActivityName="host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity" />
 
         <SplitPairFilter

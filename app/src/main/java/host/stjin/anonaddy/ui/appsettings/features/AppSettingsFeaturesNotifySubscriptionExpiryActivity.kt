@@ -70,7 +70,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     }
 
     private fun checkSubscriptionExpiry() {
-        if (AddyIo.VERSIONMAJOR == 9999) {
+        if (AddyIo.isUsingHostedInstance) {
             lifecycleScope.launch {
                 networkHelper.getUserResource { user: UserResource?, _: String? ->
                     setSubscriptionInfoText(user)

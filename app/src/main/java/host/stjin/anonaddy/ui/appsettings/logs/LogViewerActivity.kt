@@ -74,9 +74,9 @@ class LogViewerActivity : BaseActivity() {
 
             if (list != null) {
                 if (list.size > 0) {
-                    binding.activityFailedDeliveriesNoLogs.visibility = View.GONE
+                    binding.appsettingsLogviewerNoLogs.visibility = View.GONE
                 } else {
-                    binding.activityFailedDeliveriesNoLogs.visibility = View.VISIBLE
+                    binding.appsettingsLogviewerNoLogs.visibility = View.VISIBLE
                 }
 
 
@@ -98,7 +98,7 @@ class LogViewerActivity : BaseActivity() {
 
             } else {
                 binding.appsettingsLogviewerRecyclerview.visibility = View.GONE
-                binding.activityFailedDeliveriesNoLogs.visibility = View.VISIBLE
+                binding.appsettingsLogviewerNoLogs.visibility = View.VISIBLE
             }
         }
 

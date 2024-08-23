@@ -88,7 +88,7 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="8dp">
 
 
                 <ImageView
@@ -108,7 +108,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:tint="?colorOnSecondaryContainer" />
 
-
                 <ImageView
                     android:id="@+id/main_top_bar_failed_deliveries_new_items_icon"
                     android:layout_width="8dp"
@@ -124,6 +123,46 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/main_top_bar_account_notifications_icon_RL"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp">
+
+
+                <ImageView
+                    android:id="@+id/main_top_bar_account_notifications_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end|bottom"
+                    android:background="@drawable/circle_ripple"
+                    android:clickable="true"
+                    android:contentDescription="@string/account_notifications"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_bell"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="H,1:1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="?colorOnSecondaryContainer" />
+
+                <ImageView
+                    android:id="@+id/main_top_bar_account_notifications_new_items_icon"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_alignParentEnd="true"
+                    android:clickable="true"
+                    android:contentDescription="@string/new_account_notifications"
+                    android:focusable="true"
+                    android:src="@drawable/circle"
+                    android:tintMode="src_over"
+                    android:visibility="invisible"
+                    app:tint="@color/softRed" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginStart="8dp"
                 android:layout_width="36dp"
                 android:layout_height="36dp">
 

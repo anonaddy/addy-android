@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,13 +25,11 @@ import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.customviews.DashboardStatCardView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
-import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
-import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.AddyChartData
+import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -65,17 +62,11 @@ class HomeFragment : Fragment() {
         setStatistics()
         setNsvListener()
 
-        setGridLayout()
-
         // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
         // API calls, user should swipe to refresh starting from v4.5.0
         getDataFromWeb(savedInstanceState)
 
         return root
-    }
-
-    private fun setGridLayout() {
-        binding.homeStatsGridlayout.columnCount = ScreenSizeUtils.calculateNoOfColumns(requireContext())
     }
 
 
@@ -219,45 +210,6 @@ class HomeFragment : Fragment() {
 
 
     private fun setOnClickListeners() {
-        binding.homeStatCardSharedDomainAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_alias)
-            }
-        })
-
-        binding.homeStatCardRecipients.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_recipients)
-            }
-        })
-
-        binding.homeStatCardUsernames.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_usernames)
-            }
-        })
-
-        binding.homeStatCardDomains.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_domains)
-            }
-        })
-
-        binding.homeStatCardRules.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_rules)
-            }
-        })
-
-        binding.homeStatCardBandwidth.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = AddyIo.API_BASE_URL
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
-                startActivity(i)
-            }
-        })
-
 
         binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
             override fun onClick() {
@@ -455,87 +407,21 @@ class HomeFragment : Fragment() {
         val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
 
-        val activeSharedDomainAliasLimitText = if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toString()
-        }
-        binding.homeStatCardSharedDomainAliases.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count,
-                activeSharedDomainAliasLimitText
-            )
-        )
-        if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit != null &&  (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit!! > 0) {
-            binding.homeStatCardSharedDomainAliases.setProgress((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit!!.toFloat() * 100)
-        }
-
-        val recipientsLimitText = if ((activity?.application as AddyIoApp).userResource.recipient_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.recipient_limit.toString()
-        }
-        binding.homeStatCardRecipients.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.recipient_count,
-                recipientsLimitText
-            )
-        )
-        if ((activity?.application as AddyIoApp).userResource.recipient_limit != null && (activity?.application as AddyIoApp).userResource.recipient_limit!! > 0) {
-            binding.homeStatCardRecipients.setProgress((activity?.application as AddyIoApp).userResource.recipient_count.toFloat() / (activity?.application as AddyIoApp).userResource.recipient_limit!!.toFloat() * 100)
-        }
-
-
-        val domainsLimitText = if ((activity?.application as AddyIoApp).userResource.active_domain_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.active_domain_limit.toString()
-        }
-        binding.homeStatCardDomains.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.active_domain_count,
-                domainsLimitText
-            )
-        )
-        if ((activity?.application as AddyIoApp).userResource.active_domain_limit != null && (activity?.application as AddyIoApp).userResource.active_domain_limit!! > 0) {
-            binding.homeStatCardDomains.setProgress((activity?.application as AddyIoApp).userResource.active_domain_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_domain_limit!!.toFloat() * 100)
-        }
-
-
-        // Username does not have unlimited
-        //https://github.com/anonaddy/anonaddy/blob/c8296a1a68178a1165fe9dafd1904973db260ff3/config/anonaddy.php#L157
-        val usernamesLimitText = (activity?.application as AddyIoApp).userResource.username_limit.toString()
-        binding.homeStatCardUsernames.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.username_count,
-                usernamesLimitText
-            )
+        binding.homeStatCardForwarded.setDescription(
+            (activity?.application as AddyIoApp).userResource.total_emails_forwarded.toString()
         )
 
-        //FIXME This can not be 0 (yet..)
-        if ((activity?.application as AddyIoApp).userResource.username_limit > 0) {
-            binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
-        }
-
-        val rulesLimitText = if ((activity?.application as AddyIoApp).userResource.active_rule_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.active_rule_limit.toString()
-        }
-        binding.homeStatCardRules.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.active_rule_count,
-                rulesLimitText
-            )
+        binding.homeStatCardBlocked.setDescription(
+            (activity?.application as AddyIoApp).userResource.total_emails_blocked.toString()
         )
-        if ((activity?.application as AddyIoApp).userResource.active_rule_limit != null && (activity?.application as AddyIoApp).userResource.active_rule_limit!! > 0) {
-            binding.homeStatCardRules.setProgress((activity?.application as AddyIoApp).userResource.active_rule_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_rule_limit!!.toFloat() * 100)
-        }
+
+        binding.homeStatCardReplies.setDescription(
+            (activity?.application as AddyIoApp).userResource.total_emails_replied.toString()
+        )
+
+        binding.homeStatCardSent.setDescription(
+            (activity?.application as AddyIoApp).userResource.total_emails_sent.toString()
+        )
 
 
         // Bandwidth could be unlimited
@@ -556,6 +442,8 @@ class HomeFragment : Fragment() {
         binding.homeStatCardActiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_active_aliases.toString())
         binding.homeStatCardInactiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_inactive_aliases.toString())
         binding.homeStatCardDeletedAliases.setDescription((activity?.application as AddyIoApp).userResource.total_deleted_aliases.toString())
+        binding.homeStatCardTotalRecipients.setDescription((activity?.application as AddyIoApp).userResource.recipient_count.toString())
+
 
 
         val aliasWatcher = AliasWatcher(requireContext())

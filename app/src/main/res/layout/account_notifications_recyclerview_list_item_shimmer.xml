@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AddyIoCustomCardViewStyleCenter"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:padding="@dimen/cardview_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:baselineAligned="false"
+            android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:background="?colorSurfaceVariant"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textAllCaps="false"
+                    android:textColor="@color/BlackWhite"
+                    android:textSize="16sp"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/failed_deliveries_recyclerview_list_alias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?colorSurfaceVariant"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="false"
+                    tools:ignore="HardcodedText" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="12">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?colorSurfaceVariant"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/failed_deliveries_recyclerview_list_code"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?colorSurfaceVariant"
+                android:ellipsize="end"
+                android:fadingEdgeLength="150dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
+                android:lines="4"
+                android:maxLines="4"
+                android:minLines="1"
+                android:requiresFadingEdge="horizontal"
+                android:singleLine="false"
+                android:text="The additional usernames limit has just been increased from 1 to 5 for the Lite plan and from 10 to 20 for the Pro plan."
+                android:textColor="@android:color/transparent"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MaterialButtonSecondaryDark"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_weight="1"
+                app:backgroundTint="?colorSurfaceVariant" />
+
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

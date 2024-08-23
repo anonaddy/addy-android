@@ -8,19 +8,18 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-
     <ImageView
         android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_height="52dp"
+        android:contentDescription="@string/app_name"
         android:padding="12dp"
         android:src="@drawable/icon_monocolor"
-        android:contentDescription="@string/app_name"
         app:tint="?colorPrimary" />
 
     <RelativeLayout
         android:layout_width="56dp"
         android:layout_height="18dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center">
 
         <TextView
@@ -30,7 +29,6 @@
             android:background="@drawable/drag_pill"
             android:backgroundTint="?colorPrimaryContainer"
             android:backgroundTintMode="src_over"
-            android:contentDescription="@string/drag_down_to_close"
             android:gravity="center"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -42,11 +40,40 @@
 
     </RelativeLayout>
 
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="16dp">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/navigation_rail_fab_shape"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/navigation_rail_fab_account_notifications_LL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/navigation_rail_fab_account_notifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:elevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/account_notifications"
+                app:srcCompat="@drawable/ic_bell" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                app:dividerColor="?colorOnPrimaryContainer"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_height="0.5dp" />
+        </LinearLayout>
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/navigation_rail_fab_settings"
@@ -59,18 +86,5 @@
             android:contentDescription="@string/settings"
             app:srcCompat="@drawable/ic_settings" />
 
-        <ImageView
-            android:id="@+id/navigation_rail_update_icon"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_alignParentEnd="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/circle"
-            android:tintMode="src_over"
-            android:visibility="invisible"
-            android:contentDescription="@string/new_update_available"
-            app:tint="@color/softRed" />
-
-    </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

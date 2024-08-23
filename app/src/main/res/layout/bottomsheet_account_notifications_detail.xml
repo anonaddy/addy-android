@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bs_account_notifications_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="16dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/bottomsheet_top_part_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/drag_down_to_close"
+            android:src="@drawable/drag_pill" />
+
+        <TextView
+            android:id="@+id/bs_account_notifications_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="TITLE"
+            android:textAlignment="center"
+            android:textColor="@color/BlackWhite"
+            android:textSize="18sp"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <View
+        style="@style/divider"
+        android:layout_width="match_parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding">
+
+            <TextView
+                android:id="@+id/bs_account_notifications_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/BlackWhite"
+                tools:text="@tools:sample/lorem/random" />
+
+            <TextView
+                android:id="@+id/bs_account_notifications_created"
+                style="@style/DescTextStyle"
+                android:layout_marginBottom="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textStyle="italic"
+                android:fontFamily="sans-serif"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
+                android:singleLine="false"
+                android:text="@tools:sample/date/ddmmyy" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bs_account_notifications_open_button"
+                style="@style/CircularProgressButtonSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="LINK_TEXT"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>
