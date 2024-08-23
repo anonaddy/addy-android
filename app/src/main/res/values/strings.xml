@@ -160,7 +160,7 @@
     <string name="addyio_load_error">Something went wrong while loading the addy.io app, you might want to check your internet connection.\nMore information about the error:</string>
     <string name="try_again">Try again</string>
     <string name="subscription_user">%s user</string>
-    <string name="subscription_user_until">%1$s user until %2$s</string>
+    <string name="subscription_user_until">Subscription expires on %1$s</string>
     <string name="error_resend_verification">Could not resend verification email</string>
     <string name="manage_domains">Manage domains</string>
     <string name="all_domains">All domains</string>
@@ -510,8 +510,6 @@
     <string name="clear_filter">Clear filter</string>
     <string name="sort_desc">Descending</string>
     <string name="sort_by">Sort by</string>
-    <string name="filter_active">Filter active</string>
-    <string name="filter">Filter</string>
     <string name="setup_wearable_app">Setup wearable app</string>
     <string name="setup_wearable_app_desc">Would you like to setup the addy.io app on %1$s with the account %2$s? The settings will remain on the wearable even after resetting the app on this device.</string>
     <string name="confirm_and_setup">Confirm and setup</string>

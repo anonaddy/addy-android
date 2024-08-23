@@ -46,6 +46,16 @@
             android:paddingStart="@dimen/layout_padding"
             android:paddingEnd="@dimen/layout_padding">
 
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:columnCount="1"
+                android:orientation="vertical"
+                android:useDefaultMargins="true">
             <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
                 android:id="@+id/home_stat_card_bandwidth"
                 android:layout_width="match_parent"
@@ -55,6 +65,7 @@
                 app:StatCardViewIcon="@drawable/ic_gauge"
                 app:StatCardViewShowButton="false"
                 app:StatCardViewTitle="@string/monthly_bandwidth" />
+            </GridLayout>
 
             <LinearLayout
                 style="@style/AddyIoTitleNoAction"

@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ScrollView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -140,9 +141,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
         if (defaultAliasSortFilter != aliasSortFilter) {
             // Filter is active, let user know
-            binding.aliasSortList.text = binding.aliasSortList.context.resources.getString(R.string.filter_active)
+            binding.aliasSortList.icon = ContextCompat.getDrawable(binding.aliasSortList.context, R.drawable.ic_filter_filled)
         } else {
-            binding.aliasSortList.text = binding.aliasSortList.context.resources.getString(R.string.filter)
+            binding.aliasSortList.icon = ContextCompat.getDrawable(binding.aliasSortList.context, R.drawable.ic_filter)
         }
 
         filterOptionsAliasBottomDialogFragment = FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)

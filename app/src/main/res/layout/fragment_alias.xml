@@ -29,21 +29,24 @@
                     android:orientation="horizontal">
 
 
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/all_aliases" />
+
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/alias_sort_list"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="wrap_content"
+                        style="@style/Widget.Material3.Button.TonalButton.Icon"
+                        android:layout_width="42dp"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="@string/filter"
+                        app:iconPadding="0dp"
+                        android:padding="0dp"
+                        android:layout_marginEnd="8dp"
+                        app:iconGravity="textStart"
                         app:icon="@drawable/ic_filter" />
-
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/alias_add_alias"
