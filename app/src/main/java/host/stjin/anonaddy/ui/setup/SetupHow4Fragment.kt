@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialSharedAxis
 import host.stjin.anonaddy.databinding.FragmentSetupHow4Binding
 import host.stjin.anonaddy.databinding.FragmentSetupHow4Binding.inflate
+import host.stjin.anonaddy.utils.InsetUtil
 
 
 class SetupHow4Fragment : Fragment() {
@@ -31,6 +32,8 @@ class SetupHow4Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = inflate(inflater, container, false)
+        InsetUtil.applyBottomInset(binding.setupHow4Ll)
+
         // Inflate the layout for this fragment
         val root = binding.root
 

@@ -336,7 +336,6 @@
     <string name="send">Send</string>
     <string name="username">Username</string>
     <string name="rules_create_info">Rules work on all emails, including replies and also send froms. New conditions and actions will be added over time.</string>
-    <string name="_sMB_remaining_this_month">%sMB remaining this month</string>
     <string name="manage_your_addyio_account">Manage your addy.io account</string>
     <string name="loading_recipients">Loading recipients…</string>
     <string name="intent_context_menu">Create alias or send email from alias</string>
@@ -363,7 +362,6 @@
     <string name="enable_feature_always">This feature is always enabled</string>
     <string name="watch_alias_feature_desc">Keep track of emails being forwarded through a specific alias. Open the management page of an alias and enable \"Watch alias\" to be notified of a new forwarded message.\n\nUse the \"Background service interval\" option in the app settings to determine how often to check for new forwarded messages.\n\nYou can watch a maximum of 25 aliases.</string>
     <string name="features">Features</string>
-    <string name="exceeded_bandwidth_limit">You\'ve exceeded your bandwidth limit for this month</string>
     <string name="search_min_3_char_required">Search term must be at least 3 characters</string>
     <string name="just_like_that">Just like that!</string>
     <string name="select_recipients_for_this_alias">Select recipients for this alias</string>
@@ -623,7 +621,6 @@
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
     <string name="statistics">Statistics</string>
-    <string name="error_obtaining_chart_data">@string/could_not_refresh_data</string>
     <string name="you_ve_used_d_out_of_d_rules">You’ve used %1$d out of %2$s rules</string>
     <string name="from_name">From name</string>
     <string name="alias_no_from_name">This alias has no from name set. Tap here to add one</string>

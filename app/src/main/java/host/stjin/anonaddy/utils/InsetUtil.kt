@@ -1,6 +1,5 @@
 package host.stjin.anonaddy.utils
 
-import android.app.Activity
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat

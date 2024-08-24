@@ -1,13 +1,10 @@
 package host.stjin.anonaddy.ui
 
-import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,13 +21,10 @@ import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.AttributeHelper
-import host.stjin.anonaddy.utils.NumberUtils
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
-import org.ocpsoft.prettytime.PrettyTime
 import java.util.Locale
-import kotlin.math.roundToInt
 
 
 class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {

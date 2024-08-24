@@ -2,8 +2,6 @@ package host.stjin.anonaddy.ui.rules
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

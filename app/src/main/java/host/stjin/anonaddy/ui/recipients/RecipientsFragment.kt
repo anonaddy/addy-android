@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ScrollView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -26,7 +25,6 @@ import host.stjin.anonaddy.adapter.RecipientAdapter
 import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
-import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils

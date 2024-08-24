@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

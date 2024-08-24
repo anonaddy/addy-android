@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -23,8 +22,8 @@ open class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         ViewCompat.setOnApplyWindowInsetsListener(view) { v: View, insets: WindowInsetsCompat ->
             // Here, you might only want to apply the bottom inset to avoid extra padding on top or sides
-            val bottomInset = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
-            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, bottomInset)
+            val bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, v.paddingBottom + bottomInset.bottom)
             WindowInsetsCompat.CONSUMED
         }
     }

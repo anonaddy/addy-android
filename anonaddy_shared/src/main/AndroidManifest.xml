@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest>
+<manifest xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+ This library gets override because the shared_anonaddy library implements this library but in practice
+         It only gets used on the WearOS module
+    -->
+    <uses-sdk tools:overrideLibrary="androidx.wear.compose.material, androidx.wear.compose.foundation, androidx.wear.compose.material.core" />
 
 </manifest>

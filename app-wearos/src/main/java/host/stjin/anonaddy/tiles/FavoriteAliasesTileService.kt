@@ -112,6 +112,7 @@ class FavoriteAliasesTileService : TileService() {
     /**
      * https://developer.android.com/training/wearables/tiles#resources
      */
+    @Deprecated("Deprecated in Java")
     override fun onResourcesRequest(requestParams: ResourcesRequest): ListenableFuture<Resources> =
         Futures.immediateFuture(
             Resources.Builder()

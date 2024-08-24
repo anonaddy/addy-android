@@ -19,7 +19,7 @@ android {
          */
 
         // SDK 34 + v5.2.9 + release 01 + 00 (for app) (//TODO set release back to 01 and update targetSDK 35 and Gradle 2.0
-        versionCode = 345290200 // https://developer.android.com/training/wearables/packaging
+        versionCode = 345290100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
         versionName = "v5.2.9"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

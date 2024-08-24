@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.recipients.manage
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent

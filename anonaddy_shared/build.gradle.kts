@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+
 val compose_version = rootProject.extra["compose_version"]
 val compose_compiler_version = rootProject.extra["compose_compiler_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
@@ -7,6 +9,16 @@ val wear_compose_version = rootProject.extra["wear_compose_version"]
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20" // this version matches your Kotlin version
+
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
+
+
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    //stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
 }
 
 android {

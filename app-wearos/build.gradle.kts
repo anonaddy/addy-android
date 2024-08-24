@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+
 val compose_version = rootProject.extra["compose_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
 val compose_compiler_version = rootProject.extra["compose_compiler_version"]
@@ -8,16 +10,26 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20" // this version matches your Kotlin version
+
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
+
+
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    //stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
         applicationId = namespace
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -63,7 +75,7 @@ android {
         kotlinCompilerExtensionVersion = "$compose_compiler_version"
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }

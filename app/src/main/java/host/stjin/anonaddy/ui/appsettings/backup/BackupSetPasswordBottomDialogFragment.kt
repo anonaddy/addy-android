@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.appsettings.backup
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater

@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.setup
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
