@@ -18,11 +18,6 @@ class DomainSettingsActivity : BaseActivity() {
         binding = ActivityDomainSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityDomainSettingsFcv)
-        )
 
         setupToolbar(
             R.string.manage_domains,

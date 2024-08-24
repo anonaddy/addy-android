@@ -64,10 +64,6 @@ class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
         }
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsAnonaddyInstanceVersionUnsupportedRoot)
-        }
-
         return root
 
     }

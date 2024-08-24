@@ -69,11 +69,6 @@ class AccountNotificationsDetailsBottomDialogFragment(
                 text
         }
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsAccountNotificationsRoot)
-        }
-
         return root
 
     }

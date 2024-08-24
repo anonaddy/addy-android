@@ -61,10 +61,6 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
 
         updateUi(requireContext())
 
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            setIMEAnimation(binding.bsRuleActionRoot)
-        }
-
         return root
     }
 

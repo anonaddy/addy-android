@@ -17,11 +17,6 @@ class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesWatchAliasBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsFeaturesWatchAliasNSVLL)
-        )
 
         settingsManager = SettingsManager(false, this)
         setupToolbar(

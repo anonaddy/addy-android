@@ -17,11 +17,6 @@ class FailedDeliveriesActivity : BaseActivity() {
         binding = ActivityFailedDeliveriesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityFailedDeliveriesSettingsFcv)
-        )
 
         setupToolbar(
             R.string.failed_deliveries,

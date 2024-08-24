@@ -78,11 +78,6 @@ class ManageAliasActivity : BaseActivity(),
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageAliasNSVLL)
-        )
 
         setupToolbar(
             R.string.edit_alias,

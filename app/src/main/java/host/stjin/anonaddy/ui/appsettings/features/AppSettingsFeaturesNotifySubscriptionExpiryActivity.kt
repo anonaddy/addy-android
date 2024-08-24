@@ -36,11 +36,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesNotifySubscriptionExpiryNSVLL)
-        )
+
 
         settingsManager = SettingsManager(false, this)
         networkHelper = NetworkHelper(this)

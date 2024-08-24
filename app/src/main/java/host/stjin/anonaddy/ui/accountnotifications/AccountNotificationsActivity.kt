@@ -17,11 +17,6 @@ class AccountNotificationsActivity : BaseActivity() {
         binding = ActivityAccountNotificationsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAccountNotificationsSettingsFcv)
-        )
 
         setupToolbar(
             R.string.account_notifications,

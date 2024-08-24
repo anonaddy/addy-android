@@ -23,12 +23,6 @@ class LogViewerActivity : BaseActivity() {
         binding = ActivityLogViewerBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsLogviewerRecyclerview),
-            bottomViewsToShiftUpUsingMargin = arrayListOf(binding.appsettingsLogviewerEfab)
-        )
 
         val filename = intent.getStringExtra("logfile")
         setupToolbar(

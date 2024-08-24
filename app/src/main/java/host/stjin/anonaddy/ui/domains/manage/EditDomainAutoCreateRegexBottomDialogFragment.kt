@@ -70,10 +70,6 @@ class EditDomainAutoCreateRegexBottomDialogFragment(
             dismiss()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditdomainDomainRoot)
-        }
-
         return root
     }
 

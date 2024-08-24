@@ -57,11 +57,6 @@ class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), V
             false
         }
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsBackupPasswordRoot)
-        }
-
         return root
 
     }

@@ -52,11 +52,6 @@ class ManageRecipientsActivity : BaseActivity(),
         binding = ActivityManageRecipientsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityManageRecipientLL1)
-        )
 
         setupToolbar(
             R.string.edit_recipient,

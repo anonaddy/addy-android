@@ -25,8 +25,8 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/main_profile_select_dialog_username_initials"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/circle"
             android:backgroundTint="?colorPrimary"
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:text="SV"
             android:textColor="?colorOnPrimary"
-            android:textSize="42sp"
+            android:textSize="32sp"
             tools:ignore="HardcodedText" />
 
         <LinearLayout
@@ -73,7 +73,7 @@
                 <TextView
                     android:id="@+id/main_profile_select_dialog_card_subscription_until"
                     style="@style/AddyIoDialogDesc"
-                    android:fontFamily="sans-serif-thin"
+                    android:fontFamily="sans-serif-light"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="@tools:sample/lorem/random" />

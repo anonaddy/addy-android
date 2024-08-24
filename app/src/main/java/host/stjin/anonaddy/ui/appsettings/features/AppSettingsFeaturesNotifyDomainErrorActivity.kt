@@ -24,11 +24,6 @@ class AppSettingsFeaturesNotifyDomainErrorActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesNotifyDomainErrorBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesNotifyDomainErrorNSVLL)
-        )
 
         settingsManager = SettingsManager(false, this)
         networkHelper = NetworkHelper(this)

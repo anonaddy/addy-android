@@ -71,10 +71,6 @@ class EditDomainFromNameBottomDialogFragment(
             dismiss()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditFromNameDomainRoot)
-        }
-
         return root
     }
 

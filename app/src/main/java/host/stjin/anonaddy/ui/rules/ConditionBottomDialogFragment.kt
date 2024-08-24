@@ -55,10 +55,6 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
         updateUi()
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsRuleConditionRoot)
-        }
-
 
         return root
     }

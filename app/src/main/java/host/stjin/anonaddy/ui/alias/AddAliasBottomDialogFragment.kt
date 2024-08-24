@@ -82,10 +82,6 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         binding.bsAddaliasAliasAddAliasButton.setOnClickListener(this)
         spinnerChangeListener(requireContext())
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsAddaliasRoot)
-        }
-
         return root
     }
 

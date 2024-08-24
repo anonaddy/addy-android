@@ -68,10 +68,6 @@ class EditDomainRecipientBottomDialogFragment(
             dismiss()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditrecipientRoot)
-        }
-
         return root
     }
 

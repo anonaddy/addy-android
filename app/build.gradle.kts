@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = namespace
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -191,4 +191,10 @@ dependencies {
 
     // For the view system.
     implementation("com.patrykandpatrick.vico:views:1.15.0")
+}
+
+// Edge-To-Edge
+dependencies {
+    // Kotlin
+    implementation("androidx.activity:activity-ktx:1.9.1")
 }

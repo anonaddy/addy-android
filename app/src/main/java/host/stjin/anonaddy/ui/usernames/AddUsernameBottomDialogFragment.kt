@@ -69,10 +69,6 @@ class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBott
         }
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsAddusernameUsernameRoot)
-        }
-
         return root
 
     }

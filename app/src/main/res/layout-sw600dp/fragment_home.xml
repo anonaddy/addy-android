@@ -263,6 +263,7 @@
                     android:alignmentMode="alignBounds"
                     android:clipChildren="false"
                     android:clipToPadding="false"
+                    android:layout_marginBottom="8dp"
                     android:columnCount="3"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/cardview_extra_padding"

@@ -71,11 +71,6 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
             false
         }
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsAddrecipientRecipientRoot)
-        }
-
         return root
 
     }

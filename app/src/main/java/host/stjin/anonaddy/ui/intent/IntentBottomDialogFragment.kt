@@ -53,10 +53,6 @@ class IntentBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
         listener = activity as IntentBottomDialogListener
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsChangelogRoot)
-        }
-
         return root
     }
 

@@ -48,9 +48,6 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
         binding.bsBackgroundserviceintervalSetIntervalButton.setOnClickListener(this)
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsBackgroundserviceintervalRoot)
-        }
 
         return root
 

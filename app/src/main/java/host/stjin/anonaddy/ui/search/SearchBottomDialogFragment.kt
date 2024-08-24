@@ -91,10 +91,6 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
         getRecentSearchResults()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsSearchRoot)
-        }
-
         return root
     }
 

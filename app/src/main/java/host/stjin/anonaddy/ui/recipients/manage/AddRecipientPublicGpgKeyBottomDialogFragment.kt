@@ -69,10 +69,6 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
             dismiss()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditRecipientGpgKeyRoot)
-        }
-
         return root
     }
 

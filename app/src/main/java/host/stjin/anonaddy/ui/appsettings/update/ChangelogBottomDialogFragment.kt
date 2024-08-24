@@ -48,12 +48,6 @@ class ChangelogBottomDialogFragment : BaseBottomSheetDialogFragment() {
         // Allow hyperlinks to be clicked
         binding.bsChangelogTextview.movementMethod = LinkMovementMethod.getInstance()
 
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsChangelogRoot)
-        }
-
         return root
 
     }

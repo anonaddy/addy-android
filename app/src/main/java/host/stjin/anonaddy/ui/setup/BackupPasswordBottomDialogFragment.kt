@@ -57,11 +57,6 @@ class BackupPasswordBottomDialogFragment(private val fileToDecryptUri: Uri) : Ba
             false
         }
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsSetupEnterBackupPasswordRoot)
-        }
-
         return root
 
     }

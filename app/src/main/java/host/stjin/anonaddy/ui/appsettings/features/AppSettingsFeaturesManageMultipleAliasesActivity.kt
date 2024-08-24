@@ -20,11 +20,7 @@ class AppSettingsFeaturesManageMultipleAliasesActivity : BaseActivity() {
         binding = ActivityAppSettingsFeaturesManageMultipleAliasesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesLongpressNSVLL)
-        )
+
 
         settingsManager = SettingsManager(false, this)
         setupToolbar(

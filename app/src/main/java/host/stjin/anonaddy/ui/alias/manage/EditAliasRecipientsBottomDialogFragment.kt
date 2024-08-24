@@ -72,10 +72,6 @@ class EditAliasRecipientsBottomDialogFragment(
             dismiss()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditrecipientsRoot)
-        }
-
         return root
 
     }

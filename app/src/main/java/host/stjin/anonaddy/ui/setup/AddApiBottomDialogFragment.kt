@@ -101,11 +101,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             toggleQrCodeScanning()
         }
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsSetupRoot)
-        }
-
         return root
     }
 

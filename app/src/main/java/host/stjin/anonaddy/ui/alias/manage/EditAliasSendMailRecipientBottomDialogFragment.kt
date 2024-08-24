@@ -62,9 +62,6 @@ class EditAliasSendMailRecipientBottomDialogFragment(
             false
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsSendMailAliasRoot)
-        }
         return root
 
     }
