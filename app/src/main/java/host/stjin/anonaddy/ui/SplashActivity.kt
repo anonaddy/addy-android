@@ -90,11 +90,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             }
         )
 
-        drawBehindNavBar(
-            binding.root,
-            topViewsToShiftDownUsingPadding = arrayListOf(binding.activitySplashErrorLl1),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activitySplashErrorLl2)
-        )
+
         playAnimation(true, R.drawable.ic_loading_logo_splash)
 
 

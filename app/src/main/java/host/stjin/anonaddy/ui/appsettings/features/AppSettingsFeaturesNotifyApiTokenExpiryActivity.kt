@@ -14,6 +14,7 @@ import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.WearOSHelper
 import host.stjin.anonaddy_shared.AddyIo
@@ -41,13 +42,10 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyApiTokenExpiryBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifyApiTokenExpiryNSVLL)
+
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesNotifyApiTokenExpiryNSVLL)
-        )
 
         settingsManager = SettingsManager(false, this)
         networkHelper = NetworkHelper(this)

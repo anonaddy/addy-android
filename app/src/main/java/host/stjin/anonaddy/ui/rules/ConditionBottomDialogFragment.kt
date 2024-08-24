@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.rules
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,10 +53,6 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
 
         updateUi()
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsRuleConditionRoot)
-        }
 
 
         return root

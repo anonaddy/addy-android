@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,7 +24,6 @@ import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
-import host.stjin.anonaddy_shared.models.SUBSCRIPTIONS
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
@@ -82,10 +80,6 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
         binding.bsAddaliasAliasAddAliasButton.setOnClickListener(this)
         spinnerChangeListener(requireContext())
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsAddaliasRoot)
-        }
 
         return root
     }
@@ -234,7 +228,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             // If the selected domain contains a shared domain disable the local part box
 
             // Only check on hosted instance
-            if (AddyIo.VERSIONMAJOR == 9999) {
+            if (AddyIo.isUsingHostedInstance) {
                 if (sharedDomains.contains(binding.bsAddaliasDomainMact.text.toString())) {
                     binding.bsAddaliasAliasFormatTil.error = context.resources.getString(R.string.domains_format_custom_not_available_for_this_domain)
                     return

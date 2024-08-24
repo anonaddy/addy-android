@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.alias.manage
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,11 +60,6 @@ class EditAliasDescriptionBottomDialogFragment(
         } else {
             dismiss()
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditaliasRoot)
-        }
-
         return root
 
     }

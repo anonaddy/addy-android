@@ -6,6 +6,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWebintentResolutionBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.WebIntentManager
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
@@ -19,13 +20,10 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesWebintentResolutionBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.appsettingsFeaturesWebintentResolutionNSVLL)
+
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsFeaturesWebintentResolutionNSVLL)
-        )
 
         settingsManager = SettingsManager(false, this)
         setupToolbar(

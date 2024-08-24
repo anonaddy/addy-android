@@ -74,10 +74,6 @@ class EditAliasFromNameBottomDialogFragment(
             dismiss()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditFromNameAliasRoot)
-        }
-
         return root
 
     }

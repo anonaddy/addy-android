@@ -9,15 +9,20 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.2.2
+    // 1.2.3
     var MINIMUMVERSIONCODEMAJOR = 1
     var MINIMUMVERSIONCODEMINOR = 2
-    var MINIMUMVERSIONCODEPATCH = 2
+    var MINIMUMVERSIONCODEPATCH = 3
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
     var VERSIONPATCH = 0
     var VERSIONSTRING = ""
+
+
+    val isUsingHostedInstance: Boolean
+    get() = VERSIONMAJOR == 9999
+
 
 
     //resettableLazy(lazyMgr) properties: the value gets computed only upon first access
@@ -57,6 +62,10 @@ object AddyIo {
 
     // 1.0.0
     val API_URL_CHART_DATA: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/chart-data" }
+
+    // Hosted only
+    val API_URL_ACCOUNT_NOTIFICATIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/account-notifications" }
+
 
     // Gitlab built-in updater
     const val GITLAB_TAGS_RSS_FEED: String = "https://gitlab.com/Stjin/anonaddy-android/-/tags?feed_token=QQ9pQKWGBdsYzCrqkdBN&format=atom"

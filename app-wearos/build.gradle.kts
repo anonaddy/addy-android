@@ -8,10 +8,20 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20" // this version matches your Kotlin version
+
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
+
+
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    //stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
@@ -25,9 +35,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.4.5 + release 01 + 01 (for wearos)
-        versionCode = 341450101
-        versionName = "1.4.5"
+        // SDK 33 + v1.4.6 + release 01 + 01 (for wearos)
+        versionCode = 341460101
+        versionName = "1.4.6"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -63,7 +73,7 @@ android {
         kotlinCompilerExtensionVersion = "$compose_compiler_version"
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -137,7 +147,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 }
 
 // For parsing wearOSSettings
@@ -176,7 +186,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.17")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.18")
 }
 
 // Splash screen

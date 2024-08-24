@@ -14,6 +14,7 @@ import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.service.BackupHelper
 import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
@@ -36,13 +37,11 @@ class AppSettingsBackupActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsBackupBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityAppSettingsBackupNSVLL)
+
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsBackupNSVLL)
-        )
+
 
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)

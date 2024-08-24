@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.alias.manage
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -62,9 +61,6 @@ class EditAliasSendMailRecipientBottomDialogFragment(
             false
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsSendMailAliasRoot)
-        }
         return root
 
     }

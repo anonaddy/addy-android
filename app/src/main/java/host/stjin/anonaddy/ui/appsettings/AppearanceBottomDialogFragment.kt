@@ -83,11 +83,6 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
         binding.bsAppearanceOn.setOnClickListener(this)
         binding.bsAppearanceAutomatic.setOnClickListener(this)
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsAppearanceRoot)
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             binding.bsAppearanceSectionDynamicColors.visibility = View.VISIBLE
         } else {

@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.appsettings.backup
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -55,11 +54,6 @@ class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), V
                 setBackupPassword(requireContext())
             }
             false
-        }
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsBackupPasswordRoot)
         }
 
         return root

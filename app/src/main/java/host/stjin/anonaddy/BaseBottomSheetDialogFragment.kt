@@ -2,41 +2,30 @@ package host.stjin.anonaddy
 
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
-import android.view.ViewGroup
-import android.view.WindowInsets
-import android.view.WindowInsetsAnimation
-import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
-import androidx.core.view.marginBottom
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMargins
+import android.os.Bundle
+import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-open class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
-    @RequiresApi(Build.VERSION_CODES.R)
-    fun setIMEAnimation(linearLayout: LinearLayout) {
-        val inputLayoutMarginBottom = linearLayout.marginBottom
-        val callback =
-            object : WindowInsetsAnimation.Callback(DISPATCH_MODE_STOP) {
-                override fun onProgress(insets: WindowInsets, animations: MutableList<WindowInsetsAnimation>): WindowInsets {
-                    linearLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                        updateMargins(
-                            bottom = inputLayoutMarginBottom +
-                                    insets.getInsets(WindowInsets.Type.ime()).bottom
-                        )
-                    }
-                    return insets
-                }
-            }
-        linearLayout.setWindowInsetsAnimationCallback(callback)
-    }
+open class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     open fun dpToPx(dp: Int): Int {
         // https://developer.android.com/guide/practices/screens_support.html#dips-pels
         val density: Float = Resources.getSystem().displayMetrics.density
         return (dp * density + 0.5f).toInt()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v: View, insets: WindowInsetsCompat ->
+            // Here, you might only want to apply the bottom inset to avoid extra padding on top or sides
+            val bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, v.paddingBottom + bottomInset.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     override fun onResume() {

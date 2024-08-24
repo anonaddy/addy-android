@@ -81,6 +81,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             var aliasNetworkCallResult = false
             var aliasWatcherNetworkCallResult = false
             var failedDeliveriesNetworkCallResult = false
+            var accountNotificationsNetworkCallResult = false
 
             // Block the thread until this is finished
             runBlocking(Dispatchers.Default) {
@@ -274,6 +275,32 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     // Not required so always success
                     failedDeliveriesNetworkCallResult = true
                 }
+
+
+                /*
+                ACCOUNT NOTIFICATIONS
+                 */
+
+                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)) {
+                    networkHelper.cacheAccountNotificationsCountForWidgetAndBackgroundService { result ->
+                        // Store the result if the data succeeded to update in a boolean
+                        accountNotificationsNetworkCallResult = result
+                    }
+
+                    val currentAccountNotifications =
+                        encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
+                    val previousAccountNotifications =
+                        encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS)
+                    // If the current account notifications count is bigger than the previous list. That means there are new account notifications
+                    if (currentAccountNotifications > previousAccountNotifications) {
+                        NotificationHelper(appContext).createAccountNotificationsNotification(
+                            currentAccountNotifications - previousAccountNotifications
+                        )
+                    }
+                } else {
+                    // Not required so always success
+                    accountNotificationsNetworkCallResult = true
+                }
             }
 
             // If the aliasNetwork call was successful, perform the check
@@ -286,7 +313,8 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             return if (userResourceNetworkCallResult &&
                 aliasNetworkCallResult &&
                 aliasWatcherNetworkCallResult &&
-                failedDeliveriesNetworkCallResult
+                failedDeliveriesNetworkCallResult &&
+                accountNotificationsNetworkCallResult
             ) {
                 // Now the data has been updated, we can update the widget as well
                 updateWidgets()
@@ -422,11 +450,12 @@ class BackgroundWorkerHelper(private val context: Context) {
 
         val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
         val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
+        val shouldCheckForAccountNotifications = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)
         val shouldCheckApiTokenExpiry = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
         val shouldMakePeriodicBackups = settingsManager.getSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS)
 
         if (BuildConfig.DEBUG) {
-            println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets;NOTIFY_UPDATES=$shouldCheckForUpdates;NOTIFY_FAILED_DELIVERIES=$shouldCheckForFailedDeliveries")
+            println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets;NOTIFY_UPDATES=$shouldCheckForUpdates;NOTIFY_FAILED_DELIVERIES=$shouldCheckForFailedDeliveries;NOTIFY_ACCOUNT_NOTIFICATIONS=$shouldCheckForAccountNotifications")
         }
 
         // If there are
@@ -434,8 +463,9 @@ class BackgroundWorkerHelper(private val context: Context) {
         // -widgets to be updated
         // -app updates to be checked for in the background
         // -failed deliveries to be checked
+        // -Account notifications to be checked
         // --return true
-        return (!aliasToWatch.isNullOrEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckApiTokenExpiry || shouldMakePeriodicBackups)
+        return (aliasToWatch.isNotEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckForAccountNotifications || shouldCheckApiTokenExpiry || shouldMakePeriodicBackups)
     }
 
     fun cancelScheduledBackgroundWorker() {

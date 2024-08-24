@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.intent
 
 import android.app.Dialog
 import android.content.DialogInterface
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -52,10 +51,6 @@ class IntentBottomDialogFragment : BaseBottomSheetDialogFragment() {
         val root = binding.root
 
         listener = activity as IntentBottomDialogListener
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsChangelogRoot)
-        }
 
         return root
     }

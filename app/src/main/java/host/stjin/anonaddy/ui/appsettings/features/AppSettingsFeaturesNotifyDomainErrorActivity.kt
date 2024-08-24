@@ -7,6 +7,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyDomainErrorBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
@@ -22,13 +23,10 @@ class AppSettingsFeaturesNotifyDomainErrorActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyDomainErrorBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifyDomainErrorNSVLL)
+
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesNotifyDomainErrorNSVLL)
-        )
 
         settingsManager = SettingsManager(false, this)
         networkHelper = NetworkHelper(this)

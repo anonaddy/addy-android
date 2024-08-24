@@ -1,7 +1,5 @@
 package host.stjin.anonaddy.ui
 
-
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
@@ -13,12 +11,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
@@ -32,6 +33,7 @@ import host.stjin.anonaddy.databinding.ActivityMainBinding
 import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
+import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
@@ -95,20 +97,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val view = binding.root
         setContentView(view)
 
-        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            drawBehindNavBar(
-                binding.root,
-                arrayListOf(binding.root)
-            )
-        } else {
-            drawBehindNavBar(
-                binding.root,
-                arrayListOf(binding.root),
-                bottomViewsToShiftUpUsingPadding = arrayListOf(binding.navView!!, binding.activityMainViewpager!!)
-            )
-        }
-
-
         networkHelper = NetworkHelper(this@MainActivity)
 
         isAuthenticated { isAuthenticated ->
@@ -120,10 +108,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         checkForUpdates()
                         checkForApiExpiration()
                         checkForSubscriptionExpiration()
+                        checkForNewFailedDeliveries()
+                        checkForNewAccountNotifications()
+
                         // Schedule the background worker (in case this has not been done before) (this will cancel if already scheduled)
                         BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
 
-                        checkForNewFailedDeliveries()
                     }
                 }
             }
@@ -131,10 +121,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             setOnBigScreenClickListener()
-        }
-
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            setAppBar()
         }
 
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
@@ -147,19 +133,64 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             setRailVersion()
         }
 
+
+        if (AddyIo.isUsingHostedInstance) {
+            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                binding.navRail!!.headerView?.findViewById<LinearLayout>(R.id.navigation_rail_fab_account_notifications_LL)!!.visibility = View.VISIBLE
+            } else {
+                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIconRL.visibility = View.VISIBLE
+            }
+        } else {
+            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                binding.navRail!!.headerView?.findViewById<LinearLayout>(R.id.navigation_rail_fab_account_notifications_LL)!!.visibility = View.GONE
+            } else {
+                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIconRL.visibility = View.GONE
+            }
+
+        }
+
+
+    }
+
+
+    // Make sure the viewPager is ABOVE the bottomnavbar
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            binding.navView!!.viewTreeObserver.addOnGlobalLayoutListener(
+                object : OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        // gets called after layout has been done but before display
+                        // so we can get the height then hide the view
+
+
+                        val height = binding.navView!!.height // Ahaha!  Gotcha
+                        binding.activityMainViewpager!!.setPadding(0,0,0,height)
+
+                        binding.navView!!.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                    }
+                })
+
+        }
+
     }
 
 
     // Only for Sw600>
     private fun setRailVersion() {
         val railVersionText =
-            if (AddyIo.VERSIONMAJOR == 9999) this.resources.getString(R.string.hosted) else AddyIo.VERSIONSTRING
+            if (AddyIo.isUsingHostedInstance) this.resources.getString(R.string.hosted) else AddyIo.VERSIONSTRING
         binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)!!.text = railVersionText
     }
 
     private fun setOnBigScreenClickListener() {
         binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_settings)!!.setOnClickListener {
             val intent = Intent(this, AppSettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.setOnClickListener {
+            val intent = Intent(this, AccountNotificationsActivity::class.java)
             startActivity(intent)
         }
 
@@ -181,22 +212,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 changeTopBarSubTitle(
                     binding.mainAppBarInclude!!.mainTopBarSubtitle,
                     binding.mainAppBarInclude!!.mainTopBarTitle,
-                    binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                     this@MainActivity.resources.getString(R.string.refreshing_data)
                 )
                 shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
-
-                lifecycleScope.launch {
-                    checkForNewFailedDeliveries()
-                }
-
-                // Check for updates and check API expiration key
-                lifecycleScope.launch {
-                    checkForUpdates()
-                    checkForApiExpiration()
-                    checkForSubscriptionExpiration()
-                }
-
 
                 refreshAllData()
 
@@ -211,7 +229,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     changeTopBarSubTitle(
                         binding.mainAppBarInclude!!.mainTopBarSubtitle,
                         binding.mainAppBarInclude!!.mainTopBarTitle,
-                        binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                         null
                     )
                 }, 2000)
@@ -224,14 +241,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         changeTopBarSubTitle(
                             binding.mainAppBarInclude!!.mainTopBarSubtitle,
                             binding.mainAppBarInclude!!.mainTopBarTitle,
-                            binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                             this@MainActivity.resources.getString(R.string.release_to_refresh)
                         )
                     } else {
                         changeTopBarSubTitle(
                             binding.mainAppBarInclude!!.mainTopBarSubtitle,
                             binding.mainAppBarInclude!!.mainTopBarTitle,
-                            binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                             this@MainActivity.resources.getString(R.string.pull_down_to_refresh)
                         )
                     }
@@ -239,7 +254,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     changeTopBarSubTitle(
                         binding.mainAppBarInclude!!.mainTopBarSubtitle,
                         binding.mainAppBarInclude!!.mainTopBarTitle,
-                        binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                         null
                     )
                 }
@@ -250,7 +264,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 changeTopBarSubTitle(
                     binding.mainAppBarInclude!!.mainTopBarSubtitle,
                     binding.mainAppBarInclude!!.mainTopBarTitle,
-                    binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                     null
                 )
             }
@@ -263,7 +276,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
         val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
         homeFragment.getDataFromWeb(null)
-        aliasFragment.getDataFromWeb(this@MainActivity, null)
+        aliasFragment.getDataFromWeb(null)
         recipientsFragment.getDataFromWeb(null)
 
 
@@ -281,56 +294,17 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             failedDeliveriesFragment.getDataFromWeb(null)
         }
 
-    }
-
-    private fun setAppBar() {
-        var collapsingToolbarExpanded = false
-        binding.mainAppBarInclude!!.appBar.addOnOffsetChangedListener { _, verticalOffset ->
-            if (verticalOffset == -binding.mainAppBarInclude!!.collapsingToolbar.height + binding.mainAppBarInclude!!.toolbar.height) {
-                if (!collapsingToolbarExpanded) {
-                    collapsingToolbarExpanded = true
-
-                    // FADE
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitle, "alpha", 0f).apply {
-                        duration = 300
-                        start()
-                    }
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitleSmall, "alpha", 1f).apply {
-                        duration = 300
-                        start()
-                    }
-
-                    // MOVE
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitle, "translationY", -32f).apply {
-                        duration = 300
-                        start()
-                    }
-                }
-            } else {
-                if (collapsingToolbarExpanded) {
-                    collapsingToolbarExpanded = false
-
-                    // FADE
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitle, "alpha", 1f).apply {
-                        duration = 300
-                        start()
-                    }
-
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitleSmall, "alpha", 0f).apply {
-                        duration = 300
-                        start()
-                    }
-
-                    // MOVE
-                    ObjectAnimator.ofFloat(binding.mainAppBarInclude!!.mainTopBarTitle, "translationY", 0f).apply {
-                        duration = 300
-                        start()
-                    }
-
-                }
-            }
+        // Check for updates and check API expiration key
+        lifecycleScope.launch {
+            checkForUpdates()
+            checkForApiExpiration()
+            checkForSubscriptionExpiration()
+            checkForNewFailedDeliveries()
+            checkForNewAccountNotifications()
         }
+
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -394,10 +368,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                                 binding.mainAppBarInclude!!.mainTopBarTitle,
                                 this@MainActivity.resources.getString(R.string.title_dashboard)
                             )
-                            changeTopBarTitle(
-                                binding.mainAppBarInclude!!.mainTopBarTitleSmall,
-                                this@MainActivity.resources.getString(R.string.title_dashboard)
-                            )
                         }
 
                     }
@@ -410,10 +380,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                                 binding.mainAppBarInclude!!.mainTopBarTitle,
                                 this@MainActivity.resources.getString(R.string.title_aliases)
                             )
-                            changeTopBarTitle(
-                                binding.mainAppBarInclude!!.mainTopBarTitleSmall,
-                                this@MainActivity.resources.getString(R.string.title_aliases)
-                            )
                         }
 
                     }
@@ -424,10 +390,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                             changeTopBarTitle(
                                 binding.mainAppBarInclude!!.mainTopBarTitle,
-                                this@MainActivity.resources.getString(R.string.title_recipients)
-                            )
-                            changeTopBarTitle(
-                                binding.mainAppBarInclude!!.mainTopBarTitleSmall,
                                 this@MainActivity.resources.getString(R.string.title_recipients)
                             )
                         }
@@ -527,6 +489,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             val intent = Intent(this, FailedDeliveriesActivity::class.java)
             startActivity(intent)
         }
+
+        binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIcon.setOnClickListener {
+            hideAccountNotificationsBadge()
+            val intent = Intent(this, AccountNotificationsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun openSearch() {
@@ -604,7 +572,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private suspend fun checkForSubscriptionExpiration() {
         // Only check on hosted instance
-        if (AddyIo.VERSIONMAJOR == 9999) {
+        if (AddyIo.isUsingHostedInstance) {
             lifecycleScope.launch {
                 networkHelper.getUserResource { user: UserResource?, _: String? ->
                     if (user?.subscription_ends_at != null) {
@@ -670,46 +638,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             // If there is an update available or there are permissions required, show the dot
-            val animZoom =
-                if (shouldShowDot && binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility != View.VISIBLE) {
-                    // loading the animation of
-                    // zoom_in.xml file into a variable
-                    AnimationUtils.loadAnimation(
-                        this,
-                        R.anim.zoom_in
-                    )
-                } else if (
-                // If there is not update AND there are no permissions required, hide the dot
-                    !shouldShowDot &&
-                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility != View.INVISIBLE
-                ) {
-                    // loading the animation of
-                    // zoom_in.xml file into a variable
-                    AnimationUtils.loadAnimation(
-                        this,
-                        R.anim.zoom_out
-                    )
-                } else {
-                    null
-                }
-
-            animZoom?.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {
-                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility =
-                        if (shouldShowDot) View.INVISIBLE else View.VISIBLE
-                }
-
-                override fun onAnimationEnd(p0: Animation?) {
-                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.visibility =
-                        if (shouldShowDot) View.VISIBLE else View.INVISIBLE
-                }
-
-                override fun onAnimationRepeat(p0: Animation?) {
-                    //
-                }
+            if (shouldShowDot) {
+                binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_settings)!!
+                    .setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
+            } else {
+                binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_settings)!!.colorFilter = null
             }
-            )
-            animZoom?.let { binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_update_icon)!!.startAnimation(it) }
         } else {
             // If there is an update available or there are permissions required, show the dot
             val animZoom = if (shouldShowDot && binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.visibility != View.VISIBLE) {
@@ -805,6 +739,59 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
+    /*
+     This method checks if there are new account notifications
+     It does this by getting the current account notifications count, if that count is bigger than the account notifications in the cache that means there are new notifications
+
+     As BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT is only updated in the service and in the AccountNotificationsActivity that means that the red
+     indicator is only visible if:
+
+     - The activity has not been opened since there were new items.
+     - There are more account notifications than the server cached last time (in which case the user should have got a notification)
+     */
+
+    private suspend fun checkForNewAccountNotifications() {
+        val encryptedSettingsManager = SettingsManager(true, this)
+        networkHelper.getAllAccountNotifications { result, _ ->
+            val currentAccountNotifications =
+                encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
+            if ((result?.size ?: 0) > currentAccountNotifications) {
+                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+
+                    if (binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility != View.VISIBLE) {
+                        // loading the animation of
+                        // zoom_in.xml file into a variable
+                        val animZoomIn = AnimationUtils.loadAnimation(
+                            this,
+                            R.anim.zoom_in
+                        )
+                        animZoomIn.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(p0: Animation?) {
+                                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility = View.VISIBLE
+                            }
+
+                            override fun onAnimationEnd(p0: Animation?) {
+                                //
+                            }
+
+                            override fun onAnimationRepeat(p0: Animation?) {
+                                //
+                            }
+                        }
+                        )
+                        binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.startAnimation(animZoomIn)
+                    }
+                } else {
+                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_account_notifications)!!
+                        .setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
+                }
+            } else {
+                hideAccountNotificationsBadge()
+            }
+
+        }
+    }
+
     private fun hideFailedDeliveriesBadge() {
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
 
@@ -835,6 +822,39 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         } else {
             binding.navRail!!.removeBadge(R.id.navigation_failed_deliveries)
         }
+    }
+
+    private fun hideAccountNotificationsBadge() {
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+
+            if (binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility != View.INVISIBLE) {
+
+                // loading the animation of
+                // zoom_out.xml file into a variable
+                val animZoomOut = AnimationUtils.loadAnimation(
+                    this,
+                    R.anim.zoom_out
+                )
+                animZoomOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(p0: Animation?) {
+                        //
+                    }
+
+                    override fun onAnimationEnd(p0: Animation?) {
+                        binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility = View.INVISIBLE
+                    }
+
+                    override fun onAnimationRepeat(p0: Animation?) {
+                        //
+                    }
+                }
+                )
+                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.startAnimation(animZoomOut)
+            }
+        } else {
+            binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_account_notifications)!!.colorFilter = null
+        }
+
     }
 
     fun navigateTo(fragment: Int) {

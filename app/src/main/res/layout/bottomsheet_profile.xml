@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bs_profile_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,8 +24,8 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/main_profile_select_dialog_username_initials"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/circle"
             android:backgroundTint="?colorPrimary"
@@ -36,7 +35,7 @@
             android:gravity="center"
             android:text="SV"
             android:textColor="?colorOnPrimary"
-            android:textSize="16sp"
+            android:textSize="32sp"
             tools:ignore="HardcodedText" />
 
         <LinearLayout
@@ -57,13 +56,28 @@
                 android:textColor="@color/BlackWhite"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/main_profile_select_dialog_card_subscription"
-                style="@style/AddyIoDialogDesc"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/main_profile_select_dialog_card_LL"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="$ADDYIO_User_Subscription"
-                tools:ignore="HardcodedText" />
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/main_profile_select_dialog_card_subscription"
+                    style="@style/AddyIoDialogDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@tools:sample/lorem/random" />
+
+                <TextView
+                    android:id="@+id/main_profile_select_dialog_card_subscription_until"
+                    style="@style/AddyIoDialogDesc"
+                    android:fontFamily="sans-serif-light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@tools:sample/lorem/random" />
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -87,66 +101,6 @@
         android:id="@+id/bs_profile_nsv"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:drawablePadding="4dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center_vertical"
-                        android:text="@string/monthly_bandwidth" />
-
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_statistics_monthly_bandwidth_left_text"
-                        style="@style/DescTextStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:drawablePadding="4dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center_vertical"
-                        android:text="@string/monthly_bandwidth" />
-                </LinearLayout>
-
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/main_profile_select_dialog_statistics_monthly_bandwidth_progress_shimmer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:shimmer_auto_start="false"
-                    app:shimmer_base_alpha="1"
-                    app:shimmer_highlight_alpha="0.5"
-                    app:shimmer_repeat_count="0">
-
-                    <ProgressBar
-                        android:id="@+id/main_profile_select_dialog_statistics_monthly_bandwidth_progress"
-                        style="@style/AddyIoProgressBar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:progress="0" />
-                </com.facebook.shimmer.ShimmerFrameLayout>
-            </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -387,7 +341,6 @@
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

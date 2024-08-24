@@ -27,6 +27,7 @@
         android:layout_marginTop="48dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/hi_there"
+        android:fitsSystemWindows="true"
         android:textColor="@android:color/white"
         app:drawableTint="@android:color/white"
         app:drawableTopCompat="@drawable/ic_human_greeting" />
@@ -69,6 +70,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        android:fitsSystemWindows="true"
         android:layout_marginBottom="32dp"
         android:gravity="center"
         android:orientation="vertical">

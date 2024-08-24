@@ -2,37 +2,29 @@ package host.stjin.anonaddy
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
-import androidx.window.embedding.ActivityEmbeddingController
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
 import host.stjin.anonaddy.databinding.CustomToolbarOneHandedBinding
-import host.stjin.anonaddy.ui.MainActivity
-import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
@@ -47,9 +39,20 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
 
-    fun isActivityEmbedded(activity: Activity): Boolean {
-        return ActivityEmbeddingController.getInstance(this).isActivityEmbedded(activity)
+    /**
+     * Oh, the screen stretches far, to the edge it does reach,
+     * But what of my content, behind bars does it breach?
+     * With each system update, my woes do renew,
+     * For edge-to-edge display, if only it knew,
+     * The dance of the pixels, the navigation's hue,
+     * A developer's lament, in code and view.
+     * https://developer.android.com/develop/ui/views/layout/edge-to-edge#kts
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
     }
+
 
     /*
     This method forces the use of dark/light/auto mode
@@ -111,7 +114,7 @@ abstract class BaseActivity : AppCompatActivity() {
         title.text = text
     }
 
-    fun changeTopBarSubTitle(subtitle: TextView, title: TextView, smallTitle: TextView, text: String?) {
+    fun changeTopBarSubTitle(subtitle: TextView, title: TextView, text: String?) {
 
         // Prevent lagging animation by not setting text multiple times
         if (subtitle.text == text || subtitle.text.isNullOrEmpty() && text == null) {
@@ -123,10 +126,6 @@ abstract class BaseActivity : AppCompatActivity() {
                 duration = 300
                 start()
             }
-            ObjectAnimator.ofFloat(smallTitle, "translationY", 0f).apply {
-                duration = 300
-                start()
-            }
 
             ObjectAnimator.ofFloat(subtitle, "alpha", 0f).apply {
                 duration = 300
@@ -134,10 +133,6 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         } else {
             ObjectAnimator.ofFloat(title, "translationY", -12f).apply {
-                duration = 300
-                start()
-            }
-            ObjectAnimator.ofFloat(smallTitle, "translationY", -8f).apply {
                 duration = 300
                 start()
             }
@@ -211,7 +206,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private var appBarLayout: AppBarLayout? = null
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            nestedScrollView?.post { nestedScrollView?.fullScroll(ScrollView.FOCUS_UP) }
+            nestedScrollView?.post { nestedScrollView?.smoothScrollTo(0,0) }
             appBarLayout?.setExpanded(true, true)
         }
     }
@@ -316,71 +311,6 @@ abstract class BaseActivity : AppCompatActivity() {
             isSessionAuthenticated = true
             callback(true)
         }
-
-    }
-
-    /**
-     * bottomViewToShiftUp should be the last view in a NSV or CL to add a margin bottom to
-     */
-
-    private var paddingHasBeenSet = false
-
-    fun drawBehindNavBar(
-        root: View? = null,
-        topViewsToShiftDownUsingMargin: ArrayList<View>? = null,
-        topViewsToShiftDownUsingPadding: ArrayList<View>? = null,
-        bottomViewsToShiftUpUsingPadding: ArrayList<View>? = null,
-        bottomViewsToShiftUpUsingMargin: ArrayList<View>? = null
-    ) {
-
-        if (!paddingHasBeenSet) {
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-
-            root?.let { rootView ->
-                ViewCompat.setOnApplyWindowInsetsListener(rootView) { _, windowInsets ->
-                    if (!paddingHasBeenSet) {
-                        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-                        if (topViewsToShiftDownUsingMargin != null) {
-                            for (view in topViewsToShiftDownUsingMargin) {
-                                val params = view.layoutParams as ViewGroup.MarginLayoutParams
-                                params.topMargin = view.paddingTop + insets.top
-                                view.layoutParams = params
-                            }
-                        }
-
-                        if (bottomViewsToShiftUpUsingMargin != null) {
-                            for (view in bottomViewsToShiftUpUsingMargin) {
-                                val params = view.layoutParams as ViewGroup.MarginLayoutParams
-                                params.bottomMargin = view.paddingBottom + insets.bottom
-                                view.layoutParams = params
-                            }
-                        }
-
-                        if (bottomViewsToShiftUpUsingPadding != null) {
-                            for (view in bottomViewsToShiftUpUsingPadding) {
-                                view.paddingBottom.plus(insets.bottom)
-                                    .let { view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, it) }
-                            }
-                        }
-
-                        if (topViewsToShiftDownUsingPadding != null) {
-                            for (view in topViewsToShiftDownUsingPadding) {
-                                view.paddingBottom.plus(insets.top)
-                                    .let { view.setPadding(view.paddingLeft, it, view.paddingRight, view.paddingBottom) }
-                            }
-                        }
-
-                        paddingHasBeenSet = true
-                    }
-
-                    // Return CONSUMED if you don't want want the window insets to keep being
-                    // passed down to descendant views.
-                    WindowInsetsCompat.CONSUMED
-                }
-            }
-        }
-
 
     }
 

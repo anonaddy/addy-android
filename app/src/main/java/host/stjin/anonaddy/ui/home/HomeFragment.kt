@@ -4,20 +4,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.Gson
-import com.patrykandpatrick.vico.core.entry.entriesOf
-import com.patrykandpatrick.vico.core.entry.entryModelOf
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
 import host.stjin.anonaddy.service.AliasWatcher
@@ -26,13 +21,10 @@ import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.customviews.DashboardStatCardView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
-import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
-import host.stjin.anonaddy_shared.models.ChartData
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -57,6 +49,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        //InsetUtil.applyBottomInset(binding.homeStatisticsLL) Not necessary, MainActivity elevated the viewpager for the fab
+
         val root = binding.root
         networkHelper = NetworkHelper(requireContext())
 
@@ -65,8 +59,6 @@ class HomeFragment : Fragment() {
         setStatistics()
         setNsvListener()
 
-        setGridLayout()
-
         // Only run this once, not doing it in onresume as scrolling between the pages might trigger too much
         // API calls, user should swipe to refresh starting from v4.5.0
         getDataFromWeb(savedInstanceState)
@@ -74,23 +66,11 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun setGridLayout() {
-        binding.homeStatsGridlayout.columnCount = ScreenSizeUtils.calculateNoOfColumns(requireContext())
-    }
-
-
-    private var chartData: ChartData? = null
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val gson = Gson()
-        val json = gson.toJson(chartData)
-        outState.putString("chartData", json)
-    }
 
 
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.fullScroll(ScrollView.FOCUS_UP) }
+            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.smoothScrollTo(0,0) }
         }
     }
 
@@ -116,94 +96,16 @@ class HomeFragment : Fragment() {
             // On activity recreations (orientationchanges, sizing of the app) savedInstanceState will be filled using onSaveInstanceState
             // This way we can instantly set the values without another API call.
             if (savedInstanceState != null) {
-                val chartData = savedInstanceState.getString("chartData")
-                if (chartData!!.isNotEmpty() && chartData != "null") {
-                    val gson = Gson()
-                    val data: ChartData = gson.fromJson(chartData, ChartData::class.java)
-                    setChartData(data)
-                } else {
-                    getChartData()
-                    getWebStatistics()
-                }
-
+                getWebStatistics()
                 // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
                 // no need to obtain this from savedInstanceState
                 setStatistics()
             } else {
-                getChartData()
                 getWebStatistics()
             }
         }
     }
 
-    private suspend fun getChartData() {
-        networkHelper?.getChartData { chartData: ChartData?, result: String? ->
-            if (chartData != null) {
-                setChartData(chartData)
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    SnackbarHelper.createSnackbar(
-                        requireContext(),
-                        requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setChartData(data: ChartData) {
-        chartData = data
-        //val numberStr = data.forwardsData.map { FloatEntry(0,it.toFloat()) }
-
-
-        val forwardedData = entriesOf(
-            data.forwardsData[0],
-            data.forwardsData[1],
-            data.forwardsData[2],
-            data.forwardsData[3],
-            data.forwardsData[4],
-            data.forwardsData[5],
-            data.forwardsData[6]
-        )
-        val repliesData = entriesOf(
-            data.repliesData[0],
-            data.repliesData[1],
-            data.repliesData[2],
-            data.repliesData[3],
-            data.repliesData[4],
-            data.repliesData[5],
-            data.repliesData[6]
-        )
-        val sendsData = entriesOf(
-            data.sendsData[0],
-            data.sendsData[1],
-            data.sendsData[2],
-            data.sendsData[3],
-            data.sendsData[4],
-            data.sendsData[5],
-            data.sendsData[6]
-        )
-        val chartEntryModel = entryModelOf(
-            forwardedData, repliesData, sendsData
-        )
-        binding.homeChartView1.setModel(chartEntryModel)
-    }
 
 
     // Update information when coming back, such as aliases and statistics
@@ -219,45 +121,6 @@ class HomeFragment : Fragment() {
 
 
     private fun setOnClickListeners() {
-        binding.homeStatCardSharedDomainAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_alias)
-            }
-        })
-
-        binding.homeStatCardRecipients.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_recipients)
-            }
-        })
-
-        binding.homeStatCardUsernames.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_usernames)
-            }
-        })
-
-        binding.homeStatCardDomains.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_domains)
-            }
-        })
-
-        binding.homeStatCardRules.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                (activity as MainActivity).navigateTo(R.id.navigation_rules)
-            }
-        })
-
-        binding.homeStatCardBandwidth.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = AddyIo.API_BASE_URL
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
-                startActivity(i)
-            }
-        })
-
 
         binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
             override fun onClick() {
@@ -455,87 +318,21 @@ class HomeFragment : Fragment() {
         val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
 
 
-        val activeSharedDomainAliasLimitText = if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit.toString()
-        }
-        binding.homeStatCardSharedDomainAliases.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count,
-                activeSharedDomainAliasLimitText
-            )
-        )
-        if ((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit != null &&  (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit!! > 0) {
-            binding.homeStatCardSharedDomainAliases.setProgress((activity?.application as AddyIoApp).userResource.active_shared_domain_alias_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_shared_domain_alias_limit!!.toFloat() * 100)
-        }
-
-        val recipientsLimitText = if ((activity?.application as AddyIoApp).userResource.recipient_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.recipient_limit.toString()
-        }
-        binding.homeStatCardRecipients.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.recipient_count,
-                recipientsLimitText
-            )
-        )
-        if ((activity?.application as AddyIoApp).userResource.recipient_limit != null && (activity?.application as AddyIoApp).userResource.recipient_limit!! > 0) {
-            binding.homeStatCardRecipients.setProgress((activity?.application as AddyIoApp).userResource.recipient_count.toFloat() / (activity?.application as AddyIoApp).userResource.recipient_limit!!.toFloat() * 100)
-        }
-
-
-        val domainsLimitText = if ((activity?.application as AddyIoApp).userResource.active_domain_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.active_domain_limit.toString()
-        }
-        binding.homeStatCardDomains.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.active_domain_count,
-                domainsLimitText
-            )
-        )
-        if ((activity?.application as AddyIoApp).userResource.active_domain_limit != null && (activity?.application as AddyIoApp).userResource.active_domain_limit!! > 0) {
-            binding.homeStatCardDomains.setProgress((activity?.application as AddyIoApp).userResource.active_domain_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_domain_limit!!.toFloat() * 100)
-        }
-
-
-        // Username does not have unlimited
-        //https://github.com/anonaddy/anonaddy/blob/c8296a1a68178a1165fe9dafd1904973db260ff3/config/anonaddy.php#L157
-        val usernamesLimitText = (activity?.application as AddyIoApp).userResource.username_limit.toString()
-        binding.homeStatCardUsernames.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.username_count,
-                usernamesLimitText
-            )
+        binding.homeStatCardForwarded.setDescription(
+            (activity?.application as AddyIoApp).userResource.total_emails_forwarded.toString()
         )
 
-        //FIXME This can not be 0 (yet..)
-        if ((activity?.application as AddyIoApp).userResource.username_limit > 0) {
-            binding.homeStatCardUsernames.setProgress((activity?.application as AddyIoApp).userResource.username_count.toFloat() / (activity?.application as AddyIoApp).userResource.username_limit.toFloat() * 100)
-        }
-
-        val rulesLimitText = if ((activity?.application as AddyIoApp).userResource.active_rule_limit == 0 || (activity?.application as AddyIoApp).userResource.subscription == null) {
-            "∞"
-        } else {
-            (activity?.application as AddyIoApp).userResource.active_rule_limit.toString()
-        }
-        binding.homeStatCardRules.setDescription(
-            this.resources.getString(
-                R.string.d_slash_s,
-                (activity?.application as AddyIoApp).userResource.active_rule_count,
-                rulesLimitText
-            )
+        binding.homeStatCardBlocked.setDescription(
+            (activity?.application as AddyIoApp).userResource.total_emails_blocked.toString()
         )
-        if ((activity?.application as AddyIoApp).userResource.active_rule_limit != null && (activity?.application as AddyIoApp).userResource.active_rule_limit!! > 0) {
-            binding.homeStatCardRules.setProgress((activity?.application as AddyIoApp).userResource.active_rule_count.toFloat() / (activity?.application as AddyIoApp).userResource.active_rule_limit!!.toFloat() * 100)
-        }
+
+        binding.homeStatCardReplies.setDescription(
+            (activity?.application as AddyIoApp).userResource.total_emails_replied.toString()
+        )
+
+        binding.homeStatCardSent.setDescription(
+            (activity?.application as AddyIoApp).userResource.total_emails_sent.toString()
+        )
 
 
         // Bandwidth could be unlimited
@@ -556,6 +353,8 @@ class HomeFragment : Fragment() {
         binding.homeStatCardActiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_active_aliases.toString())
         binding.homeStatCardInactiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_inactive_aliases.toString())
         binding.homeStatCardDeletedAliases.setDescription((activity?.application as AddyIoApp).userResource.total_deleted_aliases.toString())
+        binding.homeStatCardTotalRecipients.setDescription((activity?.application as AddyIoApp).userResource.recipient_count.toString())
+
 
 
         val aliasWatcher = AliasWatcher(requireContext())

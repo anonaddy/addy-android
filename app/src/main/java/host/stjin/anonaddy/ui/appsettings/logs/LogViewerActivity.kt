@@ -9,6 +9,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.LogsAdapter
 import host.stjin.anonaddy.databinding.ActivityLogViewerBinding
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -21,14 +22,10 @@ class LogViewerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLogViewerBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.appsettingsLogviewerNSVLL)
+
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsLogviewerRecyclerview),
-            bottomViewsToShiftUpUsingMargin = arrayListOf(binding.appsettingsLogviewerEfab)
-        )
 
         val filename = intent.getStringExtra("logfile")
         setupToolbar(
@@ -74,9 +71,9 @@ class LogViewerActivity : BaseActivity() {
 
             if (list != null) {
                 if (list.size > 0) {
-                    binding.activityFailedDeliveriesNoLogs.visibility = View.GONE
+                    binding.appsettingsLogviewerNoLogs.visibility = View.GONE
                 } else {
-                    binding.activityFailedDeliveriesNoLogs.visibility = View.VISIBLE
+                    binding.appsettingsLogviewerNoLogs.visibility = View.VISIBLE
                 }
 
 
@@ -98,7 +95,7 @@ class LogViewerActivity : BaseActivity() {
 
             } else {
                 binding.appsettingsLogviewerRecyclerview.visibility = View.GONE
-                binding.activityFailedDeliveriesNoLogs.visibility = View.VISIBLE
+                binding.appsettingsLogviewerNoLogs.visibility = View.VISIBLE
             }
         }
 

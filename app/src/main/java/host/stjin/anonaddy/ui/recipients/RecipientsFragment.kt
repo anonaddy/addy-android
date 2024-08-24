@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ScrollView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -65,6 +64,8 @@ class RecipientsFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipientsBinding.inflate(inflater, container, false)
+        //InsetUtil.applyBottomInset(binding.recipientsLL1) Not necessary, MainActivity elevated the viewpager for the fab
+
         val root = binding.root
         encryptedSettingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
@@ -208,7 +209,7 @@ class RecipientsFragment : Fragment(),
 
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            binding.recipientsNSV.post { binding.recipientsNSV.fullScroll(ScrollView.FOCUS_UP) }
+            binding.recipientsNSV.post { binding.recipientsNSV.smoothScrollTo(0,0) }
         }
     }
 

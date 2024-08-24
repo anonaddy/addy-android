@@ -2,8 +2,6 @@ package host.stjin.anonaddy.ui.rules
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -60,10 +58,6 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
         spinnerChangeListener(requireContext())
 
         updateUi(requireContext())
-
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            setIMEAnimation(binding.bsRuleActionRoot)
-        }
 
         return root
     }

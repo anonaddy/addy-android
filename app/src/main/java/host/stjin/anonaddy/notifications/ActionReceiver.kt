@@ -17,6 +17,7 @@ class ActionReceiver : BroadcastReceiver() {
         const val DISABLE_ALIAS = "disable_alias"
         const val STOP_UPDATE_CHECK = "stop_update_check"
         const val STOP_FAILED_DELIVERY_CHECK = "stop_failed_delivery_check"
+        const val STOP_ACCOUNT_NOTIFICATIONS_CHECK = "stop_account_notifications_check"
         const val STOP_DOMAIN_ERROR_CHECK = "stop_domain_error_check"
         const val STOP_API_EXPIRY_CHECK = "stop_api_expiry_check"
         const val STOP_SUBSCRIPTION_EXPIRY_CHECK = "stop_subscription_expiry_check"

@@ -13,6 +13,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -34,13 +35,11 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifySubscriptionExpiryNSVLL)
+
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityAppSettingsFeaturesNotifySubscriptionExpiryNSVLL)
-        )
+
 
         settingsManager = SettingsManager(false, this)
         networkHelper = NetworkHelper(this)
@@ -70,7 +69,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     }
 
     private fun checkSubscriptionExpiry() {
-        if (AddyIo.VERSIONMAJOR == 9999) {
+        if (AddyIo.isUsingHostedInstance) {
             lifecycleScope.launch {
                 networkHelper.getUserResource { user: UserResource?, _: String? ->
                     setSubscriptionInfoText(user)

@@ -17,7 +17,6 @@
     <string name="crafted_with_love_and_privacy">Crafted with love and privacy</string>
     <string name="rules_unavailable_404">The rules feature is not available. Please make sure that the rules API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="api_key_invalid">API key invalid, app will reset and close in 5 seconds</string>
-    <string name="failed_deliveries_unavailable_404">The failed deliveries feature is not available. Please make sure that the failed deliveries API is available for the current user. On hosted instances this feature might require a subscription</string>
     <string name="AppIconDefault">Default</string>
     <string name="AppIconClassic">Classic</string>
     <string name="AppIconGradient">Gradient</string>

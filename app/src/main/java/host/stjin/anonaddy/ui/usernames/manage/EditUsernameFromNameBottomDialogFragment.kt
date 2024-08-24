@@ -74,11 +74,6 @@ class EditUsernameFromNameBottomDialogFragment(
         } else {
             dismiss()
         }
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditFromNameUsernameRoot)
-        }
         return root
 
     }

@@ -20,6 +20,7 @@ import host.stjin.anonaddy.adapter.DomainAdapter
 import host.stjin.anonaddy.databinding.FragmentDomainSettingsBinding
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils
@@ -57,6 +58,8 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDomainSettingsBinding.inflate(inflater, container, false)
+        InsetUtil.applyBottomInset(binding.fragmentDomainSettingsLL1)
+
         val root = binding.root
 
         encryptedSettingsManager = SettingsManager(true, requireContext())

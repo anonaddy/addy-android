@@ -4,6 +4,7 @@ import android.os.Bundle
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesWatchAliasBinding
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -15,13 +16,10 @@ class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesWatchAliasBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.appsettingsFeaturesWatchAliasNSVLL)
+
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.appsettingsFeaturesWatchAliasNSVLL)
-        )
 
         settingsManager = SettingsManager(false, this)
         setupToolbar(

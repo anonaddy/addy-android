@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!--
- This library gets override because the shared_anonaddy library implements this library but in practice
-         It only gets used on the WearOS module
-    -->
-    <uses-sdk tools:overrideLibrary="androidx.wear.compose.material, androidx.wear.compose.foundation, androidx.wear.compose.material.core" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Used for scanning the API key -->
@@ -205,9 +200,8 @@
 
 
                 <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
-                <data
-                    android:host="*"
-                    android:pathPrefix="/deactivate" />
+                <data android:host="*"/>
+                <data android:pathPrefix="/deactivate"/>
                 <!-- END -->
 
 
@@ -261,6 +255,9 @@
             android:name=".ui.faileddeliveries.FailedDeliveriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.accountnotifications.AccountNotificationsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.logs.LogViewerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -304,6 +301,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyFailedDeliveriesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyAccountNotificationsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyApiTokenExpiryActivity"

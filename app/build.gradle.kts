@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = namespace
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v5.2.9 + release 01 + 00 (for app) TODO set release back to 01 and update targetSDK 35 and Gradle 2.0
-        versionCode = 345290200 // https://developer.android.com/training/wearables/packaging
+        // SDK 35 + v5.3.0 + release 01 + 00 (for app)
+        versionCode = 355300100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v5.2.9"
+        versionName = "v5.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -93,7 +93,7 @@ dependencies {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.20")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
@@ -131,7 +131,7 @@ dependencies {
 // Apache for extracting strings ManageAliasActivity
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation("org.apache.commons:commons-lang3:3.15.0")
+    implementation("org.apache.commons:commons-lang3:3.16.0")
 }
 
 // Scanning QR codes
@@ -141,7 +141,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 }
 
 // For the donut in the aliasview
@@ -184,11 +184,8 @@ dependencies {
     implementation("androidx.startup:startup-runtime:1.1.1")
 }
 
-// Graph for home
+// Edge-To-Edge
 dependencies {
-    // Houses the core logic for charts and other elements. Included in all other modules.
-    implementation("com.patrykandpatrick.vico:core:1.15.0")
-
-    // For the view system.
-    implementation("com.patrykandpatrick.vico:views:1.15.0")
+    // Kotlin
+    implementation("androidx.activity:activity-ktx:1.9.1")
 }

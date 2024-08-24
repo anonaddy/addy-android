@@ -47,7 +47,7 @@ class AddyIoApp : Application() {
 
         userAgent = UserAgent(
             userAgentApplicationID = packageName,
-            userAgentVersion = version,
+            userAgentVersion = version.toString(),
             userAgentVersionCode = versionCode,
             userAgentApplicationBuildType = BuildConfig.BUILD_TYPE
         )

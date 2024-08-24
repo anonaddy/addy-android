@@ -1,13 +1,10 @@
 package host.stjin.anonaddy.ui
 
-import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,13 +21,10 @@ import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.AttributeHelper
-import host.stjin.anonaddy.utils.NumberUtils
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
-import org.ocpsoft.prettytime.PrettyTime
 import java.util.Locale
-import kotlin.math.roundToInt
 
 
 class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
@@ -45,7 +39,6 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     var updateAvailable: Boolean = false
     var permissionsRequired: Boolean = false
     private var _binding: BottomsheetProfileBinding? = null
-    private var altSubscriptionTextShown = false
 
     // This property is only valid between onCreateView and
 // onDestroyView.
@@ -59,7 +52,6 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         // get the views and attach the listener
         val root = binding.root
 
-        setMonthlyBandwidthStatistics()
         setInfo()
         setOnClickListeners()
 
@@ -126,14 +118,6 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
     private fun setOnClickListeners() {
 
-        binding.mainProfileSelectDialogCardSubscription.setOnClickListener {
-            if (altSubscriptionTextShown) {
-                setSubscriptionText()
-            } else {
-                setSubscriptionTextAlt()
-            }
-        }
-
         binding.mainProfileSelectDialogAppSettings.setOnClickListener {
             val intent = Intent(activity, AppSettingsActivity::class.java)
             startActivity(intent)
@@ -162,50 +146,12 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private fun setMonthlyBandwidthStatistics() {
-        val currMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth.toDouble() / 1024 / 1024
-        val maxMonthlyBandwidth = (activity?.application as AddyIoApp).userResource.bandwidth_limit / 1024 / 1024
-
-        binding.mainProfileSelectDialogStatisticsMonthlyBandwidthProgress.max =
-            if (maxMonthlyBandwidth.compareTo(0) == 0) 0 else (maxMonthlyBandwidth * 100).toInt()
-
-
-
-        binding.mainProfileSelectDialogStatisticsMonthlyBandwidthLeftText.text =
-            when {
-                maxMonthlyBandwidth.compareTo(0) == 0 -> this.resources.getString(
-                    R.string._sMB_remaining_this_month,
-                    "∞"
-                )
-                currMonthlyBandwidth > maxMonthlyBandwidth -> this.resources.getString(R.string.exceeded_bandwidth_limit)
-                else -> this.resources.getString(
-                    R.string._sMB_remaining_this_month,
-                    (NumberUtils.roundOffDecimal(maxMonthlyBandwidth.toDouble()) - NumberUtils.roundOffDecimal(currMonthlyBandwidth)).toString()
-                )
-            }
-
-        if (maxMonthlyBandwidth.compareTo(0) == 0) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.mainProfileSelectDialogStatisticsMonthlyBandwidthProgressShimmer.startShimmer()
-            }, 500)
-        }
-
-
-        ObjectAnimator.ofInt(
-            binding.mainProfileSelectDialogStatisticsMonthlyBandwidthProgress,
-            "progress",
-            currMonthlyBandwidth.roundToInt() * 100
-        )
-            .setDuration(300)
-            .start()
-    }
-
     private fun setInfo() {
         val usernameInitials = (activity?.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
         binding.mainProfileSelectDialogUsernameInitials.text = usernameInitials
 
         binding.mainProfileSelectDialogAnonaddyVersion.text =
-            if (AddyIo.VERSIONMAJOR == 9999) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
+            if (AddyIo.isUsingHostedInstance) this.resources.getString(R.string.hosted_instance) else this.resources.getString(
                 R.string.self_hosted_instance_s,
                 AddyIo.VERSIONSTRING
             )
@@ -218,53 +164,20 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setSubscriptionText() {
-        altSubscriptionTextShown = false
 
-        when {
-            (activity?.application as AddyIoApp).userResource.subscription == null -> {
-                binding.mainProfileSelectDialogCardSubscription.visibility = View.GONE
-            }
+        if ((activity?.application as AddyIoApp).userResource.subscription != null) {
+            binding.mainProfileSelectDialogCardLL.visibility = View.VISIBLE
+            binding.mainProfileSelectDialogCardSubscription.text =
+                resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
 
-            (activity?.application as AddyIoApp).userResource.subscription_ends_at != null -> {
-                binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
-                binding.mainProfileSelectDialogCardSubscription.text = resources.getString(
-                    R.string.subscription_user_until,
-                    (activity?.application as AddyIoApp).userResource.subscription,
-                    DateTimeUtils.turnStringIntoLocalString(
-                        (activity?.application as AddyIoApp).userResource.subscription_ends_at,
-                        DateTimeUtils.DatetimeFormat.DATE
-                    )
-                )
-            }
-            else -> {
-                binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
-                binding.mainProfileSelectDialogCardSubscription.text =
-                    resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
-            }
-        }
-    }
+            binding.mainProfileSelectDialogCardSubscriptionUntil.text =
+                resources.getString(R.string.subscription_user_until, DateTimeUtils.turnStringIntoLocalString(
+                    (activity?.application as AddyIoApp).userResource.subscription_ends_at,
+                    DateTimeUtils.DatetimeFormat.DATE
+                ))
 
-    private fun setSubscriptionTextAlt() {
-        altSubscriptionTextShown = true
-
-        when {
-            (activity?.application as AddyIoApp).userResource.subscription == null -> {
-                binding.mainProfileSelectDialogCardSubscription.visibility = View.GONE
-            }
-
-            (activity?.application as AddyIoApp).userResource.subscription_ends_at != null -> {
-                binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
-                val expiryDate =
-                    DateTimeUtils.turnStringIntoLocalDateTime((activity?.application as AddyIoApp).userResource.subscription_ends_at)
-                val text = PrettyTime().format(expiryDate)
-                binding.mainProfileSelectDialogCardSubscription.text = resources.getString(R.string.subscription_expiry_date, text)
-            }
-
-            else -> {
-                binding.mainProfileSelectDialogCardSubscription.visibility = View.VISIBLE
-                binding.mainProfileSelectDialogCardSubscription.text =
-                    resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
-            }
+        } else {
+            binding.mainProfileSelectDialogCardLL.visibility = View.GONE
         }
     }
 

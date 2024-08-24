@@ -103,6 +103,7 @@ class FilterOptionsAliasBottomDialogFragment(
         binding.bsFilteroptionsAliasesSortingLastBlocked.isChecked = aliasSortFilter.sort == "last_blocked"
         binding.bsFilteroptionsAliasesSortingLastReplied.isChecked = aliasSortFilter.sort == "last_replied"
         binding.bsFilteroptionsAliasesSortingLastSent.isChecked = aliasSortFilter.sort == "last_sent"
+        binding.bsFilteroptionsAliasesSortingLastUsed.isChecked = aliasSortFilter.sort == "last_used"
         binding.bsFilteroptionsAliasesSortingEmailActive.isChecked = aliasSortFilter.sort == "active"
         binding.bsFilteroptionsAliasesSortingEmailCreatedAt.isChecked = aliasSortFilter.sort == "created_at" || aliasSortFilter.sort == null
         binding.bsFilteroptionsAliasesSortingEmailUpdatedAt.isChecked = aliasSortFilter.sort == "updated_at"
@@ -144,6 +145,9 @@ class FilterOptionsAliasBottomDialogFragment(
         }
         binding.bsFilteroptionsAliasesSortingLastSent.setOnClickListener {
             aliasSortFilter.sort = "last_sent"
+        }
+        binding.bsFilteroptionsAliasesSortingLastUsed.setOnClickListener {
+            aliasSortFilter.sort = "last_used"
         }
         binding.bsFilteroptionsAliasesSortingEmailActive.setOnClickListener {
             aliasSortFilter.sort = "active"

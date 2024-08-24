@@ -13,11 +13,6 @@ class UsernamesSettingsActivity : BaseActivity() {
         binding = ActivityUsernameSettingsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        drawBehindNavBar(
-            view,
-            topViewsToShiftDownUsingMargin = arrayListOf(view),
-            bottomViewsToShiftUpUsingPadding = arrayListOf(binding.activityUsernameSettingsFcv)
-        )
 
         setupToolbar(
             R.string.manage_usernames,

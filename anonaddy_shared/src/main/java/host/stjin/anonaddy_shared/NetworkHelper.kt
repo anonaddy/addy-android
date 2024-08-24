@@ -15,6 +15,7 @@ import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
 import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACCOUNT_DETAILS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ACCOUNT_NOTIFICATIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_ALIAS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ACTIVE_RULES
@@ -43,13 +44,15 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.GITLAB_TAGS_RSS_FEED
 import host.stjin.anonaddy_shared.AddyIo.lazyMgr
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.models.AccountNotifications
+import host.stjin.anonaddy_shared.models.AccountNotificationsArray
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.ApiTokenDetails
 import host.stjin.anonaddy_shared.models.BulkActionResponse
 import host.stjin.anonaddy_shared.models.BulkAliasesArray
-import host.stjin.anonaddy_shared.models.ChartData
+import host.stjin.anonaddy_shared.models.AddyChartData
 import host.stjin.anonaddy_shared.models.DomainOptions
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.models.DomainsArray
@@ -605,7 +608,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun getChartData(
-        callback: (ChartData?, String?) -> Unit
+        callback: (AddyChartData?, String?) -> Unit
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -624,7 +627,7 @@ class NetworkHelper(private val context: Context) {
             200 -> {
                 val data = result.get()
                 val gson = Gson()
-                val addyIoData = gson.fromJson(data, ChartData::class.java)
+                val addyIoData = gson.fromJson(data, AddyChartData::class.java)
                 callback(addyIoData, null)
             }
 
@@ -4492,7 +4495,6 @@ class NetworkHelper(private val context: Context) {
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
             }
-            // Also take the not-verified recipients in account. As this value is being used to set the shimmerview
         }
     }
 
@@ -4763,6 +4765,94 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "getApiTokenDetails",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    /**
+     * ACCOUNT NOTIFICATIONS
+     */
+
+    suspend fun cacheAccountNotificationsCountForWidgetAndBackgroundService(
+        callback: (Boolean) -> Unit
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        getAllAccountNotifications { result, _ ->
+            if (result == null) {
+                // Result is null, callback false to let the BackgroundWorker know the task failed.
+                callback(false)
+                return@getAllAccountNotifications
+            } else {
+                // First move the current count to the previous count (for comparison)
+                encryptedSettingsManager.putSettingsInt(
+                    SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS,
+                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
+                )
+                // Now store the current count
+                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT, result.size)
+
+                // Stored data, let the BackgroundWorker know the task succeeded
+                callback(true)
+            }
+        }
+    }
+
+    suspend fun getAllAccountNotifications(
+        callback: (ArrayList<AccountNotifications>?, String?) -> Unit
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.get(API_URL_ACCOUNT_NOTIFICATIONS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, AccountNotificationsArray::class.java)
+                val accountNotificationList = ArrayList<AccountNotifications>()
+                accountNotificationList.addAll(addyIoData.data)
+
+                callback(accountNotificationList, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAllAccountNotifications",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )

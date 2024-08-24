@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialSharedAxis
 import host.stjin.anonaddy.databinding.FragmentSetupHow3Binding
+import host.stjin.anonaddy.utils.InsetUtil
 
 class SetupHow3Fragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +30,8 @@ class SetupHow3Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSetupHow3Binding.inflate(inflater, container, false)
+        InsetUtil.applyBottomInset(binding.setupHow3Ll)
+
         val root = binding.root
 
         binding.setupHow3ButtonNext.setOnClickListener {

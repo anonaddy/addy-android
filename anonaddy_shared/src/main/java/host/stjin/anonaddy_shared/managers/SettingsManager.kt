@@ -34,6 +34,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         PERIODIC_BACKUPS(false, PREFTYPES.BOOLEAN, "periodic_backups"),
         BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
+        NOTIFY_ACCOUNT_NOTIFICATIONS(false, PREFTYPES.BOOLEAN, "notify_account_notifications"),
         MANAGE_MULTIPLE_ALIASES(false, PREFTYPES.BOOLEAN, "manage_multiple_aliases"),
         NOTIFY_API_TOKEN_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_api_token_expiry"),
         NOTIFY_DOMAIN_ERROR(false, PREFTYPES.BOOLEAN, "notify_domain_error"),
@@ -79,6 +80,9 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         // Also used for background service failed delivery notifications
         BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT(true, PREFTYPES.INT, "cache_failed_deliveries_count"),
 
+        // Also used for background service account notifications
+        BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT(true, PREFTYPES.INT, "cache_account_notifications_count"),
+
         // Used to limit the amount of expiry notifications to 1 a day
         BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT(true, PREFTYPES.INT, "cache_api_key_expiry_left_count"),
         BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT(true, PREFTYPES.INT, "cache_subscription_expiry_left_count"),
@@ -88,6 +92,9 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
         // This value keeps track of the previous amount of failed deliveries so comparisons can be made in the BackgroundWorker
         BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_failed_deliveries_count_previous"),
+
+        // This value keeps track of the previous amount of account notifications so comparisons can be made in the BackgroundWorker
+        BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_account_notifications_count_previous"),
 
         // When BACKGROUND_SERVICE_CACHE_DATA_ALIASES gets updated the current list will move moved to BACKGROUND_SERVICE_CACHE_DATA_ALIASES_PREVIOUS for the AliasWatcher to compare
         BACKGROUND_SERVICE_WATCH_ALIAS_LIST(true, PREFTYPES.STRINGSET, "background_service_watch_alias_list"),

@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.setup
 
 import android.app.Dialog
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -55,11 +54,6 @@ class BackupPasswordBottomDialogFragment(private val fileToDecryptUri: Uri) : Ba
                 setBackupPassword()
             }
             false
-        }
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsSetupEnterBackupPasswordRoot)
         }
 
         return root

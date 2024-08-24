@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.recipients.manage
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -67,10 +66,6 @@ class AddRecipientPublicGpgKeyBottomDialogFragment(
             }
         } else {
             dismiss()
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditRecipientGpgKeyRoot)
         }
 
         return root

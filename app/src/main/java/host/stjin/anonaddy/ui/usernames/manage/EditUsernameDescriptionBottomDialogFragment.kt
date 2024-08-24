@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.usernames.manage
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -62,10 +61,6 @@ class EditUsernameDescriptionBottomDialogFragment(
             dismiss()
         }
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            setIMEAnimation(binding.bsEditusernameUsernameRoot)
-        }
         return root
 
     }

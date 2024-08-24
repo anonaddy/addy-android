@@ -49,6 +49,7 @@
                         android:id="@+id/activity_search_aliases_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never" />
 
@@ -73,6 +74,7 @@
                         android:id="@+id/activity_search_recipients_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never" />
 
@@ -97,6 +99,7 @@
                         android:id="@+id/activity_search_domains_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never" />
 
@@ -121,6 +124,7 @@
                         android:id="@+id/activity_search_usernames_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never" />
 
@@ -145,6 +149,7 @@
                         android:id="@+id/activity_search_rules_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never" />
 
@@ -169,6 +174,7 @@
                         android:id="@+id/activity_search_failed_deliveries_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never" />
 

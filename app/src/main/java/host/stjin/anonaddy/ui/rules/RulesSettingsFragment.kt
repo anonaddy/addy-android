@@ -27,6 +27,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.RulesAdapter
 import host.stjin.anonaddy.databinding.FragmentRuleSettingsBinding
 import host.stjin.anonaddy.ui.MainActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -63,6 +64,8 @@ class RulesSettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRuleSettingsBinding.inflate(inflater, container, false)
+        InsetUtil.applyBottomInset(binding.fragmentManageRulesLL1)
+
         val root = binding.root
 
         encryptedSettingsManager = SettingsManager(true, requireContext())

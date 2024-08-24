@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Added the new last_used sorting option<br />- Added account notifications<br />- Added account notifications, notification feature</p>
+<h4>Fixed/Improved</h4>
+<p>- Made the app ready for Android 15<br />- Optimized animations<br />- Optimized network calls<br />- Performance improvements and other things to make the app even smoother</p>

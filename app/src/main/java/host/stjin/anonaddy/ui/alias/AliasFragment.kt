@@ -15,8 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ScrollView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -33,14 +33,12 @@ import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
-import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.BulkAliasesArray
-import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.GsonTools
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -91,6 +89,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAliasBinding.inflate(inflater, container, false)
+        //InsetUtil.applyBottomInset(binding.aliasListLL1) Not necessary, MainActivity elevated the viewpager for the fab
+
         val root = binding.root
 
         settingsManager = SettingsManager(false, requireContext())
@@ -104,7 +104,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         setAliasesRecyclerView()
 
 
-        getDataFromWeb(requireContext(), savedInstanceState)
+        getDataFromWeb(savedInstanceState)
 
         return root
     }
@@ -121,7 +121,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             // There are no request codes
             val data: Intent? = result.data
             if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(requireContext(), null)
+                getDataFromWeb(null)
             }
         }
     }
@@ -142,9 +142,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
         if (defaultAliasSortFilter != aliasSortFilter) {
             // Filter is active, let user know
-            binding.aliasSortList.text = binding.aliasSortList.context.resources.getString(R.string.filter_active)
+            binding.aliasSortList.icon = ContextCompat.getDrawable(binding.aliasSortList.context, R.drawable.ic_filter_filled)
         } else {
-            binding.aliasSortList.text = binding.aliasSortList.context.resources.getString(R.string.filter)
+            binding.aliasSortList.icon = ContextCompat.getDrawable(binding.aliasSortList.context, R.drawable.ic_filter)
         }
 
         filterOptionsAliasBottomDialogFragment = FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
@@ -157,7 +157,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private fun setOnNestedScrollViewListener(set: Boolean) {
         if (set) {
             binding.fragmentAliasNsv.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-                if (-scrollY == v.measuredHeight - v.getChildAt(0).measuredHeight) {
+                val threshold = 10 // or some small number to account for rounding errors
+                if (scrollY + v.measuredHeight + threshold >= v.getChildAt(0).measuredHeight) {
+                    // Consider this as being at the bottom
                     viewLifecycleOwner.lifecycleScope.launch {
                         // Bottom of NSV reached. Time to load more data (if available)
                         getAliasesAndAddThemToList()
@@ -172,7 +174,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.fullScroll(ScrollView.FOCUS_UP) }
+            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.smoothScrollTo(0,0) }
         }
     }
 
@@ -183,18 +185,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
 
-    fun getDataFromWeb(context: Context, savedInstanceState: Bundle?) {
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {
-                setAliasesStatistics(
-                    context,
-                    (activity?.application as AddyIoApp).userResource.total_emails_forwarded,
-                    (activity?.application as AddyIoApp).userResource.total_emails_blocked,
-                    (activity?.application as AddyIoApp).userResource.total_emails_replied,
-                    (activity?.application as AddyIoApp).userResource.total_emails_sent
-                )
-
                 val aliasesJson = savedInstanceState.getString("aliasesList")
                 if (aliasesJson!!.isNotEmpty() && aliasesJson != "null") {
                     val gson = Gson()
@@ -202,12 +196,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     setAliasesAdapter(requireContext(), list, true)
                     // need to force reload in order to init the adapter (which has been reset due to the recreation of the activity
                 } else {
-                    getUserResource(requireContext())
                     getAliasesAndAddThemToList(forceReload = true)
                 }
 
             } else {
-                getUserResource(requireContext())
                 getAliasesAndAddThemToList(forceReload = true)
             }
         }
@@ -215,45 +207,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     }
 
-    private suspend fun getUserResource(context: Context) {
-        networkHelper?.getUserResource { user: UserResource?, result: String? ->
-            if (user != null) {
-                (activity?.application as AddyIoApp).userResource = user
-                setAliasesStatistics(
-                    context,
-                    user.total_emails_forwarded,
-                    user.total_emails_blocked,
-                    user.total_emails_replied,
-                    user.total_emails_sent
-                )
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    SnackbarHelper.createSnackbar(
-                        context,
-                        context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            context,
-                            context.resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
-                }
 
-
-            }
-        }
-    }
 
 
     // Decided to not load aliases when coming back to hold back on performance issues
@@ -482,7 +436,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                         binding.aliasAddAliasFab.hide()
 
                         if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                            SnackbarHelper.createSnackbar(
+                            aliasSelectionSnackbar = SnackbarHelper.createSnackbar(
                                 context,
                                 context.resources.getString(R.string.multiple_alias_selected, selectedAliases.count()),
                                 (activity as MainActivity).findViewById(R.id.main_container),
@@ -497,7 +451,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                                         "aliasMultipleSelectionBottomDialogFragment"
                                     )
                                 }
-                            }.show()
+                            }
+
+                            aliasSelectionSnackbar?.show()
                         } else {
                             val bottomNavView: BottomNavigationView? =
                                 activity?.findViewById(R.id.nav_view)
@@ -612,29 +568,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }, 3500)
     }
 
-    private fun setAliasesStatistics(
-        context: Context,
-        forwarded: Int,
-        blocked: Int,
-        replied: Int,
-        sent: Int
-    ) {
-        binding.aliasStats2.setDescription(
-            context.resources.getString(R.string.replied_sent_stat, replied, sent)
-        )
-        binding.aliasStats1.setDescription(
-            context.resources.getString(
-                R.string.forwarded_blocked_stat,
-                forwarded,
-                blocked
-            )
-        )
-    }
 
     override fun onAdded() {
         addAliasBottomDialogFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb(requireContext(), null)
+        getDataFromWeb(null)
     }
 
     override fun onCancel() {
@@ -660,7 +598,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
 
         loadFilter()
-        getDataFromWeb(requireContext(), null)
+        getDataFromWeb(null)
     }
 
     override fun onDismiss() {
@@ -672,7 +610,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
         if (shouldRefreshData) {
             // Automatically unselects data
-            getDataFromWeb(requireContext(), null)
+            getDataFromWeb(null)
         } else {
             // Show snackbar again
             aliasSelectionSnackbar?.show()
@@ -683,7 +621,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         aliasMultipleSelectionBottomDialogFragment.dismissAllowingStateLoss()
         if (shouldRefreshData) {
             // Automatically unselects data
-            getDataFromWeb(requireContext(), null)
+            getDataFromWeb(null)
         } else {
             aliasAdapter?.unselectAliases()
             hideSnackBar()
