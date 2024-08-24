@@ -31,6 +31,7 @@ import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRecipi
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredRules
 import host.stjin.anonaddy.ui.search.SearchActivity.FilteredLists.filteredUsernames
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -106,6 +107,8 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activitySearchLL1)
+
         val view = binding.root
         setContentView(view)
 

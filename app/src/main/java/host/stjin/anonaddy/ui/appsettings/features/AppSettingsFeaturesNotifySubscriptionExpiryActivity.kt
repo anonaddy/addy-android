@@ -13,6 +13,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -34,6 +35,8 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifySubscriptionExpiryNSVLL)
+
         val view = binding.root
         setContentView(view)
 

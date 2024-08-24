@@ -9,6 +9,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.LogsAdapter
 import host.stjin.anonaddy.databinding.ActivityLogViewerBinding
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -21,6 +22,8 @@ class LogViewerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLogViewerBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.appsettingsLogviewerNSVLL)
+
         val view = binding.root
         setContentView(view)
 

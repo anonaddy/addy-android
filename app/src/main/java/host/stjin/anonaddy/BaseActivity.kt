@@ -211,7 +211,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private var appBarLayout: AppBarLayout? = null
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            nestedScrollView?.post { nestedScrollView?.fullScroll(ScrollView.FOCUS_UP) }
+            nestedScrollView?.post { nestedScrollView?.smoothScrollTo(0,0) }
             appBarLayout?.setExpanded(true, true)
         }
     }

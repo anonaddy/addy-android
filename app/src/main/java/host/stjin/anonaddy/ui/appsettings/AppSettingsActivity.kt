@@ -33,6 +33,7 @@ import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.ui.appsettings.update.AppSettingsUpdateActivity
 import host.stjin.anonaddy.ui.appsettings.wearos.AppSettingsWearOSActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -59,6 +60,7 @@ class AppSettingsActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityAppSettingsNSVLL)
         val view = binding.root
         setContentView(view)
 

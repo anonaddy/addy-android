@@ -97,8 +97,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val view = binding.root
         setContentView(view)
 
-
-
         networkHelper = NetworkHelper(this@MainActivity)
 
         isAuthenticated { isAuthenticated ->
@@ -159,7 +157,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            binding.navView!!.getViewTreeObserver().addOnGlobalLayoutListener(
+            binding.navView!!.viewTreeObserver.addOnGlobalLayoutListener(
                 object : OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         // gets called after layout has been done but before display
@@ -169,7 +167,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         val height = binding.navView!!.height // Ahaha!  Gotcha
                         binding.activityMainViewpager!!.setPadding(0,0,0,height)
 
-                        binding.navView!!.getViewTreeObserver().removeGlobalOnLayoutListener(this)
+                        binding.navView!!.viewTreeObserver.removeGlobalOnLayoutListener(this)
                     }
                 })
 

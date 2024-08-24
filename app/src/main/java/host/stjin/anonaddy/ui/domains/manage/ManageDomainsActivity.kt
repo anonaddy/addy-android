@@ -12,6 +12,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageDomainsBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIo
@@ -62,6 +63,7 @@ class ManageDomainsActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageDomainsBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityManageDomainLL1)
         val view = binding.root
         setContentView(view)
 

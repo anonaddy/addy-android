@@ -31,6 +31,7 @@ import host.stjin.anonaddy.databinding.FragmentAliasBinding
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -90,6 +91,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAliasBinding.inflate(inflater, container, false)
+        //InsetUtil.applyBottomInset(binding.aliasListLL1) Not necessary, MainActivity elevated the viewpager for the fab
+
         val root = binding.root
 
         settingsManager = SettingsManager(false, requireContext())
@@ -156,7 +159,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private fun setOnNestedScrollViewListener(set: Boolean) {
         if (set) {
             binding.fragmentAliasNsv.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-                if (-scrollY == v.measuredHeight - v.getChildAt(0).measuredHeight) {
+                val threshold = 10 // or some small number to account for rounding errors
+                if (scrollY + v.measuredHeight + threshold >= v.getChildAt(0).measuredHeight) {
+                    // Consider this as being at the bottom
                     viewLifecycleOwner.lifecycleScope.launch {
                         // Bottom of NSV reached. Time to load more data (if available)
                         getAliasesAndAddThemToList()
@@ -171,7 +176,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.fullScroll(ScrollView.FOCUS_UP) }
+            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.smoothScrollTo(0,0) }
         }
     }
 

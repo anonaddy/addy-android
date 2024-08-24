@@ -11,6 +11,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityManageUsernamesBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
@@ -60,6 +61,8 @@ class ManageUsernamesActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageUsernamesBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityManageUsernameLL1)
+
         val view = binding.root
         setContentView(view)
 

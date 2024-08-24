@@ -16,6 +16,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AccountNotificationsAdapter
 import host.stjin.anonaddy.databinding.FragmentAccountNotificationsBinding
 import host.stjin.anonaddy.ui.MainActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -51,6 +52,7 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAccountNotificationsBinding.inflate(inflater, container, false)
+        InsetUtil.applyBottomInset(binding.fragmentAccountNotificationsLL1)
         val root = binding.root
 
         encryptedSettingsManager = SettingsManager(true, requireContext())

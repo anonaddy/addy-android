@@ -14,9 +14,6 @@ import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.Gson
-import com.patrykandpatrick.vico.core.entry.entriesOf
-import com.patrykandpatrick.vico.core.entry.entryModelOf
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
 import host.stjin.anonaddy.service.AliasWatcher
@@ -28,7 +25,6 @@ import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
-import host.stjin.anonaddy_shared.models.AddyChartData
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -54,6 +50,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        //InsetUtil.applyBottomInset(binding.homeStatisticsLL) Not necessary, MainActivity elevated the viewpager for the fab
+
         val root = binding.root
         networkHelper = NetworkHelper(requireContext())
 
@@ -70,18 +68,10 @@ class HomeFragment : Fragment() {
     }
 
 
-    private var addyChartData: AddyChartData? = null
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val gson = Gson()
-        val json = gson.toJson(addyChartData)
-        outState.putString("chartData", json)
-    }
-
 
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.fullScroll(ScrollView.FOCUS_UP) }
+            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.smoothScrollTo(0,0) }
         }
     }
 
@@ -107,94 +97,16 @@ class HomeFragment : Fragment() {
             // On activity recreations (orientationchanges, sizing of the app) savedInstanceState will be filled using onSaveInstanceState
             // This way we can instantly set the values without another API call.
             if (savedInstanceState != null) {
-                val chartData = savedInstanceState.getString("chartData")
-                if (chartData!!.isNotEmpty() && chartData != "null") {
-                    val gson = Gson()
-                    val data: AddyChartData = gson.fromJson(chartData, AddyChartData::class.java)
-                    setChartData(data)
-                } else {
-                    getChartData()
-                    getWebStatistics()
-                }
-
+                getWebStatistics()
                 // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
                 // no need to obtain this from savedInstanceState
                 setStatistics()
             } else {
-                getChartData()
                 getWebStatistics()
             }
         }
     }
 
-    private suspend fun getChartData() {
-        networkHelper?.getChartData { addyChartData: AddyChartData?, result: String? ->
-            if (addyChartData != null) {
-                setChartData(addyChartData)
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    SnackbarHelper.createSnackbar(
-                        requireContext(),
-                        requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                } else {
-                    val bottomNavView: BottomNavigationView? =
-                        activity?.findViewById(R.id.nav_view)
-                    bottomNavView?.let {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_chart_data) + "\n" + result,
-                            it,
-                            LoggingHelper.LOGFILES.DEFAULT
-                        )
-                            .apply {
-                                anchorView = bottomNavView
-                            }.show()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setChartData(data: AddyChartData) {
-        addyChartData = data
-        //val numberStr = data.forwardsData.map { FloatEntry(0,it.toFloat()) }
-
-
-        val forwardedData = entriesOf(
-            data.forwardsData[0],
-            data.forwardsData[1],
-            data.forwardsData[2],
-            data.forwardsData[3],
-            data.forwardsData[4],
-            data.forwardsData[5],
-            data.forwardsData[6]
-        )
-        val repliesData = entriesOf(
-            data.repliesData[0],
-            data.repliesData[1],
-            data.repliesData[2],
-            data.repliesData[3],
-            data.repliesData[4],
-            data.repliesData[5],
-            data.repliesData[6]
-        )
-        val sendsData = entriesOf(
-            data.sendsData[0],
-            data.sendsData[1],
-            data.sendsData[2],
-            data.sendsData[3],
-            data.sendsData[4],
-            data.sendsData[5],
-            data.sendsData[6]
-        )
-        val chartEntryModel = entryModelOf(
-            forwardedData, repliesData, sendsData
-        )
-        binding.homeChartView1.setModel(chartEntryModel)
-    }
 
 
     // Update information when coming back, such as aliases and statistics

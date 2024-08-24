@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityRulesCreateBinding
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Action
@@ -47,6 +48,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRulesCreateBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityRulesCreateLL1)
+
         val view = binding.root
         setContentView(view)
 

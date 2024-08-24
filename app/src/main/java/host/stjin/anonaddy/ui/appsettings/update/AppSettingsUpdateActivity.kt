@@ -12,6 +12,7 @@ import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.databinding.ActivityAppSettingsUpdateBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.YDGooglePlayUtils
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -30,6 +31,8 @@ class AppSettingsUpdateActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsUpdateBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.appsettingsUpdateNSVLL)
+
         val view = binding.root
         setContentView(view)
 

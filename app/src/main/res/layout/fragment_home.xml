@@ -1,38 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/home_statistics_RL1"
+<androidx.core.widget.NestedScrollView android:id="@+id/home_statistics_NSV"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        android:weightSum="1">
-
-        <com.patrykandpatrick.vico.views.chart.ChartView
-            android:id="@+id/home_chart_view_1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.5"
-            android:alpha="0.1"
-            app:chart="line"
-            app:fadingEdgeVisibilityInterpolator="androidx.interpolator.view.animation.FastOutSlowInInterpolator"
-            app:fadingEdgeWidth="32dp"
-            app:horizontalLayout="fullWidth"
-            app:lineChartStyle="@style/Chart3LineChartStyle"
-            app:showBottomAxis="false"
-            app:showStartAxis="false" />
-    </LinearLayout>
-
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/home_statistics_NSV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <LinearLayout
             android:id="@+id/home_statistics_LL"
@@ -280,4 +251,3 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</RelativeLayout>

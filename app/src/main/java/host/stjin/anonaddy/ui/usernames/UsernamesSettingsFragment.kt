@@ -20,6 +20,7 @@ import host.stjin.anonaddy.adapter.UsernameAdapter
 import host.stjin.anonaddy.databinding.FragmentUsernameSettingsBinding
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.usernames.manage.ManageUsernamesActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils
@@ -58,6 +59,8 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentUsernameSettingsBinding.inflate(inflater, container, false)
+        InsetUtil.applyBottomInset(binding.fragmentUsernameSettingsLL1)
+
         val root = binding.root
 
         encryptedSettingsManager = SettingsManager(true, requireContext())

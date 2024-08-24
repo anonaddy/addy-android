@@ -26,6 +26,7 @@ import host.stjin.anonaddy.adapter.RecipientAdapter
 import host.stjin.anonaddy.databinding.FragmentRecipientsBinding
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.recipients.manage.ManageRecipientsActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils
@@ -65,6 +66,8 @@ class RecipientsFragment : Fragment(),
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipientsBinding.inflate(inflater, container, false)
+        //InsetUtil.applyBottomInset(binding.recipientsLL1) Not necessary, MainActivity elevated the viewpager for the fab
+
         val root = binding.root
         encryptedSettingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
@@ -208,7 +211,7 @@ class RecipientsFragment : Fragment(),
 
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            binding.recipientsNSV.post { binding.recipientsNSV.fullScroll(ScrollView.FOCUS_UP) }
+            binding.recipientsNSV.post { binding.recipientsNSV.smoothScrollTo(0,0) }
         }
     }
 

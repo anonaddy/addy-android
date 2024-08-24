@@ -9,6 +9,7 @@ import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyAccountN
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -21,6 +22,8 @@ class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyAccountNotificationsBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityAppSettingsFeaturesNotifyAccountNotificationsNSVLL)
+
         val view = binding.root
         setContentView(view)
 

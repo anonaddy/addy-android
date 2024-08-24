@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,6 +17,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.FailedDeliveryAdapter
 import host.stjin.anonaddy.databinding.FragmentFailedDeliveriesBinding
 import host.stjin.anonaddy.ui.MainActivity
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -49,6 +53,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFailedDeliveriesBinding.inflate(inflater, container, false)
+        InsetUtil.applyBottomInset(binding.fragmentFailedDeliveriesLL1)
         val root = binding.root
 
         encryptedSettingsManager = SettingsManager(true, requireContext())
@@ -56,6 +61,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
 
         setFailedDeliveriesRecyclerView()
         getDataFromWeb(savedInstanceState)
+
 
         return root
     }

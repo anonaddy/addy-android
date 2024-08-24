@@ -184,15 +184,6 @@ dependencies {
     implementation("androidx.startup:startup-runtime:1.1.1")
 }
 
-// Graph for home
-dependencies {
-    // Houses the core logic for charts and other elements. Included in all other modules.
-    implementation("com.patrykandpatrick.vico:core:1.15.0")
-
-    // For the view system.
-    implementation("com.patrykandpatrick.vico:views:1.15.0")
-}
-
 // Edge-To-Edge
 dependencies {
     // Kotlin

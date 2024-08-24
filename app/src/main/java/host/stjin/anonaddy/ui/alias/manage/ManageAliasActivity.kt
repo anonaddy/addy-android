@@ -30,6 +30,7 @@ import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.AnonAddyUtils
 import host.stjin.anonaddy.utils.AnonAddyUtils.getSendAddress
+import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
@@ -74,6 +75,8 @@ class ManageAliasActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageAliasBinding.inflate(layoutInflater)
+        InsetUtil.applyBottomInset(binding.activityManageAliasNSVLL)
+
         val view = binding.root
         // Since this activity can be directly launched, set the dark mode.
         checkForDarkModeAndSetFlags()
