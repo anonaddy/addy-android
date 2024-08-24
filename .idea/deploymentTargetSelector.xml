@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-08-24T14:59:21.336150Z">
+        <DropdownSelection timestamp="2024-08-24T17:36:24.237286Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=9ce354f1" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stjin/.android/avd/Pixel_8_Pro_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -28,10 +28,10 @@
       </SelectionState>
       <SelectionState runConfigName="app-wearos">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-07-19T17:16:06.122199Z">
+        <DropdownSelection timestamp="2024-08-24T17:36:30.774053Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=28151FDH30055U" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stjin/.android/avd/Wear_OS_Small_Round_API_33.avd" />
             </handle>
           </Target>
         </DropdownSelection>

@@ -68,12 +68,12 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.2.9</h3>
+<h3>What\'s new in AnonAddy for Android 5.3.0</h3>
 <h4>Added</h4>
-<p>- Added new regex options for domains and usernames<br />- Added new regex rule conditions</p>
+<p>- Added the new last_used sorting option<br />- Added account notifications<br />- Added account notifications, notification feature</p>
 <h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.4.5</h3>
+<p>- Made the app ready for Android 15<br />- Optimized animations<br />- Optimized network calls<br />- Performance improvements and other things to make the app even smoother</p>
+<h3>What\'s new in AnonAddy for Android for Wearables 1.4.6</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>
 ]]></string>

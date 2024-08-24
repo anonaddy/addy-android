@@ -200,9 +200,8 @@
 
 
                 <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
-                <data
-                    android:host="*"
-                    android:pathPrefix="/deactivate" />
+                <data android:host="*"/>
+                <data android:pathPrefix="/deactivate"/>
                 <!-- END -->
 
 

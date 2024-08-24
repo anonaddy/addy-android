@@ -1,5 +1,28 @@
 # Changelog
 
+## [v5.3.0] - 2024-08-24
+
+### addy.io
+
+##### Added
+
+- Added the new last_used sorting option
+- Added account notifications
+- Added account notifications, notification feature
+
+##### Fixed/Improved
+
+- Made the app ready for Android 15
+- Optimized animations
+- Optimized network calls
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.4.6)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.2.9] - 2024-08-01
 
 ### addy.io

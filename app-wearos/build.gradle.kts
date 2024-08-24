@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
-
 val compose_version = rootProject.extra["compose_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
 val compose_compiler_version = rootProject.extra["compose_compiler_version"]
@@ -29,7 +27,7 @@ android {
     defaultConfig {
         applicationId = namespace
         minSdk = 30
-        targetSdk = 35
+        targetSdk = 34
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -37,9 +35,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.4.5 + release 01 + 01 (for wearos)
-        versionCode = 341450101
-        versionName = "1.4.5"
+        // SDK 33 + v1.4.6 + release 01 + 01 (for wearos)
+        versionCode = 341460101
+        versionName = "1.4.6"
         vectorDrawables {
             useSupportLibrary = true
         }

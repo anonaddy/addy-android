@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
-
 val compose_version = rootProject.extra["compose_version"]
 val compose_compiler_version = rootProject.extra["compose_compiler_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
