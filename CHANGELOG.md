@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.3.1] - 2024-08-26
+
+### addy.io
+
+##### Fixed/Improved
+
+- Made the links in account notification endpoint nullable
+- Disabled the account notification feature for self hosted instances
+
 ## [v5.3.0] - 2024-08-24
 
 ### addy.io

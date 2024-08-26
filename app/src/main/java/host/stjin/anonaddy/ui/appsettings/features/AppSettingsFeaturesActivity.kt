@@ -52,6 +52,7 @@ class AppSettingsFeaturesActivity : BaseActivity() {
     private fun checkForSelfHostedInstance() {
         // Hide the switch on Subscription Expiry Notification Card when user is using self-hosted instance
         binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.showSwitch(AddyIo.isUsingHostedInstance)
+        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.showSwitch(AddyIo.isUsingHostedInstance)
 
     }
 

@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Made the links in account notification endpoint nullable<br />- Disabled the account notification feature for self hosted instances</p>

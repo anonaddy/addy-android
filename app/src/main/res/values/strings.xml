@@ -68,14 +68,9 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.3.0</h3>
-<h4>Added</h4>
-<p>- Added the new last_used sorting option<br />- Added account notifications<br />- Added account notifications, notification feature</p>
+<h3>What\'s new in AnonAddy for Android 5.3.1</h3>
 <h4>Fixed/Improved</h4>
-<p>- Made the app ready for Android 15<br />- Optimized animations<br />- Optimized network calls<br />- Performance improvements and other things to make the app even smoother</p>
-<h3>What\'s new in AnonAddy for Android for Wearables 1.4.6</h3>
-<h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother</p>
+<p>- Made the links in account notification endpoint nullable<br />- Disabled the account notification feature for self hosted instances</p>
 ]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
@@ -704,5 +699,7 @@
     <string name="email_replies">Email replies</string>
     <string name="email_sent">Email sent</string>
     <string name="total_recipients">Total recipients</string>
+    <string name="feature_not_available_hosted">This feature is only available on hosted instances</string>
+    <string name="open_link">Open link</string>
 
 </resources>

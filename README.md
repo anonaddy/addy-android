@@ -103,7 +103,7 @@ also directly contact me via telegram or email and I'll get back to you.
 
 ## Donation
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=26D39SEWQLBHW)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/Stjinchan)
 [![BuyMeACoffee](static/bmc-button.png)](https://buymeacoffee.com/stjin)
 
 ## Privacy policy
