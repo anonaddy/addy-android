@@ -216,10 +216,12 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
     }
 
 
-    override fun onOpenUrl(url: String) {
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
-        startActivity(i)
+    override fun onOpenUrl(url: String?) {
+        if (url != null) {
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }
 
         accountNotificationsDetailsBottomDialogFragment?.dismissAllowingStateLoss()
     }

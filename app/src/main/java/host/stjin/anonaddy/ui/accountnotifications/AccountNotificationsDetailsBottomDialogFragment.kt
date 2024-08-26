@@ -19,15 +19,15 @@ class AccountNotificationsDetailsBottomDialogFragment(
     private val created: String,
     private val title: String,
     private val text: String,
-    private val linkText: String,
-    private val link: String
+    private val linkText: String?,
+    private val link: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddAccountNotificationsBottomDialogListener
 
     interface AddAccountNotificationsBottomDialogListener {
-        fun onOpenUrl(accountNotificationsId: String)
+        fun onOpenUrl(url: String?)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -53,10 +53,14 @@ class AccountNotificationsDetailsBottomDialogFragment(
             listener = activity as AddAccountNotificationsBottomDialogListener
         }
 
-        binding.bsAccountNotificationsOpenButton.setOnClickListener(this)
+        if (link != null) {
+            binding.bsAccountNotificationsOpenButton.setOnClickListener(this)
+        } else {
+            binding.bsAccountNotificationsOpenButton.visibility = View.GONE
+        }
 
         binding.bsAccountNotificationsTitle.text = title
-        binding.bsAccountNotificationsOpenButton.text = linkText
+        binding.bsAccountNotificationsOpenButton.text = linkText ?: this.resources.getString(R.string.open_link)
         binding.bsAccountNotificationsCreated.text = DateTimeUtils.turnStringIntoLocalString(created)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
