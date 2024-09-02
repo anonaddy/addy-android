@@ -701,5 +701,7 @@
     <string name="total_recipients">Total recipients</string>
     <string name="feature_not_available_hosted">This feature is only available on hosted instances</string>
     <string name="open_link">Open link</string>
+    <string name="app_not_setup">App has not been setup</string>
+    <string name="app_not_setup_desc">Open the addy.io app and setup your account to use this feature</string>
 
 </resources>
