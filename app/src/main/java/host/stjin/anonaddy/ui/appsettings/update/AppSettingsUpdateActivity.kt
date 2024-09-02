@@ -177,7 +177,7 @@ class AppSettingsUpdateActivity : BaseActivity() {
 
         binding.activityAppSettingsUpdateSectionPreviousChangelog.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                val url = "https://gitlab.com/Stjin/anonaddy-android/-/blob/master/CHANGELOG.md"
+                val url = "https://github.com/anonaddy/addy-ios/blob/master/CHANGELOG.md"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)
                 startActivity(i)

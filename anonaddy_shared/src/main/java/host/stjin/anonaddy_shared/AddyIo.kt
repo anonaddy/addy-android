@@ -67,6 +67,6 @@ object AddyIo {
     val API_URL_ACCOUNT_NOTIFICATIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/account-notifications" }
 
 
-    // Gitlab built-in updater
-    const val GITLAB_TAGS_RSS_FEED: String = "https://gitlab.com/Stjin/anonaddy-android/-/tags?feed_token=QQ9pQKWGBdsYzCrqkdBN&format=atom"
+    // Github built-in updater
+    const val GITHUB_TAGS_RSS_FEED: String = "https://github.com/anonaddy/addy-ios/releases.atom"
 }

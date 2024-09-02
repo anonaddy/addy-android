@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.3.2] - 2024-09-15
+
+### addy.io
+
+##### Fixed/Improved
+
+- Changed the links to Github as the source code moved
+- Changed the widget text when app is not set-up
+- Minor changes in the app behaviour (such as automatically refreshing data when coming back from background after a while)
+
 ## [v5.3.1] - 2024-08-26
 
 ### addy.io

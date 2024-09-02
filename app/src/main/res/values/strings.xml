@@ -68,10 +68,11 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.3.1</h3>
+<h3>What\'s new in AnonAddy for Android 5.3.2</h3>
+<h4>Note</h4>
+<p>🚀 <strong>We\'ve blasted off into the iOS universe with addy.io app for iOS and iPadOS!</strong><br /><em>Learn more by visiting addy.io</em></p>
 <h4>Fixed/Improved</h4>
-<p>- Made the links in account notification endpoint nullable<br />- Disabled the account notification feature for self hosted instances</p>
-]]></string>
+<p>- Changed the links to Github as the source code moved<br />- Changed the widget text when app is not set-up<br />- Minor changes in the app behaviour (such as automatically refreshing data when coming back from background after a while)</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -274,8 +275,8 @@
     <string name="rule_deactivated">Rule deactivated</string>
     <string name="rules">Rules</string>
     <string name="this_field_cannot_be_empty">This field cannot be empty</string>
-    <string name="gitlab_project">Gitlab project</string>
-    <string name="gitlab_project_desc">View source code and report issues</string>
+    <string name="github_project">Github project</string>
+    <string name="github_project_desc">View source code and report issues</string>
     <string name="report_an_issue">Report an issue</string>
     <string name="report_an_issue_desc">Found a bug? Tap here to create a report</string>
     <string name="username_settings_desc">Choose additional usernames</string>

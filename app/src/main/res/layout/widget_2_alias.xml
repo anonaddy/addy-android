@@ -50,7 +50,6 @@
                     android:textColor="?android:attr/colorAccent"
                     android:textSize="12sp" />
             </LinearLayout>
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
