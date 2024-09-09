@@ -68,5 +68,5 @@ object AddyIo {
 
 
     // Github built-in updater
-    const val GITHUB_TAGS_RSS_FEED: String = "https://github.com/anonaddy/addy-ios/releases.atom"
+    const val GITHUB_TAGS_RSS_FEED: String = "https://github.com/anonaddy/addy-android/releases.atom"
 }

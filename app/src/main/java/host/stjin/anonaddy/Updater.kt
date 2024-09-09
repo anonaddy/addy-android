@@ -34,7 +34,7 @@ object Updater {
         return when {
             YDGooglePlayUtils.isInstalledViaGooglePlay(context) -> "https://play.google.com/store/apps/details?id=host.stjin.anonaddy"
             YDGooglePlayUtils.isInstalledViaFDroid(context) -> "https://f-droid.org/en/packages/host.stjin.anonaddy"
-            else -> "https://github.com/anonaddy/addy-ios/releases"
+            else -> "https://github.com/anonaddy/addy-android/releases"
         }
     }
 }

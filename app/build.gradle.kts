@@ -18,8 +18,8 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 35 + v5.3.2 + release 01 + 00 (for app)
-        versionCode = 355320100 // https://developer.android.com/training/wearables/packaging
+        // SDK 35 + v5.3.2 + release 01 + 00 (for app) //TODO move release back to 01
+        versionCode = 355320200 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
         versionName = "v5.3.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
