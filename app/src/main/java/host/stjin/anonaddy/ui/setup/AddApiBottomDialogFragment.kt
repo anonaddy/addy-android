@@ -139,7 +139,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
     }
 
     private fun verifyKey(context: Context) {
-        var apiKey = binding.bsSetupApikeyTiet.text.toString()
+        var apiKey = binding.bsSetupApikeyTiet.text.toString().trim()
         val baseUrl = binding.bsSetupInstanceTiet.text.toString()
 
         binding.bsSetupInstanceTil.error = null

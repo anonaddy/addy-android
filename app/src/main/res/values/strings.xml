@@ -47,7 +47,7 @@
     <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
     <string name="next">Next</string>
-    <string name="sign_up">Sign up</string>
+    <string name="get_started">Get started</string>
     <string name="add_alias_desc">Other aliases e.g. alias@%s.addy.io or .me can also be created automatically when they receive their first email</string>
     <string name="description">Description</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
@@ -612,7 +612,6 @@
     <string name="notify_subscription_expiry_feature_section_desc">Receive a notification 7 days before your subscription expires</string>
     <string name="update_subscription_now">Update subscription now</string>
     <string name="update_subscription_now_desc">Extend or upgrade your subscription, switch to a card subscription or redeem voucher codes</string>
-    <string name="subscription_expiry_date_self_hosted">You are using a self-hosted instance of addy.io, subscriptions do not apply to self-hosted instances</string>
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
@@ -700,7 +699,6 @@
     <string name="email_replies">Email replies</string>
     <string name="email_sent">Email sent</string>
     <string name="total_recipients">Total recipients</string>
-    <string name="feature_not_available_hosted">This feature is only available on hosted instances</string>
     <string name="open_link">Open link</string>
     <string name="app_not_setup">App has not been setup</string>
     <string name="app_not_setup_desc">Open the addy.io app and setup your account to use this feature</string>

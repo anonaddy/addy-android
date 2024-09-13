@@ -69,19 +69,11 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
     }
 
     private fun checkSubscriptionExpiry() {
-        if (AddyIo.isUsingHostedInstance) {
             lifecycleScope.launch {
                 networkHelper.getUserResource { user: UserResource?, _: String? ->
                     setSubscriptionInfoText(user)
                 }
             }
-        } else {
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =
-                resources.getString(R.string.subscription_expiry_date_self_hosted)
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setLayoutEnabled(false)
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.setLayoutEnabled(false)
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setDescription(resources.getString(R.string.subscription_expiry_date_self_hosted))
-        }
     }
 
     @SuppressLint("StringFormatInvalid") // Suppress StringFormatInvalid, the gplayless version accepts 2 parameters where the gplay version only accepts 1

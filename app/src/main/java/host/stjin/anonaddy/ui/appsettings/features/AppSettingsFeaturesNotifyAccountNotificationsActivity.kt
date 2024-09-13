@@ -38,15 +38,9 @@ class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
         )
 
         loadSettings()
+        setOnClickListeners()
+        setOnSwitchListeners()
 
-        if (AddyIo.isUsingHostedInstance) {
-            setOnClickListeners()
-            setOnSwitchListeners()
-        } else {
-            binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setLayoutEnabled(false)
-            binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setDescription(this.resources.getString(R.string.feature_not_available_hosted))
-            binding.activityAppSettingsFeaturesNotifyAccountNotificationsActivity.visibility = View.GONE
-        }
 
     }
 

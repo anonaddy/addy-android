@@ -99,7 +99,7 @@
                     style="@style/MaterialButtonSecondaryDark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sign_up" />
+                    android:text="@string/get_started" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
