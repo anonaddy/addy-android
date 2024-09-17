@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_manage_subscription_CL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appsettings_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+    <include android:id="@+id/fragment_subscription_other_platform" android:visibility="gone" layout="@layout/fragment_subscription_other_platform" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/activity_manage_subscription_NSV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Segmented Control for Subscription Type -->
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/subscriptionTypeGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:checkedButton="@id/annuallyButton"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/annuallyButton"
+                    style="@style/AddyIoMaterialToggleButtonAlternative"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/annually" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/monthlyButton"
+                    style="@style/AddyIoMaterialToggleButtonAlternative"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/monthly" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+                <LinearLayout
+                    android:id="@+id/productsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+            <!-- Why Subscribe Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/why_subscribe"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/featuresList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
+
+            <!-- Restore Purchases Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/restorePurchasesButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/restore_purchases"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

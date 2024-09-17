@@ -65,6 +65,7 @@ object AddyIo {
 
     // Hosted only
     val API_URL_ACCOUNT_NOTIFICATIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/account-notifications" }
+    val API_URL_NOTIFY_SUBSCRIPTION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/notify-subscription" }
 
 
     // Github built-in updater

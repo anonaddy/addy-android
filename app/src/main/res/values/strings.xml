@@ -610,8 +610,6 @@
     <string name="feature_subscription_expiry_notification">Subscription expiry notification</string>
     <string name="feature_subscription_expiry_notification_desc">Receive a notification 7 days before your subscription expires to remind you to renew your subscription.\n\nThese notifications will reappear every day until the subscription has been renewed</string>
     <string name="notify_subscription_expiry_feature_section_desc">Receive a notification 7 days before your subscription expires</string>
-    <string name="update_subscription_now">Update subscription now</string>
-    <string name="update_subscription_now_desc">Extend or upgrade your subscription, switch to a card subscription or redeem voucher codes</string>
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
@@ -702,5 +700,16 @@
     <string name="open_link">Open link</string>
     <string name="app_not_setup">App has not been setup</string>
     <string name="app_not_setup_desc">Open the addy.io app and setup your account to use this feature</string>
+    <string name="manage_subscription">Manage subscription</string>
+    <string name="manage_subscription_desc">Switch plan or duration term</string>
+    <string name="subscription_other_platform_title_desc">To subscribe via the Google Play Store, please cancel your existing subscription on the other platform where it\'s currently managed</string>
+    <string name="annually">Annually</string>
+    <string name="monthly">Monthly</string>
+    <string name="why_subscribe">Why subscribe?</string>
+    <string name="restore_purchases">Restore purchases</string>
+    <string name="subscribe_now">Subscribe Now</string>
+    <string name="price_not_available">Price not available</string>
+    <string name="subscription_processing_failed">Processing subscription failed</string>
+    <string name="subscription_processing_failed_desc">Something went wrong communicating your order to the server. Please take a screenshot of the following information and contact addy.io\n\nUserId: %1$s\nTransactionId: %2$s\nProductId: %3$s</string>
 
 </resources>

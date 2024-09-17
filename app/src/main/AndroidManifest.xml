@@ -288,6 +288,9 @@
             android:name=".ui.appsettings.AppSettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.ManageSubscriptionActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

@@ -59,15 +59,6 @@
                     app:sectionSwitchChecked="false"
                     app:sectionTitle="@string/enable_feature" />
 
-                <host.stjin.anonaddy.ui.customviews.SectionView
-                    android:id="@+id/activity_app_settings_features_notify_subscription_expiry_update_subscription"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:sectionDescription="@string/update_subscription_now_desc"
-                    app:sectionShowSwitch="false"
-                    app:sectionSwitchChecked="false"
-                    app:sectionTitle="@string/update_subscription_now" />
-
 
             </LinearLayout>
 

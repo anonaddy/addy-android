@@ -52,21 +52,11 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
 
         setSubscriptionInfoText((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource) // Set this data right away for visuals
         checkSubscriptionExpiry()
-        checkGooglePlayGuidelines()
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
     }
 
-    private fun checkGooglePlayGuidelines() {
-        // Only show the renew button when not-google play version
-        // https://support.google.com/googleplay/android-developer/answer/13321562
-        if (BuildConfig.FLAVOR == "gplay") {
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.visibility = View.GONE
-        } else {
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.visibility = View.VISIBLE
-        }
-    }
 
     private fun checkSubscriptionExpiry() {
             lifecycleScope.launch {
@@ -138,17 +128,6 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
             override fun onClick() {
                 forceSwitch = true
                 binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.getSwitchChecked())
-            }
-        })
-
-        // This section is only visible in the gplayless version
-        binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "${AddyIo.API_BASE_URL}/settings/subscription"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
-                startActivity(i)
             }
         })
     }

@@ -166,6 +166,7 @@ dependencies {
 val gplayImplementation by configurations
 dependencies {
     gplayImplementation("com.google.android.gms:play-services-wearable:18.2.0")
+    gplayImplementation("com.android.billingclient:billing-ktx:7.0.0")
 }
 
 // Backgroundworker
@@ -186,6 +187,5 @@ dependencies {
 
 // Edge-To-Edge
 dependencies {
-    // Kotlin
     implementation("androidx.activity:activity-ktx:1.9.1")
 }

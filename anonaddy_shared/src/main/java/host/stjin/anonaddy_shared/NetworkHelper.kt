@@ -34,6 +34,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_FAILED_DELIVERIES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_INLINE_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_NOTIFY_SUBSCRIPTION
 import host.stjin.anonaddy_shared.AddyIo.API_URL_PROTECTED_HEADERS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_KEYS
@@ -4853,6 +4854,68 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "getAllAccountNotifications",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
+    suspend fun notifyServerForSubscriptionChange(
+        callback: (UserResource?, String?) -> Unit,
+        purchaseToken: String,
+        subscriptionId: String,
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("purchaseToken", purchaseToken)
+        json.put("subscriptionId", subscriptionId)
+
+
+        val (_, response, result) = Fuel.post(API_URL_NOTIFY_SUBSCRIPTION)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            201 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleUserResource::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "notifyServerForSubscriptionChange",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )

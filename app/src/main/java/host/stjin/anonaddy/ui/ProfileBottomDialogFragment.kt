@@ -67,7 +67,16 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         checkForUpdates()
         checkForPermissions()
         tintSettingsIcon()
+        checkForHostedInstance()
 
+    }
+
+    private fun checkForHostedInstance() {
+        if (AddyIo.isUsingHostedInstance) {
+            binding.mainProfileSelectDialogManageSubscription.visibility = View.VISIBLE
+        } else {
+            binding.mainProfileSelectDialogManageSubscription.visibility = View.GONE
+        }
     }
 
     private fun checkForPermissions() {
@@ -144,6 +153,19 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             i.data = Uri.parse(url)
             startActivity(i)
         }
+
+        binding.mainProfileSelectDialogManageSubscription.setOnClickListener {
+            if (BuildConfig.FLAVOR == "gplay") {
+                val intent = Intent(activity, ManageSubscriptionActivity::class.java)
+                startActivity(intent)
+            } else {
+                val url = "${AddyIo.API_BASE_URL}/settings/subscription"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+
+        }
     }
 
     private fun setInfo() {
@@ -171,10 +193,12 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                 resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
 
             binding.mainProfileSelectDialogCardSubscriptionUntil.text =
-                resources.getString(R.string.subscription_user_until, DateTimeUtils.turnStringIntoLocalString(
-                    (activity?.application as AddyIoApp).userResource.subscription_ends_at,
-                    DateTimeUtils.DatetimeFormat.DATE
-                ))
+                resources.getString(
+                    R.string.subscription_user_until, DateTimeUtils.turnStringIntoLocalString(
+                        (activity?.application as AddyIoApp).userResource.subscription_ends_at,
+                        DateTimeUtils.DatetimeFormat.DATE
+                    )
+                )
 
         } else {
             binding.mainProfileSelectDialogCardLL.visibility = View.GONE
