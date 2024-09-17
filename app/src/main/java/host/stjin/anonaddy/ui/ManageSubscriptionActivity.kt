@@ -107,10 +107,6 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
                 .setProductId("lite_yearly")
                 .setProductType(BillingClient.ProductType.SUBS)
                 .build(),
-            QueryProductDetailsParams.Product.newBuilder()
-                .setProductId("lite_monthly")
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build()
         )
 
         params.setProductList(productList).let { queryParams ->
