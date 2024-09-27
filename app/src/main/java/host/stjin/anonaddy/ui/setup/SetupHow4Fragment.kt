@@ -13,7 +13,7 @@ import host.stjin.anonaddy.databinding.FragmentSetupHow4Binding.inflate
 import host.stjin.anonaddy.utils.InsetUtil
 
 
-class SetupHow4Fragment : Fragment() {
+class SetupHow4Fragment : Fragment(), RegistrationFormBottomDialogFragment.AddRegistrationFormBottomDialogFragmentListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +24,9 @@ class SetupHow4Fragment : Fragment() {
         val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
         returnTransition = backward
     }
+
+    private var registrationFormBottomDialogFragment: RegistrationFormBottomDialogFragment =
+        RegistrationFormBottomDialogFragment.newInstance()
 
     private var _binding: FragmentSetupHow4Binding? = null
     private val binding get() = _binding!!
@@ -38,11 +41,12 @@ class SetupHow4Fragment : Fragment() {
         val root = binding.root
 
         binding.setupHow4ButtonNext.setOnClickListener {
-            val url = "https://app.addy.io/register"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            startActivity(i)
-            (activity as SetupNewActivity).finish()
+            if (!registrationFormBottomDialogFragment.isAdded) {
+                registrationFormBottomDialogFragment.show(
+                    childFragmentManager,
+                    "registrationFormBottomDialogFragment"
+                )
+            }
         }
 
         binding.setupHow4Iv.setOnClickListener {
@@ -55,5 +59,9 @@ class SetupHow4Fragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onRegistered() {
+        (activity as SetupNewActivity).finish()
     }
 }

@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 35 + v5.3.2 + release 01 + 00 (for app)
-        versionCode = 355330100 // https://developer.android.com/training/wearables/packaging
+        // SDK 35 + v5.4.0 + release 01 + 00 (for app)
+        versionCode = 355400100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
-        versionName = "v5.3.3"
+        versionName = "v5.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -98,11 +98,9 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.1")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.1")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -112,7 +110,7 @@ dependencies {
 //https://developer.android.com/studio/write/java8-support#library-desugaring
 // For using java.time pre-oreo
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 }
 
 
@@ -166,7 +164,7 @@ dependencies {
 val gplayImplementation by configurations
 dependencies {
     gplayImplementation("com.google.android.gms:play-services-wearable:18.2.0")
-    gplayImplementation("com.android.billingclient:billing-ktx:7.0.0")
+    gplayImplementation("com.android.billingclient:billing-ktx:7.1.0")
 }
 
 // Backgroundworker
@@ -182,10 +180,10 @@ dependencies {
 // Activity Embedding
 dependencies {
     implementation("androidx.window:window:1.3.0")
-    implementation("androidx.startup:startup-runtime:1.1.1")
+    implementation("androidx.startup:startup-runtime:1.2.0")
 }
 
 // Edge-To-Edge
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.9.1")
+    implementation("androidx.activity:activity-ktx:1.9.2")
 }

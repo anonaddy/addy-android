@@ -24,6 +24,7 @@ open class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
             // Here, you might only want to apply the bottom inset to avoid extra padding on top or sides
             val bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
             v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, v.paddingBottom + bottomInset.bottom)
+            view.setOnApplyWindowInsetsListener(null)
             WindowInsetsCompat.CONSUMED
         }
     }

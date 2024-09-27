@@ -9,10 +9,10 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.2.3
+    // 1.3.0
     var MINIMUMVERSIONCODEMAJOR = 1
-    var MINIMUMVERSIONCODEMINOR = 2
-    var MINIMUMVERSIONCODEPATCH = 3
+    var MINIMUMVERSIONCODEMINOR = 3
+    var MINIMUMVERSIONCODEPATCH = 0
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -63,9 +63,19 @@ object AddyIo {
     // 1.0.0
     val API_URL_CHART_DATA: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/chart-data" }
 
+
+    // 1.3.0
+    val API_URL_LOGIN: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/login" }
+    val API_URL_LOGOUT: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/logout" }
+    val API_URL_LOGIN_MFA: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/mfa" }
+    val API_URL_REGISTER: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/register" }
+    val API_URL_LOGIN_VERIFY: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/verify" }
+    val API_URL_DELETE_ACCOUNT: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/delete-account" }
+
     // Hosted only
     val API_URL_ACCOUNT_NOTIFICATIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/account-notifications" }
     val API_URL_NOTIFY_SUBSCRIPTION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/notify-subscription" }
+
 
 
     // Github built-in updater

@@ -76,7 +76,7 @@ class AppSettingsWearOSActivity : BaseActivity() {
             title = resources.getString(R.string.wearable_api_not_available),
             message = resources.getString(R.string.wearable_api_not_available_desc),
             icon = R.drawable.ic_brand_google_play,
-            positiveButtonText = resources.getString(R.string.i_understand),
+            positiveButtonText = resources.getString(R.string.understood),
             positiveButtonAction = {
                 finish()
             }
@@ -90,7 +90,7 @@ class AppSettingsWearOSActivity : BaseActivity() {
             title = resources.getString(R.string.wearable_api_not_available),
             message = resources.getString(R.string.gplayless_wearable_api_not_available_desc),
             icon = R.drawable.ic_brand_google_play,
-            positiveButtonText = resources.getString(R.string.i_understand),
+            positiveButtonText = resources.getString(R.string.understood),
             positiveButtonAction = {
                 finish()
             }

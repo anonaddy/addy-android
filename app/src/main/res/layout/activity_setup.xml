@@ -84,7 +84,7 @@
             android:layout_marginBottom="8dp"
             android:drawableEnd="@drawable/ic_key"
             android:gravity="center_vertical"
-            android:text="@string/got_the_api_key" />
+            android:text="@string/get_started" />
 
 
         <LinearLayout

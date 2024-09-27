@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="10dp"
+    android:layout_marginBottom="10dp"
     app:cardCornerRadius="15dp"
     app:cardElevation="5dp">
 
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            tools:text="@tools:sample/lorem/random"
+            tools:text="@tools:sample/lorem"
             android:layout_marginTop="8dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -45,7 +45,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/subscribe_now"
-            android:textColor="@android:color/white"
             android:layout_marginTop="16dp"
 />
 

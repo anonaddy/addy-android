@@ -51,13 +51,15 @@ class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBott
         listener = parentFragment as AddUsernameBottomDialogListener
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.bsAddusernameUsernameDesc.text =
-                (Html.fromHtml(requireContext().resources.getString(R.string.add_username_desc, usernameLimit), Html.FROM_HTML_MODE_COMPACT))
-        } else {
-            binding.bsAddusernameUsernameDesc.text =
-                (Html.fromHtml(requireContext().resources.getString(R.string.add_username_desc, usernameLimit)))
-        }
+        //TODO TEST IF THIS IS INDEED NOT REQUIRED ON ANDROID 14 AND OLDER
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            binding.bsAddusernameUsernameDesc.text =
+//                (Html.fromHtml(requireContext().resources.getString(R.string.add_username_desc, usernameLimit), Html.FROM_HTML_MODE_COMPACT))
+//        } else {
+//            binding.bsAddusernameUsernameDesc.text =
+//                (Html.fromHtml(requireContext().resources.getString(R.string.add_username_desc, usernameLimit)))
+//        }
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         binding.bsAddusernameUsernameAddUsernameButton.setOnClickListener(this)

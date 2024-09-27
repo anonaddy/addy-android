@@ -12,79 +12,162 @@
         android:id="@+id/appsettings_toolbar"
         layout="@layout/custom_toolbar_one_handed" />
 
-    <include android:id="@+id/fragment_subscription_other_platform" android:visibility="gone" layout="@layout/fragment_subscription_other_platform" />
+    <include
+        android:id="@+id/fragment_subscription_other_platform"
+        layout="@layout/fragment_subscription_other_platform"
+        android:visibility="gone" />
 
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_manage_subscription_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/activity_manage_subscription_LL1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="24dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/layout_padding_top"
+            android:paddingStart="@dimen/layout_padding"
+            android:paddingEnd="@dimen/layout_padding">
 
             <!-- Segmented Control for Subscription Type -->
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/subscriptionTypeGroup"
                 android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
-                app:checkedButton="@id/annuallyButton"
+                app:checkedButton="@id/proButton"
                 app:singleSelection="true">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/annuallyButton"
+                    android:id="@+id/proButton"
                     style="@style/AddyIoMaterialToggleButtonAlternative"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/annually" />
+                    android:layout_weight="1"
+                    android:text="@string/pro_plan" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/monthlyButton"
+                    android:id="@+id/liteButton"
                     style="@style/AddyIoMaterialToggleButtonAlternative"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/monthly" />
+                    android:layout_weight="1"
+                    android:text="@string/lite_plan" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
+            <LinearLayout
+                android:id="@+id/activity_manage_subscription_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <LinearLayout
-                    android:id="@+id/productsContainer"
-                    android:layout_width="match_parent"
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                </LinearLayout>
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:padding="16dp" />
+            </LinearLayout>
 
-            <!-- Why Subscribe Section -->
+        <LinearLayout
+            android:id="@+id/activity_manage_subscription_products_and_overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+
+
             <TextView
+                android:layout_marginTop="32dp"
+                style="@style/titleTextView"
+                android:alpha="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/why_subscribe"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textAllCaps="false"
+                android:textColor="@color/BlackWhite" />
 
             <LinearLayout
-                android:id="@+id/featuresList"
-                android:layout_width="match_parent"
+                android:id="@+id/activity_manage_subscription_features_LL"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:orientation="vertical">
+
             </LinearLayout>
 
-            <!-- Restore Purchases Button -->
+            <LinearLayout
+                android:id="@+id/productsContainer"
+                android:layout_width="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/product_item" />
+
+                <include layout="@layout/product_item" />
+
+                <include layout="@layout/product_item" />
+
+                <include layout="@layout/product_item" />
+
+
+            </LinearLayout>
+</LinearLayout>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/restorePurchasesButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/restore_purchases"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="16dp"
+                android:text="@string/restore_purchases" />
 
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/manageSubscriptionButton"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_subscription" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/privacyPolicyButton"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/privacy_policy" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/termsOfServiceButton"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/terms_of_service" />
+            </LinearLayout>
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

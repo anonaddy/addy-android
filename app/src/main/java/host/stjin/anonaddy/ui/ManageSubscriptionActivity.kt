@@ -1,13 +1,16 @@
 package host.stjin.anonaddy.ui
 
-import android.app.ActivityManager
-import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
@@ -36,6 +39,8 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
     private lateinit var settingsManager: SettingsManager
     private lateinit var encryptedSettingsManager: SettingsManager
 
+    private var currentSubscriptionSku: String? = null
+
     private lateinit var binding: ActivityManageSubscriptionBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +59,7 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
         )
 
         setupBillingClient()
-        setupUI()
+        updateUi()
 
         if ((application as AddyIoApp).userResource.subscription_type == "google" || (application as AddyIoApp).userResource.subscription_type == null) {
             binding.activityManageSubscriptionNSV.visibility = View.VISIBLE
@@ -66,7 +71,7 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
 
     }
 
-    private var selectedTab = "annually"
+    private var selectedTab = "pro"
     private lateinit var billingClient: BillingClient
     private var products: List<ProductDetails> = emptyList()
 
@@ -79,9 +84,10 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
 
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                if (billingResult.responseCode == BillingResponseCode.OK) {
                     // Here you can query products
                     queryProducts()
+                    getPurchasedItem()
                 }
             }
 
@@ -90,6 +96,24 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
                 // Google Play by calling the startConnection() method.
             }
         })
+    }
+
+    private fun getPurchasedItem(){
+        // After initializing and successfully connecting the BillingClient:
+        billingClient.queryPurchasesAsync(BillingClient.ProductType.SUBS) { billingResult, purchases ->
+            if (billingResult.responseCode == BillingResponseCode.OK) {
+                for (purchase in purchases) {
+                    // Handle each purchase
+                    currentSubscriptionSku = purchase.skus[0] // Again, assuming one SKU per purchase for simplicity
+                    Log.d("Subscription", "Current subscribed productId: $currentSubscriptionSku")
+
+                    updateProductsDisplay()
+                }
+            } else {
+                // Handle error or no purchase found
+                Log.e("Billing", "Error or no subscriptions found: " + billingResult.debugMessage)
+            }
+        }
     }
 
     private fun queryProducts() {
@@ -111,7 +135,7 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
 
         params.setProductList(productList).let { queryParams ->
             billingClient.queryProductDetailsAsync(queryParams.build()) { billingResult, productDetailsList ->
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                if (billingResult.responseCode == BillingResponseCode.OK) {
                     products = productDetailsList
                     runOnUiThread { updateProductsDisplay() }
                 }
@@ -119,39 +143,135 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
         }
     }
 
-    private fun setupUI() {
-        binding.annuallyButton.setOnClickListener {
-            binding.annuallyButton.isChecked = true
-            changeSubscriptionType("annually")
+    private fun updateUi() {
+        binding.proButton.setOnClickListener {
+            binding.proButton.isChecked = true
+            changeSubscriptionPlan("pro")
         }
-        binding.monthlyButton.setOnClickListener {
-            binding.monthlyButton.isChecked = true
-            changeSubscriptionType("monthly")
+        binding.liteButton.setOnClickListener {
+            binding.liteButton.isChecked = true
+            changeSubscriptionPlan("lite")
         }
+        binding.privacyPolicyButton.setOnClickListener {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/anonaddy/legal/blob/main/Privacy%20Policy.md")
+            )
+            startActivity(browserIntent)        }
+        binding.termsOfServiceButton.setOnClickListener {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/anonaddy/legal/blob/main/Terms%20Of%20Service.md")
+            )
+            startActivity(browserIntent)        }
         binding.restorePurchasesButton.setOnClickListener { restorePurchases() }
+        binding.manageSubscriptionButton.setOnClickListener {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/account/subscriptions?package=host.stjin.anonaddy")
+            )
+            startActivity(browserIntent)
+        }
         updateProductsDisplay()
+        setupFeaturesView()
     }
 
-    private fun changeSubscriptionType(type: String) {
+
+    private lateinit var featuresContainer: LinearLayout
+    private fun setupFeaturesView() {
+        featuresContainer = findViewById(R.id.activity_manage_subscription_features_LL)
+
+        val items = if (binding.proButton.isChecked) {
+            listOf(this.resources.getString(R.string.why_subscribe_reason_1_pro),
+                this.resources.getString(R.string.why_subscribe_reason_8_pro),
+                this.resources.getString(R.string.why_subscribe_reason_2_pro),
+                this.resources.getString(R.string.why_subscribe_reason_3_pro),
+                this.resources.getString(R.string.why_subscribe_reason_4_pro),
+                this.resources.getString(R.string.why_subscribe_reason_5_pro),
+                this.resources.getString(R.string.why_subscribe_reason_6_pro),
+                this.resources.getString(R.string.why_subscribe_reason_13),
+                this.resources.getString(R.string.why_subscribe_reason_12),
+                this.resources.getString(R.string.why_subscribe_reason_9),
+                this.resources.getString(R.string.why_subscribe_reason_10),
+                this.resources.getString(R.string.why_subscribe_reason_11),
+                this.resources.getString(R.string.why_subscribe_reason_7_pro),
+                this.resources.getString(R.string.why_subscribe_reason_14))
+
+        } else if (binding.liteButton.isChecked) {
+            listOf(this.resources.getString(R.string.why_subscribe_reason_1_lite),
+                this.resources.getString(R.string.why_subscribe_reason_8_lite),
+                this.resources.getString(R.string.why_subscribe_reason_2_lite),
+                this.resources.getString(R.string.why_subscribe_reason_3_lite),
+                this.resources.getString(R.string.why_subscribe_reason_4_lite),
+                this.resources.getString(R.string.why_subscribe_reason_5_lite),
+                this.resources.getString(R.string.why_subscribe_reason_6_lite),
+                this.resources.getString(R.string.why_subscribe_reason_13),
+                this.resources.getString(R.string.why_subscribe_reason_12),
+                this.resources.getString(R.string.why_subscribe_reason_9),
+                this.resources.getString(R.string.why_subscribe_reason_10),
+                this.resources.getString(R.string.why_subscribe_reason_11),
+                this.resources.getString(R.string.why_subscribe_reason_7_lite),
+                this.resources.getString(R.string.why_subscribe_reason_14))
+        } else {
+            listOf(this.resources.getString(R.string.why_subscribe_reason_9),
+                this.resources.getString(R.string.why_subscribe_reason_10),
+                this.resources.getString(R.string.why_subscribe_reason_11),
+                this.resources.getString(R.string.why_subscribe_reason_12),
+                this.resources.getString(R.string.why_subscribe_reason_13),
+                this.resources.getString(R.string.why_subscribe_reason_14))
+        }
+
+        setupFeaturesView(items)
+    }
+
+    private fun setupFeaturesView(items: List<String>) {
+        featuresContainer.removeAllViews()
+
+        for (item in items) {
+            val itemLayout = layoutInflater.inflate(R.layout.features_item, featuresContainer, false)
+            val textView: TextView = itemLayout.findViewById(R.id.itemText)
+            textView.text = item
+
+            featuresContainer.addView(itemLayout)
+        }
+    }
+
+    private fun changeSubscriptionPlan(type: String) {
         selectedTab = type
         updateProductsDisplay()
+        setupFeaturesView()
     }
 
     private fun updateProductsDisplay() {
-        binding.productsContainer.removeAllViews()
-        products.filter { it.productId.endsWith(selectedTab) }.forEach { productDetails ->
+        //binding.productsContainer.removeAllViews()
+        products.filter { it.productId.startsWith(selectedTab) }.forEach { productDetails ->
             val productView = layoutInflater.inflate(R.layout.product_item, binding.productsContainer, false)
             productView.findViewById<TextView>(R.id.product_item_name).text = productDetails.name
             productView.findViewById<TextView>(R.id.product_item_desc).text = productDetails.description
             productView.findViewById<TextView>(R.id.product_item_price).text = productDetails.oneTimePurchaseOfferDetails?.formattedPrice ?: this.resources.getString(R.string.price_not_available)
 
             val buyButton = productView.findViewById<MaterialButton>(R.id.product_item_button)
-            buyButton.text = getString(R.string.subscribe_now)
-            buyButton.setOnClickListener {
-                launchPurchaseFlow(productDetails)
+
+            if (currentSubscriptionSku == productDetails.productId) {
+                buyButton.text = getString(R.string.active)
+                buyButton.isEnabled = false
+                buyButton.alpha = 0.8f
+                buyButton.setOnClickListener(null)
+            } else {
+                buyButton.text = getString(R.string.subscribe_now)
+                buyButton.setOnClickListener {
+                    launchPurchaseFlow(productDetails)
+                }
+
             }
 
             binding.productsContainer.addView(productView)
+        }
+
+
+        if (products.isNotEmpty()) {
+            binding.activityManageSubscriptionProductsAndOverview.visibility = View.VISIBLE
+            binding.activityManageSubscriptionProgressbar.visibility = View.GONE
         }
     }
 
@@ -168,7 +288,7 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
     }
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+        if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
                 handlePurchase(purchase)
             }
@@ -191,7 +311,7 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
                     .setPurchaseToken(purchase.purchaseToken)
                     .build()
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    if (billingResult.responseCode == BillingResponseCode.OK) {
                         lifecycleScope.launch {
                             notifyInstanceAboutSubscription(purchase)
                         }
@@ -234,7 +354,7 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
             .build()
 
         billingClient.queryPurchasesAsync(params) { billingResult, purchasesList ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            if (billingResult.responseCode == BillingResponseCode.OK) {
                 purchasesList.forEach { purchase ->
                     handlePurchase(purchase)
                 }

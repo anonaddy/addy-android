@@ -198,10 +198,6 @@
 
                 <!-- If new URLS are added here, also add them to the webintentmanager -->
 
-
-                <!-- Self hosted instances (Only work on < SDK31 devices) (Google....sigh...why) -->
-                <data android:host="*"/>
-                <data android:pathPrefix="/deactivate"/>
                 <!-- END -->
 
 
@@ -214,8 +210,6 @@
                     android:pathPrefix="/deactivate" />
                 <!-- END -->
 
-
-                <!-- END -->
             </intent-filter>
         </activity>
         <activity
@@ -331,7 +325,34 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.setup.SetupActivity"
-            android:theme="@style/AppTheme.Setup" />
+            android:exported="true"
+            android:theme="@style/AppTheme.Setup">
+            <intent-filter android:autoVerify="true" android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "https://*/deactivate” -->
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+
+                <!-- If new URLS are added here, also add them to the webintentmanager -->
+
+                <!-- END -->
+
+
+                <!-- Hosted hosted instances (Works on > SDK31 devices) -->
+                <data
+                    android:host="app.addy.io"
+                    android:pathPrefix="/api/auth/verify" />
+                <data
+                    android:host="app.anonaddy.com"
+                    android:pathPrefix="/api/auth/verify" />
+                <!-- END -->
+
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.setup.SetupNewActivity"
             android:theme="@style/AppTheme.NoActionBar" />

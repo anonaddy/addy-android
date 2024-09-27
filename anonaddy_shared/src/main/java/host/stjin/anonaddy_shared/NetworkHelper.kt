@@ -34,11 +34,14 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_FAILED_DELIVERIES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_INLINE_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN_VERIFY
+import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGOUT
 import host.stjin.anonaddy_shared.AddyIo.API_URL_NOTIFY_SUBSCRIPTION
 import host.stjin.anonaddy_shared.AddyIo.API_URL_PROTECTED_HEADERS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_RESEND
+import host.stjin.anonaddy_shared.AddyIo.API_URL_REGISTER
 import host.stjin.anonaddy_shared.AddyIo.API_URL_REORDER_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_USERNAMES
@@ -47,20 +50,22 @@ import host.stjin.anonaddy_shared.AddyIo.lazyMgr
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AccountNotifications
 import host.stjin.anonaddy_shared.models.AccountNotificationsArray
+import host.stjin.anonaddy_shared.models.AddyChartData
 import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.ApiTokenDetails
 import host.stjin.anonaddy_shared.models.BulkActionResponse
 import host.stjin.anonaddy_shared.models.BulkAliasesArray
-import host.stjin.anonaddy_shared.models.AddyChartData
 import host.stjin.anonaddy_shared.models.DomainOptions
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.models.DomainsArray
+import host.stjin.anonaddy_shared.models.Error
 import host.stjin.anonaddy_shared.models.ErrorHelper
 import host.stjin.anonaddy_shared.models.FailedDeliveries
 import host.stjin.anonaddy_shared.models.FailedDeliveriesArray
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.Login
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.RecipientsArray
 import host.stjin.anonaddy_shared.models.Rules
@@ -191,6 +196,155 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+    suspend fun registration(
+        callback: (String?) -> Unit,
+        username: String,
+        email: String,
+        password: String,
+        apiExpiration: String) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("username", username)
+        json.put("email", email)
+        json.put("password", password)
+        json.put("device_name", "addy.io for Android")
+        json.put("expiration", if (apiExpiration == "never") null else apiExpiration)
+
+
+        val (_, response, result) = Fuel.post(API_URL_REGISTER)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+            422 -> {
+                val data = response.data.toString(Charsets.UTF_8)
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, Error::class.java)
+                callback(addyIoData.message)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "registration",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+suspend fun verifyRegistration(
+        callback: (String?, String?) -> Unit,
+        query: String) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.post("${API_URL_LOGIN_VERIFY}?${query}")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, Login::class.java)
+                callback(addyIoData.api_key, null)
+            }
+            422, 404, 403 -> {
+                val data = response.data.toString(Charsets.UTF_8)
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, Error::class.java)
+                callback(null, addyIoData.message)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "verifyRegistration",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun logout(callback: (String?) -> Unit) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+
+        val (_, response, result) = Fuel.post(API_URL_LOGOUT)
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "logout",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(null)
+            }
+        }
+    }
 
     suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (String?) -> Unit) {
         if (BuildConfig.DEBUG) {
