@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:textColor="@color/BlackWhite"
-                tools:text="@string/failed_delivery_details_text" />
+                android:text="@string/failed_delivery_details_text" />
 
             <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_failed_deliveries_delete_button"

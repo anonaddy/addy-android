@@ -29,6 +29,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_CAN_LOGIN_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CHART_DATA
+import host.stjin.anonaddy_shared.AddyIo.API_URL_DELETE_ACCOUNT
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ENCRYPTED_RECIPIENTS
@@ -201,7 +202,8 @@ class NetworkHelper(private val context: Context) {
         username: String,
         email: String,
         password: String,
-        apiExpiration: String) {
+        apiExpiration: String
+    ) {
 
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
@@ -226,12 +228,14 @@ class NetworkHelper(private val context: Context) {
             204 -> {
                 callback("204")
             }
+
             422 -> {
                 val data = response.data.toString(Charsets.UTF_8)
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(addyIoData.message)
             }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
@@ -252,9 +256,11 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
-suspend fun verifyRegistration(
+
+    suspend fun verifyRegistration(
         callback: (String?, String?) -> Unit,
-        query: String) {
+        query: String
+    ) {
 
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
@@ -273,6 +279,7 @@ suspend fun verifyRegistration(
                 val addyIoData = gson.fromJson(data, Login::class.java)
                 callback(addyIoData.api_key, null)
             }
+
             422, 404, 403 -> {
                 val data = response.data.toString(Charsets.UTF_8)
                 val gson = Gson()
@@ -294,6 +301,65 @@ suspend fun verifyRegistration(
                 )
                 callback(
                     null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun deleteAccount(
+        callback: (String?) -> Unit,
+        password: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("password", password)
+
+
+        val (_, response, result) = Fuel.post(API_URL_DELETE_ACCOUNT)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback(response.statusCode.toString())
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null)
+            }
+
+            422 -> {
+                callback(response.statusCode.toString())
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteAccount",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )
@@ -1897,7 +1963,6 @@ suspend fun verifyRegistration(
             }
         }
     }
-
 
 
     suspend fun allowRecipientToReplySend(

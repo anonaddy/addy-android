@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bs_anonaddy_instance_version_unsupported_root"
+    android:id="@+id/bs_delete_account_confirmation_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -26,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/note"
+            android:text="@string/delete_account"
             android:textAlignment="center"
             android:textColor="@color/BlackWhite"
             android:textSize="18sp" />
@@ -46,35 +47,30 @@
             android:orientation="vertical"
             android:padding="@dimen/layout_padding">
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/delete_account"
+                android:src="@drawable/ic_user_minus"
+                app:tint="@color/softRed" />
+
             <TextView
-                android:id="@+id/bs_anonaddy_instance_version_unsupported_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/BlackWhite"
                 android:layout_marginBottom="16dp"
-                android:text="@string/addyio_instance_version_unsupported" />
+                android:textAlignment="center"
+                android:text="@string/delete_account_confirmation_desc" />
 
-            <LinearLayout
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/bs_delete_account_confirmation_button"
+                style="@style/CircularProgressButtonDeleteStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_anonaddy_instance_version_unsupported_how_to_update_button"
-                    style="@style/CircularProgressButtonSecondary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/how_to_update" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_anonaddy_instance_version_unsupported_ignore_button"
-                    style="?borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/ignore_and_continue" />
-
-            </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:alpha="0.7"
+                android:text="@string/delete_failed_delivery" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

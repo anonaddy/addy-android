@@ -191,7 +191,12 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             binding.mainProfileSelectDialogCardLL.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscription.text =
                 resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
+        } else {
+            binding.mainProfileSelectDialogCardLL.visibility = View.GONE
+        }
 
+        if ((activity?.application as AddyIoApp).userResource.subscription_ends_at != null) {
+            binding.mainProfileSelectDialogCardSubscriptionUntil.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscriptionUntil.text =
                 resources.getString(
                     R.string.subscription_user_until, DateTimeUtils.turnStringIntoLocalString(
@@ -199,9 +204,8 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                         DateTimeUtils.DatetimeFormat.DATE
                     )
                 )
-
         } else {
-            binding.mainProfileSelectDialogCardLL.visibility = View.GONE
+            binding.mainProfileSelectDialogCardSubscriptionUntil.visibility = View.GONE
         }
     }
 

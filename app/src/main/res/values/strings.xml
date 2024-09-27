@@ -756,5 +756,10 @@
     <string name="registration_email_confirm_mismatch">Emails do not match</string>
     <string name="registration_password_confirm_mismatch">Passwords do not match</string>
     <string name="registration_success_verification_required">Your account is now registered! To finalize the registration, please click on the verification link sent to your email</string>
+    <string name="delete_account_confirmation_desc">Deleting your addy.io account will <b>DELETE ALL DATA</b>, this includes but it not limited to aliases, usernames, statistics, rules and failed deliveries. This data <b>CANNOT BE RESTORED</b></string>
+    <string name="delete_account_countdown">Delete account (%1$d)</string>
+    <string name="delete_account_failed">The password is incorrect, please enter the correct password</string>
+    <string name="delete_account_confirmation_alert">You are about to delete your addy.io account and EVERYTHING related to it. Please enter your password to confirm. This cannot be undone. \n\nIf account deletion is successful the app will reset</string>
+    <string name="delete_account_confirmation_password">Enter your password</string>
 
 </resources>

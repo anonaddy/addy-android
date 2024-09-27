@@ -53,6 +53,8 @@ class AppSettingsActivity : BaseActivity(),
     private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
         BackgroundServiceIntervalBottomDialogFragment.newInstance()
 
+    private val deleteAccountConfirmationBottomSheetDialog: DeleteAccountConfirmationBottomSheetDialog =
+        DeleteAccountConfirmationBottomSheetDialog.newInstance()
 
     private lateinit var settingsManager: SettingsManager
     private lateinit var encryptedSettingsManager: SettingsManager
@@ -391,7 +393,12 @@ class AppSettingsActivity : BaseActivity(),
 
         binding.activityAppSettingsSectionDeleteAccount.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                //TODO: MAKE
+                if (!deleteAccountConfirmationBottomSheetDialog.isAdded) {
+                    deleteAccountConfirmationBottomSheetDialog.show(
+                        supportFragmentManager,
+                        "deleteAccountConfirmationBottomSheetDialog"
+                    )
+                }
             }
 
         })
