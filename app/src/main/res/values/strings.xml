@@ -286,9 +286,9 @@
     <string name="qr_permissions_required">Camera permissions are required in order to scan the QR code</string>
     <string name="api_setup_qr_code_scan_desc">Tap the scanning area to start scanning</string>
     <string name="api_obtain_camera_available">Or manually enter your API key</string>
-    <string name="api_obtain">Manually enter your API key</string>
-    <string name="api_setup_qr_code_scan_wrong">This is not a valid QR code</string>
-
+    <string name="credentials">Credentials</string>
+    <string name="api_setup_qr_code_scan_wrong">QR code invalid</string>
+    <string name="api_setup_qr_code_scan_wrong_desc">Obtain the QR code in the settings page at app.addy.io (or your own hosted instance)</string>
     <string name="backgroundserviceinterval_15m">15m</string>
     <string name="backgroundserviceinterval_30m">30m</string>
     <string name="backgroundserviceinterval_1h">1h</string>
@@ -761,5 +761,12 @@
     <string name="delete_account_failed">The password is incorrect, please enter the correct password</string>
     <string name="delete_account_confirmation_alert">You are about to delete your addy.io account and EVERYTHING related to it. Please enter your password to confirm. This cannot be undone. \n\nIf account deletion is successful the app will reset</string>
     <string name="delete_account_confirmation_password">Enter your password</string>
+    <string name="login_username"><![CDATA[Username & password]]></string>
+    <string name="login_api">API key</string>
+    <string name="credentials_desc">Login using your username and password, or API key</string>
+    <string name="login">Login</string>
+    <string name="login_desc">Security key authentication is not currently supported from the mobile app, if you use a security key please use an API key to login instead</string>
+    <string name="registration_otp">One-time password</string>
+    <string name="otp_required">One-time password is required</string>
 
 </resources>

@@ -35,6 +35,8 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_DOMAIN_OPTIONS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ENCRYPTED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_FAILED_DELIVERIES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_INLINE_ENCRYPTED_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN
+import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN_MFA
 import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN_VERIFY
 import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGOUT
 import host.stjin.anonaddy_shared.AddyIo.API_URL_NOTIFY_SUBSCRIPTION
@@ -67,6 +69,7 @@ import host.stjin.anonaddy_shared.models.FailedDeliveries
 import host.stjin.anonaddy_shared.models.FailedDeliveriesArray
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.Login
+import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.RecipientsArray
 import host.stjin.anonaddy_shared.models.Rules
@@ -300,6 +303,162 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun loginMfa(
+        callback: (Login?, String?) -> Unit,
+        baseUrl: String, mfaKey: String, otp: String, xCsrfToken: String, apiExpiration: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        // Reset all values as API_BASE_URL is being set
+        lazyMgr.reset() // prop1, prop2, and prop3 all will do new lazy values on next access
+
+        // Set base URL
+        API_BASE_URL = baseUrl
+
+        val json = JSONObject()
+        json.put("mfa_key", mfaKey)
+        json.put("otp", otp)
+        json.put("device_name", "addy.io for Android")
+        json.put("expiration", if (apiExpiration == "never") null else apiExpiration)
+
+
+        val (_, response, result) = Fuel.post(API_URL_LOGIN_MFA)
+            .appendHeader(
+                    "Content-Type" to "application/json",
+                    "X-Requested-With" to "XMLHttpRequest",
+                    "Accept" to "application/json",
+                    "User-Agent" to getUserAgent(),
+                //TODO THIS DOES NOT WORK
+                    "X-CSRF-TOKEN" to xCsrfToken
+
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> { // Successfully logged in
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, Login::class.java)
+                callback(addyIoData, null)
+            }
+            422 -> { // MFA REQUIRED
+                val data = response.data.toString(Charsets.UTF_8)
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
+                callback(null, addyIoData.message)
+            }
+            401 -> { // Invalid mfa_key or mfa_key expired
+                val data = response.data.toString(Charsets.UTF_8)
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, Error::class.java)
+                callback(null, addyIoData.message)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "loginMfa",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun login(
+        callback: (Login?, LoginMfaRequired?, String?) -> Unit,
+        baseUrl: String,
+        username: String,
+        password: String,
+        apiExpiration: String
+    ) {
+
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        // Reset all values as API_BASE_URL is being set
+        lazyMgr.reset() // prop1, prop2, and prop3 all will do new lazy values on next access
+
+        // Set base URL
+        API_BASE_URL = baseUrl
+
+        val json = JSONObject()
+        json.put("username", username)
+        json.put("password", password)
+        json.put("device_name", "addy.io for Android")
+        json.put("expiration", if (apiExpiration == "never") null else apiExpiration)
+
+
+        val (_, response, result) = Fuel.post(API_URL_LOGIN)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> { // Successfully logged in
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, Login::class.java)
+                callback(addyIoData, null, null)
+            }
+            422 -> { // MFA REQUIRED
+                val data = response.data.toString(Charsets.UTF_8)
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
+                callback(null, addyIoData, null)
+            }
+            401 -> { // Login data incorrect
+                val data = response.data.toString(Charsets.UTF_8)
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, Error::class.java)
+                callback(null, null, addyIoData.message)
+            }
+            403 -> { // MFA required but is hardware key and thus not supported OR the email address has not been validated
+                val data = response.data.toString(Charsets.UTF_8)
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, Error::class.java)
+                callback(null, null, addyIoData.message)
+            }
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "login",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
                     null,
                     ErrorHelper.getErrorMessage(
                         fuelResponse

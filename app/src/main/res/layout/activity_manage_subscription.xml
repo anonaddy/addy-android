@@ -37,7 +37,6 @@
             android:paddingStart="@dimen/layout_padding"
             android:paddingEnd="@dimen/layout_padding">
 
-            <!-- Segmented Control for Subscription Type -->
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/subscriptionTypeGroup"
                 android:layout_width="match_parent"
