@@ -302,7 +302,7 @@
     <string name="notification_new_failed_delivery">Email delivery failed</string>
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
     <string name="notification_api_token_about_to_expire">Your API key is about to expire</string>
-    <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to change the API key</string>
+    <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to refresh the API key</string>
     <string name="notification_subscription_about_to_expire">Your subscription is about to expire</string>
     <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features</string>
     <string name="notification_new_account_notifications">New notification</string>
@@ -573,8 +573,8 @@
     <string name="prerequisite_disable_pgp_inline">You need to disable inline encryption before you can enable protected headers (hide subject)</string>
     <string name="prerequisite_disable_protected_headers">You need to disable protected headers (hide subject) before you can enable inline encryption</string>
     <string name="api_token_about_to_expire">API key about to expire</string>
-    <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent the app from resetting. Do you want to change the API token now?</string>
-    <string name="api_token_about_to_expire_option_1">Enter new key</string>
+    <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent the app from resetting. Do you want to refresh the API token now?</string>
+    <string name="api_token_about_to_expire_option_1">Refresh token</string>
     <string name="subscription_about_to_expire">Subscription about to expire</string>
     <string name="subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features.</string>
     <string name="subscription_about_to_expire_option_1">Renew</string>
@@ -755,7 +755,7 @@
     <string name="registration_email_confirm_mismatch">Emails do not match</string>
     <string name="registration_password_confirm_mismatch">Passwords do not match</string>
     <string name="registration_success_verification_required">Your account is now registered! To finalize the registration, please click on the verification link sent to your email</string>
-    <string name="delete_account_confirmation_desc">Deleting your addy.io account will <b>DELETE ALL DATA</b>, this includes but it not limited to aliases, usernames, statistics, rules and failed deliveries. This data <b>CANNOT BE RESTORED</b></string>
+    <string name="delete_account_confirmation_desc">Deleting your addy.io account will <b>DELETE ALL DATA</b>, this includes but is not limited to aliases, usernames, statistics, rules and failed deliveries. This data <b>CANNOT BE RESTORED</b></string>
     <string name="delete_account_countdown">Delete account (%1$d)</string>
     <string name="delete_account_failed">The password is incorrect, please enter the correct password</string>
     <string name="delete_account_confirmation_alert">You are about to delete your addy.io account and EVERYTHING related to it. Please enter your password to confirm. This cannot be undone. \n\nIf account deletion is successful the app will reset</string>

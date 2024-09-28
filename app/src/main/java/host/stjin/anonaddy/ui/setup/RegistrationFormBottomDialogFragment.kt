@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetRegistrationFormBinding
+import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import kotlinx.coroutines.launch
@@ -114,6 +115,22 @@ class RegistrationFormBottomDialogFragment: BaseBottomSheetDialogFragment(), Vie
 
         if (binding.bsRegistrationFormPasswordTiet.text.toString() != binding.bsRegistrationFormPasswordVerifyTiet.text.toString()) {
             binding.bsRegistrationFormPasswordVerifyTil.error = requireContext().resources.getString(R.string.registration_password_confirm_mismatch)
+            return
+        }
+
+        if (!CustomPatterns.EMAIL_ADDRESS.matcher(binding.bsRegistrationFormEmailTiet.text.toString())
+                .matches()
+        ) {
+            binding.bsRegistrationFormEmailTil.error =
+                requireContext().resources.getString(R.string.not_a_valid_address)
+            return
+        }
+
+        if (!CustomPatterns.EMAIL_ADDRESS.matcher(binding.bsRegistrationFormEmailVerifyTiet.text.toString())
+                .matches()
+        ) {
+            binding.bsRegistrationFormEmailVerifyTiet.error =
+                requireContext().resources.getString(R.string.not_a_valid_address)
             return
         }
 
