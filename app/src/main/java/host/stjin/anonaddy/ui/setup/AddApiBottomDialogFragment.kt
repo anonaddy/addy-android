@@ -7,19 +7,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.Visibility
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -31,13 +28,12 @@ import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
     private var codeScanner: CodeScanner? = null
     private lateinit var listener: AddApiBottomDialogListener
-    private var networkHelper: NetworkHelper? = null
+    private lateinit var networkHelper: NetworkHelper
 
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -230,7 +226,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             }
 
 
-            val networkHelper = NetworkHelper(requireContext())
             if (otpMfaObject != null){
                 if (binding.bsSetupApikeyOtpTiet.text.isNullOrEmpty()){
                     binding.bsSetupApikeyOtpTil.error = requireContext().resources.getString(R.string.otp_required)
@@ -261,7 +256,8 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     mfaKey = otpMfaObject!!.mfa_key,
                     otp = binding.bsSetupApikeyOtpTiet.text.toString(),
                     xCsrfToken = otpMfaObject!!.csrf_token,
-                    apiExpiration = expirationOption
+                    apiExpiration = expirationOption,
+                    cookies = otpMfaObject!!.cookie
                 )
 
             } else {
@@ -319,7 +315,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
 
     private fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            networkHelper?.verifyApiKey(baseUrl, apiKey) { result ->
+            networkHelper.verifyApiKey(baseUrl, apiKey) { result ->
                 if (result == "200") {
                     listener.onClickSave(baseUrl, apiKey)
                 } else {

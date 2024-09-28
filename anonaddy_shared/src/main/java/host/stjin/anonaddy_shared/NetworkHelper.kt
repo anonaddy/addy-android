@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.einmalfel.earl.EarlParser
 import com.einmalfel.earl.Feed
 import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.Headers
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
@@ -314,7 +315,7 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun loginMfa(
         callback: (Login?, String?) -> Unit,
-        baseUrl: String, mfaKey: String, otp: String, xCsrfToken: String, apiExpiration: String
+        baseUrl: String, mfaKey: String, otp: String, xCsrfToken: String, apiExpiration: String, cookies: Collection<String>
     ) {
 
         if (BuildConfig.DEBUG) {
@@ -333,16 +334,14 @@ class NetworkHelper(private val context: Context) {
         json.put("device_name", "addy.io for Android")
         json.put("expiration", if (apiExpiration == "never") null else apiExpiration)
 
-
         val (_, response, result) = Fuel.post(API_URL_LOGIN_MFA)
+            .header(Headers.COOKIE to cookies)
             .appendHeader(
                     "Content-Type" to "application/json",
                     "X-Requested-With" to "XMLHttpRequest",
                     "Accept" to "application/json",
                     "User-Agent" to getUserAgent(),
-                //TODO THIS DOES NOT WORK
                     "X-CSRF-TOKEN" to xCsrfToken
-
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -353,12 +352,6 @@ class NetworkHelper(private val context: Context) {
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, Login::class.java)
                 callback(addyIoData, null)
-            }
-            422 -> { // MFA REQUIRED
-                val data = response.data.toString(Charsets.UTF_8)
-                val gson = Gson()
-                val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
-                callback(null, addyIoData.message)
             }
             401 -> { // Invalid mfa_key or mfa_key expired
                 val data = response.data.toString(Charsets.UTF_8)
@@ -431,6 +424,7 @@ class NetworkHelper(private val context: Context) {
                 val data = response.data.toString(Charsets.UTF_8)
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
+                addyIoData.cookie = response.headers["Set-Cookie"]
                 callback(null, addyIoData, null)
             }
             401 -> { // Login data incorrect

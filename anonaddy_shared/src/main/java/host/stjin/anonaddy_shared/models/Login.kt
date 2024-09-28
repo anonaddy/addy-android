@@ -1,5 +1,6 @@
 package host.stjin.anonaddy_shared.models
 
+
 // Login data class representing the successful login response
 data class Login(
     val api_key: String,
@@ -12,5 +13,6 @@ data class Login(
 data class LoginMfaRequired(
     val message: String,
     val mfa_key: String,
-    val csrf_token: String
+    val csrf_token: String,
+    var cookie: Collection<String> // This is not part of the return body, this is just because we need to send the cookie manually in Fuel (https://github.com/kittinunf/fuel/issues/263)
 )
