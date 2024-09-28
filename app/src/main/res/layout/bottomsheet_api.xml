@@ -76,7 +76,7 @@
                 <com.budiyev.android.codescanner.CodeScannerView
                     android:id="@+id/bs_setup_scanner_view"
                     android:layout_width="match_parent"
-                    android:layout_height="130dp"
+                    android:layout_height="160dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
@@ -85,10 +85,10 @@
                     app:flashButtonColor="@android:color/white"
                     app:flashButtonVisible="false"
                     app:frameAspectRatioHeight="1"
-                    app:frameAspectRatioWidth="3"
+                    app:frameAspectRatioWidth="2.4"
                     app:frameColor="@android:color/transparent"
-                    app:frameCornersRadius="@dimen/corner_radius"
-                    app:frameCornersSize="@dimen/corner_radius"
+                    app:frameCornersRadius="@dimen/corner_radius_cardview"
+                    app:frameCornersSize="@dimen/corner_radius_cardview"
                     app:frameSize="1"
                     app:frameThickness="0dp"
                     app:maskColor="?colorSurface">

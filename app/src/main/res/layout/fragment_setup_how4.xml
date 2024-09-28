@@ -67,16 +67,6 @@
                 android:textColor="@color/BlackWhite"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.5"
-                android:fontFamily="sans-serif"
-                android:gravity="center_vertical"
-                android:text="@string/setup_how_4_desc_2"
-                android:textColor="@color/BlackWhite"
-                android:textSize="18sp" />
-
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"

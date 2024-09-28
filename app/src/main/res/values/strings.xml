@@ -30,7 +30,6 @@
     <string name="setup_how_3_desc">Let\'s say a spammer gets hold of one of your aliases and starts sending unsolicited email to it. You can simply toggle a switch in your dashboard and deactivate that alias.\n\nOur system will then silently discard any further emails and you won\'t be forwarded anything else for that alias.\n\nYou can also delete the alias. Then our system will reject any emails and respond with an error.</string>
     <string name="setup_how_4">4. What do you think?</string>
     <string name="setup_how_4_desc">Sounds like a service you’d use? If so, why not sign up.</string>
-    <string name="setup_how_4_desc_2">(This will open your browser)</string>
     <string name="api_invalid">API key invalid</string>
     <string name="aliases_statistics">Aliases statistics</string>
     <string name="emails_forwarded">Emails forwarded</string>
@@ -325,7 +324,7 @@
     <string name="send_mail">Send mail</string>
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
     <string name="addresses">Addresses</string>
-    <string name="more">More</string>
+    <string name="about_this_app">About this app</string>
     <string name="copied_recipients">Copied recipients</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
