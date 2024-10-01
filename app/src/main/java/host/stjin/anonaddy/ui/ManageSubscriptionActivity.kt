@@ -155,13 +155,13 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
         binding.privacyPolicyButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/anonaddy/legal/blob/main/Privacy%20Policy.md")
+                Uri.parse("https://addy.io/privacy/?ref=appstore")
             )
             startActivity(browserIntent)        }
         binding.termsOfServiceButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/anonaddy/legal/blob/main/Terms%20Of%20Service.md")
+                Uri.parse("https://addy.io/terms?ref=appstore")
             )
             startActivity(browserIntent)        }
         binding.restorePurchasesButton.setOnClickListener { restorePurchases() }
