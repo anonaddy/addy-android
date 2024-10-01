@@ -155,7 +155,7 @@ class ManageSubscriptionActivity : BaseActivity(), PurchasesUpdatedListener {
         binding.privacyPolicyButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://addy.io/privacy/?ref=appstore")
+                Uri.parse("https://addy.io/privacy?ref=appstore")
             )
             startActivity(browserIntent)        }
         binding.termsOfServiceButton.setOnClickListener {

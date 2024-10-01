@@ -183,7 +183,7 @@ class RegistrationFormBottomDialogFragment: BaseBottomSheetDialogFragment(), Vie
             } else if (p0.id == R.id.bs_registration_form_privacy_policy_button) {
                 val browserIntent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://addy.io/privacy/?ref=appstore")
+                    Uri.parse("https://addy.io/privacy?ref=appstore")
                 )
                 startActivity(browserIntent)
             } else if (p0.id == R.id.bs_registration_form_terms_of_service_button) {
