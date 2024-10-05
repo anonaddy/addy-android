@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Changed the links to Github as the source code moved<br />- Changed the widget text when app is not set-up<br />- Minor changes in the app behaviour (such as automatically refreshing data when coming back from background after a while)</p>

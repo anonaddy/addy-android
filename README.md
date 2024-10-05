@@ -70,12 +70,10 @@ Developer-led download channels:
 > Recommended (access to beta's, automatic updates and support me :) )
 
 - [Google Play](https://play.google.com/store/apps/details?id=host.stjin.anonaddy)
-- ⚠️Note: this version charges and contains the Google Play Services so it can be used with addy.io for Android wearables. The rest of the code is identical, so if you'd like to buy me a cup of tea (or if you're more headstrong) then go here
-  and download it, otherwise choose another source :)
 
 > Other sources (Without Google Play Services)
 
-- [Gitlab release](https://gitlab.com/Stjin/anonaddy-android/-/releases)
+- [Github release](https://github.com/anonaddy/addy-android/releases)
 - [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy)
 
 ## UI
@@ -88,13 +86,13 @@ Developer-led download channels:
 
 Third party libraries used. (Main App)
 
-- [Please see build.gradle](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/app/build.gradle.kts)
+- [Please see build.gradle](https://github.com/anonaddy/addy-android/blob/master/app/build.gradle.kts)
   - [com.google.android.gms:play-services-wearable](https://mvnrepository.com/artifact/com.google.android.gms/play-services-wearable) (is used for
     communication with WearOS, **available in the Google Play version of the app only**)
 
 Third party libraries used. (WearOS)
 
-- [Please see build.gradle](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/app-wearos/build.gradle.kts)
+- [Please see build.gradle](https://github.com/anonaddy/addy-android/blob/master/app-wearos/build.gradle.kts)
 
 ## Feedback and contribution
 
@@ -107,4 +105,4 @@ also directly contact me via telegram or email and I'll get back to you.
 [![BuyMeACoffee](static/bmc-button.png)](https://buymeacoffee.com/stjin)
 
 ## Privacy policy
-[Privacy policy](https://gitlab.com/Stjin/anonaddy-android/-/blob/master/PrivacyPolicy.md)
+[Privacy policy](https://github.com/anonaddy/addy-android/blob/master/PrivacyPolicy.md)

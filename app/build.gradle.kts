@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 35 + v5.3.0 + release 01 + 00 (for app)
-        versionCode = 355310100 // https://developer.android.com/training/wearables/packaging
-        // The "v" is important, as the updater class compares with the RSS feed on gitlab
-        versionName = "v5.3.1"
+        // SDK 35 + v5.3.2 + release 01 + 00 (for app) //TODO move release back to 01
+        versionCode = 355320200 // https://developer.android.com/training/wearables/packaging
+        // The "v" is important, as the updater class compares with the RSS feed on Github
+        versionName = "v5.3.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -112,7 +112,7 @@ dependencies {
 //https://developer.android.com/studio/write/java8-support#library-desugaring
 // For using java.time pre-oreo
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.1")
 }
 
 
@@ -131,7 +131,7 @@ dependencies {
 // Apache for extracting strings ManageAliasActivity
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation("org.apache.commons:commons-lang3:3.16.0")
+    implementation("org.apache.commons:commons-lang3:3.17.0")
 }
 
 // Scanning QR codes

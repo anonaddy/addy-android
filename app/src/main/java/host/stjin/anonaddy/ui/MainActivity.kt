@@ -71,9 +71,23 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
 import java.time.LocalDateTime
+import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
 
+
+object MainActivityTimeClass {
+    private var lastGeneralRefresh = Date()
+
+    fun updateLastGeneralRefresh() {
+        lastGeneralRefresh = Date()
+    }
+
+    fun isPast5Minutes(): Boolean {
+        val fiveMinutesInMillis = 5 * 60 * 1000
+        return Date().time - lastGeneralRefresh.time > fiveMinutesInMillis
+    }
+}
 
 class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener, AddApiBottomDialogFragment.AddApiBottomDialogListener {
 
@@ -90,6 +104,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
     private lateinit var networkHelper: NetworkHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -303,6 +318,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             checkForNewAccountNotifications()
         }
 
+        MainActivityTimeClass.updateLastGeneralRefresh()
+
     }
 
 
@@ -312,6 +329,16 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             initialiseMainAppBar()
         }
         checkForPermissions()
+
+
+        if (MainActivityTimeClass.isPast5Minutes()) {
+            //println("More than 5 minutes have passed since the last general refresh.")
+
+            // Refresh general data when coming back from the background to the foreground
+            refreshAllData()
+        }
+
+
     }
 
 

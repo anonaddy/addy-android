@@ -345,9 +345,9 @@ class AppSettingsActivity : BaseActivity(),
         })
 
 
-        binding.activityAppSettingsSectionGitlab.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityAppSettingsSectionGithub.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                val url = "https://gitlab.com/Stjin/anonaddy-android"
+                val url = "https://github.com/anonaddy/addy-android"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)
                 startActivity(i)
@@ -357,7 +357,7 @@ class AppSettingsActivity : BaseActivity(),
 
         binding.activityAppSettingsSectionReportIssue.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                val url = "https://gitlab.com/Stjin/anonaddy-android/-/issues/new"
+                val url = "https://github.com/anonaddy/addy-android/issues/new"
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse(url)
                 startActivity(i)

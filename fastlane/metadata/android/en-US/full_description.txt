@@ -1,5 +1,5 @@
 <p>Easily create and manage your addy.io aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> addy.io app for Android.</p>
-<p><strong>Requirements:<br /></strong>addy.io instance running v1.1.0 or higher</p>
+<p><strong>Requirements:<br /></strong>addy.io instance running v1.2.3 or higher</p>
 <p><strong>Characteristics</strong></p>
 <ul>
 <li>Connect to the hosted addy.io instance or your own self-hosted instance</li>
@@ -38,4 +38,3 @@
 </ul>
 <p><strong>What is addy.io</strong></p>
 <p>addy.io is an open source email forwarding service designed to protect an internet user's email addresses from spam and other unwanted emails. Using the addy.io app managing your aliases has become easier than ever! <a href="https://addy.io">Learn more about addy.io:</a> <a href="https://addy.io.com">https://addy.io </a></p>
-<p><em>Disclaimer: This app is in no way associated with the addy.io project and does not offer a license for the addy.io service</em></p>

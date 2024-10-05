@@ -199,12 +199,12 @@
 
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
-                    android:id="@+id/activity_app_settings_section_gitlab"
+                    android:id="@+id/activity_app_settings_section_github"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/gitlab_project_desc"
-                    app:sectionStartIcon="@drawable/ic_gitlab"
-                    app:sectionTitle="@string/gitlab_project" />
+                    app:sectionDescription="@string/github_project_desc"
+                    app:sectionStartIcon="@drawable/ic_github"
+                    app:sectionTitle="@string/github_project" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_report_issue"

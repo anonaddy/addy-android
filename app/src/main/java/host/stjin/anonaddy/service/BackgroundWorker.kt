@@ -442,30 +442,35 @@ class BackgroundWorkerHelper(private val context: Context) {
 
     fun isThereWorkTodo(): Boolean {
         val settingsManager = SettingsManager(false, context)
+        val encryptedSettingsManager = SettingsManager(true, context)
 
-        // Count amount of aliases to be watched
-        val aliasToWatch = AliasWatcher(context).getAliasesToWatch()
-        // Count amount of widgets
-        val amountOfWidgets = settingsManager.getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
+        if (encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) != null) {
+            // Count amount of aliases to be watched
+            val aliasToWatch = AliasWatcher(context).getAliasesToWatch()
+            // Count amount of widgets
+            val amountOfWidgets = settingsManager.getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
 
-        val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
-        val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
-        val shouldCheckForAccountNotifications = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)
-        val shouldCheckApiTokenExpiry = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
-        val shouldMakePeriodicBackups = settingsManager.getSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS)
+            val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
+            val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
+            val shouldCheckForAccountNotifications = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)
+            val shouldCheckApiTokenExpiry = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
+            val shouldMakePeriodicBackups = settingsManager.getSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS)
 
-        if (BuildConfig.DEBUG) {
-            println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets;NOTIFY_UPDATES=$shouldCheckForUpdates;NOTIFY_FAILED_DELIVERIES=$shouldCheckForFailedDeliveries;NOTIFY_ACCOUNT_NOTIFICATIONS=$shouldCheckForAccountNotifications")
+            if (BuildConfig.DEBUG) {
+                println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets;NOTIFY_UPDATES=$shouldCheckForUpdates;NOTIFY_FAILED_DELIVERIES=$shouldCheckForFailedDeliveries;NOTIFY_ACCOUNT_NOTIFICATIONS=$shouldCheckForAccountNotifications")
+            }
+
+            // If there are
+            // -aliases to be watched
+            // -widgets to be updated
+            // -app updates to be checked for in the background
+            // -failed deliveries to be checked
+            // -Account notifications to be checked
+            // --return true
+            return (aliasToWatch.isNotEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckForAccountNotifications || shouldCheckApiTokenExpiry || shouldMakePeriodicBackups)
+        } else {
+            return false
         }
-
-        // If there are
-        // -aliases to be watched
-        // -widgets to be updated
-        // -app updates to be checked for in the background
-        // -failed deliveries to be checked
-        // -Account notifications to be checked
-        // --return true
-        return (aliasToWatch.isNotEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckForAccountNotifications || shouldCheckApiTokenExpiry || shouldMakePeriodicBackups)
     }
 
     fun cancelScheduledBackgroundWorker() {

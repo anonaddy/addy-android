@@ -41,7 +41,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_RESEND
 import host.stjin.anonaddy_shared.AddyIo.API_URL_REORDER_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_USERNAMES
-import host.stjin.anonaddy_shared.AddyIo.GITLAB_TAGS_RSS_FEED
+import host.stjin.anonaddy_shared.AddyIo.GITHUB_TAGS_RSS_FEED
 import host.stjin.anonaddy_shared.AddyIo.lazyMgr
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AccountNotifications
@@ -4677,7 +4677,7 @@ class NetworkHelper(private val context: Context) {
     /**
      * UPDATE
      */
-    suspend fun getGitlabTags(
+    suspend fun getGithubTags(
         callback: (Feed?, String?) -> Unit
     ) {
 
@@ -4686,7 +4686,7 @@ class NetworkHelper(private val context: Context) {
         }
 
         val (_, response, result) =
-            Fuel.get(GITLAB_TAGS_RSS_FEED)
+            Fuel.get(GITHUB_TAGS_RSS_FEED)
                 .awaitStringResponseResult()
 
 
@@ -4705,7 +4705,7 @@ class NetworkHelper(private val context: Context) {
                 loggingHelper.addLog(
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
-                    "getGitlabTags",
+                    "getGithubTags",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )

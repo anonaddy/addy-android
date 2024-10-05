@@ -5,11 +5,11 @@ import host.stjin.anonaddy.utils.YDGooglePlayUtils
 import host.stjin.anonaddy_shared.NetworkHelper
 
 object Updater {
-    // This bit is getting called by default, it checks the Gitlab RSS feed for the latest version
+    // This bit is getting called by default, it checks the Github RSS feed for the latest version
     suspend fun isUpdateAvailable(
         callback: (Boolean, String?, Boolean, String?) -> Unit, context: Context
     ) {
-        NetworkHelper(context).getGitlabTags { feed, error ->
+        NetworkHelper(context).getGithubTags { feed, error ->
             if (error == null){
                 // Get the title (version name) of the first (thus latest) entry
                 val version = feed?.items?.get(0)?.title
@@ -34,7 +34,7 @@ object Updater {
         return when {
             YDGooglePlayUtils.isInstalledViaGooglePlay(context) -> "https://play.google.com/store/apps/details?id=host.stjin.anonaddy"
             YDGooglePlayUtils.isInstalledViaFDroid(context) -> "https://f-droid.org/en/packages/host.stjin.anonaddy"
-            else -> "https://gitlab.com/Stjin/anonaddy-android/-/releases"
+            else -> "https://github.com/anonaddy/addy-android/releases"
         }
     }
 }
