@@ -2,7 +2,7 @@
 <h1 align="center">addy.io</h1>
 
 <p align="center">
-Easily create and manage your addy.io aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> addy.io app for Android.
+Easily create and manage your addy.io aliases, recipients and more from your phone, tablet or wearable with the addy.io app.
 <br><p align="center">
 <img src="static/banner.png" alt="banner"/>
 </p>
@@ -35,9 +35,8 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 - App exclusive features
   - Watching aliases for new emails
   - Send emails from aliases by selecting an email address or clicking a mailto link
-  - Get notified on failed deliveries
+  - Get notified on failed deliveries, domain errors and expiring subscriptions
   - Update multiple aliases at once
-  - Get notified on expiring subscriptions
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Export and import *encrypted* backups of the app configuration
 - Widgets!
