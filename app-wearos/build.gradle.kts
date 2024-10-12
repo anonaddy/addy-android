@@ -157,7 +157,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut-compose:2.2.3")
+    implementation("app.futured.donut:donut-compose:2.2.4")
 }
 
 // Tiles

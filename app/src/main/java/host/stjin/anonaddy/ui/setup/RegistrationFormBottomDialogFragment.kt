@@ -175,23 +175,26 @@ class RegistrationFormBottomDialogFragment: BaseBottomSheetDialogFragment(), Vie
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
-            if (p0.id == R.id.bs_registration_form_register_button) {
-
-                viewLifecycleOwner.lifecycleScope.launch {
-                    registerUser()
+            when (p0.id) {
+                R.id.bs_registration_form_register_button -> {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        registerUser()
+                    }
                 }
-            } else if (p0.id == R.id.bs_registration_form_privacy_policy_button) {
-                val browserIntent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://addy.io/privacy?ref=appstore")
-                )
-                startActivity(browserIntent)
-            } else if (p0.id == R.id.bs_registration_form_terms_of_service_button) {
-                val browserIntent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://addy.io/terms?ref=appstore")
-                )
-                startActivity(browserIntent)
+                R.id.bs_registration_form_privacy_policy_button -> {
+                    val browserIntent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://addy.io/privacy?ref=appstore")
+                    )
+                    startActivity(browserIntent)
+                }
+                R.id.bs_registration_form_terms_of_service_button -> {
+                    val browserIntent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://addy.io/terms?ref=appstore")
+                    )
+                    startActivity(browserIntent)
+                }
             }
         }
     }

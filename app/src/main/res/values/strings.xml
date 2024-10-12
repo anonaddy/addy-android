@@ -281,10 +281,9 @@
     <string name="manage_domains_desc">Add or remove custom domains</string>
     <string name="version_s">Version %s</string>
     <string name="version_s_update_available">Version %s (Update available)</string>
-    <string name="api_setup_qr_code_scan">Scan the QR code displayed</string>
+    <string name="api_setup_qr_code_scan">Setup using QR code</string>
     <string name="qr_permissions_required">Camera permissions are required in order to scan the QR code</string>
-    <string name="api_setup_qr_code_scan_desc">Tap the scanning area to start scanning</string>
-    <string name="api_obtain_camera_available">Or manually enter your API key</string>
+    <string name="api_setup_qr_code_scan_desc">Adjust your device until the QR code fills the entire frame, the QR code will be displayed when creating an API key on your desktop</string>
     <string name="credentials">Credentials</string>
     <string name="api_setup_qr_code_scan_wrong">QR code invalid</string>
     <string name="api_setup_qr_code_scan_wrong_desc">Obtain the QR code in the settings page at app.addy.io (or your own hosted instance)</string>
@@ -535,7 +534,6 @@
     <string name="disable_quick_setup">Disable quick setup</string>
     <string name="notification_setup_app_first">Cannot setup wearable app</string>
     <string name="notification_setup_app_first_desc">The addy.io app has not been set up on this device yet. Tap here to setup the app</string>
-    <string name="reset_app_all_apps">Reset all</string>
     <string name="disable_alias">Disable alias</string>
     <string name="logs_wearable">Logs (wearable)</string>
     <string name="wearos_show_logs">Show logs</string>
@@ -700,10 +698,8 @@
     <string name="lite_plan">Lite plan</string>
     <string name="restore_purchases">Restore purchases</string>
     <string name="subscribe_now">Subscribe Now</string>
-    <string name="price_not_available">Price not available</string>
     <string name="subscription_processing_failed">Processing subscription failed</string>
     <string name="subscription_processing_failed_desc">Something went wrong communicating your order to the server. Please take a screenshot of the following information and contact addy.io\n\nUserId: %1$s\nTransactionId: %2$s\nProductId: %3$s</string>
-    <string name="active">Active</string>
     <string name="why_subscribe">Why subscribe?</string>
     <string name="why_subscribe_reason_1_pro">Unlimited Active Shared Domain Aliases</string>
     <string name="why_subscribe_reason_2_pro">7 Available Alias Domains</string>
@@ -767,5 +763,10 @@
     <string name="login_desc">Security key authentication is not currently supported from the mobile app, if you use a security key please use an API key to login instead</string>
     <string name="registration_otp">One-time password</string>
     <string name="otp_required">One-time password is required</string>
+    <string name="price_format_month">%1$s (Billed Monthly, Auto-Renews)</string>
+    <string name="price_format_year">%1$s (Billed Annually, Auto-Renews)</string>
+    <string name="activating_subscription">Activating subscription</string>
+    <string name="activating_subscription_desc">We are communicating your\nsubscription to the addy.io server</string>
+    <string name="this_might_take_a_few_moments">This might take a few moments.</string>
 
 </resources>

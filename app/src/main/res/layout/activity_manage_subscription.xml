@@ -17,6 +17,10 @@
         layout="@layout/fragment_subscription_other_platform"
         android:visibility="gone" />
 
+    <include
+        android:id="@+id/fragment_subscription_notify_server"
+        layout="@layout/fragment_subscription_notify_server"
+        android:visibility="gone" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_manage_subscription_NSV"
@@ -115,15 +119,6 @@
                 android:layout_marginTop="16dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <include layout="@layout/product_item" />
-
-                <include layout="@layout/product_item" />
-
-                <include layout="@layout/product_item" />
-
-                <include layout="@layout/product_item" />
-
 
             </LinearLayout>
 </LinearLayout>

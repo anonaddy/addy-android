@@ -18,8 +18,8 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 35 + v5.4.0 + release 01 + 00 (for app)
-        versionCode = 355400100 // https://developer.android.com/training/wearables/packaging
+        // SDK 35 + v5.4.0 + release 01 + 00 (for app) //TODO set back to 01
+        versionCode = 355400300 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
         versionName = "v5.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -72,6 +72,7 @@ android {
         disable += setOf("WearableBindListener")
     }
 
+
 }
 
 dependencies {
@@ -98,8 +99,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.1")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.1")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.2")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -144,7 +145,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut:2.2.3")
+    implementation("app.futured.donut:donut:2.2.4")
 }
 
 // Loading spinners when execution actions from eg. bottomsheets
@@ -164,7 +165,7 @@ dependencies {
 val gplayImplementation by configurations
 dependencies {
     gplayImplementation("com.google.android.gms:play-services-wearable:18.2.0")
-    gplayImplementation("com.android.billingclient:billing-ktx:7.1.0")
+    gplayImplementation("com.android.billingclient:billing-ktx:7.1.1")
 }
 
 // Backgroundworker

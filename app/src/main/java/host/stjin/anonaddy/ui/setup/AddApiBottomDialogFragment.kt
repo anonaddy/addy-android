@@ -171,6 +171,8 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
 
             }
         }
+
+        toggleQrCodeScanning()
     }
 
 

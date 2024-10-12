@@ -1,14 +1,10 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
