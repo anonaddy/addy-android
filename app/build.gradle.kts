@@ -19,7 +19,7 @@ android {
          */
 
         // SDK 35 + v5.4.0 + release 01 + 00 (for app) //TODO set back to 01
-        versionCode = 355400300 // https://developer.android.com/training/wearables/packaging
+        versionCode = 355400400 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
         versionName = "v5.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -94,13 +94,13 @@ dependencies {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.2")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -186,5 +186,5 @@ dependencies {
 
 // Edge-To-Edge
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.9.2")
+    implementation("androidx.activity:activity-ktx:1.9.3")
 }

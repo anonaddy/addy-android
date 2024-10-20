@@ -5264,7 +5264,7 @@ class NetworkHelper(private val context: Context) {
             .awaitStringResponseResult()
 
         when (response.statusCode) {
-            201 -> {
+            200 -> {
                 val data = result.get()
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, SingleUserResource::class.java)
