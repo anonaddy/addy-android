@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
@@ -40,6 +41,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
     var updateAvailable: Boolean = false
     var permissionsRequired: Boolean = false
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private var _binding: BottomsheetProfileBinding? = null
 
     // This property is only valid between onCreateView and
@@ -56,6 +58,17 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
         setInfo()
         setOnClickListeners()
+
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // There are no request codes
+                val data: Intent? = result.data
+                if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
+                    setInfo()
+                    (activity as MainActivity).refreshAllData()
+                }
+            }
+        }
 
         return root
 
@@ -170,16 +183,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
-                setInfo()
-                (activity as MainActivity).refreshAllData()
-            }
-        }
-    }
+
 
     private fun setInfo() {
         val usernameInitials = (activity?.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())

@@ -304,7 +304,6 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
                 handlePurchase(purchase)
-
                 lifecycleScope.launch {
                     getPurchasedItem()
                 }
@@ -403,6 +402,8 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         if (::billingClient.isInitialized) {
             billingClient.endConnection()
         }
+
+
         super.onDestroy()
     }
 
@@ -438,5 +439,6 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
             //Log.e("Billing", "Error or no subscriptions found: " + p0.debugMessage)
         }
     }
+
 
 }

@@ -597,6 +597,17 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
+    //TODO FIXME  When refreshing in mainActivity and then opening this activity it will crash
+    private var subscriptionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
+                refreshAllData()
+            }
+        }
+    }
+
     private suspend fun checkForSubscriptionExpiration() {
         // Only check on hosted instance
         if (AddyIo.isUsingHostedInstance) {
@@ -618,16 +629,23 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                             )
                             // Only show the renew button when not-google play version
                             // https://support.google.com/googleplay/android-developer/answer/13321562
-                            if (BuildConfig.FLAVOR != "gplay") {
                                 dialog.setPositiveButton(
                                     this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
                                 ) { _, _ ->
-                                    val url = "${AddyIo.API_BASE_URL}/settings/subscription"
-                                    val i = Intent(Intent.ACTION_VIEW)
-                                    i.data = Uri.parse(url)
-                                    startActivity(i)
+                                    if (BuildConfig.FLAVOR == "gplay") {
+                                        val intent = Intent(this@MainActivity, ManageSubscriptionActivity::class.java)
+                                        subscriptionResultLauncher.launch(intent)
+                                    } else {
+                                        val url = "${AddyIo.API_BASE_URL}/settings/subscription"
+                                        val i = Intent(Intent.ACTION_VIEW)
+                                        i.data = Uri.parse(url)
+                                        startActivity(i)
+                                    }
+
+
+
                                 }
-                            }
+
                             dialog.show()
                         }
                     }
