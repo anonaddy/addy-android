@@ -8,7 +8,7 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" // this version matches your Kotlin version
 
 }
 
@@ -35,9 +35,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.4.6 + release 01 + 01 (for wearos)
-        versionCode = 341460101
-        versionName = "1.4.6"
+        // SDK 33 + v1.4.7 + release 01 + 01 (for wearos)
+        versionCode = 341470101
+        versionName = "1.4.7"
         vectorDrawables {
             useSupportLibrary = true
         }

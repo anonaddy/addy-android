@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -8,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -157,7 +159,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         binding.mainProfileSelectDialogManageSubscription.setOnClickListener {
             if (BuildConfig.FLAVOR == "gplay") {
                 val intent = Intent(activity, ManageSubscriptionActivity::class.java)
-                startActivity(intent)
+                resultLauncher.launch(intent)
             } else {
                 val url = "${AddyIo.API_BASE_URL}/settings/subscription"
                 val i = Intent(Intent.ACTION_VIEW)
@@ -165,6 +167,17 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                 startActivity(i)
             }
 
+        }
+    }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
+                setInfo()
+                (activity as MainActivity).refreshAllData()
+            }
         }
     }
 
@@ -186,7 +199,6 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setSubscriptionText() {
-
         if ((activity?.application as AddyIoApp).userResource.subscription != null) {
             binding.mainProfileSelectDialogCardLL.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscription.text =
@@ -208,7 +220,6 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             binding.mainProfileSelectDialogCardSubscriptionUntil.visibility = View.GONE
         }
     }
-
 
     companion object {
         fun newInstance(): ProfileBottomDialogFragment {

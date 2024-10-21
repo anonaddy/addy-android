@@ -345,6 +345,13 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         }
     }
 
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("hasNewSubscription", true)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
+
     private suspend fun notifyInstanceAboutSubscription(purchase: Purchase, callback: (Boolean) -> Unit) {
         binding.root.findViewById<View>(R.id.fragment_subscription_notify_server).visibility = View.VISIBLE
         binding.activityManageSubscriptionNSV.visibility = View.GONE

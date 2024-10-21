@@ -19,7 +19,7 @@ android {
          */
 
         // SDK 35 + v5.4.0 + release 01 + 00 (for app) //TODO set back to 01
-        versionCode = 355400400 // https://developer.android.com/training/wearables/packaging
+        versionCode = 355400500 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
         versionName = "v5.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -166,6 +166,7 @@ val gplayImplementation by configurations
 dependencies {
     gplayImplementation("com.google.android.gms:play-services-wearable:18.2.0")
     gplayImplementation("com.android.billingclient:billing-ktx:7.1.1")
+    gplayImplementation("com.google.android.play:review-ktx:2.0.2")
 }
 
 // Backgroundworker

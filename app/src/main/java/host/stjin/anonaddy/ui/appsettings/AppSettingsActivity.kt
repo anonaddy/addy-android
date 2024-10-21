@@ -35,6 +35,7 @@ import host.stjin.anonaddy.ui.appsettings.wearos.AppSettingsWearOSActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.ReviewHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -82,8 +83,16 @@ class AppSettingsActivity : BaseActivity(),
         setOnSwitchListeners()
         setOnBiometricSwitchListeners()
 
+        checkForVariant()
+
         checkForUpdates()
         checkPermissions()
+    }
+
+    private fun checkForVariant() {
+        if (BuildConfig.FLAVOR == "gplay") {
+            binding.activityAppSettingsSectionReview.visibility = View.VISIBLE
+        }
     }
 
 
@@ -424,6 +433,15 @@ class AppSettingsActivity : BaseActivity(),
             }
 
         })
+
+
+         binding.activityAppSettingsSectionReview.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                ReviewHelper().launchReviewFlow(this@AppSettingsActivity)
+            }
+        })
+
+
 
     }
 

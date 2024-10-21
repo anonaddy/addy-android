@@ -66,11 +66,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.3.2</h3>
-<h4>Note</h4>
-<p>🚀 <strong>We\'ve blasted off into the iOS universe with addy.io app for iOS and iPadOS!</strong><br /><em>Learn more by visiting addy.io</em></p>
+<h3>What\'s new in addy.io for Android 5.4.0</h3>
+<h4>Added</h4>
+<p>- Users can now log in using their username and password, alongside the existing API key method<br />- New users can sign up for a hosted addy.io account directly within the app<br />- Users have the ability to subscribe to the hosted addy.io service from within the application</p>
 <h4>Fixed/Improved</h4>
-<p>- Changed the links to Github as the source code moved<br />- Changed the widget text when app is not set-up<br />- Minor changes in the app behaviour (such as automatically refreshing data when coming back from background after a while)</p>]]></string>
+<p>- Dependencies and packages have been updated for better performance and security<br />- A new option has been added allowing users to review the app directly from the settings menu<br />- Various other enhancements have been made to improve overall usability and interaction</p>
+<h3>What\'s new in addy.io for Android Wearables 1.4.7</h3>
+<h4>Fixed/Improved</h4>
+<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -768,5 +771,7 @@
     <string name="activating_subscription">Activating subscription</string>
     <string name="activating_subscription_desc">We are communicating your\nsubscription to the addy.io server</string>
     <string name="this_might_take_a_few_moments">This might take a few moments.</string>
+    <string name="rate_this_app">Rate this app</string>
+    <string name="rate_this_app_desc">Rate us on Google Play to show your support!</string>
 
 </resources>

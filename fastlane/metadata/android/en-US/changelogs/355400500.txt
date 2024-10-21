@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Users can now log in using their username and password, alongside the existing API key method<br />- New users can sign up for a hosted addy.io account directly within the app<br />- Users have the ability to subscribe to the hosted addy.io service from within the application</p>
+<h4>Fixed/Improved</h4>
+<p>- Dependencies and packages have been updated for better performance and security<br />- A new option has been added allowing users to review the app directly from the settings menu<br />- Various other enhancements have been made to improve overall usability and interaction</p>

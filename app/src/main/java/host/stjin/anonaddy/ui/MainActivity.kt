@@ -285,7 +285,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         })
     }
 
-    private fun refreshAllData() {
+    fun refreshAllData() {
         // Refresh all data in child fragments
         val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
         val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment

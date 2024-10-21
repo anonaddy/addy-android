@@ -18,7 +18,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import kotlinx.coroutines.launch
 
 
-class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBottomSheetDialogFragment(), View.OnClickListener {
+class AddUsernameBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
     private lateinit var listener: AddUsernameBottomDialogListener
@@ -76,7 +76,7 @@ class AddUsernameBottomDialogFragment(private val usernameLimit: Int) : BaseBott
 
     companion object {
         fun newInstance(usernameLimit: Int): AddUsernameBottomDialogFragment {
-            return AddUsernameBottomDialogFragment(usernameLimit)
+            return AddUsernameBottomDialogFragment()
         }
     }
 
