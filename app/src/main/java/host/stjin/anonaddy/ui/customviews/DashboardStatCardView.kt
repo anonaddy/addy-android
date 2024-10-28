@@ -155,11 +155,12 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
             // Set elevation (if set)
             if (a.getBoolean(R.styleable.DashboardStatCardView_StatCardViewShowButton, false)) {
                 linearLayout?.visibility = View.VISIBLE
+                linearLayout?.setOnClickListener(layoutClickedListener)
             } else {
                 linearLayout?.visibility = View.GONE
+                cardView?.setOnClickListener(layoutClickedListener)
             }
 
-            linearLayout?.setOnClickListener(layoutClickedListener)
 
             a.recycle()
         }
