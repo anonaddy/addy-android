@@ -21,7 +21,6 @@
     <string name="welcome_to">Welcome to</string>
     <string name="anonymous_email_forwarding">Anonymous Email Forwarding</string>
     <string name="new_user">New user?</string>
-    <string name="got_the_api_key">Got the API key?</string>
     <string name="how_does_it_work">How does it work?</string>
     <string name="setup_how_1_desc">Let\'s say your username is johndoe. You can now use *@johndoe.addy.io (or .me) as your email. Where * denotes any valid local part for an email address.\n\nIf you would like to remain anonymous choose a username that is not linked to your real name or identify and that you haven\'t used anywhere else.\n\nYou can also create aliases at shared domains if you are concerned about others linking alias ownership to you.</string>
     <string name="setup_how_1">1. Register Your Username</string>
@@ -31,7 +30,6 @@
     <string name="setup_how_3_desc">Let\'s say a spammer gets hold of one of your aliases and starts sending unsolicited email to it. You can simply toggle a switch in your dashboard and deactivate that alias.\n\nOur system will then silently discard any further emails and you won\'t be forwarded anything else for that alias.\n\nYou can also delete the alias. Then our system will reject any emails and respond with an error.</string>
     <string name="setup_how_4">4. What do you think?</string>
     <string name="setup_how_4_desc">Sounds like a service you’d use? If so, why not sign up.</string>
-    <string name="setup_how_4_desc_2">(This will open your browser)</string>
     <string name="api_invalid">API key invalid</string>
     <string name="aliases_statistics">Aliases statistics</string>
     <string name="emails_forwarded">Emails forwarded</string>
@@ -47,7 +45,7 @@
     <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
     <string name="next">Next</string>
-    <string name="sign_up">Sign up</string>
+    <string name="get_started">Get started</string>
     <string name="add_alias_desc">Other aliases e.g. alias@%s.addy.io or .me can also be created automatically when they receive their first email</string>
     <string name="description">Description</string>
     <string name="not_a_valid_domain">This is a not a valid domain</string>
@@ -68,18 +66,21 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in AnonAddy for Android 5.3.2</h3>
-<h4>Note</h4>
-<p>🚀 <strong>We\'ve blasted off into the iOS universe with addy.io app for iOS and iPadOS!</strong><br /><em>Learn more by visiting addy.io</em></p>
+<h3>What\'s new in addy.io for Android 5.4.0</h3>
+<h4>Added</h4>
+<p>- Users can now log in using their username and password, alongside the existing API key method<br />- New users can sign up for a hosted addy.io account directly within the app<br />- Users have the ability to subscribe to the hosted addy.io service from within the application</p>
 <h4>Fixed/Improved</h4>
-<p>- Changed the links to Github as the source code moved<br />- Changed the widget text when app is not set-up<br />- Minor changes in the app behaviour (such as automatically refreshing data when coming back from background after a while)</p>]]></string>
+<p>- Dependencies and packages have been updated for better performance and security<br />- A new option has been added allowing users to review the app directly from the settings menu<br />- Various other enhancements have been made to improve overall usability and interaction</p>
+<h3>What\'s new in addy.io for Android Wearables 1.4.7</h3>
+<h4>Fixed/Improved</h4>
+<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
     <string name="delete_recipient_desc">Are you sure you want to delete this recipient?</string>
     <string name="error_deleting_recipient">Something went wrong while deleting the recipient</string>
     <string name="address">Address</string>
-    <string name="add_recipient_desc"><![CDATA[Enter the individual email of the new recipient you\'d like to add. This is where your aliases will <b>forward messages to.</b><br /> <br />You will receive an email with a verification link that will <b>expire in one hour</b>, you can click "Resend email" to get a new one.]]></string>
+    <string name="add_recipient_desc">Enter the individual email of the new recipient you\'d like to add. This is where your aliases will <b>forward messages to.</b><br /> <br />You will receive an email with a verification link that will <b>expire in one hour</b>, you can click "Resend email" to get a new one.</string>
     <string name="not_a_valid_address">This is not a valid address</string>
     <string name="not_a_valid_web_address">@string/not_a_valid_address</string>
     <string name="error_adding_recipient">Something went wrong while adding this recipient</string>
@@ -133,8 +134,7 @@
     <string name="logs">Logs</string>
     <string name="clear_logs">Clear logs</string>
     <string name="addyio_locked">addy.io locked</string>
-    <string name="reset_app_error_wearable">Could not reset app</string>
-    <string name="reset_app_confirmation_desc">Are you sure you want to delete all the data from the app and start over? (This will not delete your addy.io account or anything related)</string>
+    <string name="reset_app_confirmation_desc">Are you sure you want to delete the API key and all the data from the app and start over? (This will not delete your addy.io account or anything related)\n\nThis will also reset the app on your connected wearables</string>
     <string name="edit_recipient">Edit recipient</string>
     <string name="basic">Basic</string>
     <string name="encryption">Encryption</string>
@@ -203,7 +203,7 @@
     <string name="delete_username">Delete username</string>
     <string name="delete_username_desc_confirm">Are you sure you want to delete this username? This will also delete all aliases associated with this username. You will no longer be able to receive any emails at this username subdomain. This will still count towards your additional username limit even once deleted.</string>
     <string name="error_deleting_username">Something went wrong while deleting this username</string>
-    <string name="add_username_desc"><![CDATA[Please choose usernames carefully as you can only add a <b>maximum of %1$d.</b> You can login with <b>any of your usernames.</b><br /><br />You can prevent a username from being used to login by toggling the "can login" option.]]></string>
+    <string name="add_username_desc">Please choose usernames carefully as you can only add a <b>maximum of %1$d.</b> You can login with <b>any of your usernames.</b><br /><br />You can prevent a username from being used to login by toggling the "can login" option.</string>
     <string name="error_adding_username">Something went wrong while adding this username</string>
     <string name="username_deactivated">Username deactivated</string>
     <string name="username_activated">Username activated</string>
@@ -284,13 +284,12 @@
     <string name="manage_domains_desc">Add or remove custom domains</string>
     <string name="version_s">Version %s</string>
     <string name="version_s_update_available">Version %s (Update available)</string>
-    <string name="api_setup_qr_code_scan">Scan the QR code displayed</string>
+    <string name="api_setup_qr_code_scan">Setup using QR code</string>
     <string name="qr_permissions_required">Camera permissions are required in order to scan the QR code</string>
-    <string name="api_setup_qr_code_scan_desc">Tap the scanning area to start scanning</string>
-    <string name="api_obtain_camera_available">Or manually enter your API key</string>
-    <string name="api_obtain">Manually enter your API key</string>
-    <string name="api_setup_qr_code_scan_wrong">This is not a valid QR code</string>
-
+    <string name="api_setup_qr_code_scan_desc">Adjust your device until the QR code fills the entire frame, the QR code will be displayed when creating an API key on your desktop</string>
+    <string name="credentials">Credentials</string>
+    <string name="api_setup_qr_code_scan_wrong">QR code invalid</string>
+    <string name="api_setup_qr_code_scan_wrong_desc">Obtain the QR code in the settings page at app.addy.io (or your own hosted instance)</string>
     <string name="backgroundserviceinterval_15m">15m</string>
     <string name="backgroundserviceinterval_30m">30m</string>
     <string name="backgroundserviceinterval_1h">1h</string>
@@ -305,7 +304,7 @@
     <string name="notification_new_failed_delivery">Email delivery failed</string>
     <string name="notification_new_failed_delivery_desc">%s email(s) could not be delivered. Tap here to view the failed deliveries</string>
     <string name="notification_api_token_about_to_expire">Your API key is about to expire</string>
-    <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to change the API key</string>
+    <string name="notification_api_token_about_to_expire_desc">Your API key will expire in %s. Create a new one to prevent the app from resetting. Tap here to refresh the API key</string>
     <string name="notification_subscription_about_to_expire">Your subscription is about to expire</string>
     <string name="notification_subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features</string>
     <string name="notification_new_account_notifications">New notification</string>
@@ -327,7 +326,7 @@
     <string name="send_mail">Send mail</string>
     <string name="send_mail_from_alias_desc">Enter the email addresses (comma separated) of the recipients you’d like to send an email to from %1$s.\n\nThe mail app on your device opens with the correct to addresses entered. Note that you must send this email from one of your verified recipients email address.</string>
     <string name="addresses">Addresses</string>
-    <string name="more">More</string>
+    <string name="about_this_app">About this app</string>
     <string name="copied_recipients">Copied recipients</string>
     <string name="send">Send</string>
     <string name="username">Username</string>
@@ -538,10 +537,6 @@
     <string name="disable_quick_setup">Disable quick setup</string>
     <string name="notification_setup_app_first">Cannot setup wearable app</string>
     <string name="notification_setup_app_first_desc">The addy.io app has not been set up on this device yet. Tap here to setup the app</string>
-    <string name="reset_app_confirmation_wearable">Connected wearables found, do you want to reset the app on these wearables as well?</string>
-    <string name="reset_app_error_wearable_desc">Could not reset app on connected wearables, reset just this app?</string>
-    <string name="reset_app_just_this_app">Just this app</string>
-    <string name="reset_app_all_apps">Reset all</string>
     <string name="disable_alias">Disable alias</string>
     <string name="logs_wearable">Logs (wearable)</string>
     <string name="wearos_show_logs">Show logs</string>
@@ -552,7 +547,6 @@
     <string name="wearable_api_not_available_desc">Wearable API is not available. In order to use addy.io for Android wearables make sure to have a recent version of Google Play Services installed</string>
     <string name="gplayless_wearable_api_not_available_desc">Wearable API is not available because you are using a gplayless flavor of the app. In order to use addy.io for Android wearables make sure to install the app through the Google Play Store</string>
     <string name="wearable_api_not_available">API not available</string>
-    <string name="i_understand">I understand</string>
     <string name="permissions_required">Permissions required</string>
     <string name="notification_permissions_required_desc">Notification permissions are required to fully use the app. Tap here to allow the addy.io app to send notifications. You retain control over which notification the app can send.</string>
     <string name="can_reply_send">Reply/send allowed</string>
@@ -580,8 +574,8 @@
     <string name="prerequisite_disable_pgp_inline">You need to disable inline encryption before you can enable protected headers (hide subject)</string>
     <string name="prerequisite_disable_protected_headers">You need to disable protected headers (hide subject) before you can enable inline encryption</string>
     <string name="api_token_about_to_expire">API key about to expire</string>
-    <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent the app from resetting. Do you want to change the API token now?</string>
-    <string name="api_token_about_to_expire_option_1">Enter new key</string>
+    <string name="api_token_about_to_expire_desc">Your API key will expire in %s. It is recommended to update your API key to prevent the app from resetting. Do you want to refresh the API token now?</string>
+    <string name="api_token_about_to_expire_option_1">Refresh token</string>
     <string name="subscription_about_to_expire">Subscription about to expire</string>
     <string name="subscription_about_to_expire_desc">Your subscription will expire in %s. Renew your subscription to keep using pro features.</string>
     <string name="subscription_about_to_expire_option_1">Renew</string>
@@ -610,9 +604,6 @@
     <string name="feature_subscription_expiry_notification">Subscription expiry notification</string>
     <string name="feature_subscription_expiry_notification_desc">Receive a notification 7 days before your subscription expires to remind you to renew your subscription.\n\nThese notifications will reappear every day until the subscription has been renewed</string>
     <string name="notify_subscription_expiry_feature_section_desc">Receive a notification 7 days before your subscription expires</string>
-    <string name="update_subscription_now">Update subscription now</string>
-    <string name="update_subscription_now_desc">Extend or upgrade your subscription, switch to a card subscription or redeem voucher codes</string>
-    <string name="subscription_expiry_date_self_hosted">You are using a self-hosted instance of addy.io, subscriptions do not apply to self-hosted instances</string>
     <string name="intent_attachments_not_supported">Attachments are not supported</string>
     <string name="show_suggestions">Show suggestions</string>
     <string name="show_suggestions_desc">When searching for an alias, show suggestions for domains you own</string>
@@ -700,9 +691,87 @@
     <string name="email_replies">Email replies</string>
     <string name="email_sent">Email sent</string>
     <string name="total_recipients">Total recipients</string>
-    <string name="feature_not_available_hosted">This feature is only available on hosted instances</string>
     <string name="open_link">Open link</string>
     <string name="app_not_setup">App has not been setup</string>
     <string name="app_not_setup_desc">Open the addy.io app and setup your account to use this feature</string>
+    <string name="manage_subscription">Manage subscription</string>
+    <string name="manage_subscription_desc">Switch plan or duration term</string>
+    <string name="subscription_other_platform_title_desc">To subscribe via the Google Play Store, please cancel your existing subscription on the other platform where it\'s currently managed</string>
+    <string name="pro_plan">Pro plan</string>
+    <string name="lite_plan">Lite plan</string>
+    <string name="restore_purchases">Restore purchases</string>
+    <string name="subscribe_now">Subscribe Now</string>
+    <string name="subscription_processing_failed">Processing subscription failed</string>
+    <string name="subscription_processing_failed_desc">Something went wrong communicating your order to the server. Please take a screenshot of the following information and contact addy.io\n\nUserId: %1$s\nTransactionId: %2$s\nProductId: %3$s</string>
+    <string name="why_subscribe">Why subscribe?</string>
+    <string name="why_subscribe_reason_1_pro">Unlimited Active Shared Domain Aliases</string>
+    <string name="why_subscribe_reason_2_pro">7 Available Alias Domains</string>
+    <string name="why_subscribe_reason_3_pro">20 Custom Domains</string>
+    <string name="why_subscribe_reason_4_pro">20 Additional Usernames</string>
+    <string name="why_subscribe_reason_5_pro">20 Rules</string>
+    <string name="why_subscribe_reason_6_pro">100 Anonymous Reply + Send From Daily Limit</string>
+    <string name="why_subscribe_reason_7_pro">Unlimited Monthly Bandwidth Limit</string>
+    <string name="why_subscribe_reason_8_pro">30 Recipients (real email addresses)</string>
+    <string name="why_subscribe_reason_1_lite">50 Active Shared Domain Aliases</string>
+    <string name="why_subscribe_reason_2_lite">6 Available Alias Domains</string>
+    <string name="why_subscribe_reason_3_lite">1 Custom Domain</string>
+    <string name="why_subscribe_reason_4_lite">5 Additional Usernames</string>
+    <string name="why_subscribe_reason_5_lite">5 Rules</string>
+    <string name="why_subscribe_reason_6_lite">50 Anonymous Reply + Send From Daily Limit</string>
+    <string name="why_subscribe_reason_7_lite">100MB Monthly Bandwidth Limit</string>
+    <string name="why_subscribe_reason_8_lite">5 Recipients (real email addresses)</string>
+    <string name="why_subscribe_reason_9">View / Download Failed Deliveries</string>
+    <string name="why_subscribe_reason_10">Option to Disable Catch-All</string>
+    <string name="why_subscribe_reason_11">Alias Auto Creation with Regex</string>
+    <string name="why_subscribe_reason_12">Priority Email Queue</string>
+    <string name="why_subscribe_reason_13">Access Paid Plan Settings</string>
+    <string name="why_subscribe_reason_14">Priority Support</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms Of Service</string>
+    <string name="manage_your_data">Manage your data</string>
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_desc">Delete your addy.io account and all data related to it</string>
+    <string name="reset_app_logout_failure">Could not delete the API key, do you want to reset the app anyways?</string>
+    <string name="reset_app_anyways">Reset anyways</string>
+    <string name="registration_register">Register</string>
+    <string name="registration_disclaimer">By creating an account, you consent to our Terms of Service and Privacy Policy</string>
+    <string name="registration_username_header">Create your username</string>
+    <string name="registration_username_footer">This is used to login and in the domain for your <b>standard aliases</b>\ne.g. ebay@<b>johndoe</b>.anonaddy.com or x@<b>johndoe</b>.anonaddy.me</string>
+    <string name="registration_email_footer">This is the address that your aliases will forward to</string>
+    <string name="registration_email_header">Your Real Email Address</string>
+    <string name="registration_email">Email</string>
+    <string name="registration_username">@string/username</string>
+    <string name="registration_email_confirm">Confirm email</string>
+    <string name="registration_password_footer">Make note of this password, you might need this later</string>
+    <string name="registration_password_header">Let’s secure your account</string>
+    <string name="login_expiration">Require re-login after</string>
+    <string name="registration_password">Password</string>
+    <string name="registration_password_confirm">Confirm password</string>
+    <string name="registration_username_empty">Please enter a username</string>
+    <string name="registration_address_empty">Please enter your email address</string>
+    <string name="registration_password_empty">Please enter a password</string>
+    <string name="registration_password_confirm_empty">Please confirm your password</string>
+    <string name="registration_email_confirm_mismatch">Emails do not match</string>
+    <string name="registration_password_confirm_mismatch">Passwords do not match</string>
+    <string name="registration_success_verification_required">Your account is now registered! To finalize the registration, please click on the verification link sent to your email</string>
+    <string name="delete_account_confirmation_desc">Deleting your addy.io account will <b>DELETE ALL DATA</b>, this includes but is not limited to aliases, usernames, statistics, rules and failed deliveries. This data <b>CANNOT BE RESTORED</b></string>
+    <string name="delete_account_countdown">Delete account (%1$d)</string>
+    <string name="delete_account_failed">The password is incorrect, please enter the correct password</string>
+    <string name="delete_account_confirmation_alert">You are about to delete your addy.io account and EVERYTHING related to it. Please enter your password to confirm. This cannot be undone. \n\nIf account deletion is successful the app will reset</string>
+    <string name="delete_account_confirmation_password">Enter your password</string>
+    <string name="login_username"><![CDATA[Username & password]]></string>
+    <string name="login_api">API key</string>
+    <string name="credentials_desc">Login using your username and password, or API key</string>
+    <string name="login">Login</string>
+    <string name="login_desc">Security key authentication is not currently supported from the mobile app, if you use a security key please use an API key to login instead</string>
+    <string name="registration_otp">One-time password</string>
+    <string name="otp_required">One-time password is required</string>
+    <string name="price_format_month">%1$s (Billed Monthly, Auto-Renews)</string>
+    <string name="price_format_year">%1$s (Billed Annually, Auto-Renews)</string>
+    <string name="activating_subscription">Activating subscription</string>
+    <string name="activating_subscription_desc">We are communicating your\nsubscription to the addy.io server</string>
+    <string name="this_might_take_a_few_moments">This might take a few moments.</string>
+    <string name="rate_this_app">Rate this app</string>
+    <string name="rate_this_app_desc">Rate us on Google Play to show your support!</string>
 
 </resources>

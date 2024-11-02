@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.appsettings.features
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.CompoundButton
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -51,8 +52,14 @@ class AppSettingsFeaturesActivity : BaseActivity() {
 
     private fun checkForSelfHostedInstance() {
         // Hide the switch on Subscription Expiry Notification Card when user is using self-hosted instance
-        binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.showSwitch(AddyIo.isUsingHostedInstance)
-        binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.showSwitch(AddyIo.isUsingHostedInstance)
+        if (AddyIo.isUsingHostedInstance){
+            binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.visibility = View.VISIBLE
+            binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.visibility = View.VISIBLE
+        } else {
+            binding.activityAppSettingsFeaturesSectionSubscriptionExpiryNotification.visibility = View.GONE
+            binding.activityAppSettingsFeaturesSectionNotifyAccountNotificationsSheet.visibility = View.GONE
+        }
+
 
     }
 

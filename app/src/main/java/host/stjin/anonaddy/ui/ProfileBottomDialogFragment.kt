@@ -1,5 +1,6 @@
 package host.stjin.anonaddy.ui
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -8,6 +9,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -38,6 +41,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
     var updateAvailable: Boolean = false
     var permissionsRequired: Boolean = false
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private var _binding: BottomsheetProfileBinding? = null
 
     // This property is only valid between onCreateView and
@@ -55,6 +59,17 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         setInfo()
         setOnClickListeners()
 
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // There are no request codes
+                val data: Intent? = result.data
+                if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
+                    setInfo()
+                    (activity as MainActivity).refreshAllData()
+                }
+            }
+        }
+
         return root
 
     }
@@ -67,7 +82,16 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         checkForUpdates()
         checkForPermissions()
         tintSettingsIcon()
+        checkForHostedInstance()
 
+    }
+
+    private fun checkForHostedInstance() {
+        if (AddyIo.isUsingHostedInstance) {
+            binding.mainProfileSelectDialogManageSubscription.visibility = View.VISIBLE
+        } else {
+            binding.mainProfileSelectDialogManageSubscription.visibility = View.GONE
+        }
     }
 
     private fun checkForPermissions() {
@@ -144,7 +168,22 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             i.data = Uri.parse(url)
             startActivity(i)
         }
+
+        binding.mainProfileSelectDialogManageSubscription.setOnClickListener {
+            if (BuildConfig.FLAVOR == "gplay") {
+                val intent = Intent(activity, ManageSubscriptionActivity::class.java)
+                resultLauncher.launch(intent)
+            } else {
+                val url = "${AddyIo.API_BASE_URL}/settings/subscription"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                startActivity(i)
+            }
+
+        }
     }
+
+
 
     private fun setInfo() {
         val usernameInitials = (activity?.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
@@ -164,23 +203,27 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
     }
 
     private fun setSubscriptionText() {
-
         if ((activity?.application as AddyIoApp).userResource.subscription != null) {
             binding.mainProfileSelectDialogCardLL.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscription.text =
                 resources.getString(R.string.subscription_user, (activity?.application as AddyIoApp).userResource.subscription)
-
-            binding.mainProfileSelectDialogCardSubscriptionUntil.text =
-                resources.getString(R.string.subscription_user_until, DateTimeUtils.turnStringIntoLocalString(
-                    (activity?.application as AddyIoApp).userResource.subscription_ends_at,
-                    DateTimeUtils.DatetimeFormat.DATE
-                ))
-
         } else {
             binding.mainProfileSelectDialogCardLL.visibility = View.GONE
         }
-    }
 
+        if ((activity?.application as AddyIoApp).userResource.subscription_ends_at != null) {
+            binding.mainProfileSelectDialogCardSubscriptionUntil.visibility = View.VISIBLE
+            binding.mainProfileSelectDialogCardSubscriptionUntil.text =
+                resources.getString(
+                    R.string.subscription_user_until, DateTimeUtils.turnStringIntoLocalString(
+                        (activity?.application as AddyIoApp).userResource.subscription_ends_at,
+                        DateTimeUtils.DatetimeFormat.DATE
+                    )
+                )
+        } else {
+            binding.mainProfileSelectDialogCardSubscriptionUntil.visibility = View.GONE
+        }
+    }
 
     companion object {
         fun newInstance(): ProfileBottomDialogFragment {

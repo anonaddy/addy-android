@@ -137,18 +137,40 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/store_logs_desc"
                     app:sectionShowSwitch="true"
+                    android:layout_marginBottom="8dp"
                     app:sectionStartIcon="@drawable/ic_file_alert"
                     app:sectionTitle="@string/store_logs" />
 
+                <LinearLayout
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/titleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/manage_your_data" />
+
+                </LinearLayout>
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_reset"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="8dp"
                     app:sectionDescription="@string/reset_app_desc"
                     app:sectionStartIcon="@drawable/ic_loader"
                     app:sectionTitle="@string/reset_app" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_delete_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp"
+                    app:sectionDescription="@string/delete_account_desc"
+                    app:sectionStartIcon="@drawable/ic_user_minus"
+                    app:sectionTitle="@string/delete_account" />
 
 
                 <LinearLayout
@@ -193,10 +215,19 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/more" />
+                        android:text="@string/about_this_app" />
 
                 </LinearLayout>
 
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_section_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:sectionDescription="@string/rate_this_app_desc"
+                    app:sectionStartIcon="@drawable/ic_star"
+                    app:sectionTitle="@string/rate_this_app" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_github"

@@ -21,6 +21,7 @@ object MaterialDialogHelper {
         icon: Int? = null,
         textInputHint: String? = null,
         getTextInput: ((text: String) -> Unit)? = null,
+        getPasswordInput: ((text: String) -> Unit)? = null,
         neutralButtonText: String? = null,
         neutralButtonAction: (() -> Unit)? = null,
         positiveButtonText: String? = null,
@@ -41,6 +42,17 @@ object MaterialDialogHelper {
 
             materialAlertDialogInput.findViewById<TextInputEditText>(R.id.material_alert_dialog_input_tiet).addTextChangedListener {
                 getTextInput(it.toString())
+            }
+        }
+
+        if (getPasswordInput != null) {
+            val materialAlertDialogInput = LayoutInflater.from(context).inflate(R.layout.material_alert_dialog_input_password, null)
+            textInputHint?.let { materialAlertDialogInput.findViewById<TextInputLayout>(R.id.material_alert_dialog_input_til).hint = it }
+
+            materialDialog.setView(materialAlertDialogInput)
+
+            materialAlertDialogInput.findViewById<TextInputEditText>(R.id.material_alert_dialog_input_tiet).addTextChangedListener {
+                getPasswordInput(it.toString())
             }
         }
 

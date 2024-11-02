@@ -67,16 +67,6 @@
                 android:textColor="@color/BlackWhite"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.5"
-                android:fontFamily="sans-serif"
-                android:gravity="center_vertical"
-                android:text="@string/setup_how_4_desc_2"
-                android:textColor="@color/BlackWhite"
-                android:textSize="18sp" />
-
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -99,7 +89,7 @@
                     style="@style/MaterialButtonSecondaryDark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sign_up" />
+                    android:text="@string/get_started" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

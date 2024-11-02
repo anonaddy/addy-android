@@ -8,7 +8,7 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" // this version matches your Kotlin version
 
 }
 
@@ -35,9 +35,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 33 + v1.4.6 + release 01 + 01 (for wearos)
-        versionCode = 341460101
-        versionName = "1.4.6"
+        // SDK 33 + v1.4.7 + release 01 + 01 (for wearos)
+        versionCode = 341470101
+        versionName = "1.4.7"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -157,7 +157,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut-compose:2.2.3")
+    implementation("app.futured.donut:donut-compose:2.2.4")
 }
 
 // Tiles
@@ -177,7 +177,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.9.0")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }
@@ -186,7 +186,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.18")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.20")
 }
 
 // Splash screen

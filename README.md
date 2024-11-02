@@ -17,7 +17,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 
 > addy.io
 
-- addy.io instance running v1.2.3 or higher (current version of the addy.io app has been tested with v1.2.3)
+- addy.io instance running v1.3.0 or higher (current version of the addy.io app has been tested with v1.3.0)
 
 > Android
 
@@ -35,9 +35,8 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 - App exclusive features
   - Watching aliases for new emails
   - Send emails from aliases by selecting an email address or clicking a mailto link
-  - Get notified on failed deliveries
+  - Get notified on failed deliveries, domain errors and expiring subscriptions
   - Update multiple aliases at once
-  - Get notified on expiring subscriptions
 - Enable error logging to *locally* store exceptions for easy troubleshooting
 - Export and import *encrypted* backups of the app configuration
 - Widgets!
@@ -99,7 +98,9 @@ Third party libraries used. (WearOS)
 I welcome your comments and suggestions in the issues section, or you can contribute your code by submitting a PR directly to me. Of course, you can
 also directly contact me via telegram or email and I'll get back to you.
 
-## Donation
+## Donation (Stjin)
+
+To support Stjin (the developer of the mobile apps) you can use below links:
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/Stjinchan)
 [![BuyMeACoffee](static/bmc-button.png)](https://buymeacoffee.com/stjin)

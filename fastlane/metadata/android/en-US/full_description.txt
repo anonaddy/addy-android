@@ -1,5 +1,5 @@
-<p>Easily create and manage your addy.io aliases, recipients and more from your phone, tablet or wearable with this <b>gorgeous</b> addy.io app for Android.</p>
-<p><strong>Requirements:<br /></strong>addy.io instance running v1.2.3 or higher</p>
+<p>Easily create and manage your addy.io aliases, recipients and more from your phone, tablet or wearable with the addy.io app.</p>
+<p><strong>Requirements:<br /></strong>addy.io instance running v1.3.0 or higher</p>
 <p><strong>Characteristics</strong></p>
 <ul>
 <li>Connect to the hosted addy.io instance or your own self-hosted instance</li>
@@ -10,9 +10,8 @@
 <ul>
 <li>Watching aliases for new emails</li>
 <li>Send emails from aliases by selecting an email address or clicking a mailto link</li>
-<li>Get notified on failed deliveries</li>
+<li>Get notified on failed deliveries, domain errors and expiring subscriptions</li>
 <li>Update multiple aliases at once</li>
-<li>Get notified on expiring subscriptions/li>
 </ul>
 </li>
 <li>Enable error logging to locally store exceptions for easy troubleshooting</li>

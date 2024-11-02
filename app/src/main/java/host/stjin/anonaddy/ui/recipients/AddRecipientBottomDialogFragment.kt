@@ -2,9 +2,7 @@ package host.stjin.anonaddy.ui.recipients
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -53,13 +51,15 @@ class AddRecipientBottomDialogFragment : BaseBottomSheetDialogFragment(), View.O
 
         listener = parentFragment as AddRecipientBottomDialogListener
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.bsAddrecipientRecipientDesc.text =
-                (Html.fromHtml(requireContext().resources.getString(R.string.add_recipient_desc), Html.FROM_HTML_MODE_COMPACT))
-        } else {
-            binding.bsAddrecipientRecipientDesc.text =
-                (Html.fromHtml(requireContext().resources.getString(R.string.add_recipient_desc)))
-        }
+
+        //TODO TEST IF THIS IS INDEED NOT REQUIRED ON ANDROID 14 AND OLDER
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            binding.bsAddrecipientRecipientDesc.text =
+//                (Html.fromHtml(requireContext().resources.getString(R.string.add_recipient_desc), Html.FROM_HTML_MODE_COMPACT))
+//        } else {
+//            binding.bsAddrecipientRecipientDesc.text =
+//                (Html.fromHtml(requireContext().resources.getString(R.string.add_recipient_desc)))
+//        }
 
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard

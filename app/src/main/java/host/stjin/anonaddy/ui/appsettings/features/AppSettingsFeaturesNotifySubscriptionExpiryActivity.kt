@@ -1,14 +1,10 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
-import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
@@ -52,36 +48,18 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
 
         setSubscriptionInfoText((this@AppSettingsFeaturesNotifySubscriptionExpiryActivity.application as AddyIoApp).userResource) // Set this data right away for visuals
         checkSubscriptionExpiry()
-        checkGooglePlayGuidelines()
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
     }
 
-    private fun checkGooglePlayGuidelines() {
-        // Only show the renew button when not-google play version
-        // https://support.google.com/googleplay/android-developer/answer/13321562
-        if (BuildConfig.FLAVOR == "gplay") {
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.visibility = View.GONE
-        } else {
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.visibility = View.VISIBLE
-        }
-    }
 
     private fun checkSubscriptionExpiry() {
-        if (AddyIo.isUsingHostedInstance) {
             lifecycleScope.launch {
                 networkHelper.getUserResource { user: UserResource?, _: String? ->
                     setSubscriptionInfoText(user)
                 }
             }
-        } else {
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =
-                resources.getString(R.string.subscription_expiry_date_self_hosted)
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setLayoutEnabled(false)
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.setLayoutEnabled(false)
-            binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setDescription(resources.getString(R.string.subscription_expiry_date_self_hosted))
-        }
     }
 
     @SuppressLint("StringFormatInvalid") // Suppress StringFormatInvalid, the gplayless version accepts 2 parameters where the gplay version only accepts 1
@@ -146,17 +124,6 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
             override fun onClick() {
                 forceSwitch = true
                 binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.getSwitchChecked())
-            }
-        })
-
-        // This section is only visible in the gplayless version
-        binding.activityAppSettingsFeaturesNotifySubscriptionExpiryUpdateSubscription.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val url = "${AddyIo.API_BASE_URL}/settings/subscription"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
-                startActivity(i)
             }
         })
     }

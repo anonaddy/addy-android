@@ -2,16 +2,14 @@ package host.stjin.anonaddy.ui.appsettings.features
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.CompoundButton
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityAppSettingsFeaturesNotifyAccountNotificationsBinding
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
-import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
+import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.InsetUtil
-import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
@@ -38,15 +36,9 @@ class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
         )
 
         loadSettings()
+        setOnClickListeners()
+        setOnSwitchListeners()
 
-        if (AddyIo.isUsingHostedInstance) {
-            setOnClickListeners()
-            setOnSwitchListeners()
-        } else {
-            binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setLayoutEnabled(false)
-            binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setDescription(this.resources.getString(R.string.feature_not_available_hosted))
-            binding.activityAppSettingsFeaturesNotifyAccountNotificationsActivity.visibility = View.GONE
-        }
 
     }
 

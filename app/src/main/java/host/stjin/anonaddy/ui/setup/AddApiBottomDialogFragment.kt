@@ -7,12 +7,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker
@@ -25,14 +24,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import kotlinx.coroutines.launch
 
 class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
     private var codeScanner: CodeScanner? = null
     private lateinit var listener: AddApiBottomDialogListener
-    private var networkHelper: NetworkHelper? = null
+    private lateinit var networkHelper: NetworkHelper
 
 
     // 1. Defines the listener interface with a method passing back data result.
@@ -80,12 +81,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         binding.bsSetupApikeySignInButton.setOnClickListener(this)
         binding.bsSetupApikeyGetButton.setOnClickListener(this)
-        binding.bsSetupApikeyTiet.setOnEditorActionListener { _, actionId, event ->
-            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
-                verifyKey(requireContext())
-            }
-            false
-        }
+        binding.bsSetupScannerView.setOnClickListener(this)
 
 
         binding.bsSetupApikeyTiet.setOnTouchListener { view, motionEvent ->
@@ -96,16 +92,44 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             return@setOnTouchListener false
         }
 
-        binding.bsSetupScannerView.setOnClickListener {
-            toggleQrCodeScanning()
-        }
+        setMaterialButtonToggleGroupListener()
+        fillSpinners(requireContext())
 
         return root
     }
 
+    private fun setMaterialButtonToggleGroupListener() {
+        binding.bsSetupManualTypeUsernamePasswordButton.setOnClickListener {
+            binding.bsSetupManualTypeUsernamePasswordButton.isChecked = true
+
+            binding.bsSetupApikeyUsernameApiSection.visibility = View.GONE
+            binding.bsSetupApikeyUsernamePasswordSection.visibility = View.VISIBLE
+        }
+
+        binding.bsSetupManualTypeApiButton.setOnClickListener {
+            binding.bsSetupManualTypeApiButton.isChecked = true
+
+            binding.bsSetupApikeyUsernameApiSection.visibility = View.VISIBLE
+            binding.bsSetupApikeyUsernamePasswordSection.visibility = View.GONE
+        }
+    }
+
+    private var EXPIRATIONS: List<String> = listOf()
+    private var EXPIRATIONS_NAME: List<String> = listOf()
+    private fun fillSpinners(context: Context) {
+        EXPIRATIONS = this.resources.getStringArray(R.array.expiration_options).toList()
+        EXPIRATIONS_NAME = this.resources.getStringArray(R.array.expiration_options_names).toList()
+
+        val expirationAdapter: ArrayAdapter<String> = ArrayAdapter(
+            context,
+            R.layout.dropdown_menu_popup_item,
+            EXPIRATIONS_NAME
+        )
+        binding.bsRegistrationFormExpirationMact.setAdapter(expirationAdapter)
+    }
+
     private fun initQrScanner() {
         binding.bsSetupQrLL.visibility = View.VISIBLE
-        binding.bsSetupManualApikeyTextview.text = context?.resources?.getString(R.string.api_obtain_camera_available)
         // Initialize the codeScanner, this won't start the camera yet.
         codeScanner = CodeScanner(requireActivity(), binding.bsSetupScannerView)
         // Initialize the codeScanner
@@ -114,6 +138,11 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                 // Verify if the scanned QR code has all the properties
                 if (isQrCodeFormattedCorrect(it.text)) {
 
+                    binding.bsSetupManualTypeApiButton.isChecked = true
+
+                    binding.bsSetupApikeyUsernameApiSection.visibility = View.VISIBLE
+                    binding.bsSetupApikeyUsernamePasswordSection.visibility = View.GONE
+
                     // if apiBaseUrl set, do not set the baseURL using QR
                     if (apiBaseUrl == null) {
                         // Get the string part before the | delimiter
@@ -121,14 +150,29 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     }
                     // Get the string part after the | delimiter
                     binding.bsSetupApikeyTiet.setText(it.text.substringAfterLast("|", ""))
-                    verifyKey(requireContext())
+
+                    lifecycleScope.launch {
+                        verifyLogin(requireContext())
+                    }
+
                 } else {
-                    binding.bsSetupScannerViewDesc.text = context?.resources?.getString(R.string.api_setup_qr_code_scan_wrong)
-                    codeScanner!!.startPreview()
+                    MaterialDialogHelper.showMaterialDialog(
+                        context = requireContext(),
+                        title = resources.getString(R.string.api_setup_qr_code_scan_wrong),
+                        message = resources.getString(R.string.api_setup_qr_code_scan_wrong_desc),
+                        icon = R.drawable.ic_key,
+                        neutralButtonAction = {
+                            codeScanner!!.startPreview()
+                        },
+                        neutralButtonText = resources.getString(R.string.close)
+                    ).setCancelable(false).show()
+
                 }
 
             }
         }
+
+        toggleQrCodeScanning()
     }
 
 
@@ -138,63 +182,142 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         }
     }
 
-    private fun verifyKey(context: Context) {
-        var apiKey = binding.bsSetupApikeyTiet.text.toString()
-        val baseUrl = binding.bsSetupInstanceTiet.text.toString()
 
-        binding.bsSetupInstanceTil.error = null
-        // Check if the alias is a valid web address and starts with https:// or http://
-        if (!android.util.Patterns.WEB_URL.matcher(binding.bsSetupInstanceTiet.text.toString())
-                .matches() || !(binding.bsSetupInstanceTiet.text?.startsWith("https://") == true || binding.bsSetupInstanceTiet.text?.startsWith("http://") == true)
-        ) {
-            binding.bsSetupInstanceTil.error =
-                context.resources.getString(R.string.not_a_valid_web_address)
-            return
-        }
+    private var otpMfaObject: LoginMfaRequired? = null
+    private suspend fun verifyLogin(context: Context) {
 
-        binding.bsSetupApikeyGetButton.isEnabled = false
+        if (binding.bsSetupManualTypeApiButton.isChecked) {
+            val apiKey = binding.bsSetupApikeyTiet.text.toString().trim()
+            val baseUrl = binding.bsSetupInstanceTiet.text.toString()
 
-        // Animate the button to progress
-        binding.bsSetupApikeySignInButton.startAnimation()
+            binding.bsSetupInstanceTil.error = null
 
-
-        // WORKAROUND #0002 START
-        // Google (Play) refused my update a few times due to a lack of "testing credentials"
-        // Google Play Console does not allow me to provide 1000+ char API keys for testing credentials.
-        // This workaround checks if the entered API key starts with "https://" and if so. Will download the raw body content from the webpage and
-        // use that as API key instead.
-        //
-        // This way 1000+ char API keys can be shortened to very short URL's
-        // Maybe someone else finds another use for this as well :P
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            if (apiKey.startsWith("https://")) {
-                // API key start with https://
-                // Perform a body-download of given URL and set that as API key instead
-                networkHelper?.downloadBody(apiKey) { result, error ->
-                    if (result != null) {
-                        apiKey = result
-                        verifyApiKey(context, apiKey, baseUrl)
-                    } else {
-                        binding.bsSetupApikeyGetButton.isEnabled = true
-
-                        // Revert the button to normal
-                        binding.bsSetupApikeySignInButton.revertAnimation()
-
-                        binding.bsSetupApikeyTil.error =
-                            context.resources.getString(R.string.api_invalid) + "\n" + error
-                    }
-                }
-            } else {
-                verifyApiKey(context, apiKey, baseUrl)
+            // Check if the instance is a valid web address and starts with https:// or http://
+            if (!android.util.Patterns.WEB_URL.matcher(binding.bsSetupInstanceTiet.text.toString())
+                    .matches() || !(binding.bsSetupInstanceTiet.text?.startsWith("https://") == true || binding.bsSetupInstanceTiet.text?.startsWith("http://") == true)
+            ) {
+                binding.bsSetupInstanceTil.error =
+                    context.resources.getString(R.string.not_a_valid_web_address)
+                return
             }
+
+            binding.bsSetupApikeyGetButton.isEnabled = false
+
+            // Animate the button to progress
+            binding.bsSetupApikeySignInButton.startAnimation()
+            verifyApiKey(context, apiKey, baseUrl)
+
+        } else {
+            val baseUrl = binding.bsSetupInstanceTiet.text.toString()
+            val expirationOption =  EXPIRATIONS[EXPIRATIONS_NAME.indexOf(binding.bsRegistrationFormExpirationMact.text.toString())]
+
+            binding.bsSetupApikeyUsernameTil.error = null
+            binding.bsSetupApikeyPasswordTil.error = null
+            binding.bsSetupApikeyOtpTil.error = null
+
+
+            if (binding.bsSetupApikeyUsernameTiet.text.isNullOrEmpty()){
+                binding.bsSetupApikeyUsernameTil.error = requireContext().resources.getString(R.string.registration_username_empty)
+                return
+            }
+
+
+            if (binding.bsSetupApikeyPasswordTiet.text.isNullOrEmpty()){
+                binding.bsSetupApikeyPasswordTil.error = requireContext().resources.getString(R.string.registration_password_empty)
+                return
+            }
+
+
+            if (otpMfaObject != null){
+                if (binding.bsSetupApikeyOtpTiet.text.isNullOrEmpty()){
+                    binding.bsSetupApikeyOtpTil.error = requireContext().resources.getString(R.string.otp_required)
+                    return
+                }
+
+                binding.bsSetupApikeySignInButton.startAnimation()
+                networkHelper.loginMfa(
+                    { login, error ->
+                        if (login != null) {
+                            listener.onClickSave(baseUrl, login.api_key)
+                        } else {
+                            this.otpMfaObject = null
+                            binding.bsSetupApikeyOtpTil.visibility = View.GONE
+                            binding.bsSetupApikeyOtpTiet.text = null
+
+                            MaterialDialogHelper.showMaterialDialog(
+                                context = requireContext(),
+                                title = resources.getString(R.string.login),
+                                message = error,
+                                icon = R.drawable.ic_key,
+                                neutralButtonText = resources.getString(R.string.close)
+                            ).show()
+                            binding.bsSetupApikeySignInButton.revertAnimation()
+                        }
+                    },
+                    baseUrl = baseUrl,
+                    mfaKey = otpMfaObject!!.mfa_key,
+                    otp = binding.bsSetupApikeyOtpTiet.text.toString(),
+                    xCsrfToken = otpMfaObject!!.csrf_token,
+                    apiExpiration = expirationOption,
+                    cookies = otpMfaObject!!.cookie
+                )
+
+            } else {
+                binding.bsSetupApikeySignInButton.startAnimation()
+                networkHelper.login(
+                    { login, loginMfaRequired, error ->
+                        if (login != null) {
+                            listener.onClickSave(baseUrl, login.api_key)
+                        } else if (loginMfaRequired != null) {
+                            this.otpMfaObject = loginMfaRequired
+                            binding.bsSetupApikeyOtpTil.visibility = View.VISIBLE
+                            binding.bsSetupApikeySignInButton.revertAnimation()
+                        } else {
+                            MaterialDialogHelper.showMaterialDialog(
+                                context = requireContext(),
+                                title = resources.getString(R.string.login),
+                                message = error,
+                                icon = R.drawable.ic_key,
+                                neutralButtonText = resources.getString(R.string.close)
+                            ).show()
+                            binding.bsSetupApikeySignInButton.revertAnimation()
+                        }
+                    },
+                    baseUrl = baseUrl,
+                    username = binding.bsSetupApikeyUsernameTiet.text.toString(),
+                    password = binding.bsSetupApikeyPasswordTiet.text.toString(),
+                    apiExpiration = expirationOption
+                )
+            }
+
         }
+
+        /*
+         if let login = login {
+                    // Login success
+                    self.addKey(login.api_key, baseUrl)
+                } else if loginMfaRequired != nil {
+                    // Login MFA required
+                    withAnimation {
+                        self.otpMfaObject = loginMfaRequired
+                    }
+                    resetSignInButton()
+                } else {
+                    // Show error
+                    self.alertMessage = error!
+                    self.showAlert = true
+
+                    resetSignInButton()
+                }
+         */
+
+
 
     }
 
     private fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            networkHelper?.verifyApiKey(baseUrl, apiKey) { result ->
+            networkHelper.verifyApiKey(baseUrl, apiKey) { result ->
                 if (result == "200") {
                     listener.onClickSave(baseUrl, apiKey)
                 } else {
@@ -212,17 +335,25 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
-            if (p0.id == R.id.bs_setup_apikey_sign_in_button) {
-                verifyKey(
-                    requireContext()
-                )
-            } else if (p0.id == R.id.bs_setup_apikey_get_button) {
-                val baseUrl = binding.bsSetupInstanceTiet.text.toString()
+            when (p0.id) {
+                R.id.bs_setup_apikey_sign_in_button -> {
+                    lifecycleScope.launch {
+                        verifyLogin(
+                            requireContext()
+                        )
+                    }
+                }
+                R.id.bs_setup_apikey_get_button -> {
+                    val baseUrl = binding.bsSetupInstanceTiet.text.toString()
 
-                val url = "$baseUrl/settings/api"
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
-                startActivity(i)
+                    val url = "$baseUrl/settings/api"
+                    val i = Intent(Intent.ACTION_VIEW)
+                    i.data = Uri.parse(url)
+                    startActivity(i)
+                }
+                R.id.bs_setup_scanner_view -> {
+                    toggleQrCodeScanning()
+                }
             }
         }
     }
@@ -255,6 +386,8 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         if (checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PermissionChecker.PERMISSION_GRANTED) {
             resultLauncher.launch(Manifest.permission.CAMERA)
         } else {
+            binding.bsSetupScannerViewDesc.text = requireContext().resources.getString(R.string.api_setup_qr_code_scan_desc)
+
             // If codeScanner is initialized, switch between start en stopPreview
             if (codeScanner?.isPreviewActive == true) {
                 codeScanner?.stopPreview()

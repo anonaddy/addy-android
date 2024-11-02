@@ -28,6 +28,7 @@ data class UserResource(
     val default_alias_domain: String,
     val default_alias_format: String,
     val subscription: String?, // Can be null on selfhosted
+    val subscription_type: String?, // Can be null on selfhosted
     val subscription_ends_at: String?, // Can be null on selfhosted
     val bandwidth_limit: Long,
     val recipient_count: Int,

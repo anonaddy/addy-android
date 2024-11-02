@@ -1,5 +1,27 @@
 # Changelog
 
+## [v5.4.0] - 2024-11-03
+
+### addy.io
+
+##### Added
+
+- Users can now log in using their username and password, alongside the existing API key method
+- New users can sign up for a hosted addy.io account directly within the app
+- Users have the ability to subscribe to the hosted addy.io service from within the application
+
+##### Fixed/Improved
+
+- Dependencies and packages have been updated for better performance and security
+- A new option has been added allowing users to review the app directly from the settings menu
+- Various other enhancements have been made to improve overall usability and interaction
+
+### addy.io for Android wearables _(v1.4.7)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.3.2] - 2024-09-15
 
 ### addy.io

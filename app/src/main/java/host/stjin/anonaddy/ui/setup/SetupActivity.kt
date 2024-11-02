@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -19,6 +20,7 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -38,13 +40,40 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         super.onCreate(savedInstanceState)
         binding = ActivitySetupBinding.inflate(layoutInflater)
         val view = binding.root
-        setContentView(view)
 
-        setButtonClickListeners()
 
-        requestNotificationPermissions()
+        // First check if the user has set up the app before, if so just launch SplashActivity
+        if (SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.API_KEY) != null) {
+            val intent = Intent(this, SplashActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            setContentView(view)
+            setButtonClickListeners()
+            requestNotificationPermissions()
+            mainHandler = Handler(Looper.getMainLooper())
 
-        mainHandler = Handler(Looper.getMainLooper())
+            // Check for verification Urls
+            if (intent.action != null) {
+                // /deactivate URI's
+                val data: Uri? = intent?.data
+                if (data.toString().contains("/api/auth/verify")) {
+                    val query = data?.query
+                    if (query != null) {
+                        binding.fragmentSetupInitButtonApi.startAnimation()
+                        binding.fragmentSetupInitButtonNew.isEnabled = false
+                        binding.fragmentSetupInitButtonRestoreBackup.isEnabled = false
+
+                        lifecycleScope.launch {
+                            finishRegistrationVerification(query)
+                        }
+                    }
+
+                }
+            }
+        }
+
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -148,6 +177,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
     private fun verifyKeyAndAdd(context: Context, apiKey: String, baseUrl: String = AddyIo.API_BASE_URL) {
         binding.fragmentSetupInitButtonNew.isEnabled = false
+        binding.fragmentSetupInitButtonRestoreBackup.isEnabled = false
 
         // Animate the button to progress
         binding.fragmentSetupInitButtonApi.startAnimation()
@@ -166,6 +196,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 addKey(baseUrl, apiKey)
             } else {
                 binding.fragmentSetupInitButtonNew.isEnabled = true
+                binding.fragmentSetupInitButtonRestoreBackup.isEnabled = true
 
                 // Revert the button to normal
                 binding.fragmentSetupInitButtonApi.revertAnimation()
@@ -178,6 +209,29 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 }
             }
         }
+    }
+
+    private suspend fun finishRegistrationVerification(query: String) {
+        val networkHelper = NetworkHelper(this)
+        networkHelper.verifyRegistration({ apiKey, error ->
+            if (!apiKey.isNullOrEmpty()) {
+                addKey(AddyIo.API_BASE_URL, apiKey)
+            } else {
+                binding.fragmentSetupInitButtonNew.isEnabled = true
+                binding.fragmentSetupInitButtonRestoreBackup.isEnabled = true
+
+                // Revert the button to normal
+                binding.fragmentSetupInitButtonApi.revertAnimation()
+
+                MaterialDialogHelper.showMaterialDialog(
+                    context = this,
+                    title = resources.getString(R.string.registration_register),
+                    message = error,
+                    icon = R.drawable.ic_key,
+                    neutralButtonText = resources.getString(R.string.close)
+                ).show()
+            }
+        }, query = query)
     }
 
     private fun addKey(baseUrl: String, apiKey: String) {

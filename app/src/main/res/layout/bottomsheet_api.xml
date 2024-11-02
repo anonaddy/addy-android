@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/APIKey"
+            android:text="@string/login"
             android:textAlignment="center"
             android:textColor="@color/BlackWhite"
             android:textSize="18sp" />
@@ -75,19 +75,20 @@
 
                 <com.budiyev.android.codescanner.CodeScannerView
                     android:id="@+id/bs_setup_scanner_view"
-                    android:layout_width="85dp"
-                    android:layout_height="85dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_margin="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     app:autoFocusButtonColor="@android:color/white"
                     app:autoFocusButtonVisible="false"
                     app:flashButtonColor="@android:color/white"
                     app:flashButtonVisible="false"
                     app:frameAspectRatioHeight="1"
-                    app:frameAspectRatioWidth="1"
+                    app:frameAspectRatioWidth="2.4"
                     app:frameColor="@android:color/transparent"
-                    app:frameCornersRadius="@dimen/corner_radius"
-                    app:frameCornersSize="@dimen/corner_radius"
+                    app:frameCornersRadius="@dimen/corner_radius_cardview"
+                    app:frameCornersSize="@dimen/corner_radius_cardview"
                     app:frameSize="1"
                     app:frameThickness="0dp"
                     app:maskColor="?colorSurface">
@@ -112,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@string/api_obtain"
+                    android:text="@string/credentials"
                     android:textAlignment="center" />
 
                 <TextView
@@ -122,9 +123,37 @@
                     android:layout_marginBottom="16dp"
                     android:alpha="0.5"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@string/api_obtain_desc"
+                    android:text="@string/credentials_desc"
                     android:textAlignment="center"
                     android:textSize="12sp" />
+
+
+
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/bs_setup_manual_type_mbtg"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="8dp"
+                    android:layout_height="wrap_content"
+                    app:checkedButton="@id/bs_setup_manual_type_username_password_button"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bs_setup_manual_type_username_password_button"
+                        style="@style/AddyIoMaterialToggleButtonAlternative"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/login_username" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bs_setup_manual_type_api_button"
+                        style="@style/AddyIoMaterialToggleButtonAlternative"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/login_api" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/bs_setup_instance_til"
@@ -149,32 +178,165 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/bs_setup_apikey_til"
-                    style="@style/AddyIoTextInputLayoutOutlined"
+                <LinearLayout
+                    android:id="@+id/bs_setup_apikey_username_password_section"
                     android:layout_width="match_parent"
+                    android:visibility="visible"
                     android:layout_height="wrap_content"
-                    android:hint="@string/APIKey_desc">
+                    android:orientation="vertical">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/bs_setup_apikey_tiet"
-                        style="@style/AddyIoTextInputEditText"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/bs_setup_apikey_username_til"
+                        style="@style/AddyIoTextInputLayoutOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="0dp"
+                        android:layout_height="match_parent"
+                        android:hint="@string/registration_username">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/bs_setup_apikey_username_tiet"
+                            style="@style/AddyIoTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:minLines="1"
+                            android:singleLine="true" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/bs_setup_apikey_password_til"
+                        style="@style/AddyIoTextInputLayoutOutlined"
+                        android:layout_marginBottom="0dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/registration_password">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/bs_setup_apikey_password_tiet"
+                            style="@style/AddyIoTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionDone"
+                            android:inputType="textPassword"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:minLines="1"
+                            android:singleLine="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/bs_setup_apikey_otp_til"
+                        style="@style/AddyIoTextInputLayoutOutlined"
+                        android:layout_width="match_parent"
+                        android:visibility="gone"
+                        android:layout_marginBottom="0dp"
+                        android:layout_height="match_parent"
+                        android:hint="@string/registration_otp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/bs_setup_apikey_otp_tiet"
+                            style="@style/AddyIoTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:minLines="1"
+                            android:singleLine="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/bs_registration_form_expiration_til"
+                        style="@style/AppTheme.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_height="match_parent"
+                        android:hint="@string/login_expiration">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/bs_registration_form_expiration_mact"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/login_expiration_never"
+                            android:inputType="none" />
+
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:layout_marginTop="8dp"
+                        style="@style/DescTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="top"
-                        android:imeOptions="actionDone"
-                        android:inputType="textMultiLine"
-                        android:lines="3"
-                        android:maxLines="3"
-                        android:minLines="3"
-                        android:overScrollMode="always"
-                        android:scrollbarStyle="insideInset"
-                        android:scrollbars="vertical" />
+                        android:layout_marginBottom="16dp"
+                        android:alpha="0.5"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/login_desc"
+                        android:textAlignment="center"
+                        android:textSize="12sp" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
 
 
                 <LinearLayout
+                    android:id="@+id/bs_setup_apikey_username_api_section"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/bs_setup_apikey_til"
+                        style="@style/AddyIoTextInputLayoutOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="0dp"
+                        android:hint="@string/APIKey_desc">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/bs_setup_apikey_tiet"
+                            style="@style/AddyIoTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:imeOptions="actionDone"
+                            android:inputType="textMultiLine"
+                            android:lines="3"
+                            android:maxLines="3"
+                            android:minLines="3"
+                            android:overScrollMode="always"
+                            android:scrollbarStyle="insideInset"
+                            android:scrollbars="vertical" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:layout_marginTop="8dp"
+                        style="@style/DescTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:alpha="0.5"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/api_obtain_desc"
+                        android:textAlignment="center"
+                        android:textSize="12sp" />
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_marginTop="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">

@@ -35,7 +35,9 @@ import host.stjin.anonaddy.ui.appsettings.wearos.AppSettingsWearOSActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.ReviewHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
+import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -51,6 +53,8 @@ class AppSettingsActivity : BaseActivity(),
     private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
         BackgroundServiceIntervalBottomDialogFragment.newInstance()
 
+    private val deleteAccountConfirmationBottomSheetDialog: DeleteAccountConfirmationBottomSheetDialog =
+        DeleteAccountConfirmationBottomSheetDialog.newInstance()
 
     private lateinit var settingsManager: SettingsManager
     private lateinit var encryptedSettingsManager: SettingsManager
@@ -79,8 +83,16 @@ class AppSettingsActivity : BaseActivity(),
         setOnSwitchListeners()
         setOnBiometricSwitchListeners()
 
+        checkForVariant()
+
         checkForUpdates()
         checkPermissions()
+    }
+
+    private fun checkForVariant() {
+        if (BuildConfig.FLAVOR == "gplay") {
+            binding.activityAppSettingsSectionReview.visibility = View.VISIBLE
+        }
     }
 
 
@@ -387,6 +399,18 @@ class AppSettingsActivity : BaseActivity(),
             }
         })
 
+        binding.activityAppSettingsSectionDeleteAccount.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!deleteAccountConfirmationBottomSheetDialog.isAdded) {
+                    deleteAccountConfirmationBottomSheetDialog.show(
+                        supportFragmentManager,
+                        "deleteAccountConfirmationBottomSheetDialog"
+                    )
+                }
+            }
+
+        })
+
 
         binding.activityAppSettingsSectionUpdater.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
@@ -409,6 +433,15 @@ class AppSettingsActivity : BaseActivity(),
             }
 
         })
+
+
+         binding.activityAppSettingsSectionReview.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                ReviewHelper().launchReviewFlow(this@AppSettingsActivity)
+            }
+        })
+
+
 
     }
 
@@ -446,51 +479,47 @@ class AppSettingsActivity : BaseActivity(),
                 try {
                     Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
                         if (nodes.any()) {
-                            MaterialDialogHelper.showMaterialDialog(
-                                context = this,
-                                title = resources.getString(R.string.reset_app),
-                                message = resources.getString(R.string.reset_app_confirmation_wearable),
-                                icon = R.drawable.ic_device_watch,
-                                neutralButtonText = resources.getString(R.string.cancel),
-                                positiveButtonText = resources.getString(R.string.reset_app_all_apps),
-                                positiveButtonAction = {
-                                    lifecycleScope.launch {
-                                        resetAppOnAllWearables { result ->
-                                            if (result) {
-                                                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                                            } else {
-                                                MaterialDialogHelper.showMaterialDialog(
-                                                    context = this@AppSettingsActivity,
-                                                    title = resources.getString(R.string.reset_app_error_wearable),
-                                                    message = resources.getString(R.string.reset_app_error_wearable_desc),
-                                                    icon = R.drawable.ic_loader,
-                                                    neutralButtonText = resources.getString(R.string.cancel),
-                                                    positiveButtonText = resources.getString(R.string.reset_app_just_this_app),
-                                                    positiveButtonAction = {
-                                                        (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
-                                                    }
-                                                ).show()
-                                            }
-                                        }
-                                    }
-                                },
-                                negativeButtonText = resources.getString(R.string.reset_app_just_this_app),
-                                negativeButtonAction = {
-                                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                            lifecycleScope.launch {
+                                resetAppOnAllWearables { _ ->
+                                    logoutAndReset()
                                 }
-                            ).show()
+                            }
                         } else {
-                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                            logoutAndReset()
                         }
                     }.addOnFailureListener {
-                        (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                        logoutAndReset()
                     }
                 } catch (e: NullPointerException) {
                     // Expected crash, the gplayless version will return null as connectedNodes
-                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                    logoutAndReset()
                 }
             }
         ).show()
+    }
+
+    private fun logoutAndReset(){
+
+        lifecycleScope.launch {
+            NetworkHelper(this@AppSettingsActivity).logout { result: String? ->
+                if (result == "204") {
+                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                } else {
+                    MaterialDialogHelper.showMaterialDialog(
+                        context = this@AppSettingsActivity,
+                        title = resources.getString(R.string.reset_app),
+                        message = resources.getString(R.string.reset_app_logout_failure),
+                        icon = R.drawable.ic_loader,
+                        neutralButtonText = resources.getString(R.string.cancel),
+                        positiveButtonText = resources.getString(R.string.reset_app_anyways),
+                        positiveButtonAction = {
+                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                        }
+                    ).show()
+                }
+            }
+        }
+
     }
 
     private fun resetAppOnAllWearables(callback: (Boolean) -> Unit) {

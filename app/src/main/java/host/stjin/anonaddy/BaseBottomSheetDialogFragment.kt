@@ -20,10 +20,12 @@ open class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // This makes sure the textfields move above the keyboard
         ViewCompat.setOnApplyWindowInsetsListener(view) { v: View, insets: WindowInsetsCompat ->
             // Here, you might only want to apply the bottom inset to avoid extra padding on top or sides
             val bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
-            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, v.paddingBottom + bottomInset.bottom)
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, bottomInset.bottom)
+            //view.setOnApplyWindowInsetsListener(null)
             WindowInsetsCompat.CONSUMED
         }
     }

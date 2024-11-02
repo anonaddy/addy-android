@@ -64,7 +64,7 @@ fun AliasCreateGuide(scalingLazyListState: ScalingLazyListState, settingsManager
                     enabled = true,
                     label = {
                         Text(
-                            text = context.resources.getString(R.string.i_understand)
+                            text = context.resources.getString(R.string.understood)
                         )
                     })
             }
