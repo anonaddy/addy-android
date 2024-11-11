@@ -69,14 +69,14 @@ class WebIntentManager(private val context: Context) {
                 ?.filterValues { it == DomainVerificationUserState.DOMAIN_STATE_VERIFIED }
             val selectedDomains = userState?.hostToStateMap
                 ?.filterValues { it == DomainVerificationUserState.DOMAIN_STATE_SELECTED }
-            val unapprovedDomains = userState?.hostToStateMap
+            userState?.hostToStateMap
                 ?.filterValues { it == DomainVerificationUserState.DOMAIN_STATE_NONE }
 
             var baseUrl = AddyIo.API_BASE_URL
             // Remove http,https prefix
             baseUrl = baseUrl.replace("https://", "").replace("http://", "")
 
-            verifiedDomains?.contains(baseUrl) ?: false || selectedDomains?.contains(baseUrl) ?: false
+            verifiedDomains?.contains(baseUrl) == true || selectedDomains?.contains(baseUrl) == true
         } else {
             isOurAppDefault(context)
         }

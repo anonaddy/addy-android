@@ -73,7 +73,7 @@ class ManageDomainsActivity : BaseActivity(),
             binding.activityManageDomainToolbar
         )
         networkHelper = NetworkHelper(this)
-
+        setRefreshLayout()
 
         val b = intent.extras
         val domainId = b?.getString("domain_id")
@@ -83,6 +83,14 @@ class ManageDomainsActivity : BaseActivity(),
             return
         }
         setPage(domainId)
+    }
+
+    private fun setRefreshLayout() {
+        binding.activityManageDomainSwiperefresh.setOnRefreshListener {
+            binding.activityManageDomainSwiperefresh.isRefreshing = true
+
+            domain?.let { setPage(it.id) }
+        }
     }
 
 
@@ -358,6 +366,8 @@ class ManageDomainsActivity : BaseActivity(),
                 binding.activityManageDomainLL1.visibility = View.GONE
                 binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
+
+            binding.activityManageDomainSwiperefresh.isRefreshing = false
         }, id)
     }
 

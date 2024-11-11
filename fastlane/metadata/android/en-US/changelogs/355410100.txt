@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Fixed margin error<br />- Fixed a crash when editing a rule containing a deleted recipient<br />- Allow for refreshing every page in the app<br />- Optimized refresh token flow by locking in the username<br />- Check if a refreshed token belongs to the same account</p>

@@ -50,10 +50,10 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
     fun setDescription(text: String?) {
         if (text.isNullOrEmpty()) {
             description?.text = null
-            description?.visibility = View.GONE
+            description?.visibility = GONE
         } else {
             description?.text = text
-            description?.visibility = View.VISIBLE
+            description?.visibility = VISIBLE
         }
     }
 
@@ -64,10 +64,10 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
     fun setTitle(text: String?) {
         if (text.isNullOrEmpty()) {
             title?.text = text
-            title?.visibility = View.GONE
+            title?.visibility = GONE
         } else {
             title?.text = text
-            title?.visibility = View.VISIBLE
+            title?.visibility = VISIBLE
         }
     }
 
@@ -154,10 +154,10 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
 
             // Set elevation (if set)
             if (a.getBoolean(R.styleable.DashboardStatCardView_StatCardViewShowButton, false)) {
-                linearLayout?.visibility = View.VISIBLE
+                linearLayout?.visibility = VISIBLE
                 linearLayout?.setOnClickListener(layoutClickedListener)
             } else {
-                linearLayout?.visibility = View.GONE
+                linearLayout?.visibility = GONE
                 cardView?.setOnClickListener(layoutClickedListener)
             }
 

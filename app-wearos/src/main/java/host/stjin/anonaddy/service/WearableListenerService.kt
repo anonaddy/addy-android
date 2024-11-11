@@ -39,7 +39,7 @@ class WearableListenerService : WearableListenerService() {
                 Toast.makeText(this, this.resources.getString(R.string.app_reset_requested_by, String(p0.data)), Toast.LENGTH_LONG).show()
 
                 Handler(Looper.getMainLooper()).postDelayed({
-                    (this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                    (this.getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                 }, 2500)
             }
             "/showAlias" -> {

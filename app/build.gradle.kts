@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 35 + v5.4.0 + release 01 + 00 (for app) //TODO set back to 01
-        versionCode = 355400600 // https://developer.android.com/training/wearables/packaging
+        // SDK 35 + v5.4.1 + release 01 + 00 (for app)
+        versionCode = 355410100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
-        versionName = "v5.4.0"
+        versionName = "v5.4.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -89,16 +89,16 @@ dependencies {
 
 dependencies {
     implementation(project(mapOf("path" to ":anonaddy_shared")))
-    wearApp(project(":app-wearos"))
 }
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
@@ -111,7 +111,7 @@ dependencies {
 //https://developer.android.com/studio/write/java8-support#library-desugaring
 // For using java.time pre-oreo
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
 }
 
 
@@ -140,12 +140,12 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
 }
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut:2.2.4")
+    implementation("app.futured.donut:donut:2.2.3") // FIXME: https://github.com/futuredapp/donut/pull/96
 }
 
 // Loading spinners when execution actions from eg. bottomsheets

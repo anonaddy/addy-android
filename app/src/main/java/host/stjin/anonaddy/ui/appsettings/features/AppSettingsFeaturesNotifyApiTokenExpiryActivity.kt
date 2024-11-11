@@ -155,7 +155,7 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
             binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCL
         ).show()
 
-        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
     }
 

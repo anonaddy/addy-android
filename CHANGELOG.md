@@ -1,5 +1,23 @@
 # Changelog
 
+## [v5.4.1] - 2024-11-12
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed margin error
+- Fixed a crash when editing a rule containing a deleted recipient
+- Allow for refreshing every page in the app
+- Optimized refresh token flow by locking in the username
+- Check if the new token belongs to the same account
+
+### addy.io for Android wearables _(v1.4.8)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.4.0] - 2024-11-03
 
 ### addy.io

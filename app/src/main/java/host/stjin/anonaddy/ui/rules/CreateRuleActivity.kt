@@ -384,8 +384,8 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
 
             // If forward_to type resolve the recipient
             if (action.type == "forwardTo"){
-                val recipient = recipients.first { it.id == action.value }
-                subtitle.text = recipient.email
+                val recipient = recipients.firstOrNull { it.id == action.value }
+                subtitle.text = recipient?.email ?: this.resources.getString(R.string.unknown)
             } else {
                 subtitle.text = action.value
             }

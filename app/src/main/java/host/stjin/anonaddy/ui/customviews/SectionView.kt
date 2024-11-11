@@ -123,26 +123,26 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     }
 
     fun showProgressBar(boolean: Boolean) {
-        progressBar?.visibility = if (boolean) View.VISIBLE else View.GONE
+        progressBar?.visibility = if (boolean) VISIBLE else GONE
     }
 
     fun setDescription(text: String?) {
         if (text.isNullOrEmpty()) {
             description?.text = null
-            description?.visibility = View.GONE
+            description?.visibility = GONE
         } else {
             description?.text = text
-            description?.visibility = View.VISIBLE
+            description?.visibility = VISIBLE
         }
     }
 
     fun setTitle(text: String?) {
         if (text.isNullOrEmpty()) {
             title?.text = text
-            title?.visibility = View.GONE
+            title?.visibility = GONE
         } else {
             title?.text = text
-            title?.visibility = View.VISIBLE
+            title?.visibility = VISIBLE
         }
     }
 
@@ -164,7 +164,7 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
     }
 
     fun showSwitch(b: Boolean) {
-        materialSwitch?.visibility = if (b) View.VISIBLE else View.GONE
+        materialSwitch?.visibility = if (b) VISIBLE else GONE
     }
 
     interface OnSwitchCheckedChangedListener {

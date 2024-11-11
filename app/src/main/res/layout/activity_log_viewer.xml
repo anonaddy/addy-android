@@ -13,11 +13,15 @@
         layout="@layout/custom_toolbar_one_handed" />
 
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/appsettings_logviewer_NSV"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/appsettings_logviewer_swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/appsettings_logviewer_NSV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/appsettings_logviewer_NSV_LL"
@@ -50,7 +54,7 @@
 
 
     </androidx.core.widget.NestedScrollView>
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/appsettings_logviewer_efab"

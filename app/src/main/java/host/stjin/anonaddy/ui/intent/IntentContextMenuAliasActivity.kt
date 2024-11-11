@@ -377,7 +377,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
 
                 // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
                 val clipboard: ClipboardManager =
-                    this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("recipients", anonaddyRecipientAddresses.joinToString(";"))
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()

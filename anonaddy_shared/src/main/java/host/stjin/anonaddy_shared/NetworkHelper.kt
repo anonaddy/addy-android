@@ -565,7 +565,7 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
-    suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (String?) -> Unit) {
+    suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (UserResource?, String?) -> Unit) {
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -583,7 +583,10 @@ class NetworkHelper(private val context: Context) {
 
         when (response.statusCode) {
             200 -> {
-                callback("200")
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleUserResource::class.java)
+                callback(addyIoData.data, null)
             }
             // Do not check for a 401 since the UI will take care of it
             else -> {
@@ -599,8 +602,9 @@ class NetworkHelper(private val context: Context) {
                     )
                 )
                 callback(
+                    null,
                     ErrorHelper.getErrorMessage(
-                        fuelResponse
+                        fuelResponse,
                     )
                 )
             }

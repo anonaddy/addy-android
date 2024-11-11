@@ -89,6 +89,7 @@ class ManageAliasActivity : BaseActivity(),
             R.drawable.ic_email_at
         )
 
+        setRefreshLayout()
 
         networkHelper = NetworkHelper(this)
         aliasWatcher = AliasWatcher(this)
@@ -118,6 +119,13 @@ class ManageAliasActivity : BaseActivity(),
         }
     }
 
+    private fun setRefreshLayout() {
+        binding.activityManageAliasSwiperefresh.setOnRefreshListener {
+            binding.activityManageAliasSwiperefresh.isRefreshing = true
+
+            alias?.let { setPage(it.id) }
+        }
+    }
 
     private fun getBitmapFromView(view: View): Bitmap {
         val bitmap = Bitmap.createBitmap(
@@ -444,7 +452,7 @@ class ManageAliasActivity : BaseActivity(),
 
         binding.activityManageAliasCopy.setOnClickListener {
             val clipboard: ClipboardManager =
-                this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("alias", binding.activityManageAliasEmail.text)
             clipboard.setPrimaryClip(clip)
             SnackbarHelper.createSnackbar(this, this.resources.getString(R.string.copied_alias), binding.activityManageAliasCL).show()
@@ -591,6 +599,7 @@ class ManageAliasActivity : BaseActivity(),
                 binding.activityManageAliasSettingsLL.visibility = View.GONE
                 binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
+            binding.activityManageAliasSwiperefresh.isRefreshing = false
         }, id)
     }
 
@@ -862,7 +871,7 @@ class ManageAliasActivity : BaseActivity(),
 
         // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
         val clipboard: ClipboardManager =
-            this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()

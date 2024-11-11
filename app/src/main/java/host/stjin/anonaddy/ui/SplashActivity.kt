@@ -288,7 +288,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             positiveButtonText = resources.getString(R.string.copy_to_clipboard),
             positiveButtonAction = {
                 val clipboard: ClipboardManager =
-                    this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("error", error)
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(this, resources.getString(R.string.error_copied_to_clipboard), Toast.LENGTH_LONG).show()

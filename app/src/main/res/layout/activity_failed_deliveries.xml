@@ -11,12 +11,16 @@
         android:id="@+id/activity_failed_deliveries_settings_toolbar"
         layout="@layout/custom_toolbar_one_handed" />
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/ctivity_failed_deliveries_settings_swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/activity_failed_deliveries_settings_fcv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:nestedScrollingEnabled="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+        android:nestedScrollingEnabled="true"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

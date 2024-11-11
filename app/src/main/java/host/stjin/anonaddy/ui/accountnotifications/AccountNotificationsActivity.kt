@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 class AccountNotificationsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAccountNotificationsBinding
+    private val accountNotificationsFragment = AccountNotificationsFragment()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,9 +25,22 @@ class AccountNotificationsActivity : BaseActivity() {
             binding.activityAccountNotificationsSettingsToolbar,
             R.drawable.ic_bell
         )
+        setRefreshLayout()
 
         setPage()
     }
+
+    // This only applies to <sw600Dp devices
+    private fun setRefreshLayout() {
+        binding.activityAccountNotificationsSettingsSwiperefresh.setOnRefreshListener {
+            binding.activityAccountNotificationsSettingsSwiperefresh.isRefreshing = true
+
+            accountNotificationsFragment.getDataFromWeb(null) {
+                binding.activityAccountNotificationsSettingsSwiperefresh.isRefreshing = false
+            }
+        }
+    }
+
 
     private fun setPage() {
         /**
@@ -38,7 +52,7 @@ class AccountNotificationsActivity : BaseActivity() {
                 if (isAuthenticated) {
                     supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.activity_account_notifications_settings_fcv, AccountNotificationsFragment())
+                        .replace(R.id.activity_account_notifications_settings_fcv, accountNotificationsFragment)
                         .commit()
                 }
             }

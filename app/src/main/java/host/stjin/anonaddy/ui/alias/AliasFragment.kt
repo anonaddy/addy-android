@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentAliasBinding
@@ -31,6 +32,7 @@ import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.ReviewHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
@@ -391,7 +393,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             aliasAdapter = AliasAdapter(
                 aliasList!!.data,
                 context,
-                supportMultipleSelection = settingsManager?.getSettingsBool(SettingsManager.PREFS.MANAGE_MULTIPLE_ALIASES, default = true) ?: true
+                supportMultipleSelection = settingsManager?.getSettingsBool(SettingsManager.PREFS.MANAGE_MULTIPLE_ALIASES, default = true) != false
             )
             aliasAdapter!!.setClickOnAliasClickListener(object : AliasAdapter.AliasInterface {
                 override fun onClick(pos: Int) {
@@ -573,6 +575,14 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         addAliasBottomDialogFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb(null)
+
+        if (BuildConfig.FLAVOR == "gplay") {
+            // User has successfully created an alias, this is usually a sign of a satisfied user, let's ask the user to review the app only after the app has been opened at least 10 times
+            if ((settingsManager?.getSettingsInt(SettingsManager.PREFS.TIMES_THE_APP_HAS_BEEN_OPENED) ?: 0) >= 10) {
+                activity?.let { ReviewHelper().launchReviewFlow(it) }
+            }
+
+        }
     }
 
     override fun onCancel() {

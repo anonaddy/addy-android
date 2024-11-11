@@ -18,6 +18,8 @@ class LogViewerActivity : BaseActivity() {
 
     private lateinit var loggingHelper: LoggingHelper
     private lateinit var binding: ActivityLogViewerBinding
+    private lateinit var logsAdapter: LogsAdapter
+    private var OneTimeRecyclerViewActions: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,7 @@ class LogViewerActivity : BaseActivity() {
             return
         }
 
+        setRefreshLayout()
         loggingHelper = LoggingHelper(this, LoggingHelper.LOGFILES.entries.first { it.filename == filename })
         getAllLogsAndSetRecyclerview()
 
@@ -51,8 +54,14 @@ class LogViewerActivity : BaseActivity() {
         }
     }
 
-    private lateinit var logsAdapter: LogsAdapter
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private fun setRefreshLayout() {
+        binding.appsettingsLogviewerSwiperefresh.setOnRefreshListener {
+            binding.appsettingsLogviewerSwiperefresh.isRefreshing = true
+
+            getAllLogsAndSetRecyclerview()
+        }
+    }
+
 
     private fun getAllLogsAndSetRecyclerview() {
         binding.appsettingsLogviewerRecyclerview.apply {
@@ -97,6 +106,9 @@ class LogViewerActivity : BaseActivity() {
                 binding.appsettingsLogviewerRecyclerview.visibility = View.GONE
                 binding.appsettingsLogviewerNoLogs.visibility = View.VISIBLE
             }
+
+            binding.appsettingsLogviewerSwiperefresh.isRefreshing = false
+
         }
 
     }

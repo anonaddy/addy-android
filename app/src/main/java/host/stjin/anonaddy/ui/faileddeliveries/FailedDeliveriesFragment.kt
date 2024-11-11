@@ -72,7 +72,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     }
 
 
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
+    fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {
@@ -92,7 +92,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
             } else {
                 getAllFailedDeliveriesAndSetRecyclerview()
             }
-
+            callback()
         }
     }
 

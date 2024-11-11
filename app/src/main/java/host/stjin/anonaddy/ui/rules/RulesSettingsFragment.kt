@@ -100,7 +100,6 @@ class RulesSettingsFragment : Fragment() {
         }
     }
 
-    //FIXME: This is being called on tablet, however it might be possible that getDataFromWeb gets called AFTER this call, making the app restore the old data
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
@@ -111,7 +110,7 @@ class RulesSettingsFragment : Fragment() {
         }
     }
 
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
+    fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
         // Get the latest data in the background, and update the values when loaded
         lifecycleScope.launch {
             if (savedInstanceState != null) {
@@ -144,6 +143,8 @@ class RulesSettingsFragment : Fragment() {
                 // This will also call getAllRulesAndSetView
                 getAllRecipients()
             }
+            callback()
+
         }
     }
 
