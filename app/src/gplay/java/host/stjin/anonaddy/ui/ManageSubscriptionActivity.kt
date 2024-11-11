@@ -31,6 +31,7 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
 
     private var currentSubscriptionSku: String? = null
     private var currentSubscriptionPurchaseToken: String? = null
+    private var hasNewSubscription = false
 
     private lateinit var binding: ActivityManageSubscriptionBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -333,6 +334,7 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
                                 .build()
                             billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                                    hasNewSubscription = true
                                     finish()
                                 }
                             }
@@ -346,7 +348,7 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
 
     override fun finish() {
         val resultIntent = Intent()
-        resultIntent.putExtra("hasNewSubscription", true)
+        resultIntent.putExtra("hasNewSubscription", hasNewSubscription)
         setResult(RESULT_OK, resultIntent)
         super.finish()
     }
