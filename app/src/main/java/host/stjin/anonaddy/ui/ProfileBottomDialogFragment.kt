@@ -24,6 +24,7 @@ import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.utils.AttributeHelper
+import host.stjin.anonaddy.utils.ReviewHelper
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
@@ -66,6 +67,9 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
                 if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
                     setInfo()
                     (activity as MainActivity).refreshAllData()
+
+                    // User has switched or purchased a subscription, this is usually a sign of a satisfied user, let's ask the user to review the app
+                    activity?.let { ReviewHelper().launchReviewFlow(it) }
                 }
             }
         }

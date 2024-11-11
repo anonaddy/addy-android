@@ -120,7 +120,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
              */
 
             val clipboard: ClipboardManager =
-                this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val clipboardData = clipboard.primaryClip
             val item = clipboardData?.getItemAt(0)
             val text = item?.text.toString()
@@ -158,7 +158,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
     private var resultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 // There are no request codes
                 val data: Intent? = result.data
                 data?.data?.let {
@@ -191,8 +191,8 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
     private suspend fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
         val networkHelper = NetworkHelper(context)
-        networkHelper.verifyApiKey(baseUrl, apiKey) { result ->
-            if (result == "200") {
+        networkHelper.verifyApiKey(baseUrl, apiKey) { result, error ->
+            if (result != null) {
                 addKey(baseUrl, apiKey)
             } else {
                 binding.fragmentSetupInitButtonNew.isEnabled = true

@@ -68,8 +68,10 @@ class RulesAdapter(
         // If forward_to type resolve the recipient
         if (listWithRules[position].actions[0].type == "forwardTo" && recipients != null){
 
-            val recipient = recipients.first { it.id == listWithRules[position].actions[0].value }
-            val descActions = "$actionTypeText ${recipient.email}"
+            val recipient = recipients.firstOrNull { it.id == listWithRules[position].actions[0].value }?.email ?:
+            holder.mDescription.context.resources.getString(R.string.unknown)
+
+            val descActions = "$actionTypeText $recipient"
 
             holder.mDescription.text = holder.mDescription.context.resources.getString(R.string.manage_rules_list_desc, descConditions, descActions)
 

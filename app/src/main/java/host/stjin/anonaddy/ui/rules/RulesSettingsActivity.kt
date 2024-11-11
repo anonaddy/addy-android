@@ -10,6 +10,7 @@ class RulesSettingsActivity : BaseActivity() {
 
 
     private lateinit var binding: ActivityRuleSettingsBinding
+    private val rulesSettingsFragment = RulesSettingsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,13 +25,25 @@ class RulesSettingsActivity : BaseActivity() {
             R.drawable.ic_filter
         )
 
+        setRefreshLayout()
 
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.activity_rules_settings_fcv, RulesSettingsFragment())
+            .replace(R.id.activity_rules_settings_fcv, rulesSettingsFragment)
             .commit()
 
 
+    }
+
+    // This only applies to <sw600Dp devices
+    private fun setRefreshLayout() {
+        binding.activityRulesSettingsSwiperefresh.setOnRefreshListener {
+            binding.activityRulesSettingsSwiperefresh.isRefreshing = true
+
+            rulesSettingsFragment.getDataFromWeb(null) {
+                binding.activityRulesSettingsSwiperefresh.isRefreshing = false
+            }
+        }
     }
 }
 

@@ -21,12 +21,16 @@
         app:animationDrawable="@drawable/ic_loading_logo"
         app:loopAnimation="true" />
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/activity_manage_username_swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_manage_username_NSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:alpha="0">
 
         <LinearLayout
             android:id="@+id/activity_manage_username_LL1"
@@ -218,5 +222,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

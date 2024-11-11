@@ -140,10 +140,10 @@ class AddyIoWatchFace : CanvasWatchFaceService() {
         override fun onPropertiesChanged(properties: Bundle) {
             super.onPropertiesChanged(properties)
             mLowBitAmbient = properties.getBoolean(
-                WatchFaceService.PROPERTY_LOW_BIT_AMBIENT, false
+                PROPERTY_LOW_BIT_AMBIENT, false
             )
             mBurnInProtection = properties.getBoolean(
-                WatchFaceService.PROPERTY_BURN_IN_PROTECTION, false
+                PROPERTY_BURN_IN_PROTECTION, false
             )
         }
 
@@ -297,7 +297,7 @@ class AddyIoWatchFace : CanvasWatchFaceService() {
             mRegisteredTimeZoneReceiver = true
             val filter = IntentFilter(Intent.ACTION_TIMEZONE_CHANGED)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                this@AddyIoWatchFace.registerReceiver(mTimeZoneReceiver, filter, Context.RECEIVER_EXPORTED)
+                this@AddyIoWatchFace.registerReceiver(mTimeZoneReceiver, filter, RECEIVER_EXPORTED)
             } else {
                 this@AddyIoWatchFace.registerReceiver(mTimeZoneReceiver, filter)
             }

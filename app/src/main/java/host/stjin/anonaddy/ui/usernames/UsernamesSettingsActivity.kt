@@ -8,6 +8,8 @@ import host.stjin.anonaddy.databinding.ActivityUsernameSettingsBinding
 class UsernamesSettingsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityUsernameSettingsBinding
+    private val usernamesSettingsFragment = UsernamesSettingsFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUsernameSettingsBinding.inflate(layoutInflater)
@@ -20,15 +22,26 @@ class UsernamesSettingsActivity : BaseActivity() {
             binding.activityUsernameSettingsToolbar,
             R.drawable.ic_users
         )
+        setRefreshLayout()
 
 
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.activity_username_settings_fcv, UsernamesSettingsFragment())
+            .replace(R.id.activity_username_settings_fcv, usernamesSettingsFragment)
             .commit()
 
 
     }
 
+    // This only applies to <sw600Dp devices
+    private fun setRefreshLayout() {
+        binding.activityUsernameSettingsSwiperefresh.setOnRefreshListener {
+            binding.activityUsernameSettingsSwiperefresh.isRefreshing = true
+
+            usernamesSettingsFragment.getDataFromWeb(null) {
+                binding.activityUsernameSettingsSwiperefresh.isRefreshing = false
+            }
+        }
+    }
 
 }

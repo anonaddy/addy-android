@@ -40,6 +40,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         NOTIFY_DOMAIN_ERROR(false, PREFTYPES.BOOLEAN, "notify_domain_error"),
         NOTIFY_SUBSCRIPTION_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_subscription_expiry"),
         MAILTO_ACTIVITY_SHOW_SUGGESTIONS(false, PREFTYPES.BOOLEAN, "mailto_activity_show_suggestions"),
+        TIMES_THE_APP_HAS_BEEN_OPENED(false, PREFTYPES.INT, "times_the_app_has_been_opened"),
 
         // Sorting and Filtering for aliasFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),

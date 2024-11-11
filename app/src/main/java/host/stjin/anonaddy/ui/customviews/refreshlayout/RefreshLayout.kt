@@ -85,7 +85,7 @@ open class RefreshLayout @JvmOverloads constructor(
 
     private fun addHeaderView() {
         header = RefreshLayoutAnimationView(context)
-        val params = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0)
+        val params = LayoutParams(LayoutParams.MATCH_PARENT, 0)
         params.gravity = Gravity.TOP
         header!!.layoutParams = params
 

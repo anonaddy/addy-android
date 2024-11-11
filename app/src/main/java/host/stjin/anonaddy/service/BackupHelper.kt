@@ -90,7 +90,7 @@ class BackupHelper(private val context: Context) {
         val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
         try {
             val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))
-            return f?.canRead() ?: false && f?.canWrite() ?: false
+            return f?.canRead() == true && f?.canWrite() == true
         } catch (e: Exception) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getLatestBackupDate", null)
         }

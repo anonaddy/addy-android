@@ -3,7 +3,6 @@ package host.stjin.anonaddy.ui.appsettings
 import android.Manifest
 import android.app.ActivityManager
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -35,7 +34,6 @@ import host.stjin.anonaddy.ui.appsettings.wearos.AppSettingsWearOSActivity
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MaterialDialogHelper
-import host.stjin.anonaddy.utils.ReviewHelper
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -97,7 +95,7 @@ class AppSettingsActivity : BaseActivity(),
 
 
     private fun checkPermissions() {
-        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         // Notification permission check
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.areNotificationsEnabled()) {
@@ -437,11 +435,12 @@ class AppSettingsActivity : BaseActivity(),
 
          binding.activityAppSettingsSectionReview.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                ReviewHelper().launchReviewFlow(this@AppSettingsActivity)
+                val url = "https://play.google.com/store/apps/details?id=host.stjin.anonaddy"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = Uri.parse(url)
+                this@AppSettingsActivity.startActivity(i)
             }
         })
-
-
 
     }
 
@@ -503,7 +502,7 @@ class AppSettingsActivity : BaseActivity(),
         lifecycleScope.launch {
             NetworkHelper(this@AppSettingsActivity).logout { result: String? ->
                 if (result == "204") {
-                    (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                    (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                 } else {
                     MaterialDialogHelper.showMaterialDialog(
                         context = this@AppSettingsActivity,
@@ -513,7 +512,7 @@ class AppSettingsActivity : BaseActivity(),
                         neutralButtonText = resources.getString(R.string.cancel),
                         positiveButtonText = resources.getString(R.string.reset_app_anyways),
                         positiveButtonAction = {
-                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                            (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                         }
                     ).show()
                 }

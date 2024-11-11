@@ -490,6 +490,13 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         // Write the current version code to prevent double triggering
         settingsManager.putSettingsInt(SettingsManager.PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
+
+        settingsManager.putSettingsInt(SettingsManager.PREFS.TIMES_THE_APP_HAS_BEEN_OPENED,
+            settingsManager.getSettingsInt(SettingsManager.PREFS.TIMES_THE_APP_HAS_BEEN_OPENED) + 1)
+
+        if (BuildConfig.DEBUG) {
+            print("App has been opened ${settingsManager.getSettingsInt(SettingsManager.PREFS.TIMES_THE_APP_HAS_BEEN_OPENED)} times")
+        }
     }
 
     // Only gets calls on mobile (not tablet)
@@ -535,7 +542,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
     private fun checkForPermissions() {
-        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         // Notification permission check
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.areNotificationsEnabled()) {
@@ -597,9 +604,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
-    //TODO FIXME  When refreshing in mainActivity and then opening this activity it will crash
     private var subscriptionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             // There are no request codes
             val data: Intent? = result.data
             if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
@@ -608,7 +614,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-    private suspend fun checkForSubscriptionExpiration() {
+    private fun checkForSubscriptionExpiration() {
         // Only check on hosted instance
         if (AddyIo.isUsingHostedInstance) {
             lifecycleScope.launch {
@@ -978,7 +984,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     // When returning from the search activity, load the appropriate screen
     private var resultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 // There are no request codes
                 val data: Intent? = result.data
 
@@ -1055,7 +1061,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 binding.mainContainer
             ).show()
 
-            val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
 
         } else {
@@ -1068,7 +1074,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     anchorView = binding.navView
                 }.show()
 
-                val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
             }
         }

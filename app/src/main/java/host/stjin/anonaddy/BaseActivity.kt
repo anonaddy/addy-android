@@ -219,7 +219,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), Context.RECEIVER_EXPORTED)
+            registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), RECEIVER_EXPORTED)
         } else {
             registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
         }
@@ -257,7 +257,7 @@ abstract class BaseActivity : AppCompatActivity() {
                                         },
                                         positiveButtonText = this@BaseActivity.resources.getString(R.string.reset_app),
                                         positiveButtonAction = {
-                                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+                                            (getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
                                         }
                                     ).setCancelable(false).show()
                                 }

@@ -4,10 +4,17 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.review.testing.FakeReviewManager
+import host.stjin.anonaddy.BuildConfig
 
 class ReviewHelper {
     fun launchReviewFlow(activity: Activity){
-        val manager = ReviewManagerFactory.create(activity)
+        val manager = if (BuildConfig.DEBUG){
+            FakeReviewManager(activity)
+        } else {
+            ReviewManagerFactory.create(activity)
+        }
+
         val request = manager.requestReviewFlow()
         request.addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -21,5 +28,6 @@ class ReviewHelper {
                 activity.startActivity(i)
             }
         }
+
     }
 }

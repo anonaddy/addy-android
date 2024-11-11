@@ -12,6 +12,7 @@ class DomainSettingsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityDomainSettingsBinding
 
+    private val domainSettingsFragment = DomainSettingsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +26,22 @@ class DomainSettingsActivity : BaseActivity() {
             binding.activityDomainSettingsToolbar,
             R.drawable.ic_world
         )
+        setRefreshLayout()
 
         setPage()
     }
+
+    // This only applies to <sw600Dp devices
+    private fun setRefreshLayout() {
+        binding.activityDomainSettingsSwiperefresh.setOnRefreshListener {
+            binding.activityDomainSettingsSwiperefresh.isRefreshing = true
+
+            domainSettingsFragment.getDataFromWeb(null) {
+                binding.activityDomainSettingsSwiperefresh.isRefreshing = false
+            }
+        }
+    }
+
 
     private fun setPage() {
         /**
@@ -39,7 +53,7 @@ class DomainSettingsActivity : BaseActivity() {
                 if (isAuthenticated) {
                     supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.activity_domain_settings_fcv, DomainSettingsFragment())
+                        .replace(R.id.activity_domain_settings_fcv, domainSettingsFragment)
                         .commit()
                 }
             }

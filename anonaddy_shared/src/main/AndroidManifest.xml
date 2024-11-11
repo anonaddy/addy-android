@@ -5,6 +5,10 @@
  This library gets override because the shared_anonaddy library implements this library but in practice
          It only gets used on the WearOS module
     -->
-    <uses-sdk tools:overrideLibrary="androidx.wear.compose.material, androidx.wear.compose.foundation, androidx.wear.compose.material.core" />
+    <uses-sdk tools:overrideLibrary="com.google.android.horologist.compose.layout,
+androidx.wear.compose.*,
+androidx.wear.tiles.*,
+androidx.wear.protolayout.*
+" />
 
 </manifest>

@@ -25,6 +25,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
 import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import kotlinx.coroutines.launch
@@ -71,11 +72,15 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         }
 
 
-        // if apiBaseUrl set, lock it in
+        // if apiBaseUrl set, lock it in and set username
         if (apiBaseUrl != null) {
             binding.bsSetupInstanceTiet.setText(apiBaseUrl)
             binding.bsSetupInstanceTiet.isEnabled = false
             binding.bsSetupInstanceTil.isEnabled = false
+
+            binding.bsSetupApikeyUsernameTiet.setText((activity?.application as AddyIoApp).userResource.username)
+            binding.bsSetupApikeyUsernameTiet.isEnabled = false
+            binding.bsSetupApikeyUsernameTil.isEnabled = false
         }
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
@@ -317,9 +322,20 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
 
     private fun verifyApiKey(context: Context, apiKey: String, baseUrl: String) {
         viewLifecycleOwner.lifecycleScope.launch {
-            networkHelper.verifyApiKey(baseUrl, apiKey) { result ->
-                if (result == "200") {
-                    listener.onClickSave(baseUrl, apiKey)
+            networkHelper.verifyApiKey(baseUrl, apiKey) { result, error ->
+                if (result != null) {
+                    if ((activity?.application as AddyIoApp).userResource.id == result.id){
+                        listener.onClickSave(baseUrl, apiKey)
+                    } else {
+                        binding.bsSetupApikeyGetButton.isEnabled = true
+                        // Revert the button to normal
+                        binding.bsSetupApikeySignInButton.revertAnimation()
+
+                        binding.bsSetupApikeyTil.error =
+                            context.resources.getString(R.string.api_belongs_other_account)
+
+                        toggleQrCodeScanning()
+                    }
                 } else {
                     binding.bsSetupApikeyGetButton.isEnabled = true
 
@@ -327,7 +343,10 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     binding.bsSetupApikeySignInButton.revertAnimation()
 
                     binding.bsSetupApikeyTil.error =
-                        context.resources.getString(R.string.api_invalid) + "\n" + result
+                        context.resources.getString(R.string.api_invalid) + "\n" + error
+
+                    toggleQrCodeScanning()
+
                 }
             }
         }

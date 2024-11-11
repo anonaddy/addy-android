@@ -72,7 +72,7 @@ class ManageUsernamesActivity : BaseActivity(),
             binding.activityManageUsernameToolbar
         )
         networkHelper = NetworkHelper(this)
-
+        setRefreshLayout()
 
         val b = intent.extras
         val usernameId = b?.getString("username_id")
@@ -83,6 +83,14 @@ class ManageUsernamesActivity : BaseActivity(),
         }
 
         setPage(usernameId)
+    }
+
+    private fun setRefreshLayout() {
+        binding.activityManageUsernameSwiperefresh.setOnRefreshListener {
+            binding.activityManageUsernameSwiperefresh.isRefreshing = true
+
+            username?.let { setPage(it.id) }
+        }
     }
 
     override fun finish() {
@@ -418,6 +426,7 @@ class ManageUsernamesActivity : BaseActivity(),
                 binding.activityManageUsernameLL1.visibility = View.GONE
                 binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
+            binding.activityManageUsernameSwiperefresh.isRefreshing = false
         }, id)
     }
 

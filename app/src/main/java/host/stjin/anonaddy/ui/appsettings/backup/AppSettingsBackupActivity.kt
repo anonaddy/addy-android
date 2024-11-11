@@ -121,7 +121,7 @@ class AppSettingsBackupActivity : BaseActivity(),
 
     private var resultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
 
                 // Very important. Take persistable Uri permissions to make sure we can access this place later
                 val sourceTreeUri: Uri = result.data?.data!!

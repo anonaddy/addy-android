@@ -63,6 +63,7 @@ class ManageRecipientsActivity : BaseActivity(),
             null
         )
         networkHelper = NetworkHelper(this)
+        setRefreshLayout()
 
 
         val b = intent.extras
@@ -82,6 +83,13 @@ class ManageRecipientsActivity : BaseActivity(),
         super.finish()
     }
 
+    private fun setRefreshLayout() {
+        binding.activityManageRecipientSwiperefresh.setOnRefreshListener {
+            binding.activityManageRecipientSwiperefresh.isRefreshing = true
+
+            recipient?.let { setPage(it.id) }
+        }
+    }
 
     private fun setPage(recipientId: String) {
         // Get the recipient
@@ -506,6 +514,8 @@ class ManageRecipientsActivity : BaseActivity(),
                 binding.activityManageRecipientLL1.visibility = View.GONE
                 binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
             }
+
+            binding.activityManageRecipientSwiperefresh.isRefreshing = false
         }, id)
     }
 

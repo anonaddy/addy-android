@@ -276,6 +276,13 @@ class HomeFragment : Fragment() {
 
         })
 
+        binding.homeStatCardTotalRecipients.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                (activity as MainActivity).navigateTo(R.id.navigation_recipients)
+            }
+
+        })
+
     }
 
     private suspend fun getWebStatistics() {

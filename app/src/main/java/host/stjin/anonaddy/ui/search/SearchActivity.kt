@@ -372,7 +372,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
 
                 override fun onClickCopy(pos: Int, aView: View) {
                     val clipboard: ClipboardManager =
-                        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     val aliasEmailAddress = finalList[pos].email
                     val clip = ClipData.newPlainText("alias", aliasEmailAddress)
                     clipboard.setPrimaryClip(clip)
