@@ -1,5 +1,13 @@
 # Changelog
 
+## [v5.4.2] - 2024-11-17
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed crash when logging in using QR code
+
 ## [v5.4.1] - 2024-11-12
 
 ### addy.io

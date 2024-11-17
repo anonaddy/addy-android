@@ -27,6 +27,7 @@ import host.stjin.anonaddy.databinding.BottomsheetApiBinding
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import kotlinx.coroutines.launch
 
@@ -324,7 +325,11 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         viewLifecycleOwner.lifecycleScope.launch {
             networkHelper.verifyApiKey(baseUrl, apiKey) { result, error ->
                 if (result != null) {
-                    if ((activity?.application as AddyIoApp).userResource.id == result.id){
+                    // APIKey is verified if the API_KEY is currently null (aka empty)
+                    // Or
+                    // UserResource ids are the same
+                    if (SettingsManager(true, context).getSettingsString(SettingsManager.PREFS.API_KEY) == null ||
+                        (activity?.application as AddyIoApp).userResource.id == result.id){
                         listener.onClickSave(baseUrl, apiKey)
                     } else {
                         binding.bsSetupApikeyGetButton.isEnabled = true
