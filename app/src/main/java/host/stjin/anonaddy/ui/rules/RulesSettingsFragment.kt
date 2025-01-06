@@ -245,29 +245,28 @@ class RulesSettingsFragment : Fragment() {
                 }
 
                 if (list != null) {
+                    setRulesAdapter(recipients, list)
+                } else {
 
-                    if (list.size == 0) {
+                    if (error == "404") {
                         binding.fragmentManageRulesLL1.visibility = View.GONE
                         binding.root.findViewById<View>(R.id.fragment_content_unavailable).visibility = View.VISIBLE
                     } else {
-                        setRulesAdapter(recipients, list)
-
-                    }
-                } else {
-                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_rules) + "\n" + error,
-                            (activity as MainActivity).findViewById(R.id.main_container),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
-                    } else {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_rules) + "\n" + error,
-                            (activity as RulesSettingsActivity).findViewById(R.id.activity_rules_settings_CL),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
+                        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                            SnackbarHelper.createSnackbar(
+                                requireContext(),
+                                requireContext().resources.getString(R.string.error_obtaining_rules) + "\n" + error,
+                                (activity as MainActivity).findViewById(R.id.main_container),
+                                LoggingHelper.LOGFILES.DEFAULT
+                            ).show()
+                        } else {
+                            SnackbarHelper.createSnackbar(
+                                requireContext(),
+                                requireContext().resources.getString(R.string.error_obtaining_rules) + "\n" + error,
+                                (activity as RulesSettingsActivity).findViewById(R.id.activity_rules_settings_CL),
+                                LoggingHelper.LOGFILES.DEFAULT
+                            ).show()
+                        }
                     }
 
                     // Show error animations

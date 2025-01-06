@@ -35,9 +35,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v1.4.8 + release 01 + 01 (for wearos)
-        versionCode = 341480101
-        versionName = "1.4.8"
+        // SDK 34 + v1.4.9 + release 01 + 01 (for wearos)
+        versionCode = 341490101
+        versionName = "1.4.9"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -108,7 +108,7 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
     implementation("androidx.core:core-ktx:1.15.0")
-    implementation("com.google.android.gms:play-services-wearable:18.2.0")
+    implementation("com.google.android.gms:play-services-wearable:19.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.wear:wear:1.3.0")
@@ -179,7 +179,7 @@ dependencies {
     // Use to fetch tiles from a tile provider in your tests
     testImplementation("androidx.wear.tiles:tiles-testing:$wear_tiles_version")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.10.1")
     implementation("androidx.wear.tiles:tiles-proto:$wear_tiles_version")
 
 }
@@ -188,7 +188,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.20")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.22")
 }
 
 // Splash screen
