@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 35 + v5.4.1 + release 01 + 00 (for app)
-        versionCode = 355420100 // https://developer.android.com/training/wearables/packaging
+        // SDK 35 + v5.4.3 + release 01 + 00 (for app)
+        versionCode = 355430100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
-        versionName = "v5.4.2"
+        versionName = "v5.4.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -93,14 +93,14 @@ dependencies {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.3")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -111,7 +111,7 @@ dependencies {
 //https://developer.android.com/studio/write/java8-support#library-desugaring
 // For using java.time pre-oreo
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 
@@ -164,7 +164,7 @@ dependencies {
 // Because the app has a gplayless flavor define a gplayImplementation
 val gplayImplementation by configurations
 dependencies {
-    gplayImplementation("com.google.android.gms:play-services-wearable:18.2.0")
+    gplayImplementation("com.google.android.gms:play-services-wearable:19.0.0")
     gplayImplementation("com.android.billingclient:billing-ktx:7.1.1")
     gplayImplementation("com.google.android.play:review-ktx:2.0.2")
 }

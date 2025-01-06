@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.4.3] - 2025-01-06
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed users not being able to create rules in some cases
+
+### addy.io for Android wearables _(v1.4.9)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.4.2] - 2024-11-17
 
 ### addy.io
