@@ -60,7 +60,7 @@
     <string name="contributors">Contributors</string>
     <string name="visit_addyio_helps_section">Visit addy.io help section</string>
     <string name="addyio_help">addy.io help</string>
-    <string name="appearance">Appearance</string>
+    <string name="uiux_interface">Interface</string>
     <string name="dark_mode">Dark mode</string>
     <string name="off">Off</string>
     <string name="on">On</string>
@@ -447,7 +447,7 @@
     <string name="app_data_corrupted">The app data can no longer be read. You may have recovered the app data from another device which is not supported because the addy.io app encrypts all the app data with a device specific key. Please use the built-in addy.io app backup feature in the app settings next time. The app will be reset in 15 seconds…</string>
     <string name="use_dynamic_colors">Use dynamic colors</string>
     <string name="use_dynamic_colors_desc">Apply dynamic colors provided by the system. (requires a restart of the app)</string>
-    <string name="appearance_desc">Change the looks of the app</string>
+    <string name="uiux_interface_desc">Revamp the app\'s appearance and functionality</string>
     <string name="restart_app_required">Restart the app to apply changes</string>
     <string name="active_aliases">Active aliases</string>
     <string name="inactive_aliases">Inactive aliases</string>
@@ -770,5 +770,7 @@
     <string name="rate_this_app_desc">Rate us on Google Play to show your support!</string>
     <string name="api_belongs_other_account">This API key belongs to another account. Reset the app if you would like to use it with another addy.io account</string>
     <string name="verification_record_copied_to_clipboard">Verification record has been copied to the clipboard</string>
+    <string name="startup_page">Startup page</string>
+    <string name="select_startup_page">Select startup page</string>
 
 </resources>

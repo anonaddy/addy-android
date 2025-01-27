@@ -30,6 +30,18 @@
         <item>@string/login_expiration_never</item>
     </string-array>
 
+    <string-array name="startup_page_options">
+        <item>dashboard</item>
+        <item>aliases</item>
+        <item>recipients</item>
+    </string-array>
+
+    <string-array name="startup_page_options_names">
+        <item>@string/title_dashboard</item>
+        <item>@string/title_aliases</item>
+        <item>@string/title_recipients</item>
+    </string-array>
+
     <!-- RULE CONDITIONS -->
     <string-array name="conditions.type">
         <item>sender</item>

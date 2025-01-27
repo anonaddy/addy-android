@@ -1,11 +1,13 @@
 package host.stjin.anonaddy.ui.appsettings
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.wearable.Wearable
@@ -15,7 +17,7 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.LauncherIconsAdapter
-import host.stjin.anonaddy.databinding.BottomsheetAppearanceBinding
+import host.stjin.anonaddy.databinding.BottomsheetUiuxInterfaceBinding
 import host.stjin.anonaddy.ui.customviews.SectionView
 import host.stjin.anonaddy_shared.controllers.LauncherIconController
 import host.stjin.anonaddy_shared.managers.SettingsManager
@@ -23,18 +25,16 @@ import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 
-class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
+class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
-
-    private lateinit var listener: AddAppearanceBottomDialogListener
+    private lateinit var listener: AddUIUXInterfaceBottomDialogListener
     private var forceSwitch = false
 
-    private var _binding: BottomsheetAppearanceBinding? = null
+    private var _binding: BottomsheetUiuxInterfaceBinding? = null
     private lateinit var settingsManager: SettingsManager
 
-
     // 1. Defines the listener interface with a method passing back data result.
-    interface AddAppearanceBottomDialogListener {
+    interface AddUIUXInterfaceBottomDialogListener {
         fun onDarkModeOff()
         fun onDarkModeOn()
         fun onDarkModeAutomatic()
@@ -56,41 +56,63 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = BottomsheetAppearanceBinding.inflate(inflater, container, false)
+        _binding = BottomsheetUiuxInterfaceBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        listener = activity as AddAppearanceBottomDialogListener
+        listener = activity as AddUIUXInterfaceBottomDialogListener
         settingsManager = SettingsManager(false, requireContext())
 
-        loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
+        spinnerChangeListener(requireContext())
+        loadSettings()
 
         when (settingsManager.getSettingsInt(SettingsManager.PREFS.DARK_MODE, -1)) {
             0 -> {
-                binding.bsAppearanceOff.isChecked = true
+                binding.bsUiuxInterfaceOff.isChecked = true
             }
             1 -> {
-                binding.bsAppearanceOn.isChecked = true
+                binding.bsUiuxInterfaceOn.isChecked = true
             }
             -1 -> {
-                binding.bsAppearanceAutomatic.isChecked = true
+                binding.bsUiuxInterfaceAutomatic.isChecked = true
             }
         }
 
         // 2. Setup a callback when a thesme is selected
-        binding.bsAppearanceOff.setOnClickListener(this)
-        binding.bsAppearanceOn.setOnClickListener(this)
-        binding.bsAppearanceAutomatic.setOnClickListener(this)
+        binding.bsUiuxInterfaceOff.setOnClickListener(this)
+        binding.bsUiuxInterfaceOn.setOnClickListener(this)
+        binding.bsUiuxInterfaceAutomatic.setOnClickListener(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            binding.bsAppearanceSectionDynamicColors.visibility = View.VISIBLE
+            binding.bsUiuxInterfaceSectionDynamicColors.visibility = View.VISIBLE
         } else {
-            binding.bsAppearanceSectionDynamicColors.visibility = View.GONE
+            binding.bsUiuxInterfaceSectionDynamicColors.visibility = View.GONE
         }
 
         return root
 
+    }
+
+    private fun spinnerChangeListener(context: Context) {
+        binding.bsUiuxInterfaceStartupPageMact.setOnItemClickListener { _, _, _, _ ->
+            // Since the alias format changed, check if custom is available
+            SettingsManager(false, context).putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, STARTUP_PAGES[STARTUP_PAGES_NAME.indexOf(binding.bsUiuxInterfaceStartupPageMact.text.toString())])
+        }
+    }
+
+    private var STARTUP_PAGES: List<String> = listOf()
+    private var STARTUP_PAGES_NAME: List<String> = listOf()
+    private fun fillSpinners(context: Context) {
+        STARTUP_PAGES = this.resources.getStringArray(R.array.startup_page_options).toList()
+        STARTUP_PAGES_NAME = this.resources.getStringArray(R.array.startup_page_options_names).toList()
+
+        val startupPageAdapter: ArrayAdapter<String> = ArrayAdapter(
+            context,
+            R.layout.dropdown_menu_popup_item,
+            STARTUP_PAGES_NAME
+        )
+        binding.bsUiuxInterfaceStartupPageMact.setAdapter(startupPageAdapter)
     }
 
 
@@ -101,21 +123,34 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
 
 
     private fun loadSettings() {
-        binding.bsAppearanceSectionDynamicColors.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS))
+        binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS))
+
+        var startupPageValue = SettingsManager(false, requireContext()).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "dashboard")
+        fillSpinners(requireContext())
+
+        // Check if the value exists in the array, reset to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
+        if (STARTUP_PAGES.contains(startupPageValue)) {
+            binding.bsUiuxInterfaceStartupPageMact.setText(STARTUP_PAGES_NAME[STARTUP_PAGES.indexOf(startupPageValue)], false)
+        } else {
+            SettingsManager(false, requireContext()).putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "dashboard")
+            startupPageValue = "dashboard"
+            binding.bsUiuxInterfaceStartupPageMact.setText(STARTUP_PAGES_NAME[STARTUP_PAGES.indexOf(startupPageValue)], false)
+
+        }
 
         loadIcons()
     }
 
     private fun loadIcons() {
         val linearLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.bsAppearanceIconRv.layoutManager = linearLayoutManager
+        binding.bsUiuxInterfaceIconRv.layoutManager = linearLayoutManager
 
         val customAdapter = LauncherIconsAdapter(requireContext())
         customAdapter.setClickListener(object : LauncherIconsAdapter.ClickListener {
             override fun onClick(pos: Int, aView: View) {
                 // Set status of all images accordingly
                 for (i in 0 until customAdapter.itemCount) {
-                    val viewholder = binding.bsAppearanceIconRv.findViewHolderForAdapterPosition(i) as LauncherIconsAdapter.ViewHolder
+                    val viewholder = binding.bsUiuxInterfaceIconRv.findViewHolderForAdapterPosition(i) as LauncherIconsAdapter.ViewHolder
                     viewholder.animateImage(i == pos)
                 }
 
@@ -123,7 +158,7 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
                 setWearableIcon(customAdapter.getItem(pos))
             }
         })
-        binding.bsAppearanceIconRv.adapter = customAdapter
+        binding.bsUiuxInterfaceIconRv.adapter = customAdapter
     }
 
     private fun setWearableIcon(item: LauncherIconController.LauncherIcon) {
@@ -147,16 +182,16 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
     }
 
     private fun setOnClickListeners() {
-        binding.bsAppearanceSectionDynamicColors.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.bsUiuxInterfaceSectionDynamicColors.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 forceSwitch = true
-                binding.bsAppearanceSectionDynamicColors.setSwitchChecked(!binding.bsAppearanceSectionDynamicColors.getSwitchChecked())
+                binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(!binding.bsUiuxInterfaceSectionDynamicColors.getSwitchChecked())
             }
         })
     }
 
     private fun setOnSwitchListeners() {
-        binding.bsAppearanceSectionDynamicColors.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+        binding.bsUiuxInterfaceSectionDynamicColors.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 if (compoundButton.isPressed || forceSwitch) {
                     settingsManager.putSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS, checked)
@@ -167,8 +202,8 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
     }
 
     companion object {
-        fun newInstance(): AppearanceBottomDialogFragment {
-            return AppearanceBottomDialogFragment()
+        fun newInstance(): UIUXInterfaceBottomDialogFragment {
+            return UIUXInterfaceBottomDialogFragment()
         }
     }
 
@@ -176,13 +211,13 @@ class AppearanceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnC
     override fun onClick(p0: View?) {
         if (p0 != null) {
             when (p0.id) {
-                R.id.bs_appearance_off -> {
+                R.id.bs_uiux_interface_off -> {
                     listener.onDarkModeOff()
                 }
-                R.id.bs_appearance_on -> {
+                R.id.bs_uiux_interface_on -> {
                     listener.onDarkModeOn()
                 }
-                R.id.bs_appearance_automatic -> {
+                R.id.bs_uiux_interface_automatic -> {
                     listener.onDarkModeAutomatic()
                 }
             }

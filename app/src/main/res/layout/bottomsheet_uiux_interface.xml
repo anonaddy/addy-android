@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bs_appearance_root"
+    android:id="@+id/bs_uiux_interface_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="16dp"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/appearance"
+            android:text="@string/uiux_interface"
             android:textAlignment="center"
             android:textColor="@color/BlackWhite"
             android:textSize="18sp" />
@@ -47,7 +47,7 @@
             android:orientation="vertical">
 
             <host.stjin.anonaddy.ui.customviews.SectionView
-                android:id="@+id/bs_appearance_section_dynamic_colors"
+                android:id="@+id/bs_uiux_interface_section_dynamic_colors"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
@@ -72,18 +72,18 @@
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:layout_width="match_parent"
-                android:id="@+id/bs_appearance_materialbuttontogglegroup"
+                android:id="@+id/bs_uiux_interface_materialbuttontogglegroup"
                 android:paddingStart="@dimen/layout_padding"
                 android:paddingEnd="@dimen/layout_padding"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:weightSum="3"
-                app:checkedButton="@+id/bs_appearance_automatic"
+                app:checkedButton="@+id/bs_uiux_interface_automatic"
                 app:selectionRequired="true"
                 app:singleSelection="true">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_appearance_on"
+                    android:id="@+id/bs_uiux_interface_on"
                     style="@style/AddyIoMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
 
                 <!-- app:materialThemeOverlay makes sure the line is visible in both dark- and lightmode -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_appearance_automatic"
+                    android:id="@+id/bs_uiux_interface_automatic"
                     style="@style/AddyIoMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
 
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bs_appearance_off"
+                    android:id="@+id/bs_uiux_interface_off"
                     style="@style/AddyIoMaterialToggleButtonAlternative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -110,6 +110,35 @@
                     android:text="@string/off" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <TextView
+                style="@style/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingTop="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding"
+                android:paddingBottom="@dimen/layout_padding"
+                android:text="@string/startup_page" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bs_uiux_interface_startup_page_til"
+                style="@style/AppTheme.ExposedDropdownMenu"
+                android:layout_marginBottom="0dp"
+                android:paddingStart="@dimen/layout_padding"
+                android:paddingEnd="@dimen/layout_padding"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/select_startup_page">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/bs_uiux_interface_startup_page_mact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <TextView
@@ -123,7 +152,7 @@
                 android:text="@string/app_icon" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bs_appearance_icon_rv"
+                android:id="@+id/bs_uiux_interface_icon_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"

@@ -67,9 +67,9 @@
                     android:id="@+id/activity_app_settings_section_app_theme"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:sectionDescription="@string/appearance_desc"
+                    app:sectionDescription="@string/uiux_interface_desc"
                     app:sectionStartIcon="@drawable/ic_brightness"
-                    app:sectionTitle="@string/appearance">
+                    app:sectionTitle="@string/uiux_interface">
 
                 </host.stjin.anonaddy.ui.customviews.SectionView>
 

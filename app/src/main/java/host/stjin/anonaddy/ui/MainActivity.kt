@@ -73,6 +73,8 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.time.LocalDateTime
 import java.util.Date
 import java.util.Locale
+import kotlin.collections.contains
+import kotlin.collections.indexOf
 import kotlin.math.abs
 
 
@@ -465,13 +467,27 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
-        checkForTargetExtras()
+        checkForTargetExtrasAndStartupPage()
     }
 
-    private fun checkForTargetExtras() {
+    private fun checkForStartupPage() {
+        var startupPageValue = SettingsManager(false, this).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "dashboard")
+        val STARTUP_PAGES = this.resources.getStringArray(R.array.startup_page_options).toList()
+
+        // Check if the value exists in the array, default (but dont reset) to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
+        // Don't reset the value as this app could be opened in splitscreen, we don't want to reset the value then.
+        if (STARTUP_PAGES.contains(startupPageValue)) {
+            goToTarget(startupPageValue.toString())
+        }
+
+    }
+
+    private fun checkForTargetExtrasAndStartupPage() {
         val target = intent.getStringExtra("target")
         if (!target.isNullOrEmpty()) {
             goToTarget(target)
+        } else {
+            checkForStartupPage()
         }
     }
 
@@ -945,9 +961,13 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
             R.id.navigation_failed_deliveries -> {  // Only SW600DP>
                 // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
-                val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
-                failedDeliveriesFragment.fragmentShown()
-                hideFailedDeliveriesBadge()
+
+                if (supportFragmentManager.fragments.size > 6 && (supportFragmentManager.fragments[6] is FailedDeliveriesFragment)){
+                    val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
+                    failedDeliveriesFragment.fragmentShown()
+                    hideFailedDeliveriesBadge()
+                }
+
 
                 if (this.resources.getBoolean(R.bool.isTablet)) {
                     viewPager.currentItem = 6
@@ -998,6 +1018,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
     // TODO CHECK TABLET, doesnt work from search
+    // Also gets called from the startupPage check
     private fun goToTarget(string: String) {
         when (string) {
             SearchActivity.SearchTargets.ALIASES.activity -> {

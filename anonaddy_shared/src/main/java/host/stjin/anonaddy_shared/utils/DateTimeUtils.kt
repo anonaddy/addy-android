@@ -34,9 +34,9 @@ object DateTimeUtils {
 
 
                 return when (dateTimeFormat) {
-                    DatetimeFormat.DATE -> DateFormat.getDateInstance(DateFormat.SHORT).format(date)
-                    DatetimeFormat.TIME -> DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
-                    DatetimeFormat.DATETIME -> DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
+                    DatetimeFormat.DATE -> DateFormat.getDateInstance(DateFormat.MEDIUM).format(date)
+                    DatetimeFormat.TIME -> DateFormat.getTimeInstance(DateFormat.MEDIUM).format(date)
+                    DatetimeFormat.DATETIME -> DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(date)
                     DatetimeFormat.SHORT_DATE -> SimpleDateFormat("E d MMM").format(date)
                 }
             } catch (e: Exception) {

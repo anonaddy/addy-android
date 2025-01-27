@@ -41,6 +41,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         NOTIFY_SUBSCRIPTION_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_subscription_expiry"),
         MAILTO_ACTIVITY_SHOW_SUGGESTIONS(false, PREFTYPES.BOOLEAN, "mailto_activity_show_suggestions"),
         TIMES_THE_APP_HAS_BEEN_OPENED(false, PREFTYPES.INT, "times_the_app_has_been_opened"),
+        STARTUP_PAGE(false, PREFTYPES.STRING, "startup_page"),
 
         // Sorting and Filtering for aliasFragment
         ALIAS_SORT_FILTER(false, PREFTYPES.STRING, "alias_sort_filter"),
@@ -150,8 +151,8 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         prefs.edit().putString(key.key, string).apply()
     }
 
-    fun getSettingsString(key: PREFS): String? {
-        return prefs.getString(key.key, null)
+    fun getSettingsString(key: PREFS, default: String? = null): String? {
+        return prefs.getString(key.key, default)
     }
 
     fun putSettingsInt(key: PREFS, int: Int) {
