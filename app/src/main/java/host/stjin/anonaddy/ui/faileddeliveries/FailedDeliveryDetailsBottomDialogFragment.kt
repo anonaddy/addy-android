@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.faileddeliveries
 
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -10,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.FileProvider
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -18,8 +17,13 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFailedDeliveryDetailBinding
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.utils.LoggingHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileInputStream
 
 
 class FailedDeliveryDetailsBottomDialogFragment(
@@ -155,7 +159,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
         val networkHelper = NetworkHelper(context)
         networkHelper.downloadSpecificFailedDelivery(context, { result, error ->
             if (result != null) {
-                openEMLFile(context, result)
+                saveFileToUserLocation(result)
                 binding.bsFailedDeliveriesDownloadButton.revertAnimation()
 
             } else {
@@ -170,24 +174,35 @@ class FailedDeliveryDetailsBottomDialogFragment(
         }, failedDeliveryId!!)
     }
 
-    fun openEMLFile(context: Context, file: File) {
-        val uri = FileProvider.getUriForFile(
-            context,
-            "${context.applicationContext.packageName}.provider", // Make sure this matches your FileProvider authority in the manifest
-            file
-        )
 
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(uri, "message/rfc822") // MIME type for EML files
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // Necessary for providing access to the file
-
-        // Check if there's an app to handle this intent
-        if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(intent)
-        } else {
-            // No app can handle this MIME type, show a message or handle it otherwise
-            Toast.makeText(context, "No app found to open this file type.", Toast.LENGTH_SHORT).show()
+    private var fileToSave: File? = null
+    private val saveFileResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("message/rfc822")) { uri ->
+        if (uri != null) {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    try {
+                        requireContext().contentResolver.openOutputStream(uri)?.use { outputStream ->
+                            FileInputStream(fileToSave).use { inputStream ->
+                                inputStream.copyTo(outputStream)
+                            }
+                        }
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, requireContext().resources.getString(R.string.file_saved_succesfully), Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "saveFileResultLauncher", null)
+                            Toast.makeText(context, requireContext().resources.getString(R.string.failed_to_save_file), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    fun saveFileToUserLocation(file: File) {
+        fileToSave = file
+        saveFileResultLauncher.launch(file.name)
     }
 
     override fun onClick(p0: View?) {

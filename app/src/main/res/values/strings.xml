@@ -774,5 +774,7 @@
     <string name="startup_page">Startup page</string>
     <string name="select_startup_page">Select startup page</string>
     <string name="download_failed_delivery">Download failed delivery</string>
+    <string name="failed_to_save_file">Failed to save file</string>
+    <string name="file_saved_succesfully">File saved succesfully</string>
 
 </resources>
