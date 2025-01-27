@@ -35,7 +35,8 @@ class FailedDeliveryDetailsBottomDialogFragment(
     private val type: String?,
     private val remoteMTA: String?,
     private val sender: String?,
-    private val code: String?
+    private val code: String?,
+    private val isStored: Boolean,
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -73,7 +74,13 @@ class FailedDeliveryDetailsBottomDialogFragment(
             }
 
             binding.bsFailedDeliveriesDeleteButton.setOnClickListener(this)
-            binding.bsFailedDeliveriesDownloadButton.setOnClickListener(this)
+
+            if (isStored){
+                binding.bsFailedDeliveriesDownloadButton.visibility = View.VISIBLE
+                binding.bsFailedDeliveriesDownloadButton.setOnClickListener(this)
+            } else {
+                binding.bsFailedDeliveriesDownloadButton.visibility = View.GONE
+            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 binding.bsFailedDeliveriesTextview.text = Html.fromHtml(
@@ -235,9 +242,10 @@ class FailedDeliveryDetailsBottomDialogFragment(
             type: String?,
             remoteMTA: String?,
             sender: String?,
-            code: String?
+            code: String?,
+            isStored: Boolean
         ): FailedDeliveryDetailsBottomDialogFragment {
-            return FailedDeliveryDetailsBottomDialogFragment(failedDeliveryId, created, attempted, alias, recipient, type, remoteMTA, sender, code)
+            return FailedDeliveryDetailsBottomDialogFragment(failedDeliveryId, created, attempted, alias, recipient, type, remoteMTA, sender, code, isStored)
         }
     }
 }

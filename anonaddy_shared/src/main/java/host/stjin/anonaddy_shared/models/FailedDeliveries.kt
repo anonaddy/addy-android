@@ -22,6 +22,7 @@ data class FailedDeliveries(
     val email_type: String,
     val status: String,
     val code: String,
+    val is_stored: Boolean,
     val attempted_at: String,
     val created_at: String,
     val updated_at: String

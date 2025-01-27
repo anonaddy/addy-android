@@ -202,7 +202,8 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                         list[pos].bounce_type,
                         list[pos].remote_mta,
                         list[pos].sender,
-                        list[pos].code
+                        list[pos].code,
+                        list[pos].is_stored,
                     )
                     failedDeliveryDetailsBottomDialogFragment!!.show(
                         childFragmentManager,
