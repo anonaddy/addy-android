@@ -182,7 +182,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     private fun setFailedDeliveriesAdapter(list: ArrayList<FailedDeliveries>) {
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
             failedDeliveries = list
-            if (list.size > 0) {
+            if (list.isNotEmpty()) {
                 binding.fragmentFailedDeliveriesNoFailedDeliveries.visibility = View.GONE
             } else {
                 binding.fragmentFailedDeliveriesNoFailedDeliveries.visibility = View.VISIBLE
