@@ -769,5 +769,6 @@
     <string name="rate_this_app">Rate this app</string>
     <string name="rate_this_app_desc">Rate us on Google Play to show your support!</string>
     <string name="api_belongs_other_account">This API key belongs to another account. Reset the app if you would like to use it with another addy.io account</string>
+    <string name="verification_record_copied_to_clipboard">Verification record has been copied to the clipboard</string>
 
 </resources>

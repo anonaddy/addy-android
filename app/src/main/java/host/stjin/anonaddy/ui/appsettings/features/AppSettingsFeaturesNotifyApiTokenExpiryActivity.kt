@@ -73,7 +73,7 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
     private fun setApiInfoText(apiTokenDetails: ApiTokenDetails?) {
         if (apiTokenDetails != null) {
             if (apiTokenDetails.expires_at != null) {
-                val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(apiTokenDetails.expires_at) // Get the expiry date
+                val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(apiTokenDetails.expires_at) // Get the expiry date
                 val text = PrettyTime().format(expiryDate)
                 binding.activityAppSettingsFeaturesNotifyApiTokenExpiryCurrentTokenExpiry.text =
                     this@AppSettingsFeaturesNotifyApiTokenExpiryActivity.resources.getString(

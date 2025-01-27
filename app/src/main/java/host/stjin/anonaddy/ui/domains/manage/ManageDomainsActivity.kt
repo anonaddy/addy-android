@@ -423,11 +423,11 @@ class ManageDomainsActivity : BaseActivity(),
         binding.activityManageDomainBasicTextview.text = resources.getString(
             R.string.manage_domain_basic_info,
             domain.domain,
-            DateTimeUtils.turnStringIntoLocalString(domain.created_at),
-            DateTimeUtils.turnStringIntoLocalString(domain.updated_at),
-            DateTimeUtils.turnStringIntoLocalString(domain.domain_verified_at),
-            DateTimeUtils.turnStringIntoLocalString(domain.domain_mx_validated_at),
-            DateTimeUtils.turnStringIntoLocalString(domain.domain_sending_verified_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(domain.created_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(domain.updated_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(domain.domain_verified_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(domain.domain_mx_validated_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(domain.domain_sending_verified_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
         binding.activityManageDomainAliasesTitleTextview.text = resources.getString(R.string.domain_aliases_d, totalAliases)

@@ -19,6 +19,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import org.ocpsoft.prettytime.PrettyTime
 
 
 class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context, private val supportMultipleSelection: Boolean = false) :
@@ -46,11 +47,11 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
                 listWithAliases[position].description,
                 (holder.mDescription.context).resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
+                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].created_at))
                 ),
                 (holder.mDescription.context).resources.getString(
                     R.string.updated_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
+                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].updated_at))
                 )
             )
         } else {
@@ -58,11 +59,11 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
                 R.string.s_s,
                 (holder.mDescription.context).resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].created_at)
+                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].created_at))
                 ),
                 (holder.mDescription.context).resources.getString(
                     R.string.updated_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithAliases[position].updated_at)
+                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].updated_at))
                 )
             )
         }

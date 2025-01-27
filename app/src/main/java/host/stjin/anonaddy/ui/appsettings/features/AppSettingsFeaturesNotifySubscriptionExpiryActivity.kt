@@ -73,7 +73,7 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
 
                 user.subscription_ends_at != null -> {
                     val expiryDate =
-                        DateTimeUtils.turnStringIntoLocalDateTime(user.subscription_ends_at)
+                        DateTimeUtils.convertStringToLocalTimeZoneDate(user.subscription_ends_at)
 
                     val text = PrettyTime().format(expiryDate)
                     binding.activityAppSettingsFeaturesNotifySubscriptionExpiryCurrentSubscriptionExpiry.text =

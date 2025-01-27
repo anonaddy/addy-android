@@ -26,7 +26,7 @@ class FailedDeliveryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.mAlias.text = listWithFailedDeliveries[position].alias_id
-        holder.mCreated.text = DateTimeUtils.turnStringIntoLocalString(listWithFailedDeliveries[position].created_at)
+        holder.mCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(listWithFailedDeliveries[position].created_at)
         holder.mCode.text = listWithFailedDeliveries[position].code
 
     }

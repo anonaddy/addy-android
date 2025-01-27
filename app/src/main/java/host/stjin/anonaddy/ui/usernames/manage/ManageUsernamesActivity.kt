@@ -486,8 +486,8 @@ class ManageUsernamesActivity : BaseActivity(),
         binding.activityManageUsernameBasicTextview.text = resources.getString(
             R.string.manage_username_basic_info,
             username.username,
-            DateTimeUtils.turnStringIntoLocalString(username.created_at),
-            DateTimeUtils.turnStringIntoLocalString(username.updated_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(username.created_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(username.updated_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
 

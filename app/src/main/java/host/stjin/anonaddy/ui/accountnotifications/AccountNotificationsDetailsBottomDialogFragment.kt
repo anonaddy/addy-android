@@ -61,7 +61,7 @@ class AccountNotificationsDetailsBottomDialogFragment(
 
         binding.bsAccountNotificationsTitle.text = title
         binding.bsAccountNotificationsOpenButton.text = linkText ?: this.resources.getString(R.string.open_link)
-        binding.bsAccountNotificationsCreated.text = DateTimeUtils.turnStringIntoLocalString(created)
+        binding.bsAccountNotificationsCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(created)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.bsAccountNotificationsTextview.text = Html.fromHtml(

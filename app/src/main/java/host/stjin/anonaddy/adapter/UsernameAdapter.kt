@@ -38,11 +38,11 @@ class UsernameAdapter(
                 listWithUsernames[position].description,
                 (holder.mDescription.context).resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithUsernames[position].created_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(listWithUsernames[position].created_at)
                 ),
                 (holder.mDescription.context).resources.getString(
                     R.string.updated_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithUsernames[position].updated_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(listWithUsernames[position].updated_at)
                 )
             )
         } else {
@@ -50,11 +50,11 @@ class UsernameAdapter(
                 R.string.s_s,
                 (holder.mDescription.context).resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithUsernames[position].created_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(listWithUsernames[position].created_at)
                 ),
                 (holder.mDescription.context).resources.getString(
                     R.string.updated_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(listWithUsernames[position].updated_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(listWithUsernames[position].updated_at)
                 )
             )
         }
