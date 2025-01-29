@@ -107,6 +107,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private lateinit var networkHelper: NetworkHelper
 
+    lateinit var viewPager: ViewPager2
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -288,27 +291,34 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     fun refreshAllData() {
+
+        val test = supportFragmentManager.fragments
+
+        for (frag in test ){
+            println(frag.tag)
+        }
+
         // Refresh all data in child fragments
-        val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
-        val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
-        val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
-        homeFragment.getDataFromWeb(null)
-        aliasFragment.getDataFromWeb(null)
-        recipientsFragment.getDataFromWeb(null)
+        val homeFragment: HomeFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("HomeFragment") as HomeFragment?
+        val aliasFragment: AliasFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment?
+        val recipientsFragment: RecipientsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RecipientsFragment") as RecipientsFragment?
+        homeFragment?.getDataFromWeb(null)
+        aliasFragment?.getDataFromWeb(null)
+        recipientsFragment?.getDataFromWeb(null)
 
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            val usernamesSettingsFragment: UsernamesSettingsFragment = supportFragmentManager.fragments[3] as UsernamesSettingsFragment
-            usernamesSettingsFragment.getDataFromWeb(null)
+            val usernamesSettingsFragment: UsernamesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("UsernamesSettingsFragment") as UsernamesSettingsFragment?
+            usernamesSettingsFragment?.getDataFromWeb(null)
 
-            val domainSettingsFragment: DomainSettingsFragment = supportFragmentManager.fragments[4] as DomainSettingsFragment
-            domainSettingsFragment.getDataFromWeb(null)
+            val domainSettingsFragment: DomainSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("DomainSettingsFragment") as DomainSettingsFragment?
+            domainSettingsFragment?.getDataFromWeb(null)
 
-            val rulesSettingsFragment: RulesSettingsFragment = supportFragmentManager.fragments[5] as RulesSettingsFragment
-            rulesSettingsFragment.getDataFromWeb(null)
+            val rulesSettingsFragment: RulesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RulesSettingsFragment") as RulesSettingsFragment?
+            rulesSettingsFragment?.getDataFromWeb(null)
 
-            val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
-            failedDeliveriesFragment.getDataFromWeb(null)
+            val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
+            failedDeliveriesFragment?.getDataFromWeb(null)
         }
 
         // Check for updates and check API expiration key
@@ -353,7 +363,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         val navView = if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.navRail!! else binding.navView!!
-        val viewPager =
+        viewPager =
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
 
         val fragmentList = if (resources.getBoolean(R.bool.isTablet)) {
@@ -925,9 +935,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     fun navigateTo(fragment: Int) {
-        val viewPager =
-            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
-
         when (fragment) {
             R.id.navigation_home -> viewPager.currentItem = 0
             R.id.navigation_alias -> viewPager.currentItem = 1
@@ -960,14 +967,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
 
             R.id.navigation_failed_deliveries -> {  // Only SW600DP>
+
                 // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
-
-                if (supportFragmentManager.fragments.size > 6 && (supportFragmentManager.fragments[6] is FailedDeliveriesFragment)){
-                    val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
-                    failedDeliveriesFragment.fragmentShown()
-                    hideFailedDeliveriesBadge()
-                }
-
+                val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
+                failedDeliveriesFragment?.fragmentShown()
+                hideFailedDeliveriesBadge()
 
                 if (this.resources.getBoolean(R.bool.isTablet)) {
                     viewPager.currentItem = 6
