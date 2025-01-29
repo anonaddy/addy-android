@@ -291,13 +291,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     fun refreshAllData() {
-
-        val test = supportFragmentManager.fragments
-
-        for (frag in test ){
-            println(frag.tag)
-        }
-
         // Refresh all data in child fragments
         val homeFragment: HomeFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("HomeFragment") as HomeFragment?
         val aliasFragment: AliasFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment?
