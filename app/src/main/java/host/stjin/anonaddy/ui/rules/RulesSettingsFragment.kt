@@ -47,7 +47,7 @@ class RulesSettingsFragment : Fragment() {
     private var recipients: ArrayList<Recipients>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private var oneTimeRecyclerViewActions: Boolean = true
 
     companion object {
         fun newInstance() = RulesSettingsFragment()
@@ -213,8 +213,8 @@ class RulesSettingsFragment : Fragment() {
 
     private fun setRulesRecyclerView() {
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RULES_COUNT, 10) ?: 10
 
                 // set a LinearLayoutManager to handle Android
@@ -302,7 +302,7 @@ class RulesSettingsFragment : Fragment() {
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
             recipients = recipientsList
             rules = list
-            if (list.size > 0) {
+            if (list.isNotEmpty()) {
                 binding.fragmentManageRulesNoRules.visibility = View.GONE
             } else {
                 binding.fragmentManageRulesNoRules.visibility = View.VISIBLE

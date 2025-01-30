@@ -1,8 +1,6 @@
 package host.stjin.anonaddy.ui
 
-import android.app.Activity
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
@@ -73,8 +71,6 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.time.LocalDateTime
 import java.util.Date
 import java.util.Locale
-import kotlin.collections.contains
-import kotlin.collections.indexOf
 import kotlin.math.abs
 
 
@@ -398,7 +394,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                             changeTopBarTitle(
                                 binding.mainAppBarInclude!!.mainTopBarTitle,
-                                this@MainActivity.resources.getString(R.string.title_dashboard)
+                                this@MainActivity.resources.getString(R.string.title_home)
                             )
                         }
 
@@ -474,12 +470,12 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun checkForStartupPage() {
-        var startupPageValue = SettingsManager(false, this).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "dashboard")
-        val STARTUP_PAGES = this.resources.getStringArray(R.array.startup_page_options).toList()
+        var startupPageValue = SettingsManager(false, this).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
+        val startupPageOptions = this.resources.getStringArray(R.array.startup_page_options).toList()
 
         // Check if the value exists in the array, default (but dont reset) to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
         // Don't reset the value as this app could be opened in splitscreen, we don't want to reset the value then.
-        if (STARTUP_PAGES.contains(startupPageValue)) {
+        if (startupPageOptions.contains(startupPageValue)) {
             goToTarget(startupPageValue.toString())
         }
 

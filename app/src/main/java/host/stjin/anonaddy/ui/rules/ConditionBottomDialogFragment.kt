@@ -63,11 +63,11 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
 
         if (conditionEditObject != null) {
             val typeText =
-                TYPES_NAME[TYPES.indexOf(conditionEditObject.type)]
+                conditionTypeNames[conditionTypes.indexOf(conditionEditObject.type)]
             binding.bsRuleConditionTypeMact.setText(typeText, false)
 
             val matchText =
-                MATCHES_NAME[MATCHES.indexOf(conditionEditObject.match)]
+                matchOperatorNames[matchOperators.indexOf(conditionEditObject.match)]
             binding.bsRuleConditionMatchMact.setText(matchText, false)
 
 
@@ -77,20 +77,20 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
     }
 
 
-    private var TYPES: List<String> = listOf()
-    private var MATCHES: List<String> = listOf()
-    private var MATCHES_NAME: List<String> = listOf()
-    private var TYPES_NAME: List<String> = listOf()
+    private var conditionTypes: List<String> = listOf()
+    private var matchOperators: List<String> = listOf()
+    private var matchOperatorNames: List<String> = listOf()
+    private var conditionTypeNames: List<String> = listOf()
     private fun fillSpinners(context: Context) {
-        TYPES = this.resources.getStringArray(R.array.conditions_type).toList()
-        MATCHES = this.resources.getStringArray(R.array.conditions_match).toList()
-        TYPES_NAME = this.resources.getStringArray(R.array.conditions_type_name).toList()
-        MATCHES_NAME = this.resources.getStringArray(R.array.conditions_match_name).toList()
+        conditionTypes = this.resources.getStringArray(R.array.conditions_type).toList()
+        matchOperators = this.resources.getStringArray(R.array.conditions_match).toList()
+        conditionTypeNames = this.resources.getStringArray(R.array.conditions_type_name).toList()
+        matchOperatorNames = this.resources.getStringArray(R.array.conditions_match_name).toList()
 
         val domainAdapter: ArrayAdapter<String> = ArrayAdapter(
             context,
             R.layout.dropdown_menu_popup_item,
-            TYPES_NAME
+            conditionTypeNames
         )
         binding.bsRuleConditionTypeMact.setAdapter(domainAdapter)
 
@@ -98,7 +98,7 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
         val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
             context,
             R.layout.dropdown_menu_popup_item,
-            MATCHES_NAME
+            matchOperatorNames
         )
         binding.bsRuleConditionMatchMact.setAdapter(formatAdapter)
     }
@@ -111,9 +111,9 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
 
     private fun addCondition() {
         val type =
-            TYPES[TYPES_NAME.indexOf(binding.bsRuleConditionTypeMact.text.toString())]
+            conditionTypes[conditionTypeNames.indexOf(binding.bsRuleConditionTypeMact.text.toString())]
         val match =
-            MATCHES[MATCHES_NAME.indexOf(binding.bsRuleConditionMatchMact.text.toString())]
+            matchOperators[matchOperatorNames.indexOf(binding.bsRuleConditionMatchMact.text.toString())]
 
         // Split the textfield to an array (using , as a delimiter)
         val values = binding.bsRuleConditionValuesTiet.text.toString().split(",")

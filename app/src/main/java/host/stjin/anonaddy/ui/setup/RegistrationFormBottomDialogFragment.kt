@@ -61,16 +61,16 @@ class RegistrationFormBottomDialogFragment: BaseBottomSheetDialogFragment(), Vie
     }
 
 
-    private var EXPIRATIONS: List<String> = listOf()
-    private var EXPIRATIONS_NAME: List<String> = listOf()
+    private var expirationOptions: List<String> = listOf()
+    private var expirationOptionNames: List<String> = listOf()
     private fun fillSpinners(context: Context) {
-        EXPIRATIONS = this.resources.getStringArray(R.array.expiration_options).toList()
-        EXPIRATIONS_NAME = this.resources.getStringArray(R.array.expiration_options_names).toList()
+        expirationOptions = this.resources.getStringArray(R.array.expiration_options).toList()
+        expirationOptionNames = this.resources.getStringArray(R.array.expiration_options_names).toList()
 
         val expirationAdapter: ArrayAdapter<String> = ArrayAdapter(
             context,
             R.layout.dropdown_menu_popup_item,
-            EXPIRATIONS_NAME
+            expirationOptionNames
         )
         binding.bsRegistrationFormExpirationMact.setAdapter(expirationAdapter)
     }
@@ -134,7 +134,7 @@ class RegistrationFormBottomDialogFragment: BaseBottomSheetDialogFragment(), Vie
             return
         }
 
-        val expirationOption =  EXPIRATIONS[EXPIRATIONS_NAME.indexOf(binding.bsRegistrationFormExpirationMact.text.toString())]
+        val expirationOption =  expirationOptions[expirationOptionNames.indexOf(binding.bsRegistrationFormExpirationMact.text.toString())]
 
         binding.bsRegistrationFormRegisterButton.startAnimation()
         val networkHelper = NetworkHelper(requireContext())

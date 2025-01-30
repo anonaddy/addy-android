@@ -9,6 +9,7 @@ data class SingleFailedDelivery(
     val `data`: FailedDeliveries
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class FailedDeliveries(
     val id: String,
     val user_id: String,

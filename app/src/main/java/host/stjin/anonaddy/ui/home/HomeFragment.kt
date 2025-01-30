@@ -19,7 +19,7 @@ import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.MainViewpagerAdapter
 import host.stjin.anonaddy.ui.alias.AliasFragment
-import host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+import host.stjin.anonaddy.ui.customviews.HomeStatCardView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -123,7 +123,7 @@ class HomeFragment : Fragment() {
 
     private fun setOnClickListeners() {
 
-        binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -152,7 +152,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatCardActiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardActiveAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -181,7 +181,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatCardInactiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardInactiveAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -211,7 +211,7 @@ class HomeFragment : Fragment() {
         })
 
 
-        binding.homeStatCardDeletedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardDeletedAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -240,7 +240,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatWatchedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatWatchedAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -277,7 +277,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatCardTotalRecipients.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardTotalRecipients.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 (activity as MainActivity).navigateTo(R.id.navigation_recipients)
             }

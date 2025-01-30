@@ -19,7 +19,7 @@ class LogViewerActivity : BaseActivity() {
     private lateinit var loggingHelper: LoggingHelper
     private lateinit var binding: ActivityLogViewerBinding
     private lateinit var logsAdapter: LogsAdapter
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private var oneTimeRecyclerViewActions: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,8 +65,8 @@ class LogViewerActivity : BaseActivity() {
 
     private fun getAllLogsAndSetRecyclerview() {
         binding.appsettingsLogviewerRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
                 addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
                 val resId: Int = R.anim.layout_animation_fall_down
                 val animation = AnimationUtils.loadLayoutAnimation(context, resId)
@@ -79,7 +79,7 @@ class LogViewerActivity : BaseActivity() {
             list?.reverse()
 
             if (list != null) {
-                if (list.size > 0) {
+                if (list.isNotEmpty()) {
                     binding.appsettingsLogviewerNoLogs.visibility = View.GONE
                 } else {
                     binding.appsettingsLogviewerNoLogs.visibility = View.VISIBLE

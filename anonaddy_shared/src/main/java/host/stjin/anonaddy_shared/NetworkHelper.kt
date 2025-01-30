@@ -804,7 +804,7 @@ class NetworkHelper(private val context: Context) {
         domain: String,
         description: String,
         format: String,
-        local_part: String,
+        aliasLocalPart: String,
         recipients: ArrayList<String>?
     ) {
 
@@ -824,7 +824,7 @@ class NetworkHelper(private val context: Context) {
         json.put("domain", domain)
         json.put("description", description)
         json.put("format", format)
-        json.put("local_part", local_part)
+        json.put("local_part", aliasLocalPart)
         json.put("recipient_ids", array)
 
 

@@ -16,7 +16,7 @@
         <attr name="sectionBackgroundColor" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="DashboardStatCardView">
+    <declare-styleable name="HomeStatCardView">
         <attr name="StatCardViewTitle" format="string" />
         <attr name="StatCardViewDescription" format="string" />
         <attr name="StatCardViewButtonText" format="string" />

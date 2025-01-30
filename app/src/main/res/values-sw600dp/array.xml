@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="startup_page_options" tools:ignore="InconsistentArrays">
-        <item>dashboard</item>
+        <item>home</item>
         <item>aliases</item>
         <item>recipients</item>
         <item>usernames</item>
@@ -11,7 +11,7 @@
     </string-array>
 
     <string-array name="startup_page_options_names" tools:ignore="InconsistentArrays">
-        <item>@string/title_dashboard</item>
+        <item>@string/title_home</item>
         <item>@string/title_aliases</item>
         <item>@string/title_recipients</item>
         <item>@string/usernames</item>

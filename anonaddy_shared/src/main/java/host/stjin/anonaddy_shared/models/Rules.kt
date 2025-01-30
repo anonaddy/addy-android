@@ -21,6 +21,7 @@ data class RulesArray(
     val `data`: List<Rules>
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class Rules(
     val id: String,
     val user_id: String,

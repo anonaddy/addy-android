@@ -10,10 +10,12 @@ data class SingleUserResource(
     val `data`: UserResource
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class UserResourceExtended(
     var default_recipient_email: String
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class UserResource(
     val id: String,
     val username: String,

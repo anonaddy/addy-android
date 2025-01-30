@@ -120,7 +120,7 @@ class CreateAliasActivity : ComponentActivity() {
                 "",
                 // Replace custom with random characters because typing on a watch is... meh
                 if (userResource.default_alias_format == "custom") "random_characters" else userResource.default_alias_format,
-                local_part = "",
+                aliasLocalPart = "",
                 null
             )
         }

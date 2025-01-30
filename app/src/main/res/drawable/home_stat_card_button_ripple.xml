@@ -9,5 +9,5 @@
             <solid android:color="?colorSurface" />
         </shape>
     </item>
-    <item android:drawable="@drawable/dashboard_stat_card_button" />
+    <item android:drawable="@drawable/home_stat_card_button" />
 </ripple>

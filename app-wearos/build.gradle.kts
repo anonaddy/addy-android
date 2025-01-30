@@ -110,7 +110,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("com.google.android.gms:play-services-wearable:19.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.wear:wear:1.3.0")
 
     compileOnly("com.google.android.wearable:wearable:2.9.0")
@@ -154,7 +154,7 @@ dependencies {
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.12.0")
 }
 
 // For the donut in the aliasview

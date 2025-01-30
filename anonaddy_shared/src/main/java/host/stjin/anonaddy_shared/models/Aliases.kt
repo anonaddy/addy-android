@@ -14,6 +14,8 @@ data class SingleAlias(
     val `data`: Aliases
 )
 
+
+@Suppress("PropertyName", "PropertyName")
 data class Aliases(
     val id: String,
     val user_id: String,
@@ -40,6 +42,7 @@ data class Aliases(
     var deleted_at: String?
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class Meta(
     val current_page: Int,
     val from: Int?,

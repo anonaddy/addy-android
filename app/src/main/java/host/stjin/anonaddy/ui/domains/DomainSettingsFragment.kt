@@ -38,7 +38,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
     private var domains: ArrayList<Domains>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private var oneTimeRecyclerViewActions: Boolean = true
 
     private val addDomainFragment: AddDomainBottomDialogFragment = AddDomainBottomDialogFragment.newInstance()
 
@@ -223,7 +223,7 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
     private fun setDomainsAdapter(list: java.util.ArrayList<Domains>) {
         binding.fragmentDomainSettingsAllDomainsRecyclerview.apply {
             domains = list
-            if (list.size > 0) {
+            if (list.isNotEmpty()) {
                 binding.fragmentDomainSettingsNoDomains.visibility = View.GONE
             } else {
                 binding.fragmentDomainSettingsNoDomains.visibility = View.VISIBLE
@@ -256,8 +256,8 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
 
     private fun setDomainsRecyclerView() {
         binding.fragmentDomainSettingsAllDomainsRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
                 layoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))

@@ -97,20 +97,20 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
     private fun spinnerChangeListener(context: Context) {
         binding.bsUiuxInterfaceStartupPageMact.setOnItemClickListener { _, _, _, _ ->
             // Since the alias format changed, check if custom is available
-            SettingsManager(false, context).putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, STARTUP_PAGES[STARTUP_PAGES_NAME.indexOf(binding.bsUiuxInterfaceStartupPageMact.text.toString())])
+            SettingsManager(false, context).putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, startupPages[startupPageNames.indexOf(binding.bsUiuxInterfaceStartupPageMact.text.toString())])
         }
     }
 
-    private var STARTUP_PAGES: List<String> = listOf()
-    private var STARTUP_PAGES_NAME: List<String> = listOf()
+    private var startupPages: List<String> = listOf()
+    private var startupPageNames: List<String> = listOf()
     private fun fillSpinners(context: Context) {
-        STARTUP_PAGES = this.resources.getStringArray(R.array.startup_page_options).toList()
-        STARTUP_PAGES_NAME = this.resources.getStringArray(R.array.startup_page_options_names).toList()
+        startupPages = this.resources.getStringArray(R.array.startup_page_options).toList()
+        startupPageNames = this.resources.getStringArray(R.array.startup_page_options_names).toList()
 
         val startupPageAdapter: ArrayAdapter<String> = ArrayAdapter(
             context,
             R.layout.dropdown_menu_popup_item,
-            STARTUP_PAGES_NAME
+            startupPageNames
         )
         binding.bsUiuxInterfaceStartupPageMact.setAdapter(startupPageAdapter)
     }
@@ -125,16 +125,16 @@ class UIUXInterfaceBottomDialogFragment : BaseBottomSheetDialogFragment(), View.
     private fun loadSettings() {
         binding.bsUiuxInterfaceSectionDynamicColors.setSwitchChecked(settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS))
 
-        var startupPageValue = SettingsManager(false, requireContext()).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "dashboard")
+        var startupPageValue = SettingsManager(false, requireContext()).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
         fillSpinners(requireContext())
 
         // Check if the value exists in the array, reset to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
-        if (STARTUP_PAGES.contains(startupPageValue)) {
-            binding.bsUiuxInterfaceStartupPageMact.setText(STARTUP_PAGES_NAME[STARTUP_PAGES.indexOf(startupPageValue)], false)
+        if (startupPages.contains(startupPageValue)) {
+            binding.bsUiuxInterfaceStartupPageMact.setText(startupPageNames[startupPages.indexOf(startupPageValue)], false)
         } else {
-            SettingsManager(false, requireContext()).putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "dashboard")
-            startupPageValue = "dashboard"
-            binding.bsUiuxInterfaceStartupPageMact.setText(STARTUP_PAGES_NAME[STARTUP_PAGES.indexOf(startupPageValue)], false)
+            SettingsManager(false, requireContext()).putSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
+            startupPageValue = "home"
+            binding.bsUiuxInterfaceStartupPageMact.setText(startupPageNames[startupPages.indexOf(startupPageValue)], false)
 
         }
 

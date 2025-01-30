@@ -3,13 +3,6 @@ package host.stjin.anonaddy.ui
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import host.stjin.anonaddy.ui.alias.AliasFragment
-import host.stjin.anonaddy.ui.domains.DomainSettingsFragment
-import host.stjin.anonaddy.ui.faileddeliveries.FailedDeliveriesFragment
-import host.stjin.anonaddy.ui.home.HomeFragment
-import host.stjin.anonaddy.ui.recipients.RecipientsFragment
-import host.stjin.anonaddy.ui.rules.RulesSettingsFragment
-import host.stjin.anonaddy.ui.usernames.UsernamesSettingsFragment
 
 class MainViewpagerAdapter(fa: FragmentActivity, private val fragments: ArrayList<Fragment>) : FragmentStateAdapter(fa) {
 

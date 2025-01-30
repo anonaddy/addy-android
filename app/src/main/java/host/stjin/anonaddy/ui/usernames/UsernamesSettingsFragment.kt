@@ -38,7 +38,7 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
     private var usernames: ArrayList<Usernames>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private var oneTimeRecyclerViewActions: Boolean = true
 
     private var addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance(0)
 
@@ -164,8 +164,8 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
 
     private fun setUsernamesRecyclerView() {
         binding.fragmentUsernameSettingsAllUsernamesRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
 
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))

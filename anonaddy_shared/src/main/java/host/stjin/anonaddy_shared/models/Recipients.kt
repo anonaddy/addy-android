@@ -8,6 +8,7 @@ data class SingleRecipient(
     val `data`: Recipients
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class Recipients(
     val id: String,
     val user_id: String,

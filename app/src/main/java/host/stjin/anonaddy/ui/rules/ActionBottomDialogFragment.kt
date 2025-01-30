@@ -84,7 +84,7 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
     private fun updateUi(context: Context) {
 
     if (actionEditObject != null) {
-        val typeText = TYPES_NAME[TYPES.indexOf(actionEditObject.type)]
+        val typeText = actionTypeNames[actionTypes.indexOf(actionEditObject.type)]
         binding.bsRuleActionTypeMact.setText(typeText, false)
         binding.bsRuleActionValuesTiet.setText(actionEditObject.value)
 
@@ -171,20 +171,20 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
     }
 
 
-    private var TYPES: List<String> = listOf()
-    private var VALUE_BANNER_LOCATION: List<String> = listOf()
-    private var VALUE_BANNER_LOCATION_NAME: List<String> = listOf()
-    private var TYPES_NAME: List<String> = listOf()
+    private var actionTypes: List<String> = listOf()
+    private var bannerLocations: List<String> = listOf()
+    private var bannerLocationNames: List<String> = listOf()
+    private var actionTypeNames: List<String> = listOf()
     private fun fillSpinners(context: Context) {
-        TYPES = this.resources.getStringArray(R.array.actions_type).toList()
-        TYPES_NAME = this.resources.getStringArray(R.array.actions_type_name).toList()
-        VALUE_BANNER_LOCATION = this.resources.getStringArray(R.array.actions_type_bannerlocation_options).toList()
-        VALUE_BANNER_LOCATION_NAME = this.resources.getStringArray(R.array.actions_type_bannerlocation_options_name).toList()
+        actionTypes = this.resources.getStringArray(R.array.actions_type).toList()
+        actionTypeNames = this.resources.getStringArray(R.array.actions_type_name).toList()
+        bannerLocations = this.resources.getStringArray(R.array.actions_type_bannerlocation_options).toList()
+        bannerLocationNames = this.resources.getStringArray(R.array.actions_type_bannerlocation_options_name).toList()
 
         val domainAdapter: ArrayAdapter<String> = ArrayAdapter(
             context,
             R.layout.dropdown_menu_popup_item,
-            TYPES_NAME
+            actionTypeNames
         )
         binding.bsRuleActionTypeMact.setAdapter(domainAdapter)
 
@@ -192,7 +192,7 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
         val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
             context,
             R.layout.dropdown_menu_popup_item,
-            VALUE_BANNER_LOCATION_NAME
+            bannerLocationNames
         )
         binding.bsRuleActionValuesSpinnerBannerLocationMact.setAdapter(formatAdapter)
     }
@@ -205,7 +205,7 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
 
     private fun addAction(context: Context) {
         val type =
-            TYPES[TYPES_NAME.indexOf(binding.bsRuleActionTypeMact.text.toString())]
+            actionTypes[actionTypeNames.indexOf(binding.bsRuleActionTypeMact.text.toString())]
 
         /*
         GET VALUES
@@ -215,7 +215,7 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
             // If the type is set to set banner information location get the value from the spinner
             binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.set_the_banner_information_location_to) -> {
                 val bannerLocation =
-                    VALUE_BANNER_LOCATION[VALUE_BANNER_LOCATION_NAME.indexOf(binding.bsRuleActionValuesSpinnerBannerLocationMact.text.toString())]
+                    bannerLocations[bannerLocationNames.indexOf(binding.bsRuleActionValuesSpinnerBannerLocationMact.text.toString())]
 
                 listener.onAddedAction(actionEditIndex, type, bannerLocation)
             }

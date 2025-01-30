@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings.features
 
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Bundle
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope

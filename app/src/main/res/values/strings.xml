@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_home">Home</string>
     <string name="title_aliases">@string/aliases</string>
     <string name="app_settings">App settings</string>
     <string name="title_recipients">@string/recipients</string>

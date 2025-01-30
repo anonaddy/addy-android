@@ -1,7 +1,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dashboard_stat_card_cardview"
+    android:id="@+id/home_stat_card_cardview"
     style="@style/AddyIoCustomCardViewStyleCenter"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
 
         <ProgressBar
-            android:id="@+id/dashboard_stat_card_progress"
+            android:id="@+id/home_stat_card_progress"
             style="@style/AddyIoProgressBar.Square"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,7 +37,7 @@
                 android:padding="@dimen/cardview_padding">
 
                 <ImageView
-                    android:id="@+id/dashboard_stat_card_icon"
+                    android:id="@+id/home_stat_card_icon"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="16dp"
@@ -56,7 +56,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/dashboard_stat_card_title"
+                        android:id="@+id/home_stat_card_title"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -71,7 +71,7 @@
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/dashboard_stat_card_desc"
+                        android:id="@+id/home_stat_card_desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autoSizeTextType="uniform"
@@ -90,14 +90,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/dashboard_stat_card_button_LL1"
+                android:id="@+id/home_stat_card_button_LL1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dashboard_stat_card_button_ripple">
+                android:background="@drawable/home_stat_card_button_ripple">
 
                 <!-- This extra LL5 is there for the aliasAdapter (holder.mLL0.setBackgroundColor(0))-->
                 <LinearLayout
-                    android:id="@+id/dashboard_stat_card_button_LL2"
+                    android:id="@+id/home_stat_card_button_LL2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -105,7 +105,7 @@
                     tools:ignore="UselessParent">
 
                     <TextView
-                        android:id="@+id/dashboard_stat_card_button_text"
+                        android:id="@+id/home_stat_card_button_text"
                         style="@style/DescTextStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

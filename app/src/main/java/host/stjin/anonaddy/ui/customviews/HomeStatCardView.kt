@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.View.OnClickListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.CompoundButton
@@ -17,7 +16,7 @@ import host.stjin.anonaddy.R
 import kotlin.math.roundToInt
 
 
-class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
+class HomeStatCardView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle) {
     private var onClicklistener: OnLayoutClickedListener? = null
     var description: TextView? = null
@@ -116,44 +115,44 @@ class DashboardStatCardView @JvmOverloads constructor(context: Context?, attrs: 
 
     init {
         val inflater = LayoutInflater.from(context)
-        inflater.inflate(R.layout.dashboard_stat_card, this)
-        cardView = findViewById(R.id.dashboard_stat_card_cardview)
-        linearLayout = findViewById(R.id.dashboard_stat_card_button_LL1)
-        icon = findViewById(R.id.dashboard_stat_card_icon)
-        progress = findViewById(R.id.dashboard_stat_card_progress)
-        title = findViewById(R.id.dashboard_stat_card_title)
-        description = findViewById(R.id.dashboard_stat_card_desc)
-        buttonText = findViewById(R.id.dashboard_stat_card_button_text)
+        inflater.inflate(R.layout.home_stat_card, this)
+        cardView = findViewById(R.id.home_stat_card_cardview)
+        linearLayout = findViewById(R.id.home_stat_card_button_LL1)
+        icon = findViewById(R.id.home_stat_card_icon)
+        progress = findViewById(R.id.home_stat_card_progress)
+        title = findViewById(R.id.home_stat_card_title)
+        description = findViewById(R.id.home_stat_card_desc)
+        buttonText = findViewById(R.id.home_stat_card_button_text)
 
         if (attrs != null) {
             // Get attributes
             val a = getContext()
                 .obtainStyledAttributes(
                     attrs,
-                    R.styleable.DashboardStatCardView,
+                    R.styleable.HomeStatCardView,
                     0, 0
                 )
 
 
             // Set elevation (if set)
-            if (a.getFloat(R.styleable.DashboardStatCardView_StatCardViewElevation, 999F) != 999F) {
-                cardView?.cardElevation = a.getFloat(R.styleable.DashboardStatCardView_StatCardViewElevation, 999F)
+            if (a.getFloat(R.styleable.HomeStatCardView_StatCardViewElevation, 999F) != 999F) {
+                cardView?.cardElevation = a.getFloat(R.styleable.HomeStatCardView_StatCardViewElevation, 999F)
             }
 
             // Set title and description
-            setTitle(a.getString(R.styleable.DashboardStatCardView_StatCardViewTitle))
-            setDescription(a.getString(R.styleable.DashboardStatCardView_StatCardViewDescription))
-            setButtonText(a.getString(R.styleable.DashboardStatCardView_StatCardViewButtonText))
+            setTitle(a.getString(R.styleable.HomeStatCardView_StatCardViewTitle))
+            setDescription(a.getString(R.styleable.HomeStatCardView_StatCardViewDescription))
+            setButtonText(a.getString(R.styleable.HomeStatCardView_StatCardViewButtonText))
 
 
             // Set icons
             setImageResourceIcons(
-                a.getResourceId(R.styleable.DashboardStatCardView_StatCardViewIcon, 0),
+                a.getResourceId(R.styleable.HomeStatCardView_StatCardViewIcon, 0),
                 null
             )
 
             // Set elevation (if set)
-            if (a.getBoolean(R.styleable.DashboardStatCardView_StatCardViewShowButton, false)) {
+            if (a.getBoolean(R.styleable.HomeStatCardView_StatCardViewShowButton, false)) {
                 linearLayout?.visibility = VISIBLE
                 linearLayout?.setOnClickListener(layoutClickedListener)
             } else {
