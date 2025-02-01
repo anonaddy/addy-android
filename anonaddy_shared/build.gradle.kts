@@ -11,14 +11,6 @@ plugins {
 
 }
 
-composeCompiler {
-    enableStrongSkippingMode = true
-
-
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    //stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
-}
-
 android {
     namespace = "host.stjin.anonaddy_shared"
     compileSdk = 35

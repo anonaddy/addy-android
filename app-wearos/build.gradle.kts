@@ -12,14 +12,6 @@ plugins {
 
 }
 
-composeCompiler {
-    enableStrongSkippingMode = true
-
-
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    //stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
-}
-
 android {
     compileSdk = 35
     namespace = "host.stjin.anonaddy"
@@ -35,9 +27,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v1.4.9 + release 01 + 01 (for wearos)
-        versionCode = 341490101
-        versionName = "1.4.9"
+        // SDK 34 + v1.5.0 + release 01 + 01 (for wearos)
+        versionCode = 341500101
+        versionName = "1.5.0"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -164,9 +156,6 @@ dependencies {
 
 // Tiles
 dependencies {
-    // For watchface
-    implementation("com.google.android.gms:play-services-base:18.5.0")
-
     // Use to implement support for wear tiles
     implementation("androidx.wear.tiles:tiles:$wear_tiles_version")
 

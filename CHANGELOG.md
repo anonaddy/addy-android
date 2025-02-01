@@ -1,5 +1,30 @@
 # Changelog
 
+## [v5.5.0] - 2025-02-01
+
+### addy.io
+
+##### Added
+
+- Added the ability to change the default tab to open on app launch
+- Added the ability to download failed deliveries (if enabled)
+
+##### Fixed/Improved
+
+- Improve wording of dates in alias list
+- Renamed Dashboard to Home to keep consistency with the iOS app
+- Updated dependencies
+
+### addy.io for Android wearables _(v1.5.0)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
+##### Removed
+
+- Due to the need for watchfaces to comply with the new WFF format and the low usage of the original watchface, it has been discontinued. However, it is now available as a standalone app on Google Play under the name "Tokens watchface"
+
 ## [v5.4.3] - 2025-01-06
 
 ### addy.io

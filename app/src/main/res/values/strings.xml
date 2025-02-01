@@ -66,9 +66,16 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.4.3</h3>
+<h3>What\'s new in addy.io for Android 5.5.0</h3>
+<h4>Added</h4>
+<p>- Added the ability to change the default tab to open on app launch<br />- Added the ability to download failed deliveries (if enabled)</p>
 <h4>Fixed/Improved</h4>
-<p>- Fixed users not being able to create rules in some cases</p>]]></string>
+<p>- Improve wording of dates in alias list<br />- Renamed Dashboard to Home to keep consistency with the iOS app<br />- Updated dependencies</p>
+<h3>What\'s new in addy.io for Android Wearables 1.5.0</h3>
+<h4>Fixed/Improved</h4>
+<p>- Performance improvements and other things to make the app even smoother</p>
+<h4>Removed</h4>
+<p>- Due to the need for watchfaces to comply with the new WFF format and the low usage of the original watchface, it has been discontinued. However, it is now available as a standalone app on Google Play under the name "Tokens watchface"</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -518,7 +525,7 @@
     <string name="wearable_quick_setup">Quick setup</string>
     <string name="wearable_quick_setup_desc">When the addy.io app is opened for the first time on a wearable. Show a message on this device to quickly set up the app</string>
     <string name="addyio_for_wearables">addy.io for Android wearables</string>
-    <string name="addyio_for_wearables_desc">With the addy.io app on your wearable device you have quick insight into your alias statistics, you can quickly create aliases and you have access to a beautiful watchface</string>
+    <string name="addyio_for_wearables_desc">With the addy.io app on your wearable, you gain quick access to your alias statistics and can swiftly create new aliases</string>
     <string name="start_wearable_app">Start app</string>
     <string name="setup_app_on_wearable">Setup app</string>
     <string name="select_wearable_device">Select wearable device</string>

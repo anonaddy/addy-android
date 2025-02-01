@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="digital_text_size">42dp</dimen>
-    <dimen name="digital_x_offset" format="float" type="dimen">82f</dimen>
     <dimen name="splash_screen_icon_size">48dp</dimen>
-
 </resources>
