@@ -1,0 +1,130 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_stat_card_cardview"
+    style="@style/AddyIoCustomCardViewStyleCenter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:stateListAnimator="@animator/selector_raise"
+    app:cardElevation="@dimen/cardview_default_elevation">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/home_stat_card_progress"
+            style="@style/AddyIoProgressBar.Square"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:progress="0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:baselineAligned="false"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal"
+                android:padding="@dimen/cardview_padding">
+
+                <ImageView
+                    android:id="@+id/home_stat_card_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/rounded_square"
+                    android:contentDescription="@string/emails_replied_sent"
+                    android:padding="12dp"
+                    app:srcCompat="@drawable/ic_email_at"
+                    app:tint="@android:color/white" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity=""
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/home_stat_card_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:alpha="0.7"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:text="@string/shared_domain_aliases"
+                        android:textColor="@color/BlackWhite"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/home_stat_card_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autoSizeTextType="uniform"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:text="@string/obtaining_information"
+                        android:textColor="?colorPrimary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/home_stat_card_button_LL1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/home_stat_card_button_ripple">
+
+                <!-- This extra LL5 is there for the aliasAdapter (holder.mLL0.setBackgroundColor(0))-->
+                <LinearLayout
+                    android:id="@+id/home_stat_card_button_LL2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:id="@+id/home_stat_card_button_text"
+                        style="@style/DescTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:alpha="1"
+                        android:drawablePadding="4dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="false"
+                        android:text="@string/view_all"
+                        android:textColor="?colorPrimary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

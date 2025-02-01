@@ -42,11 +42,11 @@ import kotlinx.coroutines.launch
 
 
 class AppSettingsActivity : BaseActivity(),
-    AppearanceBottomDialogFragment.AddAppearanceBottomDialogListener,
+    UIUXInterfaceBottomDialogFragment.AddUIUXInterfaceBottomDialogListener,
     BackgroundServiceIntervalBottomDialogFragment.AddBackgroundServiceIntervalBottomDialogListener {
 
-    private val addAppearanceBottomDialogFragment: AppearanceBottomDialogFragment =
-        AppearanceBottomDialogFragment.newInstance()
+    private val addUIUXInterfaceBottomDialogFragment: UIUXInterfaceBottomDialogFragment =
+        UIUXInterfaceBottomDialogFragment.newInstance()
 
     private var addBackgroundServiceIntervalBottomDialogFragment: BackgroundServiceIntervalBottomDialogFragment =
         BackgroundServiceIntervalBottomDialogFragment.newInstance()
@@ -294,8 +294,8 @@ class AppSettingsActivity : BaseActivity(),
     private fun setOnClickListeners() {
         binding.activityAppSettingsSectionAppTheme.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                if (!addAppearanceBottomDialogFragment.isAdded) {
-                    addAppearanceBottomDialogFragment.show(
+                if (!addUIUXInterfaceBottomDialogFragment.isAdded) {
+                    addUIUXInterfaceBottomDialogFragment.show(
                         supportFragmentManager,
                         "addDarkModeBottomDialogFragment"
                     )

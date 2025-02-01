@@ -342,12 +342,12 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 }
             }
 
-            if (filteredAliases.size == 0 &&
-                filteredDomains.size == 0 &&
-                filteredRecipients.size == 0 &&
-                filteredUsernames.size == 0 &&
-                filteredRules.size == 0 &&
-                filteredFailedDeliveries.size == 0
+            if (filteredAliases.isEmpty() &&
+                filteredDomains.isEmpty() &&
+                filteredRecipients.isEmpty() &&
+                filteredUsernames.isEmpty() &&
+                filteredRules.isEmpty() &&
+                filteredFailedDeliveries.isEmpty()
             ) {
                 binding.bsSearchTitle.text = context.resources.getString(R.string.search)
                 binding.bsSearchTermTil.isEnabled = true

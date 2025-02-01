@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:text="@string/title_dashboard" />
+            android:text="@string/title_home" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/main_top_bar_subtitle_shimmerframelayout"

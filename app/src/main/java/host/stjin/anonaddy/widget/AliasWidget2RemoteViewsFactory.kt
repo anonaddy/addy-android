@@ -62,7 +62,7 @@ class AliasWidget2RemoteViewsFactory(private val mContext: Context) : RemoteView
             val description: String = if (aliasList?.get(position)?.description.isNullOrEmpty()) {
                 mContext.resources.getString(
                     R.string.created_at_s,
-                    DateTimeUtils.turnStringIntoLocalString(aliasList?.get(position)?.created_at)
+                    DateTimeUtils.convertStringToLocalTimeZoneString(aliasList?.get(position)?.created_at)
                 )
             } else {
                 aliasList?.get(position)?.description.toString()

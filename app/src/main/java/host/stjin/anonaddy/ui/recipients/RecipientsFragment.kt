@@ -48,7 +48,7 @@ class RecipientsFragment : Fragment(),
     private var recipients: ArrayList<Recipients>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private var oneTimeRecyclerViewActions: Boolean = true
 
     private val addRecipientsFragment: AddRecipientBottomDialogFragment =
         AddRecipientBottomDialogFragment.newInstance()
@@ -86,8 +86,8 @@ class RecipientsFragment : Fragment(),
 
     private fun setRecipientRecyclerView() {
         binding.recipientsAllRecipientsRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
 
                 shimmerItemCount = encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_RECIPIENT_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(context))

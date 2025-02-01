@@ -8,6 +8,7 @@ data class SingleDomain(
     val `data`: Domains
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class Domains(
     val id: String,
     val user_id: String,

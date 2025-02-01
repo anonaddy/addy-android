@@ -8,6 +8,7 @@ data class SingleUsername(
     val `data`: Usernames
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class Usernames(
     val id: String,
     val user_id: String,

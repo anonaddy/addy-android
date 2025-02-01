@@ -79,7 +79,7 @@ class IntentSendMailRecipientBottomDialogFragment(
     private var aliases: ArrayList<Aliases> = arrayListOf()
 
 
-    private val TYPING_TIMEOUT = 1000 // 1 seconds timeout
+    private val aliasSearchTimeoutMillis = 1000 // 1 seconds timeout
     private var isTyping: Boolean = false
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
     private val typingTimeout = Runnable {
@@ -127,7 +127,7 @@ class IntentSendMailRecipientBottomDialogFragment(
                 // reset the timeout
                 timeoutHandler.removeCallbacks(typingTimeout)
                 // schedule the timeout
-                timeoutHandler.postDelayed(typingTimeout, TYPING_TIMEOUT.toLong())
+                timeoutHandler.postDelayed(typingTimeout, aliasSearchTimeoutMillis.toLong())
             }
             lastMactText = it.toString()
         }

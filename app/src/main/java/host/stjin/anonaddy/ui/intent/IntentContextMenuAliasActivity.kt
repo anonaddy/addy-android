@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.intent
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -300,7 +299,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
         domain: String,
         description: String,
         format: String,
-        local_part: String,
+        aliasLocalPart: String,
         alias: String,
         recipients: String,
         ccRecipients: String,
@@ -316,14 +315,14 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 Toast.makeText(this, this.resources.getString(R.string.error_adding_alias), Toast.LENGTH_LONG).show()
                 finish()
             }
-        }, domain, description, format, local_part, null)
+        }, domain, description, format, aliasLocalPart, null)
     }
 
     private suspend fun addAliasToAccount(
         domain: String,
         description: String,
         format: String,
-        local_part: String
+        aliasLocalPart: String
     ) {
         networkHelper.addAlias({ alias, _ ->
             if (alias != null) {
@@ -333,7 +332,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 Toast.makeText(this, this.resources.getString(R.string.error_adding_alias), Toast.LENGTH_LONG).show()
                 finish()
             }
-        }, domain, description, format, local_part, null)
+        }, domain, description, format, aliasLocalPart, null)
     }
 
     override suspend fun onPressSend(

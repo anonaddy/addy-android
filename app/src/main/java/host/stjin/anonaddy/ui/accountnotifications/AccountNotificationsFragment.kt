@@ -31,7 +31,7 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
     private var accountNotifications: ArrayList<AccountNotifications>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private var oneTimeRecyclerViewActions: Boolean = true
 
     private var accountNotificationsDetailsBottomDialogFragment: AccountNotificationsDetailsBottomDialogFragment? = null
 
@@ -100,8 +100,8 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
 
     private fun setAccountNotificationsRecyclerView() {
         binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
                 shimmerItemCount =
                     encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
@@ -178,7 +178,7 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
     private fun setAccountNotificationsAdapter(list: ArrayList<AccountNotifications>) {
         binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview.apply {
             accountNotifications = list
-            if (list.size > 0) {
+            if (list.isNotEmpty()) {
                 binding.fragmentAccountNotificationsNoAccountNotifications.visibility = View.GONE
             } else {
                 binding.fragmentAccountNotificationsNoAccountNotifications.visibility = View.VISIBLE

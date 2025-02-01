@@ -53,7 +53,9 @@
             <meta-data
                 android:name="host.stjin.anonaddy.ui.SplitInitializer"
                 android:value="androidx.startup" />
-        </provider> <!-- Activity Embedding -->
+        </provider>
+        <!-- END Activity Embedding -->
+
         <!-- Widget 1 -->
         <receiver
             android:name=".widget.AliasWidget1Provider"

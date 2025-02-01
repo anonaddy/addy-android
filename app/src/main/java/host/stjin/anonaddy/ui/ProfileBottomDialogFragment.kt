@@ -219,7 +219,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             binding.mainProfileSelectDialogCardSubscriptionUntil.visibility = View.VISIBLE
             binding.mainProfileSelectDialogCardSubscriptionUntil.text =
                 resources.getString(
-                    R.string.subscription_user_until, DateTimeUtils.turnStringIntoLocalString(
+                    R.string.subscription_user_until, DateTimeUtils.convertStringToLocalTimeZoneString(
                         (activity?.application as AddyIoApp).userResource.subscription_ends_at,
                         DateTimeUtils.DatetimeFormat.DATE
                     )

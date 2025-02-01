@@ -80,11 +80,11 @@ fun AliasList(aliases: List<Aliases>, favoriteAliases: List<String>?, scalingLaz
                         } else {
                             context.resources.getString(
                                 R.string.aliases_recyclerview_list_item_date_time,
-                                DateTimeUtils.turnStringIntoLocalString(
+                                DateTimeUtils.convertStringToLocalTimeZoneString(
                                     alias.created_at,
                                     DateTimeUtils.DatetimeFormat.SHORT_DATE
                                 ),
-                                DateTimeUtils.turnStringIntoLocalString(
+                                DateTimeUtils.convertStringToLocalTimeZoneString(
                                     alias.created_at,
                                     DateTimeUtils.DatetimeFormat.TIME
                                 )

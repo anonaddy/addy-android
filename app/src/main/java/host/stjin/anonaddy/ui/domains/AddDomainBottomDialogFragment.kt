@@ -1,6 +1,8 @@
 package host.stjin.anonaddy.ui.domains
 
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -161,6 +164,21 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
                 binding.bsAddDomainSetup2.startAnimation(anim)
             }, anim.duration)
         }
+
+        if (!body.isNullOrEmpty()){
+            val range = body.indexOf("aa-verify=")
+            if (range != -1) {
+                val result = body.substring(range)
+
+                val clipboard: ClipboardManager =
+                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("verification_record", result)
+                clipboard.setPrimaryClip(clip)
+
+                Toast.makeText(requireContext(), resources.getString(R.string.verification_record_copied_to_clipboard), Toast.LENGTH_LONG).show()
+            }
+        }
+
 
         // Update body text
         updateSetupStatus(body)

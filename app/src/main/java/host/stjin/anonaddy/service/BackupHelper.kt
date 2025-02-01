@@ -231,7 +231,7 @@ class BackupHelper(private val context: Context) {
                     for ((key, value) in prefsMap) {
                         // Skip keys that contain "cache_"
                         if (!key.toString().lowercase().contains("cache_")) {
-                            pw.println(key.toString() + "|||" + value.toString())
+                            pw.println("$key|||$value")
                         }
                     }
                 } catch (e: Exception) {

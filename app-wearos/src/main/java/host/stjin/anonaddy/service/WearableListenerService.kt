@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.service
 
 import android.app.ActivityManager
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Handler

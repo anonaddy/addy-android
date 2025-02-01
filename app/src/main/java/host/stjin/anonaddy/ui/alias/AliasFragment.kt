@@ -52,7 +52,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private var oneTimeRecyclerViewActions: Boolean = true
 
 
     // Default filter
@@ -381,7 +381,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
 
             // If the list is empty, set noAliasVisibility to visible
-            if (aliasList!!.data.size > 0) {
+            if (aliasList!!.data.isNotEmpty()) {
                 binding.aliasNoAliases.visibility = View.GONE
             } else {
                 binding.aliasNoAliases.visibility = View.VISIBLE
@@ -540,8 +540,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private fun setAliasesRecyclerView() {
         binding.aliasAllAliasesRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
                 shimmerItemCount = 100
                 shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
                 layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))

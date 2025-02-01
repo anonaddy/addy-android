@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="domains_formats_names">
         <item>@string/domains_format_random_characters</item>
         <item>@string/domains_format_uuid</item>
@@ -28,6 +28,18 @@
         <item>@string/login_expiration_month</item>
         <item>@string/login_expiration_year</item>
         <item>@string/login_expiration_never</item>
+    </string-array>
+
+    <string-array name="startup_page_options" tools:ignore="InconsistentArrays">
+        <item>home</item>
+        <item>aliases</item>
+        <item>recipients</item>
+    </string-array>
+
+    <string-array name="startup_page_options_names" tools:ignore="InconsistentArrays">
+        <item>@string/title_home</item>
+        <item>@string/title_aliases</item>
+        <item>@string/title_recipients</item>
     </string-array>
 
     <!-- RULE CONDITIONS -->

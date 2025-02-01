@@ -27,7 +27,7 @@
                 android:columnCount="1"
                 android:orientation="vertical"
                 android:useDefaultMargins="true">
-            <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+            <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                 android:id="@+id/home_stat_card_bandwidth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                 android:orientation="vertical"
                 android:useDefaultMargins="true">
 
-                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                     android:id="@+id/home_stat_card_forwarded"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                     app:StatCardViewShowButton="false"
                     app:StatCardViewTitle="@string/emails_forwarded" />
 
-                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                     android:id="@+id/home_stat_card_blocked"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                     app:StatCardViewTitle="@string/emails_blocked" />
 
 
-                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                     android:id="@+id/home_stat_card_replies"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                     app:StatCardViewShowButton="false"
                     app:StatCardViewTitle="@string/email_replies" />
 
-                <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                     android:id="@+id/home_stat_card_sent"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                     android:paddingEnd="@dimen/cardview_extra_padding"
                     android:useDefaultMargins="true">
 
-                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                         android:id="@+id/home_stat_card_total_aliases"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -154,7 +154,7 @@
                         app:StatCardViewShowButton="false"
                         app:StatCardViewTitle="@string/total_aliases" />
 
-                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                         android:id="@+id/home_stat_card_active_aliases"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
                         app:StatCardViewShowButton="false"
                         app:StatCardViewTitle="@string/active_aliases" />
 
-                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                         android:id="@+id/home_stat_card_inactive_aliases"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
                         app:StatCardViewShowButton="false"
                         app:StatCardViewTitle="@string/inactive_aliases" />
 
-                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                         android:id="@+id/home_stat_card_deleted_aliases"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
                         app:StatCardViewShowButton="false"
                         app:StatCardViewTitle="@string/deleted_aliases" />
 
-                    <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                         android:id="@+id/home_stat_watched_aliases"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -235,7 +235,7 @@
                 android:paddingEnd="@dimen/cardview_extra_padding"
                 android:useDefaultMargins="true">
 
-            <host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+            <host.stjin.anonaddy.ui.customviews.HomeStatCardView
                 android:id="@+id/home_stat_card_total_recipients"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -626,8 +626,8 @@ class ManageRecipientsActivity : BaseActivity(),
         binding.activityManageRecipientBasicTextview.text = resources.getString(
             R.string.manage_recipient_basic_info,
             recipient.email,
-            DateTimeUtils.turnStringIntoLocalString(recipient.created_at),
-            DateTimeUtils.turnStringIntoLocalString(recipient.updated_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(recipient.created_at),
+            DateTimeUtils.convertStringToLocalTimeZoneString(recipient.updated_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
 

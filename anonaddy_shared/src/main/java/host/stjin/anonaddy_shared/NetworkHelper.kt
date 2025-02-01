@@ -3,6 +3,7 @@
 package host.stjin.anonaddy_shared
 
 import android.content.Context
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -12,6 +13,7 @@ import com.einmalfel.earl.Feed
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Headers
 import com.github.kittinunf.fuel.core.Response
+import com.github.kittinunf.fuel.coroutines.awaitByteArrayResponseResult
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.google.gson.Gson
 import host.stjin.anonaddy_shared.AddyIo.API_BASE_URL
@@ -89,6 +91,8 @@ import host.stjin.anonaddy_shared.models.Version
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStream
 
 
@@ -800,7 +804,7 @@ class NetworkHelper(private val context: Context) {
         domain: String,
         description: String,
         format: String,
-        local_part: String,
+        aliasLocalPart: String,
         recipients: ArrayList<String>?
     ) {
 
@@ -820,7 +824,7 @@ class NetworkHelper(private val context: Context) {
         json.put("domain", domain)
         json.put("description", description)
         json.put("format", format)
-        json.put("local_part", local_part)
+        json.put("local_part", aliasLocalPart)
         json.put("recipient_ids", array)
 
 
@@ -4986,6 +4990,73 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "getSpecificFailedDelivery",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun downloadSpecificFailedDelivery(
+        context: Context,
+        callback: (File?, String?) -> Unit,
+        id: String
+    ) {
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.get("${API_URL_FAILED_DELIVERIES}/$id/download")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitByteArrayResponseResult()
+
+
+        when (response.statusCode) {
+            200 -> {
+                val directory = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                val file = File(directory, "$id.eml")
+                try {
+                    FileOutputStream(file).use { fileOut ->
+                        fileOut.write(result.get())
+                    }
+                    callback(file, null)
+                } catch (e: Exception) {
+                    loggingHelper.addLog(
+                        LOGIMPORTANCE.CRITICAL.int,
+                        e.message ?: "Unknown error",
+                        "downloadSpecificFailedDelivery",
+                        ErrorHelper.getErrorMessage(e.toString().toByteArray())
+                    )
+                    callback(null, "Error saving file: ${e.message}")
+                }
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 5000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "downloadSpecificFailedDelivery",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )

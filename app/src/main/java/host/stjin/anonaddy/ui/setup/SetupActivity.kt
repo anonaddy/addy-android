@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.setup
 
 import android.Manifest
-import android.app.Activity
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent

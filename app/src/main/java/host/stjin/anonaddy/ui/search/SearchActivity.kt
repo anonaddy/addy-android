@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.search
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -322,7 +321,8 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                         filteredFailedDeliveries!![pos].bounce_type,
                         filteredFailedDeliveries!![pos].remote_mta,
                         filteredFailedDeliveries!![pos].sender,
-                        filteredFailedDeliveries!![pos].code
+                        filteredFailedDeliveries!![pos].code,
+                        filteredFailedDeliveries!![pos].is_stored
                     )
                     failedDeliveryDetailsBottomDialogFragment!!.show(
                         supportFragmentManager,

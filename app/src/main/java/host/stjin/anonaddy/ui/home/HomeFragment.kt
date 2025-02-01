@@ -17,8 +17,9 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
+import host.stjin.anonaddy.ui.MainViewpagerAdapter
 import host.stjin.anonaddy.ui.alias.AliasFragment
-import host.stjin.anonaddy.ui.customviews.DashboardStatCardView
+import host.stjin.anonaddy.ui.customviews.HomeStatCardView
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.NumberUtils.roundOffDecimal
 import host.stjin.anonaddy.utils.SnackbarHelper
@@ -122,7 +123,7 @@ class HomeFragment : Fragment() {
 
     private fun setOnClickListeners() {
 
-        binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -132,7 +133,7 @@ class HomeFragment : Fragment() {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = false,
@@ -151,7 +152,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatCardActiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardActiveAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -161,7 +162,7 @@ class HomeFragment : Fragment() {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = true,
@@ -180,7 +181,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatCardInactiveAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardInactiveAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -190,7 +191,7 @@ class HomeFragment : Fragment() {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = false,
@@ -210,7 +211,7 @@ class HomeFragment : Fragment() {
         })
 
 
-        binding.homeStatCardDeletedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardDeletedAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -220,7 +221,7 @@ class HomeFragment : Fragment() {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = false,
@@ -239,7 +240,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatWatchedAliases.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatWatchedAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 MaterialDialogHelper.showMaterialDialog(
                     context = requireContext(),
@@ -254,7 +255,7 @@ class HomeFragment : Fragment() {
                         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
                         binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())
                         if (aliasesToWatch.isNotEmpty()) {
-                            val aliasFragment: AliasFragment = (activity as MainActivity).supportFragmentManager.fragments[1] as AliasFragment
+                            val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                             aliasFragment.setFilterAndSortingSettings(
                                 AliasSortFilter(
                                     onlyActiveAliases = false,
@@ -276,7 +277,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        binding.homeStatCardTotalRecipients.setOnLayoutClickedListener(object : DashboardStatCardView.OnLayoutClickedListener {
+        binding.homeStatCardTotalRecipients.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
             override fun onClick() {
                 (activity as MainActivity).navigateTo(R.id.navigation_recipients)
             }

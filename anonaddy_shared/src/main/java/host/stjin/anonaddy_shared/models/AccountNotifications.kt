@@ -4,6 +4,7 @@ data class AccountNotificationsArray(
     val `data`: List<AccountNotifications>
 )
 
+@Suppress("PropertyName", "PropertyName")
 data class AccountNotifications(
     val category: String,
     val created_at: String,

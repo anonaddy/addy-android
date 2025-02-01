@@ -12,14 +12,6 @@ plugins {
 
 }
 
-composeCompiler {
-    enableStrongSkippingMode = true
-
-
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    //stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
-}
-
 android {
     compileSdk = 35
     namespace = "host.stjin.anonaddy"
@@ -35,9 +27,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v1.4.9 + release 01 + 01 (for wearos)
-        versionCode = 341490101
-        versionName = "1.4.9"
+        // SDK 34 + v1.5.0 + release 01 + 01 (for wearos)
+        versionCode = 341500101
+        versionName = "1.5.0"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -110,7 +102,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("com.google.android.gms:play-services-wearable:19.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.wear:wear:1.3.0")
 
     compileOnly("com.google.android.wearable:wearable:2.9.0")
@@ -154,7 +146,7 @@ dependencies {
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.12.0")
 }
 
 // For the donut in the aliasview
@@ -164,9 +156,6 @@ dependencies {
 
 // Tiles
 dependencies {
-    // For watchface
-    implementation("com.google.android.gms:play-services-base:18.5.0")
-
     // Use to implement support for wear tiles
     implementation("androidx.wear.tiles:tiles:$wear_tiles_version")
 

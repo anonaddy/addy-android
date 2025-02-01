@@ -28,7 +28,7 @@ class AccountNotificationsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.mTitle.text = listWithAccountNotifications[position].title
-        holder.mCreated.text = DateTimeUtils.turnStringIntoLocalString(listWithAccountNotifications[position].created_at)
+        holder.mCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(listWithAccountNotifications[position].created_at)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             holder.mText.text = Html.fromHtml(

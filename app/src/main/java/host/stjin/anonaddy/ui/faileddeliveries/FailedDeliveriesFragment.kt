@@ -29,7 +29,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     private var failedDeliveries: ArrayList<FailedDeliveries>? = null
     private var networkHelper: NetworkHelper? = null
     private var encryptedSettingsManager: SettingsManager? = null
-    private var OneTimeRecyclerViewActions: Boolean = true
+    private var oneTimeRecyclerViewActions: Boolean = true
 
     private var failedDeliveryDetailsBottomDialogFragment: FailedDeliveryDetailsBottomDialogFragment? = null
 
@@ -99,8 +99,8 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
 
     private fun setFailedDeliveriesRecyclerView() {
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
-            if (OneTimeRecyclerViewActions) {
-                OneTimeRecyclerViewActions = false
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
                 shimmerItemCount =
                     encryptedSettingsManager?.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, 2) ?: 2
                 shimmerLayoutManager = GridLayoutManager(requireContext(), ScreenSizeUtils.calculateNoOfColumns(context))
@@ -182,7 +182,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     private fun setFailedDeliveriesAdapter(list: ArrayList<FailedDeliveries>) {
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
             failedDeliveries = list
-            if (list.size > 0) {
+            if (list.isNotEmpty()) {
                 binding.fragmentFailedDeliveriesNoFailedDeliveries.visibility = View.GONE
             } else {
                 binding.fragmentFailedDeliveriesNoFailedDeliveries.visibility = View.VISIBLE
@@ -202,7 +202,8 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                         list[pos].bounce_type,
                         list[pos].remote_mta,
                         list[pos].sender,
-                        list[pos].code
+                        list[pos].code,
+                        list[pos].is_stored,
                     )
                     failedDeliveryDetailsBottomDialogFragment!!.show(
                         childFragmentManager,

@@ -1,8 +1,6 @@
 package host.stjin.anonaddy.ui
 
-import android.app.Activity
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
@@ -104,6 +102,9 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
     private lateinit var networkHelper: NetworkHelper
+
+    lateinit var viewPager: ViewPager2
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -287,26 +288,26 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     fun refreshAllData() {
         // Refresh all data in child fragments
-        val homeFragment: HomeFragment = supportFragmentManager.fragments[0] as HomeFragment
-        val aliasFragment: AliasFragment = supportFragmentManager.fragments[1] as AliasFragment
-        val recipientsFragment: RecipientsFragment = supportFragmentManager.fragments[2] as RecipientsFragment
-        homeFragment.getDataFromWeb(null)
-        aliasFragment.getDataFromWeb(null)
-        recipientsFragment.getDataFromWeb(null)
+        val homeFragment: HomeFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("HomeFragment") as HomeFragment?
+        val aliasFragment: AliasFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment?
+        val recipientsFragment: RecipientsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RecipientsFragment") as RecipientsFragment?
+        homeFragment?.getDataFromWeb(null)
+        aliasFragment?.getDataFromWeb(null)
+        recipientsFragment?.getDataFromWeb(null)
 
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            val usernamesSettingsFragment: UsernamesSettingsFragment = supportFragmentManager.fragments[3] as UsernamesSettingsFragment
-            usernamesSettingsFragment.getDataFromWeb(null)
+            val usernamesSettingsFragment: UsernamesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("UsernamesSettingsFragment") as UsernamesSettingsFragment?
+            usernamesSettingsFragment?.getDataFromWeb(null)
 
-            val domainSettingsFragment: DomainSettingsFragment = supportFragmentManager.fragments[4] as DomainSettingsFragment
-            domainSettingsFragment.getDataFromWeb(null)
+            val domainSettingsFragment: DomainSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("DomainSettingsFragment") as DomainSettingsFragment?
+            domainSettingsFragment?.getDataFromWeb(null)
 
-            val rulesSettingsFragment: RulesSettingsFragment = supportFragmentManager.fragments[5] as RulesSettingsFragment
-            rulesSettingsFragment.getDataFromWeb(null)
+            val rulesSettingsFragment: RulesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RulesSettingsFragment") as RulesSettingsFragment?
+            rulesSettingsFragment?.getDataFromWeb(null)
 
-            val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
-            failedDeliveriesFragment.getDataFromWeb(null)
+            val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
+            failedDeliveriesFragment?.getDataFromWeb(null)
         }
 
         // Check for updates and check API expiration key
@@ -351,7 +352,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         val navView = if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.navRail!! else binding.navView!!
-        val viewPager =
+        viewPager =
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
 
         val fragmentList = if (resources.getBoolean(R.bool.isTablet)) {
@@ -393,7 +394,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                             changeTopBarTitle(
                                 binding.mainAppBarInclude!!.mainTopBarTitle,
-                                this@MainActivity.resources.getString(R.string.title_dashboard)
+                                this@MainActivity.resources.getString(R.string.title_home)
                             )
                         }
 
@@ -465,13 +466,27 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
         }
 
-        checkForTargetExtras()
+        checkForTargetExtrasAndStartupPage()
     }
 
-    private fun checkForTargetExtras() {
+    private fun checkForStartupPage() {
+        var startupPageValue = SettingsManager(false, this).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
+        val startupPageOptions = this.resources.getStringArray(R.array.startup_page_options).toList()
+
+        // Check if the value exists in the array, default (but dont reset) to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
+        // Don't reset the value as this app could be opened in splitscreen, we don't want to reset the value then.
+        if (startupPageOptions.contains(startupPageValue)) {
+            goToTarget(startupPageValue.toString())
+        }
+
+    }
+
+    private fun checkForTargetExtrasAndStartupPage() {
         val target = intent.getStringExtra("target")
         if (!target.isNullOrEmpty()) {
             goToTarget(target)
+        } else {
+            checkForStartupPage()
         }
     }
 
@@ -574,7 +589,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         networkHelper.getApiTokenDetails { apiTokenDetails, error ->
             if (apiTokenDetails?.expires_at != null) {
 
-                val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(apiTokenDetails.expires_at) // Get the expiry date
+                val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(apiTokenDetails.expires_at) // Get the expiry date
                 val currentDateTime = LocalDateTime.now() // Get the current date
                 val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
                 if (currentDateTime.isAfter(deadLineDate)) {
@@ -620,7 +635,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             lifecycleScope.launch {
                 networkHelper.getUserResource { user: UserResource?, _: String? ->
                     if (user?.subscription_ends_at != null) {
-                        val expiryDate = DateTimeUtils.turnStringIntoLocalDateTime(user.subscription_ends_at) // Get the expiry date
+                        val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(user.subscription_ends_at) // Get the expiry date
                         val currentDateTime = LocalDateTime.now() // Get the current date
                         val deadLineDate = expiryDate?.minusDays(7) // Subtract 7 days from the expiry date
                         if (currentDateTime.isAfter(deadLineDate)) {
@@ -909,9 +924,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     fun navigateTo(fragment: Int) {
-        val viewPager =
-            if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
-
         when (fragment) {
             R.id.navigation_home -> viewPager.currentItem = 0
             R.id.navigation_alias -> viewPager.currentItem = 1
@@ -944,9 +956,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
 
             R.id.navigation_failed_deliveries -> {  // Only SW600DP>
+
                 // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
-                val failedDeliveriesFragment: FailedDeliveriesFragment = supportFragmentManager.fragments[6] as FailedDeliveriesFragment
-                failedDeliveriesFragment.fragmentShown()
+                val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
+                failedDeliveriesFragment?.fragmentShown()
                 hideFailedDeliveriesBadge()
 
                 if (this.resources.getBoolean(R.bool.isTablet)) {
@@ -998,6 +1011,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
     // TODO CHECK TABLET, doesnt work from search
+    // Also gets called from the startupPage check
     private fun goToTarget(string: String) {
         when (string) {
             SearchActivity.SearchTargets.ALIASES.activity -> {

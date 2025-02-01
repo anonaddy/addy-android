@@ -138,21 +138,21 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
     }
 
 
-    private var DOMAINS: List<String> = listOf()
+    private var domainNames: List<String> = listOf()
     private var sharedDomains: List<String> = listOf()
-    private var FORMATS: List<String> = listOf()
+    private var domainFormatNames: List<String> = listOf()
     private suspend fun fillSpinners(context: Context) {
         val networkHelper = NetworkHelper(context)
         networkHelper.getDomainOptions { domainOptions, _ ->
             // Set domains and default format/domain
             if (domainOptions?.data != null) {
-                DOMAINS = domainOptions.data
+                domainNames = domainOptions.data
                 sharedDomains = domainOptions.sharedDomains
 
                 val domainAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
                     R.layout.dropdown_menu_popup_item,
-                    DOMAINS
+                    domainNames
                 )
                 binding.bsAddaliasDomainMact.setAdapter(domainAdapter)
 
@@ -161,21 +161,21 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
                 // Set default format
                 // Get all formats
-                FORMATS = context.resources.getStringArray(R.array.domains_formats_names).toList()
+                domainFormatNames = context.resources.getStringArray(R.array.domains_formats_names).toList()
                 // Get all format ids
-                val FORMATSID = context.resources.getStringArray(R.array.domains_formats).toList()
+                val domainFormatIds = context.resources.getStringArray(R.array.domains_formats).toList()
 
                 val formatAdapter: ArrayAdapter<String> = ArrayAdapter(
                     context,
                     R.layout.dropdown_menu_popup_item,
-                    FORMATS
+                    domainFormatNames
                 )
                 binding.bsAddaliasAliasFormatMact.setAdapter(formatAdapter)
 
                 // Set default format
                 try {
                     binding.bsAddaliasAliasFormatMact.setText(
-                        FORMATS[FORMATSID.indexOf(domainOptions.defaultAliasFormat)],
+                        domainFormatNames[domainFormatIds.indexOf(domainOptions.defaultAliasFormat)],
                         false
                     )
                 } catch (e: Exception) {
@@ -201,13 +201,13 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
     private fun addAlias(context: Context) {
 
-        if (!DOMAINS.contains(binding.bsAddaliasDomainMact.text.toString())) {
+        if (!domainNames.contains(binding.bsAddaliasDomainMact.text.toString())) {
             binding.bsAddaliasDomainTil.error =
                 context.resources.getString(R.string.not_a_valid_domain)
             return
         }
 
-        if (!FORMATS.contains(binding.bsAddaliasAliasFormatMact.text.toString())) {
+        if (!domainFormatNames.contains(binding.bsAddaliasAliasFormatMact.text.toString())) {
             binding.bsAddaliasAliasFormatTil.error =
                 context.resources.getString(R.string.not_a_valid_alias_format)
             return
@@ -275,7 +275,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         domain: String,
         description: String,
         format: String,
-        local_part: String,
+        aliasLocalPart: String,
         recipients: ArrayList<String>
     ) {
         val networkHelper = NetworkHelper(context)
@@ -295,7 +295,7 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
                 binding.bsAddaliasAliasDescTil.error =
                     context.resources.getString(R.string.error_adding_alias) + "\n" + error
             }
-        }, domain, description, format, local_part, recipients)
+        }, domain, description, format, aliasLocalPart, recipients)
     }
 
     override fun onClick(p0: View?) {
