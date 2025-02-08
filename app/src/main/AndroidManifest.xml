@@ -314,6 +314,9 @@
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifySubscriptionExpiryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyCertificateExpiryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesWebIntentResolutionActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

@@ -123,21 +123,21 @@ abstract class BaseActivity : AppCompatActivity() {
 
         if (text == null) {
             ObjectAnimator.ofFloat(title, "translationY", 0f).apply {
-                duration = 300
+                duration = 200
                 start()
             }
 
             ObjectAnimator.ofFloat(subtitle, "alpha", 0f).apply {
-                duration = 300
+                duration = 200
                 start()
             }
         } else {
-            ObjectAnimator.ofFloat(title, "translationY", -12f).apply {
-                duration = 300
+            ObjectAnimator.ofFloat(title, "translationY", -subtitle.measuredHeight.toFloat()).apply {
+                duration = 200
                 start()
             }
             ObjectAnimator.ofFloat(subtitle, "alpha", 0.7f).apply {
-                duration = 300
+                duration = 200
                 start()
             }
         }

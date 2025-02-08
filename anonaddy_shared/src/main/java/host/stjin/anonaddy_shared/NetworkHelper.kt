@@ -6,11 +6,14 @@ import android.content.Context
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.security.KeyChain
+import android.security.KeyChainException
 import android.util.Log
 import android.widget.Toast
 import com.einmalfel.earl.EarlParser
 import com.einmalfel.earl.Feed
 import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Headers
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.coroutines.awaitByteArrayResponseResult
@@ -89,11 +92,22 @@ import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.models.UsernamesArray
 import host.stjin.anonaddy_shared.models.Version
 import host.stjin.anonaddy_shared.utils.LoggingHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.net.Socket
+import java.security.Principal
+import java.security.PrivateKey
+import java.security.cert.X509Certificate
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509KeyManager
 
 
 class NetworkHelper(private val context: Context) {
@@ -115,7 +129,63 @@ class NetworkHelper(private val context: Context) {
     init {
         // Obtain API key from the encrypted preferences
         API_BASE_URL = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL) ?: API_BASE_URL
+
+        val alias = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
+
+        if (alias != null) {
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    val chain = KeyChain.getCertificateChain(context, alias)
+                    val privateKey = KeyChain.getPrivateKey(context, alias)
+                    withContext(Dispatchers.Main) {
+                        if (chain != null && privateKey != null) {
+                            setupCustomSocketFactory(alias, chain, privateKey)
+                        }
+                    }
+                } catch (e: KeyChainException) {
+                    withContext(Dispatchers.Main) {
+                        loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.message.toString(), "NetworHelper;init", e.stackTrace.toString())
+                    }
+                } catch (e: InterruptedException) {
+                    withContext(Dispatchers.Main) {
+                        loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.message.toString(), "NetworHelper;init", e.stackTrace.toString())
+                    }
+                }
+            }
+        }
     }
+
+    private fun setupCustomSocketFactory(alias: String, chain: Array<X509Certificate>?, privateKey: PrivateKey){
+        val customKeyManager = object : X509KeyManager {
+            override fun chooseClientAlias(keyType: Array<String>?, issuers: Array<Principal>?, socket: Socket?): String? {
+                return alias // Assuming 'alias' is the identifier for your certificate
+            }
+
+            override fun getCertificateChain(alias: String?): Array<X509Certificate>? {
+                return if (alias == this.chooseClientAlias(null, null, null)) chain else null
+            }
+
+            override fun getPrivateKey(alias: String?): PrivateKey? {
+                return if (alias == this.chooseClientAlias(null, null, null)) privateKey else null
+            }
+
+            // Other methods can return null or be left unimplemented if not needed
+            override fun chooseServerAlias( keyType: String?,
+                                            issuers: Array<out Principal?>?,
+                                            socket: Socket?): String? = null
+            override fun getClientAliases(keyType: String?, issuers: Array<Principal>?): Array<String>? = null
+            override fun getServerAliases(keyType: String?, issuers: Array<Principal>?): Array<String>? = null
+        }
+
+        val sslContext = SSLContext.getInstance("TLS")
+        sslContext.init(arrayOf(customKeyManager), null, null) // Use null for TrustManager if you trust the default CAs
+
+        FuelManager.instance.apply {
+            socketFactory = sslContext.socketFactory
+            hostnameVerifier = HostnameVerifier { _, _ -> true } // Be cautious; this bypasses hostname verification
+        }
+    }
+
 
     private fun getHeaders(apiKey: String? = null): Array<Pair<String, Any>> {
         val apiKeyToSend = apiKey ?: encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
@@ -385,6 +455,9 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
+
+
     suspend fun login(
         callback: (Login?, LoginMfaRequired?, String?) -> Unit,
         baseUrl: String,
@@ -402,6 +475,7 @@ class NetworkHelper(private val context: Context) {
 
         // Set base URL
         API_BASE_URL = baseUrl
+
 
         val json = JSONObject()
         json.put("username", username)

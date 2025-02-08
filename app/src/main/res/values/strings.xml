@@ -782,6 +782,27 @@
     <string name="select_startup_page">Select startup page</string>
     <string name="download_failed_delivery">Download failed delivery</string>
     <string name="failed_to_save_file">Failed to save file</string>
-    <string name="file_saved_succesfully">File saved succesfully</string>
+    <string name="file_saved_succesfully">File saved successfully</string>
+    <string name="certificate_expiry_date">Your current mTLS certificate (%1$s) will expire in %2$s</string>
+    <string name="feature_certificate_expiry_notification">Certificate expiry notification</string>
+    <string name="feature_certificate_expiry_notification_desc">Receive a notification 5 days before your (mTLS) certificate expires to prevent the app from being reset.\n\nThese notifications will reappear every day until a new certificate has been selected</string>
+    <string name="notify_certificate_expiry_feature_section_desc">Receive a notification 5 days before your certificate expires</string>
+    <string name="update_certificate_now">Update certificate now</string>
+    <string name="update_certificate_now_desc">Change the certificate that the addy.io app authenticates with.</string>
+    <string name="remove_certificate">Remove certificate</string>
+    <string name="remove_certificate_desc">Deleting the certificate when one is needed will result in the app resetting.</string>
+    <string name="remove_certificate_desc_confirm">Are you sure you want to remove this certificate? Deleting the certificate when one is needed will result in the app resetting.</string>
+    <string name="certificate_updated">Certificate successfully replaced!</string>
+    <string name="certificate_selected">Using certificate</string>
+    <string name="certificate_removed">Certificate was removed</string>
+    <string name="notification_channel_certificate_expiry">@string/certificate</string>
+    <string name="notification_channel_certificate_expiry_desc">Receive a notification when your certificate is about to expire</string>
+    <string name="certificate">Certificate</string>
+    <string name="notification_certificate_about_to_expire">Your certificate is about to expire</string>
+    <string name="notification_certificate_about_to_expire_desc">Your certificate will expire in %s. Replace it to prevent the app from resetting. Tap here to replace the certificate</string>
+    <string name="certificate_about_to_expire">Certificate about to expire</string>
+    <string name="certificate_about_to_expire_desc">Your certificate will expire in %s. It is recommended to update your certificate to prevent the app from resetting. Do you want to update the certificate now?</string>
+    <string name="certificate_about_to_expire_option_1">Update certificate</string>
+    <string name="use_certificate">Use certificate</string>
 
 </resources>

@@ -58,6 +58,30 @@ object DateTimeUtils {
         }
     }
 
+    fun convertDateToLocalTimeZoneDate(date: Date): LocalDateTime? {
+        try {
+            val ldt = convertDateToLocalDateTime(date)
+            val serverZoneId = ZoneId.of("GMT")
+            val zonedDateTime: ZonedDateTime = ldt.atZone(serverZoneId)
+            val defaultZoneId = ZoneId.systemDefault()
+
+            return zonedDateTime.withZoneSameInstant(defaultZoneId).toLocalDateTime()
+        } catch (e: Exception) {
+            return null
+        }
+    }
+
+    fun convertDateToLocalDateTime(date: Date): LocalDateTime {
+        // Convert Date to Instant
+        val instant = date.toInstant()
+
+        // Define the time zone - this could be any zone, here we use UTC for simplicity
+        val zoneId = ZoneId.systemDefault() // Or ZoneId.of("UTC") for UTC
+
+        // Convert Instant to ZonedDateTime, then extract LocalDateTime
+        return instant.atZone(zoneId).toLocalDateTime()
+    }
+
     // This method takes the string as its stored in addy.io's database, and turns it into a datetime object
     private fun turnStringIntoLocalDateTime(string: String?): LocalDateTime? {
         return LocalDateTime.parse(string, DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"))

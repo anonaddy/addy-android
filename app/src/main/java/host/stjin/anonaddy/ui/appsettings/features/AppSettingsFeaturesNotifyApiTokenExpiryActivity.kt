@@ -61,6 +61,7 @@ class AppSettingsFeaturesNotifyApiTokenExpiryActivity : BaseActivity(), AddApiBo
         setOnSwitchListeners()
     }
 
+
     private fun checkTokenExpiry() {
         lifecycleScope.launch {
             networkHelper.getApiTokenDetails { apiTokenDetails, error ->

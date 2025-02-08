@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_IDS
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.security.KeyChain
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
@@ -21,6 +22,7 @@ import host.stjin.anonaddy.widget.AliasWidget1Provider
 import host.stjin.anonaddy.widget.AliasWidget2Provider
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.GsonTools
@@ -81,6 +83,9 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             var aliasNetworkCallResult = false
             var aliasWatcherNetworkCallResult = false
             var failedDeliveriesNetworkCallResult = false
+            var notifyApiExpiryNetworkCallResult = false
+            var notifyCertificateExpiryResult = false
+            var notifySubscriptionNetworkCallResult = false
             var accountNotificationsNetworkCallResult = false
 
             // Block the thread until this is finished
@@ -112,7 +117,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 UPDATES
                  */
 
-                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
+                if (settingsManager.getSettingsBool(PREFS.NOTIFY_UPDATES)) {
                     Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean, _ :String? ->
                         if (updateAvailable) {
                             latestVersion?.let {
@@ -128,44 +133,100 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 API TOKEN
                  */
 
-                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)) {
+                if (settingsManager.getSettingsBool(PREFS.NOTIFY_API_TOKEN_EXPIRY, true)) {
                     networkHelper.getApiTokenDetails { apiTokenDetails, error ->
-                        if (apiTokenDetails?.expires_at != null) {
-                            val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(apiTokenDetails.expires_at) // Get the expiry date
+                        if (apiTokenDetails != null) {
+                            if (apiTokenDetails.expires_at != null) {
+                                val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(apiTokenDetails.expires_at) // Get the expiry date
+                                val currentDateTime = LocalDateTime.now() // Get the current date
+                                val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
+                                if (currentDateTime.isAfter(deadLineDate)) {
+                                    // The current date is suddenly after the deadline date. It will expire within 5 days
+                                    // Show the api is about to expire card
+
+                                    // Check if the notification has already been fired for this day
+                                    val previousNotificationLeftDays =
+                                        encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT)
+                                    val currentLeftDays = ChronoUnit.DAYS.between(currentDateTime, deadLineDate).toInt()
+
+                                    if (previousNotificationLeftDays != currentLeftDays) {
+                                        encryptedSettingsManager.putSettingsInt(
+                                            PREFS.BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT,
+                                            currentLeftDays
+                                        )
+                                        val text = PrettyTime().format(expiryDate)
+                                        NotificationHelper(appContext).createApiTokenExpiryNotification(text)
+                                    }
+                                    notifyApiExpiryNetworkCallResult = true
+                                } else {
+                                    // The current date is not yet after the deadline date.
+                                    notifyApiExpiryNetworkCallResult = true
+                                }
+                            } else {
+                                // If expires_at is null it will never expire
+                                notifyApiExpiryNetworkCallResult = true
+                            }
+                        }
+
+
+                    }
+                } else {
+                    notifyApiExpiryNetworkCallResult = true
+                }
+
+                /*
+                CERTIFICATE
+                 */
+
+                if (settingsManager.getSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY)) {
+
+                    val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
+
+                    if (alias != null) {
+                        val chain = KeyChain.getCertificateChain(appContext, alias)
+                        val expiryDateOfChain = chain?.firstOrNull()?.notAfter
+
+                        if (expiryDateOfChain != null) {
+                            val expiryDate = DateTimeUtils.convertDateToLocalTimeZoneDate(expiryDateOfChain) // Get the expiry date
                             val currentDateTime = LocalDateTime.now() // Get the current date
                             val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
                             if (currentDateTime.isAfter(deadLineDate)) {
                                 // The current date is suddenly after the deadline date. It will expire within 5 days
-                                // Show the api is about to expire card
+                                // Show the certificate is about to expire card
 
                                 // Check if the notification has already been fired for this day
                                 val previousNotificationLeftDays =
-                                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT)
+                                    encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_CERTIFICATE_EXPIRY_LEFT_COUNT)
                                 val currentLeftDays = ChronoUnit.DAYS.between(currentDateTime, deadLineDate).toInt()
 
                                 if (previousNotificationLeftDays != currentLeftDays) {
                                     encryptedSettingsManager.putSettingsInt(
-                                        SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT,
+                                        PREFS.BACKGROUND_SERVICE_CACHE_CERTIFICATE_EXPIRY_LEFT_COUNT,
                                         currentLeftDays
                                     )
                                     val text = PrettyTime().format(expiryDate)
-                                    NotificationHelper(appContext).createApiTokenExpiryNotification(text)
+                                    NotificationHelper(appContext).createCertificateExpiryNotification(text)
                                 }
-
+                                notifyCertificateExpiryResult = true
                             } else {
                                 // The current date is not yet after the deadline date.
+                                notifyCertificateExpiryResult = true
                             }
+                        } else {
+                            // If expiryDate is null it will never expire, which I highly doubt will EVER happen
+                            notifyCertificateExpiryResult = true
                         }
-                        // If expires_at is null it will never expire
 
                     }
+                } else {
+                    notifyCertificateExpiryResult = true
                 }
 
                 /*
                 DOMAIN ERRORS
                  */
 
-                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, false)) {
+                if (settingsManager.getSettingsBool(PREFS.NOTIFY_DOMAIN_ERROR, false)) {
                     networkHelper.getAllDomains { domains, _ ->
                         if (!domains.isNullOrEmpty()) {
                             // Check the amount of domains with MX errors
@@ -174,12 +235,12 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
                                 // Check if the notification has already been fired for this count of domains
                                 val previousNotificationLeftDays =
-                                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT)
+                                    encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT)
 
                                 // If the domains with errors have been changed, fire a notification
                                 if (previousNotificationLeftDays != amountOfDomainsWithErrors) {
                                     encryptedSettingsManager.putSettingsInt(
-                                        SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT,
+                                        PREFS.BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT,
                                         amountOfDomainsWithErrors
                                     )
                                     NotificationHelper(appContext).createDomainErrorNotification(amountOfDomainsWithErrors)
@@ -195,7 +256,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 SUBSCRIPTION EXPIRY
                  */
 
-                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)) {
+                if (settingsManager.getSettingsBool(PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)) {
                     networkHelper.getUserResource { user, _ ->
                         if (user?.subscription_ends_at != null) {
                             val expiryDate = DateTimeUtils.convertStringToLocalTimeZoneDate(user.subscription_ends_at) // Get the expiry date
@@ -207,31 +268,37 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
                                 // Check if the notification has already been fired for this day
                                 val previousNotificationLeftDays =
-                                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT)
+                                    encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT)
                                 val currentLeftDays = ChronoUnit.DAYS.between(currentDateTime, deadLineDate).toInt()
 
                                 if (previousNotificationLeftDays != currentLeftDays) {
                                     encryptedSettingsManager.putSettingsInt(
-                                        SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT,
+                                        PREFS.BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT,
                                         currentLeftDays
                                     )
                                     val text = PrettyTime().format(expiryDate)
                                     NotificationHelper(appContext).createSubscriptionExpiryNotification(text)
                                 }
+                                notifySubscriptionNetworkCallResult = true
                             } else {
                                 // The current date is not yet after the deadline date.
+                                notifySubscriptionNetworkCallResult = true
                             }
+                        } else {
+                            // If expires_at is null it will never expire
+                            notifySubscriptionNetworkCallResult = true
                         }
-                        // If expires_at is null it will never expire
 
                     }
+                } else {
+                    notifySubscriptionNetworkCallResult = true
                 }
 
 
                 /*
                 BACKUPS
                  */
-                if (settingsManager.getSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS)) {
+                if (settingsManager.getSettingsBool(PREFS.PERIODIC_BACKUPS)) {
                     BackupHelper(appContext).let {
                         val date: LocalDate? =
                             it.getLatestBackupDate()?.let { it1 -> Instant.ofEpochMilli(it1).atZone(ZoneId.systemDefault()).toLocalDate() }
@@ -255,16 +322,16 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 FAILED DELIVERIES
                  */
 
-                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)) {
+                if (settingsManager.getSettingsBool(PREFS.NOTIFY_FAILED_DELIVERIES)) {
                     networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
                         // Store the result if the data succeeded to update in a boolean
                         failedDeliveriesNetworkCallResult = result
                     }
 
                     val currentFailedDeliveries =
-                        encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+                        encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
                     val previousFailedDeliveries =
-                        encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS)
+                        encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS)
                     // If the current failed delivery count is bigger than the previous list. That means there are new failed deliveries
                     if (currentFailedDeliveries > previousFailedDeliveries) {
                         NotificationHelper(appContext).createFailedDeliveryNotification(
@@ -281,16 +348,16 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 ACCOUNT NOTIFICATIONS
                  */
 
-                if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)) {
+                if (settingsManager.getSettingsBool(PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)) {
                     networkHelper.cacheAccountNotificationsCountForWidgetAndBackgroundService { result ->
                         // Store the result if the data succeeded to update in a boolean
                         accountNotificationsNetworkCallResult = result
                     }
 
                     val currentAccountNotifications =
-                        encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
+                        encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
                     val previousAccountNotifications =
-                        encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS)
+                        encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS)
                     // If the current account notifications count is bigger than the previous list. That means there are new account notifications
                     if (currentAccountNotifications > previousAccountNotifications) {
                         NotificationHelper(appContext).createAccountNotificationsNotification(
@@ -309,11 +376,27 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 AliasWatcher(appContext).watchAliasesForDifferences()
             }
 
+            if (BuildConfig.DEBUG) {
+                LoggingHelper(appContext, LoggingHelper.LOGFILES.DEFAULT).addLog(LOGIMPORTANCE.CRITICAL.int,
+                    "userResourceNetworkCallResult=${userResourceNetworkCallResult}}\n" +
+                            "aliasNetworkCallResult=${aliasNetworkCallResult}}\n" +
+                            "aliasWatcherNetworkCallResult=${aliasWatcherNetworkCallResult}}\n" +
+                            "failedDeliveriesNetworkCallResult=${failedDeliveriesNetworkCallResult}}\n" +
+                            "notifyApiExpiryNetworkCallResult=${notifyApiExpiryNetworkCallResult}}\n" +
+                            "notifyCertificateExpiryResult=${notifyCertificateExpiryResult}}\n" +
+                            "notifySubscriptionNetworkCallResult=${notifySubscriptionNetworkCallResult}}\n" +
+                            "accountNotificationsNetworkCallResult=${accountNotificationsNetworkCallResult}}\n",
+                            "doWork()",null)
+            }
+
             // If all tasks are successful return a success()
             return if (userResourceNetworkCallResult &&
                 aliasNetworkCallResult &&
                 aliasWatcherNetworkCallResult &&
                 failedDeliveriesNetworkCallResult &&
+                notifyApiExpiryNetworkCallResult &&
+                notifyCertificateExpiryResult &&
+                notifySubscriptionNetworkCallResult &&
                 accountNotificationsNetworkCallResult
             ) {
                 // Now the data has been updated, we can update the widget as well
@@ -345,20 +428,20 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 if (result != null) {
 
                     // Get a copy of the current list
-                    val aliasesJson = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
+                    val aliasesJson = settingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
                     val aliasesList = aliasesJson?.let { GsonTools.jsonToAliasObject(appContext, it) }
 
 
                     //region Save a copy of the list
 
                     // When the call is successful, save a copy of the current CACHED version to `currentList`
-                    val currentList = settingsManager.getSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
+                    val currentList = settingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA)
 
                     // If the current CACHED list is not null, move the current list to the PREV position for AliasWatcher to compare
                     // This CACHED list could be null if this would be the first time the service is running
                     currentList?.let {
                         settingsManager.putSettingsString(
-                            SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS,
+                            PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA_PREVIOUS,
                             it
                         )
                     }
@@ -396,7 +479,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     val data = Gson().toJson(result.data)
 
                     // Store a copy of the just received data locally
-                    settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
+                    settingsManager.putSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_WATCH_ALIAS_DATA, data)
 
                 } else {
                     // The call failed, it will be logged in NetworkHelper. Try again later
@@ -427,7 +510,7 @@ class BackgroundWorkerHelper(private val context: Context) {
                 .build()
 
             // Get the amount of minutes from the settings
-            val minutes = SettingsManager(false, context).getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30).toLong()
+            val minutes = SettingsManager(false, context).getSettingsInt(PREFS.BACKGROUND_SERVICE_INTERVAL, 30).toLong()
             val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundWorker::class.java, minutes, TimeUnit.MINUTES)
                 .setConstraints(myConstraints)
                 .addTag(CONSTANT_PERIODIC_WORK_REQUEST_TAG)
@@ -444,30 +527,24 @@ class BackgroundWorkerHelper(private val context: Context) {
         val settingsManager = SettingsManager(false, context)
         val encryptedSettingsManager = SettingsManager(true, context)
 
-        if (encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY) != null) {
+        if (encryptedSettingsManager.getSettingsString(PREFS.API_KEY) != null) {
             // Count amount of aliases to be watched
             val aliasToWatch = AliasWatcher(context).getAliasesToWatch()
             // Count amount of widgets
-            val amountOfWidgets = settingsManager.getSettingsInt(SettingsManager.PREFS.WIDGETS_ACTIVE)
+            val amountOfWidgets = settingsManager.getSettingsInt(PREFS.WIDGETS_ACTIVE)
 
-            val shouldCheckForUpdates = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)
-            val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES)
-            val shouldCheckForAccountNotifications = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)
-            val shouldCheckApiTokenExpiry = settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
-            val shouldMakePeriodicBackups = settingsManager.getSettingsBool(SettingsManager.PREFS.PERIODIC_BACKUPS)
+            val shouldCheckForUpdates = settingsManager.getSettingsBool(PREFS.NOTIFY_UPDATES)
+            val shouldCheckForFailedDeliveries = settingsManager.getSettingsBool(PREFS.NOTIFY_FAILED_DELIVERIES)
+            val shouldCheckForAccountNotifications = settingsManager.getSettingsBool(PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)
+            val shouldCheckApiTokenExpiry = settingsManager.getSettingsBool(PREFS.NOTIFY_API_TOKEN_EXPIRY, true)
+            val shouldCheckCertificateExpiry = settingsManager.getSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY)
+            val shouldMakePeriodicBackups = settingsManager.getSettingsBool(PREFS.PERIODIC_BACKUPS)
 
             if (BuildConfig.DEBUG) {
                 println("isThereWorkTodo: aliasToWatch=$aliasToWatch;amountOfWidgets=$amountOfWidgets;NOTIFY_UPDATES=$shouldCheckForUpdates;NOTIFY_FAILED_DELIVERIES=$shouldCheckForFailedDeliveries;NOTIFY_ACCOUNT_NOTIFICATIONS=$shouldCheckForAccountNotifications")
             }
 
-            // If there are
-            // -aliases to be watched
-            // -widgets to be updated
-            // -app updates to be checked for in the background
-            // -failed deliveries to be checked
-            // -Account notifications to be checked
-            // --return true
-            return (aliasToWatch.isNotEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckForAccountNotifications || shouldCheckApiTokenExpiry || shouldMakePeriodicBackups)
+            return (aliasToWatch.isNotEmpty() || amountOfWidgets > 0 || shouldCheckForUpdates || shouldCheckForFailedDeliveries || shouldCheckForAccountNotifications || shouldCheckApiTokenExpiry || shouldCheckCertificateExpiry || shouldMakePeriodicBackups)
         } else {
             return false
         }
