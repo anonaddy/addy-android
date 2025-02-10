@@ -106,6 +106,7 @@ import java.security.Principal
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
 import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509KeyManager
 
@@ -152,6 +153,10 @@ class NetworkHelper(private val context: Context) {
                     }
                 }
             }
+        } else {
+            FuelManager.instance.apply {
+                socketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
+            }
         }
     }
 
@@ -182,7 +187,6 @@ class NetworkHelper(private val context: Context) {
 
         FuelManager.instance.apply {
             socketFactory = sslContext.socketFactory
-            hostnameVerifier = HostnameVerifier { _, _ -> true } // Be cautious; this bypasses hostname verification
         }
     }
 

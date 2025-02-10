@@ -120,7 +120,9 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             val tintColor = ContextCompat.getColor(requireContext(), R.color.md_theme_tertiary) // Use a color resource
             binding.bsSetupApikeySelectCert.drawable.setTint(tintColor)
         } else {
-            binding.bsSetupApikeySelectCert.drawable.setTintList(null)
+            val tintColor = ContextCompat.getColor(requireContext(), R.color.BlackWhite) // Use a color resource
+            binding.bsSetupApikeySelectCert.drawable.setTint(tintColor)
+
         }
     }
 
@@ -389,6 +391,9 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                         encryptedSettingsManager.removeSetting(PREFS.CERTIFICATE_ALIAS)
                         Toast.makeText(requireContext(), requireContext().resources.getString(R.string.certificate_removed), Toast.LENGTH_SHORT).show()
                         checkForCertificate()
+
+                        // Re-init as an alias was removed
+                        networkHelper = NetworkHelper(requireContext())
                     }
                 }
             }

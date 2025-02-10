@@ -42,6 +42,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/BlackWhite"
                 android:textSize="18sp" />
+
             <ImageButton
                 android:id="@+id/bs_setup_apikey_select_cert"
                 android:layout_width="36dp"
@@ -49,6 +50,7 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:layout_weight="1"
+                android:tint="@color/BlackWhite"
                 android:contentDescription="@string/use_certificate"
                 android:src="@drawable/ic_certificate" />
         </LinearLayout>
