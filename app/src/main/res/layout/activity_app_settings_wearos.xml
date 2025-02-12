@@ -51,6 +51,19 @@
 
                 </LinearLayout>
 
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_wearos_section_certificate_warning"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:sectionDescription="@string/wearos_certificate_warning_desc"
+                    app:sectionElevation="0"
+                    app:sectionBackgroundColor="?colorSurfaceContainerHigh"
+                    app:sectionOutlineWidth="5"
+                    app:sectionShowSwitch="false"
+                    app:sectionStartIcon="@drawable/ic_certificate"
+                    app:sectionTitle="@string/wearos_certificate_warning_title" />
+
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_wearos_section_select_device"
                     android:layout_width="match_parent"

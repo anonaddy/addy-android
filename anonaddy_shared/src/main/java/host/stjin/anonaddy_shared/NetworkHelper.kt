@@ -92,8 +92,10 @@ import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.models.UsernamesArray
 import host.stjin.anonaddy_shared.models.Version
 import host.stjin.anonaddy_shared.utils.LoggingHelper
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -105,6 +107,7 @@ import java.net.Socket
 import java.security.Principal
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
+import java.util.Date
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
@@ -126,41 +129,60 @@ class NetworkHelper(private val context: Context) {
 
     private val loggingHelper = LoggingHelper(context)
     val encryptedSettingsManager = SettingsManager(true, context)
+    private var initDeferred: Deferred<Unit>? = null
 
     init {
         // Obtain API key from the encrypted preferences
         API_BASE_URL = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL) ?: API_BASE_URL
 
-        val alias = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
-
-        if (alias != null) {
-            GlobalScope.launch(Dispatchers.IO) {
+        // This is making sure the socketFactory is set before Fuel gets used! To make sure the mTLS is set up
+        // That is because KeyChain.getCertificateChain is a blocking call that needs to be run on a background thread
+        initDeferred = GlobalScope.async(Dispatchers.IO) {
+            val alias = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
+            if (alias != null) {
                 try {
                     val chain = KeyChain.getCertificateChain(context, alias)
                     val privateKey = KeyChain.getPrivateKey(context, alias)
-                    withContext(Dispatchers.Main) {
-                        if (chain != null && privateKey != null) {
+                    if (chain != null && privateKey != null) {
+                        withContext(Dispatchers.Main) {
                             setupCustomSocketFactory(alias, chain, privateKey)
                         }
                     }
-                } catch (e: KeyChainException) {
+                } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.message.toString(), "NetworHelper;init", e.stackTrace.toString())
-                    }
-                } catch (e: InterruptedException) {
-                    withContext(Dispatchers.Main) {
-                        loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.message.toString(), "NetworHelper;init", e.stackTrace.toString())
+                        loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.message.toString(), "NetworkHelper;init", e.stackTrace.toString())
                     }
                 }
-            }
-        } else {
-            FuelManager.instance.apply {
-                socketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
+            } else {
+                withContext(Dispatchers.Main) {
+                    FuelManager.instance.apply {
+                        socketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
+                    }
+                }
             }
         }
     }
 
+    // Before any network operation, wait for initialization to complete
+    suspend fun waitForInit() {
+        initDeferred?.await()
+    }
+
     private fun setupCustomSocketFactory(alias: String, chain: Array<X509Certificate>?, privateKey: PrivateKey){
+
+        val expiryDateOfChain = chain?.firstOrNull()?.notAfter
+
+        // If there is an expiry-date check if this is in the pas
+        expiryDateOfChain?.let {
+            if (it < Date()){
+                invalidCertificate()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+            }
+        }
+
         val customKeyManager = object : X509KeyManager {
             override fun chooseClientAlias(keyType: Array<String>?, issuers: Array<Principal>?, socket: Socket?): String? {
                 return alias // Assuming 'alias' is the identifier for your certificate
@@ -187,6 +209,16 @@ class NetworkHelper(private val context: Context) {
 
         FuelManager.instance.apply {
             socketFactory = sslContext.socketFactory
+        }
+    }
+
+    private fun invalidCertificate() {
+        try {
+            Toast.makeText(context, context.resources.getString(R.string.certificate_key_invalid), Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            val ex = e.message
+            Log.e("AFA", ex.toString())
+            loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidCertificate", null)
         }
     }
 
@@ -240,45 +272,6 @@ class NetworkHelper(private val context: Context) {
     }
 
 
-    suspend fun downloadBody(url: String, callback: (String?, String?) -> Unit) {
-
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
-
-        val (_, response, result) =
-            Fuel.get(url)
-                .awaitStringResponseResult()
-
-
-        when (response.statusCode) {
-            200 -> {
-                val data = result.get()
-                callback(data, null)
-            }
-
-            else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "downloadBody",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
-                callback(
-                    null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
-            }
-        }
-    }
-
     suspend fun registration(
         callback: (String?) -> Unit,
         username: String,
@@ -287,6 +280,7 @@ class NetworkHelper(private val context: Context) {
         apiExpiration: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -344,6 +338,7 @@ class NetworkHelper(private val context: Context) {
         query: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -396,6 +391,7 @@ class NetworkHelper(private val context: Context) {
         baseUrl: String, mfaKey: String, otp: String, xCsrfToken: String, apiExpiration: String, cookies: Collection<String>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -470,6 +466,7 @@ class NetworkHelper(private val context: Context) {
         apiExpiration: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -549,6 +546,7 @@ class NetworkHelper(private val context: Context) {
         password: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -574,7 +572,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -605,6 +603,7 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun logout(callback: (String?) -> Unit) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -626,7 +625,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -648,6 +647,7 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (UserResource?, String?) -> Unit) {
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -701,6 +701,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Version?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -726,7 +727,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
             // Not found, aka the addy.io version is <0.6.0 (this endpoint was introduced in 0.6.0)
@@ -766,6 +767,7 @@ class NetworkHelper(private val context: Context) {
         callback: (UserResource?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -791,7 +793,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -821,6 +823,7 @@ class NetworkHelper(private val context: Context) {
         callback: (DomainOptions?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -846,7 +849,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -886,6 +889,7 @@ class NetworkHelper(private val context: Context) {
         recipients: ArrayList<String>?
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -926,7 +930,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -963,6 +967,7 @@ class NetworkHelper(private val context: Context) {
         username: String? = null,
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1040,7 +1045,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1071,6 +1076,7 @@ class NetworkHelper(private val context: Context) {
         callback: (AddyChartData?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1096,7 +1102,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1127,6 +1133,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1152,7 +1159,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1184,6 +1191,7 @@ class NetworkHelper(private val context: Context) {
         description: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1214,7 +1222,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1246,6 +1254,7 @@ class NetworkHelper(private val context: Context) {
         fromName: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1276,7 +1285,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1309,6 +1318,7 @@ class NetworkHelper(private val context: Context) {
         recipients: ArrayList<String>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1347,7 +1357,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1378,6 +1388,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<String>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1411,7 +1422,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1443,6 +1454,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1463,7 +1475,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -1493,6 +1505,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1526,7 +1539,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1557,6 +1570,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1584,7 +1598,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1615,6 +1629,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1648,7 +1663,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1680,6 +1695,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1700,7 +1716,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -1730,6 +1746,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1763,7 +1780,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1794,6 +1811,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1814,7 +1832,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -1845,6 +1863,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1878,7 +1897,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1910,6 +1929,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1933,7 +1953,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -1964,6 +1984,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -1997,7 +2018,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2033,6 +2054,7 @@ class NetworkHelper(private val context: Context) {
         address: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2060,7 +2082,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2091,6 +2113,7 @@ class NetworkHelper(private val context: Context) {
         verifiedOnly: Boolean
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2127,7 +2150,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2158,6 +2181,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2178,7 +2202,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -2209,6 +2233,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2236,7 +2261,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2267,6 +2292,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2287,7 +2313,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -2318,6 +2344,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2338,7 +2365,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -2369,6 +2396,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2396,7 +2424,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2428,6 +2456,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2448,7 +2477,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -2479,6 +2508,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2506,7 +2536,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2537,6 +2567,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2557,7 +2588,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -2588,6 +2619,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2615,7 +2647,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2646,6 +2678,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2666,7 +2699,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -2697,6 +2730,7 @@ class NetworkHelper(private val context: Context) {
         keyData: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2725,7 +2759,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2757,6 +2791,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2782,7 +2817,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2813,6 +2848,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2837,7 +2873,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -2871,6 +2907,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<Domains>?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2897,7 +2934,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -2928,6 +2965,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -2948,7 +2986,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -2978,6 +3016,7 @@ class NetworkHelper(private val context: Context) {
         domain: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3009,7 +3048,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null, null)
             }
 
@@ -3040,6 +3079,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3065,7 +3105,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3098,6 +3138,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3128,7 +3169,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3157,6 +3198,7 @@ class NetworkHelper(private val context: Context) {
         domainId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3177,7 +3219,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -3208,6 +3250,7 @@ class NetworkHelper(private val context: Context) {
         domainId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3235,7 +3278,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3266,6 +3309,7 @@ class NetworkHelper(private val context: Context) {
         domainId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3286,7 +3330,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -3317,6 +3361,7 @@ class NetworkHelper(private val context: Context) {
         domainId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3344,7 +3389,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3377,6 +3422,7 @@ class NetworkHelper(private val context: Context) {
         description: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3407,7 +3453,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3438,6 +3484,7 @@ class NetworkHelper(private val context: Context) {
         autoCreateRegex: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3468,7 +3515,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3499,6 +3546,7 @@ class NetworkHelper(private val context: Context) {
         fromName: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3529,7 +3577,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3562,6 +3610,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<Usernames>?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3589,7 +3638,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3620,6 +3669,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3640,7 +3690,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -3670,6 +3720,7 @@ class NetworkHelper(private val context: Context) {
         username: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3697,7 +3748,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3728,6 +3779,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3753,7 +3805,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3785,6 +3837,7 @@ class NetworkHelper(private val context: Context) {
         autoCreateRegex: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3815,7 +3868,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3845,6 +3898,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3875,7 +3929,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -3904,6 +3958,7 @@ class NetworkHelper(private val context: Context) {
         usernameId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3924,7 +3979,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -3955,6 +4010,7 @@ class NetworkHelper(private val context: Context) {
         usernameId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -3982,7 +4038,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -4014,6 +4070,7 @@ class NetworkHelper(private val context: Context) {
         description: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4044,7 +4101,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -4074,6 +4131,7 @@ class NetworkHelper(private val context: Context) {
         fromName: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4104,7 +4162,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -4133,6 +4191,7 @@ class NetworkHelper(private val context: Context) {
         callback: (String?) -> Unit?,
         usernameId: String
     ) {
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4154,7 +4213,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -4185,6 +4244,7 @@ class NetworkHelper(private val context: Context) {
         usernameId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4212,7 +4272,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -4243,6 +4303,7 @@ class NetworkHelper(private val context: Context) {
         usernameId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4263,7 +4324,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -4294,6 +4355,7 @@ class NetworkHelper(private val context: Context) {
         usernameId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4321,7 +4383,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -4358,6 +4420,7 @@ class NetworkHelper(private val context: Context) {
         show404Toast: Boolean = false
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4384,7 +4447,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
             // Not found, aka the addy.io version is <0.6.0 (this endpoint was introduced in 0.6.0)
@@ -4426,6 +4489,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4451,7 +4515,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -4483,6 +4547,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4503,7 +4568,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -4533,6 +4598,7 @@ class NetworkHelper(private val context: Context) {
         rule: Rules
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4558,7 +4624,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -4589,6 +4655,7 @@ class NetworkHelper(private val context: Context) {
         rulesArray: ArrayList<Rules>
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4619,7 +4686,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -4650,6 +4717,7 @@ class NetworkHelper(private val context: Context) {
         rule: Rules
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4672,7 +4740,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -4702,6 +4770,7 @@ class NetworkHelper(private val context: Context) {
         ruleId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4722,7 +4791,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -4753,6 +4822,7 @@ class NetworkHelper(private val context: Context) {
         ruleId: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4780,7 +4850,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -4829,6 +4899,7 @@ class NetworkHelper(private val context: Context) {
         amountOfAliasesToCache: Int? = 15
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4868,6 +4939,7 @@ class NetworkHelper(private val context: Context) {
         amountOfAliasesToCache: Int? = 15
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4907,6 +4979,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4933,6 +5006,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4966,6 +5040,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<FailedDeliveries>?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -4992,7 +5067,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
             // Not found, aka the addy.io version is <0.8.1 (this endpoint was introduced in 0.8.1)
@@ -5031,6 +5106,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -5056,7 +5132,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -5087,6 +5163,7 @@ class NetworkHelper(private val context: Context) {
         callback: (File?, String?) -> Unit,
         id: String
     ) {
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -5123,7 +5200,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -5154,6 +5231,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -5174,7 +5252,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null)
             }
 
@@ -5253,6 +5331,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ApiTokenDetails?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -5278,7 +5357,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -5313,6 +5392,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -5341,6 +5421,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<AccountNotifications>?, String?) -> Unit
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -5367,7 +5448,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 
@@ -5400,6 +5481,7 @@ class NetworkHelper(private val context: Context) {
         subscriptionId: String,
     ) {
 
+        waitForInit()
         if (BuildConfig.DEBUG) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
@@ -5429,7 +5511,7 @@ class NetworkHelper(private val context: Context) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
                     SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 5000)
+                }, 8000)
                 callback(null, null)
             }
 

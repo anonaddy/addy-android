@@ -804,5 +804,7 @@
     <string name="certificate_about_to_expire_desc">Your certificate will expire in %s. It is recommended to update your certificate to prevent the app from resetting. Do you want to update the certificate now?</string>
     <string name="certificate_about_to_expire_option_1">Update certificate</string>
     <string name="use_certificate">Use certificate</string>
+    <string name="wearos_certificate_warning_title">You\'re using a certificate</string>
+    <string name="wearos_certificate_warning_desc">You\'re currently connecting to your addy.io instance using a certificate, which isn\'t supported on wearable devices. Therefore, you may not be able to access addy.io on Android wearables.</string>
 
 </resources>
