@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,10 +20,12 @@ import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivitySetupBinding
 import host.stjin.anonaddy.ui.SplashActivity
+import host.stjin.anonaddy.ui.appsettings.logs.LogViewerActivity
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -34,6 +37,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
     private lateinit var binding: ActivitySetupBinding
     lateinit var mainHandler: Handler
+    private var tapCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,6 +155,32 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             }
 
             resultLauncher.launch(intent)
+        }
+
+        binding.fragmentSetupLogo.setOnClickListener{
+            tapCount++
+
+            // Reset count if it exceeds 10 to avoid overflow
+            if (tapCount > 10) {
+                tapCount = 0
+            }
+
+            binding.fragmentSetupLogo.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+
+            if (tapCount == 10) {
+                if (!SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)){
+                    Toast.makeText(this, this.resources.getString(R.string.logs_enabled), Toast.LENGTH_SHORT).show()
+                    SettingsManager(false, this).putSettingsBool(SettingsManager.PREFS.STORE_LOGS, true)
+                }
+
+                // Launch new activity when tap count reaches 10
+                val intent = Intent(this, LogViewerActivity::class.java)
+                intent.putExtra("logfile", LoggingHelper.LOGFILES.DEFAULT.filename)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                // Reset the counter after launching the activity
+                tapCount = 0
+            }
         }
     }
 

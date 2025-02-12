@@ -7,7 +7,6 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.security.KeyChain
-import android.security.KeyChainException
 import android.util.Log
 import android.widget.Toast
 import com.einmalfel.earl.EarlParser
@@ -96,7 +95,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
@@ -108,7 +106,6 @@ import java.security.Principal
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
 import java.util.Date
-import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509KeyManager

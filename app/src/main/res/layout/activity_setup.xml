@@ -47,6 +47,7 @@
             android:textColor="@android:color/white" />
 
         <ImageView
+            android:id="@+id/fragment_setup_logo"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:contentDescription="@string/app_name"

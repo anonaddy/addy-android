@@ -806,5 +806,6 @@
     <string name="use_certificate">Use certificate</string>
     <string name="wearos_certificate_warning_title">You\'re using a certificate</string>
     <string name="wearos_certificate_warning_desc">You\'re currently connecting to your addy.io instance using a certificate, which isn\'t supported on wearable devices. Therefore, you may not be able to access addy.io on Android wearables.</string>
+    <string name="logs_enabled">Logs are now enabled, reproduce the issue and open the Logs again</string>
 
 </resources>
