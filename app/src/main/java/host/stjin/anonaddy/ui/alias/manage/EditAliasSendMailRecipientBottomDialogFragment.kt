@@ -26,6 +26,7 @@ class EditAliasSendMailRecipientBottomDialogFragment(
     // 1. Defines the listener interface with a method passing back data result.
     interface AddEditAliasSendMailRecipientBottomDialogListener {
         fun onPressSend(toString: String)
+        fun onPressCopy(toString: String)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -54,6 +55,7 @@ class EditAliasSendMailRecipientBottomDialogFragment(
 
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         binding.bsSendMailAliasSendMailButton.setOnClickListener(this)
+        binding.bsSendMailAliasSendMailCopyButton.setOnClickListener(this)
         binding.bsSendMailAliasRecipientTiet.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                 sendMail(requireContext())
@@ -94,11 +96,34 @@ class EditAliasSendMailRecipientBottomDialogFragment(
         listener.onPressSend(binding.bsSendMailAliasRecipientTiet.text.toString())
     }
 
+    private fun copyToAddress(context: Context) {
+        val recipientsTiet = binding.bsSendMailAliasRecipientTiet.text.toString()
+        val recipients = recipientsTiet.split(",")
+
+        // Check if all the entered recipients are valid email addresses
+        for (email in recipients) {
+            if (!CustomPatterns.EMAIL_ADDRESS.matcher(email)
+                    .matches()
+            ) {
+                binding.bsSendMailAliasRecipientTil.error =
+                    context.resources.getString(R.string.not_a_valid_address)
+                return
+            }
+        }
+
+        // Set error to null if domain and alias is valid
+        binding.bsSendMailAliasRecipientTil.error = null
+        binding.bsSendMailAliasSendMailButton.isEnabled = false
+        listener.onPressCopy(binding.bsSendMailAliasRecipientTiet.text.toString())
+    }
+
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_send_mail_alias_send_mail_button) {
                 sendMail(requireContext())
+            }   else if (p0.id == R.id.bs_send_mail_alias_send_mail_copy_button) {
+                copyToAddress(requireContext())
             }
         }
     }
