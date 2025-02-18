@@ -47,6 +47,8 @@ class NotificationHelper(private val context: Context) {
     private val DOMAIN_ERROR_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val SUBSCRIPTION_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
     private val FAILED_BACKUP_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
+    private val CERTIFICATE_EXPIRY_NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID
+
     private var mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val loggingHelper = LoggingHelper(context)
 
@@ -65,6 +67,8 @@ class NotificationHelper(private val context: Context) {
         const val SUBSCRIPTION_EXPIRE_NOTIFICATION_ID = 7
         const val DOMAIN_ERROR_NOTIFICATION_ID = 8
         const val ACCOUNT_NOTIFICATIONS_NOTIFICATION_ID = 9
+        const val CERTIFICATE_EXPIRE_NOTIFICATION_ID = 10
+
     }
 
     //region Wearable notifications
@@ -337,6 +341,75 @@ class NotificationHelper(private val context: Context) {
             // notificationId is a unique int for each notification that you must define
             try {
                 notify(API_KEY_EXPIRE_NOTIFICATION_ID, notification)
+            } catch (e: SecurityException) {
+                val ex = e.message
+                // User did not gave app POST_NOTIFICATION permissions
+                loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "buildApiTokenExpiryNotification", null)
+            }
+        }
+    }
+
+
+    /*
+    Certificate expiry
+     */
+    fun createCertificateExpiryNotification(daysLeft: String) {
+        createChannel(
+            CERTIFICATE_EXPIRY_NOTIFICATION_CHANNEL_ID,
+            context.resources.getString(R.string.notification_channel_certificate_expiry),
+            context.resources.getString(R.string.notification_channel_certificate_expiry_desc), IMPORTANCE_DEFAULT
+        )
+
+        buildCertificateExpiryNotification(
+            context.resources.getString(R.string.notification_certificate_about_to_expire),
+            context.resources.getString(R.string.notification_certificate_about_to_expire_desc, daysLeft)
+        )
+    }
+
+    private fun buildCertificateExpiryNotification(title: String, text: String) {
+        val stopCheckingApiExpiryIntent = Intent(context, ActionReceiver::class.java).apply {
+            action = ActionReceiver.NOTIFICATIONACTIONS.STOP_CERTIFICATE_CHECK
+        }
+        val stopCheckingApiExpiryPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                Random.nextInt(0, 999),
+                stopCheckingApiExpiryIntent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+        // Mainactivity will check and auto remind user on launch
+        val openCertificateExpiryIntent = Intent(context, MainActivity::class.java)
+        val openCertificateExpiryPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(openCertificateExpiryIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(Random.nextInt(0, 999), PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        val notification = Builder(context, CERTIFICATE_EXPIRY_NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(
+                BigTextStyle()
+                    .bigText(text)
+            )
+            .setPriority(PRIORITY_DEFAULT)
+            .setVisibility(VISIBILITY_PUBLIC)
+            // Notifications should always have a static color to identify the app
+            .setColor(ContextCompat.getColor(context, R.color.md_theme_primary))
+            .setSmallIcon(R.drawable.ic_certificate)
+            .addAction(R.drawable.ic_certificate, context.resources.getString(R.string.disable_notifications), stopCheckingApiExpiryPendingIntent)
+            // Notifications should always have a static color to identify the app
+            .setLights(ContextCompat.getColor(context, R.color.md_theme_primary), 1000, 6000)
+            .setContentIntent(openCertificateExpiryPendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        with(from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            try {
+                notify(CERTIFICATE_EXPIRE_NOTIFICATION_ID, notification)
             } catch (e: SecurityException) {
                 val ex = e.message
                 // User did not gave app POST_NOTIFICATION permissions

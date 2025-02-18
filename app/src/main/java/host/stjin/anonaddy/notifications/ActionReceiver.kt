@@ -23,6 +23,7 @@ class ActionReceiver : BroadcastReceiver() {
         const val STOP_SUBSCRIPTION_EXPIRY_CHECK = "stop_subscription_expiry_check"
         const val STOP_PERIODIC_BACKUPS = "stop_periodic_backups"
         const val DISABLE_WEAROS_QUICK_SETUP = "disable_wearos_quick_setup"
+        const val STOP_CERTIFICATE_CHECK = "stop_certificate_check"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -67,6 +68,12 @@ class ActionReceiver : BroadcastReceiver() {
                 SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_API_TOKEN_EXPIRY, false)
                 // Dismiss notification
                 notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
+            }
+
+            NOTIFICATIONACTIONS.STOP_CERTIFICATE_CHECK -> {
+                SettingsManager(false, context).putSettingsBool(SettingsManager.PREFS.NOTIFY_SUBSCRIPTION_EXPIRY, false)
+                // Dismiss notification
+                notificationManager.cancel(NotificationHelper.CERTIFICATE_EXPIRE_NOTIFICATION_ID)
             }
 
             NOTIFICATIONACTIONS.STOP_DOMAIN_ERROR_CHECK -> {

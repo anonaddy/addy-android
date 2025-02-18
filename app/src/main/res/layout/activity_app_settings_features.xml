@@ -91,6 +91,15 @@
                 app:sectionTitle="@string/feature_api_token_expiry_notification" />
 
             <host.stjin.anonaddy.ui.customviews.SectionView
+                android:id="@+id/activity_app_settings_features_section_certificate_expiry_notification"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:sectionDescription="@string/feature_certificate_expiry_notification_desc"
+                app:sectionShowSwitch="true"
+                app:sectionStartIcon="@drawable/ic_certificate"
+                app:sectionTitle="@string/feature_certificate_expiry_notification" />
+
+            <host.stjin.anonaddy.ui.customviews.SectionView
                 android:id="@+id/activity_app_settings_features_section_domain_error_notification"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

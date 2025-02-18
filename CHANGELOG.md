@@ -1,5 +1,28 @@
 # Changelog
 
+## [v5.6.0] - 2025-02-18
+
+### addy.io
+
+##### Added
+
+- Added mTLS support, after installing certificates to the Android keystore, these can now be selected in the setup process
+- Added certificate expiration reminders when using mTLS
+- Added the ability to enable and open logmanager from the setup screen by tapping the addy.io logo multiple times
+- Added the ability to only copy the email addresses when sending mail from the app
+
+##### Fixed/Improved
+
+- Updated dependencies
+- Fixed a crash when entering an invalid URL in the setup process
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.5.1)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.5.0] - 2025-02-01
 
 ### addy.io

@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.security.KeyChain
+import android.security.KeyChainAliasCallback
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
@@ -56,6 +58,7 @@ import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.models.FailedDeliveries
@@ -66,7 +69,9 @@ import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.ocpsoft.prettytime.PrettyTime
 import java.time.LocalDateTime
 import java.util.Date
@@ -123,6 +128,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     if (savedInstanceState == null) {
                         checkForUpdates()
                         checkForApiExpiration()
+                        checkForCertificateExpiration()
                         checkForSubscriptionExpiration()
                         checkForNewFailedDeliveries()
                         checkForNewAccountNotifications()
@@ -314,6 +320,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         lifecycleScope.launch {
             checkForUpdates()
             checkForApiExpiration()
+            checkForCertificateExpiration()
             checkForSubscriptionExpiration()
             checkForNewFailedDeliveries()
             checkForNewAccountNotifications()
@@ -470,7 +477,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun checkForStartupPage() {
-        var startupPageValue = SettingsManager(false, this).getSettingsString(SettingsManager.PREFS.STARTUP_PAGE, "home")
+        var startupPageValue = SettingsManager(false, this).getSettingsString(PREFS.STARTUP_PAGE, "home")
         val startupPageOptions = this.resources.getStringArray(R.array.startup_page_options).toList()
 
         // Check if the value exists in the array, default (but dont reset) to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
@@ -494,7 +501,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         // Check the version code in the sharedpreferences, if the one in the preferences is older than the current one, the app got updated.
         // Show the changelog
         val settingsManager = SettingsManager(false, this)
-        if (settingsManager.getSettingsInt(SettingsManager.PREFS.VERSION_CODE) < BuildConfig.VERSION_CODE) {
+        if (settingsManager.getSettingsInt(PREFS.VERSION_CODE) < BuildConfig.VERSION_CODE) {
             val addChangelogBottomDialogFragment: ChangelogBottomDialogFragment =
                 ChangelogBottomDialogFragment.newInstance()
             addChangelogBottomDialogFragment.show(
@@ -504,13 +511,14 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         // Write the current version code to prevent double triggering
-        settingsManager.putSettingsInt(SettingsManager.PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
+        settingsManager.putSettingsInt(PREFS.VERSION_CODE, BuildConfig.VERSION_CODE)
 
-        settingsManager.putSettingsInt(SettingsManager.PREFS.TIMES_THE_APP_HAS_BEEN_OPENED,
-            settingsManager.getSettingsInt(SettingsManager.PREFS.TIMES_THE_APP_HAS_BEEN_OPENED) + 1)
+        settingsManager.putSettingsInt(
+            PREFS.TIMES_THE_APP_HAS_BEEN_OPENED,
+            settingsManager.getSettingsInt(PREFS.TIMES_THE_APP_HAS_BEEN_OPENED) + 1)
 
         if (BuildConfig.DEBUG) {
-            print("App has been opened ${settingsManager.getSettingsInt(SettingsManager.PREFS.TIMES_THE_APP_HAS_BEEN_OPENED)} times")
+            print("App has been opened ${settingsManager.getSettingsInt(PREFS.TIMES_THE_APP_HAS_BEEN_OPENED)} times")
         }
     }
 
@@ -572,7 +580,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private suspend fun checkForUpdates() {
         val settingsManager = SettingsManager(false, this)
-        if (settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_UPDATES)) {
+        if (settingsManager.getSettingsBool(PREFS.NOTIFY_UPDATES)) {
             Updater.isUpdateAvailable({ updateAvailable: Boolean, _: String?, _: Boolean, _: String? ->
 
                 // Set the update status in profileBottomDialogFragment
@@ -581,6 +589,50 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 // An update is available, set the update  profile bottomdialog fragment
                 setAlertIconToProfile(updateAvailable = updateAvailable)
             }, this)
+        }
+    }
+
+    private fun checkForCertificateExpiration(){
+        val encryptedSettingsManager = SettingsManager(true, this)
+        val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
+
+        if (alias != null) {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    val chain = KeyChain.getCertificateChain(this@MainActivity, alias)
+                    val expiryDateOfChain = chain?.firstOrNull()?.notAfter
+
+
+                    if (expiryDateOfChain != null) {
+                        val expiryDate = DateTimeUtils.convertDateToLocalTimeZoneDate(expiryDateOfChain) // Get the expiry date
+                        val currentDateTime = LocalDateTime.now() // Get the current date
+                        val deadLineDate = expiryDate?.minusDays(5) // Subtract 5 days from the expiry date
+                        if (currentDateTime.isAfter(deadLineDate)) {
+                            // The current date is suddenly after the deadline date. It will expire within 5 days
+                            // Show the certificate is about to expire card
+                            val text = PrettyTime().format(expiryDate)
+
+                            withContext(Dispatchers.Main) {
+                                MaterialDialogHelper.showMaterialDialog(
+                                    context = this@MainActivity,
+                                    title = this@MainActivity.resources.getString(R.string.certificate_about_to_expire),
+                                    message = this@MainActivity.resources.getString(R.string.certificate_about_to_expire_desc, text),
+                                    icon = R.drawable.ic_certificate,
+                                    neutralButtonText = this@MainActivity.resources.getString(R.string.dismiss),
+                                    positiveButtonText = this@MainActivity.resources.getString(R.string.certificate_about_to_expire_option_1),
+                                    positiveButtonAction = {
+                                        selectCertificate()
+                                    }).show()
+                            }
+
+                        } else {
+                            // The current date is not yet after the deadline date.
+                        }
+                    }
+                }
+            }
+            // If expiryDate is null it will never expire, which I highly doubt will EVER happen
+
         }
     }
 
@@ -687,6 +739,45 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
+    private fun selectCertificate() {
+        KeyChain.choosePrivateKeyAlias(this, object : KeyChainAliasCallback {
+            override fun alias(alias: String?) {
+                // If user denies access to the selected certificate
+                if (alias == null) {
+                    return
+                }
+
+                SettingsManager(true,this@MainActivity).putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
+                SettingsManager(false,this@MainActivity).putSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, true) // Enable by default when a certificate has been selected
+
+                // Since certificate expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
+
+                val notificationManager = this@MainActivity.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+                if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                    SnackbarHelper.createSnackbar(
+                        this@MainActivity,
+                        this@MainActivity.resources.getString(R.string.certificate_updated),
+                        binding.mainContainer
+                    ).show()
+                    notificationManager.cancel(NotificationHelper.CERTIFICATE_EXPIRE_NOTIFICATION_ID)
+                } else {
+                    binding.navView.let {
+                        SnackbarHelper.createSnackbar(
+                            this@MainActivity,
+                            this@MainActivity.resources.getString(R.string.certificate_updated),
+                            it!!
+                        ).apply {
+                            anchorView = binding.navView
+                        }.show()
+                        notificationManager.cancel(NotificationHelper.CERTIFICATE_EXPIRE_NOTIFICATION_ID)
+                    }
+                }
+            }
+        }, null, null, null, null)
+    }
+
 
     private var mUpdateAvailable = false
     private var mPermissionsRequired = false
@@ -767,7 +858,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val encryptedSettingsManager = SettingsManager(true, this)
         networkHelper.getAllFailedDeliveries { result, _ ->
             val currentFailedDeliveries =
-                encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+                encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
             if ((result?.size ?: 0) > currentFailedDeliveries) {
                 if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                     if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
@@ -820,7 +911,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val encryptedSettingsManager = SettingsManager(true, this)
         networkHelper.getAllAccountNotifications { result, _ ->
             val currentAccountNotifications =
-                encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
+                encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
             if ((result?.size ?: 0) > currentAccountNotifications) {
                 if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
 
@@ -1066,7 +1157,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     private fun updateKey(apiKey: String) {
         val encryptedSettingsManager = SettingsManager(true, this)
-        encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
+        encryptedSettingsManager.putSettingsString(PREFS.API_KEY, apiKey)
+        val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             SnackbarHelper.createSnackbar(
@@ -1075,7 +1167,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 binding.mainContainer
             ).show()
 
-            val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
 
         } else {
@@ -1088,7 +1179,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     anchorView = binding.navView
                 }.show()
 
-                val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.cancel(NotificationHelper.API_KEY_EXPIRE_NOTIFICATION_ID)
             }
         }

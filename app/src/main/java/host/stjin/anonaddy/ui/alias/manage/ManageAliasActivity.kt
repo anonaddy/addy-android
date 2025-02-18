@@ -870,11 +870,7 @@ class ManageAliasActivity : BaseActivity(),
         val recipients = alias?.let { getSendAddress(toString, it) }
 
         // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
-        val clipboard: ClipboardManager =
-            this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
+        onPressCopy(toString)
 
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
@@ -882,6 +878,19 @@ class ManageAliasActivity : BaseActivity(),
         if (intent.resolveActivity(packageManager) != null) {
             AnonAddyUtils.startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))
         }
+        editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
+    }
+
+    override fun onPressCopy(toString: String) {
+        // Get recipients
+        val recipients = alias?.let { getSendAddress(toString, it) }
+
+        // In case some email apps do not receive EXTRA_EMAIL properly. Copy the email addresses to clipboard as well
+        val clipboard: ClipboardManager =
+            this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("recipients", recipients?.joinToString(";"))
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, this.resources.getString(R.string.copied_recipients), Toast.LENGTH_LONG).show()
         editAliasSendMailRecipientBottomDialogFragment.dismissAllowingStateLoss()
     }
 

@@ -66,22 +66,19 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.5.0</h3>
+<h3>What\'s new in addy.io for Android 5.6.0</h3>
 <h4>Added</h4>
-<p>- Added the ability to change the default tab to open on app launch<br />- Added the ability to download failed deliveries (if enabled)</p>
+<p>- Added mTLS support, after installing certificates to the Android keystore, these can now be selected in the setup process<br />- Added certificate expiration reminders when using mTLS<br />- Added the ability to enable and open logmanager from the setup screen by tapping the addy.io logo multiple times<br />- Added the ability to only copy the email addresses when sending mail from the app</p>
 <h4>Fixed/Improved</h4>
-<p>- Improve wording of dates in alias list<br />- Renamed Dashboard to Home to keep consistency with the iOS app<br />- Updated dependencies</p>
-<h3>What\'s new in addy.io for Android Wearables 1.5.0</h3>
+<p>- Updated dependencies<br />- Fixed a crash when entering an invalid URL in the setup process<br />- Performance improvements and other things to make the app even smoother</p>
+<h3>What\'s new in addy.io for Android Wearables 1.5.1</h3>
 <h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother</p>
-<h4>Removed</h4>
-<p>- Due to the need for watchfaces to comply with the new WFF format and the low usage of the original watchface, it has been discontinued. However, it is now available as a standalone app on Google Play under the name "Tokens watchface"</p>]]></string>
+<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
     <string name="delete_recipient_desc">Are you sure you want to delete this recipient?</string>
     <string name="error_deleting_recipient">Something went wrong while deleting the recipient</string>
-    <string name="address">Address</string>
     <string name="add_recipient_desc">Enter the individual email of the new recipient you\'d like to add. This is where your aliases will <b>forward messages to.</b><br /> <br />You will receive an email with a verification link that will <b>expire in one hour</b>, you can click "Resend email" to get a new one.</string>
     <string name="not_a_valid_address">This is not a valid address</string>
     <string name="not_a_valid_web_address">@string/not_a_valid_address</string>
@@ -782,6 +779,31 @@
     <string name="select_startup_page">Select startup page</string>
     <string name="download_failed_delivery">Download failed delivery</string>
     <string name="failed_to_save_file">Failed to save file</string>
-    <string name="file_saved_succesfully">File saved succesfully</string>
+    <string name="file_saved_succesfully">File saved successfully</string>
+    <string name="certificate_expiry_date">Your current mTLS certificate (%1$s) will expire in %2$s</string>
+    <string name="feature_certificate_expiry_notification">Certificate expiry notification</string>
+    <string name="feature_certificate_expiry_notification_desc">Receive a notification 5 days before your (mTLS) certificate expires to prevent the app from being reset.\n\nThese notifications will reappear every day until a new certificate has been selected</string>
+    <string name="notify_certificate_expiry_feature_section_desc">Receive a notification 5 days before your certificate expires</string>
+    <string name="update_certificate_now">Update certificate now</string>
+    <string name="update_certificate_now_desc">Change the certificate that the addy.io app authenticates with.</string>
+    <string name="remove_certificate">Remove certificate</string>
+    <string name="remove_certificate_desc">Deleting the certificate when one is needed will result in the app resetting.</string>
+    <string name="remove_certificate_desc_confirm">Are you sure you want to remove this certificate? Deleting the certificate when one is needed will result in the app resetting.</string>
+    <string name="certificate_updated">Certificate successfully replaced!</string>
+    <string name="certificate_selected">Using certificate</string>
+    <string name="certificate_removed">Certificate was removed</string>
+    <string name="notification_channel_certificate_expiry">@string/certificate</string>
+    <string name="notification_channel_certificate_expiry_desc">Receive a notification when your certificate is about to expire</string>
+    <string name="certificate">Certificate</string>
+    <string name="notification_certificate_about_to_expire">Your certificate is about to expire</string>
+    <string name="notification_certificate_about_to_expire_desc">Your certificate will expire in %s. Replace it to prevent the app from resetting. Tap here to replace the certificate</string>
+    <string name="certificate_about_to_expire">Certificate about to expire</string>
+    <string name="certificate_about_to_expire_desc">Your certificate will expire in %s. It is recommended to update your certificate to prevent the app from resetting. Do you want to update the certificate now?</string>
+    <string name="certificate_about_to_expire_option_1">Update certificate</string>
+    <string name="use_certificate">Use certificate</string>
+    <string name="wearos_certificate_warning_title">You\'re using a certificate</string>
+    <string name="wearos_certificate_warning_desc">You\'re currently connecting to your addy.io instance using a certificate, which isn\'t supported on wearable devices. Therefore, you may not be able to access addy.io on Android wearables.</string>
+    <string name="logs_enabled">Logs are now enabled, reproduce the issue and open the Logs again</string>
+    <string name="address">Address</string>
 
 </resources>

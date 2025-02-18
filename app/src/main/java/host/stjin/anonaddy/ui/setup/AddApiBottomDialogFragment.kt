@@ -7,13 +7,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.security.KeyChain
+import android.security.KeyChainAliasCallback
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.lifecycle.lifecycleScope
@@ -24,10 +28,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetApiBinding
+import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
 import kotlinx.coroutines.launch
 
@@ -87,6 +93,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
         // 2. Setup a callback when the "Done" button is pressed on keyboard
         binding.bsSetupApikeySignInButton.setOnClickListener(this)
         binding.bsSetupApikeyGetButton.setOnClickListener(this)
+        binding.bsSetupApikeySelectCert.setOnClickListener(this)
         binding.bsSetupScannerView.setOnClickListener(this)
 
 
@@ -100,8 +107,23 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
 
         setMaterialButtonToggleGroupListener()
         fillSpinners(requireContext())
+        checkForCertificate()
 
         return root
+    }
+
+    private fun checkForCertificate() {
+        val encryptedSettingsManager = SettingsManager(true, requireContext())
+        val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
+
+        if (alias != null) {
+            val tintColor = ContextCompat.getColor(requireContext(), R.color.md_theme_tertiary) // Use a color resource
+            binding.bsSetupApikeySelectCert.drawable.setTint(tintColor)
+        } else {
+            val tintColor = ContextCompat.getColor(requireContext(), R.color.BlackWhite) // Use a color resource
+            binding.bsSetupApikeySelectCert.drawable.setTint(tintColor)
+
+        }
     }
 
     private fun setMaterialButtonToggleGroupListener() {
@@ -192,20 +214,22 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
     private var otpMfaObject: LoginMfaRequired? = null
     private suspend fun verifyLogin(context: Context) {
 
+        // Check if the instance is a valid web address and starts with https:// or http://
+        if (!android.util.Patterns.WEB_URL.matcher(binding.bsSetupInstanceTiet.text.toString())
+                .matches() || !(binding.bsSetupInstanceTiet.text?.startsWith("https://") == true || binding.bsSetupInstanceTiet.text?.startsWith("http://") == true)
+        ) {
+            binding.bsSetupInstanceTil.error =
+                context.resources.getString(R.string.not_a_valid_web_address)
+            return
+        }
+
+
+        val baseUrl = binding.bsSetupInstanceTiet.text.toString()
+        binding.bsSetupInstanceTil.error = null
+
+
         if (binding.bsSetupManualTypeApiButton.isChecked) {
             val apiKey = binding.bsSetupApikeyTiet.text.toString().trim()
-            val baseUrl = binding.bsSetupInstanceTiet.text.toString()
-
-            binding.bsSetupInstanceTil.error = null
-
-            // Check if the instance is a valid web address and starts with https:// or http://
-            if (!android.util.Patterns.WEB_URL.matcher(binding.bsSetupInstanceTiet.text.toString())
-                    .matches() || !(binding.bsSetupInstanceTiet.text?.startsWith("https://") == true || binding.bsSetupInstanceTiet.text?.startsWith("http://") == true)
-            ) {
-                binding.bsSetupInstanceTil.error =
-                    context.resources.getString(R.string.not_a_valid_web_address)
-                return
-            }
 
             binding.bsSetupApikeyGetButton.isEnabled = false
 
@@ -214,7 +238,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             verifyApiKey(context, apiKey, baseUrl)
 
         } else {
-            val baseUrl = binding.bsSetupInstanceTiet.text.toString()
             val expirationOption =  expirationOptions[expirationOptionNames.indexOf(binding.bsRegistrationFormExpirationMact.text.toString())]
 
             binding.bsSetupApikeyUsernameTil.error = null
@@ -298,25 +321,6 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
 
         }
 
-        /*
-         if let login = login {
-                    // Login success
-                    self.addKey(login.api_key, baseUrl)
-                } else if loginMfaRequired != nil {
-                    // Login MFA required
-                    withAnimation {
-                        self.otpMfaObject = loginMfaRequired
-                    }
-                    resetSignInButton()
-                } else {
-                    // Show error
-                    self.alertMessage = error!
-                    self.showAlert = true
-
-                    resetSignInButton()
-                }
-         */
-
 
 
     }
@@ -328,7 +332,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     // APIKey is verified if the API_KEY is currently null (aka empty)
                     // Or
                     // UserResource ids are the same
-                    if (SettingsManager(true, context).getSettingsString(SettingsManager.PREFS.API_KEY) == null ||
+                    if (SettingsManager(true, context).getSettingsString(PREFS.API_KEY) == null ||
                         (activity?.application as AddyIoApp).userResource.id == result.id){
                         listener.onClickSave(baseUrl, apiKey)
                     } else {
@@ -378,8 +382,47 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                 R.id.bs_setup_scanner_view -> {
                     toggleQrCodeScanning()
                 }
+                R.id.bs_setup_apikey_select_cert -> {
+                    val encryptedSettingsManager = SettingsManager(true, requireContext())
+                    val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
+                    if (alias == null) {
+                        selectCertificate()
+                    } else {
+                        encryptedSettingsManager.removeSetting(PREFS.CERTIFICATE_ALIAS)
+                        Toast.makeText(requireContext(), requireContext().resources.getString(R.string.certificate_removed), Toast.LENGTH_SHORT).show()
+                        checkForCertificate()
+
+                        // Re-init as an alias was removed
+                        networkHelper = NetworkHelper(requireContext())
+                    }
+                }
             }
         }
+    }
+
+    private fun selectCertificate() {
+        KeyChain.choosePrivateKeyAlias(requireActivity(), object : KeyChainAliasCallback {
+            override fun alias(alias: String?) {
+                // If user denies access to the selected certificate
+                if (alias == null) {
+                    return
+                }
+
+                SettingsManager(true, requireContext()).putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
+                SettingsManager(false, requireContext()).putSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, true) // Enable by default when a certificate has been selected
+
+                // Since certificate expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
+                BackgroundWorkerHelper(requireContext()).scheduleBackgroundWorker()
+
+                // Re-init as an alias was added
+                networkHelper = NetworkHelper(requireContext())
+
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), requireContext().resources.getString(R.string.certificate_selected), Toast.LENGTH_SHORT).show()
+                    checkForCertificate()
+                }
+            }
+        }, null, null, null, null)
     }
 
 
@@ -404,6 +447,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
             }
         }
     }
+
 
     private fun toggleQrCodeScanning() {
         // Check if camera permissions are granted

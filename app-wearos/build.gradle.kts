@@ -27,9 +27,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v1.5.0 + release 01 + 01 (for wearos)
-        versionCode = 341500101
-        versionName = "1.5.0"
+        // SDK 34 + v1.5.1 + release 01 + 01 (for wearos)
+        versionCode = 341510101
+        versionName = "1.5.1"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -146,7 +146,7 @@ dependencies {
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.12.0")
+    implementation("com.google.code.gson:gson:2.12.1")
 }
 
 // For the donut in the aliasview

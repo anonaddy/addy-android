@@ -22,15 +22,41 @@
             android:contentDescription="@string/drag_down_to_close"
             android:src="@drawable/drag_pill" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/login"
-            android:textAlignment="center"
-            android:textColor="@color/BlackWhite"
-            android:textSize="18sp" />
+            android:weightSum="10">
+
+            <Space
+                android:layout_width="36dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/login"
+                android:layout_weight="8"
+                android:textAlignment="center"
+                android:textColor="@color/BlackWhite"
+                android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/bs_setup_apikey_select_cert"
+                android:layout_width="36dp"
+                android:tooltipText="@string/use_certificate"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:layout_weight="1"
+                android:tint="@color/BlackWhite"
+                android:contentDescription="@string/use_certificate"
+                android:src="@drawable/ic_certificate" />
+        </LinearLayout>
+
+
+
     </LinearLayout>
 
     <View
@@ -160,6 +186,7 @@
                     style="@style/AddyIoTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:importantForAutofill="no"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/addyio_instance">
 
@@ -168,7 +195,7 @@
                         style="@style/AddyIoTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:imeOptions="actionDone"
+                        android:imeOptions="actionNext"
                         android:inputType="textWebEmailAddress"
                         android:lines="1"
                         android:maxLines="1"
@@ -198,7 +225,7 @@
                             style="@style/AddyIoTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:imeOptions="actionDone"
+                            android:imeOptions="actionNext"
                             android:inputType="text"
                             android:lines="1"
                             android:maxLines="1"

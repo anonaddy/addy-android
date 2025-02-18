@@ -37,6 +37,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         NOTIFY_ACCOUNT_NOTIFICATIONS(false, PREFTYPES.BOOLEAN, "notify_account_notifications"),
         MANAGE_MULTIPLE_ALIASES(false, PREFTYPES.BOOLEAN, "manage_multiple_aliases"),
         NOTIFY_API_TOKEN_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_api_token_expiry"),
+        NOTIFY_CERTIFICATE_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_certificate_expiry"),
         NOTIFY_DOMAIN_ERROR(false, PREFTYPES.BOOLEAN, "notify_domain_error"),
         NOTIFY_SUBSCRIPTION_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_subscription_expiry"),
         MAILTO_ACTIVITY_SHOW_SUGGESTIONS(false, PREFTYPES.BOOLEAN, "mailto_activity_show_suggestions"),
@@ -54,6 +55,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
         RECENT_SEARCHES(true, PREFTYPES.STRINGSET, "recent_searches"),
         BACKUPS_PASSWORD(true, PREFTYPES.STRING, "backups_password"),
+        CERTIFICATE_ALIAS(true, PREFTYPES.STRING, "certificate_alias"),
 
         // USER_RESOURCE is also being used by the background service to store the user_resource in
         USER_RESOURCE(true, PREFTYPES.STRING, "user_resource"),
@@ -87,6 +89,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
         // Used to limit the amount of expiry notifications to 1 a day
         BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT(true, PREFTYPES.INT, "cache_api_key_expiry_left_count"),
+        BACKGROUND_SERVICE_CACHE_CERTIFICATE_EXPIRY_LEFT_COUNT(true, PREFTYPES.INT, "cache_certificate_expiry_left_count"),
         BACKGROUND_SERVICE_CACHE_SUBSCRIPTION_EXPIRY_LEFT_COUNT(true, PREFTYPES.INT, "cache_subscription_expiry_left_count"),
 
         // Used to limit the amount of error notifications to every change

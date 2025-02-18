@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.appsettings.wearos
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.CompoundButton
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.NodeClient
@@ -45,10 +46,20 @@ class AppSettingsWearOSActivity : BaseActivity() {
             R.drawable.ic_device_watch
         )
 
+        checkForCertificate()
         checkIfApiIsAvailable()
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
+    }
+
+    private fun checkForCertificate() {
+        val alias = SettingsManager(true, this).getSettingsString(SettingsManager.PREFS.CERTIFICATE_ALIAS)
+        if (alias != null) {
+            binding.activityAppSettingsWearosSectionCertificateWarning.visibility = View.VISIBLE
+        } else {
+            binding.activityAppSettingsWearosSectionCertificateWarning.visibility = View.GONE
+        }
     }
 
     private fun checkIfApiIsAvailable() {

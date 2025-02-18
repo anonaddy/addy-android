@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Added mTLS support, after installing certificates to the Android keystore, these can now be selected in the setup process<br />- Added certificate expiration reminders when using mTLS<br />- Added the ability to enable and open logmanager from the setup screen by tapping the addy.io logo multiple times<br />- Added the ability to only copy the email addresses when sending mail from the app</p>
+<h4>Fixed/Improved</h4>
+<p>- Updated dependencies<br />- Fixed a crash when entering an invalid URL in the setup process<br />- Performance improvements and other things to make the app even smoother</p>

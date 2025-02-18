@@ -345,7 +345,6 @@
     </style>
 
     <style name="AddyIoCollapsingToolbarLayout.Title" parent="Widget.Material3.CollapsingToolbar.Large">
-        <item name="android:layout_margin">@dimen/collapsingtoolbar_title_margin</item>
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
     </style>
