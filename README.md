@@ -49,6 +49,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 - Encrypted preferences, your API key and other addy.io related settings are securely stored on your device using
   the [AndroidX crypto library](https://developer.android.com/jetpack/androidx/releases/security)
 - Encrypted app backups, when making a backup of the app configuration through the built-in backup manager
+- Support for mTLS in case of self-hosted instances
 - No stats, buried points or Device IDs, or even crash reporting (Except for Google Play Store builds). So if you get a crash, please share the crash
   info with me >_<.
 - I am forgoing the convenient third-party collection SDK and various stats just so you can use it with confidence.  **What's yours is yours**.
