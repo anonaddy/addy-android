@@ -500,8 +500,13 @@ class NetworkHelper(private val context: Context) {
                 val data = response.data.toString(Charsets.UTF_8)
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
-                addyIoData.cookie = response.headers["Set-Cookie"]
-                callback(null, addyIoData, null)
+
+                if (addyIoData.csrf_token != null){
+                    addyIoData.cookie = response.headers["Set-Cookie"]
+                    callback(null, addyIoData, null)
+                } else {
+                    callback(null, null, addyIoData.message)
+                }
             }
             401 -> { // Login data incorrect
                 val data = response.data.toString(Charsets.UTF_8)
