@@ -1,5 +1,21 @@
 # Changelog
 
+## [v5.6.1] - 2025-03-24
+
+### addy.io
+
+##### Fixed/Improved
+
+- Updated dependencies
+- Fixed a minor string issue in the username sheet
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.5.2)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.6.0] - 2025-02-18
 
 ### addy.io
