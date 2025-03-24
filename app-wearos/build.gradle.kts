@@ -27,9 +27,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v1.5.1 + release 01 + 01 (for wearos)
-        versionCode = 341510101
-        versionName = "1.5.1"
+        // SDK 34 + v1.5.2 + release 01 + 01 (for wearos)
+        versionCode = 341520101
+        versionName = "1.5.2"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -177,7 +177,7 @@ dependencies {
 // For smooth scrolling
 // https://github.com/google/horologist
 dependencies {
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.22")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.23")
 }
 
 // Splash screen

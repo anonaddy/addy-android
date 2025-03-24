@@ -286,7 +286,7 @@ class AddApiBottomDialogFragment(private val apiBaseUrl: String?) : BaseBottomSh
                     baseUrl = baseUrl,
                     mfaKey = otpMfaObject!!.mfa_key,
                     otp = binding.bsSetupApikeyOtpTiet.text.toString(),
-                    xCsrfToken = otpMfaObject!!.csrf_token,
+                    xCsrfToken = otpMfaObject!!.csrf_token.toString(), // Token should not be null at this point
                     apiExpiration = expirationOption,
                     cookies = otpMfaObject!!.cookie
                 )

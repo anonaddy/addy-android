@@ -1,0 +1,2 @@
+<h3>Fixed/Improved</h3>
+<p>- Updated dependencies<br />- Fixed a minor string issue in the username sheet<br />- Performance improvements and other things to make the app even smoother</p>

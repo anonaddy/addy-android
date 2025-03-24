@@ -15,6 +15,6 @@ data class Login(
 data class LoginMfaRequired(
     val message: String,
     val mfa_key: String,
-    val csrf_token: String,
+    val csrf_token: String?, // In case something goes wrong and a 422 gets returned, this token *could* be null
     var cookie: Collection<String> // This is not part of the return body, this is just because we need to send the cookie manually in Fuel (https://github.com/kittinunf/fuel/issues/263)
 )

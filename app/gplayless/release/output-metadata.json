@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 355600100,
-      "versionName": "v5.6.0",
+      "versionCode": 355610100,
+      "versionName": "v5.6.1",
       "outputFile": "app-gplayless-release.apk"
     }
   ],
