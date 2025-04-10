@@ -41,7 +41,19 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
         holder.mTitle.text = listWithAliases[position].email
 
-        if (listWithAliases[position].description != null) {
+        if (listWithAliases[position].deleted_at != null) {
+            holder.mDescription.text = holder.mDescription.context.resources.getString(
+                R.string.s_s,
+                (holder.mDescription.context).resources.getString(
+                    R.string.deleted_at_s,
+                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].deleted_at))
+                ),
+                (holder.mDescription.context).resources.getString(
+                    R.string.created_at_s,
+                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].created_at))
+                ),
+            )
+        } else if (listWithAliases[position].description != null) {
             holder.mDescription.text = holder.mDescription.context.resources.getString(
                 R.string.s_s_s,
                 listWithAliases[position].description,

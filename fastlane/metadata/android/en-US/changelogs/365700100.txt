@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Added support for the new "Restrict replies/sends to attached recipients" feature</p>
+<h4>Fixed/Improved</h4>
+<p>- Added support for Android 16<br />- Updated dependencies<br />- Deleted aliases will now display their deletion time in the aliases overview, distinguishing them from inactive aliases<br />- Performance improvements and other things to make the app even smoother</p>

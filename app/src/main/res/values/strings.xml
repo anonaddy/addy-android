@@ -10,6 +10,7 @@
     <string name="most_active_aliases">Most active aliases</string>
     <string name="created_at_s">Created %s</string>
     <string name="updated_at_s">Updated %s</string>
+    <string name="deleted_at_s">Deleted %s</string>
     <string name="copy_alias">Copy alias</string>
     <string name="setup_api_key" translatable="false" tools:ignore="Typos">"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 "</string>
     <string name="APIKey">API key</string>
@@ -66,10 +67,12 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.6.1</h3>
+<h3>What\'s new in addy.io for Android 5.7.0</h3>
+<h4>Added</h4>
+<p>- Added support for the new "Restrict replies/sends to attached recipients" feature</p>
 <h4>Fixed/Improved</h4>
-<p>- Updated dependencies<br />- Fixed a minor string issue in the username sheet<br />- Performance improvements and other things to make the app even smoother</p>
-<h3>What\'s new in addy.io for Android Wearables 1.5.2</h3>
+<p>- Added support for Android 16<br />- Updated dependencies<br />- Deleted aliases will now display their deletion time in the aliases overview, distinguishing them from inactive aliases<br />- Performance improvements and other things to make the app even smoother</p>
+<h3>What\'s new in addy.io for Android Wearables 1.5.3</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
@@ -801,7 +804,10 @@
     <string name="use_certificate">Use certificate</string>
     <string name="wearos_certificate_warning_title">You\'re using a certificate</string>
     <string name="wearos_certificate_warning_desc">You\'re currently connecting to your addy.io instance using a certificate, which isn\'t supported on wearable devices. Therefore, you may not be able to access addy.io on Android wearables.</string>
-    <string name="logs_enabled">Logs are now enabled, reproduce the issue and open the Logs again</string>
+    <string name="logs_enabled">Logs are now enabled, reproduce the issue and open the logs again</string>
     <string name="address">Address</string>
+    <string name="limit_replies_sends_attached_recipients_only">Limit to attached only</string>
+    <string name="limit_replies_sends_attached_recipients_only_desc">Only allow verified recipients that are directly attached to this alias to reply or send from it. If this option is enabled and no recipients are directly attached then it will not be possible to reply/send from this alias</string>
+    <string name="error_attached_recipients_only_status">An error occurred while changing the enabled state</string>
 
 </resources>

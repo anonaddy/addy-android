@@ -7,9 +7,11 @@ import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View.OnClickListener
-import android.view.View.OnLongClickListener
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.card.MaterialCardView

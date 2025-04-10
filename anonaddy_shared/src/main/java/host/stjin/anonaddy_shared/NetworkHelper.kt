@@ -30,6 +30,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_ALIAS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ALLOWED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_APP_VERSION
+import host.stjin.anonaddy_shared.AddyIo.API_URL_ATTACHED_RECIPIENTS_ONLY
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CAN_LOGIN_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_USERNAMES
@@ -1626,6 +1627,7 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
     suspend fun bulkActivateAlias(
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
@@ -2038,6 +2040,119 @@ class NetworkHelper(private val context: Context) {
                 )
                 callback(
                     null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
+
+
+    suspend fun activateAttachedRecipientsOnly(
+        callback: (Aliases?, String?) -> Unit,
+        aliasId: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("id", aliasId)
+
+        val (_, response, result) = Fuel.post(API_URL_ATTACHED_RECIPIENTS_ONLY)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "activateAttachedRecipientsOnly",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun deactivateAttachedRecipientsOnly(
+        callback: (String?) -> Unit?,
+        aliasId: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.delete("${API_URL_ATTACHED_RECIPIENTS_ONLY}/$aliasId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deactivateAttachedRecipientsOnly",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )

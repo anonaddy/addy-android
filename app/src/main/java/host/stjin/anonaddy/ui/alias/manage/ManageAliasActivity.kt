@@ -299,6 +299,7 @@ class ManageAliasActivity : BaseActivity(),
             }
         })
 
+
         binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnSwitchCheckedChangedListener(object :
             SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
@@ -320,6 +321,28 @@ class ManageAliasActivity : BaseActivity(),
                 }
             }
         })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.showProgressBar(true)
+                    forceSwitch = false
+                    shouldRefreshOnFinish = true
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableAttachedRecipientsOnly()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableAttachedRecipientsOnly()
+                        }
+                    }
+                }
+            }
+        })
+
     }
 
     override fun finish() {
@@ -378,6 +401,50 @@ class ManageAliasActivity : BaseActivity(),
     }
 
 
+
+
+    private suspend fun disableAttachedRecipientsOnly() {
+        networkHelper.deactivateAttachedRecipientsOnly({ result ->
+            binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.showProgressBar(false)
+            if (result == "204") {
+                this.alias!!.attached_recipients_only = false
+                shouldRefreshOnFinish = true
+                updateUi(this.alias!!)
+            } else {
+                binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_attached_recipients_only_status) + "\n" + result,
+                    binding.activityManageAliasCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this@ManageAliasActivity.alias!!.id)
+    }
+
+
+    private suspend fun enableAttachedRecipientsOnly() {
+        networkHelper.activateAttachedRecipientsOnly({ alias, result ->
+            binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.showProgressBar(false)
+            if (alias != null) {
+                this.alias = alias
+                shouldRefreshOnFinish = true
+            } else {
+                binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_attached_recipients_only_status) + "\n" + result,
+                    binding.activityManageAliasCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this@ManageAliasActivity.alias!!.id)
+    }
+
+
+
+
+
     private fun setOnClickListeners() {
         binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
@@ -393,6 +460,14 @@ class ManageAliasActivity : BaseActivity(),
             override fun onClick() {
                 forceSwitch = true
                 binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setSwitchChecked(!binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.getSwitchChecked())
             }
         })
 
@@ -645,6 +720,9 @@ class ManageAliasActivity : BaseActivity(),
         binding.activityManageAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(
             aliasWatcher.getAliasesToWatch().contains(this@ManageAliasActivity.alias!!.id)
         )
+
+        // Set watch switch status
+        binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setSwitchChecked(alias.attached_recipients_only)
 
 
         /**

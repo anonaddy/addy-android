@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View.OnClickListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.CompoundButton
 import android.widget.ImageView

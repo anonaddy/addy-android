@@ -1,5 +1,26 @@
 # Changelog
 
+## [v5.7.0] - 2025-04-10
+
+### addy.io
+
+##### Added
+
+- Added support for the new "Restrict replies/sends to attached recipients" feature
+
+##### Fixed/Improved
+
+- Added support for Android 16
+- Updated dependencies
+- Deleted aliases will now display their deletion time in the aliases overview, distinguishing them from inactive aliases
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.5.3)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.6.1] - 2025-03-24
 
 ### addy.io

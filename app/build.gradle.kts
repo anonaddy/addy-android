@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     namespace = "host.stjin.anonaddy"
     //compileSdkPreview = "Tiramisu"
     defaultConfig {
         applicationId = namespace
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         /*
         Set the first two digits of the version code to the targetSdkVersion, such as 28.
         Set the next three digits to the product version, such as 152 for a product version of 1.5.2.
@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 35 + v5.5.0 + release 01 + 00 (for app)
-        versionCode = 355610100 // https://developer.android.com/training/wearables/packaging
+        // SDK 36 + v5.7.0 + release 01 + 00 (for app)
+        versionCode = 365700100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
-        versionName = "v5.6.1"
+        versionName = "v5.7.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -94,7 +94,7 @@ dependencies {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.20")
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-beta01")

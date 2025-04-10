@@ -9,10 +9,10 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.3.1
+    // 1.3.2
     var MINIMUMVERSIONCODEMAJOR = 1
     var MINIMUMVERSIONCODEMINOR = 3
-    var MINIMUMVERSIONCODEPATCH = 1
+    var MINIMUMVERSIONCODEPATCH = 2
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -71,6 +71,9 @@ object AddyIo {
     val API_URL_REGISTER: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/register" }
     val API_URL_LOGIN_VERIFY: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/verify" }
     val API_URL_DELETE_ACCOUNT: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/delete-account" }
+
+    // 1.3.2
+    val API_URL_ATTACHED_RECIPIENTS_ONLY: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/attached-recipients-only" }
 
     // Hosted only
     val API_URL_ACCOUNT_NOTIFICATIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/account-notifications" }
