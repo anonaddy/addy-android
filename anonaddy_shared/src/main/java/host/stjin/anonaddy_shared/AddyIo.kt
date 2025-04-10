@@ -72,6 +72,9 @@ object AddyIo {
     val API_URL_LOGIN_VERIFY: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/verify" }
     val API_URL_DELETE_ACCOUNT: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/auth/delete-account" }
 
+    // 1.3.2
+    val API_URL_ATTACHED_RECIPIENTS_ONLY: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/attached-recipients-only" }
+
     // Hosted only
     val API_URL_ACCOUNT_NOTIFICATIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/account-notifications" }
     val API_URL_NOTIFY_SUBSCRIPTION: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/notify-subscription" }
