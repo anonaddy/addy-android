@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.7.1] - 2025-06-01
+
+### addy.io
+
+##### Fixed/Improved
+
+- Updated dependencies
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.7.0] - 2025-04-10
 
 ### addy.io

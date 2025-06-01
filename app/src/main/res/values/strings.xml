@@ -67,14 +67,10 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.7.0</h3>
-<h4>Added</h4>
-<p>- Added support for the new "Restrict replies/sends to attached recipients" feature</p>
+<h3>What\'s new in addy.io for Android 5.7.1</h3>
 <h4>Fixed/Improved</h4>
-<p>- Added support for Android 16<br />- Updated dependencies<br />- Deleted aliases will now display their deletion time in the aliases overview, distinguishing them from inactive aliases<br />- Performance improvements and other things to make the app even smoother</p>
-<h3>What\'s new in addy.io for Android Wearables 1.5.3</h3>
-<h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
+<p>- Updated dependencies<br />- Performance improvements and other things to make the app even smoother</p>
+]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -809,5 +805,8 @@
     <string name="limit_replies_sends_attached_recipients_only">Limit to attached only</string>
     <string name="limit_replies_sends_attached_recipients_only_desc">Only allow verified recipients that are directly attached to this alias to reply or send from it. If this option is enabled and no recipients are directly attached then it will not be possible to reply/send from this alias</string>
     <string name="error_attached_recipients_only_status">An error occurred while changing the enabled state</string>
+    <string name="subscription_account_disabled">Cannot manage subscription</string>
+    <string name="subscription_account_disabled_desc">Your addy.io account is currently disabled, so you cannot subscribe to another addy.io plan. If you have an active subscription through Google Play, please cancel it by selecting “Manage Subscription” below. For further assistance, contact our support team through the button below.</string>
+    <string name="contact_us">Contact us</string>
 
 </resources>

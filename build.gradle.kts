@@ -5,7 +5,7 @@ buildscript {
         // https://developer.android.com/jetpack/androidx/releases/wear-compose
         set("wear_compose_version", "1.4.1")
         // https://developer.android.com/jetpack/androidx/releases/compose
-        set("compose_version", "1.7.8")
+        set("compose_version", "1.8.2")
         set("compose_compiler_version", "1.5.15")
         // https://developer.android.com/jetpack/androidx/releases/activity
         set("compose_activity_version", "1.10.1")
@@ -22,7 +22,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.9.1")
+        classpath("com.android.tools.build:gradle:8.10.1")
         classpath(kotlin("gradle-plugin", version = "2.0.0"))
 
         // NOTE: Do not place your application dependencies here; they belong
