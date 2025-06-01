@@ -21,6 +21,11 @@
         layout="@layout/fragment_subscription_notify_server"
         android:visibility="gone" />
 
+    <include
+        android:id="@+id/fragment_subscription_account_disabled"
+        layout="@layout/fragment_subscription_account_disabled"
+        android:visibility="gone" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/activity_manage_subscription_NSV"
         android:layout_width="match_parent"

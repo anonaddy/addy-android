@@ -53,13 +53,23 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         setupBillingClient()
         updateUi()
 
-        if ((application as AddyIoApp).userResource.subscription_type == "google" || (application as AddyIoApp).userResource.subscription_type == null) {
-            binding.activityManageSubscriptionNSV.visibility = View.VISIBLE
-            binding.root.findViewById<View>(R.id.fragment_subscription_other_platform).visibility = View.GONE
-        } else {
+
+        if ((application as AddyIoApp).userResource.disabled == true) {
             binding.activityManageSubscriptionNSV.visibility = View.GONE
-            binding.root.findViewById<View>(R.id.fragment_subscription_other_platform).visibility = View.VISIBLE
+            binding.root.findViewById<View>(R.id.fragment_subscription_other_platform).visibility = View.GONE
+            binding.root.findViewById<View>(R.id.fragment_subscription_account_disabled).visibility = View.VISIBLE
+        } else {
+            binding.root.findViewById<View>(R.id.fragment_subscription_account_disabled).visibility = View.GONE
+            if ((application as AddyIoApp).userResource.subscription_type == "google" || (application as AddyIoApp).userResource.subscription_type == null) {
+                binding.activityManageSubscriptionNSV.visibility = View.VISIBLE
+                binding.root.findViewById<View>(R.id.fragment_subscription_other_platform).visibility = View.GONE
+            } else {
+                binding.activityManageSubscriptionNSV.visibility = View.GONE
+                binding.root.findViewById<View>(R.id.fragment_subscription_other_platform).visibility = View.VISIBLE
+            }
         }
+
+
 
     }
 
@@ -135,8 +145,29 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
             )
             startActivity(browserIntent)
         }
+        binding.fragmentSubscriptionAccountDisabled.termsOfServiceButton.setOnClickListener {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://addy.io/terms?ref=appstore")
+            )
+            startActivity(browserIntent)
+        }
+        binding.fragmentSubscriptionAccountDisabled.contactUsButton.setOnClickListener {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://addy.io/contact?ref=appstore")
+            )
+            startActivity(browserIntent)
+        }
         binding.restorePurchasesButton.setOnClickListener { restorePurchases() }
         binding.manageSubscriptionButton.setOnClickListener {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/account/subscriptions?package=host.stjin.anonaddy")
+            )
+            startActivity(browserIntent)
+        }
+        binding.fragmentSubscriptionAccountDisabled.manageSubscriptionButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
                 Uri.parse("https://play.google.com/store/account/subscriptions?package=host.stjin.anonaddy")

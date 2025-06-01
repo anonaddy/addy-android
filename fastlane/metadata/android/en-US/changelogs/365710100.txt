@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Updated dependencies<br />- Performance improvements and other things to make the app even smoother</p>

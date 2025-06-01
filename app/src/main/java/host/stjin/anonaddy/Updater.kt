@@ -10,9 +10,9 @@ object Updater {
         callback: (Boolean, String?, Boolean, String?) -> Unit, context: Context
     ) {
         NetworkHelper(context).getGithubTags { feed, error ->
-            if (error == null){
+            if (feed != null) {
                 // Get the title (version name) of the first (thus latest) entry
-                val version = feed?.items?.get(0)?.title
+                val version = feed.items[0]?.title
                 if (version != null) {
                     // Take the latest server version and remove the prefix (v) and version separators (.)
                     // Turn the server version into an int.
@@ -20,13 +20,14 @@ object Updater {
                     val serverVersionCodeAsInt = version.replace("v", "").replace(".", "").toInt()
                     val appVersionCodeAsInt = BuildConfig.VERSION_NAME.replace("v", "").replace(".", "").toInt()
                     callback(serverVersionCodeAsInt > appVersionCodeAsInt, version, appVersionCodeAsInt > serverVersionCodeAsInt, null)
+                } else {
+                    // If version is null something must have gone wrong with checking for updates. Return false to make the app think its up-to-date
+                    callback(false, null, false, error)
                 }
-            }
-           else {
-                // If version is null something must have gone wrong with checking for updates. Return false to make the app think its up-to-date
+            } else {
+                // If feed is null something must have gone wrong with checking for updates. Return false to make the app think its up-to-date
                 callback(false, null, false, error)
             }
-
         }
     }
 

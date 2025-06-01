@@ -19,6 +19,7 @@ data class UserResourceExtended(
 data class UserResource(
     val id: String,
     val username: String,
+    val disabled: Boolean?,
     val from_name: String?,
     val email_subject: String?,
     val banner_location: String,
