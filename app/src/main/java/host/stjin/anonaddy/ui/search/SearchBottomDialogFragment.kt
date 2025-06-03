@@ -144,7 +144,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     }
 
     private fun searchForTerm(context: Context) {
-        if (binding.bsSearchTermTiet.text.toString().length >= 3) {
+        if (binding.bsSearchTermTiet.text.toString().trim().length >= 3) {
             // Set error to null if domain and alias is valid
             binding.bsSearchTermTil.error = null
             binding.bsSearchTermTil.isEnabled = false
