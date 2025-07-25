@@ -51,18 +51,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/BlackWhite"
+                android:layout_marginBottom="16dp"
                 android:text="@string/failed_delivery_details_text" />
 
-            <TextView
-                android:id="@+id/bs_failed_deliveries_error"
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/bs_failed_deliveries_resend_button"
+                style="@style/CircularProgressButtonSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:textColor="@color/softRed"
-                android:textSize="12sp"
-                tools:text="@tools:sample/lorem"
-                android:visibility="gone" />
+                android:layout_marginBottom="8dp"
+                android:text="@string/resend_failed_delivery" />
 
             <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_failed_deliveries_download_button"

@@ -8,7 +8,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
@@ -27,6 +26,7 @@ import host.stjin.anonaddy.widget.AliasWidget2Provider.AliasWidget2Values.OPEN_A
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.CacheHelper
 import kotlin.random.Random
+import androidx.core.net.toUri
 
 
 /**
@@ -220,7 +220,7 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
                 val clickIntent = Intent(context, AliasWidget2Provider::class.java)
                 clickIntent.action = NAVIGATE
                 clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                clickIntent.data = Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME))
+                clickIntent.data = clickIntent.toUri(Intent.URI_INTENT_SCHEME).toUri()
 
                 val onClickPendingIntent = PendingIntent
                     .getBroadcast(

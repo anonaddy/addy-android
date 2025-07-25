@@ -144,7 +144,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
     }
 
     private fun searchForTerm(context: Context) {
-        if (binding.bsSearchTermTiet.text.toString().length >= 3) {
+        if (binding.bsSearchTermTiet.text.toString().trim().length >= 3) {
             // Set error to null if domain and alias is valid
             binding.bsSearchTermTil.error = null
             binding.bsSearchTermTil.isEnabled = false
@@ -342,12 +342,12 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                 }
             }
 
-            if (filteredAliases.isEmpty &&
-                filteredDomains.isEmpty &&
-                filteredRecipients.isEmpty &&
-                filteredUsernames.isEmpty &&
-                filteredRules.isEmpty &&
-                filteredFailedDeliveries.isEmpty
+            if (filteredAliases.isEmpty() &&
+                filteredDomains.isEmpty() &&
+                filteredRecipients.isEmpty() &&
+                filteredUsernames.isEmpty() &&
+                filteredRules.isEmpty() &&
+                filteredFailedDeliveries.isEmpty()
             ) {
                 binding.bsSearchTitle.text = context.resources.getString(R.string.search)
                 binding.bsSearchTermTil.isEnabled = true

@@ -459,7 +459,7 @@ class ManageUsernamesActivity : BaseActivity(),
         var totalReplies = 0
         var totalSent = 0
         val totalAliases = username.aliases_count
-        var aliases = ""
+        var aliases: String
 
         val buf = StringBuilder()
 

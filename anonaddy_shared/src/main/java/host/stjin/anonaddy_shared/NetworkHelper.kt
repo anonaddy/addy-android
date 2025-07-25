@@ -5343,6 +5343,70 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
+    suspend fun resendFailedDelivery(
+        callback: (String?) -> Unit,
+        failedDeliveryId: String,
+        recipients: ArrayList<String>? = null
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val array = JSONArray()
+        if (recipients != null) {
+            for (recipient in recipients) {
+                array.put(recipient)
+            }
+        }
+
+        val json = JSONObject()
+        json.put("recipient_ids", recipients)
+
+        val (_, response, result) = Fuel.post("${API_URL_FAILED_DELIVERIES}/$failedDeliveryId/resend")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "resendFailedDelivery",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
     suspend fun deleteFailedDelivery(
         callback: (String?) -> Unit,
         id: String

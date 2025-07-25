@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Added the ability to resend failed deliveries<br />- Added the ability to create aliases with the "custom" domain format on shares aliases</p>
+<h4>Fixed/Improved</h4>
+<p>- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>

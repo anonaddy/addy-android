@@ -8,12 +8,12 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0" // this version matches your Kotlin version
 
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     namespace = "host.stjin.anonaddy"
 
     defaultConfig {
@@ -27,9 +27,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 34 + v1.5.3 + release 01 + 01 (for wearos)
-        versionCode = 341530101
-        versionName = "1.5.3"
+        // SDK 36 + v1.5.4 + release 01 + 01 (for wearos)
+        versionCode = 361540101
+        versionName = "1.5.4"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -141,7 +141,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.10.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.2")
 }
 
 // For parsing wearOSSettings

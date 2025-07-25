@@ -3,7 +3,6 @@ package host.stjin.anonaddy.ui.intent
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -23,6 +22,7 @@ import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
+import androidx.core.net.toUri
 
 
 class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBottomDialogFragment.AddIntentSendMailRecipientBottomDialogListener,
@@ -415,7 +415,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
     ) {
         // Open the mailto app select sheet, but make sure to exclude ourselves!
         val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.data = "mailto:".toUri() // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, recipients)
         intent.putExtra(Intent.EXTRA_CC, anonaddyCcRecipientAddresses)
         intent.putExtra(Intent.EXTRA_BCC, anonaddyBccRecipientAddresses)

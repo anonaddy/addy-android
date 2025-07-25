@@ -11,11 +11,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFailedDeliveryDetailBinding
+import host.stjin.anonaddy.ui.MainActivity
+import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
@@ -73,6 +78,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
                 listener = activity as AddFailedDeliveryBottomDialogListener
             }
 
+            binding.bsFailedDeliveriesResendButton.setOnClickListener(this)
             binding.bsFailedDeliveriesDeleteButton.setOnClickListener(this)
 
             if (isStored){
@@ -122,15 +128,62 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
 
     private fun deleteFailedDelivery(context: Context) {
-        // Hide error text
-        binding.bsFailedDeliveriesError.visibility = View.GONE
-
         // Animate the button to progress
         binding.bsFailedDeliveriesDeleteButton.startAnimation()
 
         lifecycleScope.launch {
             deleteFailedDeliveryHttp(context)
         }
+    }
+
+    private fun resendFailedDelivery(context: Context) {
+        MaterialDialogHelper.showMaterialDialog(
+            context = context,
+            title = resources.getString(R.string.resend_failed_delivery),
+            message = resources.getString(R.string.resend_failed_delivery_confirmation_desc),
+            icon = R.drawable.ic_mail_error,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.resend),
+            positiveButtonAction = {
+                // Animate the button to progress
+                binding.bsFailedDeliveriesResendButton.startAnimation()
+
+                lifecycleScope.launch {
+                    resendFailedDeliveryHttp(context)
+                }
+            },
+        ).show()
+    }
+
+    private suspend fun resendFailedDeliveryHttp(context: Context) {
+        val networkHelper = NetworkHelper(context)
+        networkHelper.resendFailedDelivery({ result ->
+            if (result == "204") {
+                // Animate the button to progress
+                binding.bsFailedDeliveriesResendButton.revertAnimation()
+
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = resources.getString(R.string.resend_failed_delivery),
+                    message = context.resources.getString(R.string.failed_delivery_resend_success),
+                    icon = R.drawable.ic_mail_error,
+                    neutralButtonText = resources.getString(R.string.close)
+                ).show()
+            } else {
+                // Animate the button to progress
+                binding.bsFailedDeliveriesResendButton.revertAnimation()
+
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = resources.getString(R.string.resend_failed_delivery),
+                    message = context.resources.getString(R.string.error_resending_failed_delivery) + "\n" + result,
+                    icon = R.drawable.ic_mail_error,
+                    neutralButtonText = resources.getString(R.string.close)
+                ).show()
+
+            }
+            // aliasId is never null at this point, hence the !!
+        }, failedDeliveryId!!)
     }
 
     private suspend fun deleteFailedDeliveryHttp(context: Context) {
@@ -142,18 +195,20 @@ class FailedDeliveryDetailsBottomDialogFragment(
                 // Animate the button to progress
                 binding.bsFailedDeliveriesDeleteButton.revertAnimation()
 
-                binding.bsFailedDeliveriesError.visibility = View.VISIBLE
-                binding.bsFailedDeliveriesError.text =
-                    context.resources.getString(R.string.error_delete_failed_delivery) + "\n" + result
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = resources.getString(R.string.delete_failed_delivery),
+                    message = context.resources.getString(R.string.error_delete_failed_delivery) + "\n" + result,
+                    icon = R.drawable.ic_mail_error,
+                    neutralButtonText = resources.getString(R.string.close)
+                ).show()
+
             }
             // aliasId is never null at this point, hence the !!
         }, failedDeliveryId!!)
     }
 
     private fun downloadFailedDelivery(context: Context) {
-        // Hide error text
-        binding.bsFailedDeliveriesError.visibility = View.GONE
-
         // Animate the button to progress
         binding.bsFailedDeliveriesDownloadButton.startAnimation()
 
@@ -173,9 +228,15 @@ class FailedDeliveryDetailsBottomDialogFragment(
                 // Animate the button to progress
                 binding.bsFailedDeliveriesDownloadButton.revertAnimation()
 
-                binding.bsFailedDeliveriesError.visibility = View.VISIBLE
-                binding.bsFailedDeliveriesError.text =
-                    context.resources.getString(R.string.error_download_failed_delivery) + "\n" + result
+
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = resources.getString(R.string.download_failed_delivery),
+                    message = context.resources.getString(R.string.error_downloading_failed_delivery) + "\n" + result,
+                    icon = R.drawable.ic_mail_error,
+                    neutralButtonText = resources.getString(R.string.close)
+                ).show()
+
             }
             // aliasId is never null at this point, hence the !!
         }, failedDeliveryId!!)
@@ -214,7 +275,11 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
-            if (p0.id == R.id.bs_failed_deliveries_delete_button) {
+            if (p0.id == R.id.bs_failed_deliveries_resend_button) {
+                resendFailedDelivery(
+                    requireContext()
+                )
+            } else if (p0.id == R.id.bs_failed_deliveries_delete_button) {
                 deleteFailedDelivery(
                     requireContext()
                 )

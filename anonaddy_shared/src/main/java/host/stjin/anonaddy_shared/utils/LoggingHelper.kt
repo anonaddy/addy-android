@@ -1,7 +1,6 @@
 package host.stjin.anonaddy_shared.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy_shared.R
@@ -11,6 +10,7 @@ import host.stjin.anonaddy_shared.models.Logs
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.core.content.edit
 
 
 class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = LOGFILES.DEFAULT) {
@@ -31,10 +31,8 @@ class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = L
     }
 
     operator fun set(key: String?, value: String?) {
-        if (prefs != null) {
-            val prefsEditor: SharedPreferences.Editor = prefs.edit()
-            prefsEditor.putString(key, value)
-            prefsEditor.apply()
+        prefs?.edit {
+            putString(key, value)
         }
     }
 
@@ -76,7 +74,7 @@ class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = L
 
 
     fun clearLogs() {
-        prefs.edit().clear().apply()
+        prefs.edit { clear() }
         addLog(LOGIMPORTANCE.INFO.int, context.resources.getString(R.string.logs_cleared), "getLogs()", null)
     }
 

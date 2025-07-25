@@ -14,6 +14,7 @@ import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.Rules
+import androidx.core.view.isVisible
 
 class RulesAdapter(
     private val listWithRules: ArrayList<Rules>,
@@ -175,7 +176,7 @@ class RulesAdapter(
 
         private fun expandOptions() {
             if (!rulesRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
-                if (rulesRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                if (rulesRecyclerviewListOptionLl.isVisible) {
                     rulesRecyclerviewListOptionLl.visibility = View.GONE
                     mOptionsButton.rotation = 0f
                 } else {

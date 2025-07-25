@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.appsettings.update
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.CompoundButton
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +16,7 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy.utils.YDGooglePlayUtils
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 
 class AppSettingsUpdateActivity : BaseActivity() {
@@ -179,7 +179,7 @@ class AppSettingsUpdateActivity : BaseActivity() {
             override fun onClick() {
                 val url = "https://github.com/anonaddy/addy-android/blob/master/CHANGELOG.md"
                 val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
+                i.data = url.toUri()
                 startActivity(i)
             }
         })
@@ -188,7 +188,7 @@ class AppSettingsUpdateActivity : BaseActivity() {
     private fun downloadUpdate() {
         val url = Updater.figureOutDownloadUrl(this)
         val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
+        i.data = url.toUri()
         startActivity(i)
     }
 

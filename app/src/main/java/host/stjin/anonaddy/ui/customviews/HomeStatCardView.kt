@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import kotlin.math.roundToInt
+import androidx.core.content.withStyledAttributes
 
 
 class HomeStatCardView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
@@ -125,42 +126,42 @@ class HomeStatCardView @JvmOverloads constructor(context: Context?, attrs: Attri
 
         if (attrs != null) {
             // Get attributes
-            val a = getContext()
-                .obtainStyledAttributes(
+            getContext()
+                .withStyledAttributes(
                     attrs,
                     R.styleable.HomeStatCardView,
                     0, 0
-                )
+                ) {
 
 
-            // Set elevation (if set)
-            if (a.getFloat(R.styleable.HomeStatCardView_StatCardViewElevation, 999F) != 999F) {
-                cardView?.cardElevation = a.getFloat(R.styleable.HomeStatCardView_StatCardViewElevation, 999F)
-            }
+                    // Set elevation (if set)
+                    if (getFloat(R.styleable.HomeStatCardView_StatCardViewElevation, 999F) != 999F) {
+                        cardView?.cardElevation = getFloat(R.styleable.HomeStatCardView_StatCardViewElevation, 999F)
+                    }
 
-            // Set title and description
-            setTitle(a.getString(R.styleable.HomeStatCardView_StatCardViewTitle))
-            setDescription(a.getString(R.styleable.HomeStatCardView_StatCardViewDescription))
-            setButtonText(a.getString(R.styleable.HomeStatCardView_StatCardViewButtonText))
-
-
-            // Set icons
-            setImageResourceIcons(
-                a.getResourceId(R.styleable.HomeStatCardView_StatCardViewIcon, 0),
-                null
-            )
-
-            // Set elevation (if set)
-            if (a.getBoolean(R.styleable.HomeStatCardView_StatCardViewShowButton, false)) {
-                linearLayout?.visibility = VISIBLE
-                linearLayout?.setOnClickListener(layoutClickedListener)
-            } else {
-                linearLayout?.visibility = GONE
-                cardView?.setOnClickListener(layoutClickedListener)
-            }
+                    // Set title and description
+                    setTitle(getString(R.styleable.HomeStatCardView_StatCardViewTitle))
+                    setDescription(getString(R.styleable.HomeStatCardView_StatCardViewDescription))
+                    setButtonText(getString(R.styleable.HomeStatCardView_StatCardViewButtonText))
 
 
-            a.recycle()
+                    // Set icons
+                    setImageResourceIcons(
+                        getResourceId(R.styleable.HomeStatCardView_StatCardViewIcon, 0),
+                        null
+                    )
+
+                    // Set elevation (if set)
+                    if (getBoolean(R.styleable.HomeStatCardView_StatCardViewShowButton, false)) {
+                        linearLayout?.visibility = VISIBLE
+                        linearLayout?.setOnClickListener(layoutClickedListener)
+                    } else {
+                        linearLayout?.visibility = GONE
+                        cardView?.setOnClickListener(layoutClickedListener)
+                    }
+
+
+                }
         }
     }
 

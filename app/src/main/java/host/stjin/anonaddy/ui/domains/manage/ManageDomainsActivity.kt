@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.domains.manage
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
@@ -24,6 +23,7 @@ import host.stjin.anonaddy_shared.models.Domains
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 
 class ManageDomainsActivity : BaseActivity(),
@@ -294,7 +294,7 @@ class ManageDomainsActivity : BaseActivity(),
             override fun onClick() {
                 val url = "${AddyIo.API_BASE_URL}/domains"
                 val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
+                i.data = url.toUri()
                 startActivity(i)
             }
         })
@@ -396,7 +396,7 @@ class ManageDomainsActivity : BaseActivity(),
         var totalReplies = 0
         var totalSent = 0
         val totalAliases = domain.aliases_count
-        var aliases = ""
+        var aliases: String
 
         val buf = StringBuilder()
 

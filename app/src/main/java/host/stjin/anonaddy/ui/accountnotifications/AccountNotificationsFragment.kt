@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui.accountnotifications
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +24,7 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AccountNotifications
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBottomDialogFragment.AddAccountNotificationsBottomDialogListener {
 
@@ -219,7 +219,7 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
     override fun onOpenUrl(url: String?) {
         if (url != null) {
             val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
+            i.data = url.toUri()
             startActivity(i)
         }
 

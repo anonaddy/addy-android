@@ -12,6 +12,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Recipients
+import androidx.core.view.isVisible
 
 class RecipientAdapter(
     private val listWithRecipients: ArrayList<Recipients>
@@ -136,7 +137,7 @@ class RecipientAdapter(
 
         private fun expandOptions() {
             if (!recipientsRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
-                if (recipientsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                if (recipientsRecyclerviewListOptionLl.isVisible) {
                     recipientsRecyclerviewListOptionLl.visibility = View.GONE
                     mOptionsButton.rotation = 0f
                 } else {

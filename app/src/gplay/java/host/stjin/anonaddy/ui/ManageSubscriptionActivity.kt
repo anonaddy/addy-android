@@ -1,7 +1,6 @@
 package host.stjin.anonaddy.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -22,6 +21,7 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.core.net.toUri
 
 
 class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, PurchasesUpdatedListener, PurchasesResponseListener {
@@ -134,28 +134,28 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         binding.privacyPolicyButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://addy.io/privacy?ref=appstore")
+                "https://addy.io/privacy?ref=appstore".toUri()
             )
             startActivity(browserIntent)
         }
         binding.termsOfServiceButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://addy.io/terms?ref=appstore")
+                "https://addy.io/terms?ref=appstore".toUri()
             )
             startActivity(browserIntent)
         }
         binding.fragmentSubscriptionAccountDisabled.termsOfServiceButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://addy.io/terms?ref=appstore")
+                "https://addy.io/terms?ref=appstore".toUri()
             )
             startActivity(browserIntent)
         }
         binding.fragmentSubscriptionAccountDisabled.contactUsButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://addy.io/contact?ref=appstore")
+                "https://addy.io/contact?ref=appstore".toUri()
             )
             startActivity(browserIntent)
         }
@@ -163,14 +163,14 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
         binding.manageSubscriptionButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://play.google.com/store/account/subscriptions?package=host.stjin.anonaddy")
+                "https://play.google.com/store/account/subscriptions?package=host.stjin.anonaddy".toUri()
             )
             startActivity(browserIntent)
         }
         binding.fragmentSubscriptionAccountDisabled.manageSubscriptionButton.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://play.google.com/store/account/subscriptions?package=host.stjin.anonaddy")
+                "https://play.google.com/store/account/subscriptions?package=host.stjin.anonaddy".toUri()
             )
             startActivity(browserIntent)
         }

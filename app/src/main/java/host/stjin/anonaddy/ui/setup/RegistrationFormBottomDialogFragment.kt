@@ -3,7 +3,6 @@ package host.stjin.anonaddy.ui.setup
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,7 @@ import host.stjin.anonaddy.utils.CustomPatterns
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 class RegistrationFormBottomDialogFragment: BaseBottomSheetDialogFragment(), View.OnClickListener {
 
@@ -184,14 +184,14 @@ class RegistrationFormBottomDialogFragment: BaseBottomSheetDialogFragment(), Vie
                 R.id.bs_registration_form_privacy_policy_button -> {
                     val browserIntent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://addy.io/privacy?ref=appstore")
+                        "https://addy.io/privacy?ref=appstore".toUri()
                     )
                     startActivity(browserIntent)
                 }
                 R.id.bs_registration_form_terms_of_service_button -> {
                     val browserIntent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://addy.io/terms?ref=appstore")
+                        "https://addy.io/terms?ref=appstore".toUri()
                     )
                     startActivity(browserIntent)
                 }

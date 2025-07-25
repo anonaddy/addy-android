@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import host.stjin.anonaddy.R
+import androidx.core.content.withStyledAttributes
 
 
 class AnimationView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
@@ -51,21 +52,21 @@ class AnimationView @JvmOverloads constructor(context: Context?, attrs: Attribut
 
         if (attrs != null) {
             // Get attributes
-            val a = getContext()
-                .obtainStyledAttributes(
+            getContext()
+                .withStyledAttributes(
                     attrs,
                     R.styleable.AnimationView,
                     0, 0
-                )
+                ) {
 
-            if (a.getResourceId(R.styleable.AnimationView_animationDrawable, 0) != 0) {
-                playAnimation(
-                    a.getBoolean(R.styleable.AnimationView_loopAnimation, false),
-                    a.getResourceId(R.styleable.AnimationView_animationDrawable, 0)
-                )
-            }
+                    if (getResourceId(R.styleable.AnimationView_animationDrawable, 0) != 0) {
+                        playAnimation(
+                            getBoolean(R.styleable.AnimationView_loopAnimation, false),
+                            getResourceId(R.styleable.AnimationView_animationDrawable, 0)
+                        )
+                    }
 
-            a.recycle()
+                }
         }
     }
 }

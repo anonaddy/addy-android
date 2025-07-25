@@ -25,6 +25,7 @@ import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.PBEParameterSpec
 import kotlin.system.measureTimeMillis
+import androidx.core.net.toUri
 
 
 // isAppInForeground is being used to determine if a notification or a snackbar should be used
@@ -40,7 +41,7 @@ class BackupHelper(private val context: Context) {
     fun getLatestBackupDate(): Long? {
         val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
         try {
-            val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))?.listFiles()
+            val f = DocumentFile.fromTreeUri(context, backupDestinationPath!!.toUri())?.listFiles()
                 ?.filter { (it.name?.substringAfterLast(".") ?: "") == "anon" }
             val sortedList = f?.sortedWith(compareBy { it.lastModified() })
             return sortedList?.last()?.lastModified()
@@ -53,7 +54,7 @@ class BackupHelper(private val context: Context) {
     fun deleteBackupsOlderThanXDays(retentionPeriod: Long = 30): Boolean {
         val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
         try {
-            val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))?.listFiles()
+            val f = DocumentFile.fromTreeUri(context, backupDestinationPath!!.toUri())?.listFiles()
                 ?.filter { (it.name?.substringAfterLast(".") ?: "") == "anon" }
             var filesDeleted = 0
             for (file in f!!) {
@@ -89,8 +90,8 @@ class BackupHelper(private val context: Context) {
     fun isBackupLocationAccessible(): Boolean {
         val backupDestinationPath = SettingsManager(false, context).getSettingsString(SettingsManager.PREFS.BACKUPS_LOCATION)
         try {
-            val f = DocumentFile.fromTreeUri(context, Uri.parse(backupDestinationPath))
-            return f?.canRead() == true && f?.canWrite() == true
+            val f = DocumentFile.fromTreeUri(context, backupDestinationPath!!.toUri())
+            return f?.canRead() == true && f.canWrite()
         } catch (e: Exception) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, e.toString(), "getLatestBackupDate", null)
         }
@@ -99,7 +100,7 @@ class BackupHelper(private val context: Context) {
 
     private fun createEmptyFileAndGetOutputStream(path: String, name: String, password: String): OutputStream? {
         try {
-            val f = DocumentFile.fromTreeUri(context, Uri.parse(path))
+            val f = DocumentFile.fromTreeUri(context, path.toUri())
             val uriOfFile = f?.createFile("application/octet-stream", name)?.uri
 
             return if (encryptBackups) {

@@ -229,7 +229,9 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
 
             // Only check on hosted instance
             if (AddyIo.isUsingHostedInstance) {
-                if (sharedDomains.contains(binding.bsAddaliasDomainMact.text.toString())) {
+                // Custom format on shared domains is possible, but only if the user has a paid subscription.
+                // If the selected domain is a shared domain AND the user is a free user don't allow it.
+                if (sharedDomains.contains(binding.bsAddaliasDomainMact.text.toString()) && (activity?.application as AddyIoApp).userResource.hasUserFreeSubscription) {
                     binding.bsAddaliasAliasFormatTil.error = context.resources.getString(R.string.domains_format_custom_not_available_for_this_domain)
                     return
                 }

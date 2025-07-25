@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -31,6 +30,7 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.UserResourceExtended
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener {
@@ -299,7 +299,7 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         unsupportedBottomDialogFragment.dismissAllowingStateLoss()
         val url = "https://github.com/anonaddy/anonaddy/blob/master/SELF-HOSTING.md#updating"
         val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(url)
+        i.data = url.toUri()
         startActivity(i)
         finish()
     }
