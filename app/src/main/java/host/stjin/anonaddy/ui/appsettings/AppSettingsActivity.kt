@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -39,6 +38,7 @@ import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 
 class AppSettingsActivity : BaseActivity(),
@@ -339,7 +339,7 @@ class AppSettingsActivity : BaseActivity(),
             override fun onClick() {
                 val url = "https://addy.io/faq/"
                 val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
+                i.data = url.toUri()
                 startActivity(i)
             }
         })
@@ -349,7 +349,7 @@ class AppSettingsActivity : BaseActivity(),
             override fun onClick() {
                 val url = "https://addy.io/help/"
                 val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
+                i.data = url.toUri()
                 startActivity(i)
             }
         })
@@ -359,7 +359,7 @@ class AppSettingsActivity : BaseActivity(),
             override fun onClick() {
                 val url = "https://github.com/anonaddy/addy-android"
                 val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
+                i.data = url.toUri()
                 startActivity(i)
             }
         })
@@ -369,7 +369,7 @@ class AppSettingsActivity : BaseActivity(),
             override fun onClick() {
                 val url = "https://github.com/anonaddy/addy-android/issues/new"
                 val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
+                i.data = url.toUri()
                 startActivity(i)
             }
         })
@@ -377,7 +377,7 @@ class AppSettingsActivity : BaseActivity(),
         binding.activityAppSettingsStjinLogo.setOnClickListener {
             val url = "https://stjin.host"
             val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
+            i.data = url.toUri()
             startActivity(i)
         }
 
@@ -437,7 +437,7 @@ class AppSettingsActivity : BaseActivity(),
             override fun onClick() {
                 val url = "https://play.google.com/store/apps/details?id=host.stjin.anonaddy"
                 val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
+                i.data = url.toUri()
                 this@AppSettingsActivity.startActivity(i)
             }
         })

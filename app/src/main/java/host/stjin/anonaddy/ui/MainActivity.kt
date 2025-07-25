@@ -3,7 +3,6 @@ package host.stjin.anonaddy.ui
 import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -77,6 +76,7 @@ import java.time.LocalDateTime
 import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
+import androidx.core.net.toUri
 
 
 object MainActivityTimeClass {
@@ -477,7 +477,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun checkForStartupPage() {
-        var startupPageValue = SettingsManager(false, this).getSettingsString(PREFS.STARTUP_PAGE, "home")
+        val startupPageValue = SettingsManager(false, this).getSettingsString(PREFS.STARTUP_PAGE, "home")
         val startupPageOptions = this.resources.getStringArray(R.array.startup_page_options).toList()
 
         // Check if the value exists in the array, default (but dont reset) to home if not (this could occur if eg. a tablet backup (which has more options) gets restored on mobile)
@@ -711,7 +711,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                                     } else {
                                         val url = "${AddyIo.API_BASE_URL}/settings/subscription"
                                         val i = Intent(Intent.ACTION_VIEW)
-                                        i.data = Uri.parse(url)
+                                        i.data = url.toUri()
                                         startActivity(i)
                                     }
 

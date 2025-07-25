@@ -18,6 +18,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.materialswitch.MaterialSwitch
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.utils.AttributeHelper
+import androidx.core.content.withStyledAttributes
 
 
 class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyle: Int = 0) :
@@ -195,82 +196,82 @@ class SectionView @JvmOverloads constructor(context: Context?, attrs: AttributeS
 
         if (attrs != null) {
             // Get attributes
-            val a = getContext()
-                .obtainStyledAttributes(
+            getContext()
+                .withStyledAttributes(
                     attrs,
                     R.styleable.SectionView,
                     0, 0
-                )
+                ) {
 
-            // Set ripple, default is enabled. Ripple pref is only set once
-            if (!a.getBoolean(R.styleable.SectionView_sectionRippleEffect, true)) {
-                linearLayout?.background = null
-            }
+                    // Set ripple, default is enabled. Ripple pref is only set once
+                    if (!getBoolean(R.styleable.SectionView_sectionRippleEffect, true)) {
+                        linearLayout?.background = null
+                    }
 
-            // Set elevation (if set)
-            if (a.getFloat(R.styleable.SectionView_sectionElevation, 999F) != 999F) {
-                cardView?.cardElevation = a.getFloat(R.styleable.SectionView_sectionElevation, 999F)
-            }
+                    // Set elevation (if set)
+                    if (getFloat(R.styleable.SectionView_sectionElevation, 999F) != 999F) {
+                        cardView?.cardElevation = getFloat(R.styleable.SectionView_sectionElevation, 999F)
+                    }
 
 
-            // Set stroke (if set)
-            if (a.getInteger(R.styleable.SectionView_sectionOutlineWidth, 999) != 999) {
-                cardView?.strokeWidth = a.getInteger(R.styleable.SectionView_sectionOutlineWidth, 999)
-            }
+                    // Set stroke (if set)
+                    if (getInteger(R.styleable.SectionView_sectionOutlineWidth, 999) != 999) {
+                        cardView?.strokeWidth = getInteger(R.styleable.SectionView_sectionOutlineWidth, 999)
+                    }
 
-            // Set stroke (if set)
-            if (a.getInteger(R.styleable.SectionView_sectionBackgroundColor, 999) != 999) {
-                cardView?.setCardBackgroundColor(a.getInteger(R.styleable.SectionView_sectionBackgroundColor, 999))
-            }
+                    // Set stroke (if set)
+                    if (getInteger(R.styleable.SectionView_sectionBackgroundColor, 999) != 999) {
+                        cardView?.setCardBackgroundColor(getInteger(R.styleable.SectionView_sectionBackgroundColor, 999))
+                    }
 
-            // Set title and description
-            setTitle(a.getString(R.styleable.SectionView_sectionTitle))
-            setDescription(a.getString(R.styleable.SectionView_sectionDescription))
+                    // Set title and description
+                    setTitle(getString(R.styleable.SectionView_sectionTitle))
+                    setDescription(getString(R.styleable.SectionView_sectionDescription))
 
-            // Set section starticon background and change icon color to white
-            setSectionAlert(a.getBoolean(R.styleable.SectionView_sectionAlert, false))
+                    // Set section starticon background and change icon color to white
+                    setSectionAlert(getBoolean(R.styleable.SectionView_sectionAlert, false))
 
-            // Get colorAccent
-            val hasColorAccentDefined = a.hasValue(R.styleable.SectionView_sectionColorAccent)
+                    // Get colorAccent
+                    val hasColorAccentDefined = hasValue(R.styleable.SectionView_sectionColorAccent)
 
-            // Set colorAccent on the title and the startIcon only if set
-            if (hasColorAccentDefined) {
-                val accentColorResource = a.getResourceId(
-                    R.styleable.SectionView_sectionColorAccent,
-                    0
-                )
-                val imageTintColor = context?.let { ContextCompat.getColor(it, accentColorResource) }
-                imageTintColor?.let { title?.setTextColor(it) }
+                    // Set colorAccent on the title and the startIcon only if set
+                    if (hasColorAccentDefined) {
+                        val accentColorResource = getResourceId(
+                            R.styleable.SectionView_sectionColorAccent,
+                            0
+                        )
+                        val imageTintColor = context?.let { ContextCompat.getColor(it, accentColorResource) }
+                        imageTintColor?.let { title?.setTextColor(it) }
 
-                if (iconStart != null) {
-                    // The tint color is only set once, won't be changes at runtime.
-                    ImageViewCompat.setImageTintList(iconStart!!, imageTintColor?.let { ColorStateList.valueOf(it) })
+                        if (iconStart != null) {
+                            // The tint color is only set once, won't be changes at runtime.
+                            ImageViewCompat.setImageTintList(iconStart!!, imageTintColor?.let { ColorStateList.valueOf(it) })
+                        }
+                    }
+
+
+                    // Set icons
+                    setImageResourceIcons(
+                        getResourceId(R.styleable.SectionView_sectionStartIcon, 0),
+                        getResourceId(R.styleable.SectionView_sectionEndIcon, 0)
+                    )
+
+                    // Set switch this is ony done at init, default is invisible
+                    if (getBoolean(R.styleable.SectionView_sectionShowSwitch, false)) {
+                        materialSwitch?.visibility = VISIBLE
+                        materialSwitch?.setOnCheckedChangeListener(switchCheckedChangeListener)
+                    }
+
+                    // Set if switch is checked or not
+                    materialSwitch?.isChecked = getBoolean(R.styleable.SectionView_sectionSwitchChecked, false)
+
+
+                    // Set layout enabled
+                    setLayoutEnabled(getBoolean(R.styleable.SectionView_sectionEnabled, true))
+
+                    setSwitchVibrationEffects()
+
                 }
-            }
-
-
-            // Set icons
-            setImageResourceIcons(
-                a.getResourceId(R.styleable.SectionView_sectionStartIcon, 0),
-                a.getResourceId(R.styleable.SectionView_sectionEndIcon, 0)
-            )
-
-            // Set switch this is ony done at init, default is invisible
-            if (a.getBoolean(R.styleable.SectionView_sectionShowSwitch, false)) {
-                materialSwitch?.visibility = VISIBLE
-                materialSwitch?.setOnCheckedChangeListener(switchCheckedChangeListener)
-            }
-
-            // Set if switch is checked or not
-            materialSwitch?.isChecked = a.getBoolean(R.styleable.SectionView_sectionSwitchChecked, false)
-
-
-            // Set layout enabled
-            setLayoutEnabled(a.getBoolean(R.styleable.SectionView_sectionEnabled, true))
-
-            setSwitchVibrationEffects()
-
-            a.recycle()
         }
     }
 

@@ -7,13 +7,13 @@ val wear_compose_version = rootProject.extra["wear_compose_version"]
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0" // this version matches your Kotlin version
 
 }
 
 android {
     namespace = "host.stjin.anonaddy_shared"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

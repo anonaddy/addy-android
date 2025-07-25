@@ -10,6 +10,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.security.crypto.MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE
 import androidx.security.crypto.MasterKey.DEFAULT_MASTER_KEY_ALIAS
+import androidx.core.content.edit
 
 
 class SettingsManager(encrypt: Boolean, private val context: Context) {
@@ -143,7 +144,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun putSettingsBool(key: PREFS, boolean: Boolean) {
-        prefs.edit().putBoolean(key.key, boolean).apply()
+        prefs.edit { putBoolean(key.key, boolean) }
     }
 
     fun getSettingsBool(key: PREFS, default: Boolean = false): Boolean {
@@ -151,7 +152,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun putSettingsString(key: PREFS, string: String) {
-        prefs.edit().putString(key.key, string).apply()
+        prefs.edit {putString(key.key, string)}
     }
 
     fun getSettingsString(key: PREFS, default: String? = null): String? {
@@ -159,7 +160,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun putSettingsInt(key: PREFS, int: Int) {
-        prefs.edit().putInt(key.key, int).apply()
+        prefs.edit {putInt(key.key, int)}
     }
 
     fun getSettingsInt(key: PREFS, default: Int = 0): Int {
@@ -167,7 +168,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun putSettingsFloat(key: PREFS, float: Float) {
-        prefs.edit().putFloat(key.key, float).apply()
+        prefs.edit {putFloat(key.key, float)}
     }
 
     fun getSettingsFloat(key: PREFS): Float {
@@ -175,8 +176,8 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
     }
 
     fun putStringSet(key: PREFS, mutableset: MutableSet<String>) {
-        prefs.edit().remove(key.key).apply()
-        prefs.edit().putStringSet(key.key, mutableset).apply()
+        prefs.edit { remove(key.key) }
+        prefs.edit {putStringSet(key.key, mutableset)}
     }
 
     fun getStringSet(key: PREFS): MutableSet<String>? {
@@ -185,12 +186,12 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
 
     fun removeSetting(value: PREFS) {
-        prefs.edit().remove(value.key).apply()
+        prefs.edit {remove(value.key)}
     }
 
     fun clearAllData() {
-        SettingsManager(true, context).prefs.edit().clear().apply()
-        SettingsManager(false, context).prefs.edit().clear().apply()
+        SettingsManager(true, context).prefs.edit { clear() }
+        SettingsManager(false, context).prefs.edit { clear() }
     }
 
 

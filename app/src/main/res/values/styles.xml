@@ -349,15 +349,6 @@
         <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded</item>
     </style>
 
-    <style name="AddyIoCollapsingToolbarLayout.Title.Small" parent="Widget.Material3.CollapsingToolbar.Large">
-        <item name="android:layout_marginStart">@dimen/collapsingtoolbar_title_margin</item>
-        <item name="android:layout_marginEnd">@dimen/collapsingtoolbar_title_small_margin</item>
-        <item name="android:layout_marginTop">@dimen/collapsingtoolbar_title_small_margin</item>
-        <item name="android:layout_marginBottom">@dimen/collapsingtoolbar_title_small_margin</item>
-        <item name="android:textColor">?colorOnPrimary</item>
-        <item name="android:textAppearance">@style/AppTheme.CollapsingToolbarTitle.Expanded.Small</item>
-    </style>
-
     <style name="AddyIoCollapsingToolbarLayout.SubTitle" parent="Widget.Material3.CollapsingToolbar.Large">
         <item name="android:textColor">?colorOnPrimary</item>
         <item name="android:alpha">0.7</item>

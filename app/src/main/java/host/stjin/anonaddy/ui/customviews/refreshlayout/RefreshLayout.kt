@@ -12,6 +12,7 @@ import host.stjin.anonaddy.R
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import androidx.core.content.withStyledAttributes
 
 open class RefreshLayout @JvmOverloads constructor(
     context: Context,
@@ -75,12 +76,12 @@ open class RefreshLayout @JvmOverloads constructor(
     }
 
     private fun setAttrs(attrs: AttributeSet?) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.RefreshLayout)
+        context.withStyledAttributes(attrs, R.styleable.RefreshLayout) {
 
-        headerBackColor = a.getColor(R.styleable.RefreshLayout_AniBackColor, headerBackColor)
-        headerForeColor = a.getColor(R.styleable.RefreshLayout_AniForeColor, headerForeColor)
+            headerBackColor = getColor(R.styleable.RefreshLayout_AniBackColor, headerBackColor)
+            headerForeColor = getColor(R.styleable.RefreshLayout_AniForeColor, headerForeColor)
 
-        a.recycle()
+        }
     }
 
     private fun addHeaderView() {

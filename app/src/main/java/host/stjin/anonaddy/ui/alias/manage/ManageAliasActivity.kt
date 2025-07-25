@@ -42,6 +42,8 @@ import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
+import androidx.core.net.toUri
+import androidx.core.graphics.createBitmap
 
 
 class ManageAliasActivity : BaseActivity(),
@@ -128,9 +130,7 @@ class ManageAliasActivity : BaseActivity(),
     }
 
     private fun getBitmapFromView(view: View): Bitmap {
-        val bitmap = Bitmap.createBitmap(
-            view.width, view.height, Bitmap.Config.ARGB_8888
-        )
+        val bitmap = createBitmap(view.width, view.height)
         val canvas = Canvas(bitmap)
         view.draw(canvas)
         return bitmap
@@ -951,7 +951,7 @@ class ManageAliasActivity : BaseActivity(),
         onPressCopy(toString)
 
         val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.data = "mailto:".toUri() // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, recipients)
         if (intent.resolveActivity(packageManager) != null) {
             AnonAddyUtils.startShareSheetActivityExcludingOwnApp(this, intent, this.resources.getString(R.string.send_mail))

@@ -1,5 +1,25 @@
 # Changelog
 
+## [v5.7.2] - 2025-07-25
+
+### addy.io
+
+##### Added
+
+- Added the ability to resend failed deliveries
+- Added the ability to create aliases with the "custom" domain format on shares aliases
+
+##### Fixed/Improved
+
+- Updated gradle, kotlin version and more
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.5.4)_
+
+##### Fixed/Improved
+
+- Added support for WearOS 6
+
 ## [v5.7.1] - 2025-06-01
 
 ### addy.io

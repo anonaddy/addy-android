@@ -13,6 +13,7 @@ import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
+import androidx.core.view.isVisible
 
 class UsernameAdapter(
     private val listWithUsernames: ArrayList<Usernames>
@@ -130,7 +131,7 @@ class UsernameAdapter(
 
         private fun expandOptions() {
             if (!usernamesRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
-                if (usernamesRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                if (usernamesRecyclerviewListOptionLl.isVisible) {
                     usernamesRecyclerviewListOptionLl.visibility = View.GONE
                     mOptionsButton.rotation = 0f
                 } else {

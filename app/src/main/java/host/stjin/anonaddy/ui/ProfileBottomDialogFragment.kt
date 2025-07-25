@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +28,7 @@ import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import java.util.Locale
+import androidx.core.net.toUri
 
 
 class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
@@ -169,7 +169,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         binding.mainProfileSelectDialogAnonaddySettings.setOnClickListener {
             val url = "${AddyIo.API_BASE_URL}/settings"
             val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
+            i.data = url.toUri()
             startActivity(i)
         }
 
@@ -180,7 +180,7 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             } else {
                 val url = "${AddyIo.API_BASE_URL}/settings/subscription"
                 val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse(url)
+                i.data = url.toUri()
                 startActivity(i)
             }
 

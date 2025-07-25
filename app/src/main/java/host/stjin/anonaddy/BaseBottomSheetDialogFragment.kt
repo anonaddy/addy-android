@@ -33,7 +33,7 @@ open class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
     override fun onResume() {
         super.onResume()
         val configuration: Configuration = requireActivity().resources.configuration
-        if (configuration.orientation === Configuration.ORIENTATION_LANDSCAPE &&
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE &&
             configuration.screenWidthDp > 450
         ) {
             // you can go more fancy and vary the bottom sheet width depending on the screen width

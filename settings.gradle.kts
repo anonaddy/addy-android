@@ -6,6 +6,6 @@ include(":anonaddy_shared")
 pluginManagement {
     plugins {
         // [GitHub] https://github.com/google/ksp
-        id("com.google.devtools.ksp") version "2.0.0-1.0.21"
+        id("com.google.devtools.ksp") version "2.2.0-2.0.2"
     }
 }

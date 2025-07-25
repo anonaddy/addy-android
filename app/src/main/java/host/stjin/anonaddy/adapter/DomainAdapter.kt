@@ -12,6 +12,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Domains
+import androidx.core.view.isVisible
 
 class DomainAdapter(
     private val listWithDomains: ArrayList<Domains>
@@ -111,7 +112,7 @@ class DomainAdapter(
 
         private fun expandOptions() {
             if (!domainsRecyclerviewListOptionLl.context.resources.getBoolean(R.bool.isTablet)) {
-                if (domainsRecyclerviewListOptionLl.visibility == View.VISIBLE) {
+                if (domainsRecyclerviewListOptionLl.isVisible) {
                     domainsRecyclerviewListOptionLl.visibility = View.GONE
                     mOptionsButton.rotation = 0f
                 } else {

@@ -8,7 +8,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.net.Uri
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
@@ -24,6 +23,7 @@ import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_A
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.REFRESH_ACTION
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlin.random.Random
+import androidx.core.net.toUri
 
 
 /**
@@ -129,7 +129,7 @@ private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager
     val clickIntent = Intent(context, AliasWidget1Provider::class.java)
     clickIntent.action = NAVIGATE
     clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-    clickIntent.data = Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME))
+    clickIntent.data = clickIntent.toUri(Intent.URI_INTENT_SCHEME).toUri()
 
     val onClickPendingIntent = PendingIntent
         .getBroadcast(

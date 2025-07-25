@@ -13,6 +13,7 @@ import android.widget.Toast
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.AddyIo
+import androidx.core.net.toUri
 
 
 class WebIntentManager(private val context: Context) {
@@ -20,7 +21,7 @@ class WebIntentManager(private val context: Context) {
         try {
             val intent = Intent(
                 Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                Uri.parse("package:${context.packageName}")
+                "package:${context.packageName}".toUri()
             )
             context.startActivity(intent)
             if (enable) {
@@ -49,7 +50,7 @@ class WebIntentManager(private val context: Context) {
     //If new URLS are added here, also add them to the manifest
     private fun isOurAppDefault(context: Context): Boolean {
         // Only /deactivate for now
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(AddyIo.API_BASE_URL + "/deactivate"))
+        val browserIntent = Intent(Intent.ACTION_VIEW, (AddyIo.API_BASE_URL + "/deactivate").toUri())
         val resolveInfo = context.packageManager.resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
         var defaultBrowserPkg: String? = null
         if (resolveInfo != null) {
