@@ -37,4 +37,4 @@
 <li>Failed deliveries</li>
 </ul>
 <p><strong>What is addy.io</strong></p>
-<p>addy.io is an open source email forwarding service designed to protect an internet user's email addresses from spam and other unwanted emails. Using the addy.io app managing your aliases has become easier than ever! <a href="https://addy.io">Learn more about addy.io:</a> <a href="https://addy.io.com">https://addy.io </a></p>
+<p>addy.io is an open source email forwarding service designed to protect an internet user's email addresses from spam and other unwanted emails. Using the addy.io app managing your aliases has become easier than ever! <a href="https://addy.io">Learn more about addy.io:</a> <a href="https://addy.io">https://addy.io</a></p>
