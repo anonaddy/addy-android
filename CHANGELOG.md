@@ -1,6 +1,22 @@
 # Changelog
 
-## [v5.7.2] - 2025-07-25
+## [v5.8.0] - 2025-12-13
+
+### addy.io
+
+##### Fixed/Improved
+
+- Updated gradle, kotlin version and more
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.5.5)_
+
+##### Fixed/Improved
+
+- Updated gradle, kotlin version and more
+- Performance improvements and other things to make the app even smoother
+
+# [v5.7.2] - 2025-07-25
 
 ### addy.io
 

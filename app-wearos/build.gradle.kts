@@ -27,9 +27,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v1.5.4 + release 01 + 01 (for wearos)
-        versionCode = 361540101
-        versionName = "1.5.4"
+        // SDK 36 + v1.5.5 + release 01 + 01 (for wearos)
+        versionCode = 361550101
+        versionName = "1.5.5"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -97,7 +97,7 @@ dependencies {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.compose.material3:material3:$compose_material_version")
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("com.google.android.gms:play-services-wearable:19.0.0")
@@ -141,12 +141,12 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.10.3")
+    implementation("androidx.work:work-runtime-ktx:2.11.0")
 }
 
 // For parsing wearOSSettings
 dependencies {
-    implementation("com.google.code.gson:gson:2.13.1")
+    implementation("com.google.code.gson:gson:2.13.2")
 }
 
 // For the donut in the aliasview
@@ -182,5 +182,5 @@ dependencies {
 
 // Splash screen
 dependencies {
-    implementation("androidx.core:core-splashscreen:1.1.0-rc01")
+    implementation("androidx.core:core-splashscreen:1.2.0")
 }
