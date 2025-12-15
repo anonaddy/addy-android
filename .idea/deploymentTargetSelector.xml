@@ -28,10 +28,10 @@
       </SelectionState>
       <SelectionState runConfigName="app-wearos">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-07-25T19:56:36.112105Z">
+        <DropdownSelection timestamp="2025-12-14T15:18:20.062544Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stjin/.android/avd/Wear_OS_Large_Round_6.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=P11277001376" />
             </handle>
           </Target>
         </DropdownSelection>

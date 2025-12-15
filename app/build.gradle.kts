@@ -19,7 +19,7 @@ android {
          */
 
         // SDK 36 + v5.8.0 + release 01 + 00 (for app)
-        versionCode = 365800100 // https://developer.android.com/training/wearables/packaging
+        versionCode = 365800200 // https://developer.android.com/training/wearables/packaging //TODO Change back to 01
         // The "v" is important, as the updater class compares with the RSS feed on Github
         versionName = "v5.8.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

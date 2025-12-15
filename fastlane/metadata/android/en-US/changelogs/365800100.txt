@@ -1,5 +1,0 @@
-<h4>Fixed/Improved</h4>
-<p>- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>
-<h3>What\'s new in addy.io for Android Wearables 1.5.5</h3>
-<h4>Fixed/Improved</h4>
-<p>- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>
