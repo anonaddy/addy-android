@@ -14,13 +14,11 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumnDefaults
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
-import androidx.wear.compose.foundation.lazy.ScalingParams
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
-import com.google.android.horologist.annotations.ExperimentalHorologistApi
-import com.google.android.horologist.compose.rotaryinput.rotaryWithScroll
+import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
+import androidx.wear.compose.foundation.lazy.ScalingParams
+import androidx.wear.compose.foundation.rotary.rotaryScrollable
 
-
-@OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ScalingLazyColumnWithRSB(
     modifier: Modifier = Modifier,
@@ -37,10 +35,12 @@ fun ScalingLazyColumnWithRSB(
 ) {
     val focusRequester = remember { FocusRequester() }
     ScalingLazyColumn(
-        modifier = modifier.rotaryWithScroll(
-            scrollableState = state,
-            flingBehavior = ScrollableDefaults.flingBehavior(),
-            focusRequester = focusRequester,
+        modifier = modifier.rotaryScrollable(
+            behavior = RotaryScrollableDefaults.behavior(
+                scrollableState = state,
+                flingBehavior = ScrollableDefaults.flingBehavior()
+            ),
+            focusRequester = focusRequester
         ),
         state = state,
         reverseLayout = reverseLayout,

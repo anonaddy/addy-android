@@ -72,6 +72,9 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
 
 
             binding.bsRuleConditionValuesTiet.setText(conditionEditObject.values.joinToString())
+
+            // Show save instead of add when editing an object
+            binding.bsRuleConditionAddConditionButton.setText(R.string.save)
         }
 
     }

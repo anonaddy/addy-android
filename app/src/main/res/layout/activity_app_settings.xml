@@ -161,7 +161,7 @@
                     android:layout_height="match_parent"
                     app:sectionDescription="@string/reset_app_desc"
                     app:sectionStartIcon="@drawable/ic_loader"
-                    app:sectionTitle="@string/reset_app" />
+                    app:sectionTitle="@string/reset_app_logout" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_section_delete_account"

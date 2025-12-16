@@ -106,6 +106,8 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
             }
         }
 
+        // Show save instead of add when editing an object
+        binding.bsRuleActionAddActionButton.setText(R.string.save)
     } else {
         viewLifecycleOwner.lifecycleScope.launch {
             getAllRecipients(null)
