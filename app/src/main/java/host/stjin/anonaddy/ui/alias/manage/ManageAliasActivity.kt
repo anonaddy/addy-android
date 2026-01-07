@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import androidx.core.net.toUri
 import androidx.core.graphics.createBitmap
-import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 
 
 class ManageAliasActivity : BaseActivity(),
@@ -232,10 +231,18 @@ class ManageAliasActivity : BaseActivity(),
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
         // DONUT
+
+        // If there are no statistics, sent the emptyDonut value to 1 so that a donut can be drawn
+        val emptyDonut = if (forwarded == 0f &&
+            replied == 0f &&
+            sent == 0f &&
+            blocked == 0f
+        ) 1 else 0
+
         val section1 = DonutSection(
             name = binding.activityManageAliasChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
             color = ContextCompat.getColor(this, R.color.portalOrange),
-            amount = forwarded
+            amount = forwarded + emptyDonut
         )
         // Always show section 1
         listOfDonutSection.add(section1)

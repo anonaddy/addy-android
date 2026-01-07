@@ -99,11 +99,19 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
 
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
+
+        // If there are no statistics, sent the emptyDonut value to 1 so that a donut can be drawn
+        val emptyDonut = if (alias.emails_forwarded == 0 &&
+            alias.emails_replied == 0 &&
+            alias.emails_sent == 0 &&
+            alias.emails_blocked == 0
+        ) 1 else 0
+
         // DONUT
         val section1 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
             color = ContextCompat.getColor(holder.mChart.context, color1),
-            amount = forwarded
+            amount = forwarded + emptyDonut
         )
         // Always show section 1
         listOfDonutSection.add(section1)

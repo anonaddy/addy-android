@@ -182,7 +182,7 @@ class NetworkHelper(private val context: Context) {
         }
 
         val customKeyManager = object : X509KeyManager {
-            override fun chooseClientAlias(keyType: Array<String>?, issuers: Array<Principal>?, socket: Socket?): String? {
+            override fun chooseClientAlias(keyType: Array<String>?, issuers: Array<Principal>?, socket: Socket?): String {
                 return alias // Assuming 'alias' is the identifier for your certificate
             }
 

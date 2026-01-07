@@ -1,5 +1,29 @@
 # Changelog
 
+## [v5.9.0] - 2026-01-08
+
+### addy.io
+
+##### Fixed/Improved
+
+##### Added
+
+- Added option to show alias in phonetic alphabet style by tapping on the email-address when viewing an alias' details
+- Added count of aliases in the aliases tab
+
+##### Fixed/Improved
+
+- Fixed an issue where the app would crash after opening it from the background
+- Updated gradle, kotlin version and more
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.5.6)_
+
+##### Fixed/Improved
+
+- Updated gradle, kotlin version and more
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.8.0] - 2025-12-13
 
 ### addy.io

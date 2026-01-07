@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -19,6 +20,8 @@ class ManageAliasNATOActivity : BaseActivity() {
     private var alias: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getDelegate().localNightMode = AppCompatDelegate.MODE_NIGHT_NO;
+
         super.onCreate(savedInstanceState)
         binding = ActivityManageAliasNatoBinding.inflate(layoutInflater)
         val view = binding.root
@@ -26,7 +29,7 @@ class ManageAliasNATOActivity : BaseActivity() {
 
         // Only setup toolbar in portrait mode
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setupToolbar(R.string.alias, null,
+            setupToolbar(R.string.phonetic_alphabet, null,
                 binding.activityManageAliasNatoToolbar,
                 R.drawable.ic_letters_case)
         } else {

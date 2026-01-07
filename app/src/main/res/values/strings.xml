@@ -69,10 +69,12 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.8.0</h3>
+<h3>What\'s new in addy.io for Android 5.9.0</h3>
+<h4>Added</h4>
+<p>- Added option to show alias in phonetic alphabet style by tapping on the email-address when viewing an alias\' details<br />- Added count of aliases in the aliases tab</p>
 <h4>Fixed/Improved</h4>
-<p>- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>
-<h3>What\'s new in addy.io for Android Wearables 1.5.5</h3>
+<p>- Fixed an issue where the app would crash after opening it from the background<br />- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>
+<h3>What\'s new in addy.io for Android Wearables 1.5.6</h3>
 <h4>Fixed/Improved</h4>
 <p>- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
@@ -820,5 +822,6 @@
     <string name="resend_failed_delivery_confirmation_desc">Are you sure you want to resend this email to the recipients?</string>
     <string name="reset_app_logout">Reset app (logout)</string>
     <string name="change_orientation">Change orientation</string>
+    <string name="phonetic_alphabet">Phonetic Alphabet</string>
 
 </resources>

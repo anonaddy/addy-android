@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val compose_version = rootProject.extra["compose_version"]
 val compose_compiler_version = rootProject.extra["compose_compiler_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
@@ -7,7 +9,7 @@ val wear_compose_version = rootProject.extra["wear_compose_version"]
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.0" // this version matches your Kotlin version
 
 }
 
@@ -36,8 +38,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17  // Replace "17" with your target, e.g., JVM_11, JVM_21
+        }
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "$compose_compiler_version"

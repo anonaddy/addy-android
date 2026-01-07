@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val compose_version = rootProject.extra["compose_version"]
 val compose_material_version = rootProject.extra["compose_material_version"]
 val compose_compiler_version = rootProject.extra["compose_compiler_version"]
@@ -8,7 +10,7 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.0" // this version matches your Kotlin version
 
 }
 
@@ -27,9 +29,9 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v1.5.5 + release 01 + 01 (for wearos)
-        versionCode = 361550101
-        versionName = "1.5.5"
+        // SDK 36 + v1.5.6 + release 01 + 01 (for wearos)
+        versionCode = 361560101
+        versionName = "1.5.6"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -53,8 +55,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17  // Replace "17" with your target, e.g., JVM_11, JVM_21
+        }
     }
 
 
