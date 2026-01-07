@@ -77,6 +77,8 @@ import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import host.stjin.anonaddy.interfaces.Refreshable
 
 
 object MainActivityTimeClass {
@@ -294,27 +296,40 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     fun refreshAllData() {
         // Refresh all data in child fragments
-        val homeFragment: HomeFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("HomeFragment") as HomeFragment?
-        val aliasFragment: AliasFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment?
-        val recipientsFragment: RecipientsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RecipientsFragment") as RecipientsFragment?
-        homeFragment?.getDataFromWeb(null)
-        aliasFragment?.getDataFromWeb(null)
-        recipientsFragment?.getDataFromWeb(null)
 
+        // Get all fragments currently managed by the ViewPager's adapter
+        val allFragments = (viewPager.adapter as MainViewpagerAdapter).getAllFragments()
 
-        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            val usernamesSettingsFragment: UsernamesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("UsernamesSettingsFragment") as UsernamesSettingsFragment?
-            usernamesSettingsFragment?.getDataFromWeb(null)
-
-            val domainSettingsFragment: DomainSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("DomainSettingsFragment") as DomainSettingsFragment?
-            domainSettingsFragment?.getDataFromWeb(null)
-
-            val rulesSettingsFragment: RulesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RulesSettingsFragment") as RulesSettingsFragment?
-            rulesSettingsFragment?.getDataFromWeb(null)
-
-            val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
-            failedDeliveriesFragment?.getDataFromWeb(null)
+        // Loop through the fragments and refresh only those that implement the Refreshable interface
+        for (fragment in allFragments) {
+            if (fragment is Refreshable) {
+                // Call the interface method. It's now the fragment's own responsibility
+                // to handle this call safely.
+                fragment.onRefreshData()
+            }
         }
+
+//        val homeFragment: HomeFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("HomeFragment") as HomeFragment?
+//        val aliasFragment: AliasFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment?
+//        val recipientsFragment: RecipientsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RecipientsFragment") as RecipientsFragment?
+//        homeFragment?.getDataFromWeb(null)
+//        aliasFragment?.getDataFromWeb(null)
+//        recipientsFragment?.getDataFromWeb(null)
+//
+//
+//        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+//            val usernamesSettingsFragment: UsernamesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("UsernamesSettingsFragment") as UsernamesSettingsFragment?
+//            usernamesSettingsFragment?.getDataFromWeb(null)
+//
+//            val domainSettingsFragment: DomainSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("DomainSettingsFragment") as DomainSettingsFragment?
+//            domainSettingsFragment?.getDataFromWeb(null)
+//
+//            val rulesSettingsFragment: RulesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RulesSettingsFragment") as RulesSettingsFragment?
+//            rulesSettingsFragment?.getDataFromWeb(null)
+//
+//            val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
+//            failedDeliveriesFragment?.getDataFromWeb(null)
+//        }
 
         // Check for updates and check API expiration key
         lifecycleScope.launch {
@@ -362,7 +377,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         viewPager =
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) binding.activityMainViewpagerSw600dp!! else binding.activityMainViewpager!!
 
-        val fragmentList = if (resources.getBoolean(R.bool.isTablet)) {
+        val fragmentList: ArrayList<Fragment> = if (resources.getBoolean(R.bool.isTablet)) {
             arrayListOf(
                 HomeFragment.newInstance(),
                 AliasFragment.newInstance(),

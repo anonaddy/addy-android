@@ -28,6 +28,7 @@ import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.AliasAdapter
 import host.stjin.anonaddy.databinding.FragmentAliasBinding
+import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.alias.manage.ManageAliasActivity
@@ -41,6 +42,7 @@ import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.BulkAliasesArray
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.GsonTools
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
@@ -48,7 +50,7 @@ import kotlinx.coroutines.launch
 
 class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDialogListener,
     FilterOptionsAliasBottomDialogFragment.AddFilterOptionsAliasBottomDialogListener,
-    AliasMultipleSelectionBottomDialogFragment.AddAliasMultipleSelectionBottomDialogListener {
+    AliasMultipleSelectionBottomDialogFragment.AddAliasMultipleSelectionBottomDialogListener, Refreshable {
 
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
@@ -643,6 +645,23 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             hideSnackBar()
         }
 
+    }
+
+    override fun onRefreshData() {
+        // The key is to check if the view is created before proceeding.
+        // `viewLifecycleOwner` can be used as a proxy for this check.
+        if (!isAdded) return
+
+        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
+        try {
+            // This ensures the coroutine is launched only when the view's lifecycle is active.
+            viewLifecycleOwner.lifecycleScope.launch {
+                getDataFromWeb(null)
+            }
+        } catch (e: IllegalStateException) {
+            // Log the error if the lifecycle state was somehow invalid despite the check.
+            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "AliasFragment", null)
+        }
     }
 
 }
