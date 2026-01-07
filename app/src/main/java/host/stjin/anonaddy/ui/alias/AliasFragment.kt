@@ -387,7 +387,11 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 binding.aliasNoAliases.visibility = View.VISIBLE
             }
 
-            binding.aliasHeader.text = this@AliasFragment.resources.getString(R.string.all_aliases_d, aliasList?.meta?.total ?: 0)
+            if (defaultAliasSortFilter != aliasSortFilter) {
+                binding.aliasHeader.text = this@AliasFragment.resources.getString(R.string.aliases_filtered_d, aliasList?.meta?.total ?: 0)
+            } else {
+                binding.aliasHeader.text = this@AliasFragment.resources.getString(R.string.aliases_d, aliasList?.meta?.total ?: 0)
+            }
 
             // Hide snackbar
             hideSnackBar()

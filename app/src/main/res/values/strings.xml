@@ -36,7 +36,8 @@
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
     <string name="all_aliases">All aliases</string>
-    <string name="all_aliases_d">All aliases (%d)</string>
+    <string name="aliases_d">Aliases (%d)</string>
+    <string name="aliases_filtered_d">Aliases (%d) (filter active)</string>
     <string name="settings">Settings</string>
     <string name="resend_email">Resend email</string>
     <string name="delete">Delete</string>

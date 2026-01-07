@@ -33,9 +33,11 @@
                         android:id="@+id/alias_header"
                         style="@style/titleTextView"
                         android:layout_width="0dp"
+                        android:ellipsize="end"
+                        android:lines="1"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/all_aliases" />
+                        android:text="@string/aliases" />
 
 
                     <com.google.android.material.button.MaterialButton
