@@ -30,6 +30,7 @@
 
 
                     <TextView
+                        android:id="@+id/alias_header"
                         style="@style/titleTextView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

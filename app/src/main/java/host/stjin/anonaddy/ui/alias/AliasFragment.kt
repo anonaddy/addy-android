@@ -387,6 +387,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 binding.aliasNoAliases.visibility = View.VISIBLE
             }
 
+            binding.aliasHeader.text = this@AliasFragment.resources.getString(R.string.all_aliases_d, aliasList?.meta?.total ?: 0)
+
             // Hide snackbar
             hideSnackBar()
 
