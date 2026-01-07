@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import org.apache.commons.lang3.StringUtils
 import androidx.core.net.toUri
 import androidx.core.graphics.createBitmap
+import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 
 
 class ManageAliasActivity : BaseActivity(),
@@ -446,6 +447,12 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setOnClickListeners() {
+        binding.activityManageAliasEmail.setOnClickListener {
+            val intent = Intent(this, ManageAliasNATOActivity::class.java)
+            intent.putExtra("alias", alias?.email)
+            this.startActivity(intent)
+        }
+
         binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
             override fun onClick() {

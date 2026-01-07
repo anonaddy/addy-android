@@ -251,6 +251,9 @@
             android:name=".ui.faileddeliveries.FailedDeliveriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.alias.manage.ManageAliasNATOActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.accountnotifications.AccountNotificationsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

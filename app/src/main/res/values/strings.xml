@@ -819,5 +819,6 @@
     <string name="resend">Resend</string>
     <string name="resend_failed_delivery_confirmation_desc">Are you sure you want to resend this email to the recipients?</string>
     <string name="reset_app_logout">Reset app (logout)</string>
+    <string name="change_orientation">Change orientation</string>
 
 </resources>

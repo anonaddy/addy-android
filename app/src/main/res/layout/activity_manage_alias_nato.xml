@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_manage_alias_CL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.alias.manage.ManageAliasNATOActivity">
+
+    <include
+        android:id="@+id/activity_manage_alias_nato_toolbar"
+        layout="@layout/custom_toolbar_one_handed" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/activity_manage_alias_nato_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_nato" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/activity_manage_alias_nato_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/change_orientation"
+        app:srcCompat="@drawable/ic_device_mobile_rotated" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
