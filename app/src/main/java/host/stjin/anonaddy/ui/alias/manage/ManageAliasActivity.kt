@@ -231,10 +231,18 @@ class ManageAliasActivity : BaseActivity(),
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
         // DONUT
+
+        // If there are no statistics, sent the emptyDonut value to 1 so that a donut can be drawn
+        val emptyDonut = if (forwarded == 0f &&
+            replied == 0f &&
+            sent == 0f &&
+            blocked == 0f
+        ) 1 else 0
+
         val section1 = DonutSection(
             name = binding.activityManageAliasChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
             color = ContextCompat.getColor(this, R.color.portalOrange),
-            amount = forwarded
+            amount = forwarded + emptyDonut
         )
         // Always show section 1
         listOfDonutSection.add(section1)
@@ -446,6 +454,12 @@ class ManageAliasActivity : BaseActivity(),
 
 
     private fun setOnClickListeners() {
+        binding.activityManageAliasEmail.setOnClickListener {
+            val intent = Intent(this, ManageAliasNATOActivity::class.java)
+            intent.putExtra("alias", alias?.email)
+            this.startActivity(intent)
+        }
+
         binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
             SectionView.OnLayoutClickedListener {
             override fun onClick() {

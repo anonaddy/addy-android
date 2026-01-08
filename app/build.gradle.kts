@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v5.8.0 + release 01 + 00 (for app)
-        versionCode = 365800200 // https://developer.android.com/training/wearables/packaging //TODO Change back to 01
+        // SDK 36 + v5.9.0 + release 01 + 00 (for app)
+        versionCode = 365900200 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
-        versionName = "v5.8.0"
+        versionName = "v5.9.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -148,7 +148,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut:2.2.3") // FIXME: https://github.com/futuredapp/donut/pull/96
+    implementation("app.futured.donut:donut:2.3.0") // FIXME: https://github.com/futuredapp/donut/pull/96
 }
 
 // Loading spinners when execution actions from eg. bottomsheets
@@ -159,7 +159,7 @@ dependencies {
 // Backup manager
 dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
-    implementation("androidx.activity:activity-ktx:1.12.1")
+    implementation("androidx.activity:activity-ktx:1.12.2")
 }
 
 // Communication with Wear OS device

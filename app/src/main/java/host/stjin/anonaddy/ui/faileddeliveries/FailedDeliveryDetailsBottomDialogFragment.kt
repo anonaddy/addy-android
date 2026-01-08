@@ -11,16 +11,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFailedDeliveryDetailBinding
-import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.utils.MaterialDialogHelper
-import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper

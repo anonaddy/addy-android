@@ -256,7 +256,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
             { result, _ ->
                 if (result != null) {
                     // Check if there is an alias with this email address and get its ID
-                    val aliasId: String? = result.data.firstOrNull { it.email.lowercase() == text.lowercase() }?.id
+                    val aliasId: String? = result.data.firstOrNull { it.email.equals(text, ignoreCase = true) }?.id
                     if (!aliasId.isNullOrEmpty()) {
                         // ID is not empty, thus there was a match
                         // Let the user know that an alias exists, wait 1s and open the ManageAliasActivity

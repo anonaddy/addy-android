@@ -32,4 +32,8 @@ class MainViewpagerAdapter(fa: FragmentActivity, private val fragments: ArrayLis
 
     // Method to get position by tag
     fun getPositionByTag(tag: String): Int? = tagToIndex[tag]
+
+    fun getAllFragments(): ArrayList<Fragment> {
+        return fragments // Assuming 'fragmentList' is the list of fragments you use to create the adapter
+    }
 }

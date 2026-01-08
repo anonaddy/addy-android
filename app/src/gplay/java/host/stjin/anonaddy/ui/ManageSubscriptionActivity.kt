@@ -333,22 +333,26 @@ class ManageSubscriptionActivity : BaseActivity(), BillingClientStateListener, P
     }
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (purchase in purchases) {
-                handlePurchase(purchase)
-                lifecycleScope.launch {
-                    getPurchasedItem()
+        when (billingResult.responseCode) {
+            BillingClient.BillingResponseCode.OK if purchases != null -> {
+                for (purchase in purchases) {
+                    handlePurchase(purchase)
+                    lifecycleScope.launch {
+                        getPurchasedItem()
+                    }
                 }
             }
-        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            // Handle an error caused by a user cancelling the purchase flow.
-        } else {
-            LoggingHelper(this).addLog(
-                LOGIMPORTANCE.CRITICAL.int,
-                billingResult.debugMessage,
-                "onPurchasesUpdated",
-                billingResult.responseCode.toString()
-            )
+            BillingClient.BillingResponseCode.USER_CANCELED -> {
+                // Handle an error caused by a user cancelling the purchase flow.
+            }
+            else -> {
+                LoggingHelper(this).addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    billingResult.debugMessage,
+                    "onPurchasesUpdated",
+                    billingResult.responseCode.toString()
+                )
+            }
         }
     }
 

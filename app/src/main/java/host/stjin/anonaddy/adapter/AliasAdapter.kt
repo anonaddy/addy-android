@@ -39,69 +39,79 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         applySelectedOverlay(holder, position)
 
-        holder.mTitle.text = listWithAliases[position].email
+        val alias = listWithAliases[position]
+        holder.mTitle.text = alias.email
 
-        if (listWithAliases[position].deleted_at != null) {
-            holder.mDescription.text = holder.mDescription.context.resources.getString(
-                R.string.s_s,
-                (holder.mDescription.context).resources.getString(
+        val context = holder.mDescription.context
+        val prettyTime = PrettyTime()
+        val descriptionParts = mutableListOf<String>()
+
+        // Add description if it exists
+        alias.description?.let { descriptionParts.add(it) }
+
+        // Add date information
+        if (alias.deleted_at != null) {
+            descriptionParts.add(
+                context.getString(
                     R.string.deleted_at_s,
-                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].deleted_at))
-                ),
-                (holder.mDescription.context).resources.getString(
-                    R.string.created_at_s,
-                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].created_at))
-                ),
-            )
-        } else if (listWithAliases[position].description != null) {
-            holder.mDescription.text = holder.mDescription.context.resources.getString(
-                R.string.s_s_s,
-                listWithAliases[position].description,
-                (holder.mDescription.context).resources.getString(
-                    R.string.created_at_s,
-                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].created_at))
-                ),
-                (holder.mDescription.context).resources.getString(
-                    R.string.updated_at_s,
-                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].updated_at))
+                    prettyTime.format(DateTimeUtils.convertStringToLocalTimeZoneDate(alias.deleted_at))
                 )
             )
+            // If there's no description for a deleted alias, show created_at as well
+            if (alias.description == null) {
+                descriptionParts.add(
+                    context.getString(
+                        R.string.created_at_s,
+                        prettyTime.format(DateTimeUtils.convertStringToLocalTimeZoneDate(alias.created_at))
+                    )
+                )
+            }
         } else {
-            holder.mDescription.text = holder.mDescription.context.resources.getString(
-                R.string.s_s,
-                (holder.mDescription.context).resources.getString(
+            descriptionParts.add(
+                context.getString(
                     R.string.created_at_s,
-                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].created_at))
-                ),
-                (holder.mDescription.context).resources.getString(
+                    prettyTime.format(DateTimeUtils.convertStringToLocalTimeZoneDate(alias.created_at))
+                )
+            )
+            descriptionParts.add(
+                context.getString(
                     R.string.updated_at_s,
-                    PrettyTime().format(DateTimeUtils.convertStringToLocalTimeZoneDate(listWithAliases[position].updated_at))
+                    prettyTime.format(DateTimeUtils.convertStringToLocalTimeZoneDate(alias.updated_at))
                 )
             )
         }
 
+        holder.mDescription.text = descriptionParts.joinToString("\n")
 
         /*
         CHART
          */
 
-        val forwarded = listWithAliases[position].emails_forwarded.toFloat()
-        val replied = listWithAliases[position].emails_replied.toFloat()
-        val sent = listWithAliases[position].emails_sent.toFloat()
-        val blocked = listWithAliases[position].emails_blocked.toFloat()
+        val forwarded = alias.emails_forwarded.toFloat()
+        val replied = alias.emails_replied.toFloat()
+        val sent = alias.emails_sent.toFloat()
+        val blocked = alias.emails_blocked.toFloat()
 
-        val color1 = if (listWithAliases[position].active) R.color.portalOrange else R.color.md_grey_500
-        val color2 = if (listWithAliases[position].active) R.color.portalBlue else R.color.md_grey_600
-        val color3 = if (listWithAliases[position].active) R.color.easternBlue else R.color.md_grey_700
-        val color4 = if (listWithAliases[position].active) R.color.softRed else R.color.md_grey_800
+        val color1 = if (alias.active) R.color.portalOrange else R.color.md_grey_500
+        val color2 = if (alias.active) R.color.portalBlue else R.color.md_grey_600
+        val color3 = if (alias.active) R.color.easternBlue else R.color.md_grey_700
+        val color4 = if (alias.active) R.color.softRed else R.color.md_grey_800
 
 
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
+
+        // If there are no statistics, sent the emptyDonut value to 1 so that a donut can be drawn
+        val emptyDonut = if (alias.emails_forwarded == 0 &&
+            alias.emails_replied == 0 &&
+            alias.emails_sent == 0 &&
+            alias.emails_blocked == 0
+        ) 1 else 0
+
         // DONUT
         val section1 = DonutSection(
             name = holder.mChart.context.resources.getString(R.string.d_forwarded, forwarded.toInt()),
             color = ContextCompat.getColor(holder.mChart.context, color1),
-            amount = forwarded
+            amount = forwarded + emptyDonut
         )
         // Always show section 1
         listOfDonutSection.add(section1)
@@ -139,7 +149,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
         // DONUT
 
         holder.mWatchedTextView.visibility =
-            if (aliasesToWatch.contains(listWithAliases[position].id)) View.VISIBLE else View.GONE
+            if (aliasesToWatch.contains(alias.id)) View.VISIBLE else View.GONE
     }
 
     private fun applySelectedOverlay(holder: ViewHolder, position: Int) {
@@ -256,4 +266,3 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
     }
 }
-

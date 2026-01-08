@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.adapter.DomainAdapter
 import host.stjin.anonaddy.databinding.FragmentDomainSettingsBinding
+import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.domains.manage.ManageDomainsActivity
 import host.stjin.anonaddy.utils.InsetUtil
@@ -29,11 +30,12 @@ import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.Domains
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
-class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener {
+class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDomainBottomDialogListener, Refreshable {
 
     private var domains: ArrayList<Domains>? = null
     private var networkHelper: NetworkHelper? = null
@@ -347,6 +349,23 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
         addDomainFragment.dismissAllowingStateLoss()
         // Get the latest data in the background, and update the values when loaded
         getDataFromWeb(null)
+    }
+
+    override fun onRefreshData() {
+        // The key is to check if the view is created before proceeding.
+        // `viewLifecycleOwner` can be used as a proxy for this check.
+        if (!isAdded) return
+
+        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
+        try {
+            // This ensures the coroutine is launched only when the view's lifecycle is active.
+            viewLifecycleOwner.lifecycleScope.launch {
+                getDataFromWeb(null)
+            }
+        } catch (e: IllegalStateException) {
+            // Log the error if the lifecycle state was somehow invalid despite the check.
+            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "DomainSettingsFragment", null)
+        }
     }
 
 }

@@ -76,6 +76,17 @@ Developer-led download channels:
 - [Github release](https://github.com/anonaddy/addy-android/releases)
 - [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy)
 
+
+---
+
+**Certificate fingerprints for Github builds**
+
+SHA1: B3:54:B7:FB:01:39:DC:5C:ED:BA:FB:B6:9E:7B:C5:C5:CD:CF:0E:F3
+SHA256: 12:D4:69:1B:9F:67:A7:06:D4:E5:B0:AB:DF:A2:58:6A:A4:B0:18:BE:A1:99:9E:ED:79:18:0A:73:61:CA:ED:D2
+
+> Note that both Google Play as well as F-Droid use their own signing keys which differ from these
+---
+
 ## UI
 
 - Designed by my lovely UI guru @JustPlayingHard (💙)

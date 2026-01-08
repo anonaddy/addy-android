@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.FragmentHomeBinding
+import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.service.AliasWatcher
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.ui.MainViewpagerAdapter
@@ -26,12 +27,13 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), Refreshable {
 
     private var networkHelper: NetworkHelper? = null
 
@@ -380,5 +382,22 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onRefreshData() {
+        // The key is to check if the view is created before proceeding.
+        // `viewLifecycleOwner` can be used as a proxy for this check.
+        if (!isAdded) return
+
+        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
+        try {
+            // This ensures the coroutine is launched only when the view's lifecycle is active.
+            viewLifecycleOwner.lifecycleScope.launch {
+                getDataFromWeb(null)
+            }
+        } catch (e: IllegalStateException) {
+            // Log the error if the lifecycle state was somehow invalid despite the check.
+            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "HomeFragment", null)
+        }
     }
 }

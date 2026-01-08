@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Added option to show alias in phonetic alphabet style by tapping on the email-address when viewing an alias' details<br />- Added count of aliases in the aliases tab</p>
+<h4>Fixed/Improved</h4>
+<p>- Fixed an issue where the app would crash after opening it from the background<br />- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>
