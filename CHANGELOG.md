@@ -4,8 +4,6 @@
 
 ### addy.io
 
-##### Fixed/Improved
-
 ##### Added
 
 - Added option to show alias in phonetic alphabet style by tapping on the email-address when viewing an alias' details
