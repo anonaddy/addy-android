@@ -51,6 +51,8 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_KEYS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_RESEND
 import host.stjin.anonaddy_shared.AddyIo.API_URL_REGISTER
+import host.stjin.anonaddy_shared.AddyIo.API_URL_REMOVE_PGP_KEYS_RECIPIENTS
+import host.stjin.anonaddy_shared.AddyIo.API_URL_REMOVE_PGP_SIGNATURES_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_REORDER_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RULES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_USERNAMES
@@ -2678,6 +2680,235 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
+
+    suspend fun disableRemovePgpKeysRecipients(
+        callback: (String?) -> Unit?,
+        recipientId: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.delete("${API_URL_REMOVE_PGP_KEYS_RECIPIENTS}/$recipientId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disableRemovePgpKeysRecipients",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
+    suspend fun enableRemovePgpKeysRecipients(
+        callback: (Recipients?, String?) -> Unit,
+        recipientId: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("id", recipientId)
+
+        val (_, response, result) = Fuel.post(API_URL_REMOVE_PGP_KEYS_RECIPIENTS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enableRemovePgpKeysRecipients",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
+
+
+    suspend fun disableRemovePgpSignaturesRecipients(
+        callback: (String?) -> Unit?,
+        recipientId: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.delete("${API_URL_REMOVE_PGP_SIGNATURES_RECIPIENTS}/$recipientId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "disableRemovePgpSignaturesRecipients",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
+    suspend fun enableRemovePgpSignaturesRecipients(
+        callback: (Recipients?, String?) -> Unit,
+        recipientId: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("id", recipientId)
+
+        val (_, response, result) = Fuel.post(API_URL_REMOVE_PGP_SIGNATURES_RECIPIENTS)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleRecipient::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "enableRemovePgpSignaturesRecipients",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+
+
 
     suspend fun disableProtectedHeadersRecipient(
         callback: (String?) -> Unit?,
