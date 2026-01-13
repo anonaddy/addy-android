@@ -384,12 +384,12 @@ class ManageRecipientsActivity : BaseActivity(),
 
     private suspend fun enableRemovePGPKeysForASpecificRecipient() {
         networkHelper.enableRemovePgpKeysRecipients({ recipient, error ->
-            binding.activityManageRecipientRemovePgpKey.showProgressBar(false)
+            binding.activityManageRecipientRemovePgpKeysFromRs.showProgressBar(false)
             if (recipient != null) {
                 this.recipient = recipient
                 shouldRefreshOnFinish = true
             } else {
-                binding.activityManageRecipientRemovePgpKey.setSwitchChecked(false)
+                binding.activityManageRecipientRemovePgpKeysFromRs.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + error,
