@@ -509,6 +509,20 @@ class ManageRecipientsActivity : BaseActivity(),
                 binding.activityManageRecipientProtectedHeaders.setSwitchChecked(!binding.activityManageRecipientProtectedHeaders.getSwitchChecked())
             }
         })
+
+        binding.activityManageRecipientRemovePgpKeysFromRs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientRemovePgpKeysFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpKeysFromRs.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.getSwitchChecked())
+            }
+        })
     }
 
 
