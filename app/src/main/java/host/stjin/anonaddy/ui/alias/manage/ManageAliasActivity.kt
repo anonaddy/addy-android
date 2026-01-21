@@ -422,7 +422,7 @@ class ManageAliasActivity : BaseActivity(),
                 binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setSwitchChecked(true)
                 SnackbarHelper.createSnackbar(
                     this,
-                    this.resources.getString(R.string.error_attached_recipients_only_status) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageAliasCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
@@ -441,7 +441,7 @@ class ManageAliasActivity : BaseActivity(),
                 binding.activityManageAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
-                    this.resources.getString(R.string.error_attached_recipients_only_status) + "\n" + result,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
                     binding.activityManageAliasCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()

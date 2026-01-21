@@ -188,6 +188,44 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         })
 
+        binding.activityManageRecipientRemovePgpKeysFromRs.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageRecipientRemovePgpKeysFromRs.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableRemovePGPKeysForASpecificRecipient()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableRemovePGPKeysForASpecificRecipient()
+                        }
+                    }
+                }
+            }
+        })
+
+        binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableRemovePGPSignaturesForASpecificRecipient()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableRemovePGPSignaturesForASpecificRecipient()
+                        }
+                    }
+                }
+            }
+        })
+
 
     }
 
@@ -287,6 +325,44 @@ class ManageRecipientsActivity : BaseActivity(),
         }, this.recipient!!.id)
     }
 
+    private suspend fun disableRemovePGPKeysForASpecificRecipient() {
+        networkHelper.disableRemovePgpKeysRecipients({ result ->
+            binding.activityManageRecipientRemovePgpKeysFromRs.showProgressBar(false)
+            if (result == "204") {
+                this.recipient!!.remove_pgp_keys = false
+                shouldRefreshOnFinish = true
+                updateUi(this.recipient!!)
+            } else {
+                binding.activityManageRecipientRemovePgpKeysFromRs.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+    private suspend fun disableRemovePGPSignaturesForASpecificRecipient() {
+        networkHelper.disableRemovePgpSignaturesRecipients({ result ->
+            binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.showProgressBar(false)
+            if (result == "204") {
+                this.recipient!!.remove_pgp_signatures = false
+                shouldRefreshOnFinish = true
+                updateUi(this.recipient!!)
+            } else {
+                binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
 
     private suspend fun enablePGPInline() {
         networkHelper.enablePgpInlineRecipient({ recipient, error ->
@@ -296,6 +372,42 @@ class ManageRecipientsActivity : BaseActivity(),
                 shouldRefreshOnFinish = true
             } else {
                 binding.activityManageRecipientPgpInline.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+    private suspend fun enableRemovePGPKeysForASpecificRecipient() {
+        networkHelper.enableRemovePgpKeysRecipients({ recipient, error ->
+            binding.activityManageRecipientRemovePgpKeysFromRs.showProgressBar(false)
+            if (recipient != null) {
+                this.recipient = recipient
+                shouldRefreshOnFinish = true
+            } else {
+                binding.activityManageRecipientRemovePgpKeysFromRs.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
+                    binding.activityManageRecipientCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.recipient!!.id)
+    }
+
+    private suspend fun enableRemovePGPSignaturesForASpecificRecipient() {
+        networkHelper.enableRemovePgpSignaturesRecipients({ recipient, error ->
+            binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.showProgressBar(false)
+            if (recipient != null) {
+                this.recipient = recipient
+                shouldRefreshOnFinish = true
+            } else {
+                binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(false)
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + error,
@@ -347,7 +459,7 @@ class ManageRecipientsActivity : BaseActivity(),
 
 
     private fun setOnClickListeners() {
-        binding.activityManageRecipientChangeGpgKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageRecipientChangePgpKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
                     addRecipientPublicGpgKeyBottomDialogFragment.show(
@@ -358,7 +470,7 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageRecipientRemoveGpgKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+        binding.activityManageRecipientRemovePgpKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
                 removeGpgKey(this@ManageRecipientsActivity.recipient!!.id)
             }
@@ -395,6 +507,20 @@ class ManageRecipientsActivity : BaseActivity(),
             override fun onClick() {
                 forceSwitch = true
                 binding.activityManageRecipientProtectedHeaders.setSwitchChecked(!binding.activityManageRecipientProtectedHeaders.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientRemovePgpKeysFromRs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientRemovePgpKeysFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpKeysFromRs.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.getSwitchChecked())
             }
         })
     }
@@ -541,6 +667,8 @@ class ManageRecipientsActivity : BaseActivity(),
 
         binding.activityManageRecipientPgpInline.setSwitchChecked(recipient.inline_encryption)
         binding.activityManageRecipientProtectedHeaders.setSwitchChecked(recipient.protected_headers)
+        binding.activityManageRecipientRemovePgpKeysFromRs.setSwitchChecked(recipient.remove_pgp_keys)
+        binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(recipient.remove_pgp_signatures)
 
         if (recipient.fingerprint == null) {
             binding.activityManageRecipientPgpInline.setLayoutEnabled(false)
@@ -583,12 +711,12 @@ class ManageRecipientsActivity : BaseActivity(),
         // If there is a fingerprint, enable the remove button.
         // If there is no fingerptint, do not enable the remove button
         if (recipient.fingerprint != null) {
-            binding.activityManageRecipientRemoveGpgKey.setLayoutEnabled(true)
-            binding.activityManageRecipientChangeGpgKey.setTitle(resources.getString(R.string.change_public_gpg_key))
+            binding.activityManageRecipientRemovePgpKey.setLayoutEnabled(true)
+            binding.activityManageRecipientChangePgpKey.setTitle(resources.getString(R.string.change_public_gpg_key))
             binding.activityManageRecipientEncryptionTextview.text = resources.getString(R.string.fingerprint_s, recipient.fingerprint)
         } else {
-            binding.activityManageRecipientRemoveGpgKey.setLayoutEnabled(false)
-            binding.activityManageRecipientChangeGpgKey.setTitle(resources.getString(R.string.add_public_gpg_key))
+            binding.activityManageRecipientRemovePgpKey.setLayoutEnabled(false)
+            binding.activityManageRecipientChangePgpKey.setTitle(resources.getString(R.string.add_public_gpg_key))
             binding.activityManageRecipientEncryptionTextview.text = resources.getString(R.string.encryption_disabled)
         }
 

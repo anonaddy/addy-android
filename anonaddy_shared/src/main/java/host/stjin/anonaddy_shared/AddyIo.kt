@@ -9,10 +9,10 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.3.5
+    // 1.3.7
     var MINIMUMVERSIONCODEMAJOR = 1
     var MINIMUMVERSIONCODEMINOR = 3
-    var MINIMUMVERSIONCODEPATCH = 5
+    var MINIMUMVERSIONCODEPATCH = 7
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -38,6 +38,8 @@ object AddyIo {
     val API_URL_DOMAIN_OPTIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/domain-options" }
     val API_URL_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/encrypted-recipients" }
     val API_URL_INLINE_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/inline-encrypted-recipients" }
+    val API_URL_REMOVE_PGP_KEYS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/remove-pgp-keys-recipients" }
+    val API_URL_REMOVE_PGP_SIGNATURES_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/remove-pgp-signatures-recipients" }
     val API_URL_PROTECTED_HEADERS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/protected-headers-recipients" }
     val API_URL_RECIPIENT_RESEND: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/recipients/email/resend" }
     val API_URL_RECIPIENT_KEYS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/recipient-keys" }

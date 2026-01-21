@@ -184,6 +184,15 @@
                         app:sectionTitle="@string/can_reply_send" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_protected_headers"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/protected_headers_subject_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_heading"
+                        app:sectionTitle="@string/protected_headers" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_active"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -193,14 +202,14 @@
                         app:sectionTitle="@string/encryption_enabled" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_recipient_change_gpg_key"
+                        android:id="@+id/activity_manage_recipient_change_pgp_key"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionStartIcon="@drawable/ic_fingerprint"
                         app:sectionTitle="@string/change_public_gpg_key" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_recipient_remove_gpg_key"
+                        android:id="@+id/activity_manage_recipient_remove_pgp_key"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:sectionStartIcon="@drawable/ic_forbid"
@@ -216,13 +225,22 @@
                         app:sectionTitle="@string/pgp_inline" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
-                        android:id="@+id/activity_manage_recipient_protected_headers"
+                        android:id="@+id/activity_manage_recipient_remove_pgp_keys_from_rs"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:sectionDescription="@string/protected_headers_subject_desc"
+                        app:sectionDescription="@string/remove_pgp_keys_from_rs_desc"
                         app:sectionShowSwitch="true"
-                        app:sectionStartIcon="@drawable/ic_heading"
-                        app:sectionTitle="@string/protected_headers" />
+                        app:sectionStartIcon="@drawable/ic_key_off"
+                        app:sectionTitle="@string/remove_pgp_keys_from_rs" />
+
+                    <host.stjin.anonaddy.ui.customviews.SectionView
+                        android:id="@+id/activity_manage_recipient_remove_pgp_signatures_key_from_rs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:sectionDescription="@string/remove_pgp_signature_from_rs_desc"
+                        app:sectionShowSwitch="true"
+                        app:sectionStartIcon="@drawable/ic_signature_off"
+                        app:sectionTitle="@string/remove_pgp_signature_from_rs" />
 
                     <host.stjin.anonaddy.ui.customviews.SectionView
                         android:id="@+id/activity_manage_recipient_delete"
