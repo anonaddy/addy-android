@@ -94,7 +94,6 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
             binding.bsRuleActionValuesSpinnerBannerLocationMact.setText(actionEditObject.value, false)
         }
 
-        // If type is banner location, set value for it
         if (actionEditObject.type == "forwardTo") {
             viewLifecycleOwner.lifecycleScope.launch {
                 getAllRecipients(actionEditObject.value)
@@ -114,9 +113,16 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
         }
     }
 
-    checkIfTypeRequiresValueField(context)
+        checkIfTypeRequiresValueField(context)
+        checkIfTypeShouldShowHint(context)
+    }
 
-
+    private fun checkIfTypeShouldShowHint(context: Context) {
+        if (binding.bsRuleActionTypeMact.text.toString() == context.resources.getString(R.string.replace_the_subject_with)) {
+            binding.bsRuleActionValuesTilSubjectHint.visibility = View.VISIBLE
+        } else {
+            binding.bsRuleActionValuesTilSubjectHint.visibility = View.GONE
+        }
     }
 
     /*
@@ -126,6 +132,7 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
     private fun spinnerChangeListener(context: Context) {
         binding.bsRuleActionTypeMact.setOnItemClickListener { _, _, _, _ ->
             checkIfTypeRequiresValueField(context)
+            checkIfTypeShouldShowHint(context)
         }
     }
 
@@ -163,13 +170,13 @@ class ActionBottomDialogFragment(private val recipients: ArrayList<Recipients>, 
                 binding.bsRuleActionValuesTil.visibility = View.GONE
             }
 
-
             else -> {
                 binding.bsRuleActionForwardToTil.visibility = View.GONE
                 binding.bsRuleActionValuesSpinnerBannerLocationTil.visibility = View.GONE
                 binding.bsRuleActionValuesTil.visibility = View.VISIBLE
             }
         }
+
     }
 
 

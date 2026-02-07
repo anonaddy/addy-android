@@ -135,7 +135,16 @@
                     android:maxLines="1"
                     android:minLines="1" />
 
+                <TextView
+                    android:id="@+id/bs_rule_action_values_til_subject_hint"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_action_subject_info"/>
+
             </com.google.android.material.textfield.TextInputLayout>
+
+
 
 
             <com.google.android.material.button.MaterialButton

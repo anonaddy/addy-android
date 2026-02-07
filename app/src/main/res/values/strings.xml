@@ -823,5 +823,6 @@
     <string name="remove_pgp_keys_from_rs">Remove PGP Keys from Replies/Sends</string>
     <string name="remove_pgp_signature_from_rs">Remove PGP Signatures from Replies/Sends</string>
     <string name="remove_pgp_signature_from_rs_desc">Only disable this option if you are certain that you can not accidentally sign outbound emails using the PGP key of your recipient when replying/sending from your aliases.</string>
+    <string name="add_action_subject_info">Use {{subject}} placeholder to include the original subject (e.g. to prepend or append text)</string>
 
 </resources>

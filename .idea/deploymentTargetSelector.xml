@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-01-07T20:19:00.830147Z">
+        <DropdownSelection timestamp="2026-02-07T15:50:59.386334Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stijn/.android/avd/Medium_Phone.avd" />
@@ -28,7 +28,7 @@
       </SelectionState>
       <SelectionState runConfigName="app-wearos">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-01-07T20:18:00.642535Z">
+        <DropdownSelection timestamp="2026-02-06T18:52:41.001872Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=/Users/stijn/.android/avd/Medium_Phone.avd" />
