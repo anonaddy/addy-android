@@ -228,7 +228,7 @@
     <string name="catch_all_disabled">Catch-All disabled</string>
     <string name="alias_local_part">Alias local part</string>
     <string name="domains_format_custom_not_available_for_this_domain">Not available for the selected domain</string>
-    <string name="domains_format_random_words_not_available_for_this_subscription">Random words is not available for your current subscription</string>
+    <string name="domains_format_not_available_for_this_subscription">This domain format is not available for your current subscription</string>
     <string name="ignore_and_continue">Ignore and continue</string>
     <string name="how_to_update">How to update</string>
     <string name="latest">latest</string>

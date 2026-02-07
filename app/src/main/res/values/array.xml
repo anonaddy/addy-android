@@ -4,6 +4,9 @@
         <item>@string/domains_format_random_characters</item>
         <item>@string/domains_format_uuid</item>
         <item>@string/domains_format_random_words</item>
+        <item>@string/domains_format_random_male_name</item>
+        <item>@string/domains_format_random_female_name</item>
+        <item>@string/domains_format_random_noun</item>
         <item>@string/domains_format_custom</item>
     </string-array>
 
@@ -11,6 +14,9 @@
         <item>random_characters</item>
         <item>uuid</item>
         <item>random_words</item>
+        <item>random_male_name</item>
+        <item>random_female_name</item>
+        <item>random_noun</item>
         <item>custom</item>
     </string-array>
 
@@ -137,6 +143,9 @@
     <string name="domains_format_custom">Custom</string>
     <string name="domains_format_uuid">UUID</string>
     <string name="domains_format_random_characters">Random characters</string>
+    <string name="domains_format_random_female_name">Random female name</string>
+    <string name="domains_format_random_male_name">Random male name</string>
+    <string name="domains_format_random_noun">Random noun</string>
     <string name="matches_regex">matches regex</string>
     <string name="does_not_match_regex">does not match regex</string>
     <string name="login_expiration_day">1 day</string>
