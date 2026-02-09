@@ -226,6 +226,14 @@ class ManageAliasActivity : ComponentActivity() {
                     ) {
                         item { GetDonut() }
                         item {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(text = alias!!.email)
+                            }
+                        }
+                        item {
                             StatTextView(
                                 string = this@ManageAliasActivity.resources.getString(R.string.d_forwarded, alias!!.emails_forwarded),
                                 icon = R.drawable.ic_inbox,
