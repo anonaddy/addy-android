@@ -9,7 +9,7 @@ val wear_compose_version = rootProject.extra["wear_compose_version"]
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.0" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.10" // this version matches your Kotlin version
 
 }
 
