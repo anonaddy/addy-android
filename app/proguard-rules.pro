@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
+
+# Proguard rules for the Fuel library
+-keep class com.github.kittinunf.fuel.** { *; }
+-keep class kotlin.Result { *; }
+-dontwarn com.github.kittinunf.fuel.**

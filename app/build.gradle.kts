@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v5.9.1 + release 01 + 00 (for app)
-        versionCode = 365910100 // https://developer.android.com/training/wearables/packaging
+        // SDK 36 + v5.9.2 + release 01 + 00 (for app)
+        versionCode = 365920100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
-        versionName = "v5.9.1"
+        versionName = "v5.9.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -151,7 +151,7 @@ dependencies {
     implementation("app.futured.donut:donut:2.3.0") // FIXME: https://github.com/futuredapp/donut/pull/96
 }
 
-// Loading spinners when execution actions from eg. bottomsheets
+// Loading spinners when execution actions from e.g. bottom sheets
 dependencies {
     implementation("com.github.Stjin:LoadingButtonAndroid:2.2.0")
 }
