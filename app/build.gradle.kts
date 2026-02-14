@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v5.9.1 + release 01 + 00 (for app)
-        versionCode = 365910100 // https://developer.android.com/training/wearables/packaging
+        // SDK 36 + v5.9.2 + release 01 + 00 (for app)
+        versionCode = 365920100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
-        versionName = "v5.9.1"
+        versionName = "v5.9.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -36,7 +36,7 @@ android {
         getByName("release") {
             // Do not enable, Fuel will break
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {
             applicationIdSuffix = ".debug"
@@ -96,14 +96,14 @@ dependencies {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.10")
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.9.6")
-    implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.7")
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.7")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
@@ -143,7 +143,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.11.0")
+    implementation("androidx.work:work-runtime-ktx:2.11.1")
 }
 
 // For the donut in the aliasview
@@ -151,7 +151,7 @@ dependencies {
     implementation("app.futured.donut:donut:2.3.0") // FIXME: https://github.com/futuredapp/donut/pull/96
 }
 
-// Loading spinners when execution actions from eg. bottomsheets
+// Loading spinners when execution actions from e.g. bottom sheets
 dependencies {
     implementation("com.github.Stjin:LoadingButtonAndroid:2.2.0")
 }
@@ -159,7 +159,7 @@ dependencies {
 // Backup manager
 dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
-    implementation("androidx.activity:activity-ktx:1.12.2")
+    implementation("androidx.activity:activity-ktx:1.12.4")
 }
 
 // Communication with Wear OS device

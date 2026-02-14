@@ -218,7 +218,34 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             // If the user has a free subscription
             if ((activity?.application as AddyIoApp).userResource.hasUserFreeSubscription) {
                 binding.bsAddaliasAliasFormatTil.error =
-                    context.resources.getString(R.string.domains_format_random_words_not_available_for_this_subscription)
+                    context.resources.getString(R.string.domains_format_not_available_for_this_subscription)
+                return
+            }
+        }
+
+        if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_random_female_name)) {
+            // If the user has a free subscription
+            if ((activity?.application as AddyIoApp).userResource.hasUserFreeSubscription) {
+                binding.bsAddaliasAliasFormatTil.error =
+                    context.resources.getString(R.string.domains_format_not_available_for_this_subscription)
+                return
+            }
+        }
+
+        if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_random_male_name)) {
+            // If the user has a free subscription
+            if ((activity?.application as AddyIoApp).userResource.hasUserFreeSubscription) {
+                binding.bsAddaliasAliasFormatTil.error =
+                    context.resources.getString(R.string.domains_format_not_available_for_this_subscription)
+                return
+            }
+        }
+
+        if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_random_noun)) {
+            // If the user has a free subscription
+            if ((activity?.application as AddyIoApp).userResource.hasUserFreeSubscription) {
+                binding.bsAddaliasAliasFormatTil.error =
+                    context.resources.getString(R.string.domains_format_not_available_for_this_subscription)
                 return
             }
         }

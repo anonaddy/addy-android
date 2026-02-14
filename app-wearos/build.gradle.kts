@@ -10,7 +10,7 @@ val wear_tiles_version = rootProject.extra["wear_tiles_version"]
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.0" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.10" // this version matches your Kotlin version
 
 }
 
@@ -30,8 +30,8 @@ android {
          */
 
         // SDK 36 + v1.5.6 + release 01 + 01 (for wearos)
-        versionCode = 361560101
-        versionName = "1.5.6"
+        versionCode = 361570101
+        versionName = "1.5.7"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -84,7 +84,7 @@ android {
         getByName("release") {
             // Do not enable, Fuel will break
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {
             applicationIdSuffix = ".debug"
@@ -145,7 +145,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.11.0")
+    implementation("androidx.work:work-runtime-ktx:2.11.1")
 }
 
 // For parsing wearOSSettings
@@ -155,7 +155,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut-compose:2.2.4")
+    implementation("app.futured.donut:donut-compose:2.3.0")
 }
 
 // Tiles

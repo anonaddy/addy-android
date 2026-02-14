@@ -1,5 +1,26 @@
 # Changelog
 
+## [v5.9.2] - 2026-02-14
+
+### addy.io
+
+##### Added
+
+- Support for new alias formats
+
+##### Fixed/Improved
+
+- New subject placeholder hints when adding a new action
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.5.7)_
+
+##### Fixed/Improved
+
+- When editing an alias, the actual email address is not being shown below the donut graph
+- Updated gradle, kotlin version and more
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.9.1] - 2026-01-21
 
 ### addy.io

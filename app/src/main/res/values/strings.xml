@@ -69,11 +69,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.9.1</h3>
+<h3>What\'s new in addy.io for Android 5.9.2</h3>
 <h4>Added</h4>
-<p>- Added support for new \'Remove PGP Keys for a Specific Recipient\' and \'Remove PGP Signatures for a Specific Recipient\' features</p>
+<p>- Support for new alias formats</p>
 <h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
+<p>- New subject placeholder hints when adding a new action<br />- Performance improvements and other things to make the app even smoother<br /><br /></p>
+<h3>What\'s new in addy.io for Android Wearables 1.5.7</h3>
+<h4>Fixed/Improved</h4>
+<p>- When editing an alias, the actual email address is not being shown below the donut graph<br />- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -228,7 +231,7 @@
     <string name="catch_all_disabled">Catch-All disabled</string>
     <string name="alias_local_part">Alias local part</string>
     <string name="domains_format_custom_not_available_for_this_domain">Not available for the selected domain</string>
-    <string name="domains_format_random_words_not_available_for_this_subscription">Random words is not available for your current subscription</string>
+    <string name="domains_format_not_available_for_this_subscription">This domain format is not available for your current subscription</string>
     <string name="ignore_and_continue">Ignore and continue</string>
     <string name="how_to_update">How to update</string>
     <string name="latest">latest</string>
@@ -823,5 +826,6 @@
     <string name="remove_pgp_keys_from_rs">Remove PGP Keys from Replies/Sends</string>
     <string name="remove_pgp_signature_from_rs">Remove PGP Signatures from Replies/Sends</string>
     <string name="remove_pgp_signature_from_rs_desc">Only disable this option if you are certain that you can not accidentally sign outbound emails using the PGP key of your recipient when replying/sending from your aliases.</string>
+    <string name="add_action_subject_info">Use {{subject}} placeholder to include the original subject (e.g. to prepend or append text)</string>
 
 </resources>

@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Support for new alias formats</p>
+<h4>Fixed/Improved</h4>
+<p>- New subject placeholder hints when adding a new action<br />- Performance improvements and other things to make the app even smoother<br /><br /></p>
