@@ -107,7 +107,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-wearable:19.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
-    implementation("androidx.wear:wear:1.3.0")
+    implementation("androidx.wear:wear:1.4.0")
 
     compileOnly("com.google.android.wearable:wearable:2.9.0")
     implementation("com.google.android.support:wearable:2.9.0")
@@ -155,7 +155,7 @@ dependencies {
 
 // For the donut in the aliasview
 dependencies {
-    implementation("app.futured.donut:donut-compose:2.3.0")
+    implementation("app.futured.donut:donut-compose:2.3.1")
 }
 
 // Tiles

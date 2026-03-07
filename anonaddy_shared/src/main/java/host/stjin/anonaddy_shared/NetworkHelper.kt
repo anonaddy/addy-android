@@ -31,6 +31,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_ALLOWED_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_API_TOKEN_DETAILS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_APP_VERSION
 import host.stjin.anonaddy_shared.AddyIo.API_URL_ATTACHED_RECIPIENTS_ONLY
+import host.stjin.anonaddy_shared.AddyIo.API_URL_BLOCKLIST
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CAN_LOGIN_USERNAMES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_DOMAINS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_CATCH_ALL_USERNAMES
@@ -66,6 +67,8 @@ import host.stjin.anonaddy_shared.models.AliasSortFilter
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.models.AliasesArray
 import host.stjin.anonaddy_shared.models.ApiTokenDetails
+import host.stjin.anonaddy_shared.models.BlocklistEntries
+import host.stjin.anonaddy_shared.models.BlocklistEntriesArray
 import host.stjin.anonaddy_shared.models.BulkActionResponse
 import host.stjin.anonaddy_shared.models.BulkAliasesArray
 import host.stjin.anonaddy_shared.models.DomainOptions
@@ -78,11 +81,13 @@ import host.stjin.anonaddy_shared.models.FailedDeliveriesArray
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.Login
 import host.stjin.anonaddy_shared.models.LoginMfaRequired
+import host.stjin.anonaddy_shared.models.NewBlocklistEntry
 import host.stjin.anonaddy_shared.models.Recipients
 import host.stjin.anonaddy_shared.models.RecipientsArray
 import host.stjin.anonaddy_shared.models.Rules
 import host.stjin.anonaddy_shared.models.RulesArray
 import host.stjin.anonaddy_shared.models.SingleAlias
+import host.stjin.anonaddy_shared.models.SingleBlocklistEntry
 import host.stjin.anonaddy_shared.models.SingleDomain
 import host.stjin.anonaddy_shared.models.SingleFailedDelivery
 import host.stjin.anonaddy_shared.models.SingleRecipient
@@ -5689,6 +5694,179 @@ class NetworkHelper(private val context: Context) {
         }
     }
 
+
+    /**
+     * BLOCKLIST
+     */
+
+    suspend fun getAllBlocklistEntries(
+        callback: (ArrayList<BlocklistEntries>?, String?) -> Unit
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.get(API_URL_BLOCKLIST)
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BlocklistEntriesArray::class.java)
+
+                val blockListEntries = ArrayList<BlocklistEntries>()
+                blockListEntries.addAll(addyIoData.data)
+
+                callback(blockListEntries, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "getAllBlocklistEntries",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun deleteBlocklistEntry(
+        callback: (String?) -> Unit,
+        id: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.delete("${API_URL_BLOCKLIST}/$id")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "deleteBlocklistEntry",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun addBlocklistEntry(
+        callback: (BlocklistEntries?, String?) -> Unit,
+        entry: NewBlocklistEntry
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("type", entry.type)
+        json.put("value", entry.value)
+
+        val (_, response, result) = Fuel.post(API_URL_BLOCKLIST)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            201 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleBlocklistEntry::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "addBlocklistEntry",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
 
     /**
      * UPDATE

@@ -87,6 +87,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
 
         // Also used for background service account notifications
         BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT(true, PREFTYPES.INT, "cache_account_notifications_count"),
+        BACKGROUND_SERVICE_CACHE_BLOCKLIST_ENTRIES_COUNT(true, PREFTYPES.INT, "cache_blocklist_entries_count"),
 
         // Used to limit the amount of expiry notifications to 1 a day
         BACKGROUND_SERVICE_CACHE_API_KEY_EXPIRY_LEFT_COUNT(true, PREFTYPES.INT, "cache_api_key_expiry_left_count"),

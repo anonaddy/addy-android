@@ -79,6 +79,8 @@ import kotlin.math.abs
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import host.stjin.anonaddy.interfaces.Refreshable
+import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
+import host.stjin.anonaddy.ui.blocklist.ManageBlocklistFragment
 
 
 object MainActivityTimeClass {
@@ -385,6 +387,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 UsernamesSettingsFragment.newInstance(),
                 DomainSettingsFragment.newInstance(),
                 RulesSettingsFragment.newInstance(),
+                ManageBlocklistFragment.newInstance(),
                 FailedDeliveriesFragment.newInstance()
             )
         } else {
@@ -398,7 +401,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
 
         viewPager.adapter = MainViewpagerAdapter(this, fragmentList)
-        viewPager.offscreenPageLimit = if (resources.getBoolean(R.bool.isTablet)) 7 else 3
+        viewPager.offscreenPageLimit = if (resources.getBoolean(R.bool.isTablet)) 8 else 3
         // Allow swiping through the pages
         viewPager.isUserInputEnabled = true
         viewPager.setPageTransformer { page, position ->
@@ -459,6 +462,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     }
 
                     6 -> {
+                        navView.menu.findItem(R.id.navigation_blocklist).isChecked = true
+                    }
+
+                    7 -> {
                         hideFailedDeliveriesBadge()
 
                         navView.menu.findItem(R.id.navigation_failed_deliveries).isChecked = true
@@ -1061,6 +1068,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 }
             }
 
+            R.id.navigation_blocklist -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 6
+                } else {
+                    val intent = Intent(this, ManageBlocklistActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
             R.id.navigation_failed_deliveries -> {  // Only SW600DP>
 
                 // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
@@ -1069,7 +1085,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 hideFailedDeliveriesBadge()
 
                 if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 6
+                    viewPager.currentItem = 7
                 } else {
                     val intent = Intent(this, FailedDeliveriesActivity::class.java)
                     startActivity(intent)
