@@ -162,13 +162,13 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         if (AddyIo.isUsingHostedInstance) {
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                binding.navRail!!.headerView?.findViewById<LinearLayout>(R.id.navigation_rail_fab_account_notifications_LL)!!.visibility = View.VISIBLE
+                binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility = View.VISIBLE
             } else {
                 binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIconRL.visibility = View.VISIBLE
             }
         } else {
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                binding.navRail!!.headerView?.findViewById<LinearLayout>(R.id.navigation_rail_fab_account_notifications_LL)!!.visibility = View.GONE
+                binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility = View.GONE
             } else {
                 binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIconRL.visibility = View.GONE
             }

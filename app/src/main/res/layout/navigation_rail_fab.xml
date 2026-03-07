@@ -44,35 +44,20 @@
         android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/navigation_rail_fab_shape"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/navigation_rail_fab_account_notifications_LL"
-            android:layout_width="match_parent"
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/navigation_rail_fab_account_notifications"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/navigation_rail_fab_account_notifications"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:elevation="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/account_notifications"
-                app:srcCompat="@drawable/ic_bell" />
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                app:dividerColor="?colorOnPrimaryContainer"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_height="0.5dp" />
-        </LinearLayout>
+            android:layout_marginBottom="8dp"
+            app:shapeAppearance="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/account_notifications"
+            app:srcCompat="@drawable/ic_bell" />
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
