@@ -51,19 +51,19 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
-    <style name="AppTheme.CollapsingToolbarTitle.Expanded" parent="TextAppearance.AppCompat">
+    <style name="AppTheme.CollapsingToolbarTitle.Expanded" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="android:textSize">@dimen/expanded_text_size</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="AppTheme.CollapsingToolbarTitle.Expanded.Subtitle" parent="TextAppearance.AppCompat">
+    <style name="AppTheme.CollapsingToolbarTitle.Expanded.Subtitle" parent="TextAppearance.Material3.BodyLarge">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="AppTheme.CollapsingToolbarTitle.Expanded.Small" parent="TextAppearance.AppCompat">
+    <style name="AppTheme.CollapsingToolbarTitle.Expanded.Small" parent="TextAppearance.Material3.HeadlineSmall">
         <item name="android:textSize">@dimen/collapsed_text_size</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="fontFamily">sans-serif</item>
@@ -132,7 +132,7 @@
         <item name="android:stateListAnimator">@null</item>
         <item name="iconTint">?colorOnPrimary</item>
         <item name="cornerRadius">@dimen/corner_radius_button</item>
-        <item name="android:height">54dp</item>
+        <item name="android:height">56dp</item> <!-- Increased for expressive feel -->
         <item name="android:singleLine">true</item>
     </style>
 
@@ -152,12 +152,12 @@
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:paddingLeft">7dp</item>
-        <item name="android:paddingRight">12dp</item>
-        <item name="android:layout_width">32dp</item>
-        <item name="android:layout_height">32dp</item>
-        <item name="iconSize">18dp</item>
-        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:layout_width">40dp</item> <!-- Larger for expressive touch targets -->
+        <item name="android:layout_height">40dp</item>
+        <item name="iconSize">20dp</item>
+        <item name="cornerRadius">@dimen/corner_radius_cardview</item>
         <item name="iconTint">?colorPrimary</item>
     </style>
 
@@ -171,6 +171,7 @@
         <item name="iconTint">?colorOnTertiary</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="cornerRadius">@dimen/corner_radius_button</item>
+        <item name="android:height">56dp</item>
     </style>
 
     <style name="CircularProgressButtonTertiary" parent="ActionButtonsTertiary">
@@ -186,7 +187,7 @@
 
     <!-- END TERTIARY -->
 
-    <style name="DescTextStyle">
+    <style name="DescTextStyle" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:alpha">0.7</item>
     </style>
 
@@ -212,7 +213,7 @@
         <item name="android:layout_marginStart">16dp</item>
     </style>
 
-    <style name="titleTextView">
+    <style name="titleTextView" parent="TextAppearance.Material3.TitleMedium">
         <item name="fontFamily">sans-serif-medium</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/BlackWhite</item>
@@ -227,9 +228,13 @@
 
     <style name="AddyIoTextInputLayoutOutlined" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="android:layout_marginBottom">16dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/corner_radius_cardview</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/corner_radius_cardview</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/corner_radius_cardview</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/corner_radius_cardview</item>
     </style>
 
-    <style name="AddyIoTextInputEditText">
+    <style name="AddyIoTextInputEditText" parent="TextAppearance.Material3.BodyLarge">
         <item name="android:textColor">@color/BlackWhite</item>
     </style>
 
@@ -237,11 +242,15 @@
     <!-- Style for material design 'Spinner'-->
     <style name="AppTheme.ExposedDropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="android:layout_marginBottom">16dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/corner_radius_cardview</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/corner_radius_cardview</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/corner_radius_cardview</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/corner_radius_cardview</item>
     </style>
 
     <!-- style for material spinner 'item' layout -->
-    <style name="MaterialSpinnerItem" parent="Widget.AppCompat.TextView">
-        <item name="android:color">@color/DropDownSurfaceLightDarkMode</item>
+    <style name="MaterialSpinnerItem" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:color">?colorSurfaceContainer</item>
         <item name="android:textColor">@color/BlackWhite</item>
         <item name="android:textSize">18sp</item>
         <item name="android:ellipsize">end</item>
@@ -249,24 +258,25 @@
         <item name="android:padding">16dp</item>
     </style>
 
-    <style name="AddyIoDialogTitle">
+    <style name="AddyIoDialogTitle" parent="TextAppearance.Material3.TitleLarge">
         <item name="android:ellipsize">end</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:lines">1</item>
         <item name="android:maxLines">1</item>
         <item name="singleLine">true</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="AddyIoDialogDesc" parent="AddyIoDialogTitle">
         <item name="android:alpha">0.7</item>
         <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="divider">
         <item name="android:layout_height">1dp</item>
         <item name="android:alpha">0.4</item>
-        <item name="android:background">?colorControlHighlight</item>
+        <item name="android:background">?colorOutlineVariant</item>
     </style>
 
     <style name="divider_vertical_widget_2_layout_3">
@@ -276,7 +286,7 @@
     </style>
 
     <style name="AddyIoCustomCardViewStyleCenter" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@android:color/white</item>
+        <item name="cardBackgroundColor">?colorSurfaceContainerLow</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners_center</item>
     </style>
 
@@ -295,13 +305,14 @@
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:alpha">1</item>
         <item name="android:layout_height">48dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="AddyIoSetupTitle" parent="titleTextView">
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:alpha">1</item>
-        <item name="android:textSize">32sp</item>
+        <item name="android:textSize">@dimen/expanded_text_size</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
@@ -313,18 +324,19 @@
         <item name="android:alpha">1</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">32dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="AddyIoDescText">
+    <style name="AddyIoDescText" parent="TextAppearance.Material3.BodyLarge">
         <item name="android:layout_marginBottom">24dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
     </style>
 
     <style name="RoundFlatButton" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="android:textColor">?colorControlNormal</item>
+        <item name="android:textColor">?colorOnSurface</item>
         <item name="strokeWidth">1.5dp</item>
-        <item name="strokeColor">?colorControlNormal</item>
+        <item name="strokeColor">?colorOutline</item>
     </style>
 
     <style name="AddyIoChip" parent="Widget.Material3.Chip.Filter" />
@@ -372,26 +384,25 @@
     </style>
 
     <style name="AddyIoMaterialToggleButton" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="cornerRadius">8dp</item>
+        <item name="cornerRadius">@dimen/corner_radius_button</item>
         <item name="android:padding">4dp</item>
         <item name="strokeWidth">0dp</item>
     </style>
 
     <style name="AddyIoMaterialToggleButtonAlternative" parent="AddyIoMaterialToggleButton">
         <item name="strokeWidth">1dp</item>
-        <item name="strokeColor">?colorOnBackground</item>
+        <item name="strokeColor">?colorOutline</item>
     </style>
 
     <style name="AddyIoMaterialToggleButtonGroupParentCardView" parent="Widget.Material3.CardView.Elevated">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="cardElevation">12dp</item>
+        <item name="cardElevation">0dp</item> <!-- M3 uses tonal elevation -->
         <item name="contentPadding">3dp</item>
-        <item name="cardCornerRadius">12dp</item>
+        <item name="cardCornerRadius">@dimen/corner_radius_cardview</item>
         <item name="contentPaddingLeft">6dp</item>
         <item name="contentPaddingRight">6dp</item>
-
-        <item name="cardBackgroundColor">@android:color/white</item>
+        <item name="cardBackgroundColor">?colorSurfaceContainer</item>
     </style>
 
     <style name="AddyIoBadge" parent="Widget.MaterialComponents.Badge">

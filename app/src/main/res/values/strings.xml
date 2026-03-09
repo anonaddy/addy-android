@@ -69,14 +69,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.9.2</h3>
+<h3>What\'s new in addy.io for Android 6.0.0</h3>
 <h4>Added</h4>
-<p>- Support for new alias formats</p>
+<p>- Support for the new blocklist feature</p>
 <h4>Fixed/Improved</h4>
-<p>- New subject placeholder hints when adding a new action<br />- Performance improvements and other things to make the app even smoother<br /><br /></p>
-<h3>What\'s new in addy.io for Android Wearables 1.5.7</h3>
+<p>- Improved use on foldables and tablets<br />- Minor UI changes to match Material 3 Expressive language<br />- Performance improvements and other things to make the app even smoother<br /><br /></p>
+<h3>What\'s new in addy.io for Android Wearables 1.5.8</h3>
 <h4>Fixed/Improved</h4>
-<p>- When editing an alias, the actual email address is not being shown below the donut graph<br />- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>]]></string>
+<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -843,5 +843,6 @@
     <string name="blocklist_add_desc">Add a sender or domain below - these entries cannot reach your aliases</string>
     <string name="blocklist_add">Add to blocklist</string>
     <string name="blocklist_add_hint">Email address or domain</string>
+    <string name="blocklist_type">Type</string>
 
 </resources>

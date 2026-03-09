@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.R
-import host.stjin.anonaddy.databinding.ActivityAccountNotificationsBinding
 import host.stjin.anonaddy.databinding.ActivityManageBlocklistBinding
 import kotlinx.coroutines.launch
 

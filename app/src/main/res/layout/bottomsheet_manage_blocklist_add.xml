@@ -62,9 +62,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Type">
+                android:hint="@string/blocklist_type">
 
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/bs_manage_blocklist_add_type_autocomplete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

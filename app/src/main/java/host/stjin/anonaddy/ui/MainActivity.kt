@@ -14,7 +14,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
