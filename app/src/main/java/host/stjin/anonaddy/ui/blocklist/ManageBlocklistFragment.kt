@@ -71,14 +71,6 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
 
 
     private fun setOnClickListeners() {
-        binding.aliasAddBlocklistEntryFab.setOnClickListener {
-            manageBlocklistAddBottomDialogFragment = ManageBlocklistAddBottomDialogFragment()
-            manageBlocklistAddBottomDialogFragment!!.show(
-                childFragmentManager,
-                "manageBlocklistAddBottomDialogFragment"
-            )
-        }
-
         binding.fragmentBlocklistAddBlocklistEntryButton.setOnClickListener {
             manageBlocklistAddBottomDialogFragment = ManageBlocklistAddBottomDialogFragment()
             manageBlocklistAddBottomDialogFragment!!.show(

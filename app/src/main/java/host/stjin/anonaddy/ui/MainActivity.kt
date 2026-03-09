@@ -10,7 +10,7 @@ import android.os.Looper
 import android.security.KeyChain
 import android.security.KeyChainAliasCallback
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -18,6 +18,11 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
@@ -29,12 +34,15 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.Updater
 import host.stjin.anonaddy.databinding.ActivityMainBinding
 import host.stjin.anonaddy.databinding.ActivityMainBinding.inflate
+import host.stjin.anonaddy.interfaces.Refreshable
 import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
 import host.stjin.anonaddy.ui.alias.AliasFragment
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
+import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
+import host.stjin.anonaddy.ui.blocklist.ManageBlocklistFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsFragment
@@ -75,11 +83,6 @@ import java.time.LocalDateTime
 import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
-import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
-import host.stjin.anonaddy.interfaces.Refreshable
-import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
-import host.stjin.anonaddy.ui.blocklist.ManageBlocklistFragment
 
 
 object MainActivityTimeClass {
@@ -114,12 +117,33 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     lateinit var viewPager: ViewPager2
 
 
+    // Make sure the viewPager is ABOVE the bottomnavbar
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            // In onCreate or a setup method
+            ViewCompat.setOnApplyWindowInsetsListener(binding.activityMainViewpager!!) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+                // Add system navigation bar height to the existing margin
+                view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    bottomMargin = systemBars.bottom
+                }
+                insets
+            }
+        }
+
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+
 
         networkHelper = NetworkHelper(this@MainActivity)
 
@@ -177,28 +201,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
-
-    // Make sure the viewPager is ABOVE the bottomnavbar
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            binding.navView!!.viewTreeObserver.addOnGlobalLayoutListener(
-                object : OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        // gets called after layout has been done but before display
-                        // so we can get the height then hide the view
-
-
-                        val height = binding.navView!!.height // Ahaha!  Gotcha
-                        binding.activityMainViewpager!!.setPadding(0,0,0,height)
-
-                        binding.navView!!.viewTreeObserver.removeGlobalOnLayoutListener(this)
-                    }
-                })
-
-        }
-
-    }
 
 
     // Only for Sw600>
