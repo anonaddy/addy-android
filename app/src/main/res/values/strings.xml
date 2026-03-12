@@ -106,7 +106,6 @@
     <string name="error_rules_active">An error occurred while changing the rule state</string>
     <string name="error_edit_catch_all">An error occurred while changing the catch-all state</string>
     <string name="error_edit_can_login">An error occurred while changing the can login state</string>
-
     <string name="alias_deactivated">Alias deactivated</string>
     <string name="alias_activated">Alias activated</string>
     <string name="delete_alias_confirmation_desc">Are you sure you want to delete this alias? You can restore this alias if you later change your mind. Once deleted, this alias will reject any emails sent to it.</string>
@@ -121,7 +120,6 @@
     <string name="forget_alias_desc">Forgetting an alias will disassociate it from your account</string>
     <string name="forget_alias">Forget alias</string>
     <string name="forget_alias_confirmation_desc">Are you sure you want to forget this alias? Forgetting an alias will disassociate it from your account.\n\nNote: If this alias uses a shared domain then it can never be restored or used again so make sure you are certain. If it is a standard alias then it can be created again since it will be as if it never existed.</string>
-
     <string name="default_recipient_s">Default recipient (%s)</string>
     <string name="security">Security</string>
     <string name="security_desc">Use your biometric or pin/pattern to open the addy.io app</string>
@@ -844,5 +842,10 @@
     <string name="blocklist_add">Add to blocklist</string>
     <string name="blocklist_add_hint">Email address or domain</string>
     <string name="blocklist_type">Type</string>
-
+    <string name="pinned">Pinned</string>
+    <string name="pin_alias">Pin alias</string>
+    <string name="pin_alias_desc">Pinned aliases appear at the top of the list and in search results</string>
+    <string name="filter_pinned_aliases">Pinned</string>
+    <string name="pinned_aliases">Pinned aliases</string>
+    <string name="view_pinned">View pinned</string>
 </resources>

@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import host.stjin.anonaddy.R
 
@@ -23,4 +25,15 @@ fun Loading() {
             trackColor = colorResource(id = R.color.md_theme_onPrimaryContainer)
         )
     }
+}
+
+@Preview(
+    device = Devices.WEAR_OS_SMALL_ROUND,
+    showSystemUi = true,
+    backgroundColor = 0xff000000,
+    showBackground = true
+)
+@Composable
+fun PreviewLoading() {
+    Loading()
 }

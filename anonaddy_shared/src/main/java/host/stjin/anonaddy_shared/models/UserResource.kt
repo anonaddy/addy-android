@@ -50,6 +50,7 @@ data class UserResource(
     val total_active_aliases: Int,
     val total_inactive_aliases: Int,
     val total_deleted_aliases: Int,
+    val total_pinned_aliases: Int,
     val created_at: String,
     val updated_at: String
 ) {

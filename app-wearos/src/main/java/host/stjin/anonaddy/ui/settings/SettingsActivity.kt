@@ -3,7 +3,6 @@ package host.stjin.anonaddy.ui.settings
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Spacer
@@ -52,7 +51,6 @@ import host.stjin.anonaddy.components.ShowOnDeviceComposeContent
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
-import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
 import host.stjin.anonaddy_shared.ui.theme.getAddyIoChipColors
@@ -63,7 +61,6 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 class SettingsActivity : ComponentActivity() {
 
-    private lateinit var favoriteAliasHelper: FavoriteAliasHelper
     private lateinit var settingsManager: SettingsManager
     private lateinit var encryptedSettingsManager: SettingsManager
     private val SPACING_ALIAS_BUTTONS = Dp(8f)
@@ -71,7 +68,6 @@ class SettingsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        favoriteAliasHelper = FavoriteAliasHelper(this)
         settingsManager = SettingsManager(false, this)
         encryptedSettingsManager = SettingsManager(true, this)
         setComposeContent()
@@ -158,10 +154,6 @@ class SettingsActivity : ComponentActivity() {
                         )
                     }
                     item { InlineSlider(backgroundServiceInterval, haptic) }
-                    item {
-                        Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.tile_favorite_aliases_label))
-                    }
-                    item { ClearFavoritesChip(scalingLazyListState, haptic) }
                     item { Text(modifier = Modifier.padding(top = 12.dp), text = resources.getString(R.string.logs), textAlign = TextAlign.Center) }
                     item { StoreLogsSwitch(scalingLazyListState, haptic) }
                     item { SendLogsToDeviceChip(scalingLazyListState, haptic) }
@@ -269,36 +261,6 @@ class SettingsActivity : ComponentActivity() {
         )
     }
 
-    @Composable
-    private fun ClearFavoritesChip(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
-        Chip(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .fillMaxWidth(),
-            onClick = {
-                if (!scalingLazyListState.isScrollInProgress) {
-                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    FavoriteAliasHelper(this@SettingsActivity).clearFavoriteAliases()
-                    Toast.makeText(this@SettingsActivity, resources.getString(R.string.favorite_aliases_cleared), Toast.LENGTH_SHORT)
-                        .show()
-                    // Since the favorite list was modified, call scheduleBackgroundWorker. This method will schedule the service if its required
-                    BackgroundWorkerHelper(this@SettingsActivity).scheduleBackgroundWorker()
-                }
-            },
-            colors = getAddyIoChipColors(),
-            enabled = true,
-            label = { Text(text = resources.getString(R.string.clear_favorites)) },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_star),
-                    contentDescription = resources.getString(R.string.clear_favorites),
-                    modifier = Modifier
-                        .size(24.dp)
-                        .wrapContentSize(align = Alignment.Center),
-                )
-            }
-        )
-    }
 
     @Composable
     private fun InlineSlider(backgroundServiceInterval: Int, hapticFeedback: HapticFeedback) {

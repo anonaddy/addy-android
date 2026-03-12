@@ -193,6 +193,16 @@
                         app:StatCardViewIcon="@drawable/ic_watch_alias"
                         app:StatCardViewShowButton="false"
                         app:StatCardViewTitle="@string/watched_aliases" />
+
+                    <host.stjin.anonaddy.ui.customviews.HomeStatCardView
+                        android:id="@+id/home_stat_pinned_aliases"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        app:StatCardViewDescription="0/1"
+                        app:StatCardViewIcon="@drawable/ic_pinned"
+                        app:StatCardViewShowButton="false"
+                        app:StatCardViewTitle="@string/pinned_aliases" />
                 </GridLayout>
 
 

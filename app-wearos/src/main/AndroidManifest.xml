@@ -51,11 +51,11 @@
             android:theme="@style/AppTheme" />
 
         <service
-            android:name=".tiles.FavoriteAliasesTileService"
+            android:name=".tiles.PinnedAliasesTileService"
             android:description="@string/app_name"
             android:exported="true"
             android:icon="@drawable/ic_email_at"
-            android:label="@string/tile_favorite_aliases_label"
+            android:label="@string/tile_pinned_aliases_label"
             android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
             <intent-filter>
                 <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
@@ -63,7 +63,7 @@
 
             <meta-data
                 android:name="androidx.wear.tiles.PREVIEW"
-                android:resource="@drawable/favorite_aliases_tile" />
+                android:resource="@drawable/pinned_aliases_tile" />
         </service>
         <service
             android:name=".service.WearableListenerService"

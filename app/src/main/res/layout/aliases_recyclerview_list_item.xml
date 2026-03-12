@@ -150,4 +150,17 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/aliases_recyclerview_list_pinned"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/pinned"
+        android:src="@drawable/ic_pinned"
+        android:visibility="gone"
+        app:tint="?colorAccent"
+        tools:visibility="visible" />
+
 </com.google.android.material.card.MaterialCardView>

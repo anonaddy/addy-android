@@ -26,6 +26,16 @@
         app:sectionTitle="@string/watch_alias" />
 
     <host.stjin.anonaddy.ui.customviews.SectionView
+        android:id="@+id/activity_manage_alias_pinned_switch_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sectionDescription="@string/pin_alias_desc"
+        app:sectionShowSwitch="true"
+        app:sectionStartIcon="@drawable/ic_pinned"
+        android:visibility="gone"
+        app:sectionTitle="@string/pin_alias" />
+
+    <host.stjin.anonaddy.ui.customviews.SectionView
         android:id="@+id/activity_manage_alias_limit_attached_recipients_switch_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

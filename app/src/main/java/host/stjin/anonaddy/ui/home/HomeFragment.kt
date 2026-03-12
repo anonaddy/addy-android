@@ -142,6 +142,7 @@ class HomeFragment : Fragment(), Refreshable {
                                 onlyDeletedAliases = false,
                                 onlyInactiveAliases = false,
                                 onlyWatchedAliases = false,
+                                onlyPinnedAliases = false,
                                 sort = null,
                                 sortDesc = false,
                                 filter = null
@@ -171,6 +172,7 @@ class HomeFragment : Fragment(), Refreshable {
                                 onlyDeletedAliases = false,
                                 onlyInactiveAliases = false,
                                 onlyWatchedAliases = false,
+                                onlyPinnedAliases = false,
                                 sort = null,
                                 sortDesc = false,
                                 filter = null
@@ -200,6 +202,7 @@ class HomeFragment : Fragment(), Refreshable {
                                 onlyDeletedAliases = false,
                                 onlyInactiveAliases = true,
                                 onlyWatchedAliases = false,
+                                onlyPinnedAliases = false,
                                 sort = null,
                                 sortDesc = false,
                                 filter = null
@@ -228,8 +231,39 @@ class HomeFragment : Fragment(), Refreshable {
                             AliasSortFilter(
                                 onlyActiveAliases = false,
                                 onlyDeletedAliases = true,
-                                onlyInactiveAliases = true,
+                                onlyInactiveAliases = false,
                                 onlyWatchedAliases = false,
+                                onlyPinnedAliases = false,
+                                sort = null,
+                                sortDesc = false,
+                                filter = null
+                            )
+                        )
+                        (activity as MainActivity).navigateTo(R.id.navigation_alias)
+                    }
+                ).show()
+            }
+
+        })
+
+        binding.homeStatPinnedAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
+            override fun onClick() {
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = requireContext().resources.getString(R.string.apply_filter),
+                    message = requireContext().resources.getString(R.string.apply_filter_desc),
+                    icon = R.drawable.ic_filter,
+                    neutralButtonText = requireContext().resources.getString(R.string.cancel),
+                    positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
+                    positiveButtonAction = {
+                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
+                        aliasFragment.setFilterAndSortingSettings(
+                            AliasSortFilter(
+                                onlyActiveAliases = false,
+                                onlyDeletedAliases = false,
+                                onlyInactiveAliases = false,
+                                onlyWatchedAliases = false,
+                                onlyPinnedAliases = true,
                                 sort = null,
                                 sortDesc = false,
                                 filter = null
@@ -252,10 +286,8 @@ class HomeFragment : Fragment(), Refreshable {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-
                         val aliasWatcher = AliasWatcher(requireContext())
                         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
-                        binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())
                         if (aliasesToWatch.isNotEmpty()) {
                             val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                             aliasFragment.setFilterAndSortingSettings(
@@ -264,6 +296,7 @@ class HomeFragment : Fragment(), Refreshable {
                                     onlyDeletedAliases = false,
                                     onlyInactiveAliases = false,
                                     onlyWatchedAliases = true,
+                                    onlyPinnedAliases = false,
                                     sort = null,
                                     sortDesc = false,
                                     filter = null
@@ -363,6 +396,7 @@ class HomeFragment : Fragment(), Refreshable {
         binding.homeStatCardActiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_active_aliases.toString())
         binding.homeStatCardInactiveAliases.setDescription((activity?.application as AddyIoApp).userResource.total_inactive_aliases.toString())
         binding.homeStatCardDeletedAliases.setDescription((activity?.application as AddyIoApp).userResource.total_deleted_aliases.toString())
+        binding.homeStatPinnedAliases.setDescription((activity?.application as AddyIoApp).userResource.total_pinned_aliases.toString())
         binding.homeStatCardTotalRecipients.setDescription((activity?.application as AddyIoApp).userResource.recipient_count.toString())
 
 

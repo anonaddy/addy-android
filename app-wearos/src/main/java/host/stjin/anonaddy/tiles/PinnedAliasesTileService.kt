@@ -52,7 +52,7 @@ import kotlinx.coroutines.guava.future
  * The main function, [onTileRequest], is triggered when the system calls for a tile and implements
  * ListenableFuture which allows the Tile to be returned asynchronously.
  */
-class FavoriteAliasesTileService : TileService() {
+class PinnedAliasesTileService : TileService() {
     // For coroutines, use a custom scope we can cancel when the service is destroyed
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
@@ -73,16 +73,16 @@ class FavoriteAliasesTileService : TileService() {
     // Resource identifiers for images
     private val ID_IC_EMAIL_AT = "ic_email_at_tinted"
     private val ID_IC_ADD = "ic_add_tinted"
-    private val ID_IC_STAR = "ic_star_tinted"
+    private val ID_IC_PINNED = "ic_pinned_tinted"
 
 
     override fun onTileRequest(
         requestParams: TileRequest
     ): ListenableFuture<Tile> = serviceScope.future {
 
-        val aliases = CacheHelper.getBackgroundServiceCacheFavoriteAliasesData(this@FavoriteAliasesTileService)
+        val aliases = CacheHelper.getBackgroundServiceCachePinnedAliasesData(this@PinnedAliasesTileService)
         val encryptedSettingsManager = try {
-            SettingsManager(true, this@FavoriteAliasesTileService)
+            SettingsManager(true, this@PinnedAliasesTileService)
         } catch (e: Exception) {
             null
         }
@@ -136,11 +136,11 @@ class FavoriteAliasesTileService : TileService() {
                         )
                         .build()
                 ).addIdToImageMapping(
-                    ID_IC_STAR,
+                    ID_IC_PINNED,
                     ResourceBuilders.ImageResource.Builder()
                         .setAndroidResourceByResId(
                             ResourceBuilders.AndroidImageResourceByResId.Builder()
-                                .setResourceId(R.drawable.ic_star_tinted)
+                                .setResourceId(R.drawable.ic_pinned_tinted)
                                 .build()
                         )
                         .build()
@@ -160,7 +160,7 @@ class FavoriteAliasesTileService : TileService() {
     ): LayoutElement = Column.Builder()
         .addContent(
             Text.Builder()
-                .setText(resources.getString(R.string.tile_favorite_aliases_title))
+                .setText(resources.getString(R.string.tile_pinned_aliases_title))
                 .setFontStyle(
                     FontStyles
                         .title3(deviceParameters)
@@ -174,7 +174,7 @@ class FavoriteAliasesTileService : TileService() {
         .addContent(Spacer.Builder().setHeight(SPACING_TITLE_SUBTITLE).build())
         .addContent(
             Text.Builder()
-                .setText(resources.getString(R.string.tile_favorite_aliases_subtitle))
+                .setText(resources.getString(R.string.tile_pinned_aliases_subtitle))
                 .setFontStyle(
                     FontStyles
                         .caption1(deviceParameters)
@@ -201,7 +201,7 @@ class FavoriteAliasesTileService : TileService() {
                             )
                         }
                         else -> {
-                            addNoFavoriteLayout()
+                            addNoPinnedLayout()
                         }
                     }
                 )
@@ -218,7 +218,7 @@ class FavoriteAliasesTileService : TileService() {
                             )
                         }
                         else -> {
-                            addNoFavoriteLayout()
+                            addNoPinnedLayout()
                         }
                     }
                 )
@@ -235,7 +235,7 @@ class FavoriteAliasesTileService : TileService() {
                             )
                         }
                         else -> {
-                            addNoFavoriteLayout()
+                            addNoPinnedLayout()
                         }
                     }
                 )
@@ -252,7 +252,7 @@ class FavoriteAliasesTileService : TileService() {
             Modifiers.Builder()
                 .setSemantics(
                     Semantics.Builder()
-                        .setContentDescription(getString(R.string.tile_favorite_aliases_label))
+                        .setContentDescription(getString(R.string.tile_pinned_aliases_label))
                         .build()
                 )
                 .build()
@@ -264,7 +264,7 @@ class FavoriteAliasesTileService : TileService() {
     ): LayoutElement = Column.Builder()
         .addContent(
             Text.Builder()
-                .setText(resources.getString(R.string.tile_favorite_aliases_title))
+                .setText(resources.getString(R.string.tile_pinned_aliases_title))
                 .setFontStyle(
                     FontStyles
                         .title3(deviceParameters)
@@ -282,7 +282,7 @@ class FavoriteAliasesTileService : TileService() {
                     .setPadding(Padding.Builder().setStart(dp(16f)).setEnd(dp(16f)).build()).build()
             ).addContent(
                 Text.Builder()
-                    .setText(resources.getString(R.string.tile_favorite_aliases_subtitle_not_logged_in))
+                    .setText(resources.getString(R.string.tile_pinned_aliases_subtitle_not_logged_in))
                     .setMaxLines(3)
                     .setFontStyle(
                         FontStyles
@@ -307,14 +307,14 @@ class FavoriteAliasesTileService : TileService() {
             Modifiers.Builder()
                 .setSemantics(
                     Semantics.Builder()
-                        .setContentDescription(getString(R.string.tile_favorite_aliases_label))
+                        .setContentDescription(getString(R.string.tile_pinned_aliases_label))
                         .build()
                 )
                 .build()
         )
         .build()
 
-    private fun addNoFavoriteLayout() = Box.Builder()
+    private fun addNoPinnedLayout() = Box.Builder()
         .setWidth(dp(CIRCLE_SIZE))
         .setHeight(dp(CIRCLE_SIZE))
         .setModifiers(
@@ -331,7 +331,7 @@ class FavoriteAliasesTileService : TileService() {
                 )
                 .setSemantics(
                     Semantics.Builder()
-                        .setContentDescription(getString(R.string.tile_favorite_aliases_favorite))
+                        .setContentDescription(getString(R.string.tile_pinned_aliases_pin))
                         .build()
                 )
                 .setClickable(
@@ -352,7 +352,7 @@ class FavoriteAliasesTileService : TileService() {
             Image.Builder()
                 .setWidth(ICON_SIZE)
                 .setHeight(ICON_SIZE)
-                .setResourceId(ID_IC_STAR)
+                .setResourceId(ID_IC_PINNED)
                 .build()
         )
         .build()
@@ -364,7 +364,7 @@ class FavoriteAliasesTileService : TileService() {
                 ActionBuilders.AndroidActivity.Builder()
                     .setClassName(ManageAliasActivity::class.java.name)
                     .addKeyToExtraMapping("alias", ActionBuilders.stringExtra(alias.id))
-                    .setPackageName(this@FavoriteAliasesTileService.packageName)
+                    .setPackageName(this@PinnedAliasesTileService.packageName)
                     .build()
             ).build()
     }
@@ -405,7 +405,7 @@ class FavoriteAliasesTileService : TileService() {
                     FontStyles
                         .button(deviceParameters)
                         .setColor(
-                            argb(ColorUtils.getMostPopularColor(this@FavoriteAliasesTileService, alias))
+                            argb(ColorUtils.getMostPopularColor(this@PinnedAliasesTileService, alias))
                         )
                         .build()
                 )
@@ -433,7 +433,7 @@ class FavoriteAliasesTileService : TileService() {
                 )
                 .setSemantics(
                     Semantics.Builder()
-                        .setContentDescription(getString(R.string.tile_favorite_aliases_all))
+                        .setContentDescription(getString(R.string.tile_pinned_aliases_all))
                         .build()
                 )
                 .setClickable(
@@ -476,7 +476,7 @@ class FavoriteAliasesTileService : TileService() {
                 )
                 .setSemantics(
                     Semantics.Builder()
-                        .setContentDescription(getString(R.string.tile_favorite_aliases_create))
+                        .setContentDescription(getString(R.string.tile_pinned_aliases_create))
                         .build()
                 )
                 .setClickable(

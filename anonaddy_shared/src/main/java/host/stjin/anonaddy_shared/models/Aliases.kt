@@ -26,6 +26,7 @@ data class Aliases(
     val domain: String,
     val email: String,
     var active: Boolean,
+    var pinned: Boolean,
     val description: String?,
     val from_name: String?,
     var attached_recipients_only: Boolean,

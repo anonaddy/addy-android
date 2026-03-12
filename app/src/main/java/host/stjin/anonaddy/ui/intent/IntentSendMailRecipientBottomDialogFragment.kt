@@ -171,6 +171,7 @@ class IntentSendMailRecipientBottomDialogFragment(
                         onlyDeletedAliases = false,
                         onlyInactiveAliases = false,
                         onlyWatchedAliases = false,
+                        onlyPinnedAliases = false,
                         sort = null,
                         sortDesc = true,
                         filter = searchQuery

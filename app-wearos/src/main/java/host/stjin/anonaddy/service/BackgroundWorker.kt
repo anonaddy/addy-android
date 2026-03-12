@@ -8,13 +8,10 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.google.gson.Gson
 import host.stjin.anonaddy.BuildConfig
-import host.stjin.anonaddy.tiles.FavoriteAliasesTileService
-import host.stjin.anonaddy.utils.FavoriteAliasHelper
+import host.stjin.anonaddy.tiles.PinnedAliasesTileService
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.Aliases
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -28,7 +25,7 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
 
     private fun updateTiles() {
         TileService.getUpdater(ctx)
-            .requestUpdate(FavoriteAliasesTileService::class.java)
+            .requestUpdate(PinnedAliasesTileService::class.java)
     }
 
     override fun doWork(): Result {
@@ -43,6 +40,7 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
         // Stored if the network call succeeds its task
         var userResourceNetworkCallResult = false
         var aliasNetworkCallResult = false
+        var pinnedAliasNetworkCallResult = false
 
         // Block the thread until this is finished
         runBlocking(Dispatchers.Default) {
@@ -61,35 +59,15 @@ class BackgroundWorker(private val ctx: Context, params: WorkerParameters) : Wor
                 aliasNetworkCallResult = result
             })
 
-
-            /*
-            STORE FAVORITE ALIASES SEPARATELY
-             */
-            val favoriteAliases = FavoriteAliasHelper(ctx).getFavoriteAliases()?.toList()
-            val settingsManager = SettingsManager(encrypt = true, context = ctx)
-            if (favoriteAliases != null) {
-                val favoriteAliasesObjects = ArrayList<Aliases>()
-                if (favoriteAliases.isNotEmpty()) {
-                    networkHelper.bulkGetAlias({ aliases, _ ->
-                        aliases?.data?.forEach { favoriteAliasesObjects.add(it) }
-                    }, favoriteAliases)
-                }
-
-                // Turn the list into a json object
-                val data = Gson().toJson(favoriteAliasesObjects)
-
-                // Store a copy of the just received data locally
-                settingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA, data)
-            } else {
-                // Store a copy of the just received data locally
-                settingsManager.removeSetting(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAVORITE_ALIASES_DATA)
+            networkHelper.cachePinnedAliasesData { result ->
+                // Store the result if the data succeeded to update in a boolean
+                pinnedAliasNetworkCallResult = result
             }
         }
 
-
-        // If both tasks are successful return a success()
+        // If all tasks are successful return a success()
         return if (userResourceNetworkCallResult &&
-            aliasNetworkCallResult
+            aliasNetworkCallResult && pinnedAliasNetworkCallResult
         ) {
             // Now the data has been updated, we can update the tiles as well
             updateTiles()

@@ -287,6 +287,7 @@ class IntentContextMenuAliasActivity : BaseActivity(), IntentSendMailRecipientBo
                 onlyDeletedAliases = false,
                 onlyInactiveAliases = false,
                 onlyWatchedAliases = false,
+                onlyPinnedAliases = false,
                 sort = null,
                 sortDesc = true,
                 filter = text

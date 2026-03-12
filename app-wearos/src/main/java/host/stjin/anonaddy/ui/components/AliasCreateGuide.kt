@@ -10,15 +10,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.managers.SettingsManager
+import host.stjin.anonaddy_shared.ui.theme.AppTheme
 import host.stjin.anonaddy_shared.ui.theme.getAddyIoChipColors
 
 private val SPACING_GUIDE_BUTTONS = Dp(18f)
@@ -69,5 +74,25 @@ fun AliasCreateGuide(scalingLazyListState: ScalingLazyListState, settingsManager
                     })
             }
         }
+    }
+}
+
+@ExperimentalWearMaterialApi
+@Preview(
+    device = Devices.WEAR_OS_SMALL_ROUND,
+    showSystemUi = true,
+    backgroundColor = 0xff000000,
+    showBackground = true
+)
+@Composable
+fun PreviewAliasCreateGuide() {
+    val context = LocalContext.current
+    AppTheme {
+        AliasCreateGuide(
+            scalingLazyListState = rememberScalingLazyListState(),
+            settingsManager = SettingsManager(false, context),
+            context = context,
+            onIUnderstandClick = {}
+        )
     }
 }

@@ -47,6 +47,7 @@ import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN_MFA
 import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGIN_VERIFY
 import host.stjin.anonaddy_shared.AddyIo.API_URL_LOGOUT
 import host.stjin.anonaddy_shared.AddyIo.API_URL_NOTIFY_SUBSCRIPTION
+import host.stjin.anonaddy_shared.AddyIo.API_URL_PINNED_ALIASES
 import host.stjin.anonaddy_shared.AddyIo.API_URL_PROTECTED_HEADERS_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENTS
 import host.stjin.anonaddy_shared.AddyIo.API_URL_RECIPIENT_KEYS
@@ -997,6 +998,8 @@ class NetworkHelper(private val context: Context) {
             parameters.add("filter[deleted]=" to "with")
         } else if (aliasSortFilter.onlyDeletedAliases) {
             parameters.add("filter[deleted]=" to "only")
+        } else if (aliasSortFilter.onlyPinnedAliases) {
+            parameters.add("filter[pinned]=" to "true")
         } else {
             parameters.add("filter[deleted]=" to "with")
         }
@@ -1632,6 +1635,114 @@ class NetworkHelper(private val context: Context) {
                 )
             }
         }
+    }    suspend fun pinSpecificAlias(
+        callback: (Aliases?, String?) -> Unit,
+        aliasId: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        json.put("id", aliasId)
+
+        val (_, response, result) = Fuel.post(API_URL_PINNED_ALIASES)
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, SingleAlias::class.java)
+                callback(addyIoData.data, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "pinSpecificAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun unpinSpecificAlias(
+        callback: (String?) -> Unit?,
+        aliasId: String
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val (_, response, result) = Fuel.delete("${API_URL_PINNED_ALIASES}/$aliasId")
+            .appendHeader(
+                *getHeaders()
+            )
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            204 -> {
+                callback("204")
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "unpinSpecificAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
     }
 
 
@@ -1920,6 +2031,136 @@ class NetworkHelper(private val context: Context) {
                     LOGIMPORTANCE.CRITICAL.int,
                     ex.toString(),
                     "bulkForgetAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun bulkUnpinAlias(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        aliases: List<Aliases>
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (alias in aliases) {
+            array.put(alias.id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/unpin/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkUnpinAlias",
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+                callback(
+                    null,
+                    ErrorHelper.getErrorMessage(
+                        fuelResponse
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun bulkPinAlias(
+        callback: (BulkActionResponse?, String?) -> Unit,
+        aliases: List<Aliases>
+    ) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        val json = JSONObject()
+        val array = JSONArray()
+
+        for (alias in aliases) {
+            array.put(alias.id)
+        }
+
+        json.put("ids", array)
+
+        val (_, response, result) = Fuel.post("${API_URL_ALIAS}/pin/bulk")
+            .appendHeader(
+                *getHeaders()
+            )
+            .body(json.toString())
+            .awaitStringResponseResult()
+
+        when (response.statusCode) {
+            200 -> {
+                val data = result.get()
+                val gson = Gson()
+                val addyIoData = gson.fromJson(data, BulkActionResponse::class.java)
+                callback(addyIoData, null)
+            }
+
+            401 -> {
+                invalidApiKey()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // Unauthenticated, clear settings
+                    SettingsManager(true, context).clearSettingsAndCloseApp()
+                }, 8000)
+                callback(null, null)
+            }
+
+            else -> {
+                val ex = result.component2()?.message
+                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+                Log.e("AFA", "${response.statusCode} - $ex")
+                loggingHelper.addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
+                    ex.toString(),
+                    "bulkPinAlias",
                     ErrorHelper.getErrorMessage(
                         fuelResponse
                     )
@@ -5279,6 +5520,7 @@ class NetworkHelper(private val context: Context) {
                 onlyDeletedAliases = false,
                 onlyInactiveAliases = false,
                 onlyWatchedAliases = false,
+                onlyPinnedAliases = false,
                 sort = "emails_forwarded",
                 sortDesc = true,
                 filter = null
@@ -5315,15 +5557,55 @@ class NetworkHelper(private val context: Context) {
                 }
             },
             aliasSortFilter = AliasSortFilter(
-                onlyActiveAliases = true,
+                onlyActiveAliases = false,
                 onlyDeletedAliases = false,
                 onlyInactiveAliases = false,
                 onlyWatchedAliases = false,
+                onlyPinnedAliases = false,
                 sort = "updated_at",
                 sortDesc = true,
                 filter = null
             ),
             size = amountOfAliasesToCache,
+        )
+    }
+
+
+    suspend fun cachePinnedAliasesData(
+        callback: (Boolean) -> Unit) {
+
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
+        }
+
+        getAliases(
+            { list, _ ->
+                if (list == null) {
+                    // Result is null, callback false to let the BackgroundWorker know the task failed.
+                    callback(false)
+                    return@getAliases
+                } else {
+                    // Turn the list into a json object
+                    val data = Gson().toJson(list.data)
+
+                    // Store a copy of the just received data locally
+                    encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_PINNED_ALIASES_DATA, data)
+
+                    // Stored data, let the BackgroundWorker know the task succeeded
+                    callback(true)
+                }
+            },
+            aliasSortFilter = AliasSortFilter(
+                onlyActiveAliases = false,
+                onlyDeletedAliases = false,
+                onlyInactiveAliases = false,
+                onlyWatchedAliases = false,
+                onlyPinnedAliases = true,
+                sort = "updated_at",
+                sortDesc = true,
+                filter = null
+            )
         )
     }
 
