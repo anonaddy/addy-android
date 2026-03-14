@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -36,14 +38,6 @@ import host.stjin.anonaddy_shared.utils.DateTimeUtils
 @ExperimentalWearMaterialApi
 @Composable
 fun AliasList(aliases: List<Aliases>, scalingLazyListState: ScalingLazyListState, context: Context) {
-    fun getStarIcon(aliases: Aliases): Int {
-        return if (aliases.pinned) {
-            R.drawable.ic_pinned
-        } else {
-            R.drawable.ic_pinned_off
-        }
-    }
-
     ScalingLazyColumnWithRSB(
         modifier = Modifier.fillMaxWidth(),
         state = scalingLazyListState,
@@ -51,60 +45,66 @@ fun AliasList(aliases: List<Aliases>, scalingLazyListState: ScalingLazyListState
     ) {
         item { AliasActionRow(context = context) }
         items(aliases) { alias ->
-            Chip(
-                colors = ChipDefaults.chipColors(
-                    backgroundColor = MaterialTheme.colors.surface,
-                    secondaryContentColor = Color(ColorUtils.getMostPopularColor(context, alias))
-                ),
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp),
-                icon = {
+                contentAlignment = Alignment.TopEnd
+            ) {
+                Chip(
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = MaterialTheme.colors.surface,
+                        secondaryContentColor = Color(ColorUtils.getMostPopularColor(context, alias))
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    label = {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(), maxLines = 1, overflow = TextOverflow.Ellipsis,
+                            text = alias.email
+                        )
+                    },
+                    secondaryLabel = {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(), maxLines = 1, overflow = TextOverflow.Ellipsis,
+                            text = (if (alias.description != null) {
+                                alias.description
+                            } else {
+                                context.resources.getString(
+                                    R.string.aliases_recyclerview_list_item_date_time,
+                                    DateTimeUtils.convertStringToLocalTimeZoneString(
+                                        alias.created_at,
+                                        DateTimeUtils.DatetimeFormat.SHORT_DATE
+                                    ),
+                                    DateTimeUtils.convertStringToLocalTimeZoneString(
+                                        alias.created_at,
+                                        DateTimeUtils.DatetimeFormat.TIME
+                                    )
+                                )
+                            }).toString()
+                        )
+                    },
+                    onClick = {
+                        if (!scalingLazyListState.isScrollInProgress) {
+                            //haptic.performHapticFeedback(HapticFeedbackType.LongPress) VIBRATES IN ACTIVITY
+
+                            val intent = Intent(context, ManageAliasActivity::class.java)
+                            intent.putExtra("alias", alias.id)
+                            context.startActivity(intent)
+                        }
+                    },
+                )
+                if (alias.pinned) {
                     Icon(
-                        painter = painterResource(id = getStarIcon(alias)),
-                        tint = if (alias.pinned) Color(ColorUtils.getMostPopularColor(context, alias)) else Color.White,
+                        painter = painterResource(id = R.drawable.ic_pinned),
                         contentDescription = context.resources.getString(R.string.pin),
                         modifier = Modifier
-                            .size(24.dp)
-                            .wrapContentSize(align = Alignment.Center),
+                            .padding(end = 12.dp, top = 8.dp)
+                            .size(12.dp)
+                            .alpha(0.6f),
                     )
-                },
-                label = {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(), maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        text = alias.email
-                    )
-                },
-                secondaryLabel = {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(), maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        text = (if (alias.description != null) {
-                            alias.description
-                        } else {
-                            context.resources.getString(
-                                R.string.aliases_recyclerview_list_item_date_time,
-                                DateTimeUtils.convertStringToLocalTimeZoneString(
-                                    alias.created_at,
-                                    DateTimeUtils.DatetimeFormat.SHORT_DATE
-                                ),
-                                DateTimeUtils.convertStringToLocalTimeZoneString(
-                                    alias.created_at,
-                                    DateTimeUtils.DatetimeFormat.TIME
-                                )
-                            )
-                        }).toString()
-                    )
-                },
-                onClick = {
-                    if (!scalingLazyListState.isScrollInProgress) {
-                        //haptic.performHapticFeedback(HapticFeedbackType.LongPress) VIBRATES IN ACTIVITY
-
-                        val intent = Intent(context, ManageAliasActivity::class.java)
-                        intent.putExtra("alias", alias.id)
-                        context.startActivity(intent)
-                    }
-                },
-            )
+                }
+            }
         }
     }
 

@@ -995,7 +995,6 @@ class NetworkHelper(private val context: Context) {
             parameters.add("filter[active]=" to "true")
         } else if (aliasSortFilter.onlyInactiveAliases) {
             parameters.add("filter[active]=" to "false")
-            parameters.add("filter[deleted]=" to "with")
         } else if (aliasSortFilter.onlyDeletedAliases) {
             parameters.add("filter[deleted]=" to "only")
         } else if (aliasSortFilter.onlyPinnedAliases) {

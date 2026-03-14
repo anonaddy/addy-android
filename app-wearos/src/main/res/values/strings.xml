@@ -31,4 +31,5 @@
     <string name="pin_alias">Pin alias</string>
     <string name="pin_status_desc">Show on top</string>
     <string name="pinned">Pinned</string>
+    <string name="created_on_wearos">Created on WearOS</string>
 </resources>
