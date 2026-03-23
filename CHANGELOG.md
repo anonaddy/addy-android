@@ -1,5 +1,27 @@
 # Changelog
 
+## [v6.1.0] - 2026-03-23
+
+### addy.io
+
+##### Added
+
+- Support for pinning and unpinning aliases
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.6.0)_
+
+##### Added
+
+- Support for pinning and unpinning aliases
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v6.0.1] - 2026-03-09
 
 ### addy.io
@@ -14,7 +36,7 @@
 - Minor UI changes to match Material 3 Expressive language
 - Performance improvements and other things to make the app even smoother
 
-### addy.io for Android wearables _(v1.5.7)_
+### addy.io for Android wearables _(v1.5.8)_
 
 ##### Fixed/Improved
 

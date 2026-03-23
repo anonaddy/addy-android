@@ -17,7 +17,7 @@ Easily create and manage your addy.io aliases, recipients and more from your pho
 
 > addy.io
 
-- addy.io instance running v1.4.0 or higher (current version of the addy.io app has been tested with v1.4.0)
+- addy.io instance running v1.5.0 or higher (current version of the addy.io app has been tested with v1.5.0)
 
 > Android
 

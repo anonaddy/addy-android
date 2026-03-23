@@ -69,12 +69,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.0.1</h3>
+<h3>What\'s new in addy.io for Android 6.1.0</h3>
 <h4>Added</h4>
-<p>- Support for the new blocklist feature</p>
+<p>- Support for pinning and unpinning aliases</p>
 <h4>Fixed/Improved</h4>
-<p>- Improved use on foldables and tablets<br />- Minor UI changes to match Material 3 Expressive language<br />- Performance improvements and other things to make the app even smoother<br /><br /></p>
-<h3>What\'s new in addy.io for Android Wearables 1.5.8</h3>
+<p>- Performance improvements and other things to make the app even smoother<br /><br /></p>
+<h3>What\'s new in addy.io for Android Wearables 1.6.0</h3>
+<h4>Added</h4>
+<p>- Support for pinning and unpinning aliases</p>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
