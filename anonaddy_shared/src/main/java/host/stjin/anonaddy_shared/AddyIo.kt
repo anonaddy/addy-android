@@ -9,10 +9,10 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.3.7
+    // 1.4.0
     var MINIMUMVERSIONCODEMAJOR = 1
-    var MINIMUMVERSIONCODEMINOR = 3
-    var MINIMUMVERSIONCODEPATCH = 7
+    var MINIMUMVERSIONCODEMINOR = 4
+    var MINIMUMVERSIONCODEPATCH = 0
 
     var VERSIONMAJOR = 0
     var VERSIONMINOR = 0
@@ -55,6 +55,7 @@ object AddyIo {
     val API_URL_ACTIVE_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-rules" }
     val API_URL_REORDER_RULES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/reorder-rules" }
     val API_URL_API_TOKEN_DETAILS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/api-token-details" }
+    val API_URL_BLOCKLIST: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/blocklist" }
 
     // 0.8.1
     val API_URL_FAILED_DELIVERIES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/failed-deliveries" }

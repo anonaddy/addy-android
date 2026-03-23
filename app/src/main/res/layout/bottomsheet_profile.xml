@@ -1,59 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bs_profile_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="16dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_rounded_corners_top_profile"
         android:orientation="vertical"
         android:padding="@dimen/layout_padding">
 
         <ImageView
-            android:layout_width="34dp"
-            android:layout_height="3dp"
+            android:layout_width="32dp"
+            android:layout_height="4dp"
             android:layout_gravity="center"
             android:layout_marginBottom="16dp"
             android:contentDescription="@string/drag_down_to_close"
-            android:src="@drawable/drag_pill" />
+            android:src="@drawable/drag_pill"
+            app:tint="?attr/colorOutlineVariant" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/main_profile_select_dialog_username_initials"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/circle"
-            android:backgroundTint="?colorPrimary"
-            android:backgroundTintMode="src_over"
+            android:backgroundTint="?attr/colorPrimaryContainer"
             android:contentDescription="@string/addyio_settings"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="SV"
-            android:textColor="?colorOnPrimary"
+            android:textColor="?attr/colorOnPrimaryContainer"
             android:textSize="32sp"
             tools:ignore="HardcodedText" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:gravity="center_horizontal|center_vertical"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp">
 
             <TextView
                 android:id="@+id/main_profile_select_dialog_card_accountname"
-                style="@style/AddyIoDialogTitle"
+                style="@style/TextAppearance.Material3.TitleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:text="$ADDYIO_Account_Name"
-                android:textAllCaps="false"
-                android:textColor="@color/BlackWhite"
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
@@ -61,332 +59,372 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginTop="4dp">
                 <TextView
                     android:id="@+id/main_profile_select_dialog_card_subscription"
-                    style="@style/AddyIoDialogDesc"
+                    style="@style/TextAppearance.Material3.BodyMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@tools:sample/lorem/random" />
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="Pro Plan" />
 
                 <TextView
                     android:id="@+id/main_profile_select_dialog_card_subscription_until"
-                    style="@style/AddyIoDialogDesc"
-                    android:fontFamily="sans-serif-light"
+                    style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@tools:sample/lorem/random" />
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:alpha="0.8"
+                    tools:text="Until Jan 2025" />
             </LinearLayout>
-
-
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/main_profile_select_dialog_anonaddy_settings"
-            style="@style/RoundFlatButton"
+            style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:text="@string/manage_your_addyio_account" />
 
     </LinearLayout>
 
-    <View
-        style="@style/divider"
-        android:layout_width="match_parent" />
-
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bs_profile_nsv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp">
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp">
+
+            <!-- Group 1: Manage Subscription -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                style="@style/Widget.Material3.CardView.Filled"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardCornerRadius="24dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:id="@+id/main_profile_select_dialog_manage_subscription"
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:baselineAligned="false"
                     android:orientation="horizontal"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="24dp">
+                    android:padding="20dp">
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleMarginEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/manage_subscription"
-                            android:src="@drawable/ic_credit_card" />
-
-                    </LinearLayout>
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="@string/manage_subscription"
+                        android:src="@drawable/ic_credit_card"
+                        app:tint="?attr/colorPrimary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/AddyIoDialogTitle"
+                            style="@style/TextAppearance.Material3.TitleMedium"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/manage_subscription"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite" />
+                            android:textColor="?attr/colorOnSurface" />
 
                         <TextView
-                            style="@style/AddyIoDialogDesc"
+                            style="@style/TextAppearance.Material3.BodySmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/manage_subscription_desc" />
+                            android:text="@string/manage_subscription_desc"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
-
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Group 2: Core Features (Domains, Rules, Usernames, Blocklist) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                style="@style/Widget.Material3.CardView.Filled"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardCornerRadius="24dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
-                    android:id="@+id/main_profile_select_dialog_domain_settings"
-                    style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="24dp">
+                    android:orientation="vertical">
 
+                    <!-- Domains -->
                     <LinearLayout
-                        style="@style/SettingsSectionIconStyleMarginEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:id="@+id/main_profile_select_dialog_domain_settings"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="20dp">
 
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
                             android:contentDescription="@string/manage_domains"
-                            android:src="@drawable/ic_world" />
+                            android:src="@drawable/ic_world"
+                            app:tint="?attr/colorPrimary" />
 
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.Material3.TitleMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/manage_domains"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:id="@+id/main_profile_select_dialog_domain_settings_desc"
+                                style="@style/TextAppearance.Material3.BodySmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/manage_domains_desc"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
                     </LinearLayout>
 
+                    <!-- Rules -->
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/AddyIoDialogTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/manage_domains"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite" />
-
-                        <TextView
-                            android:id="@+id/main_profile_select_dialog_domain_settings_desc"
-                            style="@style/AddyIoDialogDesc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/manage_domains_desc" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/main_profile_select_dialog_rules"
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="24dp">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleMarginEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:id="@+id/main_profile_select_dialog_rules"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="20dp">
 
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
                             android:contentDescription="@string/manage_rules"
-                            android:src="@drawable/ic_clipboard_list" />
+                            android:src="@drawable/ic_clipboard_list"
+                            app:tint="?attr/colorPrimary" />
 
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.Material3.TitleMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/manage_rules"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:id="@+id/main_profile_select_dialog_rules_desc"
+                                style="@style/TextAppearance.Material3.BodySmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/manage_rules_desc"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
                     </LinearLayout>
 
+                    <!-- Usernames -->
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/AddyIoDialogTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/manage_rules"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite" />
-
-                        <TextView
-                            android:id="@+id/main_profile_select_dialog_rules_desc"
-                            style="@style/AddyIoDialogDesc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/manage_rules_desc" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/main_profile_select_dialog_username_settings"
-                    style="@style/SettingsSectionStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="24dp">
-
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleMarginEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:id="@+id/main_profile_select_dialog_username_settings"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="20dp">
 
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
                             android:contentDescription="@string/manage_usernames"
-                            android:src="@drawable/ic_users" />
+                            android:src="@drawable/ic_users"
+                            app:tint="?attr/colorPrimary" />
 
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.Material3.TitleMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/manage_usernames"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:id="@+id/main_profile_select_dialog_username_settings_desc"
+                                style="@style/TextAppearance.Material3.BodySmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/username_settings_desc"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
                     </LinearLayout>
 
+                    <!-- Blocklist -->
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:id="@+id/main_profile_select_dialog_blocklist_settings"
+                        style="@style/SettingsSectionStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="20dp">
 
-                        <TextView
-                            style="@style/AddyIoDialogTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/manage_usernames"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite" />
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
+                            android:contentDescription="@string/manage_blocklist"
+                            android:src="@drawable/ic_forbid"
+                            app:tint="?attr/colorPrimary" />
 
-                        <TextView
-                            android:id="@+id/main_profile_select_dialog_username_settings_desc"
-                            style="@style/AddyIoDialogDesc"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/username_settings_desc" />
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.Material3.TitleMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/manage_blocklist"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:id="@+id/main_profile_select_dialog_blocklist_settings_desc"
+                                style="@style/TextAppearance.Material3.BodySmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/blocklist_settings_desc"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
                     </LinearLayout>
-
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Group 3: App Settings -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                style="@style/Widget.Material3.CardView.Filled"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+                app:cardCornerRadius="24dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:id="@+id/main_profile_select_dialog_app_settings"
                     style="@style/SettingsSectionStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:baselineAligned="false"
                     android:orientation="horizontal"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="24dp">
+                    android:padding="20dp">
 
-                    <LinearLayout
-                        style="@style/SettingsSectionIconStyleMarginEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/main_profile_select_dialog_app_settings_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/app_settings"
-                            android:src="@drawable/ic_settings" />
-
-                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/main_profile_select_dialog_app_settings_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="@string/app_settings"
+                        android:src="@drawable/ic_settings"
+                        app:tint="?attr/colorPrimary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/AddyIoDialogTitle"
+                            style="@style/TextAppearance.Material3.TitleMedium"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/app_settings"
-                            android:textAllCaps="false"
-                            android:textColor="@color/BlackWhite" />
+                            android:textColor="?attr/colorOnSurface" />
 
                         <TextView
                             android:id="@+id/main_profile_select_dialog_app_settings_desc"
-                            style="@style/AddyIoDialogDesc"
+                            style="@style/TextAppearance.Material3.BodySmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Version 1.1.2"
+                            android:textColor="?attr/colorOnSurfaceVariant"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
-
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <LinearLayout
+            <!-- Footer Info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="24dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:id="@+id/main_profile_select_dialog_anonaddy_version"
+                    style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:gravity="center"
+                    android:text="$ADDYIO_Version"
+                    android:alpha="0.6"
+                    tools:ignore="HardcodedText" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.Material3.BodySmall"
+                    android:text="@string/addyio_android_stjin"
+                    android:gravity="center"
+                    android:alpha="0.6" />
 
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_anonaddy_version"
-                        style="@style/AddyIoDialogDesc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:gravity="center_horizontal"
-                        android:text="$ADDYIO_Version"
-                        android:textSize="12sp"
-                        tools:ignore="HardcodedText" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/addyio_android_stjin"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/main_profile_select_dialog_instance_type"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/crafted_with_love_and_privacy"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp"
-                        tools:ignore="HardcodedText" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/main_profile_select_dialog_instance_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.Material3.BodySmall"
+                    android:text="@string/crafted_with_love_and_privacy"
+                    android:gravity="center"
+                    android:alpha="0.6"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

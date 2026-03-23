@@ -34,6 +34,11 @@
         android:title="@string/rules" />
 
     <item
+        android:id="@+id/navigation_blocklist"
+        android:icon="@drawable/ic_forbid_anim_settings"
+        android:title="@string/blocklist" />
+
+    <item
         android:id="@+id/navigation_failed_deliveries"
         android:icon="@drawable/ic_mail_error_anim_settings"
         android:title="@string/failed_deliveries" />

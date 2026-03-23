@@ -69,14 +69,14 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 5.9.2</h3>
+<h3>What\'s new in addy.io for Android 6.0.1</h3>
 <h4>Added</h4>
-<p>- Support for new alias formats</p>
+<p>- Support for the new blocklist feature</p>
 <h4>Fixed/Improved</h4>
-<p>- New subject placeholder hints when adding a new action<br />- Performance improvements and other things to make the app even smoother<br /><br /></p>
-<h3>What\'s new in addy.io for Android Wearables 1.5.7</h3>
+<p>- Improved use on foldables and tablets<br />- Minor UI changes to match Material 3 Expressive language<br />- Performance improvements and other things to make the app even smoother<br /><br /></p>
+<h3>What\'s new in addy.io for Android Wearables 1.5.8</h3>
 <h4>Fixed/Improved</h4>
-<p>- When editing an alias, the actual email address is not being shown below the donut graph<br />- Updated gradle, kotlin version and more<br />- Performance improvements and other things to make the app even smoother</p>]]></string>
+<p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
     <string name="contributors_list">Will Browning (addy.io)\nStjin (lead developer)\nJPH (designer)</string>
     <string name="delete_recipient">Delete recipient</string>
@@ -687,6 +687,7 @@
     <string name="all_account_notifications">All notifications</string>
     <string name="no_account_notifications">No notifications</string>
     <string name="something_went_wrong_retrieving_account_notifications">Something went wrong retrieving notifications</string>
+    <string name="something_went_wrong_retrieving_blocklist_entries">Something went wrong retrieving blocklist entries</string>
     <string name="notify_account_notifications_feature_desc">Receive a notification on your device when new notifications appear in addy.io</string>
     <string name="view_account_notifications">View notifications</string>
     <string name="view_account_notifications_desc">Open an overview of notifications</string>
@@ -827,5 +828,21 @@
     <string name="remove_pgp_signature_from_rs">Remove PGP Signatures from Replies/Sends</string>
     <string name="remove_pgp_signature_from_rs_desc">Only disable this option if you are certain that you can not accidentally sign outbound emails using the PGP key of your recipient when replying/sending from your aliases.</string>
     <string name="add_action_subject_info">Use {{subject}} placeholder to include the original subject (e.g. to prepend or append text)</string>
+    <string name="manage_blocklist">Manage blocklist</string>
+    <string name="blocklist_settings_desc">Blocked senders and domains</string>
+    <string name="blocklist">Blocklist</string>
+    <string name="no_blocklist_entries">No blocklist entries</string>
+    <string name="blocklist_entries">Blocklist entries</string>
+    <string name="remove_from_blocklist">Remove from blocklist</string>
+    <string name="remove_from_blocklist_desc">Are you sure you want to remove this entry from your blocklist? The sender or domain will be able to reach your aliases again</string>
+    <string name="error_deleting_blocklist_entry">Something went wrong while deleting this blocklist entry</string>
+    <string name="deleting_blocklist_entry">Deleting blocklist entry…</string>
+    <string name="add_blocklist_entry">Add to blocklist</string>
+    <string name="email">Email</string>
+    <string name="error_adding_blocklist_entry">Something went wrong while adding this blocklist entry</string>
+    <string name="blocklist_add_desc">Add a sender or domain below - these entries cannot reach your aliases</string>
+    <string name="blocklist_add">Add to blocklist</string>
+    <string name="blocklist_add_hint">Email address or domain</string>
+    <string name="blocklist_type">Type</string>
 
 </resources>

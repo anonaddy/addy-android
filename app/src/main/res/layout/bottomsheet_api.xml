@@ -186,7 +186,6 @@
                     style="@style/AddyIoTextInputLayoutOutlined"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:importantForAutofill="no"
                     android:layout_marginBottom="8dp"
                     android:hint="@string/addyio_instance">
 
@@ -196,6 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
                         android:inputType="textWebEmailAddress"
                         android:lines="1"
                         android:maxLines="1"
@@ -227,6 +227,7 @@
                             android:layout_height="wrap_content"
                             android:imeOptions="actionNext"
                             android:inputType="text"
+                            android:autofillHints="username"
                             android:lines="1"
                             android:maxLines="1"
                             android:minLines="1"
@@ -249,6 +250,7 @@
                             android:layout_height="wrap_content"
                             android:imeOptions="actionDone"
                             android:inputType="textPassword"
+                            android:autofillHints="password"
                             android:lines="1"
                             android:maxLines="1"
                             android:minLines="1"

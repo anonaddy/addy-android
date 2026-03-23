@@ -29,6 +29,7 @@ import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import java.util.Locale
 import androidx.core.net.toUri
+import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
 
 
 class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
@@ -163,6 +164,11 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
         binding.mainProfileSelectDialogUsernameSettings.setOnClickListener {
             val intent = Intent(activity, UsernamesSettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.mainProfileSelectDialogBlocklistSettings.setOnClickListener {
+            val intent = Intent(activity, ManageBlocklistActivity::class.java)
             startActivity(intent)
         }
 

@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v5.9.2 + release 01 + 00 (for app)
-        versionCode = 365920100 // https://developer.android.com/training/wearables/packaging
+        // SDK 36 + v6.0.1 + release 01 + 00 (for app)
+        versionCode = 366010100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on Github
-        versionName = "v5.9.2"
+        versionName = "v6.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -37,6 +37,7 @@ android {
             // Do not enable, Fuel will break
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("debug")
         }
         getByName("debug") {
             applicationIdSuffix = ".debug"
@@ -169,7 +170,7 @@ dependencies {
 val gplayImplementation by configurations
 dependencies {
     gplayImplementation("com.google.android.gms:play-services-wearable:19.0.0")
-    gplayImplementation("com.android.billingclient:billing-ktx:8.2.0")
+    gplayImplementation("com.android.billingclient:billing-ktx:8.3.0")
     gplayImplementation("com.google.android.play:review-ktx:2.0.2")
 }
 

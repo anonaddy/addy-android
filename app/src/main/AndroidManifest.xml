@@ -308,6 +308,9 @@
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyAccountNotificationsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.blocklist.ManageBlocklistActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.appsettings.features.AppSettingsFeaturesNotifyApiTokenExpiryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

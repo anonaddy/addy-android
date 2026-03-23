@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Support for the new blocklist feature</p>
+<h4>Fixed/Improved</h4>
+<p>- Improved use on foldables and tablets<br />- Minor UI changes to match Material 3 Expressive language<br />- Performance improvements and other things to make the app even smoother<br /><br /></p>

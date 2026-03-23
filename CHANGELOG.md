@@ -1,5 +1,25 @@
 # Changelog
 
+## [v6.0.1] - 2026-03-09
+
+### addy.io
+
+##### Added
+
+- Support for the new blocklist feature
+
+##### Fixed/Improved
+
+- Improved use on foldables and tablets
+- Minor UI changes to match Material 3 Expressive language
+- Performance improvements and other things to make the app even smoother
+
+### addy.io for Android wearables _(v1.5.7)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v5.9.2] - 2026-02-14
 
 ### addy.io
