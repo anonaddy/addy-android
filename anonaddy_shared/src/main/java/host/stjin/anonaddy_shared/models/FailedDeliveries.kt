@@ -24,6 +24,8 @@ data class FailedDeliveries(
     val status: String,
     val code: String,
     val is_stored: Boolean,
+    val quarantined: Boolean,
+    val resent: Boolean,
     val attempted_at: String,
     val created_at: String,
     val updated_at: String

@@ -38,6 +38,8 @@ class FailedDeliveryDetailsBottomDialogFragment(
     private val sender: String?,
     private val code: String?,
     private val isStored: Boolean,
+    private val quarantined: Boolean,
+    private val resent: Boolean,
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -76,6 +78,14 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
             binding.bsFailedDeliveriesResendButton.setOnClickListener(this)
             binding.bsFailedDeliveriesDeleteButton.setOnClickListener(this)
+
+
+            if (isStored && !quarantined && !resent){
+                binding.bsFailedDeliveriesDownloadButton.visibility = View.VISIBLE
+                binding.bsFailedDeliveriesDownloadButton.setOnClickListener(this)
+            } else {
+                binding.bsFailedDeliveriesDownloadButton.visibility = View.GONE
+            }
 
             if (isStored){
                 binding.bsFailedDeliveriesDownloadButton.visibility = View.VISIBLE
