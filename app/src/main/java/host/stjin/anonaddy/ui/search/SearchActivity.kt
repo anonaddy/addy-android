@@ -322,7 +322,9 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                         filteredFailedDeliveries!![pos].remote_mta,
                         filteredFailedDeliveries!![pos].sender,
                         filteredFailedDeliveries!![pos].code,
-                        filteredFailedDeliveries!![pos].is_stored
+                        filteredFailedDeliveries!![pos].is_stored,
+                        filteredFailedDeliveries!![pos].quarantined,
+                        filteredFailedDeliveries!![pos].resent
                     )
                     failedDeliveryDetailsBottomDialogFragment!!.show(
                         supportFragmentManager,

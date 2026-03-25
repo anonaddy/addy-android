@@ -206,6 +206,8 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                         list[pos].sender,
                         list[pos].code,
                         list[pos].is_stored,
+                        list[pos].quarantined,
+                        list[pos].resent
                     )
                     failedDeliveryDetailsBottomDialogFragment!!.show(
                         childFragmentManager,

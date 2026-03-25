@@ -314,9 +314,11 @@ class FailedDeliveryDetailsBottomDialogFragment(
             remoteMTA: String?,
             sender: String?,
             code: String?,
-            isStored: Boolean
+            isStored: Boolean,
+            quarantined: Boolean,
+            resent: Boolean
         ): FailedDeliveryDetailsBottomDialogFragment {
-            return FailedDeliveryDetailsBottomDialogFragment(failedDeliveryId, created, attempted, alias, recipient, type, remoteMTA, sender, code, isStored)
+            return FailedDeliveryDetailsBottomDialogFragment(failedDeliveryId, created, attempted, alias, recipient, type, remoteMTA, sender, code, isStored, quarantined, resent)
         }
     }
 }
