@@ -150,6 +150,8 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
 
         holder.mWatchedTextView.visibility =
             if (aliasesToWatch.contains(alias.id)) View.VISIBLE else View.GONE
+
+        holder.mPinned.visibility = if (alias.pinned) View.VISIBLE else View.GONE
     }
 
     private fun applySelectedOverlay(holder: ViewHolder, position: Int) {
@@ -210,6 +212,7 @@ class AliasAdapter(private val listWithAliases: List<Aliases>, context: Context,
         var mChart: DonutProgressView = view.findViewById(R.id.aliases_recyclerview_list_chart)
         var mLL0: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL0)
         var mWatchAliasLL: LinearLayout = view.findViewById(R.id.aliases_recyclerview_list_LL5)
+        var mPinned: ImageView = view.findViewById(R.id.aliases_recyclerview_list_pinned)
 
         init {
             mAction.setOnClickListener(this)

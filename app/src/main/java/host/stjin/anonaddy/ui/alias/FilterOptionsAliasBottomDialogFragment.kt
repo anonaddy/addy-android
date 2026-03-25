@@ -73,10 +73,11 @@ class FilterOptionsAliasBottomDialogFragment(
         disableOptionsWhenWatched()
 
         binding.bsFilteroptionsAliasesActiveButton.isChecked = aliasSortFilter.onlyActiveAliases
+        binding.bsFilteroptionsAliasesPinnedButton.isChecked = aliasSortFilter.onlyPinnedAliases
         binding.bsFilteroptionsAliasesInactiveButton.isChecked = aliasSortFilter.onlyInactiveAliases
         binding.bsFilteroptionsAliasesDeletedButton.isChecked = aliasSortFilter.onlyDeletedAliases
         binding.bsFilteroptionsAliasesAllButton.isChecked =
-            !aliasSortFilter.onlyActiveAliases && !aliasSortFilter.onlyInactiveAliases && !aliasSortFilter.onlyDeletedAliases
+            !aliasSortFilter.onlyActiveAliases && !aliasSortFilter.onlyInactiveAliases && !aliasSortFilter.onlyDeletedAliases&& !aliasSortFilter.onlyPinnedAliases
 
         binding.bsFilteroptionsAliasesWatchedOnlyButton.isChecked = aliasSortFilter.onlyWatchedAliases
         binding.bsFilteroptionsAliasesWatchedOnlyAllAliasesButton.isChecked = !aliasSortFilter.onlyWatchedAliases
@@ -174,6 +175,7 @@ class FilterOptionsAliasBottomDialogFragment(
             aliasSortFilter.onlyInactiveAliases = false
             aliasSortFilter.onlyWatchedAliases = false
             aliasSortFilter.onlyDeletedAliases = false
+            aliasSortFilter.onlyPinnedAliases = false
             aliasSortFilter.sort = null
             aliasSortFilter.sortDesc = false
 
@@ -184,6 +186,7 @@ class FilterOptionsAliasBottomDialogFragment(
             aliasSortFilter.onlyActiveAliases = false
             aliasSortFilter.onlyInactiveAliases = false
             aliasSortFilter.onlyDeletedAliases = false
+            aliasSortFilter.onlyPinnedAliases = false
             loadFilter()
         }
 
@@ -191,6 +194,7 @@ class FilterOptionsAliasBottomDialogFragment(
             aliasSortFilter.onlyActiveAliases = true
             aliasSortFilter.onlyInactiveAliases = false
             aliasSortFilter.onlyDeletedAliases = false
+            aliasSortFilter.onlyPinnedAliases = false
             loadFilter()
         }
 
@@ -198,6 +202,7 @@ class FilterOptionsAliasBottomDialogFragment(
             aliasSortFilter.onlyActiveAliases = false
             aliasSortFilter.onlyInactiveAliases = true
             aliasSortFilter.onlyDeletedAliases = false
+            aliasSortFilter.onlyPinnedAliases = false
             loadFilter()
         }
 
@@ -205,6 +210,15 @@ class FilterOptionsAliasBottomDialogFragment(
             aliasSortFilter.onlyActiveAliases = false
             aliasSortFilter.onlyInactiveAliases = false
             aliasSortFilter.onlyDeletedAliases = true
+            aliasSortFilter.onlyPinnedAliases = false
+            loadFilter()
+        }
+
+        binding.bsFilteroptionsAliasesPinnedButton.setOnClickListener {
+            aliasSortFilter.onlyActiveAliases = false
+            aliasSortFilter.onlyInactiveAliases = false
+            aliasSortFilter.onlyDeletedAliases = false
+            aliasSortFilter.onlyPinnedAliases = true
             loadFilter()
         }
 
@@ -226,6 +240,7 @@ class FilterOptionsAliasBottomDialogFragment(
             onlyDeletedAliases = false,
             onlyInactiveAliases = false,
             onlyWatchedAliases = false,
+            onlyPinnedAliases = false,
             sort = null,
             sortDesc = false,
             filter = null

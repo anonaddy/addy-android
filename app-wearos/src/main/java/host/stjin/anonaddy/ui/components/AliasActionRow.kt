@@ -2,6 +2,7 @@ package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,9 +17,12 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
@@ -26,6 +30,7 @@ import androidx.wear.compose.material.Icon
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.settings.SettingsActivity
+import host.stjin.anonaddy_shared.ui.theme.AppTheme
 import host.stjin.anonaddy_shared.ui.theme.getAddyIoButtonColors
 
 private val SPACING_BUTTONS = Dp(8f)
@@ -102,5 +107,27 @@ private fun ShowOnSettingsLayout(context: Context) {
                     .wrapContentSize(align = Alignment.Center),
             )
         }
+    }
+}
+
+@Preview(
+    uiMode = Configuration.UI_MODE_TYPE_WATCH,
+    showSystemUi = true,
+    device = Devices.WEAR_OS_LARGE_ROUND
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_TYPE_WATCH,
+    showSystemUi = true,
+    device = Devices.WEAR_OS_SQUARE
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_TYPE_WATCH,
+    showSystemUi = true,
+    device = Devices.WEAR_OS_SMALL_ROUND
+)
+@Composable
+fun PreviewAliasActionRow() {
+    AppTheme {
+        AliasActionRow(context = LocalContext.current)
     }
 }

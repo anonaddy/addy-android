@@ -32,6 +32,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
 
     enum class NetworkAction {
         CHANGE_ACTIVE_STATE,
+        CHANGE_PINNED_STATE,
         DELETE_STATE,
         RESTORE_STATE,
         FORGET_STATE
@@ -95,6 +96,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasDescEdit.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasFromNameEdit.visibility = View.GONE
         binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasLimitAttachedRecipientsSwitchLayout.visibility = View.GONE
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.visibility = View.VISIBLE
 
         // Check if there are any aliases that are NOT deleted
         // if there is any alias that is not deleted, show the delete section. Else all aliases are deleted so hide the section
@@ -128,7 +130,11 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(selectedAliases.count() != amountOfNetworkCallsDone)
             }
-
+            NetworkAction.CHANGE_PINNED_STATE -> {
+                // Show the progressbar if
+                // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
+                binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.showProgressBar(selectedAliases.count() != amountOfNetworkCallsDone)
+            }
             NetworkAction.DELETE_STATE -> {
                 // Show the progressbar if
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
@@ -179,6 +185,9 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             )
         })
 
+        // Get pinned aliases
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.setSwitchChecked(selectedAliases.all { it.pinned })
+
     }
 
 
@@ -189,7 +198,7 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             shouldRefreshData = true
             if (alias != null) {
                 selectedAliases.forEach { it.active = false }
-                // Recheck the UI (this will finished the activity in updateUI)
+                // Recheck the UI (this will finish the activity in updateUI)
                 updateUi()
             } else {
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
@@ -218,6 +227,48 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                     requireContext().resources.getString(
                         R.string.s_s,
                         requireContext().resources.getString(R.string.error_edit_active), error
+                    )
+                )
+            }
+        }, aliases)
+    }
+
+
+    private suspend fun unpinAlias(aliases: List<Aliases>) {
+        networkHelper.bulkUnpinAlias({ alias, error ->
+            amountOfNetworkCallsDone = aliases.size
+            shouldRefreshData = true
+            if (alias != null) {
+                selectedAliases.forEach { it.pinned = false }
+                // Recheck the UI (this will finish the activity in updateUI)
+                updateUi()
+            } else {
+                binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.setSwitchChecked(true)
+                showError(
+                    requireContext().resources.getString(
+                        R.string.s_s,
+                        this.resources.getString(R.string.error_edit_pinned), error,
+                    )
+                )
+            }
+        }, aliases)
+    }
+
+
+    private suspend fun pinAlias(aliases: List<Aliases>) {
+        networkHelper.bulkPinAlias({ alias, error ->
+            amountOfNetworkCallsDone = aliases.size
+            shouldRefreshData = true
+            if (alias != null) {
+                selectedAliases.forEach { it.pinned = true }
+                // Recheck the UI (makes sure the switch only switches whenever all aliases have the same state)
+                updateUi()
+            } else {
+                binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.setSwitchChecked(false)
+                showError(
+                    requireContext().resources.getString(
+                        R.string.s_s,
+                        requireContext().resources.getString(R.string.error_edit_pinned), error
                     )
                 )
             }
@@ -275,6 +326,35 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                         }
                     }
                     // No need to update the UI here, the switch already does the switching and its all done at this point
+                }
+            }
+        })
+
+
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    amountOfNetworkCallsDone = 0
+                    networkAction = NetworkAction.CHANGE_PINNED_STATE
+                    updateUi()
+                    forceSwitch = false
+                    if (checked) {
+                        // If the alias is already active or deleted, don't make an unnecessary call and increment amountOfNetworkCallsDone
+                        // Deleted aliases cannot be activated
+                        lifecycleScope.launch {
+                            pinAlias(selectedAliases)
+                        }
+
+                    } else {
+                        // If the alias is already inactive, don't make an unnecessary call and increment amountOfNetworkCallsDone
+                        // Deleted aliases cannot be deactivated, they are always deactivated
+                        lifecycleScope.launch {
+                            unpinAlias(selectedAliases)
+                        }
+
+                    }
                 }
             }
         })

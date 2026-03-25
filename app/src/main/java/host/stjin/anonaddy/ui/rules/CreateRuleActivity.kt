@@ -454,7 +454,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                                 finish()
                             }
                             else -> {
-                                binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE
+                                binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.GONE
                                 SnackbarHelper.createSnackbar(
                                     this@CreateRuleActivity,
                                     resources.getString(R.string.error_creating_rule) + "\n" + result,
@@ -473,7 +473,7 @@ class CreateRuleActivity : BaseActivity(), ConditionBottomDialogFragment.AddCond
                             shouldRefreshOnFinish = true
                             finish()
                         } else {
-                            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.INVISIBLE
+                            binding.activityRulesToolbar.customToolbarOneHandedActionProgressbar.visibility = View.GONE
                             SnackbarHelper.createSnackbar(
                                 this@CreateRuleActivity,
                                 resources.getString(R.string.error_creating_rule) + "\n" + error,

@@ -192,6 +192,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun toolbarSetAction(customToolbarOneHandedBinding: CustomToolbarOneHandedBinding, icon: Int, onClickListener: View.OnClickListener?) {
+        customToolbarOneHandedBinding.customToolbarOneHandedActionButton.visibility = View.VISIBLE
         customToolbarOneHandedBinding.customToolbarOneHandedActionButton.setImageDrawable(ContextCompat.getDrawable(this, icon))
 
         if (onClickListener != null) {
@@ -201,6 +202,19 @@ abstract class BaseActivity : AppCompatActivity() {
         }
 
         customToolbarOneHandedBinding.customToolbarOneHandedActionButton.setOnClickListener(onClickListener)
+    }
+
+    fun toolbarSetSecondAction(customToolbarOneHandedBinding: CustomToolbarOneHandedBinding, icon: Int, onClickListener: View.OnClickListener?) {
+        customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.visibility = View.VISIBLE
+        customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.setImageDrawable(ContextCompat.getDrawable(this, icon))
+
+        if (onClickListener != null) {
+            customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.animate()?.alpha(1.0f)
+        } else {
+            customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.animate()?.alpha(0.0f)
+        }
+
+        customToolbarOneHandedBinding.customToolbarOneHandedActionButton2.setOnClickListener(onClickListener)
     }
 
     private var nestedScrollView: NestedScrollView? = null

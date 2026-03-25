@@ -20,7 +20,6 @@ import host.stjin.anonaddy.components.Loading
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.AliasList
 import host.stjin.anonaddy.ui.components.CustomTimeText
-import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
@@ -82,8 +81,7 @@ class AliasActivity : ComponentActivity() {
             if (aliasesList.isEmpty()) {
                 Loading()
             } else {
-                val favoriteAliases by remember { mutableStateOf(getFavoriteAliases()) }
-                AliasList(aliases = aliasesList, favoriteAliases = favoriteAliases, scalingLazyListState = scalingLazyListState, context = this)
+                AliasList(aliases = aliasesList, scalingLazyListState = scalingLazyListState, context = this)
             }
         }
     }
@@ -92,20 +90,8 @@ class AliasActivity : ComponentActivity() {
         val aliases = CacheHelper.getBackgroundServiceCacheLastUpdatedAliasesData(this)
         if (aliases.isNullOrEmpty()) {
             downloadAliases()
-        } else {
-            // Remove the fav aliases from the aliases
-            val favoriteAliases = getFavoriteAliases()
-            if (!favoriteAliases.isNullOrEmpty()) {
-                aliases.removeAll { favoriteAliases.contains(it.id) }
-                // Insert the favorite aliases in the first few positions
-                CacheHelper.getBackgroundServiceCacheFavoriteAliasesData(this)?.let { aliases.addAll(0, it) }
-            }
         }
         return aliases
-    }
-
-    private fun getFavoriteAliases(): List<String>? {
-        return FavoriteAliasHelper(this).getFavoriteAliases()?.toList()
     }
 
     private fun downloadAliases() {

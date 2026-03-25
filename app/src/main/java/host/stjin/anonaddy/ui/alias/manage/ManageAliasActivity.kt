@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.LinearLayout
@@ -207,7 +208,7 @@ class ManageAliasActivity : BaseActivity(),
                     // Nodes with the app installed will receive this message and open the ManageAliasActivity
                     if (nodes.any()) {
                         if (this@ManageAliasActivity.alias != null) {
-                            toolbarSetAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
+                            toolbarSetSecondAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
                                 for (node in nodes) {
                                     Wearable.getMessageClient(this)
                                         .sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
@@ -401,6 +402,59 @@ class ManageAliasActivity : BaseActivity(),
                 SnackbarHelper.createSnackbar(
                     this,
                     this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageAliasCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this@ManageAliasActivity.alias!!.id)
+    }
+
+    private suspend fun unpinAlias() {
+        binding.activityManageAliasToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
+        networkHelper.unpinSpecificAlias({ result ->
+            binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(false)
+            binding.activityManageAliasToolbar.customToolbarOneHandedActionProgressbar.visibility = View.GONE
+            if (result == "204") {
+                this.alias!!.pinned = false
+                shouldRefreshOnFinish = true
+                binding.activityManageAliasToolbar.customToolbarOneHandedActionButton.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                updateUi(this.alias!!)
+
+                if (shouldDeactivateThisAlias) {
+                    shouldDeactivateThisAlias = false
+                    SnackbarHelper.createSnackbar(
+                        this,
+                        this.resources.getString(R.string.alias_deactivated),
+                        binding.activityManageAliasCL
+                    ).show()
+                }
+
+            } else {
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_pinned) + "\n" + result,
+                    binding.activityManageAliasCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this@ManageAliasActivity.alias!!.id)
+    }
+
+
+    private suspend fun pinAlias() {
+        binding.activityManageAliasToolbar.customToolbarOneHandedActionProgressbar.visibility = View.VISIBLE
+        networkHelper.pinSpecificAlias({ alias, result ->
+            binding.activityManageAliasToolbar.customToolbarOneHandedActionProgressbar.visibility = View.GONE
+            if (alias != null) {
+                this.alias = alias
+                shouldRefreshOnFinish = true
+                binding.activityManageAliasToolbar.customToolbarOneHandedActionButton.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            } else {
+                binding.activityManageAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_pinned) + "\n" + result,
                     binding.activityManageAliasCL,
                     LoggingHelper.LOGFILES.DEFAULT
                 ).show()
@@ -911,6 +965,22 @@ class ManageAliasActivity : BaseActivity(),
             )
 
 
+        }
+
+        /**
+         * Pinned
+         */
+        val icon = if (alias.pinned) R.drawable.ic_pinned else R.drawable.ic_pinned_off
+        toolbarSetAction(binding.activityManageAliasToolbar, icon) {
+            if (alias.pinned) {
+                lifecycleScope.launch {
+                    unpinAlias()
+                }
+            } else {
+                lifecycleScope.launch {
+                    pinAlias()
+                }
+            }
         }
 
         binding.animationFragment.stopAnimation()

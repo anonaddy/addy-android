@@ -800,6 +800,7 @@ class ManageRecipientsActivity : BaseActivity(),
                 onlyDeletedAliases = false,
                 onlyInactiveAliases = false,
                 onlyWatchedAliases = false,
+                onlyPinnedAliases = false,
                 sort = null,
                 sortDesc = false,
                 filter = null

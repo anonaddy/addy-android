@@ -117,7 +117,7 @@ class CreateAliasActivity : ComponentActivity() {
                     }
                 },
                 domain = userResource!!.default_alias_domain,
-                "",
+                this@CreateAliasActivity.resources.getString(R.string.created_on_wearos),
                 // Replace custom with random characters because typing on a watch is... meh
                 if (userResource.default_alias_format == "custom") "random_characters" else userResource.default_alias_format,
                 aliasLocalPart = "",

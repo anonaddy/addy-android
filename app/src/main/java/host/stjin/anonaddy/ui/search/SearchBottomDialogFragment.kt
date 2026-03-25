@@ -196,6 +196,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
                         onlyDeletedAliases = false,
                         onlyInactiveAliases = false,
                         onlyWatchedAliases = false,
+                        onlyPinnedAliases = false,
                         sort = null,
                         sortDesc = true,
                         filter = binding.bsSearchTermTiet.text.toString().lowercase(Locale.getDefault())

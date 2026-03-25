@@ -9,9 +9,9 @@ object AddyIo {
     // The versioncode is a combination of MAJOR MINOR PATCH
     //TODO Update on every release
 
-    // 1.4.0
+    // 1.5.0
     var MINIMUMVERSIONCODEMAJOR = 1
-    var MINIMUMVERSIONCODEMINOR = 4
+    var MINIMUMVERSIONCODEMINOR = 5
     var MINIMUMVERSIONCODEPATCH = 0
 
     var VERSIONMAJOR = 0
@@ -34,6 +34,7 @@ object AddyIo {
 
     val API_URL_ALIAS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/aliases" }
     val API_URL_ACTIVE_ALIAS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/active-aliases" }
+    val API_URL_PINNED_ALIASES: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/pinned-aliases" }
     val API_URL_ALIAS_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/alias-recipients" }
     val API_URL_DOMAIN_OPTIONS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/domain-options" }
     val API_URL_ENCRYPTED_RECIPIENTS: String by resettableLazy(lazyMgr) { "$API_BASE_URL/api/v1/encrypted-recipients" }

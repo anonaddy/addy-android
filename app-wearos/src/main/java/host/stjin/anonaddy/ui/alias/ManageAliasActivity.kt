@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -60,7 +62,6 @@ import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.SplashActivity
 import host.stjin.anonaddy.ui.components.CustomTimeText
 import host.stjin.anonaddy.ui.components.ScalingLazyColumnWithRSB
-import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.Aliases
 import host.stjin.anonaddy_shared.ui.theme.AppTheme
@@ -73,7 +74,6 @@ class ManageAliasActivity : ComponentActivity() {
 
     private var alias: Aliases? = null
     private lateinit var networkHelper: NetworkHelper
-    private lateinit var favoriteAliasHelper: FavoriteAliasHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,13 +88,12 @@ class ManageAliasActivity : ComponentActivity() {
         }
 
         networkHelper = NetworkHelper(this)
-        favoriteAliasHelper = FavoriteAliasHelper(this)
 
         val aliasId: String? = intent.getStringExtra("alias")
         val aliasList = CacheHelper.getBackgroundServiceCacheLastUpdatedAliasesData(this)
-        val favoriteAliasList = CacheHelper.getBackgroundServiceCacheFavoriteAliasesData(this)
+        val pinnedAliasList = CacheHelper.getBackgroundServiceCachePinnedAliasesData(this)
         // If there are favorite aliases, add them to local list
-        favoriteAliasList?.let { aliasList?.addAll(it) }
+        pinnedAliasList?.let { aliasList?.addAll(it) }
 
         if (aliasId == null || aliasList == null) {
             finish()
@@ -108,6 +107,8 @@ class ManageAliasActivity : ComponentActivity() {
             // Check if the alias exists in the local storage
             this.alias = aliasList.firstOrNull { it.id == aliasId }
             if (this.alias != null) {
+                isAliasActive = this.alias!!.active
+                isAliasPinned = this.alias!!.pinned
                 setContent {
                     ComposeContent()
                 }
@@ -121,6 +122,8 @@ class ManageAliasActivity : ComponentActivity() {
                     NetworkHelper(this@ManageAliasActivity).getSpecificAlias({ result, error ->
                         if (result != null) {
                             this@ManageAliasActivity.alias = result
+                            isAliasActive = result.active
+                            isAliasPinned = result.pinned
                             setContent {
                                 ComposeContent()
                             }
@@ -185,102 +188,114 @@ class ManageAliasActivity : ComponentActivity() {
 
     private var isAliasActive by mutableStateOf(false)
     private var isChangingActivationStatus by mutableStateOf(false)
-    private var isAliasFavorite by mutableStateOf(false)
+    private var isChangingPinnedStatus by mutableStateOf(false)
+    private var isAliasPinned by mutableStateOf(false)
 
     @OptIn(ExperimentalWearMaterialApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
     @Composable
     private fun ComposeContent() {
-        if (alias != null) {
-            isAliasActive = alias!!.active
-            AppTheme {
-                // Creates a CoroutineScope bound to the lifecycle
-                val haptic = LocalHapticFeedback.current
-                val favoriteAliases = favoriteAliasHelper.getFavoriteAliases()
-                isAliasFavorite = favoriteAliases?.contains(this@ManageAliasActivity.alias!!.id) == true
-
-
-                val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
-                Scaffold(
-                    modifier = Modifier,
-                    timeText = {
-                        CustomTimeText(
-                            visible = (remember { derivedStateOf { scalingLazyListState.centerItemIndex } }).value < 2,
-                            showLeadingText = true,
-                            leadingText = resources.getString(R.string.edit_alias)
-                        )
-                    },
-                    vignette = {
-                        Vignette(vignettePosition = VignettePosition.TopAndBottom)
-                    },
-                    positionIndicator = {
-                        PositionIndicator(
-                            scalingLazyListState = scalingLazyListState,
-                            modifier = Modifier
-                        )
-                    }
-                ) {
-                    ScalingLazyColumnWithRSB(
-                        modifier = Modifier.fillMaxWidth(),
-                        state = scalingLazyListState,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        item { GetDonut() }
-                        item {
-                            Row(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Text(text = alias!!.email)
-                            }
-                        }
-                        item {
-                            StatTextView(
-                                string = this@ManageAliasActivity.resources.getString(R.string.d_forwarded, alias!!.emails_forwarded),
-                                icon = R.drawable.ic_inbox,
-                                colorResource(
-                                    id = R.color.portalOrange
-                                )
-                            )
-                        }
-                        item {
-                            StatTextView(
-                                string = this@ManageAliasActivity.resources.getString(R.string.d_replied, alias!!.emails_replied),
-                                icon = R.drawable.ic_arrow_back_up,
-                                colorResource(
-                                    id = R.color.portalBlue
-                                )
-                            )
-                        }
-                        item {
-                            StatTextView(
-                                string = this@ManageAliasActivity.resources.getString(R.string.d_sent, alias!!.emails_sent),
-                                icon = R.drawable.ic_mail_forward,
-                                colorResource(
-                                    id = R.color.easternBlue
-                                )
-                            )
-                        }
-                        item {
-                            StatTextView(
-                                string = this@ManageAliasActivity.resources.getString(R.string.d_blocked, alias!!.emails_blocked),
-                                icon = R.drawable.ic_forbid,
-                                colorResource(
-                                    id = R.color.softRed
-                                )
-                            )
-                        }
-                        item { AliasActiveToggle(scalingLazyListState, haptic) }
-                        item { AliasFavoriteToggle(scalingLazyListState, haptic) }
-                        item { ShowOnDeviceChip(scalingLazyListState) }
-                    }
-                }
-
+        val currentAlias = alias ?: return // Exit if null
+        LaunchedEffect(Unit) {
+            if (intent.getBooleanExtra("pinAlias", false)) {
+                isChangingPinnedStatus = true
+                pinAlias()
             }
         }
+
+        AppTheme {
+            // Creates a CoroutineScope bound to the lifecycle
+            val haptic = LocalHapticFeedback.current
+
+            val scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
+            Scaffold(
+                modifier = Modifier,
+                timeText = {
+                    CustomTimeText(
+                        visible = (remember { derivedStateOf { scalingLazyListState.centerItemIndex } }).value < 2,
+                        showLeadingText = true,
+                        leadingText = resources.getString(R.string.edit_alias)
+                    )
+                },
+                vignette = {
+                    Vignette(vignettePosition = VignettePosition.TopAndBottom)
+                },
+                positionIndicator = {
+                    PositionIndicator(
+                        scalingLazyListState = scalingLazyListState,
+                        modifier = Modifier
+                    )
+                }
+            ) {
+                ScalingLazyColumnWithRSB(
+                    modifier = Modifier.fillMaxWidth(),
+                    state = scalingLazyListState,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item { GetDonut() }
+                    item {
+                        Text(
+                            text = currentAlias.email,
+                            modifier = Modifier
+                                .fillMaxWidth() // Ensures textAlign works for multiple lines
+                                .padding(vertical = 8.dp, horizontal = 4.dp), // Horizontal padding for round screens
+                            textAlign = TextAlign.Center,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 3, // Allow wrapping for long emails
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                // color = Color.White // Or use a theme color
+                            )
+                        )
+                    }
+                    item {
+                        StatTextView(
+                            string = this@ManageAliasActivity.resources.getString(R.string.d_forwarded, currentAlias.emails_forwarded),
+                            icon = R.drawable.ic_inbox,
+                            colorResource(
+                                id = R.color.portalOrange
+                            )
+                        )
+                    }
+                    item {
+                        StatTextView(
+                            string = this@ManageAliasActivity.resources.getString(R.string.d_replied, currentAlias.emails_replied),
+                            icon = R.drawable.ic_arrow_back_up,
+                            colorResource(
+                                id = R.color.portalBlue
+                            )
+                        )
+                    }
+                    item {
+                        StatTextView(
+                            string = this@ManageAliasActivity.resources.getString(R.string.d_sent, currentAlias.emails_sent),
+                            icon = R.drawable.ic_mail_forward,
+                            colorResource(
+                                id = R.color.easternBlue
+                            )
+                        )
+                    }
+                    item {
+                        StatTextView(
+                            string = this@ManageAliasActivity.resources.getString(R.string.d_blocked, currentAlias.emails_blocked),
+                            icon = R.drawable.ic_forbid,
+                            colorResource(
+                                id = R.color.softRed
+                            )
+                        )
+                    }
+                    item { AliasActiveToggle(scalingLazyListState, haptic) }
+                    item { AliasPinnedToggle(scalingLazyListState, haptic) }
+                    item { ShowOnDeviceChip(scalingLazyListState) }
+                }
+            }
+
+        }
+
     }
 
     @Composable
     private fun ShowOnDeviceChip(scalingLazyListState: ScalingLazyListState) {
+        val currentAlias = alias ?: return // Exit if null
         Chip(
             modifier = Modifier
                 .padding(top = 2.dp, bottom = 2.dp)
@@ -289,7 +304,7 @@ class ManageAliasActivity : ComponentActivity() {
                 if (!scalingLazyListState.isScrollInProgress) {
                     // Happens in method
                     //haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    showAliasOnDevice(alias!!.id)
+                    showAliasOnDevice(currentAlias.id)
                 }
             },
             colors = getAddyIoChipColors(),
@@ -308,32 +323,55 @@ class ManageAliasActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun AliasFavoriteToggle(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
+    private fun AliasPinnedToggle(scalingLazyListState: ScalingLazyListState, hapticFeedback: HapticFeedback) {
         ToggleChip(
             modifier = Modifier
                 .padding(top = 2.dp, bottom = 2.dp)
                 .fillMaxWidth(),
             label = {
                 Text(
-                    resources.getString(R.string.favorite), maxLines = 1, overflow = TextOverflow.Ellipsis
+                    if (isAliasPinned) resources.getString(R.string.pinned) else resources.getString(
+                        R.string.pin
+                    ), maxLines = 1, overflow = TextOverflow.Ellipsis
                 )
             },
-            checked = isAliasFavorite,
+            checked = isAliasPinned,
             onCheckedChange = {
                 if (!scalingLazyListState.isScrollInProgress) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    favoriteAlias(it)
+                    if (isAliasPinned) {
+                        lifecycleScope.launch {
+                            isChangingPinnedStatus = true
+                            unpinAlias()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            isChangingPinnedStatus = true
+                            pinAlias()
+                        }
+                    }
                 }
             },
             colors = getAddyIoToggleChipColors(),
             toggleControl = {
             },
+            secondaryLabel = {
+                Text(
+                    if (isChangingPinnedStatus) {
+                        resources.getString(
+                            R.string.changing_status
+                        )
+                    } else resources.getString(
+                        R.string.pin_status_desc
+                    ), maxLines = 1, overflow = TextOverflow.Ellipsis
+                )
+            },
             appIcon = {
                 Icon(
-                    painter = if (isAliasFavorite) painterResource(id = R.drawable.ic_starred) else painterResource(
-                        id = R.drawable.ic_star
+                    painter = if (isAliasPinned) painterResource(id = R.drawable.ic_pinned) else painterResource(
+                        id = R.drawable.ic_pinned_off
                     ),
-                    contentDescription = resources.getString(R.string.alias_status_desc),
+                    contentDescription = resources.getString(R.string.pin_alias),
                     modifier = Modifier
                         .size(20.dp)
                         .wrapContentSize(align = Alignment.Center),
@@ -399,24 +437,6 @@ class ManageAliasActivity : ComponentActivity() {
         )
     }
 
-    private fun favoriteAlias(boolean: Boolean) {
-        if (boolean) {
-            if (!favoriteAliasHelper.addAliasAsFavorite(this@ManageAliasActivity.alias!!.id)) {
-                Toast.makeText(
-                    this@ManageAliasActivity,
-                    resources.getString(R.string.max_favorites_reached),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            } else {
-                isAliasFavorite = true
-            }
-        } else {
-            favoriteAliasHelper.removeAliasAsFavorite(this@ManageAliasActivity.alias!!.id)
-            isAliasFavorite = false
-        }
-    }
-
 
     private suspend fun deactivateAlias() {
         networkHelper.deactivateSpecificAlias({ result ->
@@ -447,6 +467,35 @@ class ManageAliasActivity : ComponentActivity() {
         }, this.alias!!.id)
     }
 
+    private suspend fun unpinAlias() {
+        networkHelper.unpinSpecificAlias({ result ->
+            isChangingPinnedStatus = false
+            if (result == "204") {
+                isAliasPinned = false
+            } else {
+                Toast.makeText(this, this.resources.getString(R.string.error_edit_pinned) + "\n" + result, Toast.LENGTH_SHORT).show()
+            }
+
+            // Since an alias was deactivated , call scheduleBackgroundWorker. This method will schedule the service if its required
+            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
+        }, this.alias!!.id)
+    }
+
+
+    private suspend fun pinAlias() {
+        networkHelper.pinSpecificAlias({ alias, result ->
+            isChangingPinnedStatus = false
+            if (alias != null) {
+                isAliasPinned = true
+            } else {
+                Toast.makeText(this, this.resources.getString(R.string.error_edit_pinned) + "\n" + result, Toast.LENGTH_SHORT).show()
+            }
+
+            // Since an alias was activated , call scheduleBackgroundWorker. This method will schedule the service if its required
+            BackgroundWorkerHelper(this).scheduleBackgroundWorker()
+        }, this.alias!!.id)
+    }
+
     @Composable
     fun StatTextView(string: String, icon: Int, color: Color) {
         Row(
@@ -461,43 +510,44 @@ class ManageAliasActivity : ComponentActivity() {
 
     @Composable
     fun GetDonut() {
+        val currentAlias = alias ?: return // Exit if null
         val listOfDonutSection: ArrayList<DonutSection> = arrayListOf()
 
         // If there are no statistics, sent the emptyDonut value to 1 so that a donut can be drawn
-        val emptyDonut = if (alias!!.emails_forwarded == 0 &&
-            alias!!.emails_replied == 0 &&
-            alias!!.emails_sent == 0 &&
-            alias!!.emails_blocked == 0
+        val emptyDonut = if (currentAlias.emails_forwarded == 0 &&
+            currentAlias.emails_replied == 0 &&
+            currentAlias.emails_sent == 0 &&
+            currentAlias.emails_blocked == 0
         ) 1 else 0
 
         val section1 = DonutSection(
             color = colorResource(id = R.color.portalOrange),
-            amount = alias!!.emails_forwarded.toFloat() + emptyDonut
+            amount = currentAlias.emails_forwarded.toFloat() + emptyDonut
         )
         // Always show section 1
         listOfDonutSection.add(section1)
 
 
-        if (alias!!.emails_replied > 0) {
+        if (currentAlias.emails_replied > 0) {
             val section2 = DonutSection(
                 color = colorResource(id = R.color.portalBlue),
-                amount = alias!!.emails_replied.toFloat()
+                amount = currentAlias.emails_replied.toFloat()
             )
             listOfDonutSection.add(section2)
         }
 
-        if (alias!!.emails_sent > 0) {
+        if (currentAlias.emails_sent > 0) {
             val section3 = DonutSection(
                 color = colorResource(id = R.color.easternBlue),
-                amount = alias!!.emails_sent.toFloat()
+                amount = currentAlias.emails_sent.toFloat()
             )
             listOfDonutSection.add(section3)
         }
 
-        if (alias!!.emails_blocked > 0) {
+        if (currentAlias.emails_blocked > 0) {
             val section4 = DonutSection(
                 color = colorResource(id = R.color.softRed),
-                amount = alias!!.emails_blocked.toFloat()
+                amount = currentAlias.emails_blocked.toFloat()
             )
             listOfDonutSection.add(section4)
         }

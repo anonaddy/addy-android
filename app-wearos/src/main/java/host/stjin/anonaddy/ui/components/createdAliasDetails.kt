@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui.components
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,23 +15,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Icon
@@ -40,8 +39,8 @@ import androidx.wear.compose.material.Text
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.ui.alias.CreateAliasActivity
 import host.stjin.anonaddy.ui.alias.ManageAliasActivity
-import host.stjin.anonaddy.utils.FavoriteAliasHelper
 import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.ui.theme.AppTheme
 import host.stjin.anonaddy_shared.ui.theme.getAddyIoButtonColors
 
 private val SPACING_ALIAS_BUTTONS = Dp(24f)
@@ -77,7 +76,7 @@ fun CreatedAliasDetails(scalingLazyListState: ScalingLazyListState, alias: Alias
                     Text(alias.email, fontSize = 16.sp, textAlign = TextAlign.Center)
                     Spacer(modifier = Modifier.height(SPACING_ALIAS_BUTTONS))
                     Row {
-                        AddFavoriteLayout(alias = alias, context = context)
+                        PinLayout(alias = alias, context = context, activity = activity)
                         Spacer(modifier = Modifier.width(SPACING_BUTTONS))
                         ShowOnDeviceLayout(alias = alias, context = context, activity = activity)
                     }
@@ -89,44 +88,33 @@ fun CreatedAliasDetails(scalingLazyListState: ScalingLazyListState, alias: Alias
 
 
 @Composable
-private fun AddFavoriteLayout(alias: Aliases, context: Context) {
+private fun PinLayout(alias: Aliases, context: Context, activity: CreateAliasActivity) {
     val haptic = LocalHapticFeedback.current
-    var isAliasFavorite by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .semantics {
-                contentDescription = context.getString(R.string.tile_favorite_aliases_favorite)
+                contentDescription = context.getString(R.string.tile_pinned_aliases_pin)
             }
     ) {
-        val favoriteAliasHelper by remember {
-            mutableStateOf(FavoriteAliasHelper(context))
-        }
+
         Button(
             colors = getAddyIoButtonColors(),
             onClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                if (isAliasFavorite) {
-                    favoriteAliasHelper.removeAliasAsFavorite(alias.id)
-                    isAliasFavorite = false
-                } else {
-                    if (!favoriteAliasHelper.addAliasAsFavorite(alias.id)) {
-                        Toast.makeText(
-                            context,
-                            context.resources.getString(R.string.max_favorites_reached),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        isAliasFavorite = true
-                    }
-                }
+
+                val intent = Intent(context, ManageAliasActivity::class.java)
+                intent.putExtra("alias", alias.id)
+                intent.putExtra("pinAlias", true)
+                context.startActivity(intent)
+                activity.finish()
 
             },
             enabled = true,
         ) {
             Icon(
-                painter = if (isAliasFavorite) painterResource(id = R.drawable.ic_starred) else painterResource(id = R.drawable.ic_star),
-                contentDescription = context.getString(R.string.tile_favorite_aliases_favorite),
+                painter = if (alias.pinned) painterResource(id = R.drawable.ic_pinned) else painterResource(id = R.drawable.ic_pinned_off),
+                contentDescription = context.getString(R.string.tile_pinned_aliases_pin),
                 modifier = Modifier
                     .size(24.dp)
                     .wrapContentSize(align = Alignment.Center),
@@ -165,5 +153,52 @@ private fun ShowOnDeviceLayout(alias: Aliases, context: Context, activity: Creat
                     .wrapContentSize(align = Alignment.Center),
             )
         }
+    }
+}
+
+@ExperimentalWearMaterialApi
+@Preview(
+    device = Devices.WEAR_OS_SMALL_ROUND,
+    showSystemUi = true,
+    backgroundColor = 0xff000000,
+    showBackground = true
+)
+@Composable
+fun PreviewCreatedAliasDetails() {
+    val context = LocalContext.current
+    val alias = Aliases(
+        id = "1",
+        user_id = "1",
+        aliasable_id = null,
+        aliasable_type = null,
+        local_part = "newalias",
+        extension = null,
+        domain = "anonaddy.me",
+        email = "newalias@anonaddy.me",
+        active = true,
+        pinned = false,
+        description = null,
+        from_name = null,
+        attached_recipients_only = false,
+        emails_forwarded = 0,
+        emails_blocked = 0,
+        emails_replied = 0,
+        emails_sent = 0,
+        recipients = null,
+        last_forwarded = null,
+        last_blocked = null,
+        last_replied = null,
+        last_sent = null,
+        created_at = "2023-01-01 00:00:00",
+        updated_at = "2023-01-01 00:00:00",
+        deleted_at = null
+    )
+    AppTheme {
+        CreatedAliasDetails(
+            scalingLazyListState = rememberScalingLazyListState(),
+            alias = alias,
+            context = context,
+            activity = CreateAliasActivity()
+        )
     }
 }
