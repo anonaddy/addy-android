@@ -31,20 +31,45 @@
                 android:layout_weight="9"
                 android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:text="@string/alias"
-                    android:textAllCaps="false"
-                    android:textColor="@color/BlackWhite"
-                    android:textSize="16sp"
-                    tools:ignore="HardcodedText" />
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="6dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-medium"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/alias"
+                        android:textAllCaps="false"
+                        android:textColor="@color/BlackWhite"
+                        android:textSize="16sp"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/failed_deliveries_recyclerview_list_type"
+                        style="@style/TextAppearance.Material3.LabelSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_square"
+                        android:backgroundTint="?attr/colorPrimaryContainer"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="2dp"
+                        android:textAllCaps="true"
+                        android:textColor="?attr/colorOnPrimaryContainer"
+                        android:textStyle="bold"
+                        tools:text="TYPE" />
+                </LinearLayout>
+
+
+
+
 
                 <TextView
                     android:id="@+id/failed_deliveries_recyclerview_list_alias"

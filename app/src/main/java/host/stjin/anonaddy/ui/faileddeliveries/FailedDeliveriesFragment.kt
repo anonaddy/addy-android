@@ -196,18 +196,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
 
                 override fun onClickDetails(pos: Int, aView: View) {
                     failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(
-                        list[pos].id,
-                        list[pos].created_at,
-                        list[pos].attempted_at,
-                        list[pos].alias_email,
-                        list[pos].recipient_email,
-                        list[pos].bounce_type,
-                        list[pos].remote_mta,
-                        list[pos].sender,
-                        list[pos].code,
-                        list[pos].is_stored,
-                        list[pos].quarantined,
-                        list[pos].resent
+                        list[pos]
                     )
                     failedDeliveryDetailsBottomDialogFragment!!.show(
                         childFragmentManager,

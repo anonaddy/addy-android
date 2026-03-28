@@ -21,6 +21,7 @@ data class FailedDeliveries(
     val remote_mta: String,
     val sender: String?,
     val email_type: String,
+    val email_type_text: String,
     val status: String,
     val code: String,
     val is_stored: Boolean,

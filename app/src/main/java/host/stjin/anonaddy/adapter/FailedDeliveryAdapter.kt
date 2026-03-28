@@ -28,6 +28,7 @@ class FailedDeliveryAdapter(
         holder.mAlias.text = listWithFailedDeliveries[position].alias_id
         holder.mCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(listWithFailedDeliveries[position].created_at)
         holder.mCode.text = listWithFailedDeliveries[position].code
+        holder.mType.text = listWithFailedDeliveries[position].email_type_text
 
     }
 
@@ -55,6 +56,8 @@ class FailedDeliveryAdapter(
         var mAlias: TextView = view.findViewById(R.id.failed_deliveries_recyclerview_list_alias)
         var mCode: TextView =
             view.findViewById(R.id.failed_deliveries_recyclerview_list_code)
+        var mType: TextView =
+            view.findViewById(R.id.failed_deliveries_recyclerview_list_type)
         var mCreated: TextView =
             view.findViewById(R.id.failed_deliveries_recyclerview_list_created)
 

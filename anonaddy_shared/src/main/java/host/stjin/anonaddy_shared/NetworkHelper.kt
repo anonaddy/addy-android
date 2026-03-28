@@ -6016,6 +6016,13 @@ class NetworkHelper(private val context: Context) {
                 callback(null, null)
             }
 
+            // Not found, aka the failed deliveries API is not enabled. (Not part of the user's subscription)
+            // =
+            // Show a toast (if enabled) letting the user know this feature is only available if the failed deliveries API is enabled
+            404 -> {
+                callback(null, "404")
+            }
+
             else -> {
                 val ex = result.component2()?.message
                 val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()

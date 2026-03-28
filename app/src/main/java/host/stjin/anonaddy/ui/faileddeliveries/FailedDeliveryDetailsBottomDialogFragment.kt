@@ -18,6 +18,7 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFailedDeliveryDetailBinding
 import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy_shared.NetworkHelper
+import host.stjin.anonaddy_shared.models.FailedDeliveries
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
@@ -28,18 +29,7 @@ import java.io.FileInputStream
 
 
 class FailedDeliveryDetailsBottomDialogFragment(
-    private val failedDeliveryId: String?,
-    private val created: String?,
-    private val attempted: String?,
-    private val alias: String?,
-    private val recipient: String?,
-    private val type: String?,
-    private val remoteMTA: String?,
-    private val sender: String?,
-    private val code: String?,
-    private val isStored: Boolean,
-    private val quarantined: Boolean,
-    private val resent: Boolean,
+    private val failedDelivery: FailedDeliveries?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
 
 
@@ -67,7 +57,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
 
         // Check if failedDeliveryId is null to prevent a "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-        if (failedDeliveryId != null) {
+        if (failedDelivery != null) {
 
             // Could be opened from searchactivity
             if (parentFragment != null) {
@@ -76,36 +66,37 @@ class FailedDeliveryDetailsBottomDialogFragment(
                 listener = activity as AddFailedDeliveryBottomDialogListener
             }
 
-            binding.bsFailedDeliveriesResendButton.setOnClickListener(this)
             binding.bsFailedDeliveriesDeleteButton.setOnClickListener(this)
 
 
-            if (isStored && !quarantined && !resent){
+            if (failedDelivery.is_stored && !failedDelivery.quarantined && !failedDelivery.resent && failedDelivery.email_type == "F") {
+                binding.bsFailedDeliveriesResendButton.visibility = View.VISIBLE
+                binding.bsFailedDeliveriesResendButton.setOnClickListener(this)
+            } else {
+                binding.bsFailedDeliveriesResendButton.visibility = View.GONE
+            }
+
+            if (failedDelivery.is_stored){
                 binding.bsFailedDeliveriesDownloadButton.visibility = View.VISIBLE
                 binding.bsFailedDeliveriesDownloadButton.setOnClickListener(this)
             } else {
                 binding.bsFailedDeliveriesDownloadButton.visibility = View.GONE
             }
 
-            if (isStored){
-                binding.bsFailedDeliveriesDownloadButton.visibility = View.VISIBLE
-                binding.bsFailedDeliveriesDownloadButton.setOnClickListener(this)
-            } else {
-                binding.bsFailedDeliveriesDownloadButton.visibility = View.GONE
-            }
+            binding.bsFailedDeliveriesTextviewType.text = failedDelivery.email_type_text
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 binding.bsFailedDeliveriesTextview.text = Html.fromHtml(
                     context?.resources?.getString(
                         R.string.failed_delivery_details_text,
-                        created,
-                        attempted,
-                        alias,
-                        recipient,
-                        type,
-                        remoteMTA,
-                        sender,
-                        code
+                        failedDelivery.created_at,
+                        failedDelivery.attempted_at,
+                        failedDelivery.alias_email,
+                        failedDelivery.recipient_email,
+                        failedDelivery.bounce_type,
+                        failedDelivery.remote_mta,
+                        failedDelivery.sender,
+                        failedDelivery.code
                     ),
                     Html.FROM_HTML_MODE_LEGACY
                 )
@@ -114,17 +105,19 @@ class FailedDeliveryDetailsBottomDialogFragment(
                     Html.fromHtml(
                         context?.resources?.getString(
                             R.string.failed_delivery_details_text,
-                            created,
-                            attempted,
-                            alias,
-                            recipient,
-                            type,
-                            remoteMTA,
-                            sender,
-                            code
+                            failedDelivery.created_at,
+                            failedDelivery.attempted_at,
+                            failedDelivery.alias_email,
+                            failedDelivery.recipient_email,
+                            failedDelivery.bounce_type,
+                            failedDelivery.remote_mta,
+                            failedDelivery.sender,
+                            failedDelivery.code
                         )
                     )
             }
+
+
         } else {
             dismiss()
         }
@@ -189,14 +182,14 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
             }
             // aliasId is never null at this point, hence the !!
-        }, failedDeliveryId!!)
+        }, failedDelivery!!.id)
     }
 
     private suspend fun deleteFailedDeliveryHttp(context: Context) {
         val networkHelper = NetworkHelper(context)
         networkHelper.deleteFailedDelivery({ result ->
             if (result == "204") {
-                listener.onDeleted(failedDeliveryId)
+                listener.onDeleted(failedDelivery!!.id)
             } else {
                 // Animate the button to progress
                 binding.bsFailedDeliveriesDeleteButton.revertAnimation()
@@ -211,7 +204,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
             }
             // aliasId is never null at this point, hence the !!
-        }, failedDeliveryId!!)
+        }, failedDelivery!!.id)
     }
 
     private fun downloadFailedDelivery(context: Context) {
@@ -245,7 +238,7 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
             }
             // aliasId is never null at this point, hence the !!
-        }, failedDeliveryId!!)
+        }, failedDelivery!!.id)
     }
 
 
@@ -305,20 +298,9 @@ class FailedDeliveryDetailsBottomDialogFragment(
 
     companion object {
         fun newInstance(
-            failedDeliveryId: String?,
-            created: String?,
-            attempted: String?,
-            alias: String?,
-            recipient: String?,
-            type: String?,
-            remoteMTA: String?,
-            sender: String?,
-            code: String?,
-            isStored: Boolean,
-            quarantined: Boolean,
-            resent: Boolean
+            failedDelivery: FailedDeliveries
         ): FailedDeliveryDetailsBottomDialogFragment {
-            return FailedDeliveryDetailsBottomDialogFragment(failedDeliveryId, created, attempted, alias, recipient, type, remoteMTA, sender, code, isStored, quarantined, resent)
+            return FailedDeliveryDetailsBottomDialogFragment(failedDelivery)
         }
     }
 }

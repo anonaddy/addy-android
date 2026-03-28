@@ -47,6 +47,21 @@
             android:padding="@dimen/layout_padding">
 
             <TextView
+                android:id="@+id/bs_failed_deliveries_textview_type"
+                style="@style/TextAppearance.Material3.LabelSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_square"
+                android:backgroundTint="?attr/colorPrimaryContainer"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:layout_marginBottom="8dp"
+                android:textAllCaps="true"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textStyle="bold"
+                tools:text="TYPE" />
+
+            <TextView
                 android:id="@+id/bs_failed_deliveries_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
