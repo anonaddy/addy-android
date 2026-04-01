@@ -882,7 +882,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         networkHelper.getAllFailedDeliveries { result, _ ->
             val currentFailedDeliveries =
                 encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-            if ((result?.size ?: 0) > currentFailedDeliveries) {
+            if ((result?.meta?.total ?: 0) > currentFailedDeliveries) {
                 if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                     if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
                         // loading the animation of
@@ -911,7 +911,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
                     badge.isVisible = true
                     // An icon only badge will be displayed unless a number or text is set:
-                    badge.number = (result?.size?.minus(currentFailedDeliveries)) ?: 0  // or badge.text = "New"
+                    badge.number = (result?.meta?.total?.minus(currentFailedDeliveries)) ?: 0  // or badge.text = "New"
                 }
             } else {
                 hideFailedDeliveriesBadge()

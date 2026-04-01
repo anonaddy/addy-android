@@ -261,7 +261,7 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
             viewLifecycleOwner.lifecycleScope.launch {
                 networkHelper.getAllFailedDeliveries { failedDeliveriesList, _ ->
-                    failedDeliveries = failedDeliveriesList
+                    failedDeliveries = failedDeliveriesList?.data
                     sourcesSearched++
                     performSearch(context)
                 }

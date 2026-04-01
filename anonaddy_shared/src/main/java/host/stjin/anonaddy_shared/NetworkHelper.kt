@@ -5657,7 +5657,7 @@ class NetworkHelper(private val context: Context) {
                     encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
                 )
                 // Now store the current count
-                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, result.size)
+                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, result.meta?.total ?: 0)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
@@ -5671,7 +5671,10 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllFailedDeliveries(
-        callback: (ArrayList<FailedDeliveries>?, String?) -> Unit
+        page: Int? = 1,
+        size: Int? = 25,
+        filter: Int? = 25,
+        callback: (FailedDeliveriesArray?, String?) -> Unit
     ) {
 
         waitForInit()
@@ -5679,7 +5682,12 @@ class NetworkHelper(private val context: Context) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
 
-        val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES)
+        val parameters = ArrayList<Pair<String, Any>>()
+        if (page != null) parameters.add(Pair("page[number]", page.toString()))
+        if (size != null) parameters.add(Pair("page[size]", size.toString()))
+        if (filter != null) parameters.add(Pair("page[email_type]", filter.toString()))
+
+        val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES, parameters)
             .appendHeader(
                 *getHeaders()
             )
@@ -5691,9 +5699,7 @@ class NetworkHelper(private val context: Context) {
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, FailedDeliveriesArray::class.java)
 
-                val failedDeliveriesList = ArrayList<FailedDeliveries>()
-                failedDeliveriesList.addAll(addyIoData.data)
-                callback(failedDeliveriesList, null)
+                callback(addyIoData, null)
             }
 
             401 -> {
