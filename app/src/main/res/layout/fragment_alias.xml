@@ -113,12 +113,12 @@
                         android:layout_weight="1"
                         android:text="@string/aliases" />
 
-                    <Button
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/alias_add_alias"
-                        style="?attr/materialIconButtonFilledStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:icon="@drawable/ic_add"/>
+                        android:text="@string/add_alias" />
 
                 </LinearLayout>
 
