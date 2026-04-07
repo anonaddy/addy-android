@@ -97,7 +97,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
             if (savedInstanceState != null) {
 
                 val failedDeliveriesJson = savedInstanceState.getString("failedDeliveries")
-                if (failedDeliveriesJson!!.isNotEmpty() && failedDeliveriesJson != "null") {
+                if (!failedDeliveriesJson.isNullOrEmpty() && failedDeliveriesJson != "null") {
                     val gson = Gson()
                     val list = gson.fromJson(failedDeliveriesJson, FailedDeliveriesArray::class.java)
                     setFailedDeliveriesAdapter(list, true)
@@ -189,19 +189,23 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                             binding.root.findViewById<View>(R.id.fragment_content_unavailable).visibility = View.VISIBLE
                         } else {
                             if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                                SnackbarHelper.createSnackbar(
-                                    requireContext(),
-                                    requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
-                                    (activity as MainActivity).findViewById(R.id.main_container),
-                                    LoggingHelper.LOGFILES.DEFAULT
-                                ).show()
+                                (activity as? MainActivity)?.let {
+                                    SnackbarHelper.createSnackbar(
+                                        requireContext(),
+                                        requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                                        it.findViewById(R.id.main_container),
+                                        LoggingHelper.LOGFILES.DEFAULT
+                                    ).show()
+                                }
                             } else {
-                                SnackbarHelper.createSnackbar(
-                                    requireContext(),
-                                    requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
-                                    (activity as FailedDeliveriesActivity).findViewById(R.id.activity_failed_deliveries_settings_CL),
-                                    LoggingHelper.LOGFILES.DEFAULT
-                                ).show()
+                                (activity as? FailedDeliveriesActivity)?.let {
+                                    SnackbarHelper.createSnackbar(
+                                        requireContext(),
+                                        requireContext().resources.getString(R.string.error_obtaining_failed_deliveries) + "\n" + error,
+                                        it.findViewById(R.id.activity_failed_deliveries_settings_CL),
+                                        LoggingHelper.LOGFILES.DEFAULT
+                                    ).show()
+                                }
                             }
 
                             // Show error animations
@@ -242,29 +246,33 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 failedDeliveriesList?.data?.addAll(list.data)
 
                 // Get the totalsize of the adapteritems
-                val totalSize = failedDeliveriesAdapter.itemCount
-                // Tell the adapter there is new data (from the original size to the added items)
-                binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.post { failedDeliveriesAdapter.notifyItemRangeInserted(totalSize, list.data.size - 1) }
+                if (::failedDeliveriesAdapter.isInitialized) {
+                    val totalSize = failedDeliveriesAdapter.itemCount
+                    // Tell the adapter there is new data (from the original size to the added items)
+                    binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.post { failedDeliveriesAdapter.notifyItemRangeInserted(totalSize, list.data.size) }
+                }
             }
 
-            if (failedDeliveriesList!!.data.isNotEmpty()) {
+            val data = failedDeliveriesList?.data ?: list.data
+
+            if (data.isNotEmpty()) {
                 binding.fragmentFailedDeliveriesNoFailedDeliveries.visibility = View.GONE
             } else {
                 binding.fragmentFailedDeliveriesNoFailedDeliveries.visibility = View.VISIBLE
             }
 
 
-            failedDeliveriesAdapter = FailedDeliveryAdapter(failedDeliveriesList!!.data)
+            failedDeliveriesAdapter = FailedDeliveryAdapter(data)
             failedDeliveriesAdapter.setClickListener(object : FailedDeliveryAdapter.ClickListener {
 
                 override fun onClickDetails(pos: Int, aView: View) {
-                    failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(
-                        failedDeliveriesList!!.data[pos]
-                    )
-                    failedDeliveryDetailsBottomDialogFragment!!.show(
-                        childFragmentManager,
-                        "failedDeliveryDetailsBottomDialogFragment"
-                    )
+                    data.getOrNull(pos)?.let {
+                        failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(it)
+                        failedDeliveryDetailsBottomDialogFragment!!.show(
+                            childFragmentManager,
+                            "failedDeliveryDetailsBottomDialogFragment"
+                        )
+                    }
                 }
 
             })

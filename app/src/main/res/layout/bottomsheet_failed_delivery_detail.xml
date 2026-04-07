@@ -86,6 +86,14 @@
                 android:text="@string/download_failed_delivery" />
 
             <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+                android:id="@+id/bs_failed_deliveries_block_sender_button"
+                style="@style/CircularProgressButtonSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/blocklist_add" />
+
+            <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/bs_failed_deliveries_delete_button"
                 style="@style/CircularProgressButtonDeleteStyle"
                 android:layout_width="match_parent"

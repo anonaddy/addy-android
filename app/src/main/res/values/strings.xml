@@ -862,4 +862,6 @@
     <string name="all_failed_deliveries_filtered">All failed deliveries (filtered)</string>
     <string name="all_recipients_filtered">All recipients (filtered)</string>
     <string name="custom">Custom</string>
+    <string name="blocklist_add_confirm_desc">Are you sure you want to block %s?</string>
+    <string name="blocklist_add_success">This sender was added to the blocklist</string>
 </resources>

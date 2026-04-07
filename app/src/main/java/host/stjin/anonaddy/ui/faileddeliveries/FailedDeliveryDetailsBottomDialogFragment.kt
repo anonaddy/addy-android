@@ -17,8 +17,10 @@ import host.stjin.anonaddy.BaseBottomSheetDialogFragment
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetFailedDeliveryDetailBinding
 import host.stjin.anonaddy.utils.MaterialDialogHelper
+import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.models.FailedDeliveries
+import host.stjin.anonaddy_shared.models.NewBlocklistEntry
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +83,13 @@ class FailedDeliveryDetailsBottomDialogFragment(
                 binding.bsFailedDeliveriesDownloadButton.setOnClickListener(this)
             } else {
                 binding.bsFailedDeliveriesDownloadButton.visibility = View.GONE
+            }
+
+            if (failedDelivery.sender != null && !((activity?.application as AddyIoApp).userResource.hasUserFreeSubscription)) {
+                binding.bsFailedDeliveriesBlockSenderButton.visibility = View.VISIBLE
+                binding.bsFailedDeliveriesBlockSenderButton.setOnClickListener(this)
+            } else {
+                binding.bsFailedDeliveriesBlockSenderButton.visibility = View.GONE
             }
 
             binding.bsFailedDeliveriesTextviewType.text = failedDelivery.email_type_text
@@ -270,6 +279,49 @@ class FailedDeliveryDetailsBottomDialogFragment(
         saveFileResultLauncher.launch(file.name)
     }
 
+    private fun blockSender(context: Context) {
+        MaterialDialogHelper.showMaterialDialog(
+            context = context,
+            title = resources.getString(R.string.blocklist_add),
+            message = resources.getString(R.string.blocklist_add_confirm_desc, failedDelivery?.sender),
+            icon = R.drawable.ic_forbid,
+            neutralButtonText = resources.getString(R.string.cancel),
+            positiveButtonText = resources.getString(R.string.blocklist_add),
+            positiveButtonAction = {
+                binding.bsFailedDeliveriesBlockSenderButton.startAnimation()
+                lifecycleScope.launch {
+                    blockSenderHttp(context)
+                }
+            },
+        ).show()
+    }
+
+    private suspend fun blockSenderHttp(context: Context) {
+        val networkHelper = NetworkHelper(context)
+        val sender = failedDelivery?.sender ?: return
+        networkHelper.addBlocklistEntry({ result, error ->
+            if (result != null) {
+                binding.bsFailedDeliveriesBlockSenderButton.revertAnimation()
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = resources.getString(R.string.blocklist_add),
+                    message = context.resources.getString(R.string.blocklist_add_success),
+                    icon = R.drawable.ic_forbid,
+                    neutralButtonText = resources.getString(R.string.close)
+                ).show()
+            } else {
+                binding.bsFailedDeliveriesBlockSenderButton.revertAnimation()
+                MaterialDialogHelper.showMaterialDialog(
+                    context = requireContext(),
+                    title = resources.getString(R.string.blocklist_add),
+                    message = context.resources.getString(R.string.error_adding_blocklist_entry) + "\n" + error,
+                    icon = R.drawable.ic_forbid,
+                    neutralButtonText = resources.getString(R.string.close)
+                ).show()
+            }
+        }, NewBlocklistEntry("email", sender))
+    }
+
     override fun onClick(p0: View?) {
         if (p0 != null) {
             if (p0.id == R.id.bs_failed_deliveries_resend_button) {
@@ -282,6 +334,10 @@ class FailedDeliveryDetailsBottomDialogFragment(
                 )
             } else if (p0.id == R.id.bs_failed_deliveries_download_button) {
                 downloadFailedDelivery(
+                    requireContext()
+                )
+            } else if (p0.id == R.id.bs_failed_deliveries_block_sender_button) {
+                blockSender(
                     requireContext()
                 )
             }
