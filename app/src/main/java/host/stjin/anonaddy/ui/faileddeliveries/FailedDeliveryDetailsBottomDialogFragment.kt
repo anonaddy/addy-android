@@ -90,12 +90,11 @@ class FailedDeliveryDetailsBottomDialogFragment(
                     context?.resources?.getString(
                         R.string.failed_delivery_details_text,
                         failedDelivery.created_at,
-                        failedDelivery.attempted_at,
-                        failedDelivery.alias_email,
-                        failedDelivery.recipient_email,
-                        failedDelivery.bounce_type,
+                        failedDelivery.destination ?: "",
+                        failedDelivery.alias_email ?: "",
+                        failedDelivery.sender ?: "",
                         failedDelivery.remote_mta,
-                        failedDelivery.sender,
+                        failedDelivery.attempted_at,
                         failedDelivery.code
                     ),
                     Html.FROM_HTML_MODE_LEGACY
@@ -106,12 +105,11 @@ class FailedDeliveryDetailsBottomDialogFragment(
                         context?.resources?.getString(
                             R.string.failed_delivery_details_text,
                             failedDelivery.created_at,
-                            failedDelivery.attempted_at,
-                            failedDelivery.alias_email,
-                            failedDelivery.recipient_email,
-                            failedDelivery.bounce_type,
+                            failedDelivery.destination ?: "",
+                            failedDelivery.alias_email ?: "",
+                            failedDelivery.sender ?: "",
                             failedDelivery.remote_mta,
-                            failedDelivery.sender,
+                            failedDelivery.attempted_at,
                             failedDelivery.code
                         )
                     )

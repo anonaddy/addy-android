@@ -23,7 +23,6 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:columnCount="1"
                 android:orientation="vertical"
                 android:useDefaultMargins="true">
@@ -39,8 +38,9 @@
             </GridLayout>
 
             <LinearLayout
-                style="@style/AddyIoTitleNoAction"
+                style="@style/AddyIoTitleAction"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="12dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -51,6 +51,7 @@
                     android:text="@string/statistics" />
 
             </LinearLayout>
+
 
 
             <GridLayout

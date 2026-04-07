@@ -177,8 +177,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            binding.activityMainViewpagerSw600dp!!.isUserInputEnabled = false
-
             setRailVersion()
         }
 
@@ -403,8 +401,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         viewPager.adapter = MainViewpagerAdapter(this, fragmentList)
         viewPager.offscreenPageLimit = if (resources.getBoolean(R.bool.isTablet)) 8 else 3
-        // Allow swiping through the pages
-        viewPager.isUserInputEnabled = true
+        // Disallow swiping through the pages
+        viewPager.isUserInputEnabled = false
         viewPager.setPageTransformer { page, position ->
             val normalizedposition = abs(abs(position) - 1)
             page.alpha = normalizedposition

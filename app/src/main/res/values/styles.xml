@@ -304,7 +304,7 @@
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:alpha">1</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">20sp</item>
     </style>
 

@@ -130,13 +130,37 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 layoutAnimation = animation
 
                 showShimmer()
+                
+                binding.fragmentFailedDeliveriesChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
+                    if (checkedIds.isNotEmpty()) {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            getAllFailedDeliveriesAndSetRecyclerview(forceReload = true)
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    private fun getSelectedFilter(): String? {
+        return when (binding.fragmentFailedDeliveriesChipgroup.checkedChipId) {
+            R.id.fragment_failed_deliveries_chip_inbound -> "inbound"
+            R.id.fragment_failed_deliveries_chip_outbound -> "outbound"
+            else -> null
         }
     }
 
     private lateinit var failedDeliveriesAdapter: FailedDeliveryAdapter
     private suspend fun getAllFailedDeliveriesAndSetRecyclerview(forceReload: Boolean = false) {
+
+        if (getSelectedFilter() == null){
+            binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.all_failed_deliveries)
+        } else {
+            binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.all_failed_deliveries_filtered)
+        }
+
         if (forceReload) {
+            binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.showShimmer()
             failedDeliveriesList = null
         }
         if (failedDeliveriesList == null || (failedDeliveriesList?.meta?.current_page ?: 0) < (failedDeliveriesList?.meta?.last_page ?: 0)) {
@@ -145,12 +169,14 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
             binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
                 networkHelper?.getAllFailedDeliveries(
                     page = (failedDeliveriesList?.meta?.current_page ?: 0) + 1,
-                    size = 25
+                    size = 25,
+                    filter = getSelectedFilter()
                 ) { list, error ->
                     // Check if there are new domains since the latest list
                     // If the list is the same, just return and don't bother re-init the layoutmanager
                     if (::failedDeliveriesAdapter.isInitialized && list?.data == failedDeliveriesAdapter.getList()) {
                         setOnNestedScrollViewListener(true)
+                        hideShimmer()
                         return@getAllFailedDeliveries
                     }
 

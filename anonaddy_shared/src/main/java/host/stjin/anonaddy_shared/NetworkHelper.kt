@@ -5673,7 +5673,7 @@ class NetworkHelper(private val context: Context) {
     suspend fun getAllFailedDeliveries(
         page: Int? = 1,
         size: Int? = 25,
-        filter: Int? = 25,
+        filter: String? = null,
         callback: (FailedDeliveriesArray?, String?) -> Unit
     ) {
 
@@ -5685,7 +5685,7 @@ class NetworkHelper(private val context: Context) {
         val parameters = ArrayList<Pair<String, Any>>()
         if (page != null) parameters.add(Pair("page[number]", page.toString()))
         if (size != null) parameters.add(Pair("page[size]", size.toString()))
-        if (filter != null) parameters.add(Pair("page[email_type]", filter.toString()))
+        if (filter != null) parameters.add(Pair("filter[email_type]", filter))
 
         val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES, parameters)
             .appendHeader(
