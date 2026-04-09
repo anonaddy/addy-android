@@ -58,6 +58,15 @@
                     app:sectionTitle="@string/enable_feature" />
 
                 <host.stjin.anonaddy.ui.customviews.SectionView
+                    android:id="@+id/activity_app_settings_features_notify_failed_deliveries_type_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:sectionShowSwitch="false"
+                    app:sectionSwitchChecked="false"
+                    app:sectionTitle="@string/type" />
+
+                <host.stjin.anonaddy.ui.customviews.SectionView
                     android:id="@+id/activity_app_settings_features_notify_failed_deliveries_activity"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

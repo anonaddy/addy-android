@@ -35,6 +35,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         PERIODIC_BACKUPS(false, PREFTYPES.BOOLEAN, "periodic_backups"),
         BACKUPS_LOCATION(false, PREFTYPES.STRING, "backups_location"),
         NOTIFY_FAILED_DELIVERIES(false, PREFTYPES.BOOLEAN, "notify_failed_deliveries"),
+        NOTIFY_FAILED_DELIVERIES_TYPE(false, PREFTYPES.STRING, "notify_failed_deliveries_type"),
         NOTIFY_ACCOUNT_NOTIFICATIONS(false, PREFTYPES.BOOLEAN, "notify_account_notifications"),
         MANAGE_MULTIPLE_ALIASES(false, PREFTYPES.BOOLEAN, "manage_multiple_aliases"),
         NOTIFY_API_TOKEN_EXPIRY(false, PREFTYPES.BOOLEAN, "notify_api_token_expiry"),
@@ -98,8 +99,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         // Used to limit the amount of error notifications to every change
         BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT(true, PREFTYPES.INT, "cache_domain_error_count"),
 
-        // This value keeps track of the previous amount of failed deliveries so comparisons can be made in the BackgroundWorker
-        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_failed_deliveries_count_previous"),
+        BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID(true, PREFTYPES.STRING, "cache_failed_deliveries_latest_id"),
 
         // This value keeps track of the previous amount of account notifications so comparisons can be made in the BackgroundWorker
         BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_account_notifications_count_previous"),

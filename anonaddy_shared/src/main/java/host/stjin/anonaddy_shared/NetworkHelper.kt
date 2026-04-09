@@ -5645,19 +5645,23 @@ class NetworkHelper(private val context: Context) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
 
-        getAllFailedDeliveries { result, _ ->
+        val settingsManager = SettingsManager(false, context)
+        val filterType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"
+        val filter = if (filterType == "all") null else filterType
+
+        getAllFailedDeliveries(1, 1, filter) { result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
                 return@getAllFailedDeliveries
             } else {
-                // First move the current count to the previous count (for comparison)
-                encryptedSettingsManager.putSettingsInt(
-                    SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS,
-                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-                )
-                // Now store the current count
-                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, result.meta?.total ?: 0)
+                // Store the current count
+                val totalCount = result.meta?.total ?: result.data.size
+                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, totalCount)
+
+                // Store the latest ID
+                val latestId = result.data.firstOrNull()?.id ?: ""
+                encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID, latestId)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)

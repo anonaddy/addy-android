@@ -154,7 +154,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     private suspend fun getAllFailedDeliveriesAndSetRecyclerview(forceReload: Boolean = false) {
 
         if (getSelectedFilter() == null){
-            binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.all_failed_deliveries)
+            binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.failed_deliveries)
         } else {
             binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.all_failed_deliveries_filtered)
         }

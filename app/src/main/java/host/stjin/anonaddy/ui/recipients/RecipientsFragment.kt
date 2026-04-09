@@ -263,7 +263,7 @@ class RecipientsFragment : Fragment(),
         binding.recipientsAllRecipientsRecyclerview.showShimmer()
 
         if (!getSelectedFilter()){
-            binding.recipientsAllRecipientsTitle.text = getString(R.string.all_recipients)
+            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients)
         } else {
             binding.recipientsAllRecipientsTitle.text = getString(R.string.all_recipients_filtered)
         }

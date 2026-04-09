@@ -45,7 +45,6 @@
     <string name="encryption_enabled">Encryption enabled</string>
     <string name="open_options">Open options</string>
     <string name="api_obtain_desc">Your API can be obtained at the settings page at app.addy.io (or your own hosted instance)</string>
-    <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
     <string name="next">Next</string>
     <string name="get_started">Get started</string>
@@ -396,7 +395,6 @@
     <string name="widget_2_forwarded">forwarded</string>
     <string name="details">Details</string>
     <string name="failed_deliveries_info_text">If you would like to search through failed deliveries, go back to main section and use the search button.</string>
-    <string name="all_failed_deliveries">All failed deliveries</string>
     <string name="no_failed_deliveries">No failed deliveries</string>
     <string name="failed_deliveries">Failed deliveries</string>
     <string name="delete_failed_delivery">Delete failed delivery</string>
@@ -848,6 +846,7 @@
     <string name="blocklist_add_desc">Add a sender or domain below - these entries cannot reach your aliases</string>
     <string name="blocklist_add">Add to blocklist</string>
     <string name="blocklist_add_hint">Email address or domain</string>
+    <string name="type">Type</string>
     <string name="blocklist_type">Type</string>
     <string name="pinned">Pinned</string>
     <string name="pin_alias">Pin alias</string>
