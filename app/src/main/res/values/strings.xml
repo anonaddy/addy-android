@@ -68,14 +68,12 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.1.0</h3>
+<h3>What\'s new in addy.io for Android 6.2.0</h3>
 <h4>Added</h4>
-<p>- Support for pinning and unpinning aliases</p>
+<p>- Support for the new ‘inbound rejection’ feature</p>
 <h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother<br /><br /></p>
-<h3>What\'s new in addy.io for Android Wearables 1.6.0</h3>
-<h4>Added</h4>
-<p>- Support for pinning and unpinning aliases</p>
+<p>- Completely redesigned the failed delivery view<br />- Added a new quick filter bar<br />- Redesigned blocklist UI<br />- Added the option to only be notified for inbound or outbound failed deliveries<br />- Performance enhancements and other improvements for a smoother experience</p>
+<h3>What\'s new in addy.io for Android Wearables 1.6.1</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>

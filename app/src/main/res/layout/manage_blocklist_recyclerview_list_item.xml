@@ -74,6 +74,7 @@
                     <ImageView
                         android:layout_width="14dp"
                         android:layout_height="14dp"
+                        android:contentDescription="@string/emails_blocked"
                         android:src="@drawable/ic_forbid"
                         app:tint="?attr/colorOnSurfaceVariant" />
 

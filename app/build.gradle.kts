@@ -98,7 +98,7 @@ dependencies {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.10")
-    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
@@ -144,7 +144,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.11.1")
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
 }
 
 // For the donut in the aliasview
@@ -160,7 +160,7 @@ dependencies {
 // Backup manager
 dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
-    implementation("androidx.activity:activity-ktx:1.12.4")
+    implementation("androidx.activity:activity-ktx:1.13.0")
 }
 
 // Communication with Wear OS device
