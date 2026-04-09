@@ -1,0 +1,4 @@
+<h4>Added</h4>
+<p>- Support for the new ‘inbound rejection’ feature</p>
+<h4>Fixed/Improved</h4>
+<p>- Completely redesigned the failed delivery view<br />- Added a new quick filter bar<br />- Redesigned blocklist UI<br />- Added the option to only be notified for inbound or outbound failed deliveries<br />- Performance enhancements and other improvements for a smoother experience</p>

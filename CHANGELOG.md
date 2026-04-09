@@ -1,5 +1,31 @@
 # Changelog
 
+## [v6.2.0] - 2026-04-12
+
+### addy.io
+
+##### Added
+
+- Support for the new ‘inbound rejection’ feature
+
+##### Fixed/Improved
+
+- Completely redesigned the failed delivery view
+- Added a new quick filter bar
+- Redesigned blocklist UI
+- Added the option to only be notified for inbound or outbound failed deliveries
+- Performance enhancements and other improvements for a smoother experience
+
+### addy.io for Android wearables _(v1.6.1)_
+
+##### Added
+
+- Support for pinning and unpinning aliases
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v6.1.0] - 2026-03-23
 
 ### addy.io
