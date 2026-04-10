@@ -20,7 +20,7 @@ class ManageAliasNATOActivity : BaseActivity() {
     private var alias: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getDelegate().localNightMode = AppCompatDelegate.MODE_NIGHT_NO;
+        getDelegate().localNightMode = AppCompatDelegate.MODE_NIGHT_NO
 
         super.onCreate(savedInstanceState)
         binding = ActivityManageAliasNatoBinding.inflate(layoutInflater)

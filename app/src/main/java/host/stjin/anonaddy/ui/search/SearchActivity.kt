@@ -313,16 +313,7 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
             failedDeliveryAdapter.setClickListener(object : FailedDeliveryAdapter.ClickListener {
                 override fun onClickDetails(pos: Int, aView: View) {
                     failedDeliveryDetailsBottomDialogFragment = FailedDeliveryDetailsBottomDialogFragment(
-                        filteredFailedDeliveries!![pos].id,
-                        filteredFailedDeliveries!![pos].created_at,
-                        filteredFailedDeliveries!![pos].attempted_at,
-                        filteredFailedDeliveries!![pos].alias_email,
-                        filteredFailedDeliveries!![pos].recipient_email,
-                        filteredFailedDeliveries!![pos].bounce_type,
-                        filteredFailedDeliveries!![pos].remote_mta,
-                        filteredFailedDeliveries!![pos].sender,
-                        filteredFailedDeliveries!![pos].code,
-                        filteredFailedDeliveries!![pos].is_stored
+                        filteredFailedDeliveries!![pos]
                     )
                     failedDeliveryDetailsBottomDialogFragment!!.show(
                         supportFragmentManager,

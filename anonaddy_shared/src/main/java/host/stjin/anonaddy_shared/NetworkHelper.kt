@@ -5645,19 +5645,23 @@ class NetworkHelper(private val context: Context) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
 
-        getAllFailedDeliveries { result, _ ->
+        val settingsManager = SettingsManager(false, context)
+        val filterType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"
+        val filter = if (filterType == "all") null else filterType
+
+        getAllFailedDeliveries(1, 1, filter) { result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(false)
                 return@getAllFailedDeliveries
             } else {
-                // First move the current count to the previous count (for comparison)
-                encryptedSettingsManager.putSettingsInt(
-                    SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS,
-                    encryptedSettingsManager.getSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-                )
-                // Now store the current count
-                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, result.size)
+                // Store the current count
+                val totalCount = result.meta?.total ?: result.data.size
+                encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, totalCount)
+
+                // Store the latest ID
+                val latestId = result.data.firstOrNull()?.id ?: ""
+                encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID, latestId)
 
                 // Stored data, let the BackgroundWorker know the task succeeded
                 callback(true)
@@ -5671,7 +5675,10 @@ class NetworkHelper(private val context: Context) {
      */
 
     suspend fun getAllFailedDeliveries(
-        callback: (ArrayList<FailedDeliveries>?, String?) -> Unit
+        page: Int? = 1,
+        size: Int? = 25,
+        filter: String? = null,
+        callback: (FailedDeliveriesArray?, String?) -> Unit
     ) {
 
         waitForInit()
@@ -5679,7 +5686,12 @@ class NetworkHelper(private val context: Context) {
             println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
         }
 
-        val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES)
+        val parameters = ArrayList<Pair<String, Any>>()
+        if (page != null) parameters.add(Pair("page[number]", page.toString()))
+        if (size != null) parameters.add(Pair("page[size]", size.toString()))
+        if (filter != null) parameters.add(Pair("filter[email_type]", filter))
+
+        val (_, response, result) = Fuel.get(API_URL_FAILED_DELIVERIES, parameters)
             .appendHeader(
                 *getHeaders()
             )
@@ -5691,9 +5703,7 @@ class NetworkHelper(private val context: Context) {
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, FailedDeliveriesArray::class.java)
 
-                val failedDeliveriesList = ArrayList<FailedDeliveries>()
-                failedDeliveriesList.addAll(addyIoData.data)
-                callback(failedDeliveriesList, null)
+                callback(addyIoData, null)
             }
 
             401 -> {
@@ -6014,6 +6024,13 @@ class NetworkHelper(private val context: Context) {
                     SettingsManager(true, context).clearSettingsAndCloseApp()
                 }, 8000)
                 callback(null, null)
+            }
+
+            // Not found, aka the failed deliveries API is not enabled. (Not part of the user's subscription)
+            // =
+            // Show a toast (if enabled) letting the user know this feature is only available if the failed deliveries API is enabled
+            404 -> {
+                callback(null, "404")
             }
 
             else -> {

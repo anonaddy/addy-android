@@ -45,7 +45,6 @@
     <string name="encryption_enabled">Encryption enabled</string>
     <string name="open_options">Open options</string>
     <string name="api_obtain_desc">Your API can be obtained at the settings page at app.addy.io (or your own hosted instance)</string>
-    <string name="all_recipients">All recipients</string>
     <string name="add_recipient">Add recipient</string>
     <string name="next">Next</string>
     <string name="get_started">Get started</string>
@@ -69,14 +68,12 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.1.0</h3>
+<h3>What\'s new in addy.io for Android 6.2.0</h3>
 <h4>Added</h4>
-<p>- Support for pinning and unpinning aliases</p>
+<p>- Support for the new ‘inbound rejection’ feature</p>
 <h4>Fixed/Improved</h4>
-<p>- Performance improvements and other things to make the app even smoother<br /><br /></p>
-<h3>What\'s new in addy.io for Android Wearables 1.6.0</h3>
-<h4>Added</h4>
-<p>- Support for pinning and unpinning aliases</p>
+<p>- Completely redesigned the failed delivery view<br />- Added a new quick filter bar<br />- Redesigned blocklist UI<br />- Added the option to only be notified for inbound or outbound failed deliveries<br />- Performance enhancements and other improvements for a smoother experience</p>
+<h3>What\'s new in addy.io for Android Wearables 1.6.1</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>
@@ -381,7 +378,12 @@
     <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available</string>
     <string name="addyio_updater_desc">Check for new updates and view the latest changelog</string>
     <string name="stop_checking">Stop checking</string>
-    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s</p><p><strong>First attempted</strong><br />%2$s</p><p><strong>Alias</strong><br />%3$s</p><p><strong>Recipient</strong><br />%4$s</p><p><strong>Type</strong><br />%5$s</p><p><strong>Mail Server</strong><br />%6$s</p><p><strong>Sender</strong><br />%7$s</p><p><strong>Code</strong><br />%8$s</p>]]></string>
+    <string name="failed_delivery_details_text"><![CDATA[<p><strong>Created</strong><br />%1$s<br /><br /><strong>Destination</strong><br />%2$s</p>
+<p><strong>Alias</strong><br />%3$s</p>
+<p><strong>Sender</strong><br />%4$s</p>
+<p><strong>Mail Server</strong><br />%5$s</p>
+<p><strong>First attempted</strong><br />%6$s</p>
+<p><strong>Code</strong><br />%7$s</p>]]></string>
     <string name="code">Code</string>
     <string name="created">Created</string>
     <string name="view_details">View details</string>
@@ -391,7 +393,6 @@
     <string name="widget_2_forwarded">forwarded</string>
     <string name="details">Details</string>
     <string name="failed_deliveries_info_text">If you would like to search through failed deliveries, go back to main section and use the search button.</string>
-    <string name="all_failed_deliveries">All failed deliveries</string>
     <string name="no_failed_deliveries">No failed deliveries</string>
     <string name="failed_deliveries">Failed deliveries</string>
     <string name="delete_failed_delivery">Delete failed delivery</string>
@@ -843,6 +844,7 @@
     <string name="blocklist_add_desc">Add a sender or domain below - these entries cannot reach your aliases</string>
     <string name="blocklist_add">Add to blocklist</string>
     <string name="blocklist_add_hint">Email address or domain</string>
+    <string name="type">Type</string>
     <string name="blocklist_type">Type</string>
     <string name="pinned">Pinned</string>
     <string name="pin_alias">Pin alias</string>
@@ -850,4 +852,13 @@
     <string name="filter_pinned_aliases">Pinned</string>
     <string name="pinned_aliases">Pinned aliases</string>
     <string name="view_pinned">View pinned</string>
+    <string name="verified_only">Verified only</string>
+    <string name="inbound">Inbound</string>
+    <string name="outbound">Outbound</string>
+    <string name="all">All</string>
+    <string name="all_failed_deliveries_filtered">All failed deliveries (filtered)</string>
+    <string name="all_recipients_filtered">All recipients (filtered)</string>
+    <string name="custom">Custom</string>
+    <string name="blocklist_add_confirm_desc">Are you sure you want to block %s?</string>
+    <string name="blocklist_add_success">This sender was added to the blocklist</string>
 </resources>

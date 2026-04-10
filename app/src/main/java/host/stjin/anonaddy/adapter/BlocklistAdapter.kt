@@ -25,9 +25,17 @@ class BlocklistAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.mValue.text = listWithBlocklistEntries[position].value
-        holder.mCreated.text = DateTimeUtils.convertStringToLocalTimeZoneString(listWithBlocklistEntries[position].created_at)
-        holder.mType.text = listWithBlocklistEntries[position].type
+        val entry = listWithBlocklistEntries[position]
+        holder.mValue.text = entry.value
+        holder.mType.text = entry.type
+        holder.mBlockedCount.text = (entry.blocked ?: 0).toString()
+
+        if (!entry.last_blocked.isNullOrEmpty()) {
+            holder.mLastBlocked.visibility = View.VISIBLE
+            holder.mLastBlocked.text = "(${DateTimeUtils.convertStringToLocalTimeZoneString(entry.last_blocked)})"
+        } else {
+            holder.mLastBlocked.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int = listWithBlocklistEntries.size
@@ -54,8 +62,10 @@ class BlocklistAdapter(
         var mValue: TextView = view.findViewById(R.id.manage_blocklist_recyclerview_list_value)
         var mType: TextView =
             view.findViewById(R.id.manage_blocklist_recyclerview_list_type)
-        var mCreated: TextView =
-            view.findViewById(R.id.manage_blocklist_recyclerview_list_created)
+        var mBlockedCount: TextView =
+            view.findViewById(R.id.manage_blocklist_recyclerview_list_blocked_count)
+        var mLastBlocked: TextView =
+            view.findViewById(R.id.manage_blocklist_recyclerview_list_last_blocked)
 
         init {
             mOptionsButton.setOnClickListener(this)

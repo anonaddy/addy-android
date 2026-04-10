@@ -149,6 +149,11 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                 if (entries != null) {
                     setBlocklistAdapter(entries)
                 } else {
+                    // If the error is 404, the feature is unavailable, let the user know that the feature is not available
+                    if (error == "404") {
+                        binding.fragmentBlocklistLL1.visibility = View.GONE
+                        binding.root.findViewById<View>(R.id.fragment_content_unavailable).visibility = View.VISIBLE
+                    } else {
                         if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                             SnackbarHelper.createSnackbar(
                                 requireContext(),
@@ -168,7 +173,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                         // Show error animations
                         binding.fragmentBlocklistLL1.visibility = View.GONE
                         binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
-
+                    }
 
 
                 }

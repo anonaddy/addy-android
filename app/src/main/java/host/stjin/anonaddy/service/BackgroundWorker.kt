@@ -323,20 +323,20 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                  */
 
                 if (settingsManager.getSettingsBool(PREFS.NOTIFY_FAILED_DELIVERIES)) {
+                    val previousFailedDeliveryId =
+                        encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
+
                     networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
                         // Store the result if the data succeeded to update in a boolean
                         failedDeliveriesNetworkCallResult = result
                     }
 
-                    val currentFailedDeliveries =
-                        encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-                    val previousFailedDeliveries =
-                        encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT_PREVIOUS)
-                    // If the current failed delivery count is bigger than the previous list. That means there are new failed deliveries
-                    if (currentFailedDeliveries > previousFailedDeliveries) {
-                        NotificationHelper(appContext).createFailedDeliveryNotification(
-                            currentFailedDeliveries - previousFailedDeliveries
-                        )
+                    val currentFailedDeliveryId =
+                        encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
+
+                    // If the current failed delivery id is different from the previous. That means there is a new failed delivery
+                    if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId.isNotEmpty()) {
+                        NotificationHelper(appContext).createFailedDeliveryNotification(1)
                     }
                 } else {
                     // Not required so always success

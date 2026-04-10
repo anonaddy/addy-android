@@ -2,7 +2,9 @@ package host.stjin.anonaddy_shared.models
 
 
 data class FailedDeliveriesArray(
-    val `data`: List<FailedDeliveries>
+    var `data`: ArrayList<FailedDeliveries>,
+    var links: Links?,
+    var meta: Meta?
 )
 
 data class SingleFailedDelivery(
@@ -20,10 +22,14 @@ data class FailedDeliveries(
     val bounce_type: String,
     val remote_mta: String,
     val sender: String?,
+    val destination: String?,
     val email_type: String,
+    val email_type_text: String,
     val status: String,
     val code: String,
     val is_stored: Boolean,
+    val quarantined: Boolean,
+    val resent: Boolean,
     val attempted_at: String,
     val created_at: String,
     val updated_at: String

@@ -9,12 +9,14 @@ data class SingleBlocklistEntry(
 )
 
 data class BlocklistEntries(
-    val created_at: String,
     val id: String,
-    val type: String,
-    val updated_at: String,
     val user_id: String,
-    val value: String
+    val value: String,
+    val type: String,
+    val blocked: Int?,
+    val last_blocked: String?,
+    val created_at: String,
+    val updated_at: String
 )
 
 data class NewBlocklistEntry(

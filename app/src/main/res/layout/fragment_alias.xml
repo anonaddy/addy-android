@@ -21,11 +21,85 @@
             android:clipToPadding="false"
             android:layout_marginBottom="8dp">
 
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:scrollbars="none"
+                android:overScrollMode="never">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/alias_chipgroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:selectionRequired="true"
+                    app:singleLine="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/alias_chip_all"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:checked="true"
+                        android:text="@string/filter_all_aliases" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/alias_chip_pinned"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/filter_pinned_aliases" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/alias_chip_active"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/filter_active_aliases" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/alias_chip_inactive"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/filter_inactive_aliases" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/alias_chip_deleted"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/filter_deleted_aliases" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/alias_chip_watched"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/watched_aliases" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/alias_chip_custom"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/custom" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
 
                 <LinearLayout
                     style="@style/AddyIoTitleAction"
+                    android:layout_marginTop="0dp"
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="12dp"
                     android:orientation="horizontal">
 
 
@@ -41,23 +115,13 @@
 
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/alias_sort_list"
-                        style="@style/Widget.Material3.Button.TonalButton.Icon"
-                        android:layout_width="42dp"
-                        android:layout_height="wrap_content"
-                        app:iconPadding="0dp"
-                        android:padding="0dp"
-                        android:layout_marginEnd="8dp"
-                        app:iconGravity="textStart"
-                        app:icon="@drawable/ic_filter" />
-
-                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/alias_add_alias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_alias" />
 
                 </LinearLayout>
+
 
                 <com.todkars.shimmer.ShimmerRecyclerView
                     android:id="@+id/alias_all_aliases_recyclerview"

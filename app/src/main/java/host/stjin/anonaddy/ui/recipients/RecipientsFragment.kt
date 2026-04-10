@@ -100,9 +100,21 @@ class RecipientsFragment : Fragment(),
                 layoutAnimation = animation
 
                 showShimmer()
+                
+                binding.recipientsChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
+                    if (checkedIds.isNotEmpty()) {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            getAllRecipients()
+                        }
+                    }
+                }
             }
         }
 
+    }
+
+    private fun getSelectedFilter(): Boolean {
+        return binding.recipientsChipgroup.checkedChipId == R.id.recipients_chip_verified_only
     }
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -248,6 +260,13 @@ class RecipientsFragment : Fragment(),
 
     private lateinit var recipientAdapter: RecipientAdapter
     private suspend fun getAllRecipients() {
+        binding.recipientsAllRecipientsRecyclerview.showShimmer()
+
+        if (!getSelectedFilter()){
+            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients)
+        } else {
+            binding.recipientsAllRecipientsTitle.text = getString(R.string.all_recipients_filtered)
+        }
 
         networkHelper?.getRecipients({ list, result ->
             // Sorted by created_at automatically
@@ -256,6 +275,7 @@ class RecipientsFragment : Fragment(),
             // Check if there are new recipients since the latest list
             // If the list is the same, just return and don't bother re-init the layoutmanager
             if (::recipientAdapter.isInitialized && list == recipientAdapter.getList()) {
+                binding.recipientsAllRecipientsRecyclerview.hideShimmer()
                 return@getRecipients
             }
 
@@ -289,7 +309,7 @@ class RecipientsFragment : Fragment(),
 
 
             }
-        }, verifiedOnly = false)
+        }, verifiedOnly = getSelectedFilter())
 
     }
 

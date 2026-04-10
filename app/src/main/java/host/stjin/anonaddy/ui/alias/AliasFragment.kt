@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -137,6 +136,22 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         binding.aliasAllAliasesRecyclerview.addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
     }
 
+    private var isUpdatingChips = false
+
+    private fun updateChipSelection(filter: AliasSortFilter) {
+        isUpdatingChips = true
+        when {
+            filter.onlyPinnedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_pinned)
+            filter.onlyActiveAliases -> binding.aliasChipgroup.check(R.id.alias_chip_active)
+            filter.onlyInactiveAliases -> binding.aliasChipgroup.check(R.id.alias_chip_inactive)
+            filter.onlyDeletedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_deleted)
+            filter.onlyWatchedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_watched)
+            filter == defaultAliasSortFilter -> binding.aliasChipgroup.check(R.id.alias_chip_all)
+            else -> binding.aliasChipgroup.check(R.id.alias_chip_custom)
+        }
+        isUpdatingChips = false
+    }
+
     private fun loadFilter() {
         val aliasSortFilterJson = settingsManager?.getSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER)
         val aliasSortFilterObject = aliasSortFilterJson?.let { GsonTools.jsonToAliasSortFilterObject(requireContext(), it) }
@@ -145,12 +160,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             this.aliasSortFilter = aliasSortFilterObject
         }
 
-        if (defaultAliasSortFilter != aliasSortFilter) {
-            // Filter is active, let user know
-            binding.aliasSortList.icon = ContextCompat.getDrawable(binding.aliasSortList.context, R.drawable.ic_filter_filled)
-        } else {
-            binding.aliasSortList.icon = ContextCompat.getDrawable(binding.aliasSortList.context, R.drawable.ic_filter)
-        }
+
+        updateChipSelection(this.aliasSortFilter)
 
         filterOptionsAliasBottomDialogFragment = FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
     }
@@ -228,6 +239,33 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun setOnClickListeners() {
+        binding.aliasChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
+            if (!isUpdatingChips && checkedIds.isNotEmpty()) {
+                val checkedId = checkedIds.first()
+                val newFilter = defaultAliasSortFilter.copy()
+                when (checkedId) {
+                    R.id.alias_chip_pinned -> newFilter.onlyPinnedAliases = true
+                    R.id.alias_chip_active -> newFilter.onlyActiveAliases = true
+                    R.id.alias_chip_inactive -> newFilter.onlyInactiveAliases = true
+                    R.id.alias_chip_deleted -> newFilter.onlyDeletedAliases = true
+                    R.id.alias_chip_watched -> newFilter.onlyWatchedAliases = true
+                }
+
+                if (checkedId != R.id.alias_chip_custom) {
+                    setFilterAndSortingSettings(newFilter)
+                }
+            }
+        }
+
+        binding.aliasChipCustom.setOnClickListener {
+            if (!filterOptionsAliasBottomDialogFragment.isAdded) {
+                filterOptionsAliasBottomDialogFragment.show(
+                    childFragmentManager,
+                    "filterOptionsAliasBottomDialogFragment"
+                )
+            }
+        }
+
         binding.aliasAddAliasFab.setOnClickListener {
             if (!addAliasBottomDialogFragment.isAdded) {
                 addAliasBottomDialogFragment.show(
@@ -246,20 +284,12 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
         }
 
-        binding.aliasSortList.setOnClickListener {
-
-            if (!filterOptionsAliasBottomDialogFragment.isAdded) {
-                filterOptionsAliasBottomDialogFragment.show(
-                    childFragmentManager,
-                    "filterOptionsAliasBottomDialogFragment"
-                )
-            }
-        }
     }
 
 
     private suspend fun getAliasesAndAddThemToList(forceReload: Boolean = false) {
         if (forceReload) {
+            binding.aliasAllAliasesRecyclerview.showShimmer()
             aliasList = null
         }
         // Only obtain data and do a network call whenever there is actually more information on the API side to obtain

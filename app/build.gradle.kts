@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v6.1.0 + release 01 + 00 (for app)
-        versionCode = 366100100 // https://developer.android.com/training/wearables/packaging
+        // SDK 36 + v6.2.0 + release 01 + 00 (for app)
+        versionCode = 366200100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
-        versionName = "v6.1.0"
+        versionName = "v6.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -98,7 +98,7 @@ dependencies {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.10")
-    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
@@ -144,7 +144,7 @@ dependencies {
 
 // For updating widgets and caching data
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.11.1")
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
 }
 
 // For the donut in the aliasview
@@ -160,7 +160,7 @@ dependencies {
 // Backup manager
 dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
-    implementation("androidx.activity:activity-ktx:1.12.4")
+    implementation("androidx.activity:activity-ktx:1.13.0")
 }
 
 // Communication with Wear OS device
