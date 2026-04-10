@@ -207,6 +207,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val railVersionText =
             if (AddyIo.isUsingHostedInstance) this.resources.getString(R.string.hosted) else AddyIo.VERSIONSTRING
         binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)!!.text = railVersionText
+
+        val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
+        binding.navRail!!.headerView?.findViewById<TextView>(R.id.main_top_bar_user_initials)!!.text = usernameInitials
+
     }
 
     private fun setOnBigScreenClickListener() {

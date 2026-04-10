@@ -18,10 +18,6 @@
 
 ### addy.io for Android wearables _(v1.6.1)_
 
-##### Added
-
-- Support for pinning and unpinning aliases
-
 ##### Fixed/Improved
 
 - Performance improvements and other things to make the app even smoother
