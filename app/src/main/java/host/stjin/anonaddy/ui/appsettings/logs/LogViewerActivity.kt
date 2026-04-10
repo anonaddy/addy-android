@@ -24,7 +24,7 @@ class LogViewerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLogViewerBinding.inflate(layoutInflater)
-        InsetUtil.applyBottomInset(binding.appsettingsLogviewerNSVLL)
+        InsetUtil.applyBottomInset(binding.appsettingsLogviewerCL)
 
         val view = binding.root
         setContentView(view)
