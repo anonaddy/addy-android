@@ -40,9 +40,7 @@ import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
 import host.stjin.anonaddy.ui.alias.AliasFragment
-import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
-import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
 import host.stjin.anonaddy.ui.blocklist.ManageBlocklistFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
@@ -214,11 +212,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun setOnBigScreenClickListener() {
-        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_failed_deliveries)!!.setOnClickListener {
-            val intent = Intent(this, FailedDeliveriesActivity::class.java)
-            startActivity(intent)
-        }
-
         binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!.setOnClickListener {
             if (!profileBottomDialogFragment.isAdded) {
                 profileBottomDialogFragment.show(
@@ -472,10 +465,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
                     5 -> {
                         navView.menu.findItem(R.id.navigation_rules).isChecked = true
-                    }
-
-                    6 -> {
-                        navView.menu.findItem(R.id.navigation_blocklist).isChecked = true
                     }
 
                     7 -> {
@@ -1077,15 +1066,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     viewPager.currentItem = 5
                 } else {
                     val intent = Intent(this, RulesSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            R.id.navigation_blocklist -> {  // Only SW600DP>
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 6
-                } else {
-                    val intent = Intent(this, ManageBlocklistActivity::class.java)
                     startActivity(intent)
                 }
             }
