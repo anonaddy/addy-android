@@ -30,13 +30,8 @@
 
     <item
         android:id="@+id/navigation_rules"
-        android:icon="@drawable/ic_filter_anim_settings"
+        android:icon="@drawable/ic_clipboard_list_anim_settings"
         android:title="@string/rules" />
-
-    <item
-        android:id="@+id/navigation_blocklist"
-        android:icon="@drawable/ic_forbid_anim_settings"
-        android:title="@string/blocklist" />
 
     <item
         android:id="@+id/navigation_failed_deliveries"

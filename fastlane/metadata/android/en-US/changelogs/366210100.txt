@@ -1,0 +1,2 @@
+<h4>Fixed/Improved</h4>
+<p>- Fixed a crashing issue on foldables and tablets<br />- Redesigned the navigation rail for foldables and tablets<br />- Performance enhancements and other improvements for a smoother experience</p>

@@ -110,7 +110,6 @@
                         android:layout_gravity="end|bottom"
                         android:background="@drawable/circle_ripple"
                         android:clickable="true"
-                        android:contentDescription="@string/search"
                         android:focusable="true"
                         android:padding="6dp"
                         android:src="@drawable/ic_mail_error"

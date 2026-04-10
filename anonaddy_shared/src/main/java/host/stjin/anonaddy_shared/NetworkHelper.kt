@@ -227,8 +227,6 @@ class NetworkHelper(private val context: Context) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidCertificate", null)
         }
     }
-
-
     private fun getHeaders(apiKey: String? = null): Array<Pair<String, Any>> {
         val apiKeyToSend = apiKey ?: encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
         return arrayOf(
@@ -239,8 +237,6 @@ class NetworkHelper(private val context: Context) {
             "User-Agent" to getUserAgent()
         )
     }
-
-
     private fun getUserAgent(): String {
         // User-Agent: <product> / <product-version> <comment>
         // <product> / <product-version> <comment>
@@ -254,8 +250,6 @@ class NetworkHelper(private val context: Context) {
 
         return userAgent
     }
-
-
     private fun getFuelResponse(response: Response): ByteArray? {
         return try {
             response.data
@@ -263,8 +257,6 @@ class NetworkHelper(private val context: Context) {
             null
         }
     }
-
-
     // Separate method, with a try/catch because you can't toast on a Non-UI thread. And the widgets might call methods and there *is* a chance
     // these calls return a 404
     private fun invalidApiKey() {
@@ -276,8 +268,6 @@ class NetworkHelper(private val context: Context) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidApiKey", null)
         }
     }
-
-
     suspend fun registration(
         callback: (String?) -> Unit,
         username: String,
@@ -286,10 +276,7 @@ class NetworkHelper(private val context: Context) {
         apiExpiration: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("username", username)
@@ -297,8 +284,6 @@ class NetworkHelper(private val context: Context) {
         json.put("password", password)
         json.put("device_name", "addy.io for Android")
         json.put("expiration", if (apiExpiration == "never") null else apiExpiration)
-
-
         val (_, response, result) = Fuel.post(API_URL_REGISTER)
             .appendHeader(
                 *getHeaders()
@@ -319,21 +304,9 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "registration",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "registration")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -344,10 +317,7 @@ class NetworkHelper(private val context: Context) {
         query: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.post("${API_URL_LOGIN_VERIFY}?${query}")
             .appendHeader(
@@ -371,22 +341,10 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "verifyRegistration",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "verifyRegistration")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -397,10 +355,7 @@ class NetworkHelper(private val context: Context) {
         baseUrl: String, mfaKey: String, otp: String, xCsrfToken: String, apiExpiration: String, cookies: Collection<String>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         // Reset all values as API_BASE_URL is being set
         lazyMgr.reset() // prop1, prop2, and prop3 all will do new lazy values on next access
@@ -440,28 +395,17 @@ class NetworkHelper(private val context: Context) {
                 callback(null, addyIoData.message)
             }
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "loginMfa",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+
+                val errorMessage = handleGenericError(response, result, "loginMfa")
+
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
+
             }
         }
     }
-
-
 
 
     suspend fun login(
@@ -472,25 +416,18 @@ class NetworkHelper(private val context: Context) {
         apiExpiration: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         // Reset all values as API_BASE_URL is being set
         lazyMgr.reset() // prop1, prop2, and prop3 all will do new lazy values on next access
 
         // Set base URL
         API_BASE_URL = baseUrl
-
-
         val json = JSONObject()
         json.put("username", username)
         json.put("password", password)
         json.put("device_name", "addy.io for Android")
         json.put("expiration", if (apiExpiration == "never") null else apiExpiration)
-
-
         val (_, response, result) = Fuel.post(API_URL_LOGIN)
             .appendHeader(
                 *getHeaders()
@@ -530,24 +467,15 @@ class NetworkHelper(private val context: Context) {
                 callback(null, null, addyIoData.message)
             }
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "login",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+
+                val errorMessage = handleGenericError(response, result, "login")
+
                 callback(
                     null,
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
+
             }
         }
     }
@@ -557,15 +485,10 @@ class NetworkHelper(private val context: Context) {
         password: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("password", password)
-
-
         val (_, response, result) = Fuel.post(API_URL_DELETE_ACCOUNT)
             .appendHeader(
                 *getHeaders()
@@ -579,11 +502,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
@@ -592,21 +511,9 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deleteAccount",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deleteAccount")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -614,12 +521,7 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun logout(callback: (String?) -> Unit) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
-
-
+        waitForInitAndLog()
         val (_, response, result) = Fuel.post(API_URL_LOGOUT)
             .appendHeader(
                 *getHeaders()
@@ -632,36 +534,19 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "logout",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "logout")
                 callback(null)
             }
         }
     }
 
     suspend fun verifyApiKey(baseUrl: String, apiKey: String, callback: (UserResource?, String?) -> Unit) {
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         // Reset all values as API_BASE_URL is being set
         lazyMgr.reset() // prop1, prop2, and prop3 all will do new lazy values on next access
@@ -683,23 +568,14 @@ class NetworkHelper(private val context: Context) {
             }
             // Do not check for a 401 since the UI will take care of it
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "verifyApiKey",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+
+                val errorMessage = handleGenericError(response, result, "verifyApiKey")
+
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse,
-                    )
+                    errorMessage
                 )
+
             }
         }
     }
@@ -712,10 +588,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Version?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get(API_URL_APP_VERSION)
@@ -723,8 +596,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -734,11 +605,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
             // Not found, aka the addy.io version is <0.6.0 (this endpoint was introduced in 0.6.0)
@@ -748,28 +615,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getAddyIoInstanceVersion",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getAddyIoInstanceVersion")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     /**
      * GET USER RESOURCE
      */
@@ -778,10 +631,7 @@ class NetworkHelper(private val context: Context) {
         callback: (UserResource?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get(API_URL_ACCOUNT_DETAILS)
@@ -789,8 +639,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -800,31 +648,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getUserResource",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getUserResource")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -834,19 +666,12 @@ class NetworkHelper(private val context: Context) {
         callback: (DomainOptions?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
-
-
+        waitForInitAndLog()
         val (_, response, result) = Fuel.get(API_URL_DOMAIN_OPTIONS)
             .appendHeader(
                 *getHeaders()
             )
             .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -856,37 +681,19 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getDomainOptions",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getDomainOptions")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     /**
      * ALIASES
      */
@@ -900,10 +707,7 @@ class NetworkHelper(private val context: Context) {
         recipients: ArrayList<String>?
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val array = JSONArray()
 
@@ -919,8 +723,6 @@ class NetworkHelper(private val context: Context) {
         json.put("format", format)
         json.put("local_part", aliasLocalPart)
         json.put("recipient_ids", array)
-
-
         val (_, response, result) = Fuel.post(API_URL_ALIAS)
             .appendHeader(
                 *getHeaders()
@@ -937,37 +739,19 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "addAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "addAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun getAliases(
         callback: (AliasesArray?, String?) -> Unit,
         aliasSortFilter: AliasSortFilter,
@@ -978,19 +762,12 @@ class NetworkHelper(private val context: Context) {
         username: String? = null,
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
-
-
+        waitForInitAndLog()
         /*
         Parameters
         https://app.addy.io/docs/#get-all-aliases
          */
         val parameters: ArrayList<Pair<String, String>> = arrayListOf()
-
-
         if (aliasSortFilter.onlyActiveAliases) {
             parameters.add("filter[active]=" to "true")
         } else if (aliasSortFilter.onlyInactiveAliases) {
@@ -1002,8 +779,6 @@ class NetworkHelper(private val context: Context) {
         } else {
             parameters.add("filter[deleted]=" to "with")
         }
-
-
         if (size != null) {
             parameters.add("page[size]" to size.toString())
         }
@@ -1042,8 +817,6 @@ class NetworkHelper(private val context: Context) {
                 *getHeaders()
             )
             .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -1053,32 +826,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getAliases",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getAliases")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1088,10 +844,7 @@ class NetworkHelper(private val context: Context) {
         callback: (AddyChartData?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get(API_URL_CHART_DATA)
@@ -1099,8 +852,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -1110,31 +861,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getChartData",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getChartData")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1145,10 +880,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get("${API_URL_ALIAS}/$aliasId")
@@ -1156,8 +888,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -1167,31 +897,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getSpecificAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getSpecificAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1203,15 +917,10 @@ class NetworkHelper(private val context: Context) {
         description: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("description", description)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_ALIAS}/$aliasId")
                 .appendHeader(
@@ -1219,8 +928,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -1230,31 +937,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "updateDescriptionSpecificAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "updateDescriptionSpecificAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1266,15 +957,10 @@ class NetworkHelper(private val context: Context) {
         fromName: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("from_name", fromName)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_ALIAS}/$aliasId")
                 .appendHeader(
@@ -1282,8 +968,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -1293,47 +977,26 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "updateFromNameSpecificAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "updateFromNameSpecificAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun updateRecipientsSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String,
         recipients: ArrayList<String>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1345,8 +1008,6 @@ class NetworkHelper(private val context: Context) {
         json.put("alias_id", aliasId)
         json.put("recipient_ids", array)
 
-
-
         val (_, response, result) =
             Fuel.post(API_URL_ALIAS_RECIPIENTS)
                 .appendHeader(
@@ -1354,8 +1015,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -1365,31 +1024,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "updateRecipientsSpecificAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "updateRecipientsSpecificAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1400,10 +1043,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<String>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1430,46 +1070,25 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "bulkGetAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "bulkGetAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun deactivateSpecificAlias(
         callback: (String?) -> Unit?,
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_ALIAS}/$aliasId")
             .appendHeader(
@@ -1483,30 +1102,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deactivateSpecificAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deactivateSpecificAlias")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1517,10 +1120,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1547,31 +1147,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "bulkDeactivateAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "bulkDeactivateAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1582,10 +1166,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", aliasId)
@@ -1606,31 +1187,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "activateSpecificAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "activateSpecificAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1639,10 +1204,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", aliasId)
@@ -1663,31 +1225,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "pinSpecificAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "pinSpecificAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1698,10 +1244,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_PINNED_ALIASES}/$aliasId")
             .appendHeader(
@@ -1715,45 +1258,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "unpinSpecificAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "unpinSpecificAlias")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun bulkActivateAlias(
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1780,46 +1302,25 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "bulkActivateAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "bulkActivateAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun deleteAlias(
         callback: (String?) -> Unit,
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId")
             .appendHeader(
@@ -1833,30 +1334,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deleteAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deleteAlias")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1867,10 +1352,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -1897,31 +1379,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "bulkDeleteAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "bulkDeleteAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -1932,10 +1398,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ALIAS}/$aliasId/forget")
             .appendHeader(
@@ -1949,45 +1412,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "forgetAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "forgetAlias")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun bulkForgetAlias(
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -2014,31 +1456,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "bulkForgetAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "bulkForgetAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -2049,10 +1475,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -2079,31 +1502,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "bulkUnpinAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "bulkUnpinAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -2114,10 +1521,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -2144,46 +1548,25 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "bulkPinAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "bulkPinAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun restoreAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.patch("${API_URL_ALIAS}/$aliasId/restore")
             .appendHeader(
@@ -2200,31 +1583,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "restoreAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "restoreAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -2235,10 +1602,7 @@ class NetworkHelper(private val context: Context) {
         aliases: List<Aliases>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         val array = JSONArray()
@@ -2265,37 +1629,19 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "bulkRestoreAlias",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "bulkRestoreAlias")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
 
 
     suspend fun activateAttachedRecipientsOnly(
@@ -2303,10 +1649,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", aliasId)
@@ -2327,31 +1670,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "activateAttachedRecipientsOnly",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "activateAttachedRecipientsOnly")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -2362,10 +1689,7 @@ class NetworkHelper(private val context: Context) {
         aliasId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ATTACHED_RECIPIENTS_ONLY}/$aliasId")
             .appendHeader(
@@ -2379,36 +1703,18 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deactivateAttachedRecipientsOnly",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deactivateAttachedRecipientsOnly")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     /**
      * RECIPIENTS
      */
@@ -2418,10 +1724,7 @@ class NetworkHelper(private val context: Context) {
         address: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("email", address)
@@ -2442,31 +1745,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "addRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "addRecipient")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -2477,10 +1764,7 @@ class NetworkHelper(private val context: Context) {
         verifiedOnly: Boolean
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.get(API_URL_RECIPIENTS)
             .appendHeader(
@@ -2510,31 +1794,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getRecipients",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getRecipients")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -2545,10 +1813,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENTS}/$recipientId")
             .appendHeader(
@@ -2562,45 +1827,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deleteRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deleteRecipient")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun allowRecipientToReplySend(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -2621,31 +1865,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enableEncryptionRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enableEncryptionRecipient")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -2656,10 +1884,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ALLOWED_RECIPIENTS}/$recipientId")
             .appendHeader(
@@ -2673,45 +1898,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disallowRecipientToReplySend",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disallowRecipientToReplySend")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun disableEncryptionRecipient(
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ENCRYPTED_RECIPIENTS}/$recipientId")
             .appendHeader(
@@ -2725,45 +1929,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disableEncryptionRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disableEncryptionRecipient")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun enableEncryptionRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -2784,46 +1967,25 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enableEncryptionRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enableEncryptionRecipient")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun disablePgpInlineRecipient(
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_INLINE_ENCRYPTED_RECIPIENTS}/$recipientId")
             .appendHeader(
@@ -2837,45 +1999,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disablePgpInlineRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disablePgpInlineRecipient")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun enablePgpInlineRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -2896,46 +2037,25 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enablePgpInlineRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enablePgpInlineRecipient")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun disableRemovePgpKeysRecipients(
         callback: (String?) -> Unit?,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_REMOVE_PGP_KEYS_RECIPIENTS}/$recipientId")
             .appendHeader(
@@ -2949,45 +2069,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disableRemovePgpKeysRecipients",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disableRemovePgpKeysRecipients")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun enableRemovePgpKeysRecipients(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -3008,37 +2107,19 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enableRemovePgpKeysRecipients",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enableRemovePgpKeysRecipients")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
 
 
     suspend fun disableRemovePgpSignaturesRecipients(
@@ -3046,10 +2127,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_REMOVE_PGP_SIGNATURES_RECIPIENTS}/$recipientId")
             .appendHeader(
@@ -3063,45 +2141,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disableRemovePgpSignaturesRecipients",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disableRemovePgpSignaturesRecipients")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun enableRemovePgpSignaturesRecipients(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -3122,37 +2179,19 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enableRemovePgpSignaturesRecipients",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enableRemovePgpSignaturesRecipients")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
 
 
     suspend fun disableProtectedHeadersRecipient(
@@ -3160,10 +2199,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_PROTECTED_HEADERS_RECIPIENTS}/$recipientId")
             .appendHeader(
@@ -3177,45 +2213,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disableProtectedHeadersRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disableProtectedHeadersRecipient")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun enableProtectedHeadersRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", recipientId)
@@ -3236,31 +2251,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enableProtectedHeadersRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enableProtectedHeadersRecipient")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -3271,10 +2270,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_RECIPIENT_KEYS}/$recipientId")
             .appendHeader(
@@ -3288,30 +2284,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "removeEncryptionKeyRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "removeEncryptionKeyRecipient")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -3323,15 +2303,10 @@ class NetworkHelper(private val context: Context) {
         keyData: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("key_data", keyData)
-
-
         val (_, response, result) = Fuel.patch("${API_URL_RECIPIENT_KEYS}/$recipientId")
             .appendHeader(
                 *getHeaders()
@@ -3348,46 +2323,25 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "addEncryptionKeyRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "addEncryptionKeyRecipient")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun getSpecificRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get("${API_URL_RECIPIENTS}/$recipientId")
@@ -3395,8 +2349,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -3406,31 +2358,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getSpecificRecipient",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getSpecificRecipient")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -3441,10 +2377,7 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("recipient_id", recipientId)
@@ -3462,36 +2395,18 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "resendVerificationEmail",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "resendVerificationEmail")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     /**
      * DOMAINS
      */
@@ -3500,10 +2415,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<Domains>?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.get(API_URL_DOMAINS)
             .appendHeader(
@@ -3523,31 +2435,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getDomains",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getDomains")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -3558,10 +2454,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_DOMAINS}/$id")
             .appendHeader(
@@ -3575,30 +2468,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deleteDomain",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deleteDomain")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -3609,10 +2486,7 @@ class NetworkHelper(private val context: Context) {
         domain: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("domain", domain)
@@ -3637,31 +2511,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "addDomain",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "addDomain")
                 callback(
                     null, null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -3672,10 +2530,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get("${API_URL_DOMAINS}/$id")
@@ -3683,8 +2538,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -3694,52 +2547,29 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getSpecificDomain",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getSpecificDomain")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun updateDefaultRecipientForSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("default_recipient", recipientId)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_DOMAINS}/$domainId/default-recipient")
                 .appendHeader(
@@ -3747,8 +2577,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -3758,11 +2586,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -3791,10 +2615,7 @@ class NetworkHelper(private val context: Context) {
         domainId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_DOMAINS}/$domainId")
             .appendHeader(
@@ -3808,45 +2629,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deactivateSpecificDomain",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deactivateSpecificDomain")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun activateSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", domainId)
@@ -3867,31 +2667,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "activateSpecificDomain",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "activateSpecificDomain")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -3902,10 +2686,7 @@ class NetworkHelper(private val context: Context) {
         domainId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_DOMAINS}/$domainId")
             .appendHeader(
@@ -3919,45 +2700,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disableCatchAllSpecificDomain",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disableCatchAllSpecificDomain")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun enableCatchAllSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", domainId)
@@ -3978,52 +2738,29 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enableCatchAllSpecificDomain",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enableCatchAllSpecificDomain")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun updateDescriptionSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
         description: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("description", description)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_DOMAINS}/$domainId")
                 .appendHeader(
@@ -4031,8 +2768,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -4042,11 +2777,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -4069,23 +2800,16 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
-
-
     suspend fun updateAutoCreateRegexSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
         autoCreateRegex: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("auto_create_regex", autoCreateRegex)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_DOMAINS}/$domainId")
                 .appendHeader(
@@ -4093,8 +2817,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -4104,11 +2826,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -4131,23 +2849,16 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
-
-
     suspend fun updateFromNameSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
         fromName: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("from_name", fromName)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_DOMAINS}/$domainId")
                 .appendHeader(
@@ -4155,8 +2866,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -4166,11 +2875,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -4193,8 +2898,6 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
-
-
     /**
      * USERNAMES
      */
@@ -4203,10 +2906,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<Usernames>?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.get(API_URL_USERNAMES)
             .appendHeader(
@@ -4227,31 +2927,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getUsernames",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getUsernames")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -4262,10 +2946,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_USERNAMES}/$id")
             .appendHeader(
@@ -4279,30 +2960,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deleteUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deleteUsername")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -4313,10 +2978,7 @@ class NetworkHelper(private val context: Context) {
         username: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("username", username)
@@ -4337,31 +2999,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "addUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "addUsername")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -4372,10 +3018,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get("${API_URL_USERNAMES}/$id")
@@ -4383,8 +3026,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -4394,31 +3035,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getSpecificUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getSpecificUsername")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -4430,15 +3055,10 @@ class NetworkHelper(private val context: Context) {
         autoCreateRegex: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("auto_create_regex", autoCreateRegex)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_USERNAMES}/$usernameId")
                 .appendHeader(
@@ -4446,8 +3066,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -4457,11 +3075,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -4491,15 +3105,10 @@ class NetworkHelper(private val context: Context) {
         recipientId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("default_recipient", recipientId)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_USERNAMES}/$userNameId/default-recipient")
                 .appendHeader(
@@ -4507,8 +3116,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -4518,11 +3125,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -4551,10 +3154,7 @@ class NetworkHelper(private val context: Context) {
         usernameId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_USERNAMES}/$usernameId")
             .appendHeader(
@@ -4568,45 +3168,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deactivateSpecificUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deactivateSpecificUsername")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun activateSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", usernameId)
@@ -4627,31 +3206,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "activateSpecificUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "activateSpecificUsername")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -4663,15 +3226,10 @@ class NetworkHelper(private val context: Context) {
         description: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("description", description)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_USERNAMES}/$usernameId")
                 .appendHeader(
@@ -4679,8 +3237,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -4690,11 +3246,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -4724,15 +3276,10 @@ class NetworkHelper(private val context: Context) {
         fromName: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("from_name", fromName)
-
-
         val (_, response, result) =
             Fuel.patch("${API_URL_USERNAMES}/$usernameId")
                 .appendHeader(
@@ -4740,8 +3287,6 @@ class NetworkHelper(private val context: Context) {
                 )
                 .body(json.toString())
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -4751,11 +3296,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -4778,18 +3319,11 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
-
-
     suspend fun disableCatchAllSpecificUsername(
         callback: (String?) -> Unit?,
         usernameId: String
     ) {
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
-
-
+        waitForInitAndLog()
         val (_, response, result) = Fuel.delete("${API_URL_CATCH_ALL_USERNAMES}/$usernameId")
             .appendHeader(
                 *getHeaders()
@@ -4802,45 +3336,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disableCatchAllSpecificUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disableCatchAllSpecificUsername")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun enableCatchAllSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", usernameId)
@@ -4861,31 +3374,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enableCatchAllSpecificUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enableCatchAllSpecificUsername")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -4896,10 +3393,7 @@ class NetworkHelper(private val context: Context) {
         usernameId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_CAN_LOGIN_USERNAMES}/$usernameId")
             .appendHeader(
@@ -4913,45 +3407,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "disableCanLoginSpecificUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "disableCanLoginSpecificUsername")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun enableCanLoginSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", usernameId)
@@ -4972,51 +3445,28 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "enableCanLoginSpecificUsername",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "enableCanLoginSpecificUsername")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     /**
      * RULES
      */
-
-
     suspend fun getAllRules(
         callback: (ArrayList<Rules>?, String?) -> Unit,
         show404Toast: Boolean = false
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.get(API_URL_RULES)
             .appendHeader(
@@ -5036,11 +3486,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
             // Not found, aka the addy.io version is <0.6.0 (this endpoint was introduced in 0.6.0)
@@ -5056,22 +3502,10 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getAllRules",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getAllRules")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5082,10 +3516,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get("${API_URL_RULES}/$id")
@@ -5093,8 +3524,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -5104,46 +3533,25 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getSpecificRule",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getSpecificRule")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun deleteRule(
         callback: (String?) -> Unit,
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_RULES}/$id")
             .appendHeader(
@@ -5157,30 +3565,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deleteRule",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deleteRule")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5191,10 +3583,7 @@ class NetworkHelper(private val context: Context) {
         rule: Rules
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.post(API_URL_RULES)
@@ -5213,31 +3602,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "createRule",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "createRule")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5248,10 +3621,7 @@ class NetworkHelper(private val context: Context) {
         rulesArray: ArrayList<Rules>
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val array = JSONArray()
         // Sum up the ids
@@ -5275,30 +3645,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "reorderRules",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "reorderRules")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5310,10 +3664,7 @@ class NetworkHelper(private val context: Context) {
         rule: Rules
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val ruleJson = Gson().toJson(rule)
         val (_, response, result) = Fuel.patch("${API_URL_RULES}/$ruleId")
@@ -5329,30 +3680,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "updateRule",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "updateRule")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5363,10 +3698,7 @@ class NetworkHelper(private val context: Context) {
         ruleId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_ACTIVE_RULES}/$ruleId")
             .appendHeader(
@@ -5380,45 +3712,24 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deactivateSpecificRule",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deactivateSpecificRule")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun activateSpecificRule(
         callback: (Rules?, String?) -> Unit,
         ruleId: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("id", ruleId)
@@ -5439,31 +3750,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "activateSpecificRule",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "activateSpecificRule")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5476,8 +3771,6 @@ class NetworkHelper(private val context: Context) {
     /*
     addy.io settings cannot be changed by API
      */
-
-
     /**
      * WIDGET AND WEAROS
      */
@@ -5492,10 +3785,7 @@ class NetworkHelper(private val context: Context) {
         amountOfAliasesToCache: Int? = 15
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         getAliases(
             { list, _ ->
@@ -5533,10 +3823,7 @@ class NetworkHelper(private val context: Context) {
         amountOfAliasesToCache: Int? = 15
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         getAliases(
             { list, _ ->
@@ -5568,15 +3855,10 @@ class NetworkHelper(private val context: Context) {
             size = amountOfAliasesToCache,
         )
     }
-
-
     suspend fun cachePinnedAliasesData(
         callback: (Boolean) -> Unit) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         getAliases(
             { list, _ ->
@@ -5607,16 +3889,11 @@ class NetworkHelper(private val context: Context) {
             )
         )
     }
-
-
     suspend fun cacheUserResourceForWidget(
         callback: (Boolean) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         getUserResource { userResource: UserResource?, _: String? ->
             if (userResource == null) {
@@ -5640,10 +3917,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val settingsManager = SettingsManager(false, context)
         val filterType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"
@@ -5668,8 +3942,6 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
-
-
     /**
      * FAILED DELIVERIES
      */
@@ -5681,10 +3953,7 @@ class NetworkHelper(private val context: Context) {
         callback: (FailedDeliveriesArray?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val parameters = ArrayList<Pair<String, Any>>()
         if (page != null) parameters.add(Pair("page[number]", page.toString()))
@@ -5707,11 +3976,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
             // Not found, aka the addy.io version is <0.8.1 (this endpoint was introduced in 0.8.1)
@@ -5724,22 +3989,10 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getAllFailedDeliveries",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getAllFailedDeliveries")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5750,10 +4003,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get("${API_URL_FAILED_DELIVERIES}/$id")
@@ -5761,8 +4011,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -5772,31 +4020,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getSpecificFailedDelivery",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getSpecificFailedDelivery")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5807,18 +4039,13 @@ class NetworkHelper(private val context: Context) {
         callback: (File?, String?) -> Unit,
         id: String
     ) {
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.get("${API_URL_FAILED_DELIVERIES}/$id/download")
             .appendHeader(
                 *getHeaders()
             )
             .awaitByteArrayResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val directory = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
@@ -5840,47 +4067,26 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "downloadSpecificFailedDelivery",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericErrorByteArray(response, result, "downloadSpecificFailedDelivery")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun resendFailedDelivery(
         callback: (String?) -> Unit,
         failedDeliveryId: String,
         recipients: ArrayList<String>? = null
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val array = JSONArray()
         if (recipients != null) {
@@ -5905,30 +4111,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "resendFailedDelivery",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "resendFailedDelivery")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -5939,10 +4129,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_FAILED_DELIVERIES}/$id")
             .appendHeader(
@@ -5956,36 +4143,18 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deleteFailedDelivery",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deleteFailedDelivery")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     /**
      * BLOCKLIST
      */
@@ -5994,10 +4163,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<BlocklistEntries>?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.get(API_URL_BLOCKLIST)
             .appendHeader(
@@ -6018,11 +4184,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
@@ -6034,22 +4196,10 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getAllBlocklistEntries",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getAllBlocklistEntries")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -6060,10 +4210,7 @@ class NetworkHelper(private val context: Context) {
         id: String
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.delete("${API_URL_BLOCKLIST}/$id")
             .appendHeader(
@@ -6077,30 +4224,14 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "deleteBlocklistEntry",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "deleteBlocklistEntry")
                 callback(
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -6111,10 +4242,7 @@ class NetworkHelper(private val context: Context) {
         entry: NewBlocklistEntry
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("type", entry.type)
@@ -6136,31 +4264,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "addBlocklistEntry",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "addBlocklistEntry")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -6180,8 +4292,6 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) =
             Fuel.get(GITHUB_TAGS_RSS_FEED)
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val inputStream: InputStream = result.get().byteInputStream()
@@ -6190,23 +4300,10 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getGithubTags",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getGithubTags")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -6219,10 +4316,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ApiTokenDetails?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) =
             Fuel.get(API_URL_API_TOKEN_DETAILS)
@@ -6230,8 +4324,6 @@ class NetworkHelper(private val context: Context) {
                     *getHeaders()
                 )
                 .awaitStringResponseResult()
-
-
         when (response.statusCode) {
             200 -> {
                 val data = result.get()
@@ -6241,32 +4333,15 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getApiTokenDetails",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getApiTokenDetails")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
@@ -6280,10 +4355,7 @@ class NetworkHelper(private val context: Context) {
         callback: (Boolean) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         getAllAccountNotifications { result, _ ->
             if (result == null) {
@@ -6309,10 +4381,7 @@ class NetworkHelper(private val context: Context) {
         callback: (ArrayList<AccountNotifications>?, String?) -> Unit
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val (_, response, result) = Fuel.get(API_URL_ACCOUNT_NOTIFICATIONS)
             .appendHeader(
@@ -6332,53 +4401,30 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "getAllAccountNotifications",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "getAllAccountNotifications")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
         }
     }
-
-
     suspend fun notifyServerForSubscriptionChange(
         callback: (UserResource?, String?) -> Unit,
         purchaseToken: String,
         subscriptionId: String,
     ) {
 
-        waitForInit()
-        if (BuildConfig.DEBUG) {
-            println("${object {}.javaClass.enclosingMethod?.name} called from ${Thread.currentThread().stackTrace[3].className};${Thread.currentThread().stackTrace[3].methodName}")
-        }
+        waitForInitAndLog()
 
         val json = JSONObject()
         json.put("purchaseToken", purchaseToken)
         json.put("subscriptionId", subscriptionId)
-
-
         val (_, response, result) = Fuel.post(API_URL_NOTIFY_SUBSCRIPTION)
             .appendHeader(
                 *getHeaders()
@@ -6395,33 +4441,70 @@ class NetworkHelper(private val context: Context) {
             }
 
             401 -> {
-                invalidApiKey()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    SettingsManager(true, context).clearSettingsAndCloseApp()
-                }, 8000)
+                handleUnauthorized()
                 callback(null, null)
             }
 
             else -> {
-                val ex = result.component2()?.message
-                val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
-                Log.e("AFA", "${response.statusCode} - $ex")
-                loggingHelper.addLog(
-                    LOGIMPORTANCE.CRITICAL.int,
-                    ex.toString(),
-                    "notifyServerForSubscriptionChange",
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
-                )
+                val errorMessage = handleGenericError(response, result, "notifyServerForSubscriptionChange")
                 callback(
                     null,
-                    ErrorHelper.getErrorMessage(
-                        fuelResponse
-                    )
+                    errorMessage
                 )
             }
+        }
+    }
+    private fun handleUnauthorized() {
+        invalidApiKey()
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Unauthenticated, clear settings
+            SettingsManager(true, context).clearSettingsAndCloseApp()
+        }, 8000)
+    }
+
+    private fun handleGenericError(
+        response: Response,
+        result: com.github.kittinunf.result.Result<String, com.github.kittinunf.fuel.core.FuelError>,
+        methodName: String
+    ): String? {
+        val ex = result.component2()?.message
+        val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+        Log.e("AFA", "${response.statusCode} - $ex")
+        val errorMessage = ErrorHelper.getErrorMessage(fuelResponse)
+        loggingHelper.addLog(
+            LOGIMPORTANCE.CRITICAL.int,
+            ex.toString(),
+            methodName,
+            errorMessage
+        )
+        return errorMessage
+    }
+
+    private fun handleGenericErrorByteArray(
+        response: Response,
+        result: com.github.kittinunf.result.Result<ByteArray, com.github.kittinunf.fuel.core.FuelError>,
+        methodName: String
+    ): String? {
+        val ex = result.component2()?.message
+        val fuelResponse = getFuelResponse(response) ?: ex.toString().toByteArray()
+        Log.e("AFA", "${response.statusCode} - $ex")
+        val errorMessage = ErrorHelper.getErrorMessage(fuelResponse)
+        loggingHelper.addLog(
+            LOGIMPORTANCE.CRITICAL.int,
+            ex.toString(),
+            methodName,
+            errorMessage
+        )
+        return errorMessage
+    }
+    private suspend fun waitForInitAndLog() {
+        waitForInit()
+        if (BuildConfig.DEBUG) {
+            val trace = Thread.currentThread().stackTrace
+            val callerMethod = if (trace.size > 4) trace[4].methodName else "unknown"
+            val callerClass = if (trace.size > 4) trace[4].className else "unknown"
+            val currentMethod = if (trace.size > 3) trace[3].methodName else "unknown"
+            println("$currentMethod called from $callerClass;$callerMethod")
         }
     }
 }

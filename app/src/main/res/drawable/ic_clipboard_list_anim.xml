@@ -1,0 +1,151 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:name="path"
+                android:pathData="M 9 5 L 7 5 C 6.47 5 5.961 5.211 5.586 5.586 C 5.211 5.961 5 6.47 5 7 L 5 19 C 5 19.53 5.211 20.039 5.586 20.414 C 5.961 20.789 6.47 21 7 21 L 17 21 C 17.53 21 18.039 20.789 18.414 20.414 C 18.789 20.039 19 19.53 19 19 L 19 7 C 19 6.47 18.789 5.961 18.414 5.586 C 18.039 5.211 17.53 5 17 5 L 15 5"
+                android:fillColor="#00000000"
+                android:strokeColor="#000000"
+                android:strokeWidth="2"
+                android:strokeLineCap="round"
+                android:strokeLineJoin="round"/>
+            <path
+                android:name="path_1"
+                android:pathData="M 13 3 L 11 3 C 9.895 3 9 3.895 9 5 C 9 6.105 9.895 7 11 7 L 13 7 C 14.105 7 15 6.105 15 5 C 15 3.895 14.105 3 13 3 Z"
+                android:fillColor="#00000000"
+                android:strokeColor="#000000"
+                android:strokeWidth="2"
+                android:strokeLineCap="round"
+                android:strokeLineJoin="round"/>
+            <group android:name="group">
+                <path
+                    android:name="path_2"
+                    android:pathData="M 9 12 L 9.01 12"
+                    android:fillColor="#00000000"
+                    android:strokeColor="#000000"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"/>
+                <path
+                    android:name="path_3"
+                    android:pathData="M 13 12 L 15 12"
+                    android:fillColor="#00000000"
+                    android:strokeColor="#000000"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"/>
+            </group>
+            <group android:name="group_1">
+                <path
+                    android:name="path_4"
+                    android:pathData="M 9 16 L 9.01 16"
+                    android:fillColor="#00000000"
+                    android:strokeColor="#000000"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"/>
+                <path
+                    android:name="path_5"
+                    android:pathData="M 13 16 L 15 16"
+                    android:fillColor="#00000000"
+                    android:strokeColor="#000000"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="path_2">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:duration="150"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="200"
+                    android:duration="150"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_3">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:duration="150"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="200"
+                    android:duration="150"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_4">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="50"
+                    android:duration="150"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="250"
+                    android:duration="150"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_5">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="50"
+                    android:duration="150"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="250"
+                    android:duration="150"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

@@ -27,6 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -39,9 +40,7 @@ import host.stjin.anonaddy.notifications.NotificationHelper
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
 import host.stjin.anonaddy.ui.accountnotifications.AccountNotificationsActivity
 import host.stjin.anonaddy.ui.alias.AliasFragment
-import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
 import host.stjin.anonaddy.ui.appsettings.update.ChangelogBottomDialogFragment
-import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
 import host.stjin.anonaddy.ui.blocklist.ManageBlocklistFragment
 import host.stjin.anonaddy.ui.customviews.refreshlayout.RefreshLayout
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
@@ -206,12 +205,20 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         val railVersionText =
             if (AddyIo.isUsingHostedInstance) this.resources.getString(R.string.hosted) else AddyIo.VERSIONSTRING
         binding.navRail!!.headerView?.findViewById<TextView>(R.id.navigation_rail_fab_version)!!.text = railVersionText
+
+        val usernameInitials = (this.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
+        binding.navRail!!.headerView?.findViewById<TextView>(R.id.main_top_bar_user_initials)!!.text = usernameInitials
+
     }
 
     private fun setOnBigScreenClickListener() {
-        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_settings)!!.setOnClickListener {
-            val intent = Intent(this, AppSettingsActivity::class.java)
-            startActivity(intent)
+        binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!.setOnClickListener {
+            if (!profileBottomDialogFragment.isAdded) {
+                profileBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "profileBottomDialogFragment"
+                )
+            }
         }
 
         binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.setOnClickListener {
@@ -458,10 +465,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
                     5 -> {
                         navView.menu.findItem(R.id.navigation_rules).isChecked = true
-                    }
-
-                    6 -> {
-                        navView.menu.findItem(R.id.navigation_blocklist).isChecked = true
                     }
 
                     7 -> {
@@ -817,10 +820,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             // If there is an update available or there are permissions required, show the dot
             if (shouldShowDot) {
-                binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_settings)!!
-                    .setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
+                binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!
+                    .setTextColor(ContextCompat.getColor(this, R.color.softRed))
             } else {
-                binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_settings)!!.colorFilter = null
+                binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!.setTextColor(ContextCompat.getColor(this, R.color.md_theme_onSecondaryContainer))
             }
         } else {
             // If there is an update available or there are permissions required, show the dot
@@ -1063,15 +1066,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     viewPager.currentItem = 5
                 } else {
                     val intent = Intent(this, RulesSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            R.id.navigation_blocklist -> {  // Only SW600DP>
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 6
-                } else {
-                    val intent = Intent(this, ManageBlocklistActivity::class.java)
                     startActivity(intent)
                 }
             }

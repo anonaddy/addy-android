@@ -1,6 +1,16 @@
 # Changelog
 
-## [v6.2.0] - 2026-04-12
+## [v6.2.1] - 2026-04-10
+
+### addy.io
+
+##### Fixed/Improved
+
+- Fixed a crashing issue on foldables and tablets
+- Redesigned the navigation rail for foldables and tablets
+- Performance enhancements and other improvements for a smoother experience
+
+## [v6.2.0] - 2026-04-10
 
 ### addy.io
 
@@ -17,10 +27,6 @@
 - Performance enhancements and other improvements for a smoother experience
 
 ### addy.io for Android wearables _(v1.6.1)_
-
-##### Added
-
-- Support for pinning and unpinning aliases
 
 ##### Fixed/Improved
 
