@@ -19,7 +19,6 @@ import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.models.AccountNotifications
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 import com.google.android.material.snackbar.Snackbar
@@ -97,7 +96,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                 if (blocklistEntries!!.isNotEmpty() && blocklistEntries != "null") {
                     val gson = Gson()
 
-                    val myType = object : TypeToken<ArrayList<AccountNotifications>>() {}.type
+                    val myType = object : TypeToken<ArrayList<BlocklistEntries>>() {}.type
                     val list = gson.fromJson<ArrayList<BlocklistEntries>>(blocklistEntries, myType)
                     setBlocklistAdapter(list)
                 } else {
@@ -240,7 +239,6 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
 
 
             binding.animationFragment.stopAnimation()
-            //binding.activityAccountNotificationsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
         }
     }
 

@@ -27,6 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
 import host.stjin.anonaddy.BaseActivity
 import host.stjin.anonaddy.BuildConfig
@@ -209,9 +210,18 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     }
 
     private fun setOnBigScreenClickListener() {
-        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_settings)!!.setOnClickListener {
-            val intent = Intent(this, AppSettingsActivity::class.java)
+        binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_failed_deliveries)!!.setOnClickListener {
+            val intent = Intent(this, FailedDeliveriesActivity::class.java)
             startActivity(intent)
+        }
+
+        binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!.setOnClickListener {
+            if (!profileBottomDialogFragment.isAdded) {
+                profileBottomDialogFragment.show(
+                    supportFragmentManager,
+                    "profileBottomDialogFragment"
+                )
+            }
         }
 
         binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.setOnClickListener {
@@ -817,10 +827,10 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             // If there is an update available or there are permissions required, show the dot
             if (shouldShowDot) {
-                binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_settings)!!
-                    .setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
+                binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!
+                    .setTextColor(ContextCompat.getColor(this, R.color.softRed))
             } else {
-                binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_settings)!!.colorFilter = null
+                binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!.setTextColor(ContextCompat.getColor(this, R.color.md_theme_onSecondaryContainer))
             }
         } else {
             // If there is an update available or there are permissions required, show the dot
