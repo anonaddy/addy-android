@@ -63,6 +63,15 @@
                         android:checkable="true"
                         android:text="@string/inbound" />
 
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/fragment_failed_deliveries_chip_inbound_quarantined"
+                        style="@style/AddyIoChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="@string/inbound_quarantined" />
+
                     <com.google.android.material.chip.Chip
                         android:id="@+id/fragment_failed_deliveries_chip_outbound"
                         style="@style/AddyIoChip"
@@ -70,6 +79,7 @@
                         android:layout_height="wrap_content"
                         android:checkable="true"
                         android:text="@string/outbound" />
+
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 

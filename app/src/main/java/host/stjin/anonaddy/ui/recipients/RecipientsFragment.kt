@@ -265,7 +265,7 @@ class RecipientsFragment : Fragment(),
         if (!getSelectedFilter()){
             binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients)
         } else {
-            binding.recipientsAllRecipientsTitle.text = getString(R.string.all_recipients_filtered)
+            binding.recipientsAllRecipientsTitle.text = getString(R.string.recipients_filtered)
         }
 
         networkHelper?.getRecipients({ list, result ->

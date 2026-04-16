@@ -32,11 +32,11 @@ class FailedDeliveriesActivity : BaseActivity() {
 
     // This only applies to <sw600Dp devices
     private fun setRefreshLayout() {
-        binding.ctivityFailedDeliveriesSettingsSwiperefresh.setOnRefreshListener {
-            binding.ctivityFailedDeliveriesSettingsSwiperefresh.isRefreshing = true
+        binding.activityFailedDeliveriesSettingsSwiperefresh.setOnRefreshListener {
+            binding.activityFailedDeliveriesSettingsSwiperefresh.isRefreshing = true
 
             failedDeliveriesFragment.getDataFromWeb(null) {
-                binding.ctivityFailedDeliveriesSettingsSwiperefresh.isRefreshing = false
+                binding.activityFailedDeliveriesSettingsSwiperefresh.isRefreshing = false
             }
         }
     }

@@ -851,9 +851,10 @@
     <string name="inbound">Inbound</string>
     <string name="outbound">Outbound</string>
     <string name="all">All</string>
-    <string name="all_failed_deliveries_filtered">All failed deliveries (filtered)</string>
-    <string name="all_recipients_filtered">All recipients (filtered)</string>
+    <string name="failed_deliveries_filtered">Failed deliveries (filtered)</string>
+    <string name="recipients_filtered">Recipients (filtered)</string>
     <string name="custom">Custom</string>
     <string name="blocklist_add_confirm_desc">Are you sure you want to block %s?</string>
     <string name="blocklist_add_success">This sender was added to the blocklist</string>
+    <string name="inbound_quarantined">Inbound quarantined</string>
 </resources>
