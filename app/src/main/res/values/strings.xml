@@ -829,6 +829,7 @@
     <string name="blocklist">Blocklist</string>
     <string name="no_blocklist_entries">No blocklist entries</string>
     <string name="blocklist_entries">Blocklist entries</string>
+    <string name="blocklist_entries_filtered">Blocklist entries (filtered)</string>
     <string name="remove_from_blocklist">Remove from blocklist</string>
     <string name="remove_from_blocklist_desc">Are you sure you want to remove this entry from your blocklist? The sender or domain will be able to reach your aliases again</string>
     <string name="error_deleting_blocklist_entry">Something went wrong while deleting this blocklist entry</string>

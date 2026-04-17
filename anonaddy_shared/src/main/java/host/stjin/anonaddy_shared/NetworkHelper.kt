@@ -4162,6 +4162,7 @@ class NetworkHelper(private val context: Context) {
     suspend fun getAllBlocklistEntries(
         page: Int? = 1,
         size: Int? = 25,
+        filter: String? = null,
         callback: (BlocklistEntriesArray?, String?) -> Unit
     ) {
 
@@ -4170,6 +4171,7 @@ class NetworkHelper(private val context: Context) {
         val parameters = ArrayList<Pair<String, Any>>()
         if (page != null) parameters.add(Pair("page[number]", page.toString()))
         if (size != null) parameters.add(Pair("page[size]", size.toString()))
+        if (filter != null) parameters.add(Pair("filter[type]", filter))
 
         val (_, response, result) = Fuel.get(API_URL_BLOCKLIST, parameters)
             .appendHeader(

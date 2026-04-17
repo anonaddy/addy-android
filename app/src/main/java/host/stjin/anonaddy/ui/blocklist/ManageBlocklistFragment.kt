@@ -145,12 +145,35 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                 layoutAnimation = animation
 
                 showShimmer()
+                
+                binding.fragmentBlocklistChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
+                    if (checkedIds.isNotEmpty()) {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            getAllBlocklistEntriesAndSetRecyclerview(forceReload = true)
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    private fun getSelectedFilter(): String? {
+        return when (binding.fragmentBlocklistChipgroup.checkedChipId) {
+            R.id.fragment_blocklist_chip_domain -> "domain"
+            R.id.fragment_blocklist_chip_email -> "email"
+            else -> null
         }
     }
 
     private lateinit var blocklistAdapter: BlocklistAdapter
     private suspend fun getAllBlocklistEntriesAndSetRecyclerview(forceReload: Boolean = false) {
+
+        if (getSelectedFilter() == null){
+            binding.fragmentBlocklistAllBlocklistTitle.text = getString(R.string.blocklist_entries)
+        } else {
+            binding.fragmentBlocklistAllBlocklistTitle.text = getString(R.string.blocklist_entries_filtered)
+        }
+
         if (forceReload) {
             binding.fragmentBlocklistAllBlocklistRecyclerview.showShimmer()
             blocklistEntries = null
@@ -161,7 +184,8 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
             binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
                 networkHelper?.getAllBlocklistEntries(
                     page = (blocklistEntries?.meta?.current_page ?: 0) + 1,
-                    size = 25
+                    size = 25,
+                    filter = getSelectedFilter()
                 ) { entries, error ->
                     // Check if there are new account notifications since the latest list
                     // If the list is the same, just return and don't bother re-init the layoutmanager
