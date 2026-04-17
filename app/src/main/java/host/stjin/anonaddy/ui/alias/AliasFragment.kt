@@ -46,15 +46,14 @@ import host.stjin.anonaddy_shared.utils.GsonTools
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
-
 class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDialogListener,
     FilterOptionsAliasBottomDialogFragment.AddFilterOptionsAliasBottomDialogListener,
     AliasMultipleSelectionBottomDialogFragment.AddAliasMultipleSelectionBottomDialogListener, Refreshable {
 
+    // 1. Properties
     private var networkHelper: NetworkHelper? = null
     private var settingsManager: SettingsManager? = null
     private var oneTimeRecyclerViewActions: Boolean = true
-
 
     // Default filter
     private val defaultAliasSortFilter: AliasSortFilter = AliasSortFilter(
@@ -70,10 +69,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private var aliasSortFilter: AliasSortFilter = defaultAliasSortFilter.copy()
 
-    companion object {
-        fun newInstance() = AliasFragment()
-    }
-
     private val addAliasBottomDialogFragment: AddAliasBottomDialogFragment =
         AddAliasBottomDialogFragment.newInstance()
 
@@ -84,9 +79,32 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     private var _binding: FragmentAliasBinding? = null
 
     // This property is only valid between onCreateView and
-// onDestroyView.
+    // onDestroyView.
     private val binding get() = _binding!!
 
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
+                getDataFromWeb(null)
+            }
+        }
+    }
+
+    private var isUpdatingChips = false
+
+    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.smoothScrollTo(0,0) }
+        }
+    }
+
+    private var aliasAdapter: AliasAdapter? = null
+    private var aliasList: AliasesArray? = null
+    var aliasSelectionSnackbar: Snackbar? = null
+
+    // 2. Lifecycle Methods
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -120,23 +138,33 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         outState.putString("aliasesList", json)
     }
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null)
-            }
+    override fun onResume() {
+        super.onResume()
+        setHasReachedTopOfNsv()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), Context.RECEIVER_EXPORTED)
+        } else {
+            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
         }
+
     }
 
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    // 3. View Setup
     private fun initShimmerRecyclerView() {
         // Set the item margindecoration before the shimmer is being shown, so that the shimmerviews have the exact margins
         // as the list items
         binding.aliasAllAliasesRecyclerview.addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
     }
-
-    private var isUpdatingChips = false
 
     private fun updateChipSelection(filter: AliasSortFilter) {
         isUpdatingChips = true
@@ -160,14 +188,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             this.aliasSortFilter = aliasSortFilterObject
         }
 
-
         updateChipSelection(this.aliasSortFilter)
 
         filterOptionsAliasBottomDialogFragment = FilterOptionsAliasBottomDialogFragment.newInstance(aliasSortFilter)
-    }
-
-    private fun setHasReachedTopOfNsv() {
-        (activity as MainActivity).hasReachedTopOfNsv = !binding.fragmentAliasNsv.canScrollVertically(-1)
     }
 
     private fun setOnNestedScrollViewListener(set: Boolean) {
@@ -186,56 +209,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         } else {
             binding.fragmentAliasNsv.setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
         }
-    }
-
-    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.smoothScrollTo(0,0) }
-        }
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
-    }
-
-
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
-        // Get the latest data in the background, and update the values when loaded
-        lifecycleScope.launch {
-            if (savedInstanceState != null) {
-                val aliasesJson = savedInstanceState.getString("aliasesList")
-                if (aliasesJson!!.isNotEmpty() && aliasesJson != "null") {
-                    val gson = Gson()
-                    val list: AliasesArray = gson.fromJson(aliasesJson, AliasesArray::class.java)
-                    setAliasesAdapter(requireContext(), list, true)
-                    // need to force reload in order to init the adapter (which has been reset due to the recreation of the activity
-                } else {
-                    getAliasesAndAddThemToList(forceReload = true)
-                }
-
-            } else {
-                getAliasesAndAddThemToList(forceReload = true)
-            }
-        }
-
-
-    }
-
-
-
-
-    // Decided to not load aliases when coming back to hold back on performance issues
-    override fun onResume() {
-        super.onResume()
-        setHasReachedTopOfNsv()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), Context.RECEIVER_EXPORTED)
-        } else {
-            activity?.registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
-        }
-
     }
 
     private fun setOnClickListeners() {
@@ -284,116 +257,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
         }
 
-    }
-
-
-    private suspend fun getAliasesAndAddThemToList(forceReload: Boolean = false) {
-        if (forceReload) {
-            binding.aliasAllAliasesRecyclerview.showShimmer()
-            aliasList = null
-        }
-        // Only obtain data and do a network call whenever there is actually more information on the API side to obtain
-        // If aliasList == null
-        // OR
-        // If the page we're currently on is LOWER than the last page
-        if (aliasList == null || (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
-            binding.aliasProgress.visibility = View.VISIBLE
-
-            // When loading data disable the scrollviewlistener to prevent double loading
-            setOnNestedScrollViewListener(set = false)
-
-            // When the user reached page 3, offer to use search instead
-            if (aliasList?.meta?.current_page == 3) {
-                showSearchHintSnackbar()
-            }
-
-            /**
-             * CHECK IF WATCHED ONLY IS TRUE
-             * If true simply bulk-obtain all the watched aliases
-             */
-
-            if (aliasSortFilter.onlyWatchedAliases) {
-
-                val aliasWatcher = AliasWatcher(requireContext())
-                val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
-                if (aliasesToWatch.isNotEmpty()) {
-                    networkHelper?.bulkGetAlias(
-                        { list: BulkAliasesArray?, result: String? ->
-                            if (list != null) {
-                                val aliasesArray = AliasesArray(list.data, links = null, meta = null)
-                                setAliasesAdapter(requireContext(), aliasesArray, forceReload)
-                            } else {
-                                // Data could not be loaded
-                                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                                    SnackbarHelper.createSnackbar(
-                                        requireContext(),
-                                        requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                        (activity as MainActivity).findViewById(R.id.main_container),
-                                        LoggingHelper.LOGFILES.DEFAULT
-                                    ).show()
-                                } else {
-                                    val bottomNavView: BottomNavigationView? =
-                                        activity?.findViewById(R.id.nav_view)
-                                    bottomNavView?.let {
-                                        SnackbarHelper.createSnackbar(
-                                            requireContext(),
-                                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                            it,
-                                            LoggingHelper.LOGFILES.DEFAULT
-                                        )
-                                            .apply {
-                                                anchorView = bottomNavView
-                                            }.show()
-                                    }
-                                }
-
-                            }
-                        }, aliasesToWatch
-                    )
-                } else {
-                    // This could be triggered if you remove the last watched alias and then refresh
-                    val aliasesArray = AliasesArray(arrayListOf(), links = null, meta = null)
-                    setAliasesAdapter(requireContext(), aliasesArray, forceReload)
-                }
-            } else {
-                networkHelper?.getAliases(
-                    { list: AliasesArray?, result: String? ->
-                        if (list != null) {
-                            setAliasesAdapter(requireContext(), list, forceReload)
-                        } else {
-                            // Data could not be loaded
-                            if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                                SnackbarHelper.createSnackbar(
-                                    requireContext(),
-                                    requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                    (activity as MainActivity).findViewById(R.id.main_container),
-                                    LoggingHelper.LOGFILES.DEFAULT
-                                ).show()
-                            } else {
-                                val bottomNavView: BottomNavigationView? =
-                                    activity?.findViewById(R.id.nav_view)
-                                bottomNavView?.let {
-                                    SnackbarHelper.createSnackbar(
-                                        requireContext(),
-                                        requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
-                                        it,
-                                        LoggingHelper.LOGFILES.DEFAULT
-                                    )
-                                        .apply {
-                                            anchorView = bottomNavView
-                                        }.show()
-                                }
-                            }
-                        }
-                    },
-                    aliasSortFilter = aliasSortFilter,
-                    page = (aliasList?.meta?.current_page ?: 0) + 1,
-                    size = 25 // Get only 25 aliases for performance
-                )
-            }
-
-
-        }
     }
 
     private fun setAliasesAdapter(context: Context, list: AliasesArray, forceReload: Boolean) {
@@ -536,10 +399,162 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
     }
 
+    private fun setAliasesRecyclerView() {
+        binding.aliasAllAliasesRecyclerview.apply {
+            if (oneTimeRecyclerViewActions) {
+                oneTimeRecyclerViewActions = false
+                shimmerItemCount = 100
+                shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
+                layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
+
+                val resId: Int = R.anim.layout_animation_fall_down
+                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
+                layoutAnimation = animation
+            }
+
+            showShimmer()
+        }
+
+    }
+
+    // 4. Observers (None)
+
+    // 5. Private Helpers / Public Methods
+    private fun setHasReachedTopOfNsv() {
+        (activity as MainActivity).hasReachedTopOfNsv = !binding.fragmentAliasNsv.canScrollVertically(-1)
+    }
+
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
+        // Get the latest data in the background, and update the values when loaded
+        lifecycleScope.launch {
+            if (savedInstanceState != null) {
+                val aliasesJson = savedInstanceState.getString("aliasesList")
+                if (aliasesJson!!.isNotEmpty() && aliasesJson != "null") {
+                    val gson = Gson()
+                    val list: AliasesArray = gson.fromJson(aliasesJson, AliasesArray::class.java)
+                    setAliasesAdapter(requireContext(), list, true)
+                    // need to force reload in order to init the adapter (which has been reset due to the recreation of the activity
+                } else {
+                    getAliasesAndAddThemToList(forceReload = true)
+                }
+
+            } else {
+                getAliasesAndAddThemToList(forceReload = true)
+            }
+        }
+    }
+
+    private suspend fun getAliasesAndAddThemToList(forceReload: Boolean = false) {
+        if (forceReload) {
+            binding.aliasAllAliasesRecyclerview.showShimmer()
+            aliasList = null
+        }
+        // Only obtain data and do a network call whenever there is actually more information on the API side to obtain
+        // If aliasList == null
+        // OR
+        // If the page we're currently on is LOWER than the last page
+        if (aliasList == null || (aliasList?.meta?.current_page ?: 0) < (aliasList?.meta?.last_page ?: 0)) {
+            binding.aliasProgress.visibility = View.VISIBLE
+
+            // When loading data disable the scrollviewlistener to prevent double loading
+            setOnNestedScrollViewListener(set = false)
+
+            // When the user reached page 3, offer to use search instead
+            if (aliasList?.meta?.current_page == 3) {
+                showSearchHintSnackbar()
+            }
+
+            /**
+             * CHECK IF WATCHED ONLY IS TRUE
+             * If true simply bulk-obtain all the watched aliases
+             */
+
+            if (aliasSortFilter.onlyWatchedAliases) {
+
+                val aliasWatcher = AliasWatcher(requireContext())
+                val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
+                if (aliasesToWatch.isNotEmpty()) {
+                    networkHelper?.bulkGetAlias(
+                        { list: BulkAliasesArray?, result: String? ->
+                            if (list != null) {
+                                val aliasesArray = AliasesArray(list.data, links = null, meta = null)
+                                setAliasesAdapter(requireContext(), aliasesArray, forceReload)
+                            } else {
+                                // Data could not be loaded
+                                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                                    SnackbarHelper.createSnackbar(
+                                        requireContext(),
+                                        requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                        (activity as MainActivity).findViewById(R.id.main_container),
+                                        LoggingHelper.LOGFILES.DEFAULT
+                                    ).show()
+                                } else {
+                                    val bottomNavView: BottomNavigationView? =
+                                        activity?.findViewById(R.id.nav_view)
+                                    bottomNavView?.let {
+                                        SnackbarHelper.createSnackbar(
+                                            requireContext(),
+                                            requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                            it,
+                                            LoggingHelper.LOGFILES.DEFAULT
+                                        )
+                                            .apply {
+                                                anchorView = bottomNavView
+                                            }.show()
+                                    }
+                                }
+
+                            }
+                        }, aliasesToWatch
+                    )
+                } else {
+                    // This could be triggered if you remove the last watched alias and then refresh
+                    val aliasesArray = AliasesArray(arrayListOf(), links = null, meta = null)
+                    setAliasesAdapter(requireContext(), aliasesArray, forceReload)
+                }
+            } else {
+                networkHelper?.getAliases(
+                    { list: AliasesArray?, result: String? ->
+                        if (list != null) {
+                            setAliasesAdapter(requireContext(), list, forceReload)
+                        } else {
+                            // Data could not be loaded
+                            if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                                SnackbarHelper.createSnackbar(
+                                    requireContext(),
+                                    requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                    (activity as MainActivity).findViewById(R.id.main_container),
+                                    LoggingHelper.LOGFILES.DEFAULT
+                                ).show()
+                            } else {
+                                val bottomNavView: BottomNavigationView? =
+                                    activity?.findViewById(R.id.nav_view)
+                                bottomNavView?.let {
+                                    SnackbarHelper.createSnackbar(
+                                        requireContext(),
+                                        requireContext().resources.getString(R.string.error_obtaining_aliases) + "\n" + result,
+                                        it,
+                                        LoggingHelper.LOGFILES.DEFAULT
+                                    )
+                                        .apply {
+                                            anchorView = bottomNavView
+                                        }.show()
+                                }
+                            }
+                        }
+                    },
+                    aliasSortFilter = aliasSortFilter,
+                    page = (aliasList?.meta?.current_page ?: 0) + 1,
+                    size = 25 // Get only 25 aliases for performance
+                )
+            }
+
+
+        }
+    }
 
     private fun showSearchHintSnackbar() {
         hideFabForSnackBarTime()
-
 
         if (requireContext().resources.getBoolean(R.bool.isTablet)) {
             val snackbar = SnackbarHelper.createSnackbar(
@@ -569,38 +584,12 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 snackbar.show()
             }
         }
-
-
     }
-
-    private var aliasAdapter: AliasAdapter? = null
-    private var aliasList: AliasesArray? = null
-    var aliasSelectionSnackbar: Snackbar? = null
-
-    private fun setAliasesRecyclerView() {
-        binding.aliasAllAliasesRecyclerview.apply {
-            if (oneTimeRecyclerViewActions) {
-                oneTimeRecyclerViewActions = false
-                shimmerItemCount = 100
-                shimmerLayoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
-                layoutManager = GridLayoutManager(activity, ScreenSizeUtils.calculateNoOfColumns(requireContext()))
-
-                val resId: Int = R.anim.layout_animation_fall_down
-                val animation = AnimationUtils.loadLayoutAnimation(context, resId)
-                layoutAnimation = animation
-            }
-
-            showShimmer()
-        }
-
-    }
-
 
     private fun hideSnackBar() {
         binding.aliasAddAliasFab.show()
         aliasSelectionSnackbar?.dismiss()
     }
-
 
     private fun hideFabForSnackBarTime() {
         binding.aliasAddAliasFab.hide()
@@ -608,7 +597,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             binding.aliasAddAliasFab.show()
         }, 3500)
     }
-
 
     override fun onAdded() {
         addAliasBottomDialogFragment.dismissAllowingStateLoss()
@@ -626,11 +614,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     override fun onCancel() {
         // Nothing
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun setFilterAndSortingSettings(aliasSortFilter: AliasSortFilter) {
@@ -695,4 +678,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         }
     }
 
+    // 6. Companion Object
+    companion object {
+        fun newInstance() = AliasFragment()
+    }
 }

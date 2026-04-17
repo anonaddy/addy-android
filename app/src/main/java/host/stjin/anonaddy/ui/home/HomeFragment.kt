@@ -32,20 +32,22 @@ import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
-
 class HomeFragment : Fragment(), Refreshable {
 
+    // 1. Properties
     private var networkHelper: NetworkHelper? = null
-
-    companion object {
-        fun newInstance() = HomeFragment()
-    }
-
     private var _binding: FragmentHomeBinding? = null
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    
+    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.smoothScrollTo(0,0) }
+        }
+    }
+
+    // 2. Lifecycle Methods
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,49 +71,6 @@ class HomeFragment : Fragment(), Refreshable {
         return root
     }
 
-
-
-    private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.smoothScrollTo(0,0) }
-        }
-    }
-
-    private fun setNsvListener() {
-        binding.homeStatisticsNSV.setOnScrollChangeListener(OnScrollChangeListener { _, _, _, _, _ -> setHasReachedTopOfNsv() })
-    }
-
-    private fun setHasReachedTopOfNsv() {
-        (activity as MainActivity).hasReachedTopOfNsv = !binding.homeStatisticsNSV.canScrollVertically(-1)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
-    }
-
-
-    fun getDataFromWeb(savedInstanceState: Bundle?) {
-        // Get the latest data in the background, and update the values when loaded
-        viewLifecycleOwner.lifecycleScope.launch {
-
-            // Check if savedInstanceState is null, or not
-            // On activity recreations (orientationchanges, sizing of the app) savedInstanceState will be filled using onSaveInstanceState
-            // This way we can instantly set the values without another API call.
-            if (savedInstanceState != null) {
-                getWebStatistics()
-                // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
-                // no need to obtain this from savedInstanceState
-                setStatistics()
-            } else {
-                getWebStatistics()
-            }
-        }
-    }
-
-
-
-    // Update information when coming back, such as aliases and statistics
     override fun onResume() {
         super.onResume()
         setHasReachedTopOfNsv()
@@ -122,7 +81,17 @@ class HomeFragment : Fragment(), Refreshable {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        activity?.unregisterReceiver(mScrollUpBroadcastReceiver)
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    // 3. View Setup
     private fun setOnClickListeners() {
 
         binding.homeStatCardTotalAliases.setOnLayoutClickedListener(object : HomeStatCardView.OnLayoutClickedListener {
@@ -321,6 +290,35 @@ class HomeFragment : Fragment(), Refreshable {
 
     }
 
+    private fun setNsvListener() {
+        binding.homeStatisticsNSV.setOnScrollChangeListener(OnScrollChangeListener { _, _, _, _, _ -> setHasReachedTopOfNsv() })
+    }
+
+    // 4. Observers (None)
+
+    // 5. Private Helpers / Public Methods
+    private fun setHasReachedTopOfNsv() {
+        (activity as MainActivity).hasReachedTopOfNsv = !binding.homeStatisticsNSV.canScrollVertically(-1)
+    }
+
+    fun getDataFromWeb(savedInstanceState: Bundle?) {
+        // Get the latest data in the background, and update the values when loaded
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            // Check if savedInstanceState is null, or not
+            // On activity recreations (orientationchanges, sizing of the app) savedInstanceState will be filled using onSaveInstanceState
+            // This way we can instantly set the values without another API call.
+            if (savedInstanceState != null) {
+                getWebStatistics()
+                // (activity?.application as AddyIoApp).userResource is not being cleared upon activity-creation,
+                // no need to obtain this from savedInstanceState
+                setStatistics()
+            } else {
+                getWebStatistics()
+            }
+        }
+    }
+
     private suspend fun getWebStatistics() {
         networkHelper?.getUserResource { user: UserResource?, result: String? ->
             if (user != null) {
@@ -353,7 +351,6 @@ class HomeFragment : Fragment(), Refreshable {
             }
         }
     }
-
 
     private fun setStatistics() {
         //  / 1024 / 1024 because api returns bytes
@@ -412,12 +409,6 @@ class HomeFragment : Fragment(), Refreshable {
         }
     }
 
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onRefreshData() {
         // The key is to check if the view is created before proceeding.
         // `viewLifecycleOwner` can be used as a proxy for this check.
@@ -433,5 +424,10 @@ class HomeFragment : Fragment(), Refreshable {
             // Log the error if the lifecycle state was somehow invalid despite the check.
             LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "HomeFragment", null)
         }
+    }
+
+    // 6. Companion Object
+    companion object {
+        fun newInstance() = HomeFragment()
     }
 }
