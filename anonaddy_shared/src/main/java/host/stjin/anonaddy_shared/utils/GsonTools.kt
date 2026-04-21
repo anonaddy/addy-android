@@ -4,7 +4,11 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import host.stjin.anonaddy_shared.models.*
+import host.stjin.anonaddy_shared.models.AliasSortFilter
+import host.stjin.anonaddy_shared.models.Aliases
+import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
+import host.stjin.anonaddy_shared.models.UserResource
+import host.stjin.anonaddy_shared.models.WearOSSettings
 
 object GsonTools {
     fun jsonToAliasObject(context: Context, json: String): ArrayList<Aliases>? {

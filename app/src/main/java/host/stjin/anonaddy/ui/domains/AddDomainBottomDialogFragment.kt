@@ -27,27 +27,27 @@ import kotlinx.coroutines.launch
 
 
 class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddDomainBottomDialogListener
+
     private lateinit var domain: String
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddDomainBottomDialogListener {
-        fun onAdded()
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetAdddomainBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val runnableCode = Runnable {
+        viewLifecycleOwner.lifecycleScope.launch {
+            addDomainToAccount(
+                requireContext(),
+                this@AddDomainBottomDialogFragment.domain
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -72,10 +72,27 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    companion object {
-        fun newInstance(): AddDomainBottomDialogFragment {
-            return AddDomainBottomDialogFragment()
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        handler.removeCallbacksAndMessages(null)
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_adddomain_domain_add_domain_button) {
+                addDomain(requireContext())
+            }
         }
     }
 
@@ -104,11 +121,6 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         }
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        handler.removeCallbacksAndMessages(null)
-    }
-
     private suspend fun addDomainToAccount(
         context: Context,
         address: String
@@ -119,10 +131,12 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
                 "404" -> {
                     openSetup(body)
                 }
+
                 "201" -> {
                     handler.removeCallbacksAndMessages(null)
                     listener.onAdded()
                 }
+
                 else -> {
                     handler.removeCallbacksAndMessages(null)
                     binding.bsAddDomainSetup1.visibility = View.VISIBLE
@@ -137,17 +151,6 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
             }
         }, address)
     }
-
-    private val handler =  Handler(Looper.getMainLooper())
-    private val runnableCode = Runnable {
-        viewLifecycleOwner.lifecycleScope.launch {
-            addDomainToAccount(
-                requireContext(),
-                this@AddDomainBottomDialogFragment.domain
-            )
-        }
-    }
-
 
     private fun openSetup(body: String?) {
         if (binding.bsAddDomainSetup1.visibility != View.GONE) {
@@ -165,7 +168,7 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
             }, anim.duration)
         }
 
-        if (!body.isNullOrEmpty()){
+        if (!body.isNullOrEmpty()) {
             val range = body.indexOf("aa-verify=")
             if (range != -1) {
                 val result = body.substring(range)
@@ -201,17 +204,14 @@ class AddDomainBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCl
         }, anim.duration)
     }
 
-
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_adddomain_domain_add_domain_button) {
-                addDomain(requireContext())
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddDomainBottomDialogListener {
+        fun onAdded()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(): AddDomainBottomDialogFragment {
+            return AddDomainBottomDialogFragment()
+        }
     }
 }

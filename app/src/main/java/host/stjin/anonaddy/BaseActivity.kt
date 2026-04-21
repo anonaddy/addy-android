@@ -65,9 +65,11 @@ abstract class BaseActivity : AppCompatActivity() {
             0 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+
             1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
+
             -1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
@@ -220,7 +222,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private var appBarLayout: AppBarLayout? = null
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            nestedScrollView?.post { nestedScrollView?.smoothScrollTo(0,0) }
+            nestedScrollView?.post { nestedScrollView?.smoothScrollTo(0, 0) }
             appBarLayout?.setExpanded(true, true)
         }
     }
@@ -267,7 +269,7 @@ abstract class BaseActivity : AppCompatActivity() {
                                         icon = R.drawable.ic_fingerprint,
                                         neutralButtonText = this@BaseActivity.resources.getString(R.string.try_again),
                                         neutralButtonAction = {
-                                             isAuthenticated(shouldFinishOnError, callback)
+                                            isAuthenticated(shouldFinishOnError, callback)
                                         },
                                         positiveButtonText = this@BaseActivity.resources.getString(R.string.reset_app),
                                         positiveButtonAction = {
@@ -275,16 +277,19 @@ abstract class BaseActivity : AppCompatActivity() {
                                         }
                                     ).setCancelable(false).show()
                                 }
+
                                 BiometricPrompt.ERROR_USER_CANCELED -> {
                                     if (shouldFinishOnError) {
                                         finish()
                                     }
                                 }
+
                                 BiometricPrompt.ERROR_CANCELED -> {
                                     if (shouldFinishOnError) {
                                         finish()
                                     }
                                 }
+
                                 else -> {
                                     Toast.makeText(
                                         this@BaseActivity, resources.getString(

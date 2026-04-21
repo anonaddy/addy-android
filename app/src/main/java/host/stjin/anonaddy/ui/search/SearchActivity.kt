@@ -44,19 +44,9 @@ import host.stjin.anonaddy_shared.models.Rules
 import host.stjin.anonaddy_shared.models.Usernames
 
 class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener {
-
     private var networkHelper: NetworkHelper? = null
+
     private var encryptedSettingsManager: SettingsManager? = null
-
-
-    enum class SearchTargets(val activity: String) {
-        ALIASES("aliases"),
-        RECIPIENTS("recipients"),
-        DOMAINS("domains"),
-        USERNAMES("usernames"),
-        RULES("rules"),
-        FAILED_DELIVERIES("failed_deliveries")
-    }
 
     object FilteredLists {
         var filteredAliases: ArrayList<Aliases>? = null
@@ -66,6 +56,43 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         var filteredRules: ArrayList<Rules>? = null
         var filteredFailedDeliveries: ArrayList<FailedDeliveries>? = null
     }
+
+    private lateinit var binding: ActivitySearchBinding
+
+    /*
+        No shimmer, data is already served on opening this activity
+         */
+    private fun setUsernames() {
+        binding.activitySearchUsernamesRecyclerview.apply {
+
+            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
+
+
+            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
+
+            val usernamesAdapter = UsernameAdapter(filteredUsernames!!)
+            usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
+
+                override fun onClickSettings(pos: Int, aView: View) {
+                    val intent = Intent(context, ManageUsernamesActivity::class.java)
+                    intent.putExtra("username_id", filteredUsernames!![pos].id)
+                    startActivity(intent)
+                }
+
+                override fun onClickDelete(pos: Int, aView: View) {
+                    val data = Intent()
+                    data.putExtra("target", SearchTargets.USERNAMES.activity)
+                    setResult(RESULT_OK, data)
+                    finish()
+                }
+
+            })
+            adapter = usernamesAdapter
+        }
+
+    }
+
+    private var failedDeliveryDetailsBottomDialogFragment: FailedDeliveryDetailsBottomDialogFragment? = null
 
     // TODO Get these lists through bundles?
     // Clear lists from memory when search is finished
@@ -101,8 +128,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         outState.putString("filteredFailedDeliveries", filteredFailedDeliveriesJson)
     }
 
-    private lateinit var binding: ActivitySearchBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -130,6 +155,13 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         }
 
         setSearchResults()
+    }
+
+    override fun onDeleted(failedDeliveryId: String) {
+        val position = filteredFailedDeliveries?.indexOfFirst { it.id == failedDeliveryId }
+        position?.let { filteredFailedDeliveries?.removeAt(it) }
+        position?.let { binding.activitySearchFailedDeliveriesRecyclerview.adapter?.notifyItemRemoved(it) }
+        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
     }
 
     private fun getFilteredResultsFromSavedInstance(savedInstanceState: Bundle) {
@@ -225,40 +257,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
                 }*/
     }
 
-    /*
-    No shimmer, data is already served on opening this activity
-     */
-    private fun setUsernames() {
-        binding.activitySearchUsernamesRecyclerview.apply {
-
-            layoutManager = GridLayoutManager(this@SearchActivity, ScreenSizeUtils.calculateNoOfColumns(context))
-
-
-            addItemDecoration(MarginItemDecoration(this.resources.getDimensionPixelSize(R.dimen.recyclerview_margin)))
-
-            val usernamesAdapter = UsernameAdapter(filteredUsernames!!)
-            usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
-
-                override fun onClickSettings(pos: Int, aView: View) {
-                    val intent = Intent(context, ManageUsernamesActivity::class.java)
-                    intent.putExtra("username_id", filteredUsernames!![pos].id)
-                    startActivity(intent)
-                }
-
-                override fun onClickDelete(pos: Int, aView: View) {
-                    val data = Intent()
-                    data.putExtra("target", SearchTargets.USERNAMES.activity)
-                    setResult(RESULT_OK, data)
-                    finish()
-                }
-
-            })
-            adapter = usernamesAdapter
-        }
-
-    }
-
-
     private fun setRules() {
         binding.activitySearchRulesRecyclerview.apply {
 
@@ -301,8 +299,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
 
     }
 
-
-    private var failedDeliveryDetailsBottomDialogFragment: FailedDeliveryDetailsBottomDialogFragment? = null
     private fun setFailedDeliveries() {
         binding.activitySearchFailedDeliveriesRecyclerview.apply {
 
@@ -326,7 +322,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         }
 
     }
-
 
     private fun setAliases() {
         binding.activitySearchAliasesRecyclerview.apply {
@@ -375,7 +370,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
 
     }
 
-
     private fun setRecipients() {
         binding.activitySearchRecipientsRecyclerview.apply {
 
@@ -412,7 +406,6 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
 
     }
 
-
     private fun setDomains() {
         binding.activitySearchDomainsRecyclerview.apply {
 
@@ -441,12 +434,12 @@ class SearchActivity : BaseActivity(), FailedDeliveryDetailsBottomDialogFragment
         }
     }
 
-    override fun onDeleted(failedDeliveryId: String) {
-        val position = filteredFailedDeliveries?.indexOfFirst { it.id == failedDeliveryId }
-        position?.let { filteredFailedDeliveries?.removeAt(it) }
-        position?.let { binding.activitySearchFailedDeliveriesRecyclerview.adapter?.notifyItemRemoved(it) }
-        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
+    enum class SearchTargets(val activity: String) {
+        ALIASES("aliases"),
+        RECIPIENTS("recipients"),
+        DOMAINS("domains"),
+        USERNAMES("usernames"),
+        RULES("rules"),
+        FAILED_DELIVERIES("failed_deliveries")
     }
-
-
 }

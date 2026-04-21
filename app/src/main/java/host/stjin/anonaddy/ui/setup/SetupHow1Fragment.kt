@@ -10,6 +10,11 @@ import host.stjin.anonaddy.databinding.FragmentSetupHow1Binding
 import host.stjin.anonaddy.utils.InsetUtil
 
 class SetupHow1Fragment : Fragment() {
+    private var _binding: FragmentSetupHow1Binding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,13 +25,6 @@ class SetupHow1Fragment : Fragment() {
         val backward = MaterialSharedAxis(MaterialSharedAxis.X, true)
         returnTransition = backward
     }
-
-
-    private var _binding: FragmentSetupHow1Binding? = null
-
-    // This property is only valid between onCreateView and
-// onDestroyView.
-    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -13,13 +13,14 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesNotifyDomainErrorActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
+
     private var forceSwitch = false
+
     private lateinit var networkHelper: NetworkHelper
 
-
     private lateinit var binding: ActivityAppSettingsFeaturesNotifyDomainErrorBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyDomainErrorBinding.inflate(layoutInflater)
@@ -42,6 +43,21 @@ class AppSettingsFeaturesNotifyDomainErrorActivity : BaseActivity() {
         setOnSwitchListeners()
     }
 
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyDomainErrorSection.getSwitchChecked())
+            }
+        })
+    }
+
     private fun loadSettings() {
         binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setSwitchChecked(
             settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_DOMAIN_ERROR, false)
@@ -61,21 +77,4 @@ class AppSettingsFeaturesNotifyDomainErrorActivity : BaseActivity() {
             }
         })
     }
-
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifyDomainErrorSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyDomainErrorSection.getSwitchChecked())
-            }
-        })
-    }
-
 }

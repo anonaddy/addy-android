@@ -21,13 +21,14 @@ import org.ocpsoft.prettytime.PrettyTime
 
 
 class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
+
     private var forceSwitch = false
+
     private lateinit var networkHelper: NetworkHelper
 
-
     private lateinit var binding: ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifySubscriptionExpiryBinding.inflate(layoutInflater)
@@ -53,13 +54,28 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
         setOnSwitchListeners()
     }
 
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+        checkSubscriptionExpiry()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.getSwitchChecked())
+            }
+        })
+    }
 
     private fun checkSubscriptionExpiry() {
-            lifecycleScope.launch {
-                networkHelper.getUserResource { user: UserResource?, _: String? ->
-                    setSubscriptionInfoText(user)
-                }
+        lifecycleScope.launch {
+            networkHelper.getUserResource { user: UserResource?, _: String? ->
+                setSubscriptionInfoText(user)
             }
+        }
     }
 
     @SuppressLint("StringFormatInvalid") // Suppress StringFormatInvalid, the gplayless version accepts 2 parameters where the gplay version only accepts 1
@@ -110,22 +126,4 @@ class AppSettingsFeaturesNotifySubscriptionExpiryActivity : BaseActivity() {
             }
         })
     }
-
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-        checkSubscriptionExpiry()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifySubscriptionExpirySection.getSwitchChecked())
-            }
-        })
-    }
-
 }

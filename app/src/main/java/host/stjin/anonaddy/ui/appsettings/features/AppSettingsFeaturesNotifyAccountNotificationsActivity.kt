@@ -14,11 +14,12 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
+
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesNotifyAccountNotificationsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyAccountNotificationsBinding.inflate(layoutInflater)
@@ -42,6 +43,30 @@ class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
 
     }
 
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.getSwitchChecked())
+            }
+        })
+        binding.activityAppSettingsFeaturesNotifyAccountNotificationsActivity.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                val intent = Intent(this@AppSettingsFeaturesNotifyAccountNotificationsActivity, AccountNotificationsActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
+
+    }
+
     private fun loadSettings() {
         binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setSwitchChecked(
             settingsManager.getSettingsBool(SettingsManager.PREFS.NOTIFY_ACCOUNT_NOTIFICATIONS)
@@ -61,30 +86,4 @@ class AppSettingsFeaturesNotifyAccountNotificationsActivity : BaseActivity() {
             }
         })
     }
-
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyAccountNotificationsSection.getSwitchChecked())
-            }
-        })
-        binding.activityAppSettingsFeaturesNotifyAccountNotificationsActivity.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                val intent = Intent(this@AppSettingsFeaturesNotifyAccountNotificationsActivity, AccountNotificationsActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-
-    }
-
-
 }

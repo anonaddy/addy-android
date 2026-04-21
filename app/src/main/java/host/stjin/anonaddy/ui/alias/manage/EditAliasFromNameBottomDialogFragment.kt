@@ -24,27 +24,17 @@ class EditAliasFromNameBottomDialogFragment(
     private val aliasEmail: String?,
     private val fromName: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddEditAliasFromNameBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddEditAliasFromNameBottomDialogListener {
-        fun fromNameEdited(alias: Aliases)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
 
     private var _binding: BottomsheetEditFromNameAliasBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null, null)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,12 +68,24 @@ class EditAliasFromNameBottomDialogFragment(
 
     }
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null, null)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    companion object {
-        fun newInstance(id: String, aliasEmail: String, fromName: String?): EditAliasFromNameBottomDialogFragment {
-            return EditAliasFromNameBottomDialogFragment(id, aliasEmail, fromName)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_edit_from_name_alias_save_button) {
+                editDescription(
+                    requireContext()
+                )
+            }
         }
     }
 
@@ -114,18 +116,14 @@ class EditAliasFromNameBottomDialogFragment(
         }, aliasId!!, description)
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_edit_from_name_alias_save_button) {
-                editDescription(
-                    requireContext()
-                )
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddEditAliasFromNameBottomDialogListener {
+        fun fromNameEdited(alias: Aliases)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(id: String, aliasEmail: String, fromName: String?): EditAliasFromNameBottomDialogFragment {
+            return EditAliasFromNameBottomDialogFragment(id, aliasEmail, fromName)
+        }
     }
 }

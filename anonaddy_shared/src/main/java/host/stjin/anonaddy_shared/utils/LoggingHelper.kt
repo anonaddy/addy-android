@@ -1,6 +1,7 @@
 package host.stjin.anonaddy_shared.utils
 
 import android.content.Context
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy_shared.R
@@ -9,8 +10,8 @@ import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
 import host.stjin.anonaddy_shared.models.Logs
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
-import java.util.*
-import androidx.core.content.edit
+import java.util.Date
+import java.util.Locale
 
 
 class LoggingHelper(private val context: Context, sharedPreference: LOGFILES = LOGFILES.DEFAULT) {

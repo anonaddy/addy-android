@@ -45,8 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/subscribe_now"
-            android:layout_marginTop="16dp"
-/>
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 

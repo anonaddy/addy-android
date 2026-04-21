@@ -112,13 +112,12 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                 aliasWatcherNetworkCallResult = aliasWatcherTask(appContext, networkHelper, encryptedSettingsManager)
 
 
-
                 /*
                 UPDATES
                  */
 
                 if (settingsManager.getSettingsBool(PREFS.NOTIFY_UPDATES)) {
-                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean, _ :String? ->
+                    Updater.isUpdateAvailable({ updateAvailable: Boolean, latestVersion: String?, _: Boolean, _: String? ->
                         if (updateAvailable) {
                             latestVersion?.let {
                                 NotificationHelper(appContext).createUpdateNotification(
@@ -377,7 +376,8 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
             }
 
             if (BuildConfig.DEBUG) {
-                LoggingHelper(appContext, LoggingHelper.LOGFILES.DEFAULT).addLog(LOGIMPORTANCE.CRITICAL.int,
+                LoggingHelper(appContext, LoggingHelper.LOGFILES.DEFAULT).addLog(
+                    LOGIMPORTANCE.CRITICAL.int,
                     "userResourceNetworkCallResult=${userResourceNetworkCallResult}}\n" +
                             "aliasNetworkCallResult=${aliasNetworkCallResult}}\n" +
                             "aliasWatcherNetworkCallResult=${aliasWatcherNetworkCallResult}}\n" +
@@ -386,7 +386,8 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                             "notifyCertificateExpiryResult=${notifyCertificateExpiryResult}}\n" +
                             "notifySubscriptionNetworkCallResult=${notifySubscriptionNetworkCallResult}}\n" +
                             "accountNotificationsNetworkCallResult=${accountNotificationsNetworkCallResult}}\n",
-                            "doWork()",null)
+                    "doWork()", null
+                )
             }
 
             // If all tasks are successful return a success()

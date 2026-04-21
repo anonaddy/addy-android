@@ -18,28 +18,16 @@ import host.stjin.anonaddy.utils.CustomPatterns
 class EditAliasSendMailRecipientBottomDialogFragment(
     private val aliasEmail: String?
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddEditAliasSendMailRecipientBottomDialogListener
-
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddEditAliasSendMailRecipientBottomDialogListener {
-        fun onPressSend(toString: String)
-        fun onPressCopy(toString: String)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetSendMailAliasBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    constructor() : this(null)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,11 +55,24 @@ class EditAliasSendMailRecipientBottomDialogFragment(
 
     }
 
-    constructor() : this(null)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    companion object {
-        fun newInstance(aliasEmail: String?): EditAliasSendMailRecipientBottomDialogFragment {
-            return EditAliasSendMailRecipientBottomDialogFragment(aliasEmail)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_send_mail_alias_send_mail_button) {
+                sendMail(requireContext())
+            } else if (p0.id == R.id.bs_send_mail_alias_send_mail_copy_button) {
+                copyToAddress(requireContext())
+            }
         }
     }
 
@@ -117,19 +118,15 @@ class EditAliasSendMailRecipientBottomDialogFragment(
         listener.onPressCopy(binding.bsSendMailAliasRecipientTiet.text.toString())
     }
 
-
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_send_mail_alias_send_mail_button) {
-                sendMail(requireContext())
-            }   else if (p0.id == R.id.bs_send_mail_alias_send_mail_copy_button) {
-                copyToAddress(requireContext())
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddEditAliasSendMailRecipientBottomDialogListener {
+        fun onPressSend(toString: String)
+        fun onPressCopy(toString: String)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(aliasEmail: String?): EditAliasSendMailRecipientBottomDialogFragment {
+            return EditAliasSendMailRecipientBottomDialogFragment(aliasEmail)
+        }
     }
 }

@@ -15,10 +15,12 @@ import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 
 class LogViewerActivity : BaseActivity() {
-
     private lateinit var loggingHelper: LoggingHelper
+
     private lateinit var binding: ActivityLogViewerBinding
+
     private lateinit var logsAdapter: LogsAdapter
+
     private var oneTimeRecyclerViewActions: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +63,6 @@ class LogViewerActivity : BaseActivity() {
             getAllLogsAndSetRecyclerview()
         }
     }
-
 
     private fun getAllLogsAndSetRecyclerview() {
         binding.appsettingsLogviewerRecyclerview.apply {

@@ -96,52 +96,52 @@
             </HorizontalScrollView>
 
 
-                <LinearLayout
-                    style="@style/AddyIoTitleAction"
-                    android:layout_marginTop="0dp"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
+            <LinearLayout
+                style="@style/AddyIoTitleAction"
+                android:layout_marginTop="0dp"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
 
-
-                    <TextView
-                        android:id="@+id/alias_header"
-                        style="@style/titleTextView"
-                        android:layout_width="0dp"
-                        android:ellipsize="end"
-                        android:lines="1"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/aliases" />
-
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/alias_add_alias"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_alias" />
-
-                </LinearLayout>
-
-
-                <com.todkars.shimmer.ShimmerRecyclerView
-                    android:id="@+id/alias_all_aliases_recyclerview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:shimmer_recycler_auto_start="true"
-                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
 
                 <TextView
-                    android:id="@+id/alias_no_aliases"
-                    android:layout_width="match_parent"
+                    android:id="@+id/alias_header"
+                    style="@style/titleTextView"
+                    android:layout_width="0dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/aliases" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/alias_add_alias"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/no_result_textview_padding"
-                    android:text="@string/no_aliases"
-                    android:textAlignment="center"
-                    android:textColor="@color/BlackWhite"
-                    android:visibility="gone" />
+                    android:text="@string/add_alias" />
+
+            </LinearLayout>
+
+
+            <com.todkars.shimmer.ShimmerRecyclerView
+                android:id="@+id/alias_all_aliases_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:shimmer_recycler_auto_start="true"
+                app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
+
+            <TextView
+                android:id="@+id/alias_no_aliases"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/no_result_textview_padding"
+                android:text="@string/no_aliases"
+                android:textAlignment="center"
+                android:textColor="@color/BlackWhite"
+                android:visibility="gone" />
 
 
         </LinearLayout>

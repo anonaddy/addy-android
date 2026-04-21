@@ -96,7 +96,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.smoothScrollTo(0,0) }
+            binding.fragmentAliasNsv.post { binding.fragmentAliasNsv.smoothScrollTo(0, 0) }
         }
     }
 
@@ -674,7 +674,12 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
         } catch (e: IllegalStateException) {
             // Log the error if the lifecycle state was somehow invalid despite the check.
-            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "AliasFragment", null)
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "AliasFragment",
+                null
+            )
         }
     }
 

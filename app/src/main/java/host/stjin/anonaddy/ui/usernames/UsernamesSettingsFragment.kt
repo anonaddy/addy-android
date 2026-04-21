@@ -43,17 +43,20 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
     private var oneTimeRecyclerViewActions: Boolean = true
 
     private var addUsernameFragment: AddUsernameBottomDialogFragment = AddUsernameBottomDialogFragment.newInstance(0)
+    private var _binding: FragmentUsernameSettingsBinding? = null
+    private val binding get() = _binding!!
 
-    companion object {
-        fun newInstance() = UsernamesSettingsFragment()
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
+                getDataFromWeb(null)
+            }
+        }
     }
 
-
-    private var _binding: FragmentUsernameSettingsBinding? = null
-
-    // This property is only valid between onCreateView and
-// onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var usernamesAdapter: UsernameAdapter
+    private lateinit var deleteUsernameSnackbar: Snackbar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,7 +71,6 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
         encryptedSettingsManager = SettingsManager(true, requireContext())
         networkHelper = NetworkHelper(requireContext())
 
-        // Set stats right away, update later
         setStats()
 
         setOnClickListener()
@@ -85,7 +87,6 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
         outState.putString("usernames", json)
     }
 
-
     private fun setOnClickListener() {
         binding.fragmentUsernameSettingsAddUsername.setOnClickListener {
             if (!addUsernameFragment.isAdded) {
@@ -95,73 +96,6 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                 )
             }
         }
-    }
-
-    fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
-        // Get the latest data in the background, and update the values when loaded
-        lifecycleScope.launch {
-            if (savedInstanceState != null) {
-                setStats()
-
-                val usernamesJson = savedInstanceState.getString("usernames")
-                if (!usernamesJson.isNullOrEmpty() && usernamesJson != "null") {
-                    val gson = Gson()
-
-                    val myType = object : TypeToken<ArrayList<Usernames>>() {}.type
-                    val list = gson.fromJson<ArrayList<Usernames>>(usernamesJson, myType)
-                    setUsernamesAdapter(list)
-                } else {
-                    // usernamesJson could be null when an embedded activity is opened instantly
-                    getUserResource()
-                    getAllUsernamesAndSetView()
-                }
-
-            } else {
-                getUserResource()
-                getAllUsernamesAndSetView()
-            }
-            callback()
-        }
-    }
-
-    private suspend fun getUserResource() {
-        networkHelper?.getUserResource { user: UserResource?, result: String? ->
-            if (user != null) {
-                (activity?.application as AddyIoApp).userResource = user
-                addUsernameFragment = AddUsernameBottomDialogFragment.newInstance(user.username_limit)
-                // Update stats
-                setStats()
-            } else {
-                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                    SnackbarHelper.createSnackbar(
-                        requireContext(),
-                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as MainActivity).findViewById(R.id.main_container),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                } else {
-                    SnackbarHelper.createSnackbar(
-                        requireContext(),
-                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
-                        (activity as UsernamesSettingsActivity).findViewById(R.id.activity_username_settings_CL),
-                        LoggingHelper.LOGFILES.DEFAULT
-                    ).show()
-                }
-            }
-        }
-    }
-
-    private fun setStats() {
-        // Usernames don't have an unlimited count
-        binding.fragmentUsernameSettingsRLCountText.text =
-            resources.getString(
-                R.string.you_ve_used_d_out_of_d_usernames,
-                (activity?.application as AddyIoApp).userResource.username_count,
-                (activity?.application as AddyIoApp).userResource.username_limit
-            )
-
-        binding.fragmentUsernameSettingsAddUsername.isEnabled =
-            (activity?.application as AddyIoApp).userResource.username_count < (activity?.application as AddyIoApp).userResource.username_limit
     }
 
     private fun setUsernamesRecyclerView() {
@@ -184,64 +118,11 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
         }
     }
 
-    private lateinit var usernamesAdapter: UsernameAdapter
-    private suspend fun getAllUsernamesAndSetView() {
-        binding.fragmentUsernameSettingsAllUsernamesRecyclerview.apply {
-            networkHelper?.getAllUsernames { list, error ->
-                // Sorted by created_at automatically
-                //list?.sortByDescending { it.emails_forwarded }
-
-                // Check if there are new usernames since the latest list
-                // If the list is the same, just return and don't bother re-init the layoutmanager
-                if (::usernamesAdapter.isInitialized && list == usernamesAdapter.getList()) {
-                    return@getAllUsernames
-                }
-
-                if (list != null) {
-                    setUsernamesAdapter(list)
-                } else {
-
-                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
-                            (activity as MainActivity).findViewById(R.id.main_container),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
-                    } else {
-                        SnackbarHelper.createSnackbar(
-                            requireContext(),
-                            this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
-                            (activity as UsernamesSettingsActivity).findViewById(R.id.activity_username_settings_CL),
-                            LoggingHelper.LOGFILES.DEFAULT
-                        ).show()
-                    }
-
-                    // Show error animations
-                    binding.fragmentUsernameSettingsLL1.visibility = View.GONE
-                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
-                }
-                hideShimmer()
-            }
-
-        }
-
-    }
-
     private fun setUsernamesAdapter(list: java.util.ArrayList<Usernames>) {
         binding.fragmentUsernameSettingsAllUsernamesRecyclerview.apply {
             usernames = list
-            // There is always 1 username.
 
-            /*if (list.size > 0) {
-                binding.fragmentUsernameSettingsNoUsernames.visibility = View.GONE
-            } else {
-                binding.fragmentUsernameSettingsNoUsernames.visibility = View.VISIBLE
-            }*/
-
-            // Set the count of aliases so that the shimmerview looks better next time
             encryptedSettingsManager?.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_USERNAME_COUNT, list.size)
-
 
             usernamesAdapter = UsernameAdapter(list)
             usernamesAdapter.setClickListener(object : UsernameAdapter.ClickListener {
@@ -252,7 +133,6 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                     resultLauncher.launch(intent)
                 }
 
-
                 override fun onClickDelete(pos: Int, aView: View) {
                     deleteUsername(list[pos].id, context)
                 }
@@ -261,23 +141,105 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
             adapter = usernamesAdapter
 
             binding.animationFragment.stopAnimation()
-            //binding.fragmentUsernameSettingsNSV.animate().alpha(1.0f) -> Do not animate as there is a shimmerview
-
         }
     }
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data?.getBooleanExtra("shouldRefresh", false) == true) {
-                getDataFromWeb(null)
+    fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
+        lifecycleScope.launch {
+            if (savedInstanceState != null) {
+                setStats()
+
+                val usernamesJson = savedInstanceState.getString("usernames")
+                if (!usernamesJson.isNullOrEmpty() && usernamesJson != "null") {
+                    val gson = Gson()
+
+                    val myType = object : TypeToken<ArrayList<Usernames>>() {}.type
+                    val list = gson.fromJson<ArrayList<Usernames>>(usernamesJson, myType)
+                    setUsernamesAdapter(list)
+                } else {
+                    getUserResource()
+                    getAllUsernamesAndSetView()
+                }
+            } else {
+                getUserResource()
+                getAllUsernamesAndSetView()
+            }
+            callback()
+        }
+    }
+
+    private suspend fun getUserResource() {
+        networkHelper?.getUserResource { user: UserResource?, result: String? ->
+            if (user != null) {
+                (activity?.application as AddyIoApp).userResource = user
+                addUsernameFragment = AddUsernameBottomDialogFragment.newInstance(user.username_limit)
+                setStats()
+            } else {
+                if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        resources.getString(R.string.error_obtaining_user) + "\\n" + result,
+                        (activity as MainActivity).findViewById(R.id.main_container),
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                } else {
+                    SnackbarHelper.createSnackbar(
+                        requireContext(),
+                        resources.getString(R.string.error_obtaining_user) + "\\n" + result,
+                        (activity as UsernamesSettingsActivity).findViewById(R.id.activity_username_settings_CL),
+                        LoggingHelper.LOGFILES.DEFAULT
+                    ).show()
+                }
             }
         }
     }
 
+    private fun setStats() {
+        binding.fragmentUsernameSettingsRLCountText.text =
+            resources.getString(
+                R.string.you_ve_used_d_out_of_d_usernames,
+                (activity?.application as AddyIoApp).userResource.username_count,
+                (activity?.application as AddyIoApp).userResource.username_limit
+            )
 
-    private lateinit var deleteUsernameSnackbar: Snackbar
+        binding.fragmentUsernameSettingsAddUsername.isEnabled =
+            (activity?.application as AddyIoApp).userResource.username_count < (activity?.application as AddyIoApp).userResource.username_limit
+    }
+
+    private suspend fun getAllUsernamesAndSetView() {
+        binding.fragmentUsernameSettingsAllUsernamesRecyclerview.apply {
+            networkHelper?.getAllUsernames { list, error ->
+                if (::usernamesAdapter.isInitialized && list == usernamesAdapter.getList()) {
+                    return@getAllUsernames
+                }
+
+                if (list != null) {
+                    setUsernamesAdapter(list)
+                } else {
+                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\\n" + error,
+                            (activity as MainActivity).findViewById(R.id.main_container),
+                            LoggingHelper.LOGFILES.DEFAULT
+                        ).show()
+                    } else {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\\n" + error,
+                            (activity as UsernamesSettingsActivity).findViewById(R.id.activity_username_settings_CL),
+                            LoggingHelper.LOGFILES.DEFAULT
+                        ).show()
+                    }
+
+                    binding.fragmentUsernameSettingsLL1.visibility = View.GONE
+                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
+                }
+                hideShimmer()
+            }
+        }
+    }
+
     private fun deleteUsername(id: String, context: Context) {
         MaterialDialogHelper.showMaterialDialog(
             context = requireContext(),
@@ -287,7 +249,6 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
             neutralButtonText = resources.getString(R.string.cancel),
             positiveButtonText = resources.getString(R.string.delete),
             positiveButtonAction = {
-
                 deleteUsernameSnackbar = if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
@@ -318,8 +279,6 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                 deleteUsernameSnackbar.dismiss()
                 getDataFromWeb(null)
             } else {
-
-
                 if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
@@ -341,25 +300,26 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
 
     override fun onAdded() {
         addUsernameFragment.dismissAllowingStateLoss()
-        // Get the latest data in the background, and update the values when loaded
         getDataFromWeb(null)
     }
 
     override fun onRefreshData() {
-        // The key is to check if the view is created before proceeding.
-        // `viewLifecycleOwner` can be used as a proxy for this check.
         if (!isAdded) return
-
-        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
         try {
-            // This ensures the coroutine is launched only when the view's lifecycle is active.
             viewLifecycleOwner.lifecycleScope.launch {
                 getDataFromWeb(null)
             }
         } catch (e: IllegalStateException) {
-            // Log the error if the lifecycle state was somehow invalid despite the check.
-            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "UsernamesSettingsFragment", null)
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "UsernamesSettingsFragment",
+                null
+            )
         }
     }
 
+    companion object {
+        fun newInstance() = UsernamesSettingsFragment()
+    }
 }

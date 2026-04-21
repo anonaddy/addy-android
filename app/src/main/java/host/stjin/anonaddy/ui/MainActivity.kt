@@ -98,42 +98,159 @@ object MainActivityTimeClass {
 }
 
 class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener, AddApiBottomDialogFragment.AddApiBottomDialogListener {
-
-
     private val searchBottomDialogFragment: SearchBottomDialogFragment =
+
         SearchBottomDialogFragment.newInstance()
 
     private val profileBottomDialogFragment: ProfileBottomDialogFragment =
+
         ProfileBottomDialogFragment.newInstance()
 
-
     private var addApiBottomDialogFragment: AddApiBottomDialogFragment =
-        AddApiBottomDialogFragment.newInstance()
 
+        AddApiBottomDialogFragment.newInstance()
 
     private lateinit var networkHelper: NetworkHelper
 
     lateinit var viewPager: ViewPager2
 
+    private lateinit var binding: ActivityMainBinding
 
-    // Make sure the viewPager is ABOVE the bottomnavbar
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            // In onCreate or a setup method
-            ViewCompat.setOnApplyWindowInsetsListener(binding.activityMainViewpager!!) { view, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-                // Add system navigation bar height to the existing margin
-                view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    bottomMargin = systemBars.bottom
-                }
-                insets
+    private var subscriptionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
+                refreshAllData()
             }
         }
-
     }
 
+    private var mUpdateAvailable = false
+
+    private var mPermissionsRequired = false
+
+    /*
+        This method checks if there are new failed deliveries
+        It does this by getting the current failed delivery count, if that count is bigger than the failed deliveries in the cache that means there are new failed
+        deliveries.
+
+        As BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT is only updated in the service and in the FailedDeliveriesActivity that means that the red
+        indicator is only visible if:
+
+        - The activity has not been opened since there were new items.
+        - There are more failed deliveries than the server cached last time (in which case the user should have got a notification)
+         */
+    private suspend fun checkForNewFailedDeliveries() {
+        val encryptedSettingsManager = SettingsManager(true, this)
+        networkHelper.getAllFailedDeliveries { result, _ ->
+            val currentFailedDeliveries =
+                encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
+            if ((result?.meta?.total ?: 0) > currentFailedDeliveries) {
+                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+                    if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
+                        // loading the animation of
+                        // zoom_in.xml file into a variable
+                        val animZoomIn = AnimationUtils.loadAnimation(
+                            this,
+                            R.anim.zoom_in
+                        )
+                        animZoomIn.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(p0: Animation?) {
+                                binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.VISIBLE
+                            }
+
+                            override fun onAnimationEnd(p0: Animation?) {
+                                //
+                            }
+
+                            override fun onAnimationRepeat(p0: Animation?) {
+                                //
+                            }
+                        }
+                        )
+                        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomIn)
+                    }
+                } else {
+                    val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
+                    badge.isVisible = true
+                    // An icon only badge will be displayed unless a number or text is set:
+                    badge.number = (result?.meta?.total?.minus(currentFailedDeliveries)) ?: 0  // or badge.text = "New"
+                }
+            } else {
+                hideFailedDeliveriesBadge()
+            }
+        }
+    }
+
+    /*
+         This method checks if there are new account notifications
+         It does this by getting the current account notifications count, if that count is bigger than the account notifications in the cache that means there are new notifications
+
+         As BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT is only updated in the service and in the AccountNotificationsActivity that means that the red
+         indicator is only visible if:
+
+         - The activity has not been opened since there were new items.
+         - There are more account notifications than the server cached last time (in which case the user should have got a notification)
+         */
+    private suspend fun checkForNewAccountNotifications() {
+        val encryptedSettingsManager = SettingsManager(true, this)
+        networkHelper.getAllAccountNotifications { result, _ ->
+            val currentAccountNotifications =
+                encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
+            if ((result?.size ?: 0) > currentAccountNotifications) {
+                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+
+                    if (binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility != View.VISIBLE) {
+                        // loading the animation of
+                        // zoom_in.xml file into a variable
+                        val animZoomIn = AnimationUtils.loadAnimation(
+                            this,
+                            R.anim.zoom_in
+                        )
+                        animZoomIn.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(p0: Animation?) {
+                                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility = View.VISIBLE
+                            }
+
+                            override fun onAnimationEnd(p0: Animation?) {
+                                //
+                            }
+
+                            override fun onAnimationRepeat(p0: Animation?) {
+                                //
+                            }
+                        }
+                        )
+                        binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.startAnimation(animZoomIn)
+                    }
+                } else {
+                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_account_notifications)!!
+                        .setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
+                }
+            } else {
+                hideAccountNotificationsBadge()
+            }
+
+        }
+    }
+
+    // When returning from the search activity, load the appropriate screen
+    private var resultLauncher: ActivityResultLauncher<Intent> =
+
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                // There are no request codes
+                val data: Intent? = result.data
+
+                if (data != null) {
+                    if (data.hasExtra("target")) {
+                        data.extras?.getString("target")?.let { goToTarget(it) }
+                    }
+                }
+
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -182,13 +299,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         if (AddyIo.isUsingHostedInstance) {
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility = View.VISIBLE
+                binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility =
+                    View.VISIBLE
             } else {
                 binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIconRL.visibility = View.VISIBLE
             }
         } else {
             if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility = View.GONE
+                binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.visibility =
+                    View.GONE
             } else {
                 binding.mainAppBarInclude!!.mainTopBarAccountNotificationsIconRL.visibility = View.GONE
             }
@@ -198,7 +317,195 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            initialiseMainAppBar()
+        }
+        checkForPermissions()
 
+
+        if (MainActivityTimeClass.isPast5Minutes()) {
+            //println("More than 5 minutes have passed since the last general refresh.")
+
+            // Refresh general data when coming back from the background to the foreground
+            refreshAllData()
+        }
+
+
+    }
+
+    // Make sure the viewPager is ABOVE the bottomnavbar
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            // In onCreate or a setup method
+            ViewCompat.setOnApplyWindowInsetsListener(binding.activityMainViewpager!!) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+                // Add system navigation bar height to the existing margin
+                view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    bottomMargin = systemBars.bottom
+                }
+                insets
+            }
+        }
+
+    }
+
+    fun refreshAllData() {
+        // Refresh all data in child fragments
+
+        // Get all fragments currently managed by the ViewPager's adapter
+        val allFragments = (viewPager.adapter as MainViewpagerAdapter).getAllFragments()
+
+        // Loop through the fragments and refresh only those that implement the Refreshable interface
+        for (fragment in allFragments) {
+            if (fragment is Refreshable) {
+                // Call the interface method. It's now the fragment's own responsibility
+                // to handle this call safely.
+                fragment.onRefreshData()
+            }
+        }
+
+//        val homeFragment: HomeFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("HomeFragment") as HomeFragment?
+//        val aliasFragment: AliasFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment?
+//        val recipientsFragment: RecipientsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RecipientsFragment") as RecipientsFragment?
+//        homeFragment?.getDataFromWeb(null)
+//        aliasFragment?.getDataFromWeb(null)
+//        recipientsFragment?.getDataFromWeb(null)
+//
+//
+//        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+//            val usernamesSettingsFragment: UsernamesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("UsernamesSettingsFragment") as UsernamesSettingsFragment?
+//            usernamesSettingsFragment?.getDataFromWeb(null)
+//
+//            val domainSettingsFragment: DomainSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("DomainSettingsFragment") as DomainSettingsFragment?
+//            domainSettingsFragment?.getDataFromWeb(null)
+//
+//            val rulesSettingsFragment: RulesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RulesSettingsFragment") as RulesSettingsFragment?
+//            rulesSettingsFragment?.getDataFromWeb(null)
+//
+//            val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
+//            failedDeliveriesFragment?.getDataFromWeb(null)
+//        }
+
+        // Check for updates and check API expiration key
+        lifecycleScope.launch {
+            checkForUpdates()
+            checkForApiExpiration()
+            checkForCertificateExpiration()
+            checkForSubscriptionExpiration()
+            checkForNewFailedDeliveries()
+            checkForNewAccountNotifications()
+        }
+
+        MainActivityTimeClass.updateLastGeneralRefresh()
+
+    }
+
+    fun openSearch() {
+        if (!searchBottomDialogFragment.isAdded) {
+            searchBottomDialogFragment.show(
+                supportFragmentManager,
+                "searchBottomDialogFragment"
+            )
+        }
+    }
+
+    fun navigateTo(fragment: Int) {
+        when (fragment) {
+            R.id.navigation_home -> viewPager.currentItem = 0
+            R.id.navigation_alias -> viewPager.currentItem = 1
+            R.id.navigation_recipients -> viewPager.currentItem = 2
+            R.id.navigation_usernames -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 3
+                } else {
+                    val intent = Intent(this, UsernamesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_domains -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 4
+                } else {
+                    val intent = Intent(this, DomainSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_rules -> {  // Only SW600DP>
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 5
+                } else {
+                    val intent = Intent(this, RulesSettingsActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+            R.id.navigation_failed_deliveries -> {  // Only SW600DP>
+
+                // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
+                val failedDeliveriesFragment: FailedDeliveriesFragment? =
+                    (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
+                failedDeliveriesFragment?.fragmentShown()
+                hideFailedDeliveriesBadge()
+
+                if (this.resources.getBoolean(R.bool.isTablet)) {
+                    viewPager.currentItem = 7
+                } else {
+                    val intent = Intent(this, FailedDeliveriesActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
+    override fun onSearch(
+        filteredAliases: ArrayList<Aliases>,
+        filteredRecipients: ArrayList<Recipients>,
+        filteredDomains: ArrayList<Domains>,
+        filteredUsernames: ArrayList<Usernames>,
+        filteredRules: ArrayList<Rules>,
+        filteredFailedDeliveries: ArrayList<FailedDeliveries>
+    ) {
+
+        SearchActivity.FilteredLists.filteredAliases = filteredAliases
+        SearchActivity.FilteredLists.filteredRecipients = filteredRecipients
+        SearchActivity.FilteredLists.filteredDomains = filteredDomains
+        SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
+        SearchActivity.FilteredLists.filteredRules = filteredRules
+        SearchActivity.FilteredLists.filteredFailedDeliveries = filteredFailedDeliveries
+
+        searchBottomDialogFragment.dismissAllowingStateLoss()
+        val intent = Intent(this, SearchActivity::class.java)
+        resultLauncher.launch(intent)
+    }
+
+    override fun onClickSave(baseUrl: String, apiKey: String) {
+        addApiBottomDialogFragment.dismissAllowingStateLoss()
+        updateKey(apiKey)
+
+        // Send the new configuration to all the connected Wear devices
+        try {
+            Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+                for (node in nodes) {
+                    val configuration = Gson().toJson(WearOSHelper(this).createWearOSConfiguration())
+                    Wearable.getMessageClient(this).sendMessage(
+                        node.id,
+                        "/setup",
+                        configuration.toByteArray()
+                    )
+                }
+
+            }
+        } catch (ex: Exception) {
+            // WearAPI not available, not sending anything to nodes
+            LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "MainActivity;onClickSave", null)
+        }
+    }
 
     // Only for Sw600>
     private fun setRailVersion() {
@@ -302,78 +609,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         })
     }
 
-    fun refreshAllData() {
-        // Refresh all data in child fragments
-
-        // Get all fragments currently managed by the ViewPager's adapter
-        val allFragments = (viewPager.adapter as MainViewpagerAdapter).getAllFragments()
-
-        // Loop through the fragments and refresh only those that implement the Refreshable interface
-        for (fragment in allFragments) {
-            if (fragment is Refreshable) {
-                // Call the interface method. It's now the fragment's own responsibility
-                // to handle this call safely.
-                fragment.onRefreshData()
-            }
-        }
-
-//        val homeFragment: HomeFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("HomeFragment") as HomeFragment?
-//        val aliasFragment: AliasFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment?
-//        val recipientsFragment: RecipientsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RecipientsFragment") as RecipientsFragment?
-//        homeFragment?.getDataFromWeb(null)
-//        aliasFragment?.getDataFromWeb(null)
-//        recipientsFragment?.getDataFromWeb(null)
-//
-//
-//        if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-//            val usernamesSettingsFragment: UsernamesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("UsernamesSettingsFragment") as UsernamesSettingsFragment?
-//            usernamesSettingsFragment?.getDataFromWeb(null)
-//
-//            val domainSettingsFragment: DomainSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("DomainSettingsFragment") as DomainSettingsFragment?
-//            domainSettingsFragment?.getDataFromWeb(null)
-//
-//            val rulesSettingsFragment: RulesSettingsFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("RulesSettingsFragment") as RulesSettingsFragment?
-//            rulesSettingsFragment?.getDataFromWeb(null)
-//
-//            val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
-//            failedDeliveriesFragment?.getDataFromWeb(null)
-//        }
-
-        // Check for updates and check API expiration key
-        lifecycleScope.launch {
-            checkForUpdates()
-            checkForApiExpiration()
-            checkForCertificateExpiration()
-            checkForSubscriptionExpiration()
-            checkForNewFailedDeliveries()
-            checkForNewAccountNotifications()
-        }
-
-        MainActivityTimeClass.updateLastGeneralRefresh()
-
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            initialiseMainAppBar()
-        }
-        checkForPermissions()
-
-
-        if (MainActivityTimeClass.isPast5Minutes()) {
-            //println("More than 5 minutes have passed since the last general refresh.")
-
-            // Refresh general data when coming back from the background to the foreground
-            refreshAllData()
-        }
-
-
-    }
-
-
-    private lateinit var binding: ActivityMainBinding
     private fun loadMainActivity() {
         showChangeLog()
 
@@ -539,7 +774,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         settingsManager.putSettingsInt(
             PREFS.TIMES_THE_APP_HAS_BEEN_OPENED,
-            settingsManager.getSettingsInt(PREFS.TIMES_THE_APP_HAS_BEEN_OPENED) + 1)
+            settingsManager.getSettingsInt(PREFS.TIMES_THE_APP_HAS_BEEN_OPENED) + 1
+        )
 
         if (BuildConfig.DEBUG) {
             print("App has been opened ${settingsManager.getSettingsInt(PREFS.TIMES_THE_APP_HAS_BEEN_OPENED)} times")
@@ -578,16 +814,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-    fun openSearch() {
-        if (!searchBottomDialogFragment.isAdded) {
-            searchBottomDialogFragment.show(
-                supportFragmentManager,
-                "searchBottomDialogFragment"
-            )
-        }
-    }
-
-
     private fun checkForPermissions() {
         val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
@@ -600,7 +826,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             setAlertIconToProfile(permissionsRequired = false)
         }
     }
-
 
     private suspend fun checkForUpdates() {
         val settingsManager = SettingsManager(false, this)
@@ -616,7 +841,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-    private fun checkForCertificateExpiration(){
+    private fun checkForCertificateExpiration() {
         val encryptedSettingsManager = SettingsManager(true, this)
         val alias = encryptedSettingsManager.getSettingsString(PREFS.CERTIFICATE_ALIAS)
 
@@ -660,7 +885,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-
     private suspend fun checkForApiExpiration() {
         networkHelper.getApiTokenDetails { apiTokenDetails, error ->
             if (apiTokenDetails?.expires_at != null) {
@@ -695,16 +919,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
-    private var subscriptionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            if (data?.getBooleanExtra("hasNewSubscription", false) == true) {
-                refreshAllData()
-            }
-        }
-    }
-
     private fun checkForSubscriptionExpiration() {
         // Only check on hosted instance
         if (AddyIo.isUsingHostedInstance) {
@@ -726,22 +940,21 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                             )
                             // Only show the renew button when not-google play version
                             // https://support.google.com/googleplay/android-developer/answer/13321562
-                                dialog.setPositiveButton(
-                                    this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
-                                ) { _, _ ->
-                                    if (BuildConfig.FLAVOR == "gplay") {
-                                        val intent = Intent(this@MainActivity, ManageSubscriptionActivity::class.java)
-                                        subscriptionResultLauncher.launch(intent)
-                                    } else {
-                                        val url = "${AddyIo.API_BASE_URL}/settings/subscription"
-                                        val i = Intent(Intent.ACTION_VIEW)
-                                        i.data = url.toUri()
-                                        startActivity(i)
-                                    }
-
-
-
+                            dialog.setPositiveButton(
+                                this@MainActivity.resources.getString(R.string.subscription_about_to_expire_option_1)
+                            ) { _, _ ->
+                                if (BuildConfig.FLAVOR == "gplay") {
+                                    val intent = Intent(this@MainActivity, ManageSubscriptionActivity::class.java)
+                                    subscriptionResultLauncher.launch(intent)
+                                } else {
+                                    val url = "${AddyIo.API_BASE_URL}/settings/subscription"
+                                    val i = Intent(Intent.ACTION_VIEW)
+                                    i.data = url.toUri()
+                                    startActivity(i)
                                 }
+
+
+                            }
 
                             dialog.show()
                         }
@@ -751,7 +964,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
     }
-
 
     private fun verifyNewApiToken() {
         addApiBottomDialogFragment = AddApiBottomDialogFragment.newInstance(AddyIo.API_BASE_URL)
@@ -771,8 +983,11 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     return
                 }
 
-                SettingsManager(true,this@MainActivity).putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
-                SettingsManager(false,this@MainActivity).putSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, true) // Enable by default when a certificate has been selected
+                SettingsManager(true, this@MainActivity).putSettingsString(PREFS.CERTIFICATE_ALIAS, alias)
+                SettingsManager(false, this@MainActivity).putSettingsBool(
+                    PREFS.NOTIFY_CERTIFICATE_EXPIRY,
+                    true
+                ) // Enable by default when a certificate has been selected
 
                 // Since certificate expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
                 BackgroundWorkerHelper(this@MainActivity).scheduleBackgroundWorker()
@@ -802,9 +1017,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }, null, null, null, null)
     }
 
-
-    private var mUpdateAvailable = false
-    private var mPermissionsRequired = false
     private fun setAlertIconToProfile(updateAvailable: Boolean? = null, permissionsRequired: Boolean? = null) {
         // Store the bools for comparison next time this method gets called
         if (updateAvailable != null) {
@@ -823,7 +1035,8 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!
                     .setTextColor(ContextCompat.getColor(this, R.color.softRed))
             } else {
-                binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!.setTextColor(ContextCompat.getColor(this, R.color.md_theme_onSecondaryContainer))
+                binding.navRail!!.headerView?.findViewById<MaterialTextView>(R.id.main_top_bar_user_initials)!!
+                    .setTextColor(ContextCompat.getColor(this, R.color.md_theme_onSecondaryContainer))
             }
         } else {
             // If there is an update available or there are permissions required, show the dot
@@ -864,112 +1077,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
             }
             )
             animZoom?.let { binding.mainAppBarInclude!!.mainTopBarUserInitialsUpdateIcon.startAnimation(it) }
-        }
-    }
-
-    /*
-    This method checks if there are new failed deliveries
-    It does this by getting the current failed delivery count, if that count is bigger than the failed deliveries in the cache that means there are new failed
-    deliveries.
-
-    As BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT is only updated in the service and in the FailedDeliveriesActivity that means that the red
-    indicator is only visible if:
-
-    - The activity has not been opened since there were new items.
-    - There are more failed deliveries than the server cached last time (in which case the user should have got a notification)
-     */
-    private suspend fun checkForNewFailedDeliveries() {
-        val encryptedSettingsManager = SettingsManager(true, this)
-        networkHelper.getAllFailedDeliveries { result, _ ->
-            val currentFailedDeliveries =
-                encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-            if ((result?.meta?.total ?: 0) > currentFailedDeliveries) {
-                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                    if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
-                        // loading the animation of
-                        // zoom_in.xml file into a variable
-                        val animZoomIn = AnimationUtils.loadAnimation(
-                            this,
-                            R.anim.zoom_in
-                        )
-                        animZoomIn.setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(p0: Animation?) {
-                                binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.VISIBLE
-                            }
-
-                            override fun onAnimationEnd(p0: Animation?) {
-                                //
-                            }
-
-                            override fun onAnimationRepeat(p0: Animation?) {
-                                //
-                            }
-                        }
-                        )
-                        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomIn)
-                    }
-                } else {
-                    val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
-                    badge.isVisible = true
-                    // An icon only badge will be displayed unless a number or text is set:
-                    badge.number = (result?.meta?.total?.minus(currentFailedDeliveries)) ?: 0  // or badge.text = "New"
-                }
-            } else {
-                hideFailedDeliveriesBadge()
-            }
-        }
-    }
-
-    /*
-     This method checks if there are new account notifications
-     It does this by getting the current account notifications count, if that count is bigger than the account notifications in the cache that means there are new notifications
-
-     As BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT is only updated in the service and in the AccountNotificationsActivity that means that the red
-     indicator is only visible if:
-
-     - The activity has not been opened since there were new items.
-     - There are more account notifications than the server cached last time (in which case the user should have got a notification)
-     */
-
-    private suspend fun checkForNewAccountNotifications() {
-        val encryptedSettingsManager = SettingsManager(true, this)
-        networkHelper.getAllAccountNotifications { result, _ ->
-            val currentAccountNotifications =
-                encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT)
-            if ((result?.size ?: 0) > currentAccountNotifications) {
-                if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-
-                    if (binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility != View.VISIBLE) {
-                        // loading the animation of
-                        // zoom_in.xml file into a variable
-                        val animZoomIn = AnimationUtils.loadAnimation(
-                            this,
-                            R.anim.zoom_in
-                        )
-                        animZoomIn.setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(p0: Animation?) {
-                                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility = View.VISIBLE
-                            }
-
-                            override fun onAnimationEnd(p0: Animation?) {
-                                //
-                            }
-
-                            override fun onAnimationRepeat(p0: Animation?) {
-                                //
-                            }
-                        }
-                        )
-                        binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.startAnimation(animZoomIn)
-                    }
-                } else {
-                    binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_account_notifications)!!
-                        .setColorFilter(ContextCompat.getColor(this, R.color.softRed), android.graphics.PorterDuff.Mode.SRC_IN)
-                }
-            } else {
-                hideAccountNotificationsBadge()
-            }
-
         }
     }
 
@@ -1038,93 +1145,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
-    fun navigateTo(fragment: Int) {
-        when (fragment) {
-            R.id.navigation_home -> viewPager.currentItem = 0
-            R.id.navigation_alias -> viewPager.currentItem = 1
-            R.id.navigation_recipients -> viewPager.currentItem = 2
-            R.id.navigation_usernames -> {  // Only SW600DP>
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 3
-                } else {
-                    val intent = Intent(this, UsernamesSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            R.id.navigation_domains -> {  // Only SW600DP>
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 4
-                } else {
-                    val intent = Intent(this, DomainSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            R.id.navigation_rules -> {  // Only SW600DP>
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 5
-                } else {
-                    val intent = Intent(this, RulesSettingsActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-
-            R.id.navigation_failed_deliveries -> {  // Only SW600DP>
-
-                // Tell the fragment it is shown so it can mark the failed deliveries as read by updating the count in cache
-                val failedDeliveriesFragment: FailedDeliveriesFragment? = (viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("FailedDeliveriesFragment") as FailedDeliveriesFragment?
-                failedDeliveriesFragment?.fragmentShown()
-                hideFailedDeliveriesBadge()
-
-                if (this.resources.getBoolean(R.bool.isTablet)) {
-                    viewPager.currentItem = 7
-                } else {
-                    val intent = Intent(this, FailedDeliveriesActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-        }
-    }
-
-    override fun onSearch(
-        filteredAliases: ArrayList<Aliases>,
-        filteredRecipients: ArrayList<Recipients>,
-        filteredDomains: ArrayList<Domains>,
-        filteredUsernames: ArrayList<Usernames>,
-        filteredRules: ArrayList<Rules>,
-        filteredFailedDeliveries: ArrayList<FailedDeliveries>
-    ) {
-
-        SearchActivity.FilteredLists.filteredAliases = filteredAliases
-        SearchActivity.FilteredLists.filteredRecipients = filteredRecipients
-        SearchActivity.FilteredLists.filteredDomains = filteredDomains
-        SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
-        SearchActivity.FilteredLists.filteredRules = filteredRules
-        SearchActivity.FilteredLists.filteredFailedDeliveries = filteredFailedDeliveries
-
-        searchBottomDialogFragment.dismissAllowingStateLoss()
-        val intent = Intent(this, SearchActivity::class.java)
-        resultLauncher.launch(intent)
-    }
-
-
-    // When returning from the search activity, load the appropriate screen
-    private var resultLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                // There are no request codes
-                val data: Intent? = result.data
-
-                if (data != null) {
-                    if (data.hasExtra("target")) {
-                        data.extras?.getString("target")?.let { goToTarget(it) }
-                    }
-                }
-
-            }
-        }
-
     // TODO CHECK TABLET, doesnt work from search
     // Also gets called from the startupPage check
     private fun goToTarget(string: String) {
@@ -1178,7 +1198,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-
     private fun updateKey(apiKey: String) {
         val encryptedSettingsManager = SettingsManager(true, this)
         encryptedSettingsManager.putSettingsString(PREFS.API_KEY, apiKey)
@@ -1208,28 +1227,5 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
 
 
-    }
-
-    override fun onClickSave(baseUrl: String, apiKey: String) {
-        addApiBottomDialogFragment.dismissAllowingStateLoss()
-        updateKey(apiKey)
-
-        // Send the new configuration to all the connected Wear devices
-        try {
-            Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
-                for (node in nodes) {
-                    val configuration = Gson().toJson(WearOSHelper(this).createWearOSConfiguration())
-                    Wearable.getMessageClient(this).sendMessage(
-                        node.id,
-                        "/setup",
-                        configuration.toByteArray()
-                    )
-                }
-
-            }
-        } catch (ex: Exception) {
-            // WearAPI not available, not sending anything to nodes
-            LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "MainActivity;onClickSave", null)
-        }
     }
 }

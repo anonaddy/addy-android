@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -30,15 +31,13 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.UserResource
 import host.stjin.anonaddy_shared.models.UserResourceExtended
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.UnsupportedBottomDialogListener {
-
-
     lateinit var networkHelper: NetworkHelper
 
     private val unsupportedBottomDialogFragment: UnsupportedBottomDialogFragment =
+
         UnsupportedBottomDialogFragment.newInstance()
 
     // True if there is UI stuff to be done, this var is used for Android 12 devices to keep showing the splashscreen until the app is done loading
@@ -135,17 +134,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
 
     }
 
-    private fun migrateFromAnonAddyToAddyIo() {
-
-        val encryptedSettingsManager = SettingsManager(true, this)
-
-        val baseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
-        if (baseUrl == "https://app.anonaddy.com") {
-            // Change baseUrl to app.addy.io
-            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, API_BASE_URL)
-        }
-    }
-
     fun playAnimation(playOnLoop: Boolean, animationDrawable: Int, callback: (() -> Unit)? = null) {
         val animated = this.let { AnimatedVectorDrawableCompat.create(it, animationDrawable) }
         if (playOnLoop || callback != null) {
@@ -159,6 +147,33 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         }
         binding.activitySplashAnimatedLogo.setImageDrawable(animated)
         animated?.start()
+    }
+
+    override fun onClickHowToUpdate() {
+        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
+        val url = "https://github.com/anonaddy/anonaddy/blob/master/SELF-HOSTING.md#updating"
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = url.toUri()
+        startActivity(i)
+        finish()
+    }
+
+    override fun onClickIgnore() {
+        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
+        lifecycleScope.launch {
+            loadUserResourceIntoMemory()
+        }
+    }
+
+    private fun migrateFromAnonAddyToAddyIo() {
+
+        val encryptedSettingsManager = SettingsManager(true, this)
+
+        val baseUrl = encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.BASE_URL)
+        if (baseUrl == "https://app.anonaddy.com") {
+            // Change baseUrl to app.addy.io
+            encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, API_BASE_URL)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -225,7 +240,6 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
         }
         return false
     }
-
 
     private suspend fun loadUserResourceIntoMemory() {
         networkHelper.getUserResource { user: UserResource?, error: String? ->
@@ -294,21 +308,4 @@ class SplashActivity : BaseActivity(), UnsupportedBottomDialogFragment.Unsupport
             }
         ).show()
     }
-
-    override fun onClickHowToUpdate() {
-        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
-        val url = "https://github.com/anonaddy/anonaddy/blob/master/SELF-HOSTING.md#updating"
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = url.toUri()
-        startActivity(i)
-        finish()
-    }
-
-    override fun onClickIgnore() {
-        unsupportedBottomDialogFragment.dismissAllowingStateLoss()
-        lifecycleScope.launch {
-            loadUserResourceIntoMemory()
-        }
-    }
-
 }

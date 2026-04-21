@@ -12,11 +12,12 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
+
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesWebintentResolutionBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesWebintentResolutionBinding.inflate(layoutInflater)
@@ -38,6 +39,22 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
         setOnSwitchListeners()
     }
 
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.getSwitchChecked())
+            }
+        })
+    }
+
     private fun loadSettings() {
         binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setSwitchChecked(
             WebIntentManager(this).isCurrentDomainAssociated()
@@ -55,22 +72,4 @@ class AppSettingsFeaturesWebIntentResolutionActivity : BaseActivity() {
             }
         })
     }
-
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesWebintentResolutionSectionWebintentResolutionSheet.getSwitchChecked())
-            }
-        })
-    }
-
 }

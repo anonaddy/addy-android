@@ -31,13 +31,46 @@ import kotlin.random.Random
 
 class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener,
     BackupPasswordBottomDialogFragment.AddBackupPasswordBottomDialogListener {
-
     private val addApiBottomDialogFragment: AddApiBottomDialogFragment =
+
         AddApiBottomDialogFragment.newInstance()
 
     private lateinit var binding: ActivitySetupBinding
+
     lateinit var mainHandler: Handler
+
     private var tapCount = 0
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private var notificationPermissionsResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+    }
+
+    private val updateBackground = object : Runnable {
+        override fun run() {
+            binding.activitySetupApiTextview.text = getDummyAPIKey()
+            mainHandler.postDelayed(this, Random.nextLong(300, 1500))
+        }
+    }
+
+    private var resultLauncher: ActivityResultLauncher<Intent> =
+
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                // There are no request codes
+                val data: Intent? = result.data
+                data?.data?.let {
+                    val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
+                        BackupPasswordBottomDialogFragment.newInstance(it)
+
+                    if (!backupPasswordBottomDialogFragment.isAdded) {
+                        backupPasswordBottomDialogFragment.show(
+                            supportFragmentManager,
+                            "backupPasswordBottomDialogFragment"
+                        )
+                    }
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,18 +112,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private var notificationPermissionsResultLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-    }
-
-    private fun requestNotificationPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
-                notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-    }
-
     override fun onPause() {
         super.onPause()
         mainHandler.removeCallbacks(updateBackground)
@@ -101,10 +122,22 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         mainHandler.post(updateBackground)
     }
 
-    private val updateBackground = object : Runnable {
-        override fun run() {
-            binding.activitySetupApiTextview.text = getDummyAPIKey()
-            mainHandler.postDelayed(this, Random.nextLong(300, 1500))
+    override fun onClickSave(baseUrl: String, apiKey: String) {
+        addApiBottomDialogFragment.dismissAllowingStateLoss()
+        addKey(baseUrl, apiKey)
+    }
+
+    override fun onBackupRestoreCompleted() {
+        val intent = Intent(this, SplashActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun requestNotificationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PermissionChecker.PERMISSION_GRANTED) {
+                notificationPermissionsResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
     }
 
@@ -157,7 +190,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             resultLauncher.launch(intent)
         }
 
-        binding.fragmentSetupLogo.setOnClickListener{
+        binding.fragmentSetupLogo.setOnClickListener {
             tapCount++
 
             // Reset count if it exceeds 10 to avoid overflow
@@ -168,7 +201,7 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
             binding.fragmentSetupLogo.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
 
             if (tapCount == 10) {
-                if (!SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)){
+                if (!SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.STORE_LOGS)) {
                     Toast.makeText(this, this.resources.getString(R.string.logs_enabled), Toast.LENGTH_SHORT).show()
                     SettingsManager(false, this).putSettingsBool(SettingsManager.PREFS.STORE_LOGS, true)
                 }
@@ -180,26 +213,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
                 startActivity(intent)
                 // Reset the counter after launching the activity
                 tapCount = 0
-            }
-        }
-    }
-
-
-    private var resultLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                // There are no request codes
-                val data: Intent? = result.data
-                data?.data?.let {
-                    val backupPasswordBottomDialogFragment: BackupPasswordBottomDialogFragment =
-                        BackupPasswordBottomDialogFragment.newInstance(it)
-
-                    if (!backupPasswordBottomDialogFragment.isAdded) {
-                        backupPasswordBottomDialogFragment.show(
-                            supportFragmentManager,
-                        "backupPasswordBottomDialogFragment"
-                    )
-                }
             }
         }
     }
@@ -267,18 +280,6 @@ class SetupActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDia
         val encryptedSettingsManager = SettingsManager(true, this)
         encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.API_KEY, apiKey)
         encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BASE_URL, baseUrl)
-        val intent = Intent(this, SplashActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-
-    override fun onClickSave(baseUrl: String, apiKey: String) {
-        addApiBottomDialogFragment.dismissAllowingStateLoss()
-        addKey(baseUrl, apiKey)
-    }
-
-    override fun onBackupRestoreCompleted() {
         val intent = Intent(this, SplashActivity::class.java)
         startActivity(intent)
         finish()

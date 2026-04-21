@@ -24,26 +24,16 @@ class EditDomainRecipientBottomDialogFragment(
 ) :
     BaseBottomSheetDialogFragment(),
     View.OnClickListener {
-
-
     private lateinit var listener: AddEditDomainRecipientBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddEditDomainRecipientBottomDialogListener {
-        fun recipientEdited(domain: Domains)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetEditRecipientDomainBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(null, null)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,6 +60,27 @@ class EditDomainRecipientBottomDialogFragment(
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_editrecipient_save_button) {
+                editRecipient(
+                    requireContext()
+                )
+            }
+        }
+    }
+
     private suspend fun getAllRecipients(context: Context) {
         val networkHelper = NetworkHelper(context)
 
@@ -91,19 +102,6 @@ class EditDomainRecipientBottomDialogFragment(
             }
 
         }, true)
-    }
-
-
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(null, null)
-
-    companion object {
-        fun newInstance(
-            id: String,
-            recipient: String?
-        ): EditDomainRecipientBottomDialogFragment {
-            return EditDomainRecipientBottomDialogFragment(id, recipient)
-        }
     }
 
     private fun editRecipient(context: Context) {
@@ -142,18 +140,17 @@ class EditDomainRecipientBottomDialogFragment(
         }, aliasId, recipient)
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_editrecipient_save_button) {
-                editRecipient(
-                    requireContext()
-                )
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddEditDomainRecipientBottomDialogListener {
+        fun recipientEdited(domain: Domains)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(
+            id: String,
+            recipient: String?
+        ): EditDomainRecipientBottomDialogFragment {
+            return EditDomainRecipientBottomDialogFragment(id, recipient)
+        }
     }
 }

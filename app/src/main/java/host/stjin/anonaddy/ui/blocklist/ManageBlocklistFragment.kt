@@ -9,46 +9,45 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import host.stjin.anonaddy.R
+import host.stjin.anonaddy.adapter.BlocklistAdapter
+import host.stjin.anonaddy.databinding.FragmentManageBlocklistBinding
 import host.stjin.anonaddy.ui.MainActivity
 import host.stjin.anonaddy.utils.InsetUtil
 import host.stjin.anonaddy.utils.MarginItemDecoration
+import host.stjin.anonaddy.utils.MaterialDialogHelper
 import host.stjin.anonaddy.utils.ScreenSizeUtils
 import host.stjin.anonaddy.utils.SnackbarHelper
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
-import host.stjin.anonaddy_shared.utils.LoggingHelper
-import kotlinx.coroutines.launch
-import com.google.android.material.snackbar.Snackbar
-import host.stjin.anonaddy.adapter.BlocklistAdapter
-import host.stjin.anonaddy.databinding.FragmentManageBlocklistBinding
-import host.stjin.anonaddy.utils.MaterialDialogHelper
-import host.stjin.anonaddy_shared.models.BlocklistEntries
 import host.stjin.anonaddy_shared.models.BlocklistEntriesArray
 import host.stjin.anonaddy_shared.models.NewBlocklistEntry
+import host.stjin.anonaddy_shared.utils.LoggingHelper
+import kotlinx.coroutines.launch
 
 class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragment.AddBlocklistBottomDialogListener {
-
     private var blocklistEntries: BlocklistEntriesArray? = null
+
     private var networkHelper: NetworkHelper? = null
+
     private var encryptedSettingsManager: SettingsManager? = null
+
     private var oneTimeRecyclerViewActions: Boolean = true
 
     private var manageBlocklistAddBottomDialogFragment: ManageBlocklistAddBottomDialogFragment? = null
-
-
-    companion object {
-        fun newInstance() = ManageBlocklistFragment()
-    }
-
 
     private var _binding: FragmentManageBlocklistBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var blocklistAdapter: BlocklistAdapter
+
+    private lateinit var deleteBlocklistSnackbar: Snackbar
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,6 +68,12 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         return root
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val gson = Gson()
+        val json = gson.toJson(blocklistEntries)
+        outState.putString("blocklistEntries", json)
+    }
 
     private fun setOnClickListeners() {
         binding.fragmentBlocklistAddBlocklistEntryButton.setOnClickListener {
@@ -79,32 +84,6 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
             )
         }
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val gson = Gson()
-        val json = gson.toJson(blocklistEntries)
-        outState.putString("blocklistEntries", json)
-    }
-
-
-    private fun setOnNestedScrollViewListener(set: Boolean) {
-        if (set) {
-            binding.fragmentBlocklistNSV.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-                val threshold = 10 // or some small number to account for rounding errors
-                if (scrollY + v.measuredHeight + threshold >= v.getChildAt(0).measuredHeight) {
-                    // Consider this as being at the bottom
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        // Bottom of NSV reached. Time to load more data (if available)
-                        getAllBlocklistEntriesAndSetRecyclerview()
-                    }
-                }
-            })
-        } else {
-            binding.fragmentBlocklistNSV.setOnScrollChangeListener(null as androidx.core.widget.NestedScrollView.OnScrollChangeListener?)
-        }
-    }
-
 
     fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
         // Get the latest data in the background, and update the values when loaded
@@ -128,6 +107,28 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }
     }
 
+    override fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry) {
+        manageBlocklistAddBottomDialogFragment?.dismissAllowingStateLoss()
+        // Get the latest data in the background, and update the values when loaded
+        getDataFromWeb(null)
+    }
+
+    private fun setOnNestedScrollViewListener(set: Boolean) {
+        if (set) {
+            binding.fragmentBlocklistNSV.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+                val threshold = 10 // or some small number to account for rounding errors
+                if (scrollY + v.measuredHeight + threshold >= v.getChildAt(0).measuredHeight) {
+                    // Consider this as being at the bottom
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        // Bottom of NSV reached. Time to load more data (if available)
+                        getAllBlocklistEntriesAndSetRecyclerview()
+                    }
+                }
+            })
+        } else {
+            binding.fragmentBlocklistNSV.setOnScrollChangeListener(null as androidx.core.widget.NestedScrollView.OnScrollChangeListener?)
+        }
+    }
 
     private fun setBlocklistRecyclerView() {
         binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
@@ -145,7 +146,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                 layoutAnimation = animation
 
                 showShimmer()
-                
+
                 binding.fragmentBlocklistChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
                     if (checkedIds.isNotEmpty()) {
                         viewLifecycleOwner.lifecycleScope.launch {
@@ -165,10 +166,9 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }
     }
 
-    private lateinit var blocklistAdapter: BlocklistAdapter
     private suspend fun getAllBlocklistEntriesAndSetRecyclerview(forceReload: Boolean = false) {
 
-        if (getSelectedFilter() == null){
+        if (getSelectedFilter() == null) {
             binding.fragmentBlocklistAllBlocklistTitle.text = getString(R.string.blocklist_entries)
         } else {
             binding.fragmentBlocklistAllBlocklistTitle.text = getString(R.string.blocklist_entries_filtered)
@@ -247,7 +247,6 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }
     }
 
-
     private fun setBlocklistAdapter(list: BlocklistEntriesArray, forceReload: Boolean) {
         binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
             if (blocklistEntries == null || forceReload) {
@@ -312,18 +311,16 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }
     }
 
-    private lateinit var deleteBlocklistSnackbar: Snackbar
-
     private suspend fun deleteBlocklistEntryHttpRequest(id: String, context: Context) {
         networkHelper?.deleteBlocklistEntry({ result ->
             if (result == "204") {
                 deleteBlocklistSnackbar.dismiss()
-                
+
                 val index = blocklistEntries?.data?.indexOfFirst { it.id == id } ?: -1
                 if (index != -1) {
                     blocklistEntries?.data?.removeAt(index)
                     blocklistAdapter.notifyItemRemoved(index)
-                    
+
                     if (blocklistEntries?.data?.isEmpty() == true) {
                         binding.fragmentBlocklistNoBlocklist.visibility = View.VISIBLE
                     }
@@ -358,9 +355,7 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
         }, id)
     }
 
-    override fun onAddedBlocklistEntry(newBlocklistEntry: NewBlocklistEntry) {
-        manageBlocklistAddBottomDialogFragment?.dismissAllowingStateLoss()
-        // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb(null)
+    companion object {
+        fun newInstance() = ManageBlocklistFragment()
     }
 }

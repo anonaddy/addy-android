@@ -16,27 +16,14 @@ import host.stjin.anonaddy.databinding.BottomsheetAddyioInstanceVersionUnsupport
 
 
 class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
     private lateinit var listener: UnsupportedBottomDialogListener
-
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface UnsupportedBottomDialogListener {
-        fun onClickHowToUpdate()
-        fun onClickIgnore()
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetAddyioInstanceVersionUnsupportedBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,15 +55,20 @@ class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         listener.onClickIgnore()
-    }
-
-    companion object {
-        fun newInstance(): UnsupportedBottomDialogFragment {
-            return UnsupportedBottomDialogFragment()
-        }
     }
 
     override fun onClick(p0: View?) {
@@ -89,9 +81,15 @@ class UnsupportedBottomDialogFragment : BaseBottomSheetDialogFragment(), View.On
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    // 1. Defines the listener interface with a method passing back data result.
+    interface UnsupportedBottomDialogListener {
+        fun onClickHowToUpdate()
+        fun onClickIgnore()
     }
 
+    companion object {
+        fun newInstance(): UnsupportedBottomDialogFragment {
+            return UnsupportedBottomDialogFragment()
+        }
+    }
 }

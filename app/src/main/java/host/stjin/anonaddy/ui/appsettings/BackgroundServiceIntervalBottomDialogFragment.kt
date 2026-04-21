@@ -14,27 +14,14 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddBackgroundServiceIntervalBottomDialogListener
-
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddBackgroundServiceIntervalBottomDialogListener {
-        fun setInterval(minutes: Int)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetBackgroundserviceintervalBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,12 +47,15 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
             15 -> {
                 binding.bsBackgroundserviceinterval15.isChecked = true
             }
+
             30 -> {
                 binding.bsBackgroundserviceinterval30.isChecked = true
             }
+
             60 -> {
                 binding.bsBackgroundserviceinterval60.isChecked = true
             }
+
             120 -> {
                 binding.bsBackgroundserviceinterval120.isChecked = true
             }
@@ -74,12 +64,16 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
 
     }
 
-    companion object {
-        fun newInstance(): BackgroundServiceIntervalBottomDialogFragment {
-            return BackgroundServiceIntervalBottomDialogFragment()
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
 
     override fun onClick(p0: View?) {
         if (p0 != null) {
@@ -89,12 +83,15 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
                         binding.bsBackgroundserviceinterval15.isChecked -> {
                             listener.setInterval(15)
                         }
+
                         binding.bsBackgroundserviceinterval30.isChecked -> {
                             listener.setInterval(30)
                         }
+
                         binding.bsBackgroundserviceinterval60.isChecked -> {
                             listener.setInterval(60)
                         }
+
                         binding.bsBackgroundserviceinterval120.isChecked -> {
                             listener.setInterval(120)
                         }
@@ -104,8 +101,14 @@ class BackgroundServiceIntervalBottomDialogFragment : BaseBottomSheetDialogFragm
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddBackgroundServiceIntervalBottomDialogListener {
+        fun setInterval(minutes: Int)
+    }
+
+    companion object {
+        fun newInstance(): BackgroundServiceIntervalBottomDialogFragment {
+            return BackgroundServiceIntervalBottomDialogFragment()
+        }
     }
 }

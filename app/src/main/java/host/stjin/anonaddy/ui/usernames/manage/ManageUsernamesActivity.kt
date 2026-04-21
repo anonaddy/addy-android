@@ -29,21 +29,24 @@ class ManageUsernamesActivity : BaseActivity(),
     EditUsernameFromNameBottomDialogFragment.AddEditUsernameFromNameBottomDialogListener,
     EditUsernameRecipientBottomDialogFragment.AddEditUsernameRecipientBottomDialogListener,
     EditUsernameAutoCreateRegexBottomDialogFragment.AddEditUsernameAutoCreateRegexBottomDialogListener {
-
     lateinit var networkHelper: NetworkHelper
 
     private lateinit var editUsernameDescriptionBottomDialogFragment: EditUsernameDescriptionBottomDialogFragment
+
     private lateinit var editUsernameRecipientBottomDialogFragment: EditUsernameRecipientBottomDialogFragment
+
     private lateinit var editUserNameFromNameBottomDialogFragment: EditUsernameFromNameBottomDialogFragment
+
     private lateinit var editUsernameAutoCreateRegexBottomDialogFragment: EditUsernameAutoCreateRegexBottomDialogFragment
 
-
     private var shouldRefreshOnFinish = false
+
     private var username: Usernames? = null
         set(value) {
             field = value
             value?.let { updateUi(it) }
         }
+
     private var aliasList: AliasesArray? = null
         set(value) {
             field = value
@@ -52,11 +55,11 @@ class ManageUsernamesActivity : BaseActivity(),
 
     private var workingAliasList: AliasesArray? = null
 
-
     private var forceSwitch = false
 
-
     private lateinit var binding: ActivityManageUsernamesBinding
+
+    private lateinit var deleteUsernameSnackbar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,203 +87,6 @@ class ManageUsernamesActivity : BaseActivity(),
 
         setPage(usernameId)
     }
-
-    private fun setRefreshLayout() {
-        binding.activityManageUsernameSwiperefresh.setOnRefreshListener {
-            binding.activityManageUsernameSwiperefresh.isRefreshing = true
-
-            username?.let { setPage(it.id) }
-        }
-    }
-
-    override fun finish() {
-        val resultIntent = Intent()
-        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
-        setResult(RESULT_OK, resultIntent)
-        super.finish()
-    }
-
-    private fun setPage(usernameId: String) {
-        // Get the username
-        lifecycleScope.launch {
-            getUsernameInfo(usernameId)
-        }
-    }
-
-    private fun setOnSwitchChangeListeners() {
-        binding.activityManageUsernameActiveSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-                if (compoundButton.isPressed || forceSwitch) {
-                    binding.activityManageUsernameActiveSwitchLayout.showProgressBar(true)
-                    forceSwitch = false
-                    if (checked) {
-                        lifecycleScope.launch {
-                            activateUsername()
-                        }
-                    } else {
-                        lifecycleScope.launch {
-                            deactivateUsername()
-                        }
-                    }
-                }
-            }
-        })
-
-        binding.activityManageUsernameCatchAllSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-                if (compoundButton.isPressed || forceSwitch) {
-                    binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(true)
-                    forceSwitch = false
-                    if (checked) {
-                        lifecycleScope.launch {
-                            enableCatchAll()
-                        }
-                    } else {
-                        lifecycleScope.launch {
-                            disableCatchAll()
-                        }
-                    }
-                }
-            }
-        })
-
-        binding.activityManageUsernameCanLoginSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
-            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
-                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
-                if (compoundButton.isPressed || forceSwitch) {
-                    binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(true)
-                    forceSwitch = false
-                    if (checked) {
-                        lifecycleScope.launch {
-                            enableCanLogin()
-                        }
-                    } else {
-                        lifecycleScope.launch {
-                            disableCanLogin()
-                        }
-                    }
-                }
-            }
-        })
-    }
-
-
-    private suspend fun disableCanLogin() {
-        networkHelper.disableCanLoginSpecificUsername({ result ->
-            binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(false)
-            if (result == "204") {
-                this.username!!.can_login = false
-                shouldRefreshOnFinish = true
-                updateUi(this.username!!)
-            } else {
-                binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(true)
-                SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.error_edit_can_login) + "\n" + result,
-                    binding.activityManageUsernameCL,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
-            }
-        }, this.username!!.id)
-    }
-
-
-    private suspend fun enableCanLogin() {
-        networkHelper.enableCanLoginSpecificUsername({ username, error ->
-            binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(false)
-            if (username != null) {
-                this.username = username
-                shouldRefreshOnFinish = true
-            } else {
-                binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(false)
-                SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.error_edit_can_login) + "\n" + error,
-                    binding.activityManageUsernameCL,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
-            }
-        }, this.username!!.id)
-    }
-
-    private suspend fun disableCatchAll() {
-        networkHelper.disableCatchAllSpecificUsername({ result ->
-            binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
-            if (result == "204") {
-                this.username!!.catch_all = false
-                shouldRefreshOnFinish = true
-                updateUi(this.username!!)
-            } else {
-                binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(true)
-                SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
-                    binding.activityManageUsernameCL,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
-            }
-        }, this.username!!.id)
-    }
-
-
-    private suspend fun enableCatchAll() {
-        networkHelper.enableCatchAllSpecificUsername({ username, error ->
-            binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
-            if (username != null) {
-                this.username = username
-                shouldRefreshOnFinish = true
-            } else {
-                binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(false)
-                SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + error,
-                    binding.activityManageUsernameCL,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
-            }
-        }, this.username!!.id)
-    }
-
-    private suspend fun deactivateUsername() {
-        networkHelper.deactivateSpecificUsername({ result ->
-            binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
-            if (result == "204") {
-                this.username!!.active = false
-                shouldRefreshOnFinish = true
-                updateUi(this.username!!)
-            } else {
-                binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(true)
-                SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
-                    binding.activityManageUsernameCL,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
-            }
-        }, this.username!!.id)
-    }
-
-
-    private suspend fun activateUsername() {
-        networkHelper.activateSpecificUsername({ username, error ->
-            binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
-            if (username != null) {
-                this.username = username
-                shouldRefreshOnFinish = true
-            } else {
-                binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(false)
-                SnackbarHelper.createSnackbar(
-                    this,
-                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
-                    binding.activityManageUsernameCL,
-                    LoggingHelper.LOGFILES.DEFAULT
-                ).show()
-            }
-        }, this.username!!.id)
-    }
-
 
     private fun setOnClickListeners() {
         binding.activityManageUsernameActiveSwitchLayout.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
@@ -356,8 +162,226 @@ class ManageUsernamesActivity : BaseActivity(),
         })
     }
 
+    override fun finish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
+        setResult(RESULT_OK, resultIntent)
+        super.finish()
+    }
 
-    private lateinit var deleteUsernameSnackbar: Snackbar
+    override fun descriptionEdited(username: Usernames) {
+        editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editUsernameDescriptionBottomDialogFragment
+        this.username = username
+    }
+
+    override fun recipientEdited(username: Usernames) {
+        editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editUsernameRecipientBottomDialogFragment
+        this.username = username
+    }
+
+    override fun fromNameEdited(username: Usernames) {
+        editUserNameFromNameBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editUserNameFromNameBottomDialogFragment
+        this.username = username
+    }
+
+    override fun autoCreateRegexEdited(username: Usernames) {
+        editUsernameAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init editUsernameAutoCreateRegexBottomDialogFragment
+        this.username = username
+    }
+
+    private fun setRefreshLayout() {
+        binding.activityManageUsernameSwiperefresh.setOnRefreshListener {
+            binding.activityManageUsernameSwiperefresh.isRefreshing = true
+
+            username?.let { setPage(it.id) }
+        }
+    }
+
+    private fun setPage(usernameId: String) {
+        // Get the username
+        lifecycleScope.launch {
+            getUsernameInfo(usernameId)
+        }
+    }
+
+    private fun setOnSwitchChangeListeners() {
+        binding.activityManageUsernameActiveSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageUsernameActiveSwitchLayout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            activateUsername()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            deactivateUsername()
+                        }
+                    }
+                }
+            }
+        })
+
+        binding.activityManageUsernameCatchAllSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableCatchAll()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableCatchAll()
+                        }
+                    }
+                }
+            }
+        })
+
+        binding.activityManageUsernameCanLoginSwitchLayout.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+            override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
+                // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
+                if (compoundButton.isPressed || forceSwitch) {
+                    binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(true)
+                    forceSwitch = false
+                    if (checked) {
+                        lifecycleScope.launch {
+                            enableCanLogin()
+                        }
+                    } else {
+                        lifecycleScope.launch {
+                            disableCanLogin()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private suspend fun disableCanLogin() {
+        networkHelper.disableCanLoginSpecificUsername({ result ->
+            binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(false)
+            if (result == "204") {
+                this.username!!.can_login = false
+                shouldRefreshOnFinish = true
+                updateUi(this.username!!)
+            } else {
+                binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_can_login) + "\n" + result,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
+    }
+
+    private suspend fun enableCanLogin() {
+        networkHelper.enableCanLoginSpecificUsername({ username, error ->
+            binding.activityManageUsernameCanLoginSwitchLayout.showProgressBar(false)
+            if (username != null) {
+                this.username = username
+                shouldRefreshOnFinish = true
+            } else {
+                binding.activityManageUsernameCanLoginSwitchLayout.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_can_login) + "\n" + error,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
+    }
+
+    private suspend fun disableCatchAll() {
+        networkHelper.disableCatchAllSpecificUsername({ result ->
+            binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
+            if (result == "204") {
+                this.username!!.catch_all = false
+                shouldRefreshOnFinish = true
+                updateUi(this.username!!)
+            } else {
+                binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + result,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
+    }
+
+    private suspend fun enableCatchAll() {
+        networkHelper.enableCatchAllSpecificUsername({ username, error ->
+            binding.activityManageUsernameCatchAllSwitchLayout.showProgressBar(false)
+            if (username != null) {
+                this.username = username
+                shouldRefreshOnFinish = true
+            } else {
+                binding.activityManageUsernameCatchAllSwitchLayout.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_catch_all) + "\n" + error,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
+    }
+
+    private suspend fun deactivateUsername() {
+        networkHelper.deactivateSpecificUsername({ result ->
+            binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
+            if (result == "204") {
+                this.username!!.active = false
+                shouldRefreshOnFinish = true
+                updateUi(this.username!!)
+            } else {
+                binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(true)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + result,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
+    }
+
+    private suspend fun activateUsername() {
+        networkHelper.activateSpecificUsername({ username, error ->
+            binding.activityManageUsernameActiveSwitchLayout.showProgressBar(false)
+            if (username != null) {
+                this.username = username
+                shouldRefreshOnFinish = true
+            } else {
+                binding.activityManageUsernameActiveSwitchLayout.setSwitchChecked(false)
+                SnackbarHelper.createSnackbar(
+                    this,
+                    this.resources.getString(R.string.error_edit_active) + "\n" + error,
+                    binding.activityManageUsernameCL,
+                    LoggingHelper.LOGFILES.DEFAULT
+                ).show()
+            }
+        }, this.username!!.id)
+    }
+
     private fun deleteUsername(id: String) {
         MaterialDialogHelper.showMaterialDialog(
             context = this,
@@ -381,7 +405,6 @@ class ManageUsernamesActivity : BaseActivity(),
         ).show()
     }
 
-
     private suspend fun deleteUsernameHttpRequest(id: String, context: Context) {
         networkHelper.deleteUsername({ result ->
             if (result == "204") {
@@ -401,7 +424,6 @@ class ManageUsernamesActivity : BaseActivity(),
             }
         }, id)
     }
-
 
     private suspend fun getUsernameInfo(id: String) {
         networkHelper.getSpecificUsername({ username, error ->
@@ -607,38 +629,6 @@ class ManageUsernamesActivity : BaseActivity(),
         setOnSwitchChangeListeners()
         setOnClickListeners()
     }
-
-
-    override fun descriptionEdited(username: Usernames) {
-        editUsernameDescriptionBottomDialogFragment.dismissAllowingStateLoss()
-
-        // Do this last, will trigger updateUI as well as re-init editUsernameDescriptionBottomDialogFragment
-        this.username = username
-    }
-
-    override fun recipientEdited(username: Usernames) {
-        editUsernameRecipientBottomDialogFragment.dismissAllowingStateLoss()
-
-        // Do this last, will trigger updateUI as well as re-init editUsernameRecipientBottomDialogFragment
-        this.username = username
-    }
-
-    override fun fromNameEdited(username: Usernames) {
-        editUserNameFromNameBottomDialogFragment.dismissAllowingStateLoss()
-
-        // Do this last, will trigger updateUI as well as re-init editUserNameFromNameBottomDialogFragment
-        this.username = username
-    }
-
-
-
-    override fun autoCreateRegexEdited(username: Usernames) {
-        editUsernameAutoCreateRegexBottomDialogFragment.dismissAllowingStateLoss()
-
-        // Do this last, will trigger updateUI as well as re-init editUsernameAutoCreateRegexBottomDialogFragment
-        this.username = username
-    }
-
 
     private suspend fun getAliasesAndAddThemToList(username: Usernames) {
         binding.activityManageUsernameAliasesShimmerframelayout.startShimmer()

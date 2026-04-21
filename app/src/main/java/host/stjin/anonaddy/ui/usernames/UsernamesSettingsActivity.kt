@@ -6,8 +6,8 @@ import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.ActivityUsernameSettingsBinding
 
 class UsernamesSettingsActivity : BaseActivity() {
-
     private lateinit var binding: ActivityUsernameSettingsBinding
+
     private val usernamesSettingsFragment = UsernamesSettingsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,5 +43,4 @@ class UsernamesSettingsActivity : BaseActivity() {
             }
         }
     }
-
 }

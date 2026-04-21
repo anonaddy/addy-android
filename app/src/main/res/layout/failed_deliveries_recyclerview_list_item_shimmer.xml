@@ -38,20 +38,20 @@
                     android:gravity="center_vertical"
                     android:layout_marginBottom="2dp">
 
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:background="?colorSurfaceVariant"
-                    android:layout_marginEnd="6dp"
-                    android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textAllCaps="false"
-                    android:textColor="@color/BlackWhite"
-                    android:textSize="16sp"
-                    tools:ignore="HardcodedText" />
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:background="?colorSurfaceVariant"
+                        android:layout_marginEnd="6dp"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-medium"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textAllCaps="false"
+                        android:textColor="@color/BlackWhite"
+                        android:textSize="16sp"
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/manage_blocklist_recyclerview_list_type"

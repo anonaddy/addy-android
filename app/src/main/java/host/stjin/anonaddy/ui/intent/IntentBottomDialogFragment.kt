@@ -13,14 +13,28 @@ import host.stjin.anonaddy.databinding.BottomsheetIntentBinding
 
 
 class IntentBottomDialogFragment : BaseBottomSheetDialogFragment() {
-
-
     private lateinit var listener: IntentBottomDialogListener
 
+    private var _binding: BottomsheetIntentBinding? = null
 
-    // 1. Defines the listener interface with a method passing back data result.
-    interface IntentBottomDialogListener {
-        fun onClose()
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = BottomsheetIntentBinding.inflate(inflater, container, false)
+        val root = binding.root
+
+        listener = activity as IntentBottomDialogListener
+
+        return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onCancel(dialog: DialogInterface) {
@@ -40,24 +54,9 @@ class IntentBottomDialogFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private var _binding: BottomsheetIntentBinding? = null
-    private val binding get() = _binding!!
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = BottomsheetIntentBinding.inflate(inflater, container, false)
-        val root = binding.root
-
-        listener = activity as IntentBottomDialogListener
-
-        return root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    // 1. Defines the listener interface with a method passing back data result.
+    interface IntentBottomDialogListener {
+        fun onClose()
     }
 
     companion object {

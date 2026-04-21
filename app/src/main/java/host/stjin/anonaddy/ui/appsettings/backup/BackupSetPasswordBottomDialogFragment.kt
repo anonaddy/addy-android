@@ -17,26 +17,14 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddBackupPasswordBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddBackupPasswordBottomDialogListener {
-        fun onSaved()
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetSetBackupPasswordBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,10 +48,22 @@ class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), V
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    companion object {
-        fun newInstance(): BackupSetPasswordBottomDialogFragment {
-            return BackupSetPasswordBottomDialogFragment()
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_backup_password_save_password_button) {
+                setBackupPassword(requireContext())
+            }
         }
     }
 
@@ -79,16 +79,14 @@ class BackupSetPasswordBottomDialogFragment : BaseBottomSheetDialogFragment(), V
         listener.onSaved()
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_backup_password_save_password_button) {
-                setBackupPassword(requireContext())
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddBackupPasswordBottomDialogListener {
+        fun onSaved()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(): BackupSetPasswordBottomDialogFragment {
+            return BackupSetPasswordBottomDialogFragment()
+        }
     }
 }

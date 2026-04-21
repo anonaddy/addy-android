@@ -9,10 +9,10 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
 
     private lateinit var binding: ActivityAppSettingsFeaturesWatchAliasBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesWatchAliasBinding.inflate(layoutInflater)
@@ -33,21 +33,17 @@ class AppSettingsFeaturesWatchAliasActivity : BaseActivity() {
         setOnClickListeners()
     }
 
-    private fun loadSettings() {
-        // Nothing to load
-    }
-
-
     // If the user comes back from eg. settings re-check + enable biometricswitch
     override fun onResume() {
         super.onResume()
         loadSettings()
     }
 
-
     private fun setOnClickListeners() {
         // Nothing to click
     }
 
-
+    private fun loadSettings() {
+        // Nothing to load
+    }
 }

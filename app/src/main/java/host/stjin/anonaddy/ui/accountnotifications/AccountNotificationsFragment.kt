@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,28 +25,26 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.models.AccountNotifications
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
 
 class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBottomDialogFragment.AddAccountNotificationsBottomDialogListener {
-
     private var accountNotifications: ArrayList<AccountNotifications>? = null
+
     private var networkHelper: NetworkHelper? = null
+
     private var encryptedSettingsManager: SettingsManager? = null
+
     private var oneTimeRecyclerViewActions: Boolean = true
 
     private var accountNotificationsDetailsBottomDialogFragment: AccountNotificationsDetailsBottomDialogFragment? = null
-
-
-    companion object {
-        fun newInstance() = AccountNotificationsFragment()
-    }
-
 
     private var _binding: FragmentAccountNotificationsBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var accountNotificationsAdapter: AccountNotificationsAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,14 +63,12 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
         return root
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val gson = Gson()
         val json = gson.toJson(accountNotifications)
         outState.putString("accountNotifications", json)
     }
-
 
     fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
         // Get the latest data in the background, and update the values when loaded
@@ -97,6 +94,15 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
         }
     }
 
+    override fun onOpenUrl(url: String?) {
+        if (url != null) {
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = url.toUri()
+            startActivity(i)
+        }
+
+        accountNotificationsDetailsBottomDialogFragment?.dismissAllowingStateLoss()
+    }
 
     private fun setAccountNotificationsRecyclerView() {
         binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview.apply {
@@ -118,7 +124,6 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
         }
     }
 
-    private lateinit var accountNotificationsAdapter: AccountNotificationsAdapter
     private suspend fun getAllAccountNotificationsAndSetRecyclerview() {
         binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview.apply {
             networkHelper?.getAllAccountNotifications { list, error ->
@@ -134,26 +139,25 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
                 if (list != null) {
                     setAccountNotificationsAdapter(list)
                 } else {
-                        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.something_went_wrong_retrieving_account_notifications) + "\n" + error,
-                                (activity as MainActivity).findViewById(R.id.main_container),
-                                LoggingHelper.LOGFILES.DEFAULT
-                            ).show()
-                        } else {
-                            SnackbarHelper.createSnackbar(
-                                requireContext(),
-                                requireContext().resources.getString(R.string.something_went_wrong_retrieving_account_notifications) + "\n" + error,
-                                (activity as AccountNotificationsActivity).findViewById(R.id.activity_account_notifications_settings_CL),
-                                LoggingHelper.LOGFILES.DEFAULT
-                            ).show()
-                        }
+                    if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.something_went_wrong_retrieving_account_notifications) + "\n" + error,
+                            (activity as MainActivity).findViewById(R.id.main_container),
+                            LoggingHelper.LOGFILES.DEFAULT
+                        ).show()
+                    } else {
+                        SnackbarHelper.createSnackbar(
+                            requireContext(),
+                            requireContext().resources.getString(R.string.something_went_wrong_retrieving_account_notifications) + "\n" + error,
+                            (activity as AccountNotificationsActivity).findViewById(R.id.activity_account_notifications_settings_CL),
+                            LoggingHelper.LOGFILES.DEFAULT
+                        ).show()
+                    }
 
-                        // Show error animations
-                        binding.fragmentAccountNotificationsLL1.visibility = View.GONE
-                        binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
-
+                    // Show error animations
+                    binding.fragmentAccountNotificationsLL1.visibility = View.GONE
+                    binding.animationFragment.playAnimation(false, R.drawable.ic_loading_logo_error)
 
 
                 }
@@ -173,7 +177,6 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
             )
         }
     }
-
 
     private fun setAccountNotificationsAdapter(list: ArrayList<AccountNotifications>) {
         binding.fragmentAccountNotificationsAllAccountNotificationsRecyclerview.apply {
@@ -215,14 +218,7 @@ class AccountNotificationsFragment : Fragment(), AccountNotificationsDetailsBott
         }
     }
 
-
-    override fun onOpenUrl(url: String?) {
-        if (url != null) {
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = url.toUri()
-            startActivity(i)
-        }
-
-        accountNotificationsDetailsBottomDialogFragment?.dismissAllowingStateLoss()
+    companion object {
+        fun newInstance() = AccountNotificationsFragment()
     }
 }

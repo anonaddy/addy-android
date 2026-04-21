@@ -20,34 +20,30 @@ import host.stjin.anonaddy_shared.models.AliasSortFilter
 class FilterOptionsAliasBottomDialogFragment(
     private val aliasSortFilter: AliasSortFilter
 ) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
     private lateinit var listener: AddFilterOptionsAliasBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddFilterOptionsAliasBottomDialogListener {
-        fun setFilterAndSortingSettings(
-            aliasSortFilter: AliasSortFilter
-        )
-
-        fun onDismiss()
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        listener.onDismiss()
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetFilterOptionsAliasBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
+    constructor() : this(
+        AliasSortFilter(
+            onlyActiveAliases = false,
+            onlyDeletedAliases = false,
+            onlyInactiveAliases = false,
+            onlyWatchedAliases = false,
+            onlyPinnedAliases = false,
+            sort = null,
+            sortDesc = false,
+            filter = null
+        )
+    ) {
+        loadFilter()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,6 +64,36 @@ class FilterOptionsAliasBottomDialogFragment(
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        disableWatchedOption()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        listener.onDismiss()
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            when (p0.id) {
+                R.id.bs_filteroptions_aliases_save_button -> {
+                    listener.setFilterAndSortingSettings(aliasSortFilter)
+                }
+            }
+        }
+    }
 
     private fun loadFilter() {
         disableOptionsWhenWatched()
@@ -77,7 +103,7 @@ class FilterOptionsAliasBottomDialogFragment(
         binding.bsFilteroptionsAliasesInactiveButton.isChecked = aliasSortFilter.onlyInactiveAliases
         binding.bsFilteroptionsAliasesDeletedButton.isChecked = aliasSortFilter.onlyDeletedAliases
         binding.bsFilteroptionsAliasesAllButton.isChecked =
-            !aliasSortFilter.onlyActiveAliases && !aliasSortFilter.onlyInactiveAliases && !aliasSortFilter.onlyDeletedAliases&& !aliasSortFilter.onlyPinnedAliases
+            !aliasSortFilter.onlyActiveAliases && !aliasSortFilter.onlyInactiveAliases && !aliasSortFilter.onlyDeletedAliases && !aliasSortFilter.onlyPinnedAliases
 
         binding.bsFilteroptionsAliasesWatchedOnlyButton.isChecked = aliasSortFilter.onlyWatchedAliases
         binding.bsFilteroptionsAliasesWatchedOnlyAllAliasesButton.isChecked = !aliasSortFilter.onlyWatchedAliases
@@ -168,7 +194,6 @@ class FilterOptionsAliasBottomDialogFragment(
         }
     }
 
-
     private fun setOnFilterListeners() {
         binding.bsFilteroptionsAliasesClearFilter.setOnClickListener {
             aliasSortFilter.onlyActiveAliases = false
@@ -233,38 +258,6 @@ class FilterOptionsAliasBottomDialogFragment(
         }
     }
 
-    // Have an empty constructor the prevent the "could not find Fragment constructor when changing theme or rotating when the dialog is open"
-    constructor() : this(
-        AliasSortFilter(
-            onlyActiveAliases = false,
-            onlyDeletedAliases = false,
-            onlyInactiveAliases = false,
-            onlyWatchedAliases = false,
-            onlyPinnedAliases = false,
-            sort = null,
-            sortDesc = false,
-            filter = null
-        )
-    ) {
-        loadFilter()
-    }
-
-    companion object {
-        fun newInstance(
-            aliasSortFilter: AliasSortFilter
-        ): FilterOptionsAliasBottomDialogFragment {
-            return FilterOptionsAliasBottomDialogFragment(
-                aliasSortFilter
-            )
-        }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        disableWatchedOption()
-    }
-
     private fun disableOptionsWhenWatched() {
         binding.bsFilteroptionsAliasesMbtg.isEnabled = !aliasSortFilter.onlyWatchedAliases
         binding.bsFilteroptionsAliasesSortingChipgroup.children.forEach { it.isEnabled = !aliasSortFilter.onlyWatchedAliases }
@@ -277,19 +270,22 @@ class FilterOptionsAliasBottomDialogFragment(
         binding.bsFilteroptionsAliasesWatchedMbtg.isEnabled = aliasesToWatch.isNotEmpty()
     }
 
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddFilterOptionsAliasBottomDialogListener {
+        fun setFilterAndSortingSettings(
+            aliasSortFilter: AliasSortFilter
+        )
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            when (p0.id) {
-                R.id.bs_filteroptions_aliases_save_button -> {
-                    listener.setFilterAndSortingSettings(aliasSortFilter)
-                }
-            }
-        }
+        fun onDismiss()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(
+            aliasSortFilter: AliasSortFilter
+        ): FilterOptionsAliasBottomDialogFragment {
+            return FilterOptionsAliasBottomDialogFragment(
+                aliasSortFilter
+            )
+        }
     }
 }

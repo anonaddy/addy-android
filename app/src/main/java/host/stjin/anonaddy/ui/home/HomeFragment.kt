@@ -37,13 +37,14 @@ class HomeFragment : Fragment(), Refreshable {
     // 1. Properties
     private var networkHelper: NetworkHelper? = null
     private var _binding: FragmentHomeBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    
+
     private val mScrollUpBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.smoothScrollTo(0,0) }
+            binding.homeStatisticsNSV.post { binding.homeStatisticsNSV.smoothScrollTo(0, 0) }
         }
     }
 
@@ -104,7 +105,8 @@ class HomeFragment : Fragment(), Refreshable {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
+                        val aliasFragment: AliasFragment =
+                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = false,
@@ -134,7 +136,8 @@ class HomeFragment : Fragment(), Refreshable {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
+                        val aliasFragment: AliasFragment =
+                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = true,
@@ -164,7 +167,8 @@ class HomeFragment : Fragment(), Refreshable {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
+                        val aliasFragment: AliasFragment =
+                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = false,
@@ -195,7 +199,8 @@ class HomeFragment : Fragment(), Refreshable {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
+                        val aliasFragment: AliasFragment =
+                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = false,
@@ -225,7 +230,8 @@ class HomeFragment : Fragment(), Refreshable {
                     neutralButtonText = requireContext().resources.getString(R.string.cancel),
                     positiveButtonText = requireContext().resources.getString(R.string.apply_filter),
                     positiveButtonAction = {
-                        val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
+                        val aliasFragment: AliasFragment =
+                            ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                         aliasFragment.setFilterAndSortingSettings(
                             AliasSortFilter(
                                 onlyActiveAliases = false,
@@ -258,7 +264,8 @@ class HomeFragment : Fragment(), Refreshable {
                         val aliasWatcher = AliasWatcher(requireContext())
                         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
                         if (aliasesToWatch.isNotEmpty()) {
-                            val aliasFragment: AliasFragment = ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
+                            val aliasFragment: AliasFragment =
+                                ((activity as MainActivity).viewPager.adapter as MainViewpagerAdapter).getFragmentByTag("AliasFragment") as AliasFragment
                             aliasFragment.setFilterAndSortingSettings(
                                 AliasSortFilter(
                                     onlyActiveAliases = false,
@@ -397,7 +404,6 @@ class HomeFragment : Fragment(), Refreshable {
         binding.homeStatCardTotalRecipients.setDescription((activity?.application as AddyIoApp).userResource.recipient_count.toString())
 
 
-
         val aliasWatcher = AliasWatcher(requireContext())
         val aliasesToWatch = aliasWatcher.getAliasesToWatch().toList()
         binding.homeStatWatchedAliases.setDescription(aliasesToWatch.size.toString())
@@ -422,7 +428,12 @@ class HomeFragment : Fragment(), Refreshable {
             }
         } catch (e: IllegalStateException) {
             // Log the error if the lifecycle state was somehow invalid despite the check.
-            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "HomeFragment", null)
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "HomeFragment",
+                null
+            )
         }
     }
 

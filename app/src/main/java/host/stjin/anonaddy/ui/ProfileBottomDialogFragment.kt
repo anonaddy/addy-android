@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -19,6 +20,7 @@ import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.databinding.BottomsheetProfileBinding
 import host.stjin.anonaddy.ui.appsettings.AppSettingsActivity
+import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
 import host.stjin.anonaddy.ui.domains.DomainSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
@@ -28,27 +30,21 @@ import host.stjin.anonaddy_shared.AddyIo
 import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import java.util.Locale
-import androidx.core.net.toUri
-import host.stjin.anonaddy.ui.blocklist.ManageBlocklistActivity
 
 
 class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
-
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
     var updateAvailable: Boolean = false
+
     var permissionsRequired: Boolean = false
+
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
     private var _binding: BottomsheetProfileBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -91,58 +87,15 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
 
     }
 
-    private fun checkForHostedInstance() {
-        if (AddyIo.isUsingHostedInstance) {
-            binding.mainProfileSelectDialogManageSubscription.visibility = View.VISIBLE
-        } else {
-            binding.mainProfileSelectDialogManageSubscription.visibility = View.GONE
-        }
-    }
-
-    private fun checkForPermissions() {
-        if (permissionsRequired) {
-            binding.mainProfileSelectDialogAppSettingsDesc.text =
-                resources.getString(R.string.permissions_required)
-        }
-    }
-
-    private fun checkForUpdates() {
-        // The main activity tells the dialog if an update is available
-        if (updateAvailable) {
-            binding.mainProfileSelectDialogAppSettingsDesc.text =
-                resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
-        }
-
-    }
-
-    private fun tintSettingsIcon() {
-        if (updateAvailable || permissionsRequired) {
-            ImageViewCompat.setImageTintList(
-                binding.mainProfileSelectDialogAppSettingsIcon,
-                context?.let { ContextCompat.getColorStateList(it, R.color.softRed) }
-            )
-        } else {
-            ImageViewCompat.setImageTintList(
-                binding.mainProfileSelectDialogAppSettingsIcon,
-                context?.let { ColorStateList.valueOf(AttributeHelper.getValueByAttr(it, R.attr.colorControlNormal)) }
-            )
-            binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
-        }
-
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean("updateAvailable", updateAvailable)
         outState.putBoolean("permissionsRequired", permissionsRequired)
         super.onSaveInstanceState(outState)
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        if (savedInstanceState != null) {
-            updateAvailable = savedInstanceState.getBoolean("updateAvailable")
-            permissionsRequired = savedInstanceState.getBoolean("permissionsRequired")
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun setOnClickListeners() {
@@ -193,7 +146,59 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
         }
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            updateAvailable = savedInstanceState.getBoolean("updateAvailable")
+            permissionsRequired = savedInstanceState.getBoolean("permissionsRequired")
+        }
+    }
+
+    private fun checkForHostedInstance() {
+        if (AddyIo.isUsingHostedInstance) {
+            binding.mainProfileSelectDialogManageSubscription.visibility = View.VISIBLE
+        } else {
+            binding.mainProfileSelectDialogManageSubscription.visibility = View.GONE
+        }
+    }
+
+    private fun checkForPermissions() {
+        if (permissionsRequired) {
+            binding.mainProfileSelectDialogAppSettingsDesc.text =
+                resources.getString(R.string.permissions_required)
+        }
+    }
+
+    private fun checkForUpdates() {
+        // The main activity tells the dialog if an update is available
+        if (updateAvailable) {
+            binding.mainProfileSelectDialogAppSettingsDesc.text =
+                resources.getString(R.string.version_s_update_available, BuildConfig.VERSION_NAME)
+        }
+
+    }
+
+    private fun tintSettingsIcon() {
+        if (updateAvailable || permissionsRequired) {
+            ImageViewCompat.setImageTintList(
+                binding.mainProfileSelectDialogAppSettingsIcon,
+                context?.let { ContextCompat.getColorStateList(it, R.color.softRed) }
+            )
+        } else {
+            ImageViewCompat.setImageTintList(
+                binding.mainProfileSelectDialogAppSettingsIcon,
+                context?.let { ColorStateList.valueOf(AttributeHelper.getValueByAttr(it, R.attr.colorControlNormal)) }
+            )
+            binding.mainProfileSelectDialogAppSettingsDesc.text = resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
+        }
+
+    }
 
     private fun setInfo() {
         val usernameInitials = (activity?.application as AddyIoApp).userResource.username.take(2).uppercase(Locale.getDefault())
@@ -240,10 +245,4 @@ class ProfileBottomDialogFragment : BaseBottomSheetDialogFragment() {
             return ProfileBottomDialogFragment()
         }
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 }

@@ -16,11 +16,12 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesMailToActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
+
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesMailtoBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesMailtoBinding.inflate(layoutInflater)
@@ -42,6 +43,29 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
         setOnClickListeners()
         setOnLongClickListeners()
         setOnSwitchListeners()
+    }
+
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.getSwitchChecked())
+            }
+        })
+
+        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.getSwitchChecked())
+            }
+        })
     }
 
     private fun loadSettings() {
@@ -83,30 +107,6 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
         })
     }
 
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheet.getSwitchChecked())
-            }
-        })
-
-        binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.setSwitchChecked(!binding.activityAppSettingsFeaturesMailtoSectionMailtoSheetSuggestions.getSwitchChecked())
-            }
-        })
-    }
-
     private fun setOnLongClickListeners() {
         binding.activityAppSettingsFeaturesMailtoImage.setOnLongClickListener {
             binding.activityAppSettingsFeaturesMailtoImage.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
@@ -117,6 +117,4 @@ class AppSettingsFeaturesMailToActivity : BaseActivity() {
             false
         }
     }
-
-
 }

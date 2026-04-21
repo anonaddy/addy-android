@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
-import androidx.core.view.isVisible
 
 class UsernameAdapter(
     private val listWithUsernames: ArrayList<Usernames>
@@ -117,12 +117,15 @@ class UsernameAdapter(
                 R.id.usernames_recyclerview_list_CV -> {
                     expandOptions()
                 }
+
                 R.id.usernames_recyclerview_list_expand_options -> {
                     expandOptions()
                 }
+
                 R.id.usernames_recyclerview_list_settings_button -> {
                     onUsernameClicker.onClickSettings(adapterPosition, p0)
                 }
+
                 R.id.usernames_recyclerview_list_delete_button -> {
                     onUsernameClicker.onClickDelete(adapterPosition, p0)
                 }

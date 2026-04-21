@@ -15,27 +15,23 @@ import host.stjin.anonaddy.databinding.BottomsheetRulesConditionBinding
 import host.stjin.anonaddy_shared.models.Condition
 
 
-class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, private val conditionEditObject: Condition?) : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
+class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, private val conditionEditObject: Condition?) :
+    BaseBottomSheetDialogFragment(), View.OnClickListener {
     private lateinit var listener: AddConditionBottomDialogListener
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddConditionBottomDialogListener {
-        fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String, values: List<String>)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetRulesConditionBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private var conditionTypes: List<String> = listOf()
+
+    private var matchOperators: List<String> = listOf()
+
+    private var matchOperatorNames: List<String> = listOf()
+
+    private var conditionTypeNames: List<String> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +52,25 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
 
 
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_rule_condition_add_condition_button) {
+                addCondition()
+            }
+        }
     }
 
     private fun updateUi() {
@@ -79,11 +94,6 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
 
     }
 
-
-    private var conditionTypes: List<String> = listOf()
-    private var matchOperators: List<String> = listOf()
-    private var matchOperatorNames: List<String> = listOf()
-    private var conditionTypeNames: List<String> = listOf()
     private fun fillSpinners(context: Context) {
         conditionTypes = this.resources.getStringArray(R.array.conditions_type).toList()
         matchOperators = this.resources.getStringArray(R.array.conditions_match).toList()
@@ -106,12 +116,6 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
         binding.bsRuleConditionMatchMact.setAdapter(formatAdapter)
     }
 
-    companion object {
-        fun newInstance(conditionEditIndex: Int?, conditionEditObject: Condition?): ConditionBottomDialogFragment {
-            return ConditionBottomDialogFragment(conditionEditIndex, conditionEditObject)
-        }
-    }
-
     private fun addCondition() {
         val type =
             conditionTypes[conditionTypeNames.indexOf(binding.bsRuleConditionTypeMact.text.toString())]
@@ -124,16 +128,14 @@ class ConditionBottomDialogFragment(private val conditionEditIndex: Int?, privat
         listener.onAddedCondition(conditionEditIndex, type, match, values)
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_rule_condition_add_condition_button) {
-                addCondition()
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddConditionBottomDialogListener {
+        fun onAddedCondition(conditionEditIndex: Int?, type: String, match: String, values: List<String>)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(conditionEditIndex: Int?, conditionEditObject: Condition?): ConditionBottomDialogFragment {
+            return ConditionBottomDialogFragment(conditionEditIndex, conditionEditObject)
+        }
     }
 }

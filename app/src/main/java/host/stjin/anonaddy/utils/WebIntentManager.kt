@@ -10,10 +10,10 @@ import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.core.net.toUri
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy_shared.AddyIo
-import androidx.core.net.toUri
 
 
 class WebIntentManager(private val context: Context) {

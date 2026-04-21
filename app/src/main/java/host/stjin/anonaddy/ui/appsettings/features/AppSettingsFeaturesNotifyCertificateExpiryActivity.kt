@@ -24,15 +24,16 @@ import org.ocpsoft.prettytime.PrettyTime
 
 
 class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
+
     private lateinit var encryptedSettingsManager: SettingsManager
+
     private var forceSwitch = false
+
     private lateinit var networkHelper: NetworkHelper
 
-
-
     private lateinit var binding: ActivityAppSettingsFeaturesNotifyCertificateExpiryBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesNotifyCertificateExpiryBinding.inflate(layoutInflater)
@@ -55,6 +56,34 @@ class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
+    }
+
+    // If the user comes back from eg. settings re-check + enable biometricswitch
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+        checkCertificateExpiry()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.getSwitchChecked())
+            }
+        })
+        binding.activityAppSettingsFeaturesNotifyCertificateExpiryChangeCertificate.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                selectCertificate()
+            }
+        })
+        binding.activityAppSettingsFeaturesNotifyCertificateExpiryRemoveCertificate.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                deleteCertificatePrompt()
+            }
+        })
     }
 
     private fun checkCertificateExpiry() {
@@ -85,7 +114,6 @@ class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
         }
     }
 
-
     private fun loadSettings() {
         binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setSwitchChecked(
             settingsManager.getSettingsBool(PREFS.NOTIFY_CERTIFICATE_EXPIRY, true)
@@ -111,33 +139,6 @@ class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
                     // Since certificate expiry should be monitored in the background, call scheduleBackgroundWorker. This method will schedule the service if its required
                     BackgroundWorkerHelper(this@AppSettingsFeaturesNotifyCertificateExpiryActivity).scheduleBackgroundWorker()
                 }
-            }
-        })
-    }
-
-    // If the user comes back from eg. settings re-check + enable biometricswitch
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-        checkCertificateExpiry()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setSwitchChecked(!binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.getSwitchChecked())
-            }
-        })
-        binding.activityAppSettingsFeaturesNotifyCertificateExpiryChangeCertificate.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                selectCertificate()
-            }
-        })
-        binding.activityAppSettingsFeaturesNotifyCertificateExpiryRemoveCertificate.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                deleteCertificatePrompt()
             }
         })
     }
@@ -194,5 +195,4 @@ class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
             }
         }, null, null, null, null)
     }
-
 }

@@ -11,11 +11,12 @@ import host.stjin.anonaddy_shared.managers.SettingsManager
 
 
 class AppSettingsFeaturesManageMultipleAliasesActivity : BaseActivity() {
-
     private lateinit var settingsManager: SettingsManager
+
     private var forceSwitch = false
 
     private lateinit var binding: ActivityAppSettingsFeaturesManageMultipleAliasesBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAppSettingsFeaturesManageMultipleAliasesBinding.inflate(layoutInflater)
@@ -36,6 +37,20 @@ class AppSettingsFeaturesManageMultipleAliasesActivity : BaseActivity() {
         loadSettings()
         setOnClickListeners()
         setOnSwitchListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadSettings()
+    }
+
+    private fun setOnClickListeners() {
+        binding.activityAppSettingsFeaturesLongpressSectionLongpressSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityAppSettingsFeaturesLongpressSectionLongpressSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesLongpressSectionLongpressSheet.getSwitchChecked())
+            }
+        })
     }
 
     private fun loadSettings() {
@@ -61,20 +76,4 @@ class AppSettingsFeaturesManageMultipleAliasesActivity : BaseActivity() {
             }
         })
     }
-
-    override fun onResume() {
-        super.onResume()
-        loadSettings()
-    }
-
-
-    private fun setOnClickListeners() {
-        binding.activityAppSettingsFeaturesLongpressSectionLongpressSheet.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityAppSettingsFeaturesLongpressSectionLongpressSheet.setSwitchChecked(!binding.activityAppSettingsFeaturesLongpressSectionLongpressSheet.getSwitchChecked())
-            }
-        })
-    }
-
 }

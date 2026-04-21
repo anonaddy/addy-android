@@ -42,6 +42,7 @@ class LogsAdapter(
                     }
                 }
             }
+
             1 -> {
                 for (drawable in holder.mMessage.compoundDrawablesRelative) {
                     if (drawable != null) {
@@ -52,6 +53,7 @@ class LogsAdapter(
                     }
                 }
             }
+
             2 -> {
                 for (drawable in holder.mMessage.compoundDrawablesRelative) {
                     if (drawable != null) {

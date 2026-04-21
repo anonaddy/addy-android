@@ -8,10 +8,9 @@ import host.stjin.anonaddy.databinding.ActivityFailedDeliveriesBinding
 import kotlinx.coroutines.launch
 
 class FailedDeliveriesActivity : BaseActivity() {
-
     private lateinit var binding: ActivityFailedDeliveriesBinding
-    private val failedDeliveriesFragment = FailedDeliveriesFragment()
 
+    private val failedDeliveriesFragment = FailedDeliveriesFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,5 +57,4 @@ class FailedDeliveriesActivity : BaseActivity() {
         }
 
     }
-
 }

@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class MainViewpagerAdapter(fa: FragmentActivity, private val fragments: ArrayList<Fragment>) : FragmentStateAdapter(fa) {
-
     // Map to keep track of tags and their corresponding fragment indices
     private val tagToIndex = mutableMapOf<String, Int>()
 

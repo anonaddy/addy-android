@@ -11,6 +11,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import host.stjin.anonaddy.BuildConfig
 import host.stjin.anonaddy.R
 import host.stjin.anonaddy.service.BackgroundWorkerHelper
@@ -23,7 +24,6 @@ import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.OPEN_A
 import host.stjin.anonaddy.widget.AliasWidget1Provider.AliasWidget1Values.REFRESH_ACTION
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import kotlin.random.Random
-import androidx.core.net.toUri
 
 
 /**
@@ -91,11 +91,13 @@ class AliasWidget1Provider : AppWidgetProvider() {
                     //scheduleBackgroundWorker calls doWork which updates the widget as soon as it got all the data
                     //onUpdate(context)
                 }
+
                 OPEN_APP -> {
                     val mainIntent = Intent(context, SplashActivity::class.java)
                     mainIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                     startActivity(context, mainIntent, null)
                 }
+
                 NAVIGATE -> {
                     if (intent.hasExtra(COPY_ACTION)) {
                         val alias = intent.getStringExtra(COPY_ACTION)

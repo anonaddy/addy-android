@@ -29,29 +29,34 @@ import kotlinx.coroutines.launch
 
 
 class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
-
     private lateinit var listener: AddAliasBottomDialogListener
-
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddAliasBottomDialogListener {
-        fun onAdded()
-        fun onCancel()
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
 
     private var _binding: BottomsheetAddaliasBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    /*
+        the custom format is not available for shared domains
+         */
+    private fun spinnerChangeListener(context: Context) {
+        binding.bsAddaliasAliasFormatMact.setOnItemClickListener { _, _, _, _ ->
+            // Since the alias format changed, check if custom is available
+            checkIfCustomIsAvailable(context)
+            binding.bsAddaliasAliasFormatTil.error = null
+        }
+
+        binding.bsAddaliasDomainMact.setOnItemClickListener { _, _, _, _ ->
+            binding.bsAddaliasDomainTil.error = null
+        }
+    }
+
+    private var domainNames: List<String> = listOf()
+
+    private var sharedDomains: List<String> = listOf()
+
+    private var domainFormatNames: List<String> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,9 +89,28 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
         listener.onCancel()
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_addalias_alias_add_alias_button) {
+                addAlias(requireContext())
+            }
+        }
     }
 
     private suspend fun getAllRecipients(context: Context) {
@@ -112,22 +136,6 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         // TODO what if null?
     }
 
-
-    /*
-    the custom format is not available for shared domains
-     */
-    private fun spinnerChangeListener(context: Context) {
-        binding.bsAddaliasAliasFormatMact.setOnItemClickListener { _, _, _, _ ->
-            // Since the alias format changed, check if custom is available
-            checkIfCustomIsAvailable(context)
-            binding.bsAddaliasAliasFormatTil.error = null
-        }
-
-        binding.bsAddaliasDomainMact.setOnItemClickListener { _, _, _, _ ->
-            binding.bsAddaliasDomainTil.error = null
-        }
-    }
-
     private fun checkIfCustomIsAvailable(context: Context) {
         // If the selected domain format is custom
         if (binding.bsAddaliasAliasFormatMact.text.toString() == context.resources.getString(R.string.domains_format_custom)) {
@@ -137,10 +145,6 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         }
     }
 
-
-    private var domainNames: List<String> = listOf()
-    private var sharedDomains: List<String> = listOf()
-    private var domainFormatNames: List<String> = listOf()
     private suspend fun fillSpinners(context: Context) {
         val networkHelper = NetworkHelper(context)
         networkHelper.getDomainOptions { domainOptions, _ ->
@@ -191,12 +195,6 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
             checkIfCustomIsAvailable(context)
         }
 
-    }
-
-    companion object {
-        fun newInstance(): AddAliasBottomDialogFragment {
-            return AddAliasBottomDialogFragment()
-        }
     }
 
     private fun addAlias(context: Context) {
@@ -327,16 +325,15 @@ class AddAliasBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnCli
         }, domain, description, format, aliasLocalPart, recipients)
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_addalias_alias_add_alias_button) {
-                addAlias(requireContext())
-            }
-        }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddAliasBottomDialogListener {
+        fun onAdded()
+        fun onCancel()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    companion object {
+        fun newInstance(): AddAliasBottomDialogFragment {
+            return AddAliasBottomDialogFragment()
+        }
     }
 }

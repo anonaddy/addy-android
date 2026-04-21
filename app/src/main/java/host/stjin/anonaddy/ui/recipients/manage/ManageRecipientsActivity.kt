@@ -26,9 +26,10 @@ import kotlinx.coroutines.launch
 
 class ManageRecipientsActivity : BaseActivity(),
     AddRecipientPublicGpgKeyBottomDialogFragment.AddEditGpgKeyBottomDialogListener {
-
     lateinit var networkHelper: NetworkHelper
+
     private lateinit var addRecipientPublicGpgKeyBottomDialogFragment: AddRecipientPublicGpgKeyBottomDialogFragment
+
     private var shouldRefreshOnFinish = false
 
     private var recipient: Recipients? = null
@@ -36,6 +37,7 @@ class ManageRecipientsActivity : BaseActivity(),
             field = value
             value?.let { updateUi(it) }
         }
+
     private var aliasList: AliasesArray? = null
         set(value) {
             field = value
@@ -44,9 +46,13 @@ class ManageRecipientsActivity : BaseActivity(),
 
     private var workingAliasList: AliasesArray? = null
 
-
     private var forceSwitch = false
+
     private lateinit var binding: ActivityManageRecipientsBinding
+
+    private lateinit var removeGpgKeySnackbar: Snackbar
+
+    private lateinit var deleteRecipientSnackbar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,11 +82,85 @@ class ManageRecipientsActivity : BaseActivity(),
         setPage(recipientId)
     }
 
+    private fun setOnClickListeners() {
+        binding.activityManageRecipientChangePgpKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
+                    addRecipientPublicGpgKeyBottomDialogFragment.show(
+                        supportFragmentManager,
+                        "editrecipientDescriptionBottomDialogFragment"
+                    )
+                }
+            }
+        })
+
+        binding.activityManageRecipientRemovePgpKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                removeGpgKey(this@ManageRecipientsActivity.recipient!!.id)
+            }
+        })
+
+        binding.activityManageRecipientDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                deleteRecipient(this@ManageRecipientsActivity.recipient!!.id)
+            }
+        })
+
+        binding.activityManageRecipientActive.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientActive.setSwitchChecked(!binding.activityManageRecipientActive.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientCanReplySend.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientCanReplySend.setSwitchChecked(!binding.activityManageRecipientCanReplySend.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientPgpInline.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientPgpInline.setSwitchChecked(!binding.activityManageRecipientPgpInline.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientProtectedHeaders.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientProtectedHeaders.setSwitchChecked(!binding.activityManageRecipientProtectedHeaders.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientRemovePgpKeysFromRs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientRemovePgpKeysFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpKeysFromRs.getSwitchChecked())
+            }
+        })
+
+        binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.getSwitchChecked())
+            }
+        })
+    }
+
     override fun finish() {
         val resultIntent = Intent()
         resultIntent.putExtra("shouldRefresh", shouldRefreshOnFinish)
         setResult(RESULT_OK, resultIntent)
         super.finish()
+    }
+
+    override fun onKeyAdded(recipient: Recipients) {
+        addRecipientPublicGpgKeyBottomDialogFragment.dismissAllowingStateLoss()
+
+        // Do this last, will trigger updateUI as well as re-init addRecipientPublicGpgKeyBottomDialogFragment
+        this.recipient = recipient
     }
 
     private fun setRefreshLayout() {
@@ -207,7 +287,8 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         })
 
-        binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setOnSwitchCheckedChangedListener(object : SectionView.OnSwitchCheckedChangedListener {
+        binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setOnSwitchCheckedChangedListener(object :
+            SectionView.OnSwitchCheckedChangedListener {
             override fun onCheckedChange(compoundButton: CompoundButton, checked: Boolean) {
                 // Using forceswitch can toggle onCheckedChangeListener programmatically without having to press the actual switch
                 if (compoundButton.isPressed || forceSwitch) {
@@ -266,7 +347,6 @@ class ManageRecipientsActivity : BaseActivity(),
         }, this.recipient!!.id)
     }
 
-
     private suspend fun disableEncryption() {
         networkHelper.disableEncryptionRecipient({ result ->
             binding.activityManageRecipientActive.showProgressBar(false)
@@ -286,7 +366,6 @@ class ManageRecipientsActivity : BaseActivity(),
         }, this.recipient!!.id)
     }
 
-
     private suspend fun enableEncryption() {
         networkHelper.enableEncryptionRecipient({ recipient, error ->
             binding.activityManageRecipientActive.showProgressBar(false)
@@ -304,7 +383,6 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         }, this.recipient!!.id)
     }
-
 
     private suspend fun disablePGPInline() {
         networkHelper.disablePgpInlineRecipient({ result ->
@@ -363,7 +441,6 @@ class ManageRecipientsActivity : BaseActivity(),
         }, this.recipient!!.id)
     }
 
-
     private suspend fun enablePGPInline() {
         networkHelper.enablePgpInlineRecipient({ recipient, error ->
             binding.activityManageRecipientPgpInline.showProgressBar(false)
@@ -418,7 +495,6 @@ class ManageRecipientsActivity : BaseActivity(),
         }, this.recipient!!.id)
     }
 
-
     private suspend fun disableProtectedHeaders() {
         networkHelper.disableProtectedHeadersRecipient({ result ->
             binding.activityManageRecipientProtectedHeaders.showProgressBar(false)
@@ -438,7 +514,6 @@ class ManageRecipientsActivity : BaseActivity(),
         }, this.recipient!!.id)
     }
 
-
     private suspend fun enableProtectedHeaders() {
         networkHelper.enableProtectedHeadersRecipient({ recipient, error ->
             binding.activityManageRecipientProtectedHeaders.showProgressBar(false)
@@ -457,76 +532,6 @@ class ManageRecipientsActivity : BaseActivity(),
         }, this.recipient!!.id)
     }
 
-
-    private fun setOnClickListeners() {
-        binding.activityManageRecipientChangePgpKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                if (!addRecipientPublicGpgKeyBottomDialogFragment.isAdded) {
-                    addRecipientPublicGpgKeyBottomDialogFragment.show(
-                        supportFragmentManager,
-                        "editrecipientDescriptionBottomDialogFragment"
-                    )
-                }
-            }
-        })
-
-        binding.activityManageRecipientRemovePgpKey.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                removeGpgKey(this@ManageRecipientsActivity.recipient!!.id)
-            }
-        })
-
-        binding.activityManageRecipientDelete.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                deleteRecipient(this@ManageRecipientsActivity.recipient!!.id)
-            }
-        })
-
-        binding.activityManageRecipientActive.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageRecipientActive.setSwitchChecked(!binding.activityManageRecipientActive.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageRecipientCanReplySend.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageRecipientCanReplySend.setSwitchChecked(!binding.activityManageRecipientCanReplySend.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageRecipientPgpInline.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageRecipientPgpInline.setSwitchChecked(!binding.activityManageRecipientPgpInline.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageRecipientProtectedHeaders.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageRecipientProtectedHeaders.setSwitchChecked(!binding.activityManageRecipientProtectedHeaders.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageRecipientRemovePgpKeysFromRs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageRecipientRemovePgpKeysFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpKeysFromRs.getSwitchChecked())
-            }
-        })
-
-        binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.setSwitchChecked(!binding.activityManageRecipientRemovePgpSignaturesKeyFromRs.getSwitchChecked())
-            }
-        })
-    }
-
-
-    private lateinit var removeGpgKeySnackbar: Snackbar
     private fun removeGpgKey(id: String) {
         MaterialDialogHelper.showMaterialDialog(
             context = this,
@@ -550,7 +555,6 @@ class ManageRecipientsActivity : BaseActivity(),
         ).show()
     }
 
-    private lateinit var deleteRecipientSnackbar: Snackbar
     private fun deleteRecipient(id: String) {
         MaterialDialogHelper.showMaterialDialog(
             context = this,
@@ -616,7 +620,6 @@ class ManageRecipientsActivity : BaseActivity(),
             }
         }, id)
     }
-
 
     private suspend fun getRecipientInfo(id: String) {
         networkHelper.getSpecificRecipient({ recipient, error ->
@@ -767,15 +770,6 @@ class ManageRecipientsActivity : BaseActivity(),
         binding.activityManageRecipientNSV.animate().alpha(1.0f)
         setOnClickListeners()
     }
-
-
-    override fun onKeyAdded(recipient: Recipients) {
-        addRecipientPublicGpgKeyBottomDialogFragment.dismissAllowingStateLoss()
-
-        // Do this last, will trigger updateUI as well as re-init addRecipientPublicGpgKeyBottomDialogFragment
-        this.recipient = recipient
-    }
-
 
     private suspend fun getAliasesAndAddThemToList(recipient: Recipients) {
         binding.activityManageRecipientAliasesShimmerframelayout.startShimmer()

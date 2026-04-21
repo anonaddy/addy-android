@@ -23,45 +23,26 @@ import kotlinx.coroutines.launch
 
 
 class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: List<Aliases>) : BaseBottomSheetDialogFragment() {
-
     lateinit var networkHelper: NetworkHelper
+
     private lateinit var listener: AddAliasMultipleSelectionBottomDialogListener
+
     private lateinit var aliasWatcher: AliasWatcher
+
     private var forceSwitch = false
+
     private var networkAction: NetworkAction? = null
 
-    enum class NetworkAction {
-        CHANGE_ACTIVE_STATE,
-        CHANGE_PINNED_STATE,
-        DELETE_STATE,
-        RESTORE_STATE,
-        FORGET_STATE
-    }
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddAliasMultipleSelectionBottomDialogListener {
-        fun onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean)
-        fun onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean)
-    }
-
     private var shouldRefreshData = false
-    override fun onCancel(dialog: DialogInterface) {
-        listener.onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData)
-        super.onCancel(dialog)
-    }
-
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
 
     private var _binding: BottomsheetMultipleSelectionAliasBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private var amountOfNetworkCallsDone = -1
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,6 +61,67 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
 
         return root
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setOnClickListeners() {
+
+        binding.bsMultipleSelectionAliasCancel.setOnClickListener {
+            listener.onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData)
+        }
+
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.getSwitchChecked())
+            }
+        })
+
+
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forceSwitch = true
+                binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.getSwitchChecked())
+            }
+        })
+
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasDelete.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                deleteAlias()
+            }
+        })
+
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasForget.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                forgetAlias()
+            }
+        })
+
+        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRestore.setOnLayoutClickedListener(object :
+            SectionView.OnLayoutClickedListener {
+            override fun onClick() {
+                restoreAlias()
+            }
+        })
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        listener.onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData)
+        super.onCancel(dialog)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
     }
 
     private fun updateUi() {
@@ -130,11 +172,13 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.showProgressBar(selectedAliases.count() != amountOfNetworkCallsDone)
             }
+
             NetworkAction.CHANGE_PINNED_STATE -> {
                 // Show the progressbar if
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
                 binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasPinnedSwitchLayout.showProgressBar(selectedAliases.count() != amountOfNetworkCallsDone)
             }
+
             NetworkAction.DELETE_STATE -> {
                 // Show the progressbar if
                 // the amount of network calls does not match the total network calls that have to be done (which is the selected aliases amount)
@@ -190,8 +234,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
 
     }
 
-
-    private var amountOfNetworkCallsDone = -1
     private suspend fun deactivateAlias(aliases: List<Aliases>) {
         networkHelper.bulkDeactivateAlias({ alias, error ->
             amountOfNetworkCallsDone = aliases.size
@@ -211,7 +253,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             }
         }, aliases)
     }
-
 
     private suspend fun activateAlias(aliases: List<Aliases>) {
         networkHelper.bulkActivateAlias({ alias, error ->
@@ -233,7 +274,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         }, aliases)
     }
 
-
     private suspend fun unpinAlias(aliases: List<Aliases>) {
         networkHelper.bulkUnpinAlias({ alias, error ->
             amountOfNetworkCallsDone = aliases.size
@@ -253,7 +293,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
             }
         }, aliases)
     }
-
 
     private suspend fun pinAlias(aliases: List<Aliases>) {
         networkHelper.bulkPinAlias({ alias, error ->
@@ -360,51 +399,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         })
     }
 
-    private fun setOnClickListeners() {
-
-        binding.bsMultipleSelectionAliasCancel.setOnClickListener {
-            listener.onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData)
-        }
-
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.setSwitchChecked(!binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasActiveSwitchLayout.getSwitchChecked())
-            }
-        })
-
-
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forceSwitch = true
-                binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.setSwitchChecked(!binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasWatchSwitchLayout.getSwitchChecked())
-            }
-        })
-
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasDelete.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                deleteAlias()
-            }
-        })
-
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasForget.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                forgetAlias()
-            }
-        })
-
-        binding.bsMultipleSelectionAliasGeneralActions.activityManageAliasRestore.setOnLayoutClickedListener(object :
-            SectionView.OnLayoutClickedListener {
-            override fun onClick() {
-                restoreAlias()
-            }
-        })
-    }
-
     private fun restoreAlias() {
         MaterialDialogHelper.aliasRestoreDialog(
             context = requireContext()
@@ -420,7 +414,6 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
 
         }
     }
-
 
     private fun deleteAlias() {
         MaterialDialogHelper.aliasDeleteDialog(
@@ -531,15 +524,23 @@ class AliasMultipleSelectionBottomDialogFragment(private val selectedAliases: Li
         }, aliases)
     }
 
+    enum class NetworkAction {
+        CHANGE_ACTIVE_STATE,
+        CHANGE_PINNED_STATE,
+        DELETE_STATE,
+        RESTORE_STATE,
+        FORGET_STATE
+    }
+
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddAliasMultipleSelectionBottomDialogListener {
+        fun onCloseMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean)
+        fun onCancelMultipleSelectionBottomDialogFragment(shouldRefreshData: Boolean)
+    }
+
     companion object {
         fun newInstance(selectedAliases: List<Aliases>): AliasMultipleSelectionBottomDialogFragment {
             return AliasMultipleSelectionBottomDialogFragment(selectedAliases)
         }
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

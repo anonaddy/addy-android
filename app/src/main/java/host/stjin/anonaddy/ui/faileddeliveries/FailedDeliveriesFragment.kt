@@ -26,25 +26,24 @@ import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.launch
 
 class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFragment.AddFailedDeliveryBottomDialogListener, Refreshable {
-
     private var failedDeliveriesList: FailedDeliveriesArray? = null
+
     private var networkHelper: NetworkHelper? = null
+
     private var encryptedSettingsManager: SettingsManager? = null
+
     private var oneTimeRecyclerViewActions: Boolean = true
 
     private var failedDeliveryDetailsBottomDialogFragment: FailedDeliveryDetailsBottomDialogFragment? = null
-
-
-    companion object {
-        fun newInstance() = FailedDeliveriesFragment()
-    }
-
 
     private var _binding: FragmentFailedDeliveriesBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var failedDeliveriesAdapter: FailedDeliveryAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,31 +64,12 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         return root
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val gson = Gson()
         val json = gson.toJson(failedDeliveriesList)
         outState.putString("failedDeliveries", json)
     }
-
-    private fun setOnNestedScrollViewListener(set: Boolean) {
-        if (set) {
-            binding.fragmentFailedDeliveriesNSV.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-                val threshold = 10 // or some small number to account for rounding errors
-                if (scrollY + v.measuredHeight + threshold >= v.getChildAt(0).measuredHeight) {
-                    // Consider this as being at the bottom
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        // Bottom of NSV reached. Time to load more data (if available)
-                        getAllFailedDeliveriesAndSetRecyclerview()
-                    }
-                }
-            })
-        } else {
-            binding.fragmentFailedDeliveriesNSV.setOnScrollChangeListener(null as androidx.core.widget.NestedScrollView.OnScrollChangeListener?)
-        }
-    }
-
 
     fun getDataFromWeb(savedInstanceState: Bundle?, callback: () -> Unit? = {}) {
         // Get the latest data in the background, and update the values when loaded
@@ -113,6 +93,60 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         }
     }
 
+    fun fragmentShown() {
+        if (::failedDeliveriesAdapter.isInitialized) {
+            // Set the count of failed deliveries so that the shimmerview looks better next time AND so that we can use it for the backgroundservice AND mark this a read for the badge
+            encryptedSettingsManager?.putSettingsInt(
+                SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT,
+                failedDeliveriesList?.meta?.total ?: failedDeliveriesAdapter.itemCount
+            )
+        }
+    }
+
+    override fun onDeleted(failedDeliveryId: String) {
+        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
+        // Get the latest data in the background, and update the values when loaded
+        getDataFromWeb(null)
+    }
+
+    override fun onRefreshData() {
+        // The key is to check if the view is created before proceeding.
+        // `viewLifecycleOwner` can be used as a proxy for this check.
+        if (!isAdded) return
+
+        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
+        try {
+            // This ensures the coroutine is launched only when the view's lifecycle is active.
+            viewLifecycleOwner.lifecycleScope.launch {
+                getDataFromWeb(null)
+            }
+        } catch (e: IllegalStateException) {
+            // Log the error if the lifecycle state was somehow invalid despite the check.
+            LoggingHelper(requireContext()).addLog(
+                LOGIMPORTANCE.CRITICAL.int,
+                "Failed to refresh data, view lifecycle not available. $e",
+                "FailedDeliveriesFragment",
+                null
+            )
+        }
+    }
+
+    private fun setOnNestedScrollViewListener(set: Boolean) {
+        if (set) {
+            binding.fragmentFailedDeliveriesNSV.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+                val threshold = 10 // or some small number to account for rounding errors
+                if (scrollY + v.measuredHeight + threshold >= v.getChildAt(0).measuredHeight) {
+                    // Consider this as being at the bottom
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        // Bottom of NSV reached. Time to load more data (if available)
+                        getAllFailedDeliveriesAndSetRecyclerview()
+                    }
+                }
+            })
+        } else {
+            binding.fragmentFailedDeliveriesNSV.setOnScrollChangeListener(null as androidx.core.widget.NestedScrollView.OnScrollChangeListener?)
+        }
+    }
 
     private fun setFailedDeliveriesRecyclerView() {
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
@@ -130,7 +164,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 layoutAnimation = animation
 
                 showShimmer()
-                
+
                 binding.fragmentFailedDeliveriesChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
                     if (checkedIds.isNotEmpty()) {
                         viewLifecycleOwner.lifecycleScope.launch {
@@ -151,10 +185,9 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         }
     }
 
-    private lateinit var failedDeliveriesAdapter: FailedDeliveryAdapter
     private suspend fun getAllFailedDeliveriesAndSetRecyclerview(forceReload: Boolean = false) {
 
-        if (getSelectedFilter() == null){
+        if (getSelectedFilter() == null) {
             binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.failed_deliveries)
         } else {
             binding.fragmentFailedDeliveriesAllFailedDeliveriesTitle.text = getString(R.string.failed_deliveries_filtered)
@@ -221,17 +254,6 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         }
     }
 
-    fun fragmentShown() {
-        if (::failedDeliveriesAdapter.isInitialized) {
-            // Set the count of failed deliveries so that the shimmerview looks better next time AND so that we can use it for the backgroundservice AND mark this a read for the badge
-            encryptedSettingsManager?.putSettingsInt(
-                SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT,
-                failedDeliveriesList?.meta?.total ?: failedDeliveriesAdapter.itemCount
-            )
-        }
-    }
-
-
     private fun setFailedDeliveriesAdapter(list: FailedDeliveriesArray, forceReload: Boolean) {
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
             if (failedDeliveriesList == null || forceReload) {
@@ -246,7 +268,12 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 // Get the totalsize of the adapteritems
                 val totalSize = failedDeliveriesAdapter.itemCount
                 // Tell the adapter there is new data (from the original size to the added items)
-                binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.post { failedDeliveriesAdapter.notifyItemRangeInserted(totalSize, list.data.size - 1) }
+                binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.post {
+                    failedDeliveriesAdapter.notifyItemRangeInserted(
+                        totalSize,
+                        list.data.size - 1
+                    )
+                }
             }
 
             val data = failedDeliveriesList?.data ?: list.data
@@ -287,27 +314,7 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
         }
     }
 
-
-    override fun onDeleted(failedDeliveryId: String) {
-        failedDeliveryDetailsBottomDialogFragment?.dismissAllowingStateLoss()
-        // Get the latest data in the background, and update the values when loaded
-        getDataFromWeb(null)
-    }
-
-    override fun onRefreshData() {
-        // The key is to check if the view is created before proceeding.
-        // `viewLifecycleOwner` can be used as a proxy for this check.
-        if (!isAdded) return
-
-        // Use a try-catch as an ultimate safeguard against rare lifecycle race conditions.
-        try {
-            // This ensures the coroutine is launched only when the view's lifecycle is active.
-            viewLifecycleOwner.lifecycleScope.launch {
-                getDataFromWeb(null)
-            }
-        } catch (e: IllegalStateException) {
-            // Log the error if the lifecycle state was somehow invalid despite the check.
-            LoggingHelper(requireContext()).addLog(LOGIMPORTANCE.CRITICAL.int, "Failed to refresh data, view lifecycle not available. $e", "FailedDeliveriesFragment", null)
-        }
+    companion object {
+        fun newInstance() = FailedDeliveriesFragment()
     }
 }

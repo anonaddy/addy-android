@@ -37,36 +37,36 @@ import java.util.Locale
 
 
 class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClickListener {
-
     private lateinit var listener: AddSearchBottomDialogListener
+
     private lateinit var networkHelper: NetworkHelper
+
     private lateinit var encryptedSettingsManager: SettingsManager
-
-    // 1. Defines the listener interface with a method passing back data result.
-    interface AddSearchBottomDialogListener {
-        fun onSearch(
-            filteredAliases: ArrayList<Aliases>,
-            filteredRecipients: ArrayList<Recipients>,
-            filteredDomains: ArrayList<Domains>,
-            filteredUsernames: ArrayList<Usernames>,
-            filteredRules: ArrayList<Rules>,
-            filteredFailedDeliveries: ArrayList<FailedDeliveries>
-        )
-    }
-
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        return dialog
-    }
-
 
     private var _binding: BottomsheetSearchBinding? = null
 
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
+
+    private var hasSetItemDecoration = false
+
+    var aliases: ArrayList<Aliases>? = null
+
+    var recipients: ArrayList<Recipients>? = null
+
+    var domains: ArrayList<Domains>? = null
+
+    var usernames: ArrayList<Usernames>? = null
+
+    var rules: ArrayList<Rules>? = null
+
+    private var failedDeliveries: ArrayList<FailedDeliveries>? = null
+
+    private var sourcesToSearch = 0
+
+    private var sourcesSearched = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,6 +93,31 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = BottomSheetDialog(requireContext(), theme)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        return dialog
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 != null) {
+            if (p0.id == R.id.bs_search_clear_recent) {
+                encryptedSettingsManager.removeSetting(SettingsManager.PREFS.RECENT_SEARCHES)
+                getRecentSearchResults()
+            }
+        }
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        binding.bsSearchTermTiet.hideKeyboard()
+    }
+
     private fun View.showKeyboard() {
         Handler(Looper.getMainLooper()).postDelayed({
             // Clear settings
@@ -108,7 +133,6 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    private var hasSetItemDecoration = false
     private fun getRecentSearchResults() {
         val recentSearchesSet = encryptedSettingsManager.getStringSet(SettingsManager.PREFS.RECENT_SEARCHES)
 
@@ -133,13 +157,6 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
 
             })
             adapter = recipientAdapter
-        }
-    }
-
-
-    companion object {
-        fun newInstance(): SearchBottomDialogFragment {
-            return SearchBottomDialogFragment()
         }
     }
 
@@ -169,16 +186,6 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             binding.bsSearchTermTiet.showKeyboard()
         }
     }
-
-    var aliases: ArrayList<Aliases>? = null
-    var recipients: ArrayList<Recipients>? = null
-    var domains: ArrayList<Domains>? = null
-    var usernames: ArrayList<Usernames>? = null
-    var rules: ArrayList<Rules>? = null
-    private var failedDeliveries: ArrayList<FailedDeliveries>? = null
-    private var sourcesToSearch = 0
-    private var sourcesSearched = 0
-
 
     private fun getAndReturnList(context: Context) {
         if (binding.bsSearchChipAliases.isChecked) {
@@ -268,7 +275,6 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
             }
         }
     }
-
 
     private fun performSearch(context: Context) {
         if (sourcesSearched >= sourcesToSearch) {
@@ -361,22 +367,21 @@ class SearchBottomDialogFragment : BaseBottomSheetDialogFragment(), View.OnClick
         }
     }
 
-    override fun onClick(p0: View?) {
-        if (p0 != null) {
-            if (p0.id == R.id.bs_search_clear_recent) {
-                encryptedSettingsManager.removeSetting(SettingsManager.PREFS.RECENT_SEARCHES)
-                getRecentSearchResults()
-            }
+    // 1. Defines the listener interface with a method passing back data result.
+    interface AddSearchBottomDialogListener {
+        fun onSearch(
+            filteredAliases: ArrayList<Aliases>,
+            filteredRecipients: ArrayList<Recipients>,
+            filteredDomains: ArrayList<Domains>,
+            filteredUsernames: ArrayList<Usernames>,
+            filteredRules: ArrayList<Rules>,
+            filteredFailedDeliveries: ArrayList<FailedDeliveries>
+        )
+    }
+
+    companion object {
+        fun newInstance(): SearchBottomDialogFragment {
+            return SearchBottomDialogFragment()
         }
-    }
-
-    override fun dismiss() {
-        super.dismiss()
-        binding.bsSearchTermTiet.hideKeyboard()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

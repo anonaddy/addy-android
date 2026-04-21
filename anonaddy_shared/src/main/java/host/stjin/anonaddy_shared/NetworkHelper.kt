@@ -174,13 +174,13 @@ class NetworkHelper(private val context: Context) {
         initDeferred?.await()
     }
 
-    private fun setupCustomSocketFactory(alias: String, chain: Array<X509Certificate>?, privateKey: PrivateKey){
+    private fun setupCustomSocketFactory(alias: String, chain: Array<X509Certificate>?, privateKey: PrivateKey) {
 
         val expiryDateOfChain = chain?.firstOrNull()?.notAfter
 
         // If there is an expiry-date check if this is in the pas
         expiryDateOfChain?.let {
-            if (it < Date()){
+            if (it < Date()) {
                 invalidCertificate()
                 Handler(Looper.getMainLooper()).postDelayed({
                     // Unauthenticated, clear settings
@@ -203,9 +203,12 @@ class NetworkHelper(private val context: Context) {
             }
 
             // Other methods can return null or be left unimplemented if not needed
-            override fun chooseServerAlias( keyType: String?,
-                                            issuers: Array<out Principal?>?,
-                                            socket: Socket?): String? = null
+            override fun chooseServerAlias(
+                keyType: String?,
+                issuers: Array<out Principal?>?,
+                socket: Socket?
+            ): String? = null
+
             override fun getClientAliases(keyType: String?, issuers: Array<Principal>?): Array<String>? = null
             override fun getServerAliases(keyType: String?, issuers: Array<Principal>?): Array<String>? = null
         }
@@ -227,6 +230,7 @@ class NetworkHelper(private val context: Context) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidCertificate", null)
         }
     }
+
     private fun getHeaders(apiKey: String? = null): Array<Pair<String, Any>> {
         val apiKeyToSend = apiKey ?: encryptedSettingsManager.getSettingsString(SettingsManager.PREFS.API_KEY)
         return arrayOf(
@@ -237,6 +241,7 @@ class NetworkHelper(private val context: Context) {
             "User-Agent" to getUserAgent()
         )
     }
+
     private fun getUserAgent(): String {
         // User-Agent: <product> / <product-version> <comment>
         // <product> / <product-version> <comment>
@@ -250,6 +255,7 @@ class NetworkHelper(private val context: Context) {
 
         return userAgent
     }
+
     private fun getFuelResponse(response: Response): ByteArray? {
         return try {
             response.data
@@ -257,6 +263,7 @@ class NetworkHelper(private val context: Context) {
             null
         }
     }
+
     // Separate method, with a try/catch because you can't toast on a Non-UI thread. And the widgets might call methods and there *is* a chance
     // these calls return a 404
     private fun invalidApiKey() {
@@ -268,6 +275,7 @@ class NetworkHelper(private val context: Context) {
             loggingHelper.addLog(LOGIMPORTANCE.CRITICAL.int, ex.toString(), "invalidApiKey", null)
         }
     }
+
     suspend fun registration(
         callback: (String?) -> Unit,
         username: String,
@@ -372,11 +380,11 @@ class NetworkHelper(private val context: Context) {
         val (_, response, result) = Fuel.post(API_URL_LOGIN_MFA)
             .header(Headers.COOKIE to cookies)
             .appendHeader(
-                    "Content-Type" to "application/json",
-                    "X-Requested-With" to "XMLHttpRequest",
-                    "Accept" to "application/json",
-                    "User-Agent" to getUserAgent(),
-                    "X-CSRF-TOKEN" to xCsrfToken
+                "Content-Type" to "application/json",
+                "X-Requested-With" to "XMLHttpRequest",
+                "Accept" to "application/json",
+                "User-Agent" to getUserAgent(),
+                "X-CSRF-TOKEN" to xCsrfToken
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -388,12 +396,14 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, Login::class.java)
                 callback(addyIoData, null)
             }
+
             401 -> { // Invalid mfa_key or mfa_key expired
                 val data = response.data.toString(Charsets.UTF_8)
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(null, addyIoData.message)
             }
+
             else -> {
 
                 val errorMessage = handleGenericError(response, result, "loginMfa")
@@ -442,30 +452,34 @@ class NetworkHelper(private val context: Context) {
                 val addyIoData = gson.fromJson(data, Login::class.java)
                 callback(addyIoData, null, null)
             }
+
             422 -> { // MFA REQUIRED
                 val data = response.data.toString(Charsets.UTF_8)
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
 
-                if (addyIoData.csrf_token != null){
+                if (addyIoData.csrf_token != null) {
                     addyIoData.cookie = response.headers["Set-Cookie"]
                     callback(null, addyIoData, null)
                 } else {
                     callback(null, null, addyIoData.message)
                 }
             }
+
             401 -> { // Login data incorrect
                 val data = response.data.toString(Charsets.UTF_8)
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(null, null, addyIoData.message)
             }
+
             403 -> { // MFA required but is hardware key and thus not supported OR the email address has not been validated
                 val data = response.data.toString(Charsets.UTF_8)
                 val gson = Gson()
                 val addyIoData = gson.fromJson(data, Error::class.java)
                 callback(null, null, addyIoData.message)
             }
+
             else -> {
 
                 val errorMessage = handleGenericError(response, result, "login")
@@ -623,6 +637,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * GET USER RESOURCE
      */
@@ -694,6 +709,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * ALIASES
      */
@@ -752,6 +768,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun getAliases(
         callback: (AliasesArray?, String?) -> Unit,
         aliasSortFilter: AliasSortFilter,
@@ -990,6 +1007,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateRecipientsSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String,
@@ -1083,6 +1101,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun deactivateSpecificAlias(
         callback: (String?) -> Unit?,
         aliasId: String
@@ -1199,7 +1218,9 @@ class NetworkHelper(private val context: Context) {
                 )
             }
         }
-    }    suspend fun pinSpecificAlias(
+    }
+
+    suspend fun pinSpecificAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
     ) {
@@ -1270,6 +1291,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun bulkActivateAlias(
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
@@ -1315,6 +1337,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun deleteAlias(
         callback: (String?) -> Unit,
         aliasId: String
@@ -1424,6 +1447,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun bulkForgetAlias(
         callback: (BulkActionResponse?, String?) -> Unit,
         aliases: List<Aliases>
@@ -1561,6 +1585,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun restoreAlias(
         callback: (Aliases?, String?) -> Unit,
         aliasId: String
@@ -1715,6 +1740,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * RECIPIENTS
      */
@@ -1839,6 +1865,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun allowRecipientToReplySend(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -1910,6 +1937,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun disableEncryptionRecipient(
         callback: (String?) -> Unit?,
         recipientId: String
@@ -1941,6 +1969,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableEncryptionRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -1980,6 +2009,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun disablePgpInlineRecipient(
         callback: (String?) -> Unit?,
         recipientId: String
@@ -2011,6 +2041,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enablePgpInlineRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2050,6 +2081,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun disableRemovePgpKeysRecipients(
         callback: (String?) -> Unit?,
         recipientId: String
@@ -2081,6 +2113,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableRemovePgpKeysRecipients(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2153,6 +2186,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableRemovePgpSignaturesRecipients(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2225,6 +2259,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableProtectedHeadersRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2336,6 +2371,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun getSpecificRecipient(
         callback: (Recipients?, String?) -> Unit,
         recipientId: String
@@ -2407,6 +2443,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * DOMAINS
      */
@@ -2560,6 +2597,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateDefaultRecipientForSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -2641,6 +2679,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun activateSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String
@@ -2712,6 +2751,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableCatchAllSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String
@@ -2751,6 +2791,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateDescriptionSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -2800,6 +2841,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateAutoCreateRegexSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -2849,6 +2891,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun updateFromNameSpecificDomain(
         callback: (Domains?, String?) -> Unit,
         domainId: String,
@@ -2898,6 +2941,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * USERNAMES
      */
@@ -3180,6 +3224,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun activateSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
@@ -3319,6 +3364,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun disableCatchAllSpecificUsername(
         callback: (String?) -> Unit?,
         usernameId: String
@@ -3348,6 +3394,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableCatchAllSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
@@ -3419,6 +3466,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun enableCanLoginSpecificUsername(
         callback: (Usernames?, String?) -> Unit,
         usernameId: String
@@ -3458,6 +3506,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * RULES
      */
@@ -3546,6 +3595,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun deleteRule(
         callback: (String?) -> Unit,
         id: String
@@ -3724,6 +3774,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun activateSpecificRule(
         callback: (Rules?, String?) -> Unit,
         ruleId: String
@@ -3855,8 +3906,10 @@ class NetworkHelper(private val context: Context) {
             size = amountOfAliasesToCache,
         )
     }
+
     suspend fun cachePinnedAliasesData(
-        callback: (Boolean) -> Unit) {
+        callback: (Boolean) -> Unit
+    ) {
 
         waitForInitAndLog()
 
@@ -3889,6 +3942,7 @@ class NetworkHelper(private val context: Context) {
             )
         )
     }
+
     suspend fun cacheUserResourceForWidget(
         callback: (Boolean) -> Unit
     ) {
@@ -3942,6 +3996,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * FAILED DELIVERIES
      */
@@ -4080,6 +4135,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun resendFailedDelivery(
         callback: (String?) -> Unit,
         failedDeliveryId: String,
@@ -4155,6 +4211,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     /**
      * BLOCKLIST
      */
@@ -4419,6 +4476,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     suspend fun notifyServerForSubscriptionChange(
         callback: (UserResource?, String?) -> Unit,
         purchaseToken: String,
@@ -4459,6 +4517,7 @@ class NetworkHelper(private val context: Context) {
             }
         }
     }
+
     private fun handleUnauthorized() {
         invalidApiKey()
         Handler(Looper.getMainLooper()).postDelayed({
@@ -4502,6 +4561,7 @@ class NetworkHelper(private val context: Context) {
         )
         return errorMessage
     }
+
     private suspend fun waitForInitAndLog() {
         waitForInit()
         if (BuildConfig.DEBUG) {

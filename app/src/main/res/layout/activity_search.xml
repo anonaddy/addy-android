@@ -33,155 +33,155 @@
             <LinearLayout
                 android:id="@+id/activity_search_aliases_LL"
                 android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                    <TextView
-                        style="@style/AddyIoTitleNoAction"
-                        android:layout_width="match_parent"
-                        android:text="@string/aliases" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_search_aliases_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/activity_search_recipients_LL"
+                <TextView
+                    style="@style/AddyIoTitleNoAction"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:text="@string/aliases" />
 
-                    <TextView
-                        style="@style/AddyIoTitleNoAction"
-                        android:layout_width="match_parent"
-                        android:text="@string/recipients" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_search_recipients_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/activity_search_domains_LL"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_search_aliases_recyclerview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:clipChildren="false"
+                    android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        style="@style/AddyIoTitleNoAction"
-                        android:layout_width="match_parent"
-                        android:text="@string/domains" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_search_domains_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/activity_search_usernames_LL"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        style="@style/AddyIoTitleNoAction"
-                        android:layout_width="match_parent"
-                        android:text="@string/usernames" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_search_usernames_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/activity_search_rules_LL"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        style="@style/AddyIoTitleNoAction"
-                        android:layout_width="match_parent"
-                        android:text="@string/rules" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_search_rules_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/activity_search_failed_deliveries_LL"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        style="@style/AddyIoTitleNoAction"
-                        android:layout_width="match_parent"
-                        android:text="@string/failed_deliveries" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_search_failed_deliveries_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never" />
-
-                </LinearLayout>
-
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_search_recipients_LL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:text="@string/recipients" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_search_recipients_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_search_domains_LL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:text="@string/domains" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_search_domains_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_search_usernames_LL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:text="@string/usernames" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_search_usernames_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_search_rules_LL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:text="@string/rules" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_search_rules_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_search_failed_deliveries_LL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/AddyIoTitleNoAction"
+                    android:layout_width="match_parent"
+                    android:text="@string/failed_deliveries" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_search_failed_deliveries_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
 
 
     </androidx.core.widget.NestedScrollView>

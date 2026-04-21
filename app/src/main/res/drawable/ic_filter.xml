@@ -4,15 +4,14 @@
     android:tint="?colorControlNormal"
     android:viewportWidth="24"
     android:viewportHeight="24">
-  <group>
-    <clip-path
-        android:pathData="M0,0h24v24h-24z"/>
-    <path
-        android:pathData="M4,4H20V6.172C20,6.702 19.789,7.211 19.414,7.586L15,12V19L9,21V12.5L4.52,7.572C4.185,7.204 4,6.724 4,6.227V4Z"
-        android:strokeLineJoin="round"
-        android:strokeWidth="2"
-        android:fillColor="#00000000"
-        android:strokeColor="#000000"
-        android:strokeLineCap="round"/>
-  </group>
+    <group>
+        <clip-path android:pathData="M0,0h24v24h-24z" />
+        <path
+            android:pathData="M4,4H20V6.172C20,6.702 19.789,7.211 19.414,7.586L15,12V19L9,21V12.5L4.52,7.572C4.185,7.204 4,6.724 4,6.227V4Z"
+            android:strokeLineJoin="round"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"
+            android:strokeColor="#000000"
+            android:strokeLineCap="round" />
+    </group>
 </vector>

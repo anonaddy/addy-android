@@ -82,15 +82,19 @@ class SettingsActivity : ComponentActivity() {
             15 -> {
                 1
             }
+
             30 -> {
                 2
             }
+
             60 -> {
                 3
             }
+
             120 -> {
                 4
             }
+
             else -> {
                 2
             }
@@ -279,16 +283,19 @@ class SettingsActivity : ComponentActivity() {
                         this.backgroundServiceInterval = 1
                         backgroundServiceIntervalValue = 15
                     }
+
                     2f -> {
                         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 30)
                         this.backgroundServiceInterval = 2
                         backgroundServiceIntervalValue = 30
                     }
+
                     3f -> {
                         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 60)
                         this.backgroundServiceInterval = 3
                         backgroundServiceIntervalValue = 60
                     }
+
                     4f -> {
                         settingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_INTERVAL, 120)
                         this.backgroundServiceInterval = 4

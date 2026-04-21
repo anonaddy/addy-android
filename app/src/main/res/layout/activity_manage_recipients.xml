@@ -26,11 +26,11 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/activity_manage_recipient_NSV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0">
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/activity_manage_recipient_NSV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0">
 
             <LinearLayout
                 android:id="@+id/activity_manage_recipient_LL1"
@@ -253,6 +253,6 @@
 
 
             </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
