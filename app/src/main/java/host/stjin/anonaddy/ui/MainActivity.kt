@@ -51,8 +51,6 @@ import host.stjin.anonaddy.ui.home.HomeFragment
 import host.stjin.anonaddy.ui.recipients.RecipientsFragment
 import host.stjin.anonaddy.ui.rules.RulesSettingsActivity
 import host.stjin.anonaddy.ui.rules.RulesSettingsFragment
-import host.stjin.anonaddy.ui.search.SearchActivity
-import host.stjin.anonaddy.ui.search.SearchBottomDialogFragment
 import host.stjin.anonaddy.ui.setup.AddApiBottomDialogFragment
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsActivity
 import host.stjin.anonaddy.ui.usernames.UsernamesSettingsFragment
@@ -97,10 +95,7 @@ object MainActivityTimeClass {
     }
 }
 
-class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomDialogListener, AddApiBottomDialogFragment.AddApiBottomDialogListener {
-    private val searchBottomDialogFragment: SearchBottomDialogFragment =
-
-        SearchBottomDialogFragment.newInstance()
+class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDialogListener {
 
     private val profileBottomDialogFragment: ProfileBottomDialogFragment =
 
@@ -234,23 +229,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
         }
     }
-
-    // When returning from the search activity, load the appropriate screen
-    private var resultLauncher: ActivityResultLauncher<Intent> =
-
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                // There are no request codes
-                val data: Intent? = result.data
-
-                if (data != null) {
-                    if (data.hasExtra("target")) {
-                        data.extras?.getString("target")?.let { goToTarget(it) }
-                    }
-                }
-
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -404,15 +382,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
     }
 
-    fun openSearch() {
-        if (!searchBottomDialogFragment.isAdded) {
-            searchBottomDialogFragment.show(
-                supportFragmentManager,
-                "searchBottomDialogFragment"
-            )
-        }
-    }
-
     fun navigateTo(fragment: Int) {
         when (fragment) {
             R.id.navigation_home -> viewPager.currentItem = 0
@@ -463,27 +432,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         }
     }
 
-    override fun onSearch(
-        filteredAliases: ArrayList<Aliases>,
-        filteredRecipients: ArrayList<Recipients>,
-        filteredDomains: ArrayList<Domains>,
-        filteredUsernames: ArrayList<Usernames>,
-        filteredRules: ArrayList<Rules>,
-        filteredFailedDeliveries: ArrayList<FailedDeliveries>
-    ) {
-
-        SearchActivity.FilteredLists.filteredAliases = filteredAliases
-        SearchActivity.FilteredLists.filteredRecipients = filteredRecipients
-        SearchActivity.FilteredLists.filteredDomains = filteredDomains
-        SearchActivity.FilteredLists.filteredUsernames = filteredUsernames
-        SearchActivity.FilteredLists.filteredRules = filteredRules
-        SearchActivity.FilteredLists.filteredFailedDeliveries = filteredFailedDeliveries
-
-        searchBottomDialogFragment.dismissAllowingStateLoss()
-        val intent = Intent(this, SearchActivity::class.java)
-        resultLauncher.launch(intent)
-    }
-
     override fun onClickSave(baseUrl: String, apiKey: String) {
         addApiBottomDialogFragment.dismissAllowingStateLoss()
         updateKey(apiKey)
@@ -531,15 +479,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
         binding.navRail!!.headerView?.findViewById<FloatingActionButton>(R.id.navigation_rail_fab_account_notifications)!!.setOnClickListener {
             val intent = Intent(this, AccountNotificationsActivity::class.java)
             startActivity(intent)
-        }
-
-        binding.searchBar?.setOnClickListener {
-            openSearch()
-        }
-
-        binding.navigationRailUserRefresh?.setOnClickListener {
-            (binding.navigationRailUserRefresh!!.compoundDrawables[0] as AnimatedVectorDrawable).start()
-            refreshAllData()
         }
 
     }
@@ -795,10 +734,6 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                     "profileBottomDialogFragment"
                 )
             }
-        }
-
-        binding.mainAppBarInclude!!.mainTopBarSearchIcon.setOnClickListener {
-            openSearch()
         }
 
         binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesIcon.setOnClickListener {
@@ -1149,15 +1084,15 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
     // Also gets called from the startupPage check
     private fun goToTarget(string: String) {
         when (string) {
-            SearchActivity.SearchTargets.ALIASES.activity -> {
+            ActivityTargets.ALIASES.activity -> {
                 navigateTo(R.id.navigation_alias)
             }
 
-            SearchActivity.SearchTargets.RECIPIENTS.activity -> {
+            ActivityTargets.RECIPIENTS.activity -> {
                 navigateTo(R.id.navigation_recipients)
             }
 
-            SearchActivity.SearchTargets.DOMAINS.activity -> {
+            ActivityTargets.DOMAINS.activity -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
                     navigateTo(R.id.navigation_domains)
                 } else {
@@ -1166,7 +1101,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 }
             }
 
-            SearchActivity.SearchTargets.USERNAMES.activity -> {
+            ActivityTargets.USERNAMES.activity -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
                     navigateTo(R.id.navigation_usernames)
                 } else {
@@ -1175,7 +1110,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
                 }
             }
 
-            SearchActivity.SearchTargets.RULES.activity -> {
+            ActivityTargets.RULES.activity -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
                     navigateTo(R.id.navigation_rules)
                 } else {
@@ -1185,7 +1120,7 @@ class MainActivity : BaseActivity(), SearchBottomDialogFragment.AddSearchBottomD
 
             }
 
-            SearchActivity.SearchTargets.FAILED_DELIVERIES.activity -> {
+            ActivityTargets.FAILED_DELIVERIES.activity -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
                     navigateTo(R.id.navigation_failed_deliveries)
                 } else {

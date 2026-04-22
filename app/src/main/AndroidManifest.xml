@@ -274,9 +274,6 @@
             android:name=".ui.usernames.UsernamesSettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.search.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ui.recipients.manage.ManageRecipientsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -76,6 +77,29 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
     }
 
     private fun setOnClickListeners() {
+        binding.blocklistSearchTermTiet.addTextChangedListener { text ->
+            val searchText = text?.toString()?.trim()
+            if (searchText.isNullOrEmpty()) {
+                getDataFromWeb(null)
+            }
+        }
+
+        binding.blocklistSearchTermTiet.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH ||
+                actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
+                (event?.action == android.view.KeyEvent.ACTION_DOWN &&
+                        event.keyCode == android.view.KeyEvent.KEYCODE_ENTER)
+            ) {
+                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(binding.blocklistSearchTermTiet.windowToken, 0)
+                
+                getDataFromWeb(null)
+                true
+            } else {
+                false
+            }
+        }
+
         binding.fragmentBlocklistAddBlocklistEntryButton.setOnClickListener {
             manageBlocklistAddBottomDialogFragment = ManageBlocklistAddBottomDialogFragment()
             manageBlocklistAddBottomDialogFragment!!.show(
@@ -182,10 +206,12 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
             binding.fragmentBlocklistProgress.visibility = View.VISIBLE
             setOnNestedScrollViewListener(false)
             binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
+                val searchText = binding.blocklistSearchTermTiet.text.toString().trim()
                 networkHelper?.getAllBlocklistEntries(
                     page = (blocklistEntries?.meta?.current_page ?: 0) + 1,
                     size = 25,
-                    filter = getSelectedFilter()
+                    filter = getSelectedFilter(),
+                    search = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
                 ) { entries, error ->
                     // Check if there are new account notifications since the latest list
                     // If the list is the same, just return and don't bother re-init the layoutmanager

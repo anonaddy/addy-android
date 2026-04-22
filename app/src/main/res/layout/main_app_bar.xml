@@ -79,24 +79,6 @@
                 android:gravity="end"
                 android:layout_margin="@dimen/collapsingtoolbar_action_margin">
 
-                <ImageView
-                    android:id="@+id/main_top_bar_search_icon"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="end|bottom"
-                    android:background="@drawable/circle_ripple"
-                    android:clickable="true"
-                    android:contentDescription="@string/search"
-                    android:focusable="true"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_search"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="H,1:1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="?colorOnSecondaryContainer" />
-
-
                 <RelativeLayout
                     android:layout_width="36dp"
                     android:layout_height="36dp"

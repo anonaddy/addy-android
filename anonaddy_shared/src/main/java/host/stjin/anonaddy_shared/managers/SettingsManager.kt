@@ -55,7 +55,6 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         PRIVACY_MODE(true, PREFTYPES.BOOLEAN, "privacy_mode"),
         API_KEY(true, PREFTYPES.STRING, "API_KEY"),
         BASE_URL(true, PREFTYPES.STRING, "BASE_URL"),
-        RECENT_SEARCHES(true, PREFTYPES.STRINGSET, "recent_searches"),
         BACKUPS_PASSWORD(true, PREFTYPES.STRING, "backups_password"),
         CERTIFICATE_ALIAS(true, PREFTYPES.STRING, "certificate_alias"),
 

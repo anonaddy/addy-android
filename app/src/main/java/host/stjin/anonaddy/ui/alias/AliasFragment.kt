@@ -595,9 +595,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 (activity as MainActivity).findViewById(R.id.main_container),
                 LoggingHelper.LOGFILES.DEFAULT
             )
-            snackbar.setAction(R.string.search) {
-                (activity as MainActivity).openSearch()
-            }
             snackbar.show()
         } else {
             val bottomNavView: BottomNavigationView? =
@@ -609,9 +606,6 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                     it,
                     LoggingHelper.LOGFILES.DEFAULT
                 )
-                snackbar.setAction(R.string.search) {
-                    (activity as MainActivity).openSearch()
-                }
                 snackbar.anchorView = bottomNavView
                 snackbar.show()
             }

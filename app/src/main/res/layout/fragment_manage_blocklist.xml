@@ -18,24 +18,69 @@
         android:visibility="gone"
         layout="@layout/fragment_feature_not_available_subscription" />
 
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/fragment_blocklist_NSV"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="12dp"
+        android:paddingStart="@dimen/layout_padding"
+        android:paddingEnd="@dimen/layout_padding"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-        <LinearLayout
-            android:id="@+id/fragment_blocklist_LL1"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/blocklist_search_term_til"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="@dimen/layout_padding_top"
-            android:paddingStart="@dimen/layout_padding"
-            android:paddingEnd="@dimen/layout_padding">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:elevation="10dp"
+            android:outlineProvider="none"
+            app:boxCornerRadiusBottomEnd="28dp"
+            app:boxCornerRadiusBottomStart="28dp"
+            app:boxCornerRadiusTopEnd="28dp"
+            app:boxCornerRadiusTopStart="28dp"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:boxBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:hintEnabled="false"
+            app:startIconDrawable="@drawable/ic_search"
+            app:endIconMode="clear_text">
 
-            <HorizontalScrollView
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/blocklist_search_term_tiet"
+                style="@style/AddyIoTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:hint="@string/search"
+                android:imeOptions="actionSearch"
+                android:inputType="textEmailAddress"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/fragment_blocklist_NSV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/fragment_blocklist_LL1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp">
+
+                <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -154,6 +199,8 @@
 
 
     </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/fragment_blocklist_progress"
