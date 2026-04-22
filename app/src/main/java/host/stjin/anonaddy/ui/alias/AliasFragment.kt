@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.NestedScrollView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -168,13 +169,14 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
 
     private fun updateChipSelection(filter: AliasSortFilter) {
         isUpdatingChips = true
+        val filterWithoutSearch = filter.copy(filter = null)
         when {
-            filter.onlyPinnedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_pinned)
-            filter.onlyActiveAliases -> binding.aliasChipgroup.check(R.id.alias_chip_active)
-            filter.onlyInactiveAliases -> binding.aliasChipgroup.check(R.id.alias_chip_inactive)
-            filter.onlyDeletedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_deleted)
-            filter.onlyWatchedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_watched)
-            filter == defaultAliasSortFilter -> binding.aliasChipgroup.check(R.id.alias_chip_all)
+            filterWithoutSearch.onlyPinnedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_pinned)
+            filterWithoutSearch.onlyActiveAliases -> binding.aliasChipgroup.check(R.id.alias_chip_active)
+            filterWithoutSearch.onlyInactiveAliases -> binding.aliasChipgroup.check(R.id.alias_chip_inactive)
+            filterWithoutSearch.onlyDeletedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_deleted)
+            filterWithoutSearch.onlyWatchedAliases -> binding.aliasChipgroup.check(R.id.alias_chip_watched)
+            filterWithoutSearch == defaultAliasSortFilter -> binding.aliasChipgroup.check(R.id.alias_chip_all)
             else -> binding.aliasChipgroup.check(R.id.alias_chip_custom)
         }
         isUpdatingChips = false
@@ -187,6 +189,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         if (aliasSortFilterObject != null) {
             this.aliasSortFilter = aliasSortFilterObject
         }
+        
+        val searchText = binding.aliasSearchTermTiet.text.toString().trim()
+        this.aliasSortFilter.filter = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
 
         updateChipSelection(this.aliasSortFilter)
 
@@ -212,10 +217,37 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun setOnClickListeners() {
+        binding.aliasSearchTermTiet.addTextChangedListener { text ->
+            val searchText = text?.toString()?.trim()
+            if (searchText.isNullOrEmpty() && aliasSortFilter.filter != null) {
+                aliasSortFilter.filter = null
+                getDataFromWeb(null)
+            }
+        }
+
+        binding.aliasSearchTermTiet.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH ||
+                actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
+                (event?.action == android.view.KeyEvent.ACTION_DOWN &&
+                        event.keyCode == android.view.KeyEvent.KEYCODE_ENTER)
+            ) {
+                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(binding.aliasSearchTermTiet.windowToken, 0)
+                
+                val searchText = binding.aliasSearchTermTiet.text.toString().trim()
+                aliasSortFilter.filter = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
+                getDataFromWeb(null)
+                true
+            } else {
+                false
+            }
+        }
+
         binding.aliasChipgroup.setOnCheckedStateChangeListener { _, checkedIds ->
             if (!isUpdatingChips && checkedIds.isNotEmpty()) {
                 val checkedId = checkedIds.first()
                 val newFilter = defaultAliasSortFilter.copy()
+                newFilter.filter = aliasSortFilter.filter // Preserve the search text
                 when (checkedId) {
                     R.id.alias_chip_pinned -> newFilter.onlyPinnedAliases = true
                     R.id.alias_chip_active -> newFilter.onlyActiveAliases = true
@@ -559,7 +591,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         if (requireContext().resources.getBoolean(R.bool.isTablet)) {
             val snackbar = SnackbarHelper.createSnackbar(
                 requireContext(),
-                requireContext().resources.getString(R.string.alias_global_search_hint),
+                requireContext().resources.getString(R.string.alias_search_hint),
                 (activity as MainActivity).findViewById(R.id.main_container),
                 LoggingHelper.LOGFILES.DEFAULT
             )
@@ -573,7 +605,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             bottomNavView?.let {
                 val snackbar = SnackbarHelper.createSnackbar(
                     requireContext(),
-                    requireContext().resources.getString(R.string.alias_global_search_hint),
+                    requireContext().resources.getString(R.string.alias_search_hint),
                     it,
                     LoggingHelper.LOGFILES.DEFAULT
                 )
@@ -619,7 +651,8 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     override fun setFilterAndSortingSettings(aliasSortFilter: AliasSortFilter) {
         this.aliasSortFilter = aliasSortFilter
         // Turn the list into a json object
-        val data = Gson().toJson(aliasSortFilter)
+        val filterToSave = aliasSortFilter.copy(filter = null)
+        val data = Gson().toJson(filterToSave)
         // Store a copy of the just received data locally
         settingsManager?.putSettingsString(SettingsManager.PREFS.ALIAS_SORT_FILTER, data)
 

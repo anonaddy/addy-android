@@ -81,7 +81,7 @@
     <string name="not_a_valid_web_address">@string/not_a_valid_address</string>
     <string name="error_adding_recipient">Something went wrong while adding this recipient</string>
     <string name="verification_email_has_been_sent">Verification email has been sent</string>
-    <string name="no_aliases">No aliases with these filter settings.\n\nLooking for a specific alias? Use the global search function by clicking the magnifying glass in the app bar.</string>
+    <string name="no_aliases">No aliases with these filter settings</string>
     <string name="alias_status_active">Alias active</string>
     <string name="created_at">Created at</string>
     <string name="updated_at">Updated at</string>
@@ -461,7 +461,7 @@
     <string name="replies">Replies</string>
     <string name="forwards">Forwards</string>
     <string name="run_rule_on">Run rule on</string>
-    <string name="alias_global_search_hint">Looking for a specific alias? Try the global search instead.</string>
+    <string name="alias_search_hint">Looking for a specific alias? Try searching instead.</string>
     <string name="cancel">Cancel</string>
     <string name="deleting_alias">Deleting alias…</string>
     <string name="restoring_alias">Restoring alias…</string>
