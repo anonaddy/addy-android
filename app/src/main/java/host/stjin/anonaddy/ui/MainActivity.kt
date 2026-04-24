@@ -139,9 +139,22 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private suspend fun checkForNewFailedDeliveries() {
         val encryptedSettingsManager = SettingsManager(true, this)
         networkHelper.getAllFailedDeliveries { result, _ ->
-            val currentFailedDeliveries =
-                encryptedSettingsManager.getSettingsInt(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT)
-            if ((result?.meta?.total ?: 0) > currentFailedDeliveries) {
+            val previousFailedDeliveryId =
+                encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
+
+            var newDeliveriesCount = 0
+            if (result != null && result.data.isNotEmpty()) {
+                val currentFailedDeliveryId = result.data.firstOrNull()?.id
+                if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId.isNotEmpty()) {
+                    for (delivery in result.data) {
+                        if (delivery.id == previousFailedDeliveryId) break
+                        newDeliveriesCount++
+                    }
+                    if (newDeliveriesCount == 0) newDeliveriesCount = 1
+                }
+            }
+
+            if (newDeliveriesCount > 0) {
                 if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
                     if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.VISIBLE) {
                         // loading the animation of
@@ -170,7 +183,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     val badge = binding.navRail!!.getOrCreateBadge(R.id.navigation_failed_deliveries)
                     badge.isVisible = true
                     // An icon only badge will be displayed unless a number or text is set:
-                    badge.number = (result?.meta?.total?.minus(currentFailedDeliveries)) ?: 0  // or badge.text = "New"
+                    badge.number = newDeliveriesCount  // or badge.text = "New"
                 }
             } else {
                 hideFailedDeliveriesBadge()

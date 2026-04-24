@@ -360,7 +360,7 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun loginMfa(
         callback: (Login?, String?) -> Unit,
-        baseUrl: String, mfaKey: String, otp: String, xCsrfToken: String, apiExpiration: String, cookies: Collection<String>
+        baseUrl: String, mfaKey: String, otp: String, apiExpiration: String, cookies: Collection<String>
     ) {
 
         waitForInitAndLog()
@@ -383,8 +383,7 @@ class NetworkHelper(private val context: Context) {
                 "Content-Type" to "application/json",
                 "X-Requested-With" to "XMLHttpRequest",
                 "Accept" to "application/json",
-                "User-Agent" to userAgent,
-                "X-CSRF-TOKEN" to xCsrfToken
+                "User-Agent" to userAgent
             )
             .body(json.toString())
             .awaitStringResponseResult()
@@ -457,13 +456,8 @@ class NetworkHelper(private val context: Context) {
                 val data = response.data.toString(Charsets.UTF_8)
                 
                 val addyIoData = gson.fromJson(data, LoginMfaRequired::class.java)
-
-                if (addyIoData.csrf_token != null) {
-                    addyIoData.cookie = response.headers["Set-Cookie"]
-                    callback(null, addyIoData, null)
-                } else {
-                    callback(null, null, addyIoData.message)
-                }
+                addyIoData.cookie = response.headers["Set-Cookie"]
+                callback(null, addyIoData, null)
             }
 
             401 -> { // Login data incorrect
@@ -3909,7 +3903,8 @@ class NetworkHelper(private val context: Context) {
     }
 
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
-        callback: (Boolean) -> Unit
+        previousId: String?,
+        callback: (Int?) -> Unit
     ) {
 
         waitForInitAndLog()
@@ -3918,10 +3913,10 @@ class NetworkHelper(private val context: Context) {
         val filterType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"
         val filter = if (filterType == "all") null else filterType
 
-        getAllFailedDeliveries(1, 1, filter) { result, _ ->
+        getAllFailedDeliveries(1, 25, filter) { result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
-                callback(false)
+                callback(null)
                 return@getAllFailedDeliveries
             } else {
                 // Store the current count
@@ -3932,8 +3927,18 @@ class NetworkHelper(private val context: Context) {
                 val latestId = result.data.firstOrNull()?.id ?: ""
                 encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID, latestId)
 
+                var newDeliveriesCount = 0
+                if (previousId != null) {
+                    for (delivery in result.data) {
+                        if (delivery.id == previousId) break
+                        newDeliveriesCount++
+                    }
+                } else {
+                    newDeliveriesCount = 1
+                }
+
                 // Stored data, let the BackgroundWorker know the task succeeded
-                callback(true)
+                callback(newDeliveriesCount)
             }
         }
     }

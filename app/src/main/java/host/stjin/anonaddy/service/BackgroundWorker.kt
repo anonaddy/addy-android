@@ -325,9 +325,14 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                     val previousFailedDeliveryId =
                         encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
 
-                    networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService { result ->
-                        // Store the result if the data succeeded to update in a boolean
-                        failedDeliveriesNetworkCallResult = result
+                    var newDeliveriesCount = 0
+                    networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService(previousFailedDeliveryId) { result ->
+                        if (result != null) {
+                            newDeliveriesCount = result
+                            failedDeliveriesNetworkCallResult = true
+                        } else {
+                            failedDeliveriesNetworkCallResult = false
+                        }
                     }
 
                     val currentFailedDeliveryId =
@@ -335,7 +340,11 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
                     // If the current failed delivery id is different from the previous. That means there is a new failed delivery
                     if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId.isNotEmpty()) {
-                        NotificationHelper(appContext).createFailedDeliveryNotification(1)
+                        
+                        // Fallback to 1 if count could not be determined properly
+                        if (newDeliveriesCount <= 0) newDeliveriesCount = 1
+
+                        NotificationHelper(appContext).createFailedDeliveryNotification(newDeliveriesCount)
                     }
                 } else {
                     // Not required so always success
