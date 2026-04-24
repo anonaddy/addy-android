@@ -18,10 +18,10 @@ android {
         Reserve the last two digits for a multi-APK variant, 00 for app, 01 for wearOS
          */
 
-        // SDK 36 + v6.2.1 + release 01 + 00 (for app)
-        versionCode = 366210100 // https://developer.android.com/training/wearables/packaging
+        // SDK 36 + v6.2.2 + release 01 + 00 (for app)
+        versionCode = 366220100 // https://developer.android.com/training/wearables/packaging
         // The "v" is important, as the updater class compares with the RSS feed on GitHub
-        versionName = "v6.2.1"
+        versionName = "v6.2.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -103,8 +103,8 @@ dependencies {
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.9.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.9.7")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.8")
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.8")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
@@ -175,7 +175,7 @@ dependencies {
 
 // Backgroundworker
 dependencies {
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.14.0")
 }
 
 // Built-in updater

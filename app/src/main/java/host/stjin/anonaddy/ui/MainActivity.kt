@@ -2,7 +2,6 @@ package host.stjin.anonaddy.ui
 
 import android.app.NotificationManager
 import android.content.Intent
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,7 +14,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -62,14 +60,8 @@ import host.stjin.anonaddy_shared.AddyIoApp
 import host.stjin.anonaddy_shared.NetworkHelper
 import host.stjin.anonaddy_shared.managers.SettingsManager
 import host.stjin.anonaddy_shared.managers.SettingsManager.PREFS
-import host.stjin.anonaddy_shared.models.Aliases
-import host.stjin.anonaddy_shared.models.Domains
-import host.stjin.anonaddy_shared.models.FailedDeliveries
 import host.stjin.anonaddy_shared.models.LOGIMPORTANCE
-import host.stjin.anonaddy_shared.models.Recipients
-import host.stjin.anonaddy_shared.models.Rules
 import host.stjin.anonaddy_shared.models.UserResource
-import host.stjin.anonaddy_shared.models.Usernames
 import host.stjin.anonaddy_shared.utils.DateTimeUtils
 import host.stjin.anonaddy_shared.utils.LoggingHelper
 import kotlinx.coroutines.Dispatchers

@@ -1,5 +1,30 @@
 # Changelog
 
+## [v6.2.2] - TBD
+
+### addy.io
+
+##### Fixed/Improved
+
+- Added support for blocklist pagination
+- Added support for blocklist filtering
+- Added support for searching through blocklist items
+- Added support for filtering failed deliveries for inbound quarantined
+- Reworked logic for counting failed deliveries
+- Redesigned searchbar for aliases
+- Redesigned tablet and foldable UI
+- Performance enhancements and other improvements for a smoother experience
+
+##### Removed
+
+- Removed Global Search in favor of new searchbars
+
+### addy.io for Android wearables _(v1.6.2)_
+
+##### Fixed/Improved
+
+- Performance improvements and other things to make the app even smoother
+
 ## [v6.2.1] - 2026-04-10
 
 ### addy.io

@@ -9,7 +9,7 @@ val wear_compose_version = rootProject.extra["wear_compose_version"]
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.3.10" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.21" // this version matches your Kotlin version
 
 }
 
@@ -58,7 +58,7 @@ dependencies {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.14.0")
 
     // Preferences for storing settings (and crypto settings)
     implementation("androidx.preference:preference-ktx:1.2.1")
@@ -77,7 +77,7 @@ dependencies {
 // Fuel, network requests
 dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.14.0")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 }

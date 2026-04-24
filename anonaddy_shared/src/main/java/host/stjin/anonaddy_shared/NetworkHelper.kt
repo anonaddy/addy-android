@@ -547,7 +547,7 @@ class NetworkHelper(private val context: Context) {
             }
 
             else -> {
-                val errorMessage = handleGenericError(response, result, "logout")
+                //val errorMessage = handleGenericError(response, result, "logout")
                 callback(null)
             }
         }
@@ -4089,8 +4089,6 @@ class NetworkHelper(private val context: Context) {
     ) {
 
         waitForInitAndLog()
-
-        val array = JSONArray(recipients ?: emptyList<String>())
 
         val json = JSONObject()
         json.put("recipient_ids", recipients)
