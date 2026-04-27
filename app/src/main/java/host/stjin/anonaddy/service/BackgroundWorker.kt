@@ -326,25 +326,26 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
                         encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
 
                     var newDeliveriesCount = 0
+                    var currentFailedDeliveryId: String? = null
                     networkHelper.cacheFailedDeliveryCountForWidgetAndBackgroundService(previousFailedDeliveryId) { result ->
                         if (result != null) {
-                            newDeliveriesCount = result
+                            newDeliveriesCount = result.first
+                            currentFailedDeliveryId = result.second
                             failedDeliveriesNetworkCallResult = true
                         } else {
                             failedDeliveriesNetworkCallResult = false
                         }
                     }
 
-                    val currentFailedDeliveryId =
-                        encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
-
                     // If the current failed delivery id is different from the previous. That means there is a new failed delivery
-                    if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId.isNotEmpty()) {
+                    if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId!!.isNotEmpty()) {
                         
-                        // Fallback to 1 if count could not be determined properly
-                        if (newDeliveriesCount <= 0) newDeliveriesCount = 1
-
-                        NotificationHelper(appContext).createFailedDeliveryNotification(newDeliveriesCount)
+                        // Ensure we only create a notification if the locally applied filter found matching deliveries.
+                        // For example, if a new 'outbound' delivery arrived but the user only wants 'inbound' notifications,
+                        // newDeliveriesCount will be 0 and no notification will be triggered.
+                        if (newDeliveriesCount > 0) {
+                            NotificationHelper(appContext).createFailedDeliveryNotification(newDeliveriesCount)
+                        }
                     }
                 } else {
                     // Not required so always success

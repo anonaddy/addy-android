@@ -57,8 +57,13 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
         })
         binding.activityAppSettingsFeaturesNotifyFailedDeliveriesTypeSection.setOnLayoutClickedListener(object : SectionView.OnLayoutClickedListener {
             override fun onClick() {
-                val types = arrayOf("all", "inbound", "outbound")
-                val typeNames = arrayOf(getString(R.string.all), getString(R.string.inbound), getString(R.string.outbound))
+                val types = arrayOf("all", "inbound", "outbound", "inbound_quarantined")
+                val typeNames = arrayOf(
+                    getString(R.string.all), 
+                    getString(R.string.inbound), 
+                    getString(R.string.outbound), 
+                    getString(R.string.inbound_quarantined)
+                )
                 val currentType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"
                 val checkedItem = types.indexOf(currentType).takeIf { it != -1 } ?: 0
 
@@ -96,6 +101,7 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
             when (type) {
                 "inbound" -> getString(R.string.inbound)
                 "outbound" -> getString(R.string.outbound)
+                "inbound_quarantined" -> getString(R.string.inbound_quarantined)
                 else -> getString(R.string.all)
             }
         )

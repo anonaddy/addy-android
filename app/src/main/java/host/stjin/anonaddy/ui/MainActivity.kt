@@ -130,6 +130,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
          */
     private suspend fun checkForNewFailedDeliveries() {
         val encryptedSettingsManager = SettingsManager(true, this)
+
         networkHelper.getAllFailedDeliveries { result, _ ->
             val previousFailedDeliveryId =
                 encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
@@ -137,12 +138,17 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             var newDeliveriesCount = 0
             if (result != null && result.data.isNotEmpty()) {
                 val currentFailedDeliveryId = result.data.firstOrNull()?.id
-                if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId.isNotEmpty()) {
-                    for (delivery in result.data) {
-                        if (delivery.id == previousFailedDeliveryId) break
-                        newDeliveriesCount++
+                if (!currentFailedDeliveryId.isNullOrEmpty()) {
+                    if (previousFailedDeliveryId == null) {
+                        // On a new installation, the previous ID is null, so consider all fetched items as new
+                        newDeliveriesCount = result.meta?.total ?: result.data.size
+                    } else if (currentFailedDeliveryId != previousFailedDeliveryId) {
+                        for (delivery in result.data) {
+                            if (delivery.id == previousFailedDeliveryId) break
+                            newDeliveriesCount++
+                        }
+                        if (newDeliveriesCount <= 0) newDeliveriesCount = 1
                     }
-                    if (newDeliveriesCount == 0) newDeliveriesCount = 1
                 }
             }
 
@@ -271,9 +277,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             setOnBigScreenClickListener()
         }
 
-        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-            setRefreshLayout()
-        }
+        setRefreshLayout()
 
         if (this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
             setRailVersion()
@@ -488,69 +492,81 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
 
     }
 
-    // This only applies to <sw600Dp devices
     private fun setRefreshLayout() {
-        binding.refreshLayout!!.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
-            override fun refresh() {
-                changeTopBarSubTitle(
-                    binding.mainAppBarInclude!!.mainTopBarSubtitle,
-                    binding.mainAppBarInclude!!.mainTopBarTitle,
-                    this@MainActivity.resources.getString(R.string.refreshing_data)
-                )
-                shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
-
-                refreshAllData()
-
-
-                // Since a bunch of different calls are being made, it is very hard to keep progress of everything.
-                // Just hide the refresh text after 2 seconds.
-                // TODO Any way to keep track of all this?
-                Handler(Looper.getMainLooper()).postDelayed({
-                    // Unauthenticated, clear settings
-                    binding.refreshLayout!!.finishRefreshing()
-                    shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
+        if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
+            binding.refreshLayout?.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
+                override fun refresh() {
                     changeTopBarSubTitle(
                         binding.mainAppBarInclude!!.mainTopBarSubtitle,
                         binding.mainAppBarInclude!!.mainTopBarTitle,
-                        null
+                        this@MainActivity.resources.getString(R.string.refreshing_data)
                     )
-                }, 2000)
+                    shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
 
-            }
+                    refreshAllData()
 
-            override fun pullDown(pixelsMoved: Float, shouldRefreshOnRelease: Boolean) {
-                if (pixelsMoved > 50) {
-                    if (shouldRefreshOnRelease) {
+
+                    // Since a bunch of different calls are being made, it is very hard to keep progress of everything.
+                    // Just hide the refresh text after 2 seconds.
+                    // TODO Any way to keep track of all this?
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        // Unauthenticated, clear settings
+                        binding.refreshLayout?.finishRefreshing()
+                        shimmerTopBarSubTitle(binding.mainAppBarInclude!!.mainTopBarSubtitleShimmerframelayout, true)
                         changeTopBarSubTitle(
                             binding.mainAppBarInclude!!.mainTopBarSubtitle,
                             binding.mainAppBarInclude!!.mainTopBarTitle,
-                            this@MainActivity.resources.getString(R.string.release_to_refresh)
+                            null
                         )
+                    }, 2000)
+
+                }
+
+                override fun pullDown(pixelsMoved: Float, shouldRefreshOnRelease: Boolean) {
+                    if (pixelsMoved > 50) {
+                        if (shouldRefreshOnRelease) {
+                            changeTopBarSubTitle(
+                                binding.mainAppBarInclude!!.mainTopBarSubtitle,
+                                binding.mainAppBarInclude!!.mainTopBarTitle,
+                                this@MainActivity.resources.getString(R.string.release_to_refresh)
+                            )
+                        } else {
+                            changeTopBarSubTitle(
+                                binding.mainAppBarInclude!!.mainTopBarSubtitle,
+                                binding.mainAppBarInclude!!.mainTopBarTitle,
+                                this@MainActivity.resources.getString(R.string.pull_down_to_refresh)
+                            )
+                        }
                     } else {
                         changeTopBarSubTitle(
                             binding.mainAppBarInclude!!.mainTopBarSubtitle,
                             binding.mainAppBarInclude!!.mainTopBarTitle,
-                            this@MainActivity.resources.getString(R.string.pull_down_to_refresh)
+                            null
                         )
                     }
-                } else {
+
+                }
+
+                override fun cancel() {
                     changeTopBarSubTitle(
                         binding.mainAppBarInclude!!.mainTopBarSubtitle,
                         binding.mainAppBarInclude!!.mainTopBarTitle,
                         null
                     )
                 }
-
+            })
+        } else {
+            binding.swipeRefreshLayoutSw600dp?.setOnChildScrollUpCallback { _, _ ->
+                !this@MainActivity.hasReachedTopOfNsv
             }
+            binding.swipeRefreshLayoutSw600dp?.setOnRefreshListener {
+                refreshAllData()
 
-            override fun cancel() {
-                changeTopBarSubTitle(
-                    binding.mainAppBarInclude!!.mainTopBarSubtitle,
-                    binding.mainAppBarInclude!!.mainTopBarTitle,
-                    null
-                )
+                Handler(Looper.getMainLooper()).postDelayed({
+                    binding.swipeRefreshLayoutSw600dp?.isRefreshing = false
+                }, 2000)
             }
-        })
+        }
     }
 
     private fun loadMainActivity() {
@@ -599,57 +615,63 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        navView.menu.findItem(R.id.navigation_home).isChecked = true
+                        navView.menu.findItem(R.id.navigation_home)?.isChecked = true
 
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                            changeTopBarTitle(
-                                binding.mainAppBarInclude!!.mainTopBarTitle,
-                                this@MainActivity.resources.getString(R.string.title_home)
-                            )
+                            binding.mainAppBarInclude?.let {
+                                changeTopBarTitle(
+                                    it.mainTopBarTitle,
+                                    this@MainActivity.resources.getString(R.string.title_home)
+                                )
+                            }
                         }
 
                     }
 
                     1 -> {
-                        navView.menu.findItem(R.id.navigation_alias).isChecked = true
+                        navView.menu.findItem(R.id.navigation_alias)?.isChecked = true
 
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                            changeTopBarTitle(
-                                binding.mainAppBarInclude!!.mainTopBarTitle,
-                                this@MainActivity.resources.getString(R.string.title_aliases)
-                            )
+                            binding.mainAppBarInclude?.let {
+                                changeTopBarTitle(
+                                    it.mainTopBarTitle,
+                                    this@MainActivity.resources.getString(R.string.title_aliases)
+                                )
+                            }
                         }
 
                     }
 
                     2 -> {
-                        navView.menu.findItem(R.id.navigation_recipients).isChecked = true
+                        navView.menu.findItem(R.id.navigation_recipients)?.isChecked = true
 
                         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
-                            changeTopBarTitle(
-                                binding.mainAppBarInclude!!.mainTopBarTitle,
-                                this@MainActivity.resources.getString(R.string.title_recipients)
-                            )
+                            binding.mainAppBarInclude?.let {
+                                changeTopBarTitle(
+                                    it.mainTopBarTitle,
+                                    this@MainActivity.resources.getString(R.string.title_recipients)
+                                )
+                            }
                         }
 
                     }
 
                     3 -> {
-                        navView.menu.findItem(R.id.navigation_usernames).isChecked = true
+                        navView.menu.findItem(R.id.navigation_usernames)?.isChecked = true
                     }
 
                     4 -> {
-                        navView.menu.findItem(R.id.navigation_domains).isChecked = true
+                        navView.menu.findItem(R.id.navigation_domains)?.isChecked = true
                     }
 
                     5 -> {
-                        navView.menu.findItem(R.id.navigation_rules).isChecked = true
+                        navView.menu.findItem(R.id.navigation_rules)?.isChecked = true
                     }
 
                     7 -> {
                         hideFailedDeliveriesBadge()
 
-                        navView.menu.findItem(R.id.navigation_failed_deliveries).isChecked = true
+                        navView.menu.findItem(R.id.navigation_failed_deliveries)?.isChecked = true
                     }
                 }
                 super.onPageSelected(position)
@@ -1023,7 +1045,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
     private fun hideFailedDeliveriesBadge() {
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
 
-            if (binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility != View.INVISIBLE) {
+            if (binding.mainAppBarInclude?.mainTopBarFailedDeliveriesNewItemsIcon?.visibility != View.INVISIBLE) {
 
                 // loading the animation of
                 // zoom_out.xml file into a variable
@@ -1037,7 +1059,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     }
 
                     override fun onAnimationEnd(p0: Animation?) {
-                        binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.visibility = View.INVISIBLE
+                        binding.mainAppBarInclude?.mainTopBarFailedDeliveriesNewItemsIcon?.visibility = View.INVISIBLE
                     }
 
                     override fun onAnimationRepeat(p0: Animation?) {
@@ -1045,17 +1067,17 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     }
                 }
                 )
-                binding.mainAppBarInclude!!.mainTopBarFailedDeliveriesNewItemsIcon.startAnimation(animZoomOut)
+                binding.mainAppBarInclude?.mainTopBarFailedDeliveriesNewItemsIcon?.startAnimation(animZoomOut)
             }
         } else {
-            binding.navRail!!.removeBadge(R.id.navigation_failed_deliveries)
+            binding.navRail?.removeBadge(R.id.navigation_failed_deliveries)
         }
     }
 
     private fun hideAccountNotificationsBadge() {
         if (!this@MainActivity.resources.getBoolean(R.bool.isTablet)) {
 
-            if (binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility != View.INVISIBLE) {
+            if (binding.mainAppBarInclude?.mainTopBarAccountNotificationsNewItemsIcon?.visibility != View.INVISIBLE) {
 
                 // loading the animation of
                 // zoom_out.xml file into a variable
@@ -1069,7 +1091,7 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     }
 
                     override fun onAnimationEnd(p0: Animation?) {
-                        binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.visibility = View.INVISIBLE
+                        binding.mainAppBarInclude?.mainTopBarAccountNotificationsNewItemsIcon?.visibility = View.INVISIBLE
                     }
 
                     override fun onAnimationRepeat(p0: Animation?) {
@@ -1077,10 +1099,10 @@ class MainActivity : BaseActivity(), AddApiBottomDialogFragment.AddApiBottomDial
                     }
                 }
                 )
-                binding.mainAppBarInclude!!.mainTopBarAccountNotificationsNewItemsIcon.startAnimation(animZoomOut)
+                binding.mainAppBarInclude?.mainTopBarAccountNotificationsNewItemsIcon?.startAnimation(animZoomOut)
             }
         } else {
-            binding.navRail!!.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_account_notifications)!!.colorFilter = null
+            binding.navRail?.headerView?.findViewById<ImageView>(R.id.navigation_rail_fab_account_notifications)?.colorFilter = null
         }
 
     }

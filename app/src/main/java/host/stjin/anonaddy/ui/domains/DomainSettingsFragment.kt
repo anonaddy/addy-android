@@ -189,14 +189,14 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                 if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
-                        resources.getString(R.string.error_obtaining_user) + "\\n" + result,
+                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
-                        resources.getString(R.string.error_obtaining_user) + "\\n" + result,
+                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
@@ -242,14 +242,14 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
                     if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
-                            this.resources.getString(R.string.error_obtaining_domain) + "\\n" + error,
+                            this.resources.getString(R.string.error_obtaining_domain) + "\n" + error,
                             (activity as MainActivity).findViewById(R.id.main_container),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
-                            this.resources.getString(R.string.error_obtaining_domain) + "\\n" + error,
+                            this.resources.getString(R.string.error_obtaining_domain) + "\n" + error,
                             (activity as DomainSettingsActivity).findViewById(R.id.activity_domain_settings_CL),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()

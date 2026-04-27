@@ -242,7 +242,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                 if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
-                        requireContext().resources.getString(R.string.error_obtaining_user) + "\\n" + result,
+                        requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
@@ -252,7 +252,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                     bottomNavView?.let {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_user) + "\\n" + result,
+                            requireContext().resources.getString(R.string.error_obtaining_user) + "\n" + result,
                             it,
                             LoggingHelper.LOGFILES.DEFAULT
                         )
@@ -286,7 +286,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                 if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
-                        requireContext().resources.getString(R.string.error_obtaining_recipients) + "\\n" + result,
+                        requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
                         (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
@@ -296,7 +296,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                     bottomNavView?.let {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
-                            requireContext().resources.getString(R.string.error_obtaining_recipients) + "\\n" + result,
+                            requireContext().resources.getString(R.string.error_obtaining_recipients) + "\n" + result,
                             it,
                             LoggingHelper.LOGFILES.DEFAULT
                         )
@@ -317,7 +317,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                 if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         context,
-                        context.resources.getString(R.string.error_resend_verification) + "\\n" + result,
+                        context.resources.getString(R.string.error_resend_verification) + "\n" + result,
                         (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
@@ -328,7 +328,7 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
                     bottomNavView?.let {
                         SnackbarHelper.createSnackbar(
                             context,
-                            context.resources.getString(R.string.error_resend_verification) + "\\n" + result,
+                            context.resources.getString(R.string.error_resend_verification) + "\n" + result,
                             it,
                             LoggingHelper.LOGFILES.DEFAULT
                         )

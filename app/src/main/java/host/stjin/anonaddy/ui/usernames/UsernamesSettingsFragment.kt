@@ -178,14 +178,14 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                 if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
-                        resources.getString(R.string.error_obtaining_user) + "\\n" + result,
+                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as MainActivity).findViewById(R.id.main_container),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
                 } else {
                     SnackbarHelper.createSnackbar(
                         requireContext(),
-                        resources.getString(R.string.error_obtaining_user) + "\\n" + result,
+                        resources.getString(R.string.error_obtaining_user) + "\n" + result,
                         (activity as UsernamesSettingsActivity).findViewById(R.id.activity_username_settings_CL),
                         LoggingHelper.LOGFILES.DEFAULT
                     ).show()
@@ -219,14 +219,14 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
                     if (requireContext().resources.getBoolean(R.bool.isTablet)) {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
-                            this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\\n" + error,
+                            this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
                             (activity as MainActivity).findViewById(R.id.main_container),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()
                     } else {
                         SnackbarHelper.createSnackbar(
                             requireContext(),
-                            this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\\n" + error,
+                            this@UsernamesSettingsFragment.resources.getString(R.string.error_obtaining_usernames) + "\n" + error,
                             (activity as UsernamesSettingsActivity).findViewById(R.id.activity_username_settings_CL),
                             LoggingHelper.LOGFILES.DEFAULT
                         ).show()

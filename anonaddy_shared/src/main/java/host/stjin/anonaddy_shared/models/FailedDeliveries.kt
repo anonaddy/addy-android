@@ -23,6 +23,8 @@ data class FailedDeliveries(
     val remote_mta: String,
     val sender: String?,
     val destination: String?,
+    val ir_dedupe_key: String?,
+    val type: String,
     val email_type: String,
     val email_type_text: String,
     val status: String,

@@ -124,6 +124,11 @@ class AppSettingsFeaturesNotifyCertificateExpiryActivity : BaseActivity() {
         binding.activityAppSettingsFeaturesNotifyCertificateExpirySection.setLayoutEnabled(
             alias != null
         )
+
+        binding.activityAppSettingsFeaturesNotifyCertificateExpiryChangeCertificate.setLayoutEnabled(
+            alias != null
+        )
+
         binding.activityAppSettingsFeaturesNotifyCertificateExpiryRemoveCertificate.setLayoutEnabled(
             alias != null
         )

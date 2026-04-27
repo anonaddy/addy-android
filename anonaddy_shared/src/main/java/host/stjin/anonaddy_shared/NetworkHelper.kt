@@ -3904,41 +3904,45 @@ class NetworkHelper(private val context: Context) {
 
     suspend fun cacheFailedDeliveryCountForWidgetAndBackgroundService(
         previousId: String?,
-        callback: (Int?) -> Unit
+        callback: (Pair<Int, String?>?) -> Unit
     ) {
 
         waitForInitAndLog()
 
         val settingsManager = SettingsManager(false, context)
         val filterType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"
-        val filter = if (filterType == "all") null else filterType
 
-        getAllFailedDeliveries(1, 25, filter) { result, _ ->
+        // Fetch all failed deliveries without the filter so that the widget's total count accurately
+        // reflects all failed deliveries and the latestId lookup never fails on mixed types.
+        getAllFailedDeliveries(1, 25, null) { result, _ ->
             if (result == null) {
                 // Result is null, callback false to let the BackgroundWorker know the task failed.
                 callback(null)
                 return@getAllFailedDeliveries
             } else {
-                // Store the current count
+                // Store the current count for shimmering
                 val totalCount = result.meta?.total ?: result.data.size
                 encryptedSettingsManager.putSettingsInt(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT, totalCount)
 
                 // Store the latest ID
                 val latestId = result.data.firstOrNull()?.id ?: ""
-                encryptedSettingsManager.putSettingsString(SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID, latestId)
 
                 var newDeliveriesCount = 0
                 if (previousId != null) {
                     for (delivery in result.data) {
                         if (delivery.id == previousId) break
-                        newDeliveriesCount++
+                        // Locally filter and count only the deliveries matching the notifyFailedDeliveriesType
+                        if (filterType == "all" || delivery.type == filterType) { // TODO: ALSO ADD INB QUARANTINED AS OPTION IN NOTIFS
+                            newDeliveriesCount++
+                        }
                     }
                 } else {
-                    newDeliveriesCount = 1
+                    // No previous ID, so we can't reliably count new deliveries
+                    newDeliveriesCount = 0
                 }
 
                 // Stored data, let the BackgroundWorker know the task succeeded
-                callback(newDeliveriesCount)
+                callback(Pair(newDeliveriesCount, latestId))
             }
         }
     }

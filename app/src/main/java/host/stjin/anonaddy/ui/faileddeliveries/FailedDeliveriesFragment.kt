@@ -100,6 +100,15 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
                 SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_COUNT,
                 failedDeliveriesList?.meta?.total ?: failedDeliveriesAdapter.itemCount
             )
+
+            val latestId = failedDeliveriesList?.data?.firstOrNull()?.id ?: "" // First in the list is actually the last ID because its sort DESC
+            
+            if (latestId.isNotEmpty()) {
+                encryptedSettingsManager?.putSettingsString(
+                    SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID,
+                    latestId
+                )
+            }
         }
     }
 
@@ -300,7 +309,6 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
 
             })
             adapter = failedDeliveriesAdapter
-
 
             // When in tablet mode (aka split screen mode) loading this fragment should not automatically update the value, it should only be updated
             // upon showing (so that the value keeps notifying the user until the user clicks on it.
