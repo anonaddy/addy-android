@@ -119,6 +119,16 @@ class UsernamesSettingsFragment : Fragment(), AddUsernameBottomDialogFragment.Ad
     }
 
     private fun setUsernamesAdapter(list: java.util.ArrayList<Usernames>) {
+        binding.usernameSettingsCount.apply {
+            val total = list.size
+            if (total > 0) {
+                text = total.toString()
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
+            }
+        }
+
         binding.fragmentUsernameSettingsAllUsernamesRecyclerview.apply {
             usernames = list
 

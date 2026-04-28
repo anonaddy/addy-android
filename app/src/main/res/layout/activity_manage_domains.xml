@@ -90,10 +90,29 @@
                     <TextView
                         android:id="@+id/activity_manage_domain_aliases_title_textview"
                         style="@style/titleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/domain_aliases" />
+
+                    <TextView
+                        android:id="@+id/activity_manage_domain_aliases_count_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_count_capsule"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="10"
+                        tools:visibility="visible" />
+
+                    <Space
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/domain_aliases_d" />
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <LinearLayout

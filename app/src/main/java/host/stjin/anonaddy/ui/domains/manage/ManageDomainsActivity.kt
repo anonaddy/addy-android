@@ -423,6 +423,16 @@ class ManageDomainsActivity : BaseActivity(),
         val buf = StringBuilder()
 
         if (aliasesArray != null) {
+            binding.activityManageDomainAliasesCountTextview.apply {
+                val total = aliasesArray.meta?.total ?: aliasesArray.data.size
+                if (total > 0) {
+                    text = total.toString()
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            }
+
             aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
             for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
@@ -452,7 +462,6 @@ class ManageDomainsActivity : BaseActivity(),
             DateTimeUtils.convertStringToLocalTimeZoneString(domain.domain_sending_verified_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
-        binding.activityManageDomainAliasesTitleTextview.text = resources.getString(R.string.domain_aliases_d, totalAliases)
 
 
         /**

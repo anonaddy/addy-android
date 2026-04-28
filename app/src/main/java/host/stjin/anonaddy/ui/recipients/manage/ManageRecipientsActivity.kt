@@ -734,6 +734,16 @@ class ManageRecipientsActivity : BaseActivity(),
         val buf = StringBuilder()
 
         if (aliasesArray != null) {
+            binding.activityManageRecipientAliasesCountTextview.apply {
+                val total = aliasesArray.meta?.total ?: aliasesArray.data.size
+                if (total > 0) {
+                    text = total.toString()
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            }
+
             aliasesArray.data = ArrayList(aliasesArray.data.sortedBy { it.email })
             for (alias in aliasesArray.data) {
                 totalForwarded += alias.emails_forwarded
@@ -761,10 +771,6 @@ class ManageRecipientsActivity : BaseActivity(),
             DateTimeUtils.convertStringToLocalTimeZoneString(recipient.updated_at),
             totalForwarded, totalBlocked, totalReplies, totalSent
         )
-
-        binding.activityManageRecipientAliasesTitleTextview.text = resources.getString(R.string.recipient_aliases_d, totalAliases)
-
-
 
         binding.animationFragment.stopAnimation()
         binding.activityManageRecipientNSV.animate().alpha(1.0f)

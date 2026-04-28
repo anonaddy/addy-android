@@ -357,6 +357,16 @@ class RulesSettingsFragment : Fragment(), Refreshable {
     }
 
     private fun setRulesAdapter(recipientsList: ArrayList<Recipients>, list: java.util.ArrayList<Rules>) {
+        binding.ruleSettingsCount.apply {
+            val total = list.size
+            if (total > 0) {
+                text = total.toString()
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
+            }
+        }
+
         binding.fragmentManageRulesAllRulesRecyclerview.apply {
             recipients = recipientsList
             rules = list

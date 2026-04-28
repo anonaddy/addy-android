@@ -100,6 +100,7 @@ class SettingsManager(encrypt: Boolean, private val context: Context) {
         BACKGROUND_SERVICE_CACHE_DOMAIN_ERROR_COUNT(true, PREFTYPES.INT, "cache_domain_error_count"),
 
         BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID(true, PREFTYPES.STRING, "cache_failed_deliveries_latest_id"),
+        BACKGROUND_SERVICE_NOTIFIED_FAILED_DELIVERIES_LATEST_ID(true, PREFTYPES.STRING, "notified_failed_deliveries_latest_id"),
 
         // This value keeps track of the previous amount of account notifications so comparisons can be made in the BackgroundWorker
         BACKGROUND_SERVICE_CACHE_ACCOUNT_NOTIFICATIONS_COUNT_PREVIOUS(true, PREFTYPES.INT, "cache_account_notifications_count_previous"),

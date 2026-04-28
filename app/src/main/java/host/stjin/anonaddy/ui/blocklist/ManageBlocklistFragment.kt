@@ -90,9 +90,10 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
                 (event?.action == android.view.KeyEvent.ACTION_DOWN &&
                         event.keyCode == android.view.KeyEvent.KEYCODE_ENTER)
             ) {
-                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(binding.blocklistSearchTermTiet.windowToken, 0)
-                
+
                 getDataFromWeb(null)
                 true
             } else {
@@ -274,6 +275,17 @@ class ManageBlocklistFragment : Fragment(), ManageBlocklistAddBottomDialogFragme
     }
 
     private fun setBlocklistAdapter(list: BlocklistEntriesArray, forceReload: Boolean) {
+        binding.blocklistCount.apply {
+            list.meta?.total?.let { total ->
+                if (total > 0) {
+                    text = total.toString()
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            } ?: run { visibility = View.GONE }
+        }
+
         binding.fragmentBlocklistAllBlocklistRecyclerview.apply {
             if (blocklistEntries == null || forceReload) {
                 // If blocklistEntries is empty, assign it

@@ -2,7 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,130 +68,149 @@
                 android:layout_marginBottom="8dp">
 
                 <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:scrollbars="none"
-                android:overScrollMode="never">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/alias_chipgroup"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:selectionRequired="true"
-                    app:singleLine="true"
-                    app:singleSelection="true">
+                    android:layout_marginBottom="12dp"
+                    android:scrollbars="none"
+                    android:overScrollMode="never">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/alias_chip_all"
-                        style="@style/AddyIoChip"
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/alias_chipgroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:checked="true"
-                        android:text="@string/filter_all_aliases" />
+                        app:selectionRequired="true"
+                        app:singleLine="true"
+                        app:singleSelection="true">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/alias_chip_pinned"
-                        style="@style/AddyIoChip"
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_all"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:checked="true"
+                            android:text="@string/filter_all_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_pinned"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/filter_pinned_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_active"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/filter_active_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_inactive"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/filter_inactive_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_deleted"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/filter_deleted_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_watched"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/watched_aliases" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/alias_chip_custom"
+                            style="@style/AddyIoChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="@string/custom" />
+                    </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
+
+
+                <LinearLayout
+                    style="@style/AddyIoTitleAction"
+                    android:layout_marginTop="0dp"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:id="@+id/alias_header"
+                        style="@style/titleTextView"
+                        android:layout_width="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:layout_height="match_parent"
+                        android:text="@string/aliases" />
+
+                    <TextView
+                        android:id="@+id/alias_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="@string/filter_pinned_aliases" />
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_count_capsule"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="10"
+                        tools:visibility="visible" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/alias_chip_active"
-                        style="@style/AddyIoChip"
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/alias_add_alias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="@string/filter_active_aliases" />
+                        android:text="@string/add_alias" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/alias_chip_inactive"
-                        style="@style/AddyIoChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="@string/filter_inactive_aliases" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/alias_chip_deleted"
-                        style="@style/AddyIoChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="@string/filter_deleted_aliases" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/alias_chip_watched"
-                        style="@style/AddyIoChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="@string/watched_aliases" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/alias_chip_custom"
-                        style="@style/AddyIoChip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checkable="true"
-                        android:text="@string/custom" />
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
+                </LinearLayout>
 
 
-            <LinearLayout
-                style="@style/AddyIoTitleAction"
-                android:layout_marginTop="0dp"
-                android:layout_width="match_parent"
-                android:orientation="horizontal">
-
+                <com.todkars.shimmer.ShimmerRecyclerView
+                    android:id="@+id/alias_all_aliases_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:shimmer_recycler_auto_start="true"
+                    app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
 
                 <TextView
-                    android:id="@+id/alias_header"
-                    style="@style/titleTextView"
-                    android:layout_width="0dp"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/aliases" />
-
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/alias_add_alias"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/alias_no_aliases"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_alias" />
+                    android:padding="@dimen/no_result_textview_padding"
+                    android:text="@string/no_aliases"
+                    android:textAlignment="center"
+                    android:textColor="@color/BlackWhite"
+                    android:visibility="gone" />
+
 
             </LinearLayout>
-
-
-            <com.todkars.shimmer.ShimmerRecyclerView
-                android:id="@+id/alias_all_aliases_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:shimmer_recycler_auto_start="true"
-                app:shimmer_recycler_layout="@layout/aliases_recyclerview_list_item_shimmer" />
-
-            <TextView
-                android:id="@+id/alias_no_aliases"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/no_result_textview_padding"
-                android:text="@string/no_aliases"
-                android:textAlignment="center"
-                android:textColor="@color/BlackWhite"
-                android:visibility="gone" />
-
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 

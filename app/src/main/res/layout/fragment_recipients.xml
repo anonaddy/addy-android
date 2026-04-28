@@ -77,12 +77,31 @@
             <TextView
                 android:id="@+id/recipients_all_recipients_title"
                 style="@style/titleTextView"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:text="@string/recipients" />
+
+            <TextView
+                android:id="@+id/recipients_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_count_capsule"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="10"
+                tools:visibility="visible" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
         </LinearLayout>
 

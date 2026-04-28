@@ -102,10 +102,14 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
             )
 
             val latestId = failedDeliveriesList?.data?.firstOrNull()?.id ?: "" // First in the list is actually the last ID because its sort DESC
-            
+
             if (latestId.isNotEmpty()) {
                 encryptedSettingsManager?.putSettingsString(
                     SettingsManager.PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID,
+                    latestId
+                )
+                encryptedSettingsManager?.putSettingsString(
+                    SettingsManager.PREFS.BACKGROUND_SERVICE_NOTIFIED_FAILED_DELIVERIES_LATEST_ID,
                     latestId
                 )
             }
@@ -264,6 +268,17 @@ class FailedDeliveriesFragment : Fragment(), FailedDeliveryDetailsBottomDialogFr
     }
 
     private fun setFailedDeliveriesAdapter(list: FailedDeliveriesArray, forceReload: Boolean) {
+        binding.failedDeliveriesCount.apply {
+            list.meta?.total?.let { total ->
+                if (total > 0) {
+                    text = total.toString()
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            } ?: run { visibility = View.GONE }
+        }
+
         binding.fragmentFailedDeliveriesAllFailedDeliveriesRecyclerview.apply {
             if (failedDeliveriesList == null || forceReload) {
                 // If failedDeliveriesList is empty, assign it

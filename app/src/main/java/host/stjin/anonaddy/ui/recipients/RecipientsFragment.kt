@@ -157,6 +157,16 @@ class RecipientsFragment : Fragment(), AddRecipientBottomDialogFragment.AddRecip
     }
 
     private fun setRecipientAdapter(list: ArrayList<Recipients>) {
+        binding.recipientsCount.apply {
+            val total = list.size
+            if (total > 0) {
+                text = total.toString()
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
+            }
+        }
+
         binding.recipientsAllRecipientsRecyclerview.apply {
             recipients = list
 

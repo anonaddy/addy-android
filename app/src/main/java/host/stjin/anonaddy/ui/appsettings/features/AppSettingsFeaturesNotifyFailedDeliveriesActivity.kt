@@ -59,9 +59,9 @@ class AppSettingsFeaturesNotifyFailedDeliveriesActivity : BaseActivity() {
             override fun onClick() {
                 val types = arrayOf("all", "inbound", "outbound", "inbound_quarantined")
                 val typeNames = arrayOf(
-                    getString(R.string.all), 
-                    getString(R.string.inbound), 
-                    getString(R.string.outbound), 
+                    getString(R.string.all),
+                    getString(R.string.inbound),
+                    getString(R.string.outbound),
                     getString(R.string.inbound_quarantined)
                 )
                 val currentType = settingsManager.getSettingsString(SettingsManager.PREFS.NOTIFY_FAILED_DELIVERIES_TYPE) ?: "all"

@@ -323,7 +323,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
                 if (settingsManager.getSettingsBool(PREFS.NOTIFY_FAILED_DELIVERIES)) {
                     val previousFailedDeliveryId =
-                        encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_CACHE_FAILED_DELIVERIES_LATEST_ID)
+                        encryptedSettingsManager.getSettingsString(PREFS.BACKGROUND_SERVICE_NOTIFIED_FAILED_DELIVERIES_LATEST_ID)
 
                     var newDeliveriesCount = 0
                     var currentFailedDeliveryId: String? = null
@@ -339,13 +339,20 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, par
 
                     // If the current failed delivery id is different from the previous. That means there is a new failed delivery
                     if (currentFailedDeliveryId != null && previousFailedDeliveryId != null && currentFailedDeliveryId != previousFailedDeliveryId && currentFailedDeliveryId!!.isNotEmpty()) {
-                        
+
                         // Ensure we only create a notification if the locally applied filter found matching deliveries.
                         // For example, if a new 'outbound' delivery arrived but the user only wants 'inbound' notifications,
                         // newDeliveriesCount will be 0 and no notification will be triggered.
                         if (newDeliveriesCount > 0) {
                             NotificationHelper(appContext).createFailedDeliveryNotification(newDeliveriesCount)
                         }
+                    }
+
+                    if (currentFailedDeliveryId != null && currentFailedDeliveryId!!.isNotEmpty()) {
+                        encryptedSettingsManager.putSettingsString(
+                            PREFS.BACKGROUND_SERVICE_NOTIFIED_FAILED_DELIVERIES_LATEST_ID,
+                            currentFailedDeliveryId!!
+                        )
                     }
                 } else {
                     // Not required so always success

@@ -120,6 +120,16 @@ class DomainSettingsFragment : Fragment(), AddDomainBottomDialogFragment.AddDoma
     }
 
     private fun setDomainsAdapter(list: java.util.ArrayList<Domains>) {
+        binding.domainSettingsCount.apply {
+            val total = list.size
+            if (total > 0) {
+                text = total.toString()
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
+            }
+        }
+
         binding.fragmentDomainSettingsAllDomainsRecyclerview.apply {
             domains = list
             if (list.isNotEmpty()) {

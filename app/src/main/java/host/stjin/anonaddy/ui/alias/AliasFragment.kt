@@ -189,7 +189,7 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
         if (aliasSortFilterObject != null) {
             this.aliasSortFilter = aliasSortFilterObject
         }
-        
+
         val searchText = binding.aliasSearchTermTiet.text.toString().trim()
         this.aliasSortFilter.filter = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
 
@@ -231,9 +231,10 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
                 (event?.action == android.view.KeyEvent.ACTION_DOWN &&
                         event.keyCode == android.view.KeyEvent.KEYCODE_ENTER)
             ) {
-                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(binding.aliasSearchTermTiet.windowToken, 0)
-                
+
                 val searchText = binding.aliasSearchTermTiet.text.toString().trim()
                 aliasSortFilter.filter = if (searchText.isEmpty()) null else searchText.lowercase(java.util.Locale.getDefault())
                 getDataFromWeb(null)
@@ -292,6 +293,17 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
     }
 
     private fun setAliasesAdapter(context: Context, list: AliasesArray, forceReload: Boolean) {
+        binding.aliasCount.apply {
+            list.meta?.total?.let { total ->
+                if (total > 0) {
+                    text = total.toString()
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
+            } ?: run { visibility = View.GONE }
+        }
+
         binding.aliasAllAliasesRecyclerview.apply {
             if (aliasList == null || forceReload) {
                 // If aliasList is empty, assign it
@@ -316,9 +328,9 @@ class AliasFragment : Fragment(), AddAliasBottomDialogFragment.AddAliasBottomDia
             }
 
             if (defaultAliasSortFilter != aliasSortFilter) {
-                binding.aliasHeader.text = this@AliasFragment.resources.getString(R.string.aliases_filtered_d, aliasList?.meta?.total ?: 0)
+                binding.aliasHeader.text = this@AliasFragment.resources.getString(R.string.aliases_filtered, aliasList?.meta?.total ?: 0)
             } else {
-                binding.aliasHeader.text = this@AliasFragment.resources.getString(R.string.aliases_d, aliasList?.meta?.total ?: 0)
+                binding.aliasHeader.text = this@AliasFragment.resources.getString(R.string.aliases, aliasList?.meta?.total ?: 0)
             }
 
             // Hide snackbar

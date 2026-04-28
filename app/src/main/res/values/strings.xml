@@ -36,8 +36,7 @@
     <string name="emails_forwarded">Emails forwarded</string>
     <string name="emails_replied_sent">Emails replied/sent</string>
     <string name="all_aliases">All aliases</string>
-    <string name="aliases_d">Aliases (%d)</string>
-    <string name="aliases_filtered_d">Aliases (%d) (filter active)</string>
+    <string name="aliases_filtered">Aliases (filter active)</string>
     <string name="settings">Settings</string>
     <string name="resend_email">Resend email</string>
     <string name="delete">Delete</string>
@@ -139,7 +138,7 @@
     <string name="encryption">Encryption</string>
     <string name="remove_public_key">Remove public key</string>
     <string name="action">Action</string>
-    <string name="recipient_aliases_d">Recipient aliases (%d)</string>
+    <string name="recipient_aliases">Recipient aliases</string>
     <string name="encryption_disabled">Encryption disabled</string>
     <string name="change_public_gpg_key">Change public GPG key</string>
     <string name="add_public_gpg_key">Add public GPG key</string>
@@ -171,8 +170,8 @@
     <string name="edit_desc_domain_desc">Change the description for this domain, describe what this domain is used for</string>
     <string name="edit_desc_username_desc">Change the description for this username, describe what this username is used for</string>
     <string name="edit_domain">Edit domain</string>
-    <string name="domain_aliases_d">Domain aliases (%d)</string>
-    <string name="username_aliases_d">Username aliases (%d)</string>
+    <string name="domain_aliases">Domain aliases</string>
+    <string name="username_aliases">Username aliases</string>
     <string name="domain_status_desc">Use this domain for mail forwarding</string>
     <string name="username_status_desc">Use this username for mail forwarding</string>
     <string name="delete_domain_desc">You will no longer be able to receive any emails at this domain</string>
@@ -366,13 +365,13 @@
     <string name="back">back</string>
     <string name="obtaining_information">obtaining information…</string>
     <string name="new_update_available">New update available</string>
-    <string name="new_update_available_version">%s -> %s</string>
+    <string name="new_update_available_version">%1$s -> %2$s</string>
     <string name="addyio_updater">addy.io app updater</string>
     <string name="update_notify_title">Notify for new updates</string>
     <string name="update_notify_desc">Periodically check for updates in the background and send a notification when one is available</string>
     <string name="previous_changelogs">Previous changelogs</string>
     <string name="previous_changelogs_desc">View previous changelogs</string>
-    <string name="version_channel_info">Version: %s\nDownload channel: %s</string>
+    <string name="version_channel_info">Version: %1$s\nDownload channel: %2$s</string>
     <string name="sideloaded">sideloaded</string>
     <string name="no_new_update_available">You\'re up to date</string>
     <string name="no_new_update_available_desc">You are currently using the latest version of the addy.io app. Turn on notifications to get notified when a new version is available</string>
