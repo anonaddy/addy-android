@@ -67,12 +67,12 @@
     <string name="on">On</string>
     <string name="system_default">System default</string>
     <string name="app_changelog"><![CDATA[
-<h3>What\'s new in addy.io for Android 6.2.2</h3>
+<h3>What\'s new in addy.io for Android 6.2.3</h3>
 <h4>Fixed/Improved</h4>
 <p>- Added support for blocklist pagination<br />- Added support for blocklist filtering<br />- Added support for searching through blocklist items<br />- Added support for filtering failed deliveries for inbound quarantined<br />- Reworked logic for counting failed deliveries<br />- Redesigned searchbar for aliases<br />- Redesigned tablet and foldable UI<br />- Performance enhancements and other improvements for a smoother experience</p>
 <h4>Removed</h4>
 <p>- Removed Global Search in favor of new searchbars</p>
-<h3>What\'s new in addy.io for Android Wearables 1.6.2</h3>
+<h3>What\'s new in addy.io for Android Wearables 1.6.3</h3>
 <h4>Fixed/Improved</h4>
 <p>- Performance improvements and other things to make the app even smoother</p>]]></string>
     <string name="addyio_instance_version_unsupported">The version of this addy.io instance is lower than the minimum required version to use this app. You can ignore this message and just use the app, but there is a good chance that some functions will not work.</string>

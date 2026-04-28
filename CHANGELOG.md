@@ -1,6 +1,6 @@
 # Changelog
 
-## [v6.2.2] - TBD
+## [v6.2.3] - TBD
 
 ### addy.io
 
@@ -19,7 +19,7 @@
 
 - Removed Global Search in favor of new searchbars
 
-### addy.io for Android wearables _(v1.6.2)_
+### addy.io for Android wearables _(v1.6.3)_
 
 ##### Fixed/Improved
 
