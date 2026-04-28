@@ -377,7 +377,6 @@ class ManageAliasActivity : BaseActivity(),
     private fun loadNodes() {
         if (BuildConfig.FLAVOR == "gplay") {
             try {
-                // TODO Maybe add option menu when multiple wearables are connected
                 val nodeClient = Wearable.getNodeClient(this)
                 nodeClient.connectedNodes.addOnSuccessListener { nodes ->
                     // Send a message to all connected nodes
@@ -385,15 +384,29 @@ class ManageAliasActivity : BaseActivity(),
                     if (nodes.any()) {
                         if (this@ManageAliasActivity.alias != null) {
                             toolbarSetSecondAction(binding.activityManageAliasToolbar, R.drawable.ic_send_to_device_watch) {
-                                for (node in nodes) {
-                                    Wearable.getMessageClient(this)
-                                        .sendMessage(node.id, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+                                if (nodes.size > 1) {
+                                    val nodeListItems = arrayListOf<CharSequence>()
+                                    nodes.forEach { nodeListItems.add(it.displayName) }
+                                    val nodeListItemsCS: Array<CharSequence> = nodeListItems.toArray(arrayOfNulls<CharSequence>(nodeListItems.size))
+
+                                    val materialDialog = MaterialDialogHelper.showMaterialDialog(
+                                        context = this@ManageAliasActivity,
+                                        title = resources.getString(R.string.select_wearable_device),
+                                        icon = R.drawable.ic_device_watch,
+                                        neutralButtonText = resources.getString(R.string.cancel),
+                                    )
+
+                                    materialDialog.setSingleChoiceItems(
+                                        nodeListItemsCS,
+                                        -1
+                                    ) { dialog, which ->
+                                        sendToWearableNode(nodes[which].id)
+                                        dialog.dismiss()
+                                    }
+                                    materialDialog.show()
+                                } else {
+                                    sendToWearableNode(nodes[0].id)
                                 }
-                                SnackbarHelper.createSnackbar(
-                                    this,
-                                    this.resources.getString(R.string.check_your_wearable),
-                                    binding.activityManageAliasCL
-                                ).show()
                             }
                         }
 
@@ -403,6 +416,16 @@ class ManageAliasActivity : BaseActivity(),
                 LoggingHelper(this).addLog(LOGIMPORTANCE.WARNING.int, ex.toString(), "loadNodes", null)
             }
         }
+    }
+
+    private fun sendToWearableNode(nodeId: String) {
+        Wearable.getMessageClient(this)
+            .sendMessage(nodeId, "/showAlias", this@ManageAliasActivity.alias!!.id.toByteArray())
+        SnackbarHelper.createSnackbar(
+            this,
+            this.resources.getString(R.string.check_your_wearable),
+            binding.activityManageAliasCL
+        ).show()
     }
 
     private fun setChart(forwarded: Float, replied: Float, blocked: Float, sent: Float) {
