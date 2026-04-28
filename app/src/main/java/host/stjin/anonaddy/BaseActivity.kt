@@ -48,9 +48,12 @@ abstract class BaseActivity : AppCompatActivity() {
      * A developer's lament, in code and view.
      * https://developer.android.com/develop/ui/views/layout/edge-to-edge#kts
      */
+    private var isDynamicColorsEnabled: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        isDynamicColorsEnabled = SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS)
     }
 
 
@@ -238,6 +241,11 @@ abstract class BaseActivity : AppCompatActivity() {
             registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"), RECEIVER_EXPORTED)
         } else {
             registerReceiver(mScrollUpBroadcastReceiver, IntentFilter("scroll_up"))
+        }
+
+        val currentDynamicColors = SettingsManager(false, this).getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS)
+        if (isDynamicColorsEnabled != currentDynamicColors) {
+            recreate()
         }
     }
 

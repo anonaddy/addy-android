@@ -52,9 +52,13 @@ class AddyIoApp : Application() {
             userAgentApplicationBuildType = BuildConfig.BUILD_TYPE
         )
 
-        if (settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS)) {
-            // Apply dynamic color
-            DynamicColors.applyToActivitiesIfAvailable(this)
-        }
+        DynamicColors.applyToActivitiesIfAvailable(
+            this,
+            com.google.android.material.color.DynamicColorsOptions.Builder()
+                .setPrecondition { _, _ ->
+                    settingsManager.getSettingsBool(SettingsManager.PREFS.DYNAMIC_COLORS)
+                }
+                .build()
+        )
     }
 }

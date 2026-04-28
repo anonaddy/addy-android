@@ -286,8 +286,7 @@ class AppSettingsActivity : BaseActivity(),
     }
 
     override fun onApplyDynamicColors() {
-        binding.activityAppSettingsSectionAppTheme.setDescription(this.resources.getString(R.string.restart_app_required))
-        binding.activityAppSettingsSectionAppTheme.setSectionAlert(true)
+        recreate()
     }
 
     override fun setInterval(minutes: Int) {
