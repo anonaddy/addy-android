@@ -3932,7 +3932,7 @@ class NetworkHelper(private val context: Context) {
                     for (delivery in result.data) {
                         if (delivery.id == previousId) break
                         // Locally filter and count only the deliveries matching the notifyFailedDeliveriesType
-                        if (filterType == "all" || delivery.type == filterType) { // TODO: ALSO ADD INB QUARANTINED AS OPTION IN NOTIFS
+                        if (filterType == "all" || delivery.type == filterType) {
                             newDeliveriesCount++
                         }
                     }
